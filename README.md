@@ -3,7 +3,7 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 
 
 
-## [NuGet package](https://www.nuget.org/packages/BionicUtilities.Net/)
+//## [NuGet package](https://www.nuget.org/packages/BionicUtilities.Net/)
 
 ## [Class Reference](https://rawcdn.githack.com/BionicCode/BionicUtilities.Net/d1765f5da61687fac04e0fd7fc3ca4142935ecf1/BionicUtilities.Net/Documentation/Help/index.html)
 
