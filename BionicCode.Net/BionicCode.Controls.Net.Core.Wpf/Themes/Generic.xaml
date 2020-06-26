@@ -1,0 +1,108 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:wpf="clr-namespace:BionicCode.Controls.Net.Core.Wpf">
+  <Style TargetType="wpf:NormalizingNumericTextBox">
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="BorderBrush" Value="DarkGray" />
+    <Setter Property="HorizontalAlignment" Value="Left"/>
+    <Setter Property="VerticalContentAlignment" Value="Center"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="wpf:NormalizingNumericTextBox">
+          <Border BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  Background="{TemplateBinding Background}"
+                  Padding="{TemplateBinding Padding}">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <ScrollViewer x:Name="PART_ContentHost" Grid.Column="0" Margin="0" />
+              <ComboBox x:Name="PART_UnitsItemsHost" Grid.Column="1" BorderThickness="0" HorizontalAlignment="Right" />
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style TargetType="{x:Type wpf:ClosableTabControl}"
+         BasedOn="{StaticResource {x:Type TabControl}}">
+    <Setter Property="Background"
+            Value="{x:Static SystemColors.ControlBrush}" />
+    <!--<Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:ClosableTabControl}">
+                      <Grid KeyboardNavigation.TabNavigation="Local">
+                        <Grid.RowDefinitions>
+                          <RowDefinition Height="Auto" />
+                          <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+                        <TabPanel x:Name="HeaderPanel"
+                                  Grid.Row="0"
+                                  Panel.ZIndex="1"
+                                  Margin="0,0,4,-1"
+                                  IsItemsHost="True"
+                                  KeyboardNavigation.TabIndex="1"
+                                  Background="Transparent" />
+            <Border Grid.Row="1" Background="Red"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+
+              <ContentPresenter x:Name="PART_SelectedContentHost" />
+                    </Border>
+              </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>-->
+    <Setter Property="ItemContainerStyle">
+      <Setter.Value>
+        <Style TargetType="TabItem" BasedOn="{StaticResource {x:Type TabItem}}">
+          <Setter Property="BorderThickness"
+                  Value="1,1,1,0" />
+          <Setter Property="Margin"
+                  Value="0,2,0,0" />
+          <Setter Property="BorderBrush" Value="DimGray" />
+          <Setter Property="Background" Value="LightGray" />
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="TabItem">
+                <Border BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Background="{TemplateBinding Background}">
+                  <StackPanel Orientation="Horizontal">
+                    <ContentPresenter x:Name="ContentSite"
+                                      VerticalAlignment="Center"
+                                      HorizontalAlignment="Center"
+                                      ContentSource="Header"
+                                      Margin="12,2,12,2"
+                                      RecognizesAccessKey="True" />
+                    <Button Content="X"
+                            Command="{x:Static wpf:ClosableTabControl.CloseTabRoutedCommand}"
+                            Height="16"
+                            Width="16"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Margin="4" />
+                  </StackPanel>
+                </Border>
+                <ControlTemplate.Triggers>
+                  <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background"
+                            Value="{x:Static SystemColors.ControlBrush}" />
+                    <Setter Property="Panel.ZIndex"
+                            Value="100" />
+                    <Setter Property="Margin"
+                            Value="0,0,0,-1" />
+                  </Trigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+        </Style>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>NetStandard2.0</TargetFramework>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
+    <RootNamespace>BionicCode.Utilities.Net.Standard</RootNamespace>
+    <AssemblyName>BionicCode.Utilities.Net.Standard</AssemblyName>
+  </PropertyGroup>
+
+</Project>
