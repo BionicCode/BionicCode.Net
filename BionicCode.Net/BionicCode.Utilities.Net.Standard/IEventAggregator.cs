@@ -30,7 +30,7 @@ namespace BionicCode.Utilities.Net.Standard
     /// <param name="eventSourceType">The type of the observable.</param>
     /// <param name="eventHandler">A delegate that handles the specified event.</param>
     /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
-    bool TryRegisterObserver<TEventArgs>(string eventName, Type eventSourceType, Action<object, TEventArgs> eventHandler);
+    bool TryRegisterObserver<TEventArgs>(string eventName, Type eventSourceType, EventHandler<TEventArgs> eventHandler);
 
     /// <summary>
     /// Register an event delegate to handle a specific event which could be published by any type.
@@ -47,7 +47,7 @@ namespace BionicCode.Utilities.Net.Standard
     /// <param name="eventName">The name of the observed event.</param>
     /// <param name="eventHandler">A delegate that handles the specified event.</param>
     /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
-    bool TryRegisterGlobalObserver<TEventArgs>(string eventName, Action<object, TEventArgs> eventHandler);
+    bool TryRegisterGlobalObserver<TEventArgs>(string eventName, EventHandler<TEventArgs> eventHandler);
 
     /// <summary>
     /// Registers a handler for any registered event source with a compatible event delegate signature.
@@ -62,7 +62,7 @@ namespace BionicCode.Utilities.Net.Standard
     /// <typeparam name="TEventArgs">The type of the event args object.</typeparam>
     /// <param name="eventHandler">A delegate that handles the specified event.</param>
     /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
-    bool TryRegisterGlobalObserver<TEventArgs>(Action<object, TEventArgs> eventHandler);
+    bool TryRegisterGlobalObserver<TEventArgs>(EventHandler<TEventArgs> eventHandler);
 
     /// <summary>
     /// Unregister the event publisher for a collection of specified events.
@@ -101,7 +101,7 @@ namespace BionicCode.Utilities.Net.Standard
     /// <param name="eventSourceType">The type of the event publisher.</param>
     /// <param name="eventHandler">The event handler to remove.</param>
     /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
-    bool TryRemoveObserver<TEventArgs>(string eventName, Type eventSourceType, Action<object, TEventArgs> eventHandler);
+    bool TryRemoveObserver<TEventArgs>(string eventName, Type eventSourceType, EventHandler<TEventArgs> eventHandler);
 
     /// <summary>
     /// Removes all event handlers for a specified event no matter event publisher type.
@@ -140,7 +140,7 @@ namespace BionicCode.Utilities.Net.Standard
     /// <param name="eventName">The event name of the event that the delegate is handling.</param>
     /// <param name="eventHandler">The event handler to remove</param>
     /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
-    bool TryRemoveGlobalObserver<TEventArgs>(string eventName, Action<object, TEventArgs> eventHandler);
+    bool TryRemoveGlobalObserver<TEventArgs>(string eventName, EventHandler<TEventArgs> eventHandler);
 
     /// <summary>
     /// Removes the event handler for all registered events with a compatible event delegate signature.
@@ -155,6 +155,6 @@ namespace BionicCode.Utilities.Net.Standard
     /// <typeparam name="TEventArgs">The type of the event args object.</typeparam>
     /// <param name="eventHandler">The event handler to remove.</param>
     /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
-    bool TryRemoveGlobalObserver<TEventArgs>(Action<object, TEventArgs> eventHandler);
+    bool TryRemoveGlobalObserver<TEventArgs>(EventHandler<TEventArgs> eventHandler);
   }
 }

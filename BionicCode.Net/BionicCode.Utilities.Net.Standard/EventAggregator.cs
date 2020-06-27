@@ -126,7 +126,7 @@ namespace BionicCode.Utilities.Net.Standard
     }
 
     /// <inheritdoc />
-    public bool TryRegisterObserver<TEventSource>(string eventName, Type eventSourceType, Action<object, TEventSource> eventHandler) => TryRegisterObserver(eventName, eventSourceType, (Delegate) eventHandler);
+    public bool TryRegisterObserver<TEventArgs>(string eventName, Type eventSourceType, EventHandler<TEventArgs> eventHandler) => TryRegisterObserver(eventName, eventSourceType, (Delegate) eventHandler);
 
     /// <inheritdoc />
     public bool TryRegisterGlobalObserver(string eventName, Delegate eventHandler)
@@ -137,7 +137,7 @@ namespace BionicCode.Utilities.Net.Standard
     }
 
     /// <inheritdoc />
-    public bool TryRegisterGlobalObserver<TEventArgs>(string eventName, Action<object, TEventArgs> eventHandler)
+    public bool TryRegisterGlobalObserver<TEventArgs>(string eventName, EventHandler<TEventArgs> eventHandler)
     {
       Type normalizedEventHandlerType = NormalizeEventHandlerType<TEventArgs>(eventHandler.GetType());
       var fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, eventName);
@@ -153,7 +153,7 @@ namespace BionicCode.Utilities.Net.Standard
     }
 
     /// <inheritdoc />
-    public bool TryRegisterGlobalObserver<TEventArgs>(Action<object, TEventArgs> eventHandler)
+    public bool TryRegisterGlobalObserver<TEventArgs>(EventHandler<TEventArgs> eventHandler)
     {
       Type normalizedEventHandlerType = NormalizeEventHandlerType<TEventArgs>(eventHandler.GetType());
       var fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, string.Empty);
@@ -169,10 +169,10 @@ namespace BionicCode.Utilities.Net.Standard
     }
 
     /// <inheritdoc />
-    public bool TryRemoveObserver<TEventSource>(
+    public bool TryRemoveObserver<TEventArgs>(
       string eventName,
       Type eventSourceType,
-      Action<object, TEventSource> eventHandler) =>
+      EventHandler<TEventArgs> eventHandler) =>
       TryRemoveObserver(eventName, eventSourceType, (Delegate) eventHandler);
 
     /// <inheritdoc />
@@ -187,7 +187,7 @@ namespace BionicCode.Utilities.Net.Standard
 
 
     /// <inheritdoc />
-    public bool TryRemoveGlobalObserver<TEventArgs>(string eventName, Action<object, TEventArgs> eventHandler)
+    public bool TryRemoveGlobalObserver<TEventArgs>(string eventName, EventHandler<TEventArgs> eventHandler)
     {
       Type normalizedEventHandlerType = NormalizeEventHandlerType< TEventArgs>(eventHandler.GetType());
 
@@ -206,7 +206,7 @@ namespace BionicCode.Utilities.Net.Standard
     }
 
     /// <inheritdoc />
-    public bool TryRemoveGlobalObserver<TEventArgs>(Action<object, TEventArgs> eventHandler)
+    public bool TryRemoveGlobalObserver<TEventArgs>(EventHandler<TEventArgs> eventHandler)
     {
       Type normalizedEventHandlerType = NormalizeEventHandlerType< TEventArgs>(eventHandler.GetType());
       return TryRemoveGlobalObserverInternal(normalizedEventHandlerType);
@@ -391,7 +391,7 @@ namespace BionicCode.Utilities.Net.Standard
     private Type NormalizeEventHandlerType<TEventArgs>(Type eventHandlerType) =>
       eventHandlerType == typeof(EventHandler) || eventHandlerType == typeof(Action<object, EventArgs>)
         ? typeof(EventHandler<EventArgs>)
-        : eventHandlerType == typeof(Action<object, TEventArgs>)
+        : eventHandlerType == typeof(EventHandler<TEventArgs>)
           ? typeof(EventHandler<TEventArgs>)
           : eventHandlerType;
 
