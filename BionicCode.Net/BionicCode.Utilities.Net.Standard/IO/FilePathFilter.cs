@@ -7,7 +7,8 @@ namespace BionicCode.Utilities.Net.Standard.IO
 {
   public class FilePathFilter : IFilePathFilter
   {
-    public IEnumerable<string> FilterFilePathsFromFolder(
+    /// <inheritdoc />
+    public IEnumerable<FileInfo> EnumerateFilesInFolder(
       string folderPath,
       FileExtensions fileExtensionsToCollect,
       bool isIncludingSubdirectories)
@@ -33,114 +34,77 @@ namespace BionicCode.Utilities.Net.Standard.IO
         currentDirectorySearchOption);
     }
 
-    protected IEnumerable<string> CollectFilePathsFromFolderByFileExtension(
+    protected IEnumerable<FileInfo> CollectFilePathsFromFolderByFileExtension(
       string folderPath,
       FileExtensions fileExtensionsToCollect,
       SearchOption directorySearchOption)
     {
       if (!Directory.Exists(folderPath))
       {
-        return new List<string>();
+        yield break;
       }
 
       var directoryInfo = new DirectoryInfo(folderPath);
-      var fileInfoCollection = new List<FileInfo>();
 
-      List<string> extensionsToCollect = fileExtensionsToCollect.ToString().Split(',').ToList();
+      IEnumerable<string> extensionsToCollect = fileExtensionsToCollect.ToString().Split(',');
       foreach (string fileExtension in extensionsToCollect)
       {
-        fileInfoCollection.AddRange(directoryInfo.GetFiles("*." + fileExtension, directorySearchOption));
+        foreach (FileInfo fileInfo in directoryInfo.EnumerateFiles("*." + fileExtension, directorySearchOption))
+        {
+          yield return fileInfo;
+        }
       }
-
-      return (from fileInfo in fileInfoCollection select fileInfo.FullName).ToList();
     }
 
-    protected IEnumerable<string> CollectAllFilePathsIgnoreFileExtension(
+    protected IEnumerable<FileInfo> CollectAllFilePathsIgnoreFileExtension(
       string folderPath,
       SearchOption directorySearchOption)
     {
       if (!Directory.Exists(folderPath))
       {
-        return new List<string>();
+        return new List<FileInfo>();
       }
 
       var directoryInfo = new DirectoryInfo(folderPath);
-      List<FileInfo> fileInfoCollection =
-        directoryInfo.GetFiles("*", directorySearchOption).Where(fileInfo => fileInfo.Exists).ToList();
-      return (from fileInfo in fileInfoCollection select fileInfo.FullName).ToList();
+      return 
+        directoryInfo.EnumerateFiles("*", directorySearchOption);
     }
 
-    /// <summary>
-    ///   Extracts valid paths or paths with a specified extension from a collection of paths.
-    ///   The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
-    ///   will be applied to all containing files.
-    /// </summary>
-    /// <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
-    /// <param name="fileExtensionsToCollect">
-    ///   A flagged Enum type that defines one or more extensions to filter from the
-    ///   collection. <see cref="FileExtensions" />
-    /// </param>
-    /// <param name="isIncludingSubdirectories">
-    ///   Sets the filter whether to apply to sub directories or not.
-    ///   <c>True</c> includes subdirectories and <c>False</c> ignores them.
-    ///   If value is passed the parameter defaults to <c>Tue</c>.
-    /// </param>
-    /// <returns>IEnumerable</returns>
-    /// <remarks>
-    ///   To ignore file extensions and collect all files found specify the <c>any</c> file extension.
-    ///   <see cref="FileExtensions" />
-    /// </remarks>
-    public IEnumerable<string> FilterFilePathsFromMixedPathsIncludingFolders(
+    /// <inheritdoc />
+    public IEnumerable<FileInfo> EnumerateFilesIncludingFolders(
       IEnumerable<string> pathEntries,
       FileExtensions fileExtensionsToCollect,
-      bool isIncludingSubdirectories)
+      bool isIncludingSubdirectories = false)
     {
-      var filePathCollection = new List<string>();
       foreach (string path in pathEntries)
       {
         if (Directory.Exists(path))
         {
-          filePathCollection.AddRange(
-            CollectFilePathsFromFolderByFileExtension(
-              path,
-              fileExtensionsToCollect,
-              isIncludingSubdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly));
+          foreach (FileInfo fileInfo in CollectFilePathsFromFolderByFileExtension(
+            path,
+            fileExtensionsToCollect,
+            isIncludingSubdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
+          {
+            yield return fileInfo;
+          }
         }
         else if (File.Exists(path))
         {
           var fileInfo = new FileInfo(path);
-          FileExtensions foundFileExtension;
-          if (Enum.TryParse(fileInfo.Extension.Substring(1), true, out foundFileExtension) &&
+          if (Enum.TryParse(fileInfo.Extension.Substring(1), true, out FileExtensions foundFileExtension) &&
               fileExtensionsToCollect.HasFlag(foundFileExtension))
           {
-            filePathCollection.Add(path);
+            yield return fileInfo;
           }
         }
       }
-
-      return filePathCollection;
     }
 
-    /// <summary>
-    ///   Extracts valid paths or paths with a specified extension from a collection of paths.
-    ///   The path collection can be a mix-up of files and folders. In case the path describes a folder, the filter will ignore
-    ///   it including all containing files.
-    /// </summary>
-    /// <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
-    /// <param name="fileExtensionsToCollect">
-    ///   A flagged Enum type that defines one or more extensions to filter from the
-    ///   collection. <see cref="FileExtensions" />
-    /// </param>
-    /// <returns>IEnumerable</returns>
-    /// <remarks>
-    ///   To ignore file extensions and collect all files found specify the <c>any</c> file extension.
-    ///   <see cref="FileExtensions" />
-    /// </remarks>
-    public IEnumerable<string> FilterFilePathsFromMixedPathsIgnoringFolders(
+    /// <inheritdoc />
+    public IEnumerable<FileInfo> EnumerateFilesIgnoringFolders(
       IEnumerable<string> pathEntries,
       FileExtensions fileExtensionsToCollect)
     {
-      var filePathCollection = new List<string>();
       foreach (string path in pathEntries)
       {
         if (Directory.Exists(path))
@@ -148,26 +112,17 @@ namespace BionicCode.Utilities.Net.Standard.IO
           continue;
         }
 
-        if (File.Exists(path))
+        if (!File.Exists(path))
         {
-          FilePathFilter.CollectFilePaths(fileExtensionsToCollect, path, filePathCollection);
+          continue;
         }
-      }
 
-      return filePathCollection;
-    }
-
-    private static void CollectFilePaths(
-      FileExtensions fileExtensionsToCollect,
-      string path,
-      List<string> filePathCollection)
-    {
-      var fileInfo = new FileInfo(path);
-      FileExtensions currentFileExtension;
-      if (Enum.TryParse(fileInfo.Extension, true, out currentFileExtension) &&
-          fileExtensionsToCollect.HasFlag(currentFileExtension))
-      {
-        filePathCollection.Add(path);
+        var fileInfo = new FileInfo(path);
+        if (Enum.TryParse(fileInfo.Extension, true, out FileExtensions currentFileExtension) &&
+            fileExtensionsToCollect.HasFlag(currentFileExtension))
+        {
+          yield return fileInfo;
+        }
       }
     }
   }
