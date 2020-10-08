@@ -1,0 +1,1296 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<HelpTOC>
+
+  <HelpTOCNode Title="Welcome to the [TODO: Add project name]" Url="html/15cadd46-fec9-403c-9db4-d611b51370ca.htm" />
+  <HelpTOCNode Id="0cceb584-1758-4b35-96c5-c87598c6cf07" Title="Version History" Url="html/c5da87fe-d1a3-43fb-9427-d5a468d39c51.htm">
+    <HelpTOCNode Title="Version 1.0.0.0" Url="html/e3f796bb-fafc-41a5-a922-eb3f43610968.htm" />
+  </HelpTOCNode>
+  <HelpTOCNode Id="d7d721af-a0cd-4797-b808-b14764b6d337" Title="BionicCode.Controls.Net.Core.Wpf" Url="html/N_BionicCode_Controls_Net_Core_Wpf.htm">
+    <HelpTOCNode Id="1b9eebcf-efb4-41e0-b6b6-e149670de797" Title="ClosableTabControl Class" Url="html/T_BionicCode_Controls_Net_Core_Wpf_ClosableTabControl.htm">
+      <HelpTOCNode Title="ClosableTabControl Constructor " Url="html/M_BionicCode_Controls_Net_Core_Wpf_ClosableTabControl__ctor.htm" />
+      <HelpTOCNode Title="ClosableTabControl Properties" Url="html/Properties_T_BionicCode_Controls_Net_Core_Wpf_ClosableTabControl.htm" />
+      <HelpTOCNode Title="ClosableTabControl Methods" Url="html/Methods_T_BionicCode_Controls_Net_Core_Wpf_ClosableTabControl.htm" />
+      <HelpTOCNode Title="ClosableTabControl Events" Url="html/Events_T_BionicCode_Controls_Net_Core_Wpf_ClosableTabControl.htm" />
+      <HelpTOCNode Id="c92a68ac-0b56-4134-a927-4ed0d6c5e399" Title="ClosableTabControl Fields" Url="html/Fields_T_BionicCode_Controls_Net_Core_Wpf_ClosableTabControl.htm">
+        <HelpTOCNode Title="CloseTabRoutedCommand Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_ClosableTabControl_CloseTabRoutedCommand.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="34eeed57-9ae0-4c48-be73-89eb0dca3706" Title="DefaultMatchFormatter Class" Url="html/T_BionicCode_Controls_Net_Core_Wpf_DefaultMatchFormatter.htm">
+      <HelpTOCNode Title="DefaultMatchFormatter Constructor " Url="html/M_BionicCode_Controls_Net_Core_Wpf_DefaultMatchFormatter__ctor.htm" />
+      <HelpTOCNode Id="10805d81-d05b-43f5-86e6-3da8213b5581" Title="DefaultMatchFormatter Methods" Url="html/Methods_T_BionicCode_Controls_Net_Core_Wpf_DefaultMatchFormatter.htm">
+        <HelpTOCNode Title="FormatMatch Method " Url="html/M_BionicCode_Controls_Net_Core_Wpf_DefaultMatchFormatter_FormatMatch.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="9f01c971-1078-4672-a2c5-de1f01d38049" Title="DelimiterPair Structure" Url="html/T_BionicCode_Controls_Net_Core_Wpf_DelimiterPair.htm">
+      <HelpTOCNode Title="DelimiterPair Constructor " Url="html/M_BionicCode_Controls_Net_Core_Wpf_DelimiterPair__ctor.htm" />
+      <HelpTOCNode Id="08d7824d-ea14-4161-b6b2-5262724f9b1d" Title="DelimiterPair Properties" Url="html/Properties_T_BionicCode_Controls_Net_Core_Wpf_DelimiterPair.htm">
+        <HelpTOCNode Title="End Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_DelimiterPair_End.htm" />
+        <HelpTOCNode Title="Start Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_DelimiterPair_Start.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="d9107cd1-85be-4b38-a071-bb139c7eb870" Title="DelimiterPair Methods" Url="html/Methods_T_BionicCode_Controls_Net_Core_Wpf_DelimiterPair.htm">
+        <HelpTOCNode Id="9ab7968a-1175-4df0-b704-79b05bcd9c12" Title="Equals Method " Url="html/Overload_BionicCode_Controls_Net_Core_Wpf_DelimiterPair_Equals.htm">
+          <HelpTOCNode Title="Equals Method (Object)" Url="html/M_BionicCode_Controls_Net_Core_Wpf_DelimiterPair_Equals_1.htm" />
+          <HelpTOCNode Title="Equals Method (DelimiterPair)" Url="html/M_BionicCode_Controls_Net_Core_Wpf_DelimiterPair_Equals.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="GetHashCode Method " Url="html/M_BionicCode_Controls_Net_Core_Wpf_DelimiterPair_GetHashCode.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="472dbaec-ccd4-4c43-8590-f5cbc71b9e82" Title="DelimiterPair Operators" Url="html/Operators_T_BionicCode_Controls_Net_Core_Wpf_DelimiterPair.htm">
+        <HelpTOCNode Title="Equality Operator " Url="html/M_BionicCode_Controls_Net_Core_Wpf_DelimiterPair_op_Equality.htm" />
+        <HelpTOCNode Title="Inequality Operator " Url="html/M_BionicCode_Controls_Net_Core_Wpf_DelimiterPair_op_Inequality.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="683e2b14-6657-46b4-9fb2-f2dd317ca31b" Title="HighlightArgs Structure" Url="html/T_BionicCode_Controls_Net_Core_Wpf_HighlightArgs.htm">
+      <HelpTOCNode Title="HighlightArgs Constructor " Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightArgs__ctor.htm" />
+      <HelpTOCNode Id="7eeb5964-b44a-4489-93c7-164c0392209b" Title="HighlightArgs Properties" Url="html/Properties_T_BionicCode_Controls_Net_Core_Wpf_HighlightArgs.htm">
+        <HelpTOCNode Title="Background Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightArgs_Background.htm" />
+        <HelpTOCNode Title="FontFamily Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightArgs_FontFamily.htm" />
+        <HelpTOCNode Title="FontSize Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightArgs_FontSize.htm" />
+        <HelpTOCNode Title="FontStretch Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightArgs_FontStretch.htm" />
+        <HelpTOCNode Title="FontStyle Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightArgs_FontStyle.htm" />
+        <HelpTOCNode Title="FontWeight Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightArgs_FontWeight.htm" />
+        <HelpTOCNode Title="Foreground Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightArgs_Foreground.htm" />
+        <HelpTOCNode Title="RichTextBox Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightArgs_RichTextBox.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="b6fdf51d-8ebc-4043-a66c-2e3634730337" Title="HighlightArgs Methods" Url="html/Methods_T_BionicCode_Controls_Net_Core_Wpf_HighlightArgs.htm">
+        <HelpTOCNode Id="198e7a4d-d3f9-40d5-93b8-1b3ffa0baf71" Title="Equals Method " Url="html/Overload_BionicCode_Controls_Net_Core_Wpf_HighlightArgs_Equals.htm">
+          <HelpTOCNode Title="Equals Method (Object)" Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightArgs_Equals_1.htm" />
+          <HelpTOCNode Title="Equals Method (HighlightArgs)" Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightArgs_Equals.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="GetHashCode Method " Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightArgs_GetHashCode.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="e28601c9-851d-446f-bb52-c54f67b85070" Title="HighlightArgs Operators" Url="html/Operators_T_BionicCode_Controls_Net_Core_Wpf_HighlightArgs.htm">
+        <HelpTOCNode Title="Equality Operator " Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightArgs_op_Equality.htm" />
+        <HelpTOCNode Title="Inequality Operator " Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightArgs_op_Inequality.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="c42e240a-8d36-46a7-941d-6b12e3700ca4" Title="HighlightRichTextBox Class" Url="html/T_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox.htm">
+      <HelpTOCNode Title="HighlightRichTextBox Constructor " Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox__ctor.htm" />
+      <HelpTOCNode Id="d0b37125-8985-4855-8d6a-461843a21ea2" Title="HighlightRichTextBox Properties" Url="html/Properties_T_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox.htm">
+        <HelpTOCNode Title="DelimiterPairs Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_DelimiterPairs.htm" />
+        <HelpTOCNode Title="HighlightBackground Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_HighlightBackground.htm" />
+        <HelpTOCNode Title="HighlightFontFamily Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_HighlightFontFamily.htm" />
+        <HelpTOCNode Title="HighlightFontSize Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_HighlightFontSize.htm" />
+        <HelpTOCNode Title="HighlightFontStretch Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_HighlightFontStretch.htm" />
+        <HelpTOCNode Title="HighlightFontStyle Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_HighlightFontStyle.htm" />
+        <HelpTOCNode Title="HighlightFontWeight Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_HighlightFontWeight.htm" />
+        <HelpTOCNode Title="HighlightForeground Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_HighlightForeground.htm" />
+        <HelpTOCNode Title="IsAutoHighlightingEnabled Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_IsAutoHighlightingEnabled.htm" />
+        <HelpTOCNode Title="IsLiveSearchEnabled Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_IsLiveSearchEnabled.htm" />
+        <HelpTOCNode Title="MatchFormatter Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_MatchFormatter.htm" />
+        <HelpTOCNode Title="MatchHistory Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_MatchHistory.htm" />
+        <HelpTOCNode Title="SearchKeys Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_SearchKeys.htm" />
+        <HelpTOCNode Title="StartMatchOffsets Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_StartMatchOffsets.htm" />
+        <HelpTOCNode Title="StringComparison Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_StringComparison.htm" />
+        <HelpTOCNode Title="TotalMatchCount Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_TotalMatchCount.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="bf558809-4d0c-4d06-ba6f-88119aa42e05" Title="HighlightRichTextBox Methods" Url="html/Methods_T_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox.htm">
+        <HelpTOCNode Id="45e3152d-453e-4a23-bed2-c839cfd3fb36" Title="EnumerateSearch Method " Url="html/Overload_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_EnumerateSearch.htm">
+          <HelpTOCNode Title="EnumerateSearch Method " Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_EnumerateSearch.htm" />
+          <HelpTOCNode Title="EnumerateSearch Method (Int32)" Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_EnumerateSearch_1.htm" />
+          <HelpTOCNode Title="EnumerateSearch Method (Int32, IEnumerable(DelimiterPair))" Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_EnumerateSearch_2.htm" />
+          <HelpTOCNode Title="EnumerateSearch Method (Int32, IEnumerable(String))" Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_EnumerateSearch_3.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="OnDelimiterPairsChanged Method " Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_OnDelimiterPairsChanged.htm" />
+        <HelpTOCNode Title="OnMatchFound Method " Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_OnMatchFound.htm" />
+        <HelpTOCNode Title="OnTextChanged Method " Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_OnTextChanged.htm" />
+        <HelpTOCNode Id="79b0e94b-5fbf-4b17-993c-75b96084c9d7" Title="Search Method " Url="html/Overload_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_Search.htm">
+          <HelpTOCNode Title="Search Method " Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_Search.htm" />
+          <HelpTOCNode Title="Search Method (Int32)" Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_Search_1.htm" />
+          <HelpTOCNode Title="Search Method (Int32, IEnumerable(DelimiterPair))" Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_Search_2.htm" />
+          <HelpTOCNode Title="Search Method (Int32, IEnumerable(String))" Url="html/M_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_Search_3.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="15287d22-22f4-4c73-9c35-2765b00fadf6" Title="HighlightRichTextBox Events" Url="html/Events_T_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox.htm">
+        <HelpTOCNode Title="MatchFound Event" Url="html/E_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_MatchFound.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="e89b364c-abfb-4a93-bedc-dbb8d91e5d11" Title="HighlightRichTextBox Fields" Url="html/Fields_T_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox.htm">
+        <HelpTOCNode Title="DelimiterPairsProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_DelimiterPairsProperty.htm" />
+        <HelpTOCNode Title="HighlightBackgroundProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_HighlightBackgroundProperty.htm" />
+        <HelpTOCNode Title="HighlightFontFamilyProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_HighlightFontFamilyProperty.htm" />
+        <HelpTOCNode Title="HighlightFontSizeProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_HighlightFontSizeProperty.htm" />
+        <HelpTOCNode Title="HighlightFontStretchProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_HighlightFontStretchProperty.htm" />
+        <HelpTOCNode Title="HighlightFontStyleProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_HighlightFontStyleProperty.htm" />
+        <HelpTOCNode Title="HighlightFontWeightProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_HighlightFontWeightProperty.htm" />
+        <HelpTOCNode Title="HighlightForegroundProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_HighlightForegroundProperty.htm" />
+        <HelpTOCNode Title="IsAutoHighlightingEnabledProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_IsAutoHighlightingEnabledProperty.htm" />
+        <HelpTOCNode Title="IsLiveSearchEnabledProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_IsLiveSearchEnabledProperty.htm" />
+        <HelpTOCNode Title="MatchFormatterProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_MatchFormatterProperty.htm" />
+        <HelpTOCNode Title="MatchHistoryProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_MatchHistoryProperty.htm" />
+        <HelpTOCNode Title="MatchHistoryPropertyKey Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_MatchHistoryPropertyKey.htm" />
+        <HelpTOCNode Title="SearchKeysProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_SearchKeysProperty.htm" />
+        <HelpTOCNode Title="StringComparisonProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_StringComparisonProperty.htm" />
+        <HelpTOCNode Title="TotalMatchCountProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_HighlightRichTextBox_TotalMatchCountProperty.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="944826a4-7d75-4b23-9126-6983f0212527" Title="IMatchFormatter Interface" Url="html/T_BionicCode_Controls_Net_Core_Wpf_IMatchFormatter.htm">
+      <HelpTOCNode Id="18583aa6-fe5b-4054-bebc-9f3bfe0e8003" Title="IMatchFormatter Methods" Url="html/Methods_T_BionicCode_Controls_Net_Core_Wpf_IMatchFormatter.htm">
+        <HelpTOCNode Title="FormatMatch Method " Url="html/M_BionicCode_Controls_Net_Core_Wpf_IMatchFormatter_FormatMatch.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="80c3deda-c8ed-42bc-b7e5-16e7c3498209" Title="MatchFoundEventArgs Class" Url="html/T_BionicCode_Controls_Net_Core_Wpf_MatchFoundEventArgs.htm">
+      <HelpTOCNode Id="28be18f0-9bdd-4e86-a398-97a77f7905b5" Title="MatchFoundEventArgs Properties" Url="html/Properties_T_BionicCode_Controls_Net_Core_Wpf_MatchFoundEventArgs.htm">
+        <HelpTOCNode Title="FormattingAttributes Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_MatchFoundEventArgs_FormattingAttributes.htm" />
+        <HelpTOCNode Title="MatchInfo Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_MatchFoundEventArgs_MatchInfo.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="bf95ad1e-8529-4b07-a32a-03dbf8d7c274" Title="MatchFoundEventArgs Methods" Url="html/Methods_T_BionicCode_Controls_Net_Core_Wpf_MatchFoundEventArgs.htm">
+        <HelpTOCNode Title="CancelAutomaticHighlight Method " Url="html/M_BionicCode_Controls_Net_Core_Wpf_MatchFoundEventArgs_CancelAutomaticHighlight.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="454e0362-ca9f-41c0-9f38-a04d2fc9f07e" Title="MatchInfo Structure" Url="html/T_BionicCode_Controls_Net_Core_Wpf_MatchInfo.htm">
+      <HelpTOCNode Title="MatchInfo Constructor " Url="html/M_BionicCode_Controls_Net_Core_Wpf_MatchInfo__ctor.htm" />
+      <HelpTOCNode Id="09d86794-d0e4-4155-997f-1af6326979f5" Title="MatchInfo Properties" Url="html/Properties_T_BionicCode_Controls_Net_Core_Wpf_MatchInfo.htm">
+        <HelpTOCNode Title="Length Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_MatchInfo_Length.htm" />
+        <HelpTOCNode Title="StartIndex Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_MatchInfo_StartIndex.htm" />
+        <HelpTOCNode Title="TextRange Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_MatchInfo_TextRange.htm" />
+        <HelpTOCNode Title="Value Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_MatchInfo_Value.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="6db4e008-beab-4252-a07b-634043bd960a" Title="MatchInfo Methods" Url="html/Methods_T_BionicCode_Controls_Net_Core_Wpf_MatchInfo.htm">
+        <HelpTOCNode Id="53c93710-3892-4cde-8d70-7e7734990c35" Title="Equals Method " Url="html/Overload_BionicCode_Controls_Net_Core_Wpf_MatchInfo_Equals.htm">
+          <HelpTOCNode Title="Equals Method (Object)" Url="html/M_BionicCode_Controls_Net_Core_Wpf_MatchInfo_Equals_1.htm" />
+          <HelpTOCNode Title="Equals Method (MatchInfo)" Url="html/M_BionicCode_Controls_Net_Core_Wpf_MatchInfo_Equals.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="GetHashCode Method " Url="html/M_BionicCode_Controls_Net_Core_Wpf_MatchInfo_GetHashCode.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="3bb5c810-eaa0-4b6f-9cf1-14e4797c5996" Title="MatchInfo Operators" Url="html/Operators_T_BionicCode_Controls_Net_Core_Wpf_MatchInfo.htm">
+        <HelpTOCNode Title="Equality Operator " Url="html/M_BionicCode_Controls_Net_Core_Wpf_MatchInfo_op_Equality.htm" />
+        <HelpTOCNode Title="Inequality Operator " Url="html/M_BionicCode_Controls_Net_Core_Wpf_MatchInfo_op_Inequality.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="8ac3373f-4113-4d94-92ca-d2c81ad5f2b0" Title="NormalizingNumericTextBox Class" Url="html/T_BionicCode_Controls_Net_Core_Wpf_NormalizingNumericTextBox.htm">
+      <HelpTOCNode Title="NormalizingNumericTextBox Constructor " Url="html/M_BionicCode_Controls_Net_Core_Wpf_NormalizingNumericTextBox__ctor.htm" />
+      <HelpTOCNode Id="a95620dc-73aa-498e-9855-f9962183b5cf" Title="NormalizingNumericTextBox Properties" Url="html/Properties_T_BionicCode_Controls_Net_Core_Wpf_NormalizingNumericTextBox.htm">
+        <HelpTOCNode Title="NormalizedValue Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_NormalizingNumericTextBox_NormalizedValue.htm" />
+        <HelpTOCNode Title="SelectedUnit Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_NormalizingNumericTextBox_SelectedUnit.htm" />
+        <HelpTOCNode Title="Units Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_NormalizingNumericTextBox_Units.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="d8daedce-8237-4ae4-a284-ff0b081a501a" Title="NormalizingNumericTextBox Methods" Url="html/Methods_T_BionicCode_Controls_Net_Core_Wpf_NormalizingNumericTextBox.htm">
+        <HelpTOCNode Title="OnApplyTemplate Method " Url="html/M_BionicCode_Controls_Net_Core_Wpf_NormalizingNumericTextBox_OnApplyTemplate.htm" />
+        <HelpTOCNode Title="OnTextChanged Method " Url="html/M_BionicCode_Controls_Net_Core_Wpf_NormalizingNumericTextBox_OnTextChanged.htm" />
+        <HelpTOCNode Title="OnTextInput Method " Url="html/M_BionicCode_Controls_Net_Core_Wpf_NormalizingNumericTextBox_OnTextInput.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="NormalizingNumericTextBox Events" Url="html/Events_T_BionicCode_Controls_Net_Core_Wpf_NormalizingNumericTextBox.htm" />
+      <HelpTOCNode Id="0c4d367f-58dd-48db-9344-4d0b6e50ede3" Title="NormalizingNumericTextBox Fields" Url="html/Fields_T_BionicCode_Controls_Net_Core_Wpf_NormalizingNumericTextBox.htm">
+        <HelpTOCNode Title="NormalizedValueProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_NormalizingNumericTextBox_NormalizedValueProperty.htm" />
+        <HelpTOCNode Title="SelectedUnitProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_NormalizingNumericTextBox_SelectedUnitProperty.htm" />
+        <HelpTOCNode Title="UnitsProperty Field" Url="html/F_BionicCode_Controls_Net_Core_Wpf_NormalizingNumericTextBox_UnitsProperty.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="3a9095b2-05ca-42dd-932a-b169d1f96ece" Title="Unit Class" Url="html/T_BionicCode_Controls_Net_Core_Wpf_Unit.htm">
+      <HelpTOCNode Title="Unit Constructor " Url="html/M_BionicCode_Controls_Net_Core_Wpf_Unit__ctor.htm" />
+      <HelpTOCNode Id="f504aaf1-8ad3-46df-a266-0971272405b6" Title="Unit Properties" Url="html/Properties_T_BionicCode_Controls_Net_Core_Wpf_Unit.htm">
+        <HelpTOCNode Title="BaseFactor Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_Unit_BaseFactor.htm" />
+        <HelpTOCNode Title="Name Property " Url="html/P_BionicCode_Controls_Net_Core_Wpf_Unit_Name.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="5e137f22-6aeb-4cd9-8eb0-188f93f89d7b" Title="Unit Methods" Url="html/Methods_T_BionicCode_Controls_Net_Core_Wpf_Unit.htm">
+        <HelpTOCNode Title="ToString Method " Url="html/M_BionicCode_Controls_Net_Core_Wpf_Unit_ToString.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="4b20d6d3-26b6-4c30-bc8c-eed322aa343a" Title="BionicCode.Utilities.Net Namespaces" Url="html/G_BionicCode_Utilities_Net.htm">
+    <HelpTOCNode Id="feb40112-d9df-4d35-83d2-1ed14c3bef1b" Title="BionicCode.Utilities.Net.Core Namespaces" Url="html/G_BionicCode_Utilities_Net_Core.htm">
+      <HelpTOCNode Id="ceea1689-c755-4bb8-82c7-8f4a633b5161" Title="BionicCode.Utilities.Net.Core.Wpf" Url="html/N_BionicCode_Utilities_Net_Core_Wpf.htm">
+        <HelpTOCNode Id="2f69ccce-2ba7-43cc-9030-8054a8690de1" Title="AsyncRelayCommand Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand.htm">
+          <HelpTOCNode Id="6132654b-0f51-46fa-a120-1cccc03b1acf" Title="AsyncRelayCommand Constructor " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand__ctor.htm">
+            <HelpTOCNode Title="AsyncRelayCommand Constructor (Action)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand__ctor.htm" />
+            <HelpTOCNode Title="AsyncRelayCommand Constructor (Action(Object))" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand__ctor_2.htm" />
+            <HelpTOCNode Title="AsyncRelayCommand Constructor (Func(Task))" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand__ctor_4.htm" />
+            <HelpTOCNode Title="AsyncRelayCommand Constructor (Func(Object, Task))" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand__ctor_6.htm" />
+            <HelpTOCNode Title="AsyncRelayCommand Constructor (Action, Func(Boolean))" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand__ctor_1.htm" />
+            <HelpTOCNode Title="AsyncRelayCommand Constructor (Action(Object), Predicate(Object))" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand__ctor_3.htm" />
+            <HelpTOCNode Title="AsyncRelayCommand Constructor (Func(Task), Func(Boolean))" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand__ctor_5.htm" />
+            <HelpTOCNode Title="AsyncRelayCommand Constructor (Func(Object, Task), Predicate(Object))" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand__ctor_7.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="1771939b-cdde-4f22-b192-24c04ef3119b" Title="AsyncRelayCommand Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand.htm">
+            <HelpTOCNode Id="e9c7108f-f644-468e-8836-264f0383dcba" Title="CanExecute Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_CanExecute.htm">
+              <HelpTOCNode Title="CanExecute Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_CanExecute.htm" />
+              <HelpTOCNode Title="CanExecute Method (Object)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_CanExecute_1.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="a08b1b7f-0100-4f41-b555-075343cd5727" Title="Execute Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_Execute.htm">
+              <HelpTOCNode Title="Execute Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_Execute.htm" />
+              <HelpTOCNode Title="Execute Method (Object)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_Execute_1.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="113d695b-7a21-4b7d-807c-e8ad4e257d72" Title="ExecuteAsync Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_ExecuteAsync.htm">
+              <HelpTOCNode Title="ExecuteAsync Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_ExecuteAsync.htm" />
+              <HelpTOCNode Title="ExecuteAsync Method (Object)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_ExecuteAsync_1.htm" />
+            </HelpTOCNode>
+          </HelpTOCNode>
+          <HelpTOCNode Id="49ea499c-ed4d-41d4-9a86-2444454cd1d8" Title="AsyncRelayCommand Events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand.htm">
+            <HelpTOCNode Title="CanExecuteChanged Event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_CanExecuteChanged.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="24b85406-8e7a-4ddd-9847-81d49165a334" Title="AsyncRelayCommand Fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand.htm">
+            <HelpTOCNode Title="CanExecuteNoParam Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_CanExecuteNoParam.htm" />
+            <HelpTOCNode Title="ExecuteAsyncNoParam Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_ExecuteAsyncNoParam.htm" />
+            <HelpTOCNode Title="ExecuteNoParam Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_ExecuteNoParam.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="2a27372b-1207-48ab-8b01-758118076b93" Title="DefaultValueInverter Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_DefaultValueInverter.htm">
+          <HelpTOCNode Title="DefaultValueInverter Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_DefaultValueInverter__ctor.htm" />
+          <HelpTOCNode Id="c7cc3dd0-06ee-4f60-b66c-dfec9a292792" Title="DefaultValueInverter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_DefaultValueInverter.htm">
+            <HelpTOCNode Title="InvertValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_DefaultValueInverter_InvertValue.htm" />
+            <HelpTOCNode Title="TryInvertValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_DefaultValueInverter_TryInvertValue.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="800e3d5c-7400-4159-820c-ef5725bfd550" Title="IAsyncRelayCommand Interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand.htm">
+          <HelpTOCNode Id="50e1cccd-fb5a-46b8-ab60-bc31d5ee515d" Title="IAsyncRelayCommand Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand.htm">
+            <HelpTOCNode Id="0a8e2ad7-0594-4751-b501-b59d60df433a" Title="CanExecute Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand_CanExecute.htm">
+              <HelpTOCNode Title="CanExecute Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand_CanExecute.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="139947fb-6714-4bd6-8fa6-a6de0def95da" Title="Execute Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand_Execute.htm">
+              <HelpTOCNode Title="Execute Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand_Execute.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="c7166303-f070-41f6-b6dd-a9bb5b4cef27" Title="ExecuteAsync Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand_ExecuteAsync.htm">
+              <HelpTOCNode Title="ExecuteAsync Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand_ExecuteAsync.htm" />
+              <HelpTOCNode Title="ExecuteAsync Method (Object)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand_ExecuteAsync_1.htm" />
+            </HelpTOCNode>
+          </HelpTOCNode>
+          <HelpTOCNode Title="IAsyncRelayCommand Events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="9070065d-c088-41a5-be56-a5a957f0c0f3" Title="BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors" Url="html/N_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors.htm">
+        <HelpTOCNode Id="be0398fa-8441-41fb-9c21-afaf75d0a25d" Title="HighlightRange Structure" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighlightRange.htm">
+          <HelpTOCNode Title="HighlightRange Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighlightRange__ctor.htm" />
+          <HelpTOCNode Id="e8937848-e995-45e8-9ad2-22167c67796b" Title="HighlightRange Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighlightRange.htm">
+            <HelpTOCNode Title="EndIndex Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighlightRange_EndIndex.htm" />
+            <HelpTOCNode Title="StartIndex Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighlightRange_StartIndex.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Title="HighlightRange Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighlightRange.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Id="5ee1ab06-e773-4c89-bb27-a07870ead3c3" Title="HighLightRangeCollection Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighLightRangeCollection.htm">
+          <HelpTOCNode Title="HighLightRangeCollection Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighLightRangeCollection__ctor.htm" />
+          <HelpTOCNode Title="HighLightRangeCollection Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighLightRangeCollection.htm" />
+          <HelpTOCNode Title="HighLightRangeCollection Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighLightRangeCollection.htm" />
+          <HelpTOCNode Title="HighLightRangeCollection Events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighLightRangeCollection.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Id="7ea250e6-88c3-4496-9ac4-bc573661675f" Title="PasswordBox Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox.htm">
+          <HelpTOCNode Title="PasswordBox Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox__ctor.htm" />
+          <HelpTOCNode Title="PasswordBox Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox.htm" />
+          <HelpTOCNode Id="b18397ef-1b0a-4cd2-90a9-9f26992c0830" Title="PasswordBox Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox.htm">
+            <HelpTOCNode Title="GetCommand Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox_GetCommand.htm" />
+            <HelpTOCNode Title="SetCommand Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox_SetCommand.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="8fe804e9-5d39-4720-a951-bcb6fd8775f9" Title="PasswordBox Fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox.htm">
+            <HelpTOCNode Title="CommandProperty Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox_CommandProperty.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="f16f33bf-0ca8-4ba9-8f93-73d423ddee10" Title="PasswordBox Attached Properties" Url="html/AttachedProperties_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox.htm">
+            <HelpTOCNode Title="Command Attached Property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox_Command.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="2758b1b1-4a0f-4511-a114-06bdfe2fca88" Title="Popup Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup.htm">
+          <HelpTOCNode Title="Popup Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup__ctor.htm" />
+          <HelpTOCNode Title="Popup Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup.htm" />
+          <HelpTOCNode Id="4a9da367-84ff-41a7-9ca1-83293e3d79ad" Title="Popup Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup.htm">
+            <HelpTOCNode Title="GetIsSticky Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup_GetIsSticky.htm" />
+            <HelpTOCNode Title="SetIsSticky Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup_SetIsSticky.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="0ea0f95b-751d-4ab9-ab74-694136717fe6" Title="Popup Fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup.htm">
+            <HelpTOCNode Title="IsStickyProperty Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup_IsStickyProperty.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="6fed6aaa-3c08-4732-8b6e-9e5ea603e753" Title="Popup Attached Properties" Url="html/AttachedProperties_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup.htm">
+            <HelpTOCNode Title="IsSticky Attached Property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup_IsSticky.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="2f74db90-3852-42dc-99cc-2bcb1d6b0431" Title="TextControl Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl.htm">
+          <HelpTOCNode Title="TextControl Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl__ctor.htm" />
+          <HelpTOCNode Title="TextControl Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl.htm" />
+          <HelpTOCNode Id="d722f6da-1886-4607-a782-cd7cf0a1abee" Title="TextControl Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl.htm">
+            <HelpTOCNode Title="GetHighlightBackground Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_GetHighlightBackground.htm" />
+            <HelpTOCNode Title="GetHighlightForeground Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_GetHighlightForeground.htm" />
+            <HelpTOCNode Title="GetHighlightRanges Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_GetHighlightRanges.htm" />
+            <HelpTOCNode Title="GetIsHighlightingEnabled Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_GetIsHighlightingEnabled.htm" />
+            <HelpTOCNode Title="GetText Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_GetText.htm" />
+            <HelpTOCNode Title="SetHighlightBackground Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_SetHighlightBackground.htm" />
+            <HelpTOCNode Title="SetHighlightForeground Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_SetHighlightForeground.htm" />
+            <HelpTOCNode Title="SetHighlightRanges Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_SetHighlightRanges.htm" />
+            <HelpTOCNode Title="SetIsHighlightingEnabled Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_SetIsHighlightingEnabled.htm" />
+            <HelpTOCNode Title="SetText Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_SetText.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="624009b2-137e-41d1-893a-ee80e5a71388" Title="TextControl Fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl.htm">
+            <HelpTOCNode Title="HighlightBackgroundProperty Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightBackgroundProperty.htm" />
+            <HelpTOCNode Title="HighlightForegroundProperty Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightForegroundProperty.htm" />
+            <HelpTOCNode Title="HighlightRangesProperty Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightRangesProperty.htm" />
+            <HelpTOCNode Title="IsHighlightingEnabledProperty Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_IsHighlightingEnabledProperty.htm" />
+            <HelpTOCNode Title="TextProperty Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_TextProperty.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="3d8e6f0b-57d9-4c9d-a3c7-a4a388b01c64" Title="TextControl Attached Properties" Url="html/AttachedProperties_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl.htm">
+            <HelpTOCNode Title="HighlightBackground Attached Property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightBackground.htm" />
+            <HelpTOCNode Title="HighlightForeground Attached Property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightForeground.htm" />
+            <HelpTOCNode Title="HighlightRanges Attached Property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightRanges.htm" />
+            <HelpTOCNode Title="IsHighlightingEnabled Attached Property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_IsHighlightingEnabled.htm" />
+            <HelpTOCNode Title="Text Attached Property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_Text.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="bea6e980-48c3-439a-93df-827a3d4a6ab5" Title="BionicCode.Utilities.Net.Core.Wpf.Collections.Generic" Url="html/N_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic.htm">
+        <HelpTOCNode Id="fbdd9f27-7daf-4878-8310-5b1a77e449b8" Title="ObservablePropertyChangedCollection(TItem) Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1.htm">
+          <HelpTOCNode Title="ObservablePropertyChangedCollection(TItem) Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1__ctor.htm" />
+          <HelpTOCNode Title="ObservablePropertyChangedCollection(TItem) Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1.htm" />
+          <HelpTOCNode Id="b717e915-502e-40b5-88eb-726f8926a8b1" Title="ObservablePropertyChangedCollection(TItem) Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1.htm">
+            <HelpTOCNode Title="ClearItems Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1_ClearItems.htm" />
+            <HelpTOCNode Title="InsertItem Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1_InsertItem.htm" />
+            <HelpTOCNode Title="RemoveItem Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1_RemoveItem.htm" />
+            <HelpTOCNode Title="SetItem Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1_SetItem.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Title="ObservablePropertyChangedCollection(TItem) Events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="31dabf1b-f70a-4c46-8db5-977a1e7d683f" Title="BionicCode.Utilities.Net.Core.Wpf.Converter" Url="html/N_BionicCode_Utilities_Net_Core_Wpf_Converter.htm">
+        <HelpTOCNode Id="87957fc1-bedd-49f0-8d4b-eae78ef1501a" Title="BooleanMultiValueConverter Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_BooleanMultiValueConverter.htm">
+          <HelpTOCNode Title="BooleanMultiValueConverter Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BooleanMultiValueConverter__ctor.htm" />
+          <HelpTOCNode Id="90adfcb5-ec7b-44c7-9bee-49f38ff1fcda" Title="BooleanMultiValueConverter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Converter_BooleanMultiValueConverter.htm">
+            <HelpTOCNode Title="Convert Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BooleanMultiValueConverter_Convert.htm" />
+            <HelpTOCNode Title="ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BooleanMultiValueConverter_ConvertBack.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="50eff3db-c155-49e3-b6f6-6425e6afeb39" Title="BoolToStringConverter Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter.htm">
+          <HelpTOCNode Title="BoolToStringConverter Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter__ctor.htm" />
+          <HelpTOCNode Id="f75d799d-38cb-457b-af04-9d17769fff69" Title="BoolToStringConverter Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter.htm">
+            <HelpTOCNode Title="FalseValue Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_FalseValue.htm" />
+            <HelpTOCNode Title="NullValue Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_NullValue.htm" />
+            <HelpTOCNode Title="TrueValue Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_TrueValue.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="63fc8901-a0ef-423d-a077-72b945d0f02a" Title="BoolToStringConverter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter.htm">
+            <HelpTOCNode Title="Convert Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_Convert.htm" />
+            <HelpTOCNode Title="ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_ConvertBack.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="f8a9f2d1-aa3f-46b3-9ea8-7856b2846453" Title="BoolToStringConverter Fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter.htm">
+            <HelpTOCNode Title="FalseValueProperty Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_FalseValueProperty.htm" />
+            <HelpTOCNode Title="NullValueProperty Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_NullValueProperty.htm" />
+            <HelpTOCNode Title="TrueValueProperty Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_TrueValueProperty.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="c00a05e4-97f2-498a-a88c-c3c622ede9af" Title="DividerValueConverter Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_DividerValueConverter.htm">
+          <HelpTOCNode Title="DividerValueConverter Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_DividerValueConverter__ctor.htm" />
+          <HelpTOCNode Id="6cdc35db-42d1-47f6-ad0e-71024de2e2df" Title="DividerValueConverter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Converter_DividerValueConverter.htm">
+            <HelpTOCNode Title="Convert Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_DividerValueConverter_Convert.htm" />
+            <HelpTOCNode Title="ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_DividerValueConverter_ConvertBack.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="3d7facf6-e58f-484f-bba9-3abf14b87014" Title="FilePathTruncateConverter Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter.htm">
+          <HelpTOCNode Title="FilePathTruncateConverter Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter__ctor.htm" />
+          <HelpTOCNode Id="fdd5d588-3f82-4501-8c4c-dfdefed582e7" Title="FilePathTruncateConverter Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter.htm">
+            <HelpTOCNode Title="MaxLength Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter_MaxLength.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="512354ee-e6af-4c5e-8180-a5ca1700f217" Title="FilePathTruncateConverter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter.htm">
+            <HelpTOCNode Title="Convert Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter_Convert.htm" />
+            <HelpTOCNode Title="ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter_ConvertBack.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="6da75572-16fb-4a8e-97f5-ad3b0172f7ef" Title="FilePathTruncateConverter Fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter.htm">
+            <HelpTOCNode Title="MaxLengthProperty Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter_MaxLengthProperty.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="7d847787-ea4d-4c9c-958c-e124b43acb54" Title="InvertBooleanConverter Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertBooleanConverter.htm">
+          <HelpTOCNode Title="InvertBooleanConverter Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertBooleanConverter__ctor.htm" />
+          <HelpTOCNode Id="398acaf4-b70a-4ff4-9873-d54c902d9003" Title="InvertBooleanConverter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertBooleanConverter.htm">
+            <HelpTOCNode Title="Convert Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertBooleanConverter_Convert.htm" />
+            <HelpTOCNode Title="ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertBooleanConverter_ConvertBack.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="79de49b6-167c-4c1c-94bf-0b7f6b46986e" Title="InvertValueConverter Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertValueConverter.htm">
+          <HelpTOCNode Title="InvertValueConverter Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertValueConverter__ctor.htm" />
+          <HelpTOCNode Id="0685520c-b2db-446a-8fc5-ee4b6f4bd122" Title="InvertValueConverter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertValueConverter.htm">
+            <HelpTOCNode Title="Convert Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertValueConverter_Convert.htm" />
+            <HelpTOCNode Title="ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertValueConverter_ConvertBack.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="374d50de-be98-434c-92b9-2609953134ba" Title="IsGreaterThanValueConverter Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter.htm">
+          <HelpTOCNode Title="IsGreaterThanValueConverter Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter__ctor.htm" />
+          <HelpTOCNode Id="72a74135-887d-4006-9a97-f1ef270a7d52" Title="IsGreaterThanValueConverter Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter.htm">
+            <HelpTOCNode Title="Comparer Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_Comparer.htm" />
+            <HelpTOCNode Title="CompareValue Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_CompareValue.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="de2955ca-f9ee-4be3-9cc1-dfca39a18a43" Title="IsGreaterThanValueConverter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter.htm">
+            <HelpTOCNode Title="Convert Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_Convert.htm" />
+            <HelpTOCNode Title="ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_ConvertBack.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="3f7b6c3d-bbb4-4ee4-97d8-b37f214c346f" Title="IsGreaterThanValueConverter Fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter.htm">
+            <HelpTOCNode Title="ComparerProperty Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_ComparerProperty.htm" />
+            <HelpTOCNode Title="CompareValueProperty Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_CompareValueProperty.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="1c28bbb9-c91d-4e82-99e1-e6211cc2db73" Title="BionicCode.Utilities.Net.Core.Wpf.Dialog" Url="html/N_BionicCode_Utilities_Net_Core_Wpf_Dialog.htm">
+        <HelpTOCNode Id="86015324-f864-4153-b452-34f61110d262" Title="Dialog Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog.htm">
+          <HelpTOCNode Title="Dialog Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog__ctor.htm" />
+          <HelpTOCNode Title="Dialog Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog.htm" />
+          <HelpTOCNode Id="441483e8-6cce-491f-a6ae-569d484561d0" Title="Dialog Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog.htm">
+            <HelpTOCNode Title="GetDataTemplateSelector Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_GetDataTemplateSelector.htm" />
+            <HelpTOCNode Title="GetDialogDataContext Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_GetDialogDataContext.htm" />
+            <HelpTOCNode Title="GetStyle Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_GetStyle.htm" />
+            <HelpTOCNode Title="SetDataTemplateSelector Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_SetDataTemplateSelector.htm" />
+            <HelpTOCNode Title="SetDialogDataContext Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_SetDialogDataContext.htm" />
+            <HelpTOCNode Title="SetStyle Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_SetStyle.htm" />
+            <HelpTOCNode Title="TryGetDialog Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_TryGetDialog.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="361a3ee3-8bf9-477d-88e0-d75e45983bc6" Title="Dialog Fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog.htm">
+            <HelpTOCNode Title="DataTemplateSelectorProperty Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_DataTemplateSelectorProperty.htm" />
+            <HelpTOCNode Title="DialogDataContextProperty Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_DialogDataContextProperty.htm" />
+            <HelpTOCNode Title="StyleProperty Field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_StyleProperty.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="b62353cc-57a3-4789-a5c8-48bba9293fe6" Title="Dialog Attached Properties" Url="html/AttachedProperties_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog.htm">
+            <HelpTOCNode Title="DataTemplateSelector Attached Property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_DataTemplateSelector.htm" />
+            <HelpTOCNode Title="DialogDataContext Attached Property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_DialogDataContext.htm" />
+            <HelpTOCNode Title="Style Attached Property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_Style.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Title="DialogResult Enumeration" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogResult.htm" />
+        <HelpTOCNode Id="9a4a2a02-8d3a-4b93-8056-d13bff7558d8" Title="DialogViewModel Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel.htm">
+          <HelpTOCNode Id="7a828b40-59ac-4772-83b5-87edeeeb005c" Title="DialogViewModel Constructor " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel__ctor.htm">
+            <HelpTOCNode Title="DialogViewModel Constructor (String, String)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel__ctor.htm" />
+            <HelpTOCNode Title="DialogViewModel Constructor (String, String, Func(IDialogViewModel, Task))" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel__ctor_1.htm" />
+            <HelpTOCNode Title="DialogViewModel Constructor (String, String, ImageSource, Func(IDialogViewModel, Task))" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel__ctor_2.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="7c714b7e-c18f-4316-99a5-100f1bf6f200" Title="DialogViewModel Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel.htm">
+            <HelpTOCNode Title="DialogResult Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_DialogResult.htm" />
+            <HelpTOCNode Title="Message Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_Message.htm" />
+            <HelpTOCNode Title="ResponseCallbackAsync Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_ResponseCallbackAsync.htm" />
+            <HelpTOCNode Title="SendResponseAsyncCommand Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_SendResponseAsyncCommand.htm" />
+            <HelpTOCNode Title="Title Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_Title.htm" />
+            <HelpTOCNode Title="TitleBarIcon Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_TitleBarIcon.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="eb0691be-8652-4d52-b97c-9573b9200c3d" Title="DialogViewModel Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel.htm">
+            <HelpTOCNode Title="OnInteractionCompleted Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_OnInteractionCompleted.htm" />
+            <HelpTOCNode Title="OnSendResponseAsyncCommandExecuted Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_OnSendResponseAsyncCommandExecuted.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="297dd61d-b299-4a9a-8a36-2665db3b642d" Title="DialogViewModel Events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel.htm">
+            <HelpTOCNode Title="InteractionCompleted Event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_InteractionCompleted.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="435e9af1-a9cf-481c-9ce6-dbdc5a907dad" Title="IDialogViewModel Interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel.htm">
+          <HelpTOCNode Id="9154090e-9b0d-43d7-83c5-3cf16186009f" Title="IDialogViewModel Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel.htm">
+            <HelpTOCNode Title="DialogResult Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_DialogResult.htm" />
+            <HelpTOCNode Title="Message Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_Message.htm" />
+            <HelpTOCNode Title="ResponseCallbackAsync Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_ResponseCallbackAsync.htm" />
+            <HelpTOCNode Title="SendResponseAsyncCommand Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_SendResponseAsyncCommand.htm" />
+            <HelpTOCNode Title="Title Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_Title.htm" />
+            <HelpTOCNode Title="TitleBarIcon Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_TitleBarIcon.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Title="IDialogViewModel Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel.htm" />
+          <HelpTOCNode Id="97256101-f70b-4420-ba0b-4a24fc2c44d0" Title="IDialogViewModel Events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel.htm">
+            <HelpTOCNode Title="InteractionCompleted Event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_InteractionCompleted.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="8cba7fc2-a310-491b-8eac-cae42fb6fa2c" Title="IDialogViewModelProvider Interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModelProvider.htm">
+          <HelpTOCNode Id="68c19b06-e6a8-41c4-a076-22f0f04ee95d" Title="IDialogViewModelProvider Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModelProvider.htm">
+            <HelpTOCNode Title="DialogViewModel Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModelProvider_DialogViewModel.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="9f532491-08a2-47fb-ad5e-b908bb8b564e" Title="IDialogViewModelProviderSource Interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModelProviderSource.htm">
+          <HelpTOCNode Id="54cb43cd-65d1-4e91-853c-7b034bb8808c" Title="IDialogViewModelProviderSource Events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModelProviderSource.htm">
+            <HelpTOCNode Title="DialogRequested Event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModelProviderSource_DialogRequested.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="a7658cfe-661f-4825-b617-a673dd637318" Title="BionicCode.Utilities.Net.Core.Wpf.Extensions" Url="html/N_BionicCode_Utilities_Net_Core_Wpf_Extensions.htm">
+        <HelpTOCNode Id="b85e11b3-a08e-4965-988d-8580fc453442" Title="HelperExtensions Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions.htm">
+          <HelpTOCNode Id="0d31c781-f271-49db-87bf-52eb003c0165" Title="HelperExtensions Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions.htm">
+            <HelpTOCNode Title="FindVisualChildElements(TChildren) Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_FindVisualChildElements__1.htm" />
+            <HelpTOCNode Title="ToDictionary Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_ToDictionary.htm" />
+            <HelpTOCNode Title="TryFindVisualChildElement(TChild) Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_TryFindVisualChildElement__1.htm" />
+            <HelpTOCNode Title="TryFindVisualChildElementByName Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_TryFindVisualChildElementByName.htm" />
+            <HelpTOCNode Title="TryFindVisualParentElement(TParent) Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_TryFindVisualParentElement__1.htm" />
+            <HelpTOCNode Title="TryFindVisualParentElementByName Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_TryFindVisualParentElementByName.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="06c7b76b-9bd2-4051-9b8d-b04cc7c607b4" Title="BionicCode.Utilities.Net.Core.Wpf.Generic" Url="html/N_BionicCode_Utilities_Net_Core_Wpf_Generic.htm">
+        <HelpTOCNode Id="261bd49a-71e6-4a80-8af2-4011cbba4089" Title="AsyncRelayCommand(TParam) Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1.htm">
+          <HelpTOCNode Id="709b6c20-26c8-4bc1-89c8-95a2f7e8b685" Title="AsyncRelayCommand(TParam) Constructor " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1__ctor.htm">
+            <HelpTOCNode Title="AsyncRelayCommand(TParam) Constructor (Action)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1__ctor.htm" />
+            <HelpTOCNode Title="AsyncRelayCommand(TParam) Constructor (Action(TParam))" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1__ctor_2.htm" />
+            <HelpTOCNode Title="AsyncRelayCommand(TParam) Constructor (Func(Task))" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1__ctor_4.htm" />
+            <HelpTOCNode Title="AsyncRelayCommand(TParam) Constructor (Func(TParam, Task))" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1__ctor_6.htm" />
+            <HelpTOCNode Title="AsyncRelayCommand(TParam) Constructor (Action, Func(Boolean))" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1__ctor_1.htm" />
+            <HelpTOCNode Title="AsyncRelayCommand(TParam) Constructor (Action(TParam), Predicate(TParam))" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1__ctor_3.htm" />
+            <HelpTOCNode Title="AsyncRelayCommand(TParam) Constructor (Func(Task), Func(Boolean))" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1__ctor_5.htm" />
+            <HelpTOCNode Title="AsyncRelayCommand(TParam) Constructor (Func(TParam, Task), Predicate(TParam))" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1__ctor_7.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="98a0fb1f-d26f-415b-82d0-b75daa41c8d3" Title="AsyncRelayCommand(TParam) Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1.htm">
+            <HelpTOCNode Id="4c70e13d-3663-410a-bd55-2c6446acbda4" Title="CanExecute Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1_CanExecute.htm">
+              <HelpTOCNode Title="CanExecute Method (TParam)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1_CanExecute.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="957bb5b8-a41a-46d9-868a-29d7a665aa69" Title="Execute Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1_Execute.htm">
+              <HelpTOCNode Title="Execute Method (TParam)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1_Execute.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="675dd78b-acbf-4bfa-b138-be1f4768c231" Title="ExecuteAsync Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1_ExecuteAsync.htm">
+              <HelpTOCNode Title="ExecuteAsync Method (TParam)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1_ExecuteAsync.htm" />
+            </HelpTOCNode>
+          </HelpTOCNode>
+          <HelpTOCNode Title="AsyncRelayCommand(TParam) Events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1.htm" />
+          <HelpTOCNode Title="AsyncRelayCommand(TParam) Fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Id="6f16ca60-5e74-417f-b7cc-d393a014025f" Title="IAsyncRelayCommand(TParam) Interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1.htm">
+          <HelpTOCNode Id="56742822-9388-47ab-b3a2-4adcf1d2e4fd" Title="IAsyncRelayCommand(TParam) Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1.htm">
+            <HelpTOCNode Id="ec55a2b6-9ce1-4375-9eb9-c03b0c36ed24" Title="CanExecute Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1_CanExecute.htm">
+              <HelpTOCNode Title="CanExecute Method (TParam)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1_CanExecute.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="1b3387bf-97d5-4e3e-9aae-d3a708ed0d50" Title="Execute Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1_Execute.htm">
+              <HelpTOCNode Title="Execute Method (TParam)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1_Execute.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="6a314203-c82c-49c2-a605-8311944b8b5f" Title="ExecuteAsync Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1_ExecuteAsync.htm">
+              <HelpTOCNode Title="ExecuteAsync Method (TParam)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1_ExecuteAsync.htm" />
+            </HelpTOCNode>
+          </HelpTOCNode>
+          <HelpTOCNode Title="IAsyncRelayCommand(TParam) Events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="253abb59-b6e7-425a-aa5b-03ea0389f083" Title="BionicCode.Utilities.Net.Core.Wpf.Markup" Url="html/N_BionicCode_Utilities_Net_Core_Wpf_Markup.htm">
+        <HelpTOCNode Id="bad8d26b-e4f9-4017-b6a9-e6eb178ef755" Title="EqualsExtension Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_EqualsExtension.htm">
+          <HelpTOCNode Id="33ce8972-2de5-4bb5-8532-e60814722f0b" Title="EqualsExtension Constructor " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Markup_EqualsExtension__ctor.htm">
+            <HelpTOCNode Title="EqualsExtension Constructor (Object, Object)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_EqualsExtension__ctor.htm" />
+            <HelpTOCNode Title="EqualsExtension Constructor (Object, Type)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_EqualsExtension__ctor_1.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="0fdacad8-0259-4cd6-a318-6e2897eb0fde" Title="EqualsExtension Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Markup_EqualsExtension.htm">
+            <HelpTOCNode Title="ProvideValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_EqualsExtension_ProvideValue.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Title="InversionMode Enumeration" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_InversionMode.htm" />
+        <HelpTOCNode Id="13fd22e7-7583-4d0d-8ab3-a4a0187126af" Title="InvertExtension Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension.htm">
+          <HelpTOCNode Id="a6cbcf54-5a43-4076-a42d-b88eb30dcfc6" Title="InvertExtension Constructor " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension__ctor.htm">
+            <HelpTOCNode Title="InvertExtension Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension__ctor.htm" />
+            <HelpTOCNode Title="InvertExtension Constructor (Object)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension__ctor_1.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="df842c79-3a2d-4a43-8996-07e7016cffb3" Title="InvertExtension Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension.htm">
+            <HelpTOCNode Title="Mode Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension_Mode.htm" />
+            <HelpTOCNode Title="Value Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension_Value.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="93139668-54b8-466e-afbd-b4d938d29bc8" Title="InvertExtension Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension.htm">
+            <HelpTOCNode Title="GetValueToInvertFromMarkupExtension Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension_GetValueToInvertFromMarkupExtension.htm" />
+            <HelpTOCNode Title="ProvideValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension_ProvideValue.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="761ebc1c-c739-4deb-b6c8-ad5080d62b3d" Title="PrimitiveTypeExtension Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension.htm">
+          <HelpTOCNode Id="1863af56-1575-4212-ae1d-93e7dbde4efe" Title="PrimitiveTypeExtension Constructor " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension__ctor.htm">
+            <HelpTOCNode Title="PrimitiveTypeExtension Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension__ctor.htm" />
+            <HelpTOCNode Title="PrimitiveTypeExtension Constructor (Boolean)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension__ctor_1.htm" />
+            <HelpTOCNode Title="PrimitiveTypeExtension Constructor (Double)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension__ctor_2.htm" />
+            <HelpTOCNode Title="PrimitiveTypeExtension Constructor (Int32)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension__ctor_3.htm" />
+            <HelpTOCNode Title="PrimitiveTypeExtension Constructor (String)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension__ctor_4.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="ecdeacc5-fe8e-4305-856f-270b67e012dd" Title="PrimitiveTypeExtension Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension.htm">
+            <HelpTOCNode Title="Boolean Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension_Boolean.htm" />
+            <HelpTOCNode Title="Double Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension_Double.htm" />
+            <HelpTOCNode Title="Int32 Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension_Int32.htm" />
+            <HelpTOCNode Title="String Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension_String.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="d7aec9f7-6fa2-4f4b-9911-251edd410b29" Title="PrimitiveTypeExtension Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension.htm">
+            <HelpTOCNode Title="ProvideValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension_ProvideValue.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="bee80bc1-4ec5-494f-aedc-29c807df2bb8" Title="BionicCode.Utilities.Net.Core.Wpf.Settings" Url="html/N_BionicCode_Utilities_Net_Core_Wpf_Settings.htm">
+        <HelpTOCNode Id="dd2df269-7092-48fc-a9b5-bd87c02cfb48" Title="AppSettingsConnector Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector.htm">
+          <HelpTOCNode Id="cc4d1bc8-9a63-4660-813b-2f055b6f1392" Title="AppSettingsConnector Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector.htm">
+            <HelpTOCNode Title="TryReadBool Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_TryReadBool.htm" />
+            <HelpTOCNode Title="TryReadDouble Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_TryReadDouble.htm" />
+            <HelpTOCNode Title="TryReadInt Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_TryReadInt.htm" />
+            <HelpTOCNode Title="TryReadString Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_TryReadString.htm" />
+            <HelpTOCNode Title="WriteBool Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_WriteBool.htm" />
+            <HelpTOCNode Title="WriteDouble Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_WriteDouble.htm" />
+            <HelpTOCNode Title="WriteInt Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_WriteInt.htm" />
+            <HelpTOCNode Title="WriteString Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_WriteString.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="83dc1289-5c7e-4fee-b518-1f1411696619" Title="IMruManager Interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager.htm">
+          <HelpTOCNode Id="d057062f-5f3a-4fcd-978a-08592074973e" Title="IMruManager Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager.htm">
+            <HelpTOCNode Title="MaxMostRecentlyUsedCount Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_MaxMostRecentlyUsedCount.htm" />
+            <HelpTOCNode Title="MostRecentlyUsedFile Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_MostRecentlyUsedFile.htm" />
+            <HelpTOCNode Title="MostRecentlyUsedFiles Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_MostRecentlyUsedFiles.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="c9885824-db43-49e8-811a-acf4a82e6a4b" Title="IMruManager Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager.htm">
+            <HelpTOCNode Title="AddMostRecentlyUsedFile Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_AddMostRecentlyUsedFile.htm" />
+            <HelpTOCNode Title="Clear Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_Clear.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="ec292f5d-ef41-41bb-8740-c374d6f32488" Title="IMruManager Events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager.htm">
+            <HelpTOCNode Title="FileAdded Event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_FileAdded.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="742de335-19a8-400f-a973-34a026d4c384" Title="MostRecentlyUsedFileItem Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem.htm">
+          <HelpTOCNode Title="MostRecentlyUsedFileItem Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem__ctor.htm" />
+          <HelpTOCNode Id="685dd9f3-e373-4720-8b03-993fd8785142" Title="MostRecentlyUsedFileItem Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem.htm">
+            <HelpTOCNode Title="FileInfo Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_FileInfo.htm" />
+            <HelpTOCNode Title="FullName Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_FullName.htm" />
+            <HelpTOCNode Title="Name Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_Name.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="cf500882-198f-4708-a5b9-c074c0c4d671" Title="MostRecentlyUsedFileItem Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem.htm">
+            <HelpTOCNode Id="a60deb5d-bf8b-41ed-93b3-648a69176c63" Title="Equals Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_Equals.htm">
+              <HelpTOCNode Title="Equals Method (Object)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_Equals_1.htm" />
+              <HelpTOCNode Title="Equals Method (MostRecentlyUsedFileItem)" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_Equals.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Title="GetHashCode Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_GetHashCode.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Title="MostRecentlyUsedFileItem Events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem.htm" />
+          <HelpTOCNode Id="82250243-ce1f-440b-8a14-970f44d8235f" Title="MostRecentlyUsedFileItem Operators" Url="html/Operators_T_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem.htm">
+            <HelpTOCNode Title="Equality Operator " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_op_Equality.htm" />
+            <HelpTOCNode Title="Inequality Operator " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_op_Inequality.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="8bb6d69c-b8e3-4469-9665-014dd731dd06" Title="MruManager Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager.htm">
+          <HelpTOCNode Title="MruManager Constructor " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager__ctor.htm" />
+          <HelpTOCNode Id="d70045d9-6e37-4d88-9b11-12073ca95a24" Title="MruManager Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager.htm">
+            <HelpTOCNode Title="InternalMostRecentlyUsedFiles Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_InternalMostRecentlyUsedFiles.htm" />
+            <HelpTOCNode Title="MaxMostRecentlyUsedCount Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_MaxMostRecentlyUsedCount.htm" />
+            <HelpTOCNode Title="MostRecentlyUsedFile Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_MostRecentlyUsedFile.htm" />
+            <HelpTOCNode Title="MostRecentlyUsedFiles Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_MostRecentlyUsedFiles.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="d9f25c47-5628-420d-a145-f6b145ca7c97" Title="MruManager Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager.htm">
+            <HelpTOCNode Title="AddMostRecentlyUsedFile Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_AddMostRecentlyUsedFile.htm" />
+            <HelpTOCNode Title="Clear Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_Clear.htm" />
+            <HelpTOCNode Title="IsMruCountValid Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_IsMruCountValid.htm" />
+            <HelpTOCNode Title="OnFileAdded Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_OnFileAdded.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="7691c3a3-bc17-4ade-bf1e-647824ffd6a6" Title="MruManager Events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager.htm">
+            <HelpTOCNode Title="FileAdded Event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_FileAdded.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="81f5c678-1f16-4d66-911d-f1cc475fd557" Title="BionicCode.Utilities.Net.Framework Namespaces" Url="html/G_BionicCode_Utilities_Net_Framework.htm">
+      <HelpTOCNode Id="e1f36059-3e46-4129-802f-f8dea0f755a3" Title="BionicCode.Utilities.Net.Framework" Url="html/N_BionicCode_Utilities_Net_Framework.htm">
+        <HelpTOCNode Id="ac63bda0-3c96-4c9e-b79e-cab4bbd427c1" Title="DefaultValueInverter Class" Url="html/T_BionicCode_Utilities_Net_Framework_DefaultValueInverter.htm">
+          <HelpTOCNode Title="DefaultValueInverter Constructor " Url="html/M_BionicCode_Utilities_Net_Framework_DefaultValueInverter__ctor.htm" />
+          <HelpTOCNode Id="847642a4-d989-4c06-a15f-f6046644f98b" Title="DefaultValueInverter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_DefaultValueInverter.htm">
+            <HelpTOCNode Title="InvertValue Method " Url="html/M_BionicCode_Utilities_Net_Framework_DefaultValueInverter_InvertValue.htm" />
+            <HelpTOCNode Title="TryInvertValue Method " Url="html/M_BionicCode_Utilities_Net_Framework_DefaultValueInverter_TryInvertValue.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="d6250c38-ca5a-41f6-bc59-1d49bcf7fc79" Title="BionicCode.Utilities.Net.Framework.Collections.Generic" Url="html/N_BionicCode_Utilities_Net_Framework_Collections_Generic.htm">
+        <HelpTOCNode Id="933adbd8-5649-4349-8b52-a29f2502603c" Title="ObservablePropertyChangedCollection(TItem) Class" Url="html/T_BionicCode_Utilities_Net_Framework_Collections_Generic_ObservablePropertyChangedCollection_1.htm">
+          <HelpTOCNode Title="ObservablePropertyChangedCollection(TItem) Constructor " Url="html/M_BionicCode_Utilities_Net_Framework_Collections_Generic_ObservablePropertyChangedCollection_1__ctor.htm" />
+          <HelpTOCNode Title="ObservablePropertyChangedCollection(TItem) Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Framework_Collections_Generic_ObservablePropertyChangedCollection_1.htm" />
+          <HelpTOCNode Id="4a9e424e-da66-4ca1-95aa-c8a7243d5872" Title="ObservablePropertyChangedCollection(TItem) Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Collections_Generic_ObservablePropertyChangedCollection_1.htm">
+            <HelpTOCNode Title="ClearItems Method " Url="html/M_BionicCode_Utilities_Net_Framework_Collections_Generic_ObservablePropertyChangedCollection_1_ClearItems.htm" />
+            <HelpTOCNode Title="InsertItem Method " Url="html/M_BionicCode_Utilities_Net_Framework_Collections_Generic_ObservablePropertyChangedCollection_1_InsertItem.htm" />
+            <HelpTOCNode Title="RemoveItem Method " Url="html/M_BionicCode_Utilities_Net_Framework_Collections_Generic_ObservablePropertyChangedCollection_1_RemoveItem.htm" />
+            <HelpTOCNode Title="SetItem Method " Url="html/M_BionicCode_Utilities_Net_Framework_Collections_Generic_ObservablePropertyChangedCollection_1_SetItem.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Title="ObservablePropertyChangedCollection(TItem) Events" Url="html/Events_T_BionicCode_Utilities_Net_Framework_Collections_Generic_ObservablePropertyChangedCollection_1.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="d039ec0a-d9c5-46a4-8ba9-783eeee22a8f" Title="BionicCode.Utilities.Net.Framework.Converter" Url="html/N_BionicCode_Utilities_Net_Framework_Converter.htm">
+        <HelpTOCNode Id="71568a18-f9d2-4c01-b860-373c80f8cd22" Title="BooleanMultiValueConverter Class" Url="html/T_BionicCode_Utilities_Net_Framework_Converter_BooleanMultiValueConverter.htm">
+          <HelpTOCNode Title="BooleanMultiValueConverter Constructor " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_BooleanMultiValueConverter__ctor.htm" />
+          <HelpTOCNode Id="ebb6d487-9680-4641-a422-f1ff737adf48" Title="BooleanMultiValueConverter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Converter_BooleanMultiValueConverter.htm">
+            <HelpTOCNode Title="Convert Method " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_BooleanMultiValueConverter_Convert.htm" />
+            <HelpTOCNode Title="ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_BooleanMultiValueConverter_ConvertBack.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="48c91a2e-ea38-4554-8e80-59b2f00cc471" Title="BoolToStringConverter Class" Url="html/T_BionicCode_Utilities_Net_Framework_Converter_BoolToStringConverter.htm">
+          <HelpTOCNode Title="BoolToStringConverter Constructor " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_BoolToStringConverter__ctor.htm" />
+          <HelpTOCNode Id="0b0f9040-1dc9-4037-a772-fe67ad18aa80" Title="BoolToStringConverter Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Framework_Converter_BoolToStringConverter.htm">
+            <HelpTOCNode Title="FalseValue Property " Url="html/P_BionicCode_Utilities_Net_Framework_Converter_BoolToStringConverter_FalseValue.htm" />
+            <HelpTOCNode Title="NullValue Property " Url="html/P_BionicCode_Utilities_Net_Framework_Converter_BoolToStringConverter_NullValue.htm" />
+            <HelpTOCNode Title="TrueValue Property " Url="html/P_BionicCode_Utilities_Net_Framework_Converter_BoolToStringConverter_TrueValue.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="a1cd9ce6-f8e1-4870-b52c-9c037df1b62c" Title="BoolToStringConverter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Converter_BoolToStringConverter.htm">
+            <HelpTOCNode Title="Convert Method " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_BoolToStringConverter_Convert.htm" />
+            <HelpTOCNode Title="ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_BoolToStringConverter_ConvertBack.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="37f42ee2-b13a-4236-ba08-5fd61a130d7c" Title="BoolToStringConverter Fields" Url="html/Fields_T_BionicCode_Utilities_Net_Framework_Converter_BoolToStringConverter.htm">
+            <HelpTOCNode Title="FalseValueProperty Field" Url="html/F_BionicCode_Utilities_Net_Framework_Converter_BoolToStringConverter_FalseValueProperty.htm" />
+            <HelpTOCNode Title="NullValueProperty Field" Url="html/F_BionicCode_Utilities_Net_Framework_Converter_BoolToStringConverter_NullValueProperty.htm" />
+            <HelpTOCNode Title="TrueValueProperty Field" Url="html/F_BionicCode_Utilities_Net_Framework_Converter_BoolToStringConverter_TrueValueProperty.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="986bea84-7e50-4081-b60f-b2c8f33fc070" Title="DividerValueConverter Class" Url="html/T_BionicCode_Utilities_Net_Framework_Converter_DividerValueConverter.htm">
+          <HelpTOCNode Title="DividerValueConverter Constructor " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_DividerValueConverter__ctor.htm" />
+          <HelpTOCNode Id="39ef0c32-9705-4b76-a035-0290da863b76" Title="DividerValueConverter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Converter_DividerValueConverter.htm">
+            <HelpTOCNode Title="Convert Method " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_DividerValueConverter_Convert.htm" />
+            <HelpTOCNode Title="ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_DividerValueConverter_ConvertBack.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="0b50d646-f8d2-443c-b2aa-4cabcd452587" Title="FilePathTruncateConverter Class" Url="html/T_BionicCode_Utilities_Net_Framework_Converter_FilePathTruncateConverter.htm">
+          <HelpTOCNode Title="FilePathTruncateConverter Constructor " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_FilePathTruncateConverter__ctor.htm" />
+          <HelpTOCNode Id="21407605-9b77-4c64-845d-c93ffcd8de26" Title="FilePathTruncateConverter Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Framework_Converter_FilePathTruncateConverter.htm">
+            <HelpTOCNode Title="MaxLength Property " Url="html/P_BionicCode_Utilities_Net_Framework_Converter_FilePathTruncateConverter_MaxLength.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="f5724952-ee46-4703-8140-824c4eb4cd46" Title="FilePathTruncateConverter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Converter_FilePathTruncateConverter.htm">
+            <HelpTOCNode Title="Convert Method " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_FilePathTruncateConverter_Convert.htm" />
+            <HelpTOCNode Title="ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_FilePathTruncateConverter_ConvertBack.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="60cab6cb-649d-4678-8a91-be6ec3a4a969" Title="FilePathTruncateConverter Fields" Url="html/Fields_T_BionicCode_Utilities_Net_Framework_Converter_FilePathTruncateConverter.htm">
+            <HelpTOCNode Title="MaxLengthProperty Field" Url="html/F_BionicCode_Utilities_Net_Framework_Converter_FilePathTruncateConverter_MaxLengthProperty.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="c2edb356-54b0-46d3-b8c6-e855602bc7ad" Title="InvertBooleanConverter Class" Url="html/T_BionicCode_Utilities_Net_Framework_Converter_InvertBooleanConverter.htm">
+          <HelpTOCNode Title="InvertBooleanConverter Constructor " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_InvertBooleanConverter__ctor.htm" />
+          <HelpTOCNode Id="c2c6a0ae-791c-4bce-9bac-24ec37a6d5fe" Title="InvertBooleanConverter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Converter_InvertBooleanConverter.htm">
+            <HelpTOCNode Title="Convert Method " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_InvertBooleanConverter_Convert.htm" />
+            <HelpTOCNode Title="ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_InvertBooleanConverter_ConvertBack.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="eb406ada-1721-4f00-90e5-e31cbcb613bd" Title="InvertValueConverter Class" Url="html/T_BionicCode_Utilities_Net_Framework_Converter_InvertValueConverter.htm">
+          <HelpTOCNode Title="InvertValueConverter Constructor " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_InvertValueConverter__ctor.htm" />
+          <HelpTOCNode Id="dc700cb3-1fe6-4eb4-bd0d-ceb6b15b7f90" Title="InvertValueConverter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Converter_InvertValueConverter.htm">
+            <HelpTOCNode Title="Convert Method " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_InvertValueConverter_Convert.htm" />
+            <HelpTOCNode Title="ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_InvertValueConverter_ConvertBack.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="1bc5c29c-25cb-436f-be19-2503fa903ce1" Title="IsGreaterThanValueConverter Class" Url="html/T_BionicCode_Utilities_Net_Framework_Converter_IsGreaterThanValueConverter.htm">
+          <HelpTOCNode Title="IsGreaterThanValueConverter Constructor " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_IsGreaterThanValueConverter__ctor.htm" />
+          <HelpTOCNode Id="54d87bbf-c86c-4957-a7e0-d3659d79cafb" Title="IsGreaterThanValueConverter Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Framework_Converter_IsGreaterThanValueConverter.htm">
+            <HelpTOCNode Title="Comparer Property " Url="html/P_BionicCode_Utilities_Net_Framework_Converter_IsGreaterThanValueConverter_Comparer.htm" />
+            <HelpTOCNode Title="CompareValue Property " Url="html/P_BionicCode_Utilities_Net_Framework_Converter_IsGreaterThanValueConverter_CompareValue.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="f834b244-e4ad-43af-8b54-4af0cc0ef263" Title="IsGreaterThanValueConverter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Converter_IsGreaterThanValueConverter.htm">
+            <HelpTOCNode Title="Convert Method " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_IsGreaterThanValueConverter_Convert.htm" />
+            <HelpTOCNode Title="ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Framework_Converter_IsGreaterThanValueConverter_ConvertBack.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="5e6f46b1-6414-4135-a0ca-d31901cc3e7d" Title="IsGreaterThanValueConverter Fields" Url="html/Fields_T_BionicCode_Utilities_Net_Framework_Converter_IsGreaterThanValueConverter.htm">
+            <HelpTOCNode Title="ComparerProperty Field" Url="html/F_BionicCode_Utilities_Net_Framework_Converter_IsGreaterThanValueConverter_ComparerProperty.htm" />
+            <HelpTOCNode Title="CompareValueProperty Field" Url="html/F_BionicCode_Utilities_Net_Framework_Converter_IsGreaterThanValueConverter_CompareValueProperty.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="cddfba91-cd07-4dfe-af30-b4f12c55b572" Title="BionicCode.Utilities.Net.Framework.Dialog" Url="html/N_BionicCode_Utilities_Net_Framework_Dialog.htm">
+        <HelpTOCNode Id="59bd002e-b4ed-488d-9e38-0c07d0b3ae51" Title="Dialog Class" Url="html/T_BionicCode_Utilities_Net_Framework_Dialog_Dialog.htm">
+          <HelpTOCNode Title="Dialog Constructor " Url="html/M_BionicCode_Utilities_Net_Framework_Dialog_Dialog__ctor.htm" />
+          <HelpTOCNode Title="Dialog Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Framework_Dialog_Dialog.htm" />
+          <HelpTOCNode Id="b9285d76-392f-4c62-8976-cc828659081d" Title="Dialog Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Dialog_Dialog.htm">
+            <HelpTOCNode Title="GetDataTemplateSelector Method " Url="html/M_BionicCode_Utilities_Net_Framework_Dialog_Dialog_GetDataTemplateSelector.htm" />
+            <HelpTOCNode Title="GetDialogDataContext Method " Url="html/M_BionicCode_Utilities_Net_Framework_Dialog_Dialog_GetDialogDataContext.htm" />
+            <HelpTOCNode Title="GetStyle Method " Url="html/M_BionicCode_Utilities_Net_Framework_Dialog_Dialog_GetStyle.htm" />
+            <HelpTOCNode Title="SetDataTemplateSelector Method " Url="html/M_BionicCode_Utilities_Net_Framework_Dialog_Dialog_SetDataTemplateSelector.htm" />
+            <HelpTOCNode Title="SetDialogDataContext Method " Url="html/M_BionicCode_Utilities_Net_Framework_Dialog_Dialog_SetDialogDataContext.htm" />
+            <HelpTOCNode Title="SetStyle Method " Url="html/M_BionicCode_Utilities_Net_Framework_Dialog_Dialog_SetStyle.htm" />
+            <HelpTOCNode Title="TryGetDialog Method " Url="html/M_BionicCode_Utilities_Net_Framework_Dialog_Dialog_TryGetDialog.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="3091bc51-be75-447b-8fd6-701044206b71" Title="Dialog Fields" Url="html/Fields_T_BionicCode_Utilities_Net_Framework_Dialog_Dialog.htm">
+            <HelpTOCNode Title="DataTemplateSelectorProperty Field" Url="html/F_BionicCode_Utilities_Net_Framework_Dialog_Dialog_DataTemplateSelectorProperty.htm" />
+            <HelpTOCNode Title="DialogDataContextProperty Field" Url="html/F_BionicCode_Utilities_Net_Framework_Dialog_Dialog_DialogDataContextProperty.htm" />
+            <HelpTOCNode Title="StyleProperty Field" Url="html/F_BionicCode_Utilities_Net_Framework_Dialog_Dialog_StyleProperty.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="6f135e41-1b27-4ff3-907e-3f51fe5248cf" Title="Dialog Attached Properties" Url="html/AttachedProperties_T_BionicCode_Utilities_Net_Framework_Dialog_Dialog.htm">
+            <HelpTOCNode Title="DataTemplateSelector Attached Property" Url="html/P_BionicCode_Utilities_Net_Framework_Dialog_Dialog_DataTemplateSelector.htm" />
+            <HelpTOCNode Title="DialogDataContext Attached Property" Url="html/P_BionicCode_Utilities_Net_Framework_Dialog_Dialog_DialogDataContext.htm" />
+            <HelpTOCNode Title="Style Attached Property" Url="html/P_BionicCode_Utilities_Net_Framework_Dialog_Dialog_Style.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Title="DialogResult Enumeration" Url="html/T_BionicCode_Utilities_Net_Framework_Dialog_DialogResult.htm" />
+        <HelpTOCNode Id="53480918-23ec-4786-9d75-ccdb110ef410" Title="DialogViewModel Class" Url="html/T_BionicCode_Utilities_Net_Framework_Dialog_DialogViewModel.htm">
+          <HelpTOCNode Id="b601f215-a2c6-4820-9c4e-5bd95c9c548d" Title="DialogViewModel Constructor " Url="html/Overload_BionicCode_Utilities_Net_Framework_Dialog_DialogViewModel__ctor.htm">
+            <HelpTOCNode Title="DialogViewModel Constructor (String, String)" Url="html/M_BionicCode_Utilities_Net_Framework_Dialog_DialogViewModel__ctor.htm" />
+            <HelpTOCNode Title="DialogViewModel Constructor (String, String, Func(IDialogViewModel, Task))" Url="html/M_BionicCode_Utilities_Net_Framework_Dialog_DialogViewModel__ctor_1.htm" />
+            <HelpTOCNode Title="DialogViewModel Constructor (String, String, ImageSource, Func(IDialogViewModel, Task))" Url="html/M_BionicCode_Utilities_Net_Framework_Dialog_DialogViewModel__ctor_2.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="7650626f-a8e7-4592-af25-b4830c503255" Title="DialogViewModel Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Framework_Dialog_DialogViewModel.htm">
+            <HelpTOCNode Title="DialogResult Property " Url="html/P_BionicCode_Utilities_Net_Framework_Dialog_DialogViewModel_DialogResult.htm" />
+            <HelpTOCNode Title="Message Property " Url="html/P_BionicCode_Utilities_Net_Framework_Dialog_DialogViewModel_Message.htm" />
+            <HelpTOCNode Title="ResponseCallbackAsync Property " Url="html/P_BionicCode_Utilities_Net_Framework_Dialog_DialogViewModel_ResponseCallbackAsync.htm" />
+            <HelpTOCNode Title="SendResponseAsyncCommand Property " Url="html/P_BionicCode_Utilities_Net_Framework_Dialog_DialogViewModel_SendResponseAsyncCommand.htm" />
+            <HelpTOCNode Title="Title Property " Url="html/P_BionicCode_Utilities_Net_Framework_Dialog_DialogViewModel_Title.htm" />
+            <HelpTOCNode Title="TitleBarIcon Property " Url="html/P_BionicCode_Utilities_Net_Framework_Dialog_DialogViewModel_TitleBarIcon.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="be1779d9-5828-4c65-bdd1-7ff46e9780a3" Title="DialogViewModel Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Dialog_DialogViewModel.htm">
+            <HelpTOCNode Title="OnInteractionCompleted Method " Url="html/M_BionicCode_Utilities_Net_Framework_Dialog_DialogViewModel_OnInteractionCompleted.htm" />
+            <HelpTOCNode Title="OnSendResponseAsyncCommandExecuted Method " Url="html/M_BionicCode_Utilities_Net_Framework_Dialog_DialogViewModel_OnSendResponseAsyncCommandExecuted.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="229c4e12-a57e-48c8-983f-0555167fdca3" Title="DialogViewModel Events" Url="html/Events_T_BionicCode_Utilities_Net_Framework_Dialog_DialogViewModel.htm">
+            <HelpTOCNode Title="InteractionCompleted Event" Url="html/E_BionicCode_Utilities_Net_Framework_Dialog_DialogViewModel_InteractionCompleted.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="9e436f6a-4474-416b-ba17-ce04ea092101" Title="IDialogViewModel Interface" Url="html/T_BionicCode_Utilities_Net_Framework_Dialog_IDialogViewModel.htm">
+          <HelpTOCNode Id="50e58b8b-420b-4ef4-8f2a-ea4d6f7207ff" Title="IDialogViewModel Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Framework_Dialog_IDialogViewModel.htm">
+            <HelpTOCNode Title="DialogResult Property " Url="html/P_BionicCode_Utilities_Net_Framework_Dialog_IDialogViewModel_DialogResult.htm" />
+            <HelpTOCNode Title="Message Property " Url="html/P_BionicCode_Utilities_Net_Framework_Dialog_IDialogViewModel_Message.htm" />
+            <HelpTOCNode Title="ResponseCallbackAsync Property " Url="html/P_BionicCode_Utilities_Net_Framework_Dialog_IDialogViewModel_ResponseCallbackAsync.htm" />
+            <HelpTOCNode Title="SendResponseAsyncCommand Property " Url="html/P_BionicCode_Utilities_Net_Framework_Dialog_IDialogViewModel_SendResponseAsyncCommand.htm" />
+            <HelpTOCNode Title="Title Property " Url="html/P_BionicCode_Utilities_Net_Framework_Dialog_IDialogViewModel_Title.htm" />
+            <HelpTOCNode Title="TitleBarIcon Property " Url="html/P_BionicCode_Utilities_Net_Framework_Dialog_IDialogViewModel_TitleBarIcon.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Title="IDialogViewModel Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Dialog_IDialogViewModel.htm" />
+          <HelpTOCNode Id="1adf34f0-87dd-46b9-978c-93d9fc417536" Title="IDialogViewModel Events" Url="html/Events_T_BionicCode_Utilities_Net_Framework_Dialog_IDialogViewModel.htm">
+            <HelpTOCNode Title="InteractionCompleted Event" Url="html/E_BionicCode_Utilities_Net_Framework_Dialog_IDialogViewModel_InteractionCompleted.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="f18d214b-abfb-4b7c-8e72-b9b8c42a750e" Title="IDialogViewModelProvider Interface" Url="html/T_BionicCode_Utilities_Net_Framework_Dialog_IDialogViewModelProvider.htm">
+          <HelpTOCNode Id="3158b5ed-b9e5-4b28-ae2e-dafeec89cdb4" Title="IDialogViewModelProvider Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Framework_Dialog_IDialogViewModelProvider.htm">
+            <HelpTOCNode Title="DialogViewModel Property " Url="html/P_BionicCode_Utilities_Net_Framework_Dialog_IDialogViewModelProvider_DialogViewModel.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="af82f419-6450-4931-8f05-f81e2a6c1197" Title="IDialogViewModelProviderSource Interface" Url="html/T_BionicCode_Utilities_Net_Framework_Dialog_IDialogViewModelProviderSource.htm">
+          <HelpTOCNode Id="beaf5be2-9ab3-4258-85b8-e923ccdc1cdf" Title="IDialogViewModelProviderSource Events" Url="html/Events_T_BionicCode_Utilities_Net_Framework_Dialog_IDialogViewModelProviderSource.htm">
+            <HelpTOCNode Title="DialogRequested Event" Url="html/E_BionicCode_Utilities_Net_Framework_Dialog_IDialogViewModelProviderSource_DialogRequested.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="7d2f108d-3a00-4a6e-950f-32896c8f5c40" Title="BionicCode.Utilities.Net.Framework.Extensions" Url="html/N_BionicCode_Utilities_Net_Framework_Extensions.htm">
+        <HelpTOCNode Id="228be2be-00f8-44e4-ad1a-b476606afd70" Title="HelperExtensions Class" Url="html/T_BionicCode_Utilities_Net_Framework_Extensions_HelperExtensions.htm">
+          <HelpTOCNode Id="53a47920-192b-4ea8-b157-e50da0568554" Title="HelperExtensions Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Extensions_HelperExtensions.htm">
+            <HelpTOCNode Title="FindVisualChildElements(TChildren) Method " Url="html/M_BionicCode_Utilities_Net_Framework_Extensions_HelperExtensions_FindVisualChildElements__1.htm" />
+            <HelpTOCNode Title="TryFindVisualChildElement(TChild) Method " Url="html/M_BionicCode_Utilities_Net_Framework_Extensions_HelperExtensions_TryFindVisualChildElement__1.htm" />
+            <HelpTOCNode Title="TryFindVisualChildElementByName Method " Url="html/M_BionicCode_Utilities_Net_Framework_Extensions_HelperExtensions_TryFindVisualChildElementByName.htm" />
+            <HelpTOCNode Title="TryFindVisualParentElement(TParent) Method " Url="html/M_BionicCode_Utilities_Net_Framework_Extensions_HelperExtensions_TryFindVisualParentElement__1.htm" />
+            <HelpTOCNode Title="TryFindVisualParentElementByName Method " Url="html/M_BionicCode_Utilities_Net_Framework_Extensions_HelperExtensions_TryFindVisualParentElementByName.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="b30c69b1-0c99-484e-9831-d4b2668f8a24" Title="BionicCode.Utilities.Net.Framework.Markup" Url="html/N_BionicCode_Utilities_Net_Framework_Markup.htm">
+        <HelpTOCNode Id="22737c31-1f09-415f-8951-4cd180869a42" Title="EqualsExtension Class" Url="html/T_BionicCode_Utilities_Net_Framework_Markup_EqualsExtension.htm">
+          <HelpTOCNode Id="686019e2-4444-4f20-a019-18e3f04c616e" Title="EqualsExtension Constructor " Url="html/Overload_BionicCode_Utilities_Net_Framework_Markup_EqualsExtension__ctor.htm">
+            <HelpTOCNode Title="EqualsExtension Constructor (Object, Object)" Url="html/M_BionicCode_Utilities_Net_Framework_Markup_EqualsExtension__ctor.htm" />
+            <HelpTOCNode Title="EqualsExtension Constructor (Object, Type)" Url="html/M_BionicCode_Utilities_Net_Framework_Markup_EqualsExtension__ctor_1.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="77074028-c356-445f-b9e7-f5b27f8544c7" Title="EqualsExtension Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Markup_EqualsExtension.htm">
+            <HelpTOCNode Title="ProvideValue Method " Url="html/M_BionicCode_Utilities_Net_Framework_Markup_EqualsExtension_ProvideValue.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Title="InversionMode Enumeration" Url="html/T_BionicCode_Utilities_Net_Framework_Markup_InversionMode.htm" />
+        <HelpTOCNode Id="02adacc0-2183-4e0b-a08c-7e7e54a4b893" Title="InvertExtension Class" Url="html/T_BionicCode_Utilities_Net_Framework_Markup_InvertExtension.htm">
+          <HelpTOCNode Id="e2442574-de7f-4df6-b92c-fcabe43015df" Title="InvertExtension Constructor " Url="html/Overload_BionicCode_Utilities_Net_Framework_Markup_InvertExtension__ctor.htm">
+            <HelpTOCNode Title="InvertExtension Constructor " Url="html/M_BionicCode_Utilities_Net_Framework_Markup_InvertExtension__ctor.htm" />
+            <HelpTOCNode Title="InvertExtension Constructor (Object)" Url="html/M_BionicCode_Utilities_Net_Framework_Markup_InvertExtension__ctor_1.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="6c32f64e-0f3c-48bc-98c8-f6188b98bda6" Title="InvertExtension Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Framework_Markup_InvertExtension.htm">
+            <HelpTOCNode Title="Mode Property " Url="html/P_BionicCode_Utilities_Net_Framework_Markup_InvertExtension_Mode.htm" />
+            <HelpTOCNode Title="Value Property " Url="html/P_BionicCode_Utilities_Net_Framework_Markup_InvertExtension_Value.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="d26297da-e13f-49a8-be84-2b13b079a906" Title="InvertExtension Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Markup_InvertExtension.htm">
+            <HelpTOCNode Title="GetValueToInvertFromMarkupExtension Method " Url="html/M_BionicCode_Utilities_Net_Framework_Markup_InvertExtension_GetValueToInvertFromMarkupExtension.htm" />
+            <HelpTOCNode Title="ProvideValue Method " Url="html/M_BionicCode_Utilities_Net_Framework_Markup_InvertExtension_ProvideValue.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="03d84623-15da-4ef3-8eb1-1d74c6483098" Title="PrimitiveTypeExtension Class" Url="html/T_BionicCode_Utilities_Net_Framework_Markup_PrimitiveTypeExtension.htm">
+          <HelpTOCNode Id="494e54f5-ffb6-42a5-a77b-5a3ee00a0335" Title="PrimitiveTypeExtension Constructor " Url="html/Overload_BionicCode_Utilities_Net_Framework_Markup_PrimitiveTypeExtension__ctor.htm">
+            <HelpTOCNode Title="PrimitiveTypeExtension Constructor " Url="html/M_BionicCode_Utilities_Net_Framework_Markup_PrimitiveTypeExtension__ctor.htm" />
+            <HelpTOCNode Title="PrimitiveTypeExtension Constructor (Boolean)" Url="html/M_BionicCode_Utilities_Net_Framework_Markup_PrimitiveTypeExtension__ctor_1.htm" />
+            <HelpTOCNode Title="PrimitiveTypeExtension Constructor (Double)" Url="html/M_BionicCode_Utilities_Net_Framework_Markup_PrimitiveTypeExtension__ctor_2.htm" />
+            <HelpTOCNode Title="PrimitiveTypeExtension Constructor (Int32)" Url="html/M_BionicCode_Utilities_Net_Framework_Markup_PrimitiveTypeExtension__ctor_3.htm" />
+            <HelpTOCNode Title="PrimitiveTypeExtension Constructor (String)" Url="html/M_BionicCode_Utilities_Net_Framework_Markup_PrimitiveTypeExtension__ctor_4.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="97d43b4e-0c24-43fc-9d3e-fd20a622493e" Title="PrimitiveTypeExtension Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Framework_Markup_PrimitiveTypeExtension.htm">
+            <HelpTOCNode Title="Boolean Property " Url="html/P_BionicCode_Utilities_Net_Framework_Markup_PrimitiveTypeExtension_Boolean.htm" />
+            <HelpTOCNode Title="Double Property " Url="html/P_BionicCode_Utilities_Net_Framework_Markup_PrimitiveTypeExtension_Double.htm" />
+            <HelpTOCNode Title="Int32 Property " Url="html/P_BionicCode_Utilities_Net_Framework_Markup_PrimitiveTypeExtension_Int32.htm" />
+            <HelpTOCNode Title="String Property " Url="html/P_BionicCode_Utilities_Net_Framework_Markup_PrimitiveTypeExtension_String.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="62c54bd4-b796-4c51-a9bf-5a6c9302fe08" Title="PrimitiveTypeExtension Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Markup_PrimitiveTypeExtension.htm">
+            <HelpTOCNode Title="ProvideValue Method " Url="html/M_BionicCode_Utilities_Net_Framework_Markup_PrimitiveTypeExtension_ProvideValue.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="3cb7e3e8-cf2b-4a0c-9871-c4e085227c1c" Title="BionicCode.Utilities.Net.Framework.Settings" Url="html/N_BionicCode_Utilities_Net_Framework_Settings.htm">
+        <HelpTOCNode Id="e0c6b6c7-3137-428d-934a-8c245e151831" Title="AppSettingsConnector Class" Url="html/T_BionicCode_Utilities_Net_Framework_Settings_AppSettingsConnector.htm">
+          <HelpTOCNode Id="a08cb0e0-5557-42f7-ba87-c544627edf93" Title="AppSettingsConnector Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Settings_AppSettingsConnector.htm">
+            <HelpTOCNode Title="TryReadBool Method " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_AppSettingsConnector_TryReadBool.htm" />
+            <HelpTOCNode Title="TryReadDouble Method " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_AppSettingsConnector_TryReadDouble.htm" />
+            <HelpTOCNode Title="TryReadInt Method " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_AppSettingsConnector_TryReadInt.htm" />
+            <HelpTOCNode Title="TryReadString Method " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_AppSettingsConnector_TryReadString.htm" />
+            <HelpTOCNode Title="WriteBool Method " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_AppSettingsConnector_WriteBool.htm" />
+            <HelpTOCNode Title="WriteDouble Method " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_AppSettingsConnector_WriteDouble.htm" />
+            <HelpTOCNode Title="WriteInt Method " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_AppSettingsConnector_WriteInt.htm" />
+            <HelpTOCNode Title="WriteString Method " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_AppSettingsConnector_WriteString.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="67f7d814-3794-431a-aae0-585b8fbd2500" Title="IMruManager Interface" Url="html/T_BionicCode_Utilities_Net_Framework_Settings_IMruManager.htm">
+          <HelpTOCNode Id="d0acb563-a34a-4c9a-af19-defefc9c2443" Title="IMruManager Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Framework_Settings_IMruManager.htm">
+            <HelpTOCNode Title="MaxMostRecentlyUsedCount Property " Url="html/P_BionicCode_Utilities_Net_Framework_Settings_IMruManager_MaxMostRecentlyUsedCount.htm" />
+            <HelpTOCNode Title="MostRecentlyUsedFile Property " Url="html/P_BionicCode_Utilities_Net_Framework_Settings_IMruManager_MostRecentlyUsedFile.htm" />
+            <HelpTOCNode Title="MostRecentlyUsedFiles Property " Url="html/P_BionicCode_Utilities_Net_Framework_Settings_IMruManager_MostRecentlyUsedFiles.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="464acd46-38eb-4c1e-b878-3921095c43a1" Title="IMruManager Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Settings_IMruManager.htm">
+            <HelpTOCNode Title="AddMostRecentlyUsedFile Method " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_IMruManager_AddMostRecentlyUsedFile.htm" />
+            <HelpTOCNode Title="Clear Method " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_IMruManager_Clear.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="d7e3e86a-4cba-4539-b05b-30b500025f30" Title="IMruManager Events" Url="html/Events_T_BionicCode_Utilities_Net_Framework_Settings_IMruManager.htm">
+            <HelpTOCNode Title="FileAdded Event" Url="html/E_BionicCode_Utilities_Net_Framework_Settings_IMruManager_FileAdded.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="2e03bff9-5740-4032-8843-67eae687f2de" Title="MostRecentlyUsedFileItem Class" Url="html/T_BionicCode_Utilities_Net_Framework_Settings_MostRecentlyUsedFileItem.htm">
+          <HelpTOCNode Title="MostRecentlyUsedFileItem Constructor " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_MostRecentlyUsedFileItem__ctor.htm" />
+          <HelpTOCNode Id="056f2cfe-7e5e-4eaa-8d52-6030357eb4d0" Title="MostRecentlyUsedFileItem Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Framework_Settings_MostRecentlyUsedFileItem.htm">
+            <HelpTOCNode Title="FileInfo Property " Url="html/P_BionicCode_Utilities_Net_Framework_Settings_MostRecentlyUsedFileItem_FileInfo.htm" />
+            <HelpTOCNode Title="FullName Property " Url="html/P_BionicCode_Utilities_Net_Framework_Settings_MostRecentlyUsedFileItem_FullName.htm" />
+            <HelpTOCNode Title="Name Property " Url="html/P_BionicCode_Utilities_Net_Framework_Settings_MostRecentlyUsedFileItem_Name.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="d823956d-bfa1-404e-91b1-cd70865278b7" Title="MostRecentlyUsedFileItem Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Settings_MostRecentlyUsedFileItem.htm">
+            <HelpTOCNode Id="9d730add-02a9-4092-9d01-56eeb5bc9cb8" Title="Equals Method " Url="html/Overload_BionicCode_Utilities_Net_Framework_Settings_MostRecentlyUsedFileItem_Equals.htm">
+              <HelpTOCNode Title="Equals Method (Object)" Url="html/M_BionicCode_Utilities_Net_Framework_Settings_MostRecentlyUsedFileItem_Equals_1.htm" />
+              <HelpTOCNode Title="Equals Method (MostRecentlyUsedFileItem)" Url="html/M_BionicCode_Utilities_Net_Framework_Settings_MostRecentlyUsedFileItem_Equals.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Title="GetHashCode Method " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_MostRecentlyUsedFileItem_GetHashCode.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Title="MostRecentlyUsedFileItem Events" Url="html/Events_T_BionicCode_Utilities_Net_Framework_Settings_MostRecentlyUsedFileItem.htm" />
+          <HelpTOCNode Id="cef201b6-2f1a-4b3c-b23d-7f72f25ebef5" Title="MostRecentlyUsedFileItem Operators" Url="html/Operators_T_BionicCode_Utilities_Net_Framework_Settings_MostRecentlyUsedFileItem.htm">
+            <HelpTOCNode Title="Equality Operator " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_MostRecentlyUsedFileItem_op_Equality.htm" />
+            <HelpTOCNode Title="Inequality Operator " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_MostRecentlyUsedFileItem_op_Inequality.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="0fc31319-f664-4088-8ea0-b56f2b2baa65" Title="MruManager Class" Url="html/T_BionicCode_Utilities_Net_Framework_Settings_MruManager.htm">
+          <HelpTOCNode Title="MruManager Constructor " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_MruManager__ctor.htm" />
+          <HelpTOCNode Id="fb8a8a6f-92ff-4a01-a21a-dcee17f600c4" Title="MruManager Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Framework_Settings_MruManager.htm">
+            <HelpTOCNode Title="InternalMostRecentlyUsedFiles Property " Url="html/P_BionicCode_Utilities_Net_Framework_Settings_MruManager_InternalMostRecentlyUsedFiles.htm" />
+            <HelpTOCNode Title="MaxMostRecentlyUsedCount Property " Url="html/P_BionicCode_Utilities_Net_Framework_Settings_MruManager_MaxMostRecentlyUsedCount.htm" />
+            <HelpTOCNode Title="MostRecentlyUsedFile Property " Url="html/P_BionicCode_Utilities_Net_Framework_Settings_MruManager_MostRecentlyUsedFile.htm" />
+            <HelpTOCNode Title="MostRecentlyUsedFiles Property " Url="html/P_BionicCode_Utilities_Net_Framework_Settings_MruManager_MostRecentlyUsedFiles.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="84a2902b-429d-4516-83ca-98c733c56e9d" Title="MruManager Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Settings_MruManager.htm">
+            <HelpTOCNode Title="AddMostRecentlyUsedFile Method " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_MruManager_AddMostRecentlyUsedFile.htm" />
+            <HelpTOCNode Title="Clear Method " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_MruManager_Clear.htm" />
+            <HelpTOCNode Title="IsMruCountValid Method " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_MruManager_IsMruCountValid.htm" />
+            <HelpTOCNode Title="OnFileAdded Method " Url="html/M_BionicCode_Utilities_Net_Framework_Settings_MruManager_OnFileAdded.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="724b36e1-d47f-41d9-88f6-f445a7312376" Title="MruManager Events" Url="html/Events_T_BionicCode_Utilities_Net_Framework_Settings_MruManager.htm">
+            <HelpTOCNode Title="FileAdded Event" Url="html/E_BionicCode_Utilities_Net_Framework_Settings_MruManager_FileAdded.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="664a2c45-8bb3-4587-9a1e-eee872372a0f" Title="BionicCode.Utilities.Net.Framework.Utility Namespaces" Url="html/G_BionicCode_Utilities_Net_Framework_Utility.htm">
+        <HelpTOCNode Id="817f9e7d-b9ff-485b-8826-5a0515f6430c" Title="BionicCode.Utilities.Net.Framework.Utility" Url="html/N_BionicCode_Utilities_Net_Framework_Utility.htm">
+          <HelpTOCNode Id="2af42658-0c38-49e9-85b4-9c8bc5673b23" Title="AsyncRelayCommand Class" Url="html/T_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand.htm">
+            <HelpTOCNode Id="b44816c1-e662-4669-a1b6-3ca937fbffb2" Title="AsyncRelayCommand Constructor " Url="html/Overload_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand__ctor.htm">
+              <HelpTOCNode Title="AsyncRelayCommand Constructor (Action)" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand__ctor.htm" />
+              <HelpTOCNode Title="AsyncRelayCommand Constructor (Action(Object))" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand__ctor_2.htm" />
+              <HelpTOCNode Title="AsyncRelayCommand Constructor (Func(Task))" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand__ctor_4.htm" />
+              <HelpTOCNode Title="AsyncRelayCommand Constructor (Func(Object, Task))" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand__ctor_6.htm" />
+              <HelpTOCNode Title="AsyncRelayCommand Constructor (Action, Func(Boolean))" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand__ctor_1.htm" />
+              <HelpTOCNode Title="AsyncRelayCommand Constructor (Action(Object), Predicate(Object))" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand__ctor_3.htm" />
+              <HelpTOCNode Title="AsyncRelayCommand Constructor (Func(Task), Func(Boolean))" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand__ctor_5.htm" />
+              <HelpTOCNode Title="AsyncRelayCommand Constructor (Func(Object, Task), Predicate(Object))" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand__ctor_7.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="d3a32276-e8b9-4609-bc83-bd10cbec6377" Title="AsyncRelayCommand Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand.htm">
+              <HelpTOCNode Id="8c78af2c-5440-4398-92e3-bc2a9a37b5b1" Title="CanExecute Method " Url="html/Overload_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand_CanExecute.htm">
+                <HelpTOCNode Title="CanExecute Method " Url="html/M_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand_CanExecute.htm" />
+                <HelpTOCNode Title="CanExecute Method (Object)" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand_CanExecute_1.htm" />
+              </HelpTOCNode>
+              <HelpTOCNode Id="e90360a6-f98b-4641-a023-c9460fb8bb5c" Title="Execute Method " Url="html/Overload_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand_Execute.htm">
+                <HelpTOCNode Title="Execute Method " Url="html/M_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand_Execute.htm" />
+                <HelpTOCNode Title="Execute Method (Object)" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand_Execute_1.htm" />
+              </HelpTOCNode>
+              <HelpTOCNode Id="74e0a105-9b87-446e-8e3a-e6838c1ee295" Title="ExecuteAsync Method " Url="html/Overload_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand_ExecuteAsync.htm">
+                <HelpTOCNode Title="ExecuteAsync Method " Url="html/M_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand_ExecuteAsync.htm" />
+                <HelpTOCNode Title="ExecuteAsync Method (Object)" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand_ExecuteAsync_1.htm" />
+              </HelpTOCNode>
+            </HelpTOCNode>
+            <HelpTOCNode Id="bae93983-3f3d-4715-b68c-751cb3a669e4" Title="AsyncRelayCommand Events" Url="html/Events_T_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand.htm">
+              <HelpTOCNode Title="CanExecuteChanged Event" Url="html/E_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand_CanExecuteChanged.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="52d31bc3-b1fc-49ab-9b8d-2454fc84da31" Title="AsyncRelayCommand Fields" Url="html/Fields_T_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand.htm">
+              <HelpTOCNode Title="CanExecuteNoParam Field" Url="html/F_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand_CanExecuteNoParam.htm" />
+              <HelpTOCNode Title="ExecuteAsyncNoParam Field" Url="html/F_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand_ExecuteAsyncNoParam.htm" />
+              <HelpTOCNode Title="ExecuteNoParam Field" Url="html/F_BionicCode_Utilities_Net_Framework_Utility_AsyncRelayCommand_ExecuteNoParam.htm" />
+            </HelpTOCNode>
+          </HelpTOCNode>
+          <HelpTOCNode Id="58c2a029-65c3-4516-8be9-3e59f8191ddf" Title="IAsyncRelayCommand Interface" Url="html/T_BionicCode_Utilities_Net_Framework_Utility_IAsyncRelayCommand.htm">
+            <HelpTOCNode Id="247cd62f-8556-45d0-ab7a-b9c8e3356ce0" Title="IAsyncRelayCommand Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Utility_IAsyncRelayCommand.htm">
+              <HelpTOCNode Id="d3d24b35-93b2-40cb-beec-38c01d662b11" Title="CanExecute Method " Url="html/Overload_BionicCode_Utilities_Net_Framework_Utility_IAsyncRelayCommand_CanExecute.htm">
+                <HelpTOCNode Title="CanExecute Method " Url="html/M_BionicCode_Utilities_Net_Framework_Utility_IAsyncRelayCommand_CanExecute.htm" />
+              </HelpTOCNode>
+              <HelpTOCNode Id="1868db8a-7be0-4aa8-909b-2fde4dd4bca1" Title="Execute Method " Url="html/Overload_BionicCode_Utilities_Net_Framework_Utility_IAsyncRelayCommand_Execute.htm">
+                <HelpTOCNode Title="Execute Method " Url="html/M_BionicCode_Utilities_Net_Framework_Utility_IAsyncRelayCommand_Execute.htm" />
+              </HelpTOCNode>
+              <HelpTOCNode Id="283518bf-eb67-4034-abf2-b9e5bee0ab3c" Title="ExecuteAsync Method " Url="html/Overload_BionicCode_Utilities_Net_Framework_Utility_IAsyncRelayCommand_ExecuteAsync.htm">
+                <HelpTOCNode Title="ExecuteAsync Method " Url="html/M_BionicCode_Utilities_Net_Framework_Utility_IAsyncRelayCommand_ExecuteAsync.htm" />
+                <HelpTOCNode Title="ExecuteAsync Method (Object)" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_IAsyncRelayCommand_ExecuteAsync_1.htm" />
+              </HelpTOCNode>
+            </HelpTOCNode>
+            <HelpTOCNode Title="IAsyncRelayCommand Events" Url="html/Events_T_BionicCode_Utilities_Net_Framework_Utility_IAsyncRelayCommand.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="686ca438-2762-4add-8341-48fb5afb0fa9" Title="BionicCode.Utilities.Net.Framework.Utility.Generic" Url="html/N_BionicCode_Utilities_Net_Framework_Utility_Generic.htm">
+          <HelpTOCNode Id="31419b23-56db-4c88-b930-f6215ad5a0d4" Title="AsyncRelayCommand(TParam) Class" Url="html/T_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1.htm">
+            <HelpTOCNode Id="f4bc1927-380e-438f-835d-49d8506bb310" Title="AsyncRelayCommand(TParam) Constructor " Url="html/Overload_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1__ctor.htm">
+              <HelpTOCNode Title="AsyncRelayCommand(TParam) Constructor (Action)" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1__ctor.htm" />
+              <HelpTOCNode Title="AsyncRelayCommand(TParam) Constructor (Action(TParam))" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1__ctor_2.htm" />
+              <HelpTOCNode Title="AsyncRelayCommand(TParam) Constructor (Func(Task))" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1__ctor_4.htm" />
+              <HelpTOCNode Title="AsyncRelayCommand(TParam) Constructor (Func(TParam, Task))" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1__ctor_6.htm" />
+              <HelpTOCNode Title="AsyncRelayCommand(TParam) Constructor (Action, Func(Boolean))" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1__ctor_1.htm" />
+              <HelpTOCNode Title="AsyncRelayCommand(TParam) Constructor (Action(TParam), Predicate(TParam))" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1__ctor_3.htm" />
+              <HelpTOCNode Title="AsyncRelayCommand(TParam) Constructor (Func(Task), Func(Boolean))" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1__ctor_5.htm" />
+              <HelpTOCNode Title="AsyncRelayCommand(TParam) Constructor (Func(TParam, Task), Predicate(TParam))" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1__ctor_7.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="7ee53d3b-5451-4163-bf04-19045576551a" Title="AsyncRelayCommand(TParam) Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1.htm">
+              <HelpTOCNode Id="29187aab-b25d-4408-aa78-2093450e1929" Title="CanExecute Method " Url="html/Overload_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1_CanExecute.htm">
+                <HelpTOCNode Title="CanExecute Method (TParam)" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1_CanExecute.htm" />
+              </HelpTOCNode>
+              <HelpTOCNode Id="9ce65f2e-bcd0-4bbe-aa92-4bfe7086caf5" Title="Execute Method " Url="html/Overload_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1_Execute.htm">
+                <HelpTOCNode Title="Execute Method (TParam)" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1_Execute.htm" />
+              </HelpTOCNode>
+              <HelpTOCNode Id="919027bf-3ff4-4bda-b31a-88bc9ee82d9e" Title="ExecuteAsync Method " Url="html/Overload_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1_ExecuteAsync.htm">
+                <HelpTOCNode Title="ExecuteAsync Method (TParam)" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1_ExecuteAsync.htm" />
+              </HelpTOCNode>
+            </HelpTOCNode>
+            <HelpTOCNode Title="AsyncRelayCommand(TParam) Events" Url="html/Events_T_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1.htm" />
+            <HelpTOCNode Title="AsyncRelayCommand(TParam) Fields" Url="html/Fields_T_BionicCode_Utilities_Net_Framework_Utility_Generic_AsyncRelayCommand_1.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="c67def00-9706-49e5-8c38-e216523f4e1a" Title="IAsyncRelayCommand(TParam) Interface" Url="html/T_BionicCode_Utilities_Net_Framework_Utility_Generic_IAsyncRelayCommand_1.htm">
+            <HelpTOCNode Id="4aea3557-60ff-4c74-bd6c-2def3e8d9f20" Title="IAsyncRelayCommand(TParam) Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_Utility_Generic_IAsyncRelayCommand_1.htm">
+              <HelpTOCNode Id="b169c4e1-f124-49a6-b121-9fb72c51b671" Title="CanExecute Method " Url="html/Overload_BionicCode_Utilities_Net_Framework_Utility_Generic_IAsyncRelayCommand_1_CanExecute.htm">
+                <HelpTOCNode Title="CanExecute Method (TParam)" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_Generic_IAsyncRelayCommand_1_CanExecute.htm" />
+              </HelpTOCNode>
+              <HelpTOCNode Id="233bac5f-c84a-4f4b-a9fe-0fba79aa3d35" Title="Execute Method " Url="html/Overload_BionicCode_Utilities_Net_Framework_Utility_Generic_IAsyncRelayCommand_1_Execute.htm">
+                <HelpTOCNode Title="Execute Method (TParam)" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_Generic_IAsyncRelayCommand_1_Execute.htm" />
+              </HelpTOCNode>
+              <HelpTOCNode Id="0f85989b-e9c6-48a8-a1af-704c5c7f4bfa" Title="ExecuteAsync Method " Url="html/Overload_BionicCode_Utilities_Net_Framework_Utility_Generic_IAsyncRelayCommand_1_ExecuteAsync.htm">
+                <HelpTOCNode Title="ExecuteAsync Method (TParam)" Url="html/M_BionicCode_Utilities_Net_Framework_Utility_Generic_IAsyncRelayCommand_1_ExecuteAsync.htm" />
+              </HelpTOCNode>
+            </HelpTOCNode>
+            <HelpTOCNode Title="IAsyncRelayCommand(TParam) Events" Url="html/Events_T_BionicCode_Utilities_Net_Framework_Utility_Generic_IAsyncRelayCommand_1.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="fb2ee3bb-737e-4027-b1c3-5a81c2ceb1f8" Title="BionicCode.Utilities.Net.Standard Namespaces" Url="html/G_BionicCode_Utilities_Net_Standard.htm">
+      <HelpTOCNode Id="f4752dec-7fea-43fb-bb7b-285d8fa4cc52" Title="BionicCode.Utilities.Net.Standard" Url="html/N_BionicCode_Utilities_Net_Standard.htm">
+        <HelpTOCNode Id="c10252be-1064-48e9-b4e1-90aeb6be7960" Title="ArgumentsValidator Class" Url="html/T_BionicCode_Utilities_Net_Standard_ArgumentsValidator.htm">
+          <HelpTOCNode Title="ArgumentsValidator Constructor " Url="html/M_BionicCode_Utilities_Net_Standard_ArgumentsValidator__ctor.htm" />
+          <HelpTOCNode Id="2dbf84b6-1c17-448f-9857-366c4ed44674" Title="ArgumentsValidator Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_ArgumentsValidator.htm">
+            <HelpTOCNode Title="ArgsAreNull Method " Url="html/M_BionicCode_Utilities_Net_Standard_ArgumentsValidator_ArgsAreNull.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="b2cbc4c7-c4c3-4a3d-bc18-6484d2e37837" Title="EventAggregator Class" Url="html/T_BionicCode_Utilities_Net_Standard_EventAggregator.htm">
+          <HelpTOCNode Title="EventAggregator Constructor " Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator__ctor.htm" />
+          <HelpTOCNode Id="b8ff161f-06ec-4415-aa4b-5d1bb91a3678" Title="EventAggregator Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_EventAggregator.htm">
+            <HelpTOCNode Id="84970aca-c38b-4d0d-8f1d-a9a5953dcca5" Title="TryRegisterGlobalObserver Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRegisterGlobalObserver.htm">
+              <HelpTOCNode Title="TryRegisterGlobalObserver Method (Delegate)" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRegisterGlobalObserver.htm" />
+              <HelpTOCNode Title="TryRegisterGlobalObserver(TEventArgs) Method (EventHandler(TEventArgs))" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRegisterGlobalObserver__1.htm" />
+              <HelpTOCNode Title="TryRegisterGlobalObserver Method (String, Delegate)" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRegisterGlobalObserver_1.htm" />
+              <HelpTOCNode Title="TryRegisterGlobalObserver(TEventArgs) Method (String, EventHandler(TEventArgs))" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRegisterGlobalObserver__1_1.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Title="TryRegisterObservable Method " Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRegisterObservable.htm" />
+            <HelpTOCNode Id="32940aa8-9d63-4601-af8d-5a82c22c160d" Title="TryRegisterObserver Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRegisterObserver.htm">
+              <HelpTOCNode Title="TryRegisterObserver Method (String, Type, Delegate)" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRegisterObserver.htm" />
+              <HelpTOCNode Title="TryRegisterObserver(TEventArgs) Method (String, Type, EventHandler(TEventArgs))" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRegisterObserver__1.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="c26a3c1e-c046-45ce-ab05-f07d5ad09485" Title="TryRemoveAllObservers Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveAllObservers.htm">
+              <HelpTOCNode Title="TryRemoveAllObservers Method (String)" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveAllObservers.htm" />
+              <HelpTOCNode Title="TryRemoveAllObservers Method (Type)" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveAllObservers_2.htm" />
+              <HelpTOCNode Title="TryRemoveAllObservers Method (String, Type)" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveAllObservers_1.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="bdb870ec-ec97-4aa8-8277-3a8401dd9222" Title="TryRemoveGlobalObserver Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveGlobalObserver.htm">
+              <HelpTOCNode Title="TryRemoveGlobalObserver Method (Delegate)" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveGlobalObserver.htm" />
+              <HelpTOCNode Title="TryRemoveGlobalObserver(TEventArgs) Method (EventHandler(TEventArgs))" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveGlobalObserver__1.htm" />
+              <HelpTOCNode Title="TryRemoveGlobalObserver Method (String, Delegate)" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveGlobalObserver_1.htm" />
+              <HelpTOCNode Title="TryRemoveGlobalObserver(TEventArgs) Method (String, EventHandler(TEventArgs))" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveGlobalObserver__1_1.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="80eda09a-f47a-4ad9-a13c-9d0582e504c2" Title="TryRemoveObservable Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveObservable.htm">
+              <HelpTOCNode Title="TryRemoveObservable Method (Object, Boolean)" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveObservable.htm" />
+              <HelpTOCNode Title="TryRemoveObservable Method (Object, IEnumerable(String), Boolean)" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveObservable_1.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="4752f0e3-598d-4491-b4c1-9376ec585b13" Title="TryRemoveObserver Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveObserver.htm">
+              <HelpTOCNode Title="TryRemoveObserver Method (String, Type, Delegate)" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveObserver.htm" />
+              <HelpTOCNode Title="TryRemoveObserver(TEventArgs) Method (String, Type, EventHandler(TEventArgs))" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveObserver__1.htm" />
+            </HelpTOCNode>
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="8e61eac7-f44f-4973-a7ec-3942bf71eaef" Title="IEventAggregator Interface" Url="html/T_BionicCode_Utilities_Net_Standard_IEventAggregator.htm">
+          <HelpTOCNode Id="e6691dd5-ca64-4771-8db4-58c8ca6ba573" Title="IEventAggregator Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_IEventAggregator.htm">
+            <HelpTOCNode Id="48070f26-227f-4e23-8c51-e3487a508dc9" Title="TryRegisterGlobalObserver Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRegisterGlobalObserver.htm">
+              <HelpTOCNode Title="TryRegisterGlobalObserver Method (Delegate)" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRegisterGlobalObserver.htm" />
+              <HelpTOCNode Title="TryRegisterGlobalObserver(TEventArgs) Method (EventHandler(TEventArgs))" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRegisterGlobalObserver__1.htm" />
+              <HelpTOCNode Title="TryRegisterGlobalObserver Method (String, Delegate)" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRegisterGlobalObserver_1.htm" />
+              <HelpTOCNode Title="TryRegisterGlobalObserver(TEventArgs) Method (String, EventHandler(TEventArgs))" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRegisterGlobalObserver__1_1.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Title="TryRegisterObservable Method " Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRegisterObservable.htm" />
+            <HelpTOCNode Id="a0827cb7-4456-47d0-8dd8-87731f497631" Title="TryRegisterObserver Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRegisterObserver.htm">
+              <HelpTOCNode Title="TryRegisterObserver Method (String, Type, Delegate)" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRegisterObserver.htm" />
+              <HelpTOCNode Title="TryRegisterObserver(TEventArgs) Method (String, Type, EventHandler(TEventArgs))" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRegisterObserver__1.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="643aea5d-3653-4c53-8be5-c7a09f7c4e8d" Title="TryRemoveAllObservers Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveAllObservers.htm">
+              <HelpTOCNode Title="TryRemoveAllObservers Method (String)" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveAllObservers.htm" />
+              <HelpTOCNode Title="TryRemoveAllObservers Method (Type)" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveAllObservers_2.htm" />
+              <HelpTOCNode Title="TryRemoveAllObservers Method (String, Type)" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveAllObservers_1.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="decbefbc-6e6b-4149-8852-308760e52328" Title="TryRemoveGlobalObserver Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveGlobalObserver.htm">
+              <HelpTOCNode Title="TryRemoveGlobalObserver Method (Delegate)" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveGlobalObserver.htm" />
+              <HelpTOCNode Title="TryRemoveGlobalObserver(TEventArgs) Method (EventHandler(TEventArgs))" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveGlobalObserver__1.htm" />
+              <HelpTOCNode Title="TryRemoveGlobalObserver Method (String, Delegate)" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveGlobalObserver_1.htm" />
+              <HelpTOCNode Title="TryRemoveGlobalObserver(TEventArgs) Method (String, EventHandler(TEventArgs))" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveGlobalObserver__1_1.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="4c4d3f4f-4edb-4022-a6fa-d91ee4c23d5e" Title="TryRemoveObservable Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveObservable.htm">
+              <HelpTOCNode Title="TryRemoveObservable Method (Object, Boolean)" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveObservable.htm" />
+              <HelpTOCNode Title="TryRemoveObservable Method (Object, IEnumerable(String), Boolean)" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveObservable_1.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="fcfd8216-67da-4b2b-9d47-84fa29cf77b8" Title="TryRemoveObserver Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveObserver.htm">
+              <HelpTOCNode Title="TryRemoveObserver Method (String, Type, Delegate)" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveObserver.htm" />
+              <HelpTOCNode Title="TryRemoveObserver(TEventArgs) Method (String, Type, EventHandler(TEventArgs))" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveObserver__1.htm" />
+            </HelpTOCNode>
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="4d947de8-3a4a-4ed7-9241-1f0ecc5b260d" Title="INullObject Interface" Url="html/T_BionicCode_Utilities_Net_Standard_INullObject.htm">
+          <HelpTOCNode Id="48fcad9b-cca1-460a-ada3-7cde284320b6" Title="INullObject Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_INullObject.htm">
+            <HelpTOCNode Title="IsNull Property " Url="html/P_BionicCode_Utilities_Net_Standard_INullObject_IsNull.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="38b60d68-aca4-497d-ae98-249b63bf59e9" Title="IValueInverter Interface" Url="html/T_BionicCode_Utilities_Net_Standard_IValueInverter.htm">
+          <HelpTOCNode Id="cc73ccf1-1160-487d-a92d-764f86f0290b" Title="IValueInverter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_IValueInverter.htm">
+            <HelpTOCNode Title="InvertValue Method " Url="html/M_BionicCode_Utilities_Net_Standard_IValueInverter_InvertValue.htm" />
+            <HelpTOCNode Title="TryInvertValue Method " Url="html/M_BionicCode_Utilities_Net_Standard_IValueInverter_TryInvertValue.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="200c82a0-3f7f-4231-9e47-289f58721da0" Title="BionicCode.Utilities.Net.Standard.Collections.Generic" Url="html/N_BionicCode_Utilities_Net_Standard_Collections_Generic.htm">
+        <HelpTOCNode Id="799e596b-c92d-4361-9b80-3735da32e2a1" Title="WeakReferenceKeyDictionary(TKey, TValue) Class" Url="html/T_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2.htm">
+          <HelpTOCNode Id="a8423ff7-0e38-47a3-b8e3-e1f114d6b20c" Title="WeakReferenceKeyDictionary(TKey, TValue) Constructor " Url="html/Overload_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2__ctor.htm">
+            <HelpTOCNode Title="WeakReferenceKeyDictionary(TKey, TValue) Constructor " Url="html/M_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2__ctor.htm" />
+            <HelpTOCNode Title="WeakReferenceKeyDictionary(TKey, TValue) Constructor (Boolean, Boolean)" Url="html/M_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2__ctor_1.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="178a0377-1d82-4e29-bd30-46f2b6f64413" Title="WeakReferenceKeyDictionary(TKey, TValue) Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2.htm">
+            <HelpTOCNode Title="Count Property " Url="html/P_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_Count.htm" />
+            <HelpTOCNode Title="IsAutoPurgeFinalizedItemsEnabled Property " Url="html/P_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_IsAutoPurgeFinalizedItemsEnabled.htm" />
+            <HelpTOCNode Title="IsReadOnly Property " Url="html/P_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_IsReadOnly.htm" />
+            <HelpTOCNode Title="Item Property " Url="html/P_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_Item.htm" />
+            <HelpTOCNode Title="Keys Property " Url="html/P_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_Keys.htm" />
+            <HelpTOCNode Title="Values Property " Url="html/P_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_Values.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="aa93f4f9-6ff5-4b9d-9752-e0ac12f9c974" Title="WeakReferenceKeyDictionary(TKey, TValue) Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2.htm">
+            <HelpTOCNode Title="IEnumerable.GetEnumerator Method " Url="html/M_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_System_Collections_IEnumerable_GetEnumerator.htm" />
+            <HelpTOCNode Id="2c4425c1-3986-4b06-b6ff-8acdd9fa3acb" Title="Add Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_Add.htm">
+              <HelpTOCNode Title="Add Method (KeyValuePair(TKey, TValue))" Url="html/M_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_Add.htm" />
+              <HelpTOCNode Title="Add Method (TKey, TValue)" Url="html/M_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_Add_1.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Title="Clear Method " Url="html/M_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_Clear.htm" />
+            <HelpTOCNode Title="Contains Method " Url="html/M_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_Contains.htm" />
+            <HelpTOCNode Title="ContainsKey Method " Url="html/M_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_ContainsKey.htm" />
+            <HelpTOCNode Title="CopyTo Method " Url="html/M_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_CopyTo.htm" />
+            <HelpTOCNode Title="GetEnumerator Method " Url="html/M_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_GetEnumerator.htm" />
+            <HelpTOCNode Id="80dc53ab-3079-44b0-925d-be38aacb2f48" Title="Remove Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_Remove.htm">
+              <HelpTOCNode Title="Remove Method (KeyValuePair(TKey, TValue))" Url="html/M_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_Remove.htm" />
+              <HelpTOCNode Title="Remove Method (TKey)" Url="html/M_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_Remove_1.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Title="RemoveTarget Method " Url="html/M_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_RemoveTarget.htm" />
+            <HelpTOCNode Id="b451c80e-c6e5-424e-a994-ff60286378ce" Title="TryGetValue Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_TryGetValue.htm">
+              <HelpTOCNode Title="TryGetValue Method (Object, TValue)" Url="html/M_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_TryGetValue.htm" />
+              <HelpTOCNode Title="TryGetValue Method (TKey, TValue)" Url="html/M_BionicCode_Utilities_Net_Standard_Collections_Generic_WeakReferenceKeyDictionary_2_TryGetValue_1.htm" />
+            </HelpTOCNode>
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="30ede84d-aecd-4ffc-b52f-a8520cbaf4e3" Title="BionicCode.Utilities.Net.Standard.Exception" Url="html/N_BionicCode_Utilities_Net_Standard_Exception.htm">
+        <HelpTOCNode Id="75a238c1-21ce-44fe-a9ce-894940ecfd7a" Title="WrongEventHandlerSignatureException Class" Url="html/T_BionicCode_Utilities_Net_Standard_Exception_WrongEventHandlerSignatureException.htm">
+          <HelpTOCNode Id="f2413116-5798-4c8a-add9-750af2a3decc" Title="WrongEventHandlerSignatureException Constructor " Url="html/Overload_BionicCode_Utilities_Net_Standard_Exception_WrongEventHandlerSignatureException__ctor.htm">
+            <HelpTOCNode Title="WrongEventHandlerSignatureException Constructor " Url="html/M_BionicCode_Utilities_Net_Standard_Exception_WrongEventHandlerSignatureException__ctor.htm" />
+            <HelpTOCNode Title="WrongEventHandlerSignatureException Constructor (String)" Url="html/M_BionicCode_Utilities_Net_Standard_Exception_WrongEventHandlerSignatureException__ctor_2.htm" />
+            <HelpTOCNode Title="WrongEventHandlerSignatureException Constructor (SerializationInfo, StreamingContext)" Url="html/M_BionicCode_Utilities_Net_Standard_Exception_WrongEventHandlerSignatureException__ctor_1.htm" />
+            <HelpTOCNode Title="WrongEventHandlerSignatureException Constructor (String, Exception)" Url="html/M_BionicCode_Utilities_Net_Standard_Exception_WrongEventHandlerSignatureException__ctor_3.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Title="WrongEventHandlerSignatureException Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_Exception_WrongEventHandlerSignatureException.htm" />
+          <HelpTOCNode Title="WrongEventHandlerSignatureException Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Exception_WrongEventHandlerSignatureException.htm" />
+          <HelpTOCNode Title="WrongEventHandlerSignatureException Events" Url="html/Events_T_BionicCode_Utilities_Net_Standard_Exception_WrongEventHandlerSignatureException.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="53153caa-6071-4b8f-8f34-af0b98b329f7" Title="BionicCode.Utilities.Net.Standard.Extensions" Url="html/N_BionicCode_Utilities_Net_Standard_Extensions.htm">
+        <HelpTOCNode Id="5594a868-eb20-4dd9-b6ca-f0a3229b7d85" Title="HelperExtensions Class" Url="html/T_BionicCode_Utilities_Net_Standard_Extensions_HelperExtensions.htm">
+          <HelpTOCNode Id="2c0738b1-fca4-407b-8f65-6a25b090a1ff" Title="HelperExtensions Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Extensions_HelperExtensions.htm">
+            <HelpTOCNode Id="3ce07e28-99a6-462b-a111-95ca13ba18c9" Title="AddRange Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_Extensions_HelperExtensions_AddRange.htm">
+              <HelpTOCNode Title="AddRange(TItem) Method (ICollection(TItem), IEnumerable(TItem))" Url="html/M_BionicCode_Utilities_Net_Standard_Extensions_HelperExtensions_AddRange__1.htm" />
+              <HelpTOCNode Title="AddRange(TKey, TValue) Method (IDictionary(TKey, TValue), IDictionary(TKey, TValue))" Url="html/M_BionicCode_Utilities_Net_Standard_Extensions_HelperExtensions_AddRange__2.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Title="HasReachedEnd Method " Url="html/M_BionicCode_Utilities_Net_Standard_Extensions_HelperExtensions_HasReachedEnd.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="d01bdfbb-06c5-4b35-93c5-3b4b4245d0aa" Title="BionicCode.Utilities.Net.Standard.Generic" Url="html/N_BionicCode_Utilities_Net_Standard_Generic.htm">
+        <HelpTOCNode Id="6e213d4c-bdac-434f-85cd-1655d3996aa9" Title="IFactory(TCreate) Interface" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_IFactory_1.htm">
+          <HelpTOCNode Id="47f79c8d-99dc-462b-8be2-f3c28b134331" Title="IFactory(TCreate) Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Generic_IFactory_1.htm">
+            <HelpTOCNode Id="784b977b-cdc8-4596-84c2-1d02b3911262" Title="Create Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_IFactory_1_Create.htm">
+              <HelpTOCNode Title="Create Method " Url="html/M_BionicCode_Utilities_Net_Standard_Generic_IFactory_1_Create.htm" />
+              <HelpTOCNode Title="Create Method (Object[])" Url="html/M_BionicCode_Utilities_Net_Standard_Generic_IFactory_1_Create_1.htm" />
+            </HelpTOCNode>
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="d7f9be81-b742-4ab6-977e-1bab55d8818c" Title="INullObject(TObject) Interface" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_INullObject_1.htm">
+          <HelpTOCNode Id="30a60c5a-510d-43fa-a11e-3f0873f2393a" Title="INullObject(TObject) Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_Generic_INullObject_1.htm">
+            <HelpTOCNode Title="NullObject Property " Url="html/P_BionicCode_Utilities_Net_Standard_Generic_INullObject_1_NullObject.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="e2b3bef9-4f36-44ae-b5f1-a4f80a6b3fdc" Title="NullObject(TObject) Class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_NullObject_1.htm">
+          <HelpTOCNode Id="a17941cd-acd1-43ee-9b4c-ef13e49d95e2" Title="NullObject(TObject) Constructor " Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_NullObject_1__ctor.htm">
+            <HelpTOCNode Title="NullObject(TObject) Constructor (Boolean)" Url="html/M_BionicCode_Utilities_Net_Standard_Generic_NullObject_1__ctor_1.htm" />
+            <HelpTOCNode Title="NullObject(TObject) Constructor (IFactory(TObject))" Url="html/M_BionicCode_Utilities_Net_Standard_Generic_NullObject_1__ctor.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="88d0a91d-15be-4cb3-a81c-184478ed6cb3" Title="NullObject(TObject) Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_Generic_NullObject_1.htm">
+            <HelpTOCNode Title="IsNull Property " Url="html/P_BionicCode_Utilities_Net_Standard_Generic_NullObject_1_IsNull.htm" />
+            <HelpTOCNode Title="NullInstance Property " Url="html/P_BionicCode_Utilities_Net_Standard_Generic_NullObject_1_NullInstance.htm" />
+            <HelpTOCNode Title="NullInstanceFactory Property " Url="html/P_BionicCode_Utilities_Net_Standard_Generic_NullObject_1_NullInstanceFactory.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Title="NullObject(TObject) Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Generic_NullObject_1.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Id="163a6ee6-e39c-4cf2-8672-038a82455a68" Title="ValueChangedEventArgs(TValue) Class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1.htm">
+          <HelpTOCNode Title="ValueChangedEventArgs(TValue) Constructor " Url="html/M_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1__ctor.htm" />
+          <HelpTOCNode Id="ffe571cd-70fc-46d4-a7dd-d0b2010f74eb" Title="ValueChangedEventArgs(TValue) Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1.htm">
+            <HelpTOCNode Title="NewValue Property " Url="html/P_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1_NewValue.htm" />
+            <HelpTOCNode Title="OldValue Property " Url="html/P_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1_OldValue.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Title="ValueChangedEventArgs(TValue) Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Id="4d1d340a-e3df-4a2b-a323-1844e4b15937" Title="ValueEventArgs(TValue) Class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1.htm">
+          <HelpTOCNode Title="ValueEventArgs(TValue) Constructor " Url="html/M_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1__ctor.htm" />
+          <HelpTOCNode Id="d5ea759b-3416-4dab-bf42-b07ea8f868f6" Title="ValueEventArgs(TValue) Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1.htm">
+            <HelpTOCNode Title="Value Property " Url="html/P_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1_Value.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Title="ValueEventArgs(TValue) Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="6b748caa-5273-450b-927d-6c10620fe42b" Title="BionicCode.Utilities.Net.Standard.IO" Url="html/N_BionicCode_Utilities_Net_Standard_IO.htm">
+        <HelpTOCNode Title="FileExtensions Enumeration" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+        <HelpTOCNode Id="4542242f-6309-4965-b9d2-11a0a64127df" Title="FilePathFilter Class" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FilePathFilter.htm">
+          <HelpTOCNode Title="FilePathFilter Constructor " Url="html/M_BionicCode_Utilities_Net_Standard_IO_FilePathFilter__ctor.htm" />
+          <HelpTOCNode Id="b30770d6-ec43-4c0a-9502-faeeca5a54e7" Title="FilePathFilter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_IO_FilePathFilter.htm">
+            <HelpTOCNode Title="CollectAllFilePathsIgnoreFileExtension Method " Url="html/M_BionicCode_Utilities_Net_Standard_IO_FilePathFilter_CollectAllFilePathsIgnoreFileExtension.htm" />
+            <HelpTOCNode Title="CollectFilePathsFromFolderByFileExtension Method " Url="html/M_BionicCode_Utilities_Net_Standard_IO_FilePathFilter_CollectFilePathsFromFolderByFileExtension.htm" />
+            <HelpTOCNode Title="EnumerateFilesIgnoringFolders Method " Url="html/M_BionicCode_Utilities_Net_Standard_IO_FilePathFilter_EnumerateFilesIgnoringFolders.htm" />
+            <HelpTOCNode Title="EnumerateFilesIncludingFolders Method " Url="html/M_BionicCode_Utilities_Net_Standard_IO_FilePathFilter_EnumerateFilesIncludingFolders.htm" />
+            <HelpTOCNode Title="EnumerateFilesInFolder Method " Url="html/M_BionicCode_Utilities_Net_Standard_IO_FilePathFilter_EnumerateFilesInFolder.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="b4f6170a-be89-430f-8075-f37108341fe9" Title="IFilePathFilter Interface" Url="html/T_BionicCode_Utilities_Net_Standard_IO_IFilePathFilter.htm">
+          <HelpTOCNode Id="682ebe3e-2965-47d2-8797-813a9229cbab" Title="IFilePathFilter Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_IO_IFilePathFilter.htm">
+            <HelpTOCNode Title="EnumerateFilesIgnoringFolders Method " Url="html/M_BionicCode_Utilities_Net_Standard_IO_IFilePathFilter_EnumerateFilesIgnoringFolders.htm" />
+            <HelpTOCNode Title="EnumerateFilesIncludingFolders Method " Url="html/M_BionicCode_Utilities_Net_Standard_IO_IFilePathFilter_EnumerateFilesIncludingFolders.htm" />
+            <HelpTOCNode Title="EnumerateFilesInFolder Method " Url="html/M_BionicCode_Utilities_Net_Standard_IO_IFilePathFilter_EnumerateFilesInFolder.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="824dac76-0844-444e-9497-ddab2b144da0" Title="BionicCode.Utilities.Net.Standard.ViewModel" Url="html/N_BionicCode_Utilities_Net_Standard_ViewModel.htm">
+        <HelpTOCNode Id="369b0d49-b04a-4498-8167-c64d4f5e22fa" Title="IViewModel Interface" Url="html/T_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel.htm">
+          <HelpTOCNode Title="IViewModel Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel.htm" />
+          <HelpTOCNode Id="4f73599a-c2b8-422c-a548-eadea7061c95" Title="IViewModel Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel.htm">
+            <HelpTOCNode Title="GetPropertyErrors Method " Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel_GetPropertyErrors.htm" />
+            <HelpTOCNode Title="PropertyHasError Method " Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel_PropertyHasError.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="4292987b-f1f5-42f1-928e-76e7e109e96c" Title="IViewModel Events" Url="html/Events_T_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel.htm">
+            <HelpTOCNode Title="PropertyValueChanged Event" Url="html/E_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel_PropertyValueChanged.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+        <HelpTOCNode Id="0c2b5fc7-0a2f-4663-8ee2-dc524a0d3c5c" Title="PropertyValueChangedArgs(TValue) Class" Url="html/T_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1.htm">
+          <HelpTOCNode Title="PropertyValueChangedArgs(TValue) Constructor " Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1__ctor.htm" />
+          <HelpTOCNode Id="b470aa8c-b860-48e0-a254-72501ef59fa2" Title="PropertyValueChangedArgs(TValue) Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1.htm">
+            <HelpTOCNode Title="NewValue Property " Url="html/P_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1_NewValue.htm" />
+            <HelpTOCNode Title="OldValue Property " Url="html/P_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1_OldValue.htm" />
+            <HelpTOCNode Title="PropertyName Property " Url="html/P_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1_PropertyName.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Title="PropertyValueChangedArgs(TValue) Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="PropertyValueChangedEventHandler(TValue) Delegate" Url="html/T_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedEventHandler_1.htm" />
+        <HelpTOCNode Id="2a99f7f0-22a5-4db4-b63c-ff2b347f186a" Title="ViewModel Class" Url="html/T_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel.htm">
+          <HelpTOCNode Title="ViewModel Constructor " Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel__ctor.htm" />
+          <HelpTOCNode Id="d35cf3b7-f06d-4825-827f-10507f6e9ed9" Title="ViewModel Properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel.htm">
+            <HelpTOCNode Title="HasErrors Property " Url="html/P_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_HasErrors.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Id="aff02da9-1f65-460d-a1f8-06f0c3925962" Title="ViewModel Methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel.htm">
+            <HelpTOCNode Title="GetErrors Method " Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_GetErrors.htm" />
+            <HelpTOCNode Title="GetPropertyErrors Method " Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_GetPropertyErrors.htm" />
+            <HelpTOCNode Title="IsValueValid(TValue) Method " Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_IsValueValid__1.htm" />
+            <HelpTOCNode Title="OnErrorsChanged Method " Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_OnErrorsChanged.htm" />
+            <HelpTOCNode Title="OnPropertyChanged Method " Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_OnPropertyChanged.htm" />
+            <HelpTOCNode Title="PropertyHasError Method " Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_PropertyHasError.htm" />
+            <HelpTOCNode Id="0609bce7-7368-4804-8650-91d06f8226f5" Title="TrySetValue Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_TrySetValue.htm">
+              <HelpTOCNode Title="TrySetValue(TValue) Method (TValue, TValue, String)" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_TrySetValue__1_1.htm" />
+              <HelpTOCNode Title="TrySetValue(TValue) Method (TValue, Func(TValue, ValueTuple(Boolean, IEnumerable(String))), TValue, Boolean, Boolean, String)" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_TrySetValue__1.htm" />
+            </HelpTOCNode>
+            <HelpTOCNode Id="b9b89caf-a6db-4ef1-a64c-6caa853e4288" Title="TrySetValueSilent Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_TrySetValueSilent.htm">
+              <HelpTOCNode Title="TrySetValueSilent(TValue) Method (TValue, TValue, String)" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_TrySetValueSilent__1_1.htm" />
+              <HelpTOCNode Title="TrySetValueSilent(TValue) Method (TValue, Func(TValue, ValueTuple(Boolean, IEnumerable(String))), TValue, Boolean, Boolean, String)" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_TrySetValueSilent__1.htm" />
+            </HelpTOCNode>
+          </HelpTOCNode>
+          <HelpTOCNode Id="d470f40a-b40a-4d38-bbf2-6ae5e6fe3f08" Title="ViewModel Events" Url="html/Events_T_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel.htm">
+            <HelpTOCNode Title="ErrorsChanged Event" Url="html/E_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_ErrorsChanged.htm" />
+            <HelpTOCNode Title="PropertyChanged Event" Url="html/E_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_PropertyChanged.htm" />
+            <HelpTOCNode Title="PropertyValueChanged Event" Url="html/E_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_PropertyValueChanged.htm" />
+          </HelpTOCNode>
+        </HelpTOCNode>
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+</HelpTOC>

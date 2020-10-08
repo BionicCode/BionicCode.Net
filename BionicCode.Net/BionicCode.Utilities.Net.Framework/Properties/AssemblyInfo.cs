@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("BionicCode.BionicUtilities.Net")]
+[assembly: AssemblyTitle("BionicCode.Utilities.Net.Framework")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("BionicCode.BionicUtilities.Net")]
+[assembly: AssemblyCompany("BionicCode")]
+[assembly: AssemblyProduct("BionicCode.Utilities.Net.Framework")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("f1f301f6-caf9-4460-bc4a-f73ea1789c5f")]
+[assembly: Guid("4c616501-0a08-48e4-864d-1fb631f4ae23")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -13,17 +13,16 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
   /// PropertyChanged event handler that supports standard property changed signature events with additional old value and new value parameters.
   /// </summary>
   /// <typeparam name="TValue"></typeparam>
-  /// <param name="sender">The event source.</param>
-  /// <param name="propertyName">The name of the property that has changed.</param>
-  /// <param name="oldValue">The value before the change.</param>
-  /// <param name="newValue">The value after the change.</param>
   public delegate void PropertyValueChangedEventHandler<TValue>(
     object sender,
     PropertyValueChangedArgs<TValue> propertyChangedArgs);
 
+
+  /// <summary>
+  /// Encapsulates implementations of <see cref="INotifyPropertyChanged"/> and <see cref="INotifyDataErrorInfo"/> and adds <see cref="PropertyValueChanged"/> event which is raised in tandem with <see cref="INotifyPropertyChanged.PropertyChanged"/> except it provides addition data like old value and new value.
+  /// </summary>
   public interface IViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
   {
-
     /// <summary>
     /// Checks whether the specified property has errors or is valid.
     /// </summary>

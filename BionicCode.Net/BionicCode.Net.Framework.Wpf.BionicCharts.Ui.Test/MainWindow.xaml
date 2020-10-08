@@ -1,0 +1,59 @@
+﻿<Window x:Class="BionicCode.Net.Framework.Wpf.BionicCharts.Ui.Test.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BionicCode.Net.Framework.Wpf.BionicCharts.Ui.Test"
+        xmlns:bionicCharts="clr-namespace:BionicCode.Controls.Net.Framework.Wpf.BionicCharts;assembly=BionicCode.Controls.Net.Framework.Wpf"
+        xmlns:bionicFramework="clr-namespace:BionicCode.Utilities.Net.Framework.Wpf.Markup;assembly=BionicCode.Utilities.Net.Framework.Wpf"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="800" Width="800">
+  <Window.DataContext>
+    <local:CartesianChartViewModel />
+  </Window.DataContext>
+  <StackPanel>
+    <ComboBox ItemsSource="{bionicFramework:Enum EnumType={x:Type local:MyEnum}}"/>
+    <TextBox Text="{Binding  RelativeSource={RelativeSource AncestorType=Window}, Path=Text, UpdateSourceTrigger=PropertyChanged}"/>
+    <TextBlock Text="{bionicFramework:Invert {Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Text}}"/>
+    <TextBlock Text="{bionicFramework:Invert 12}"/>
+    <TextBlock Text="{bionicFramework:Invert True}"/>
+    <TextBlock Text="{bionicFramework:Invert 0.12}"/>
+    <TextBlock Text="{bionicFramework:Invert False}"/>
+    <TextBox Text="{bionicFramework:Invert {Binding  RelativeSource={RelativeSource AncestorType=Window}, Path=Text}, Mode=TwoWay}"/>
+    <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Text}"/>
+    <!--<Button Click="ButtonBase_OnClick" Height="100" Content="Offset"/>
+    <ListBox ItemsSource="{Binding ChartPoints}">
+      <ListBox.Resources>
+        --><!--Selected color when the ListBox is focused--><!--
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow" />
+        --><!--Selected color when the ListBox is not focused--><!--
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Yellow" />
+      </ListBox.Resources>
+      --><!--<ListBox.ItemsPanel>
+        <ItemsPanelTemplate>
+          <Canvas Background="CornflowerBlue" Width="11000" Height="500"  />
+        </ItemsPanelTemplate>
+      </ListBox.ItemsPanel>
+      <ListBox.ItemTemplate>
+        <DataTemplate DataType="Point">
+          <Grid>
+            <Line Stroke="Black" StrokeThickness="1" X1="0" X2="10" Y1="5" Y2="5" />
+            <Line Stroke="Black" StrokeThickness="1" X1="5" X2="5" Y1="0" Y2="10" />
+          </Grid>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+      <ListBox.ItemContainerStyle>
+        <Style TargetType="ListBoxItem">
+          <Setter Property="Canvas.Left" Value="{Binding X}" />
+          <Setter Property="Canvas.Top" Value="{Binding Y}" />
+        </Style>
+      </ListBox.ItemContainerStyle>--><!--
+    </ListBox>-->
+    <bionicCharts:CartesianChart Height="700" Width="700" VirtualizingPanel.CacheLengthUnit="Page" VirtualizingPanel.CacheLength="1,2"  bionicCharts:VirtualizingCartesianCanvas.XZoomFactor="3" bionicCharts:VirtualizingCartesianCanvas.YZoomFactor="1" 
+                                ItemsSource="{Binding ChartPoints}"  Background="CadetBlue">
+      <!--<bionicCharts:CartesianChart.Items>
+        <bionicCharts:CartesianChartItem X="100" Y="20"><Ellipse Height="10" Width="10" StrokeThickness="2" Stroke="Black"/></bionicCharts:CartesianChartItem>
+      </bionicCharts:CartesianChart.Items>-->
+    </bionicCharts:CartesianChart>
+  </StackPanel>
+</Window>

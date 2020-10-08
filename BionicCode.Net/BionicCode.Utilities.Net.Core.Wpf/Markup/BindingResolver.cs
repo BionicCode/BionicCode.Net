@@ -8,10 +8,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Data;
-using BionicCode.Utilities.Net.Standard;
-using BionicCode.Utilities.Net.Standard.Collections.Generic;
+
+
+[assembly: InternalsVisibleTo("BionicCode.Utilities.UnitTest.Net.Core")]
 
 namespace BionicCode.Utilities.Net.Core.Wpf.Markup
 {
@@ -29,11 +31,12 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Markup
     #endregion ResolvedValue attached property
 
     public DependencyProperty TargetProperty { get; set; }
-    public WeakReference Target { get; set; }
-    public InversionMode InversionMode { get; set; }
-    public IValueInverter ValueInverter { get; set; }
+    public WeakReference<DependencyObject> Target { get; set; }
+    public WeakReference<Binding> OriginalBinding { get; set; }
+    public Func<object, object> ResolvedSourceValueFilter { get; set; }
+    public Func<object, object> ResolvedTargetValueFilter { get; set; }
     private bool IsUpDating { get; set; }
-    private static WeakReferenceKeyDictionary<WeakReference, BindingResolver> BindingTargetToBindingResolversMap { get; } = new WeakReferenceKeyDictionary<WeakReference, BindingResolver>();
+    private static ConditionalWeakTable<DependencyObject, BindingResolver> BindingTargetToBindingResolversMap { get; } = new ConditionalWeakTable<DependencyObject, BindingResolver>();
 
     public BindingResolver(DependencyObject target, DependencyProperty targetProperty)
     {
@@ -45,38 +48,34 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Markup
       {
         throw new ArgumentNullException(nameof(targetProperty));
       }
-      this.Target = new WeakReference(target);
+      this.Target = new WeakReference<DependencyObject>(target);
       this.TargetProperty = targetProperty;
-      this.ValueInverter = new DefaultValueInverter();
-      this.InversionMode = InversionMode.Default;
+      this.ResolvedSourceValueFilter = value => value;
+      this.ResolvedTargetValueFilter = value => value;
     }
 
-    private void AddBindingTargetToLookupTable()
-    {
-      BindingResolver.BindingTargetToBindingResolversMap.Add(this.Target, this);
-    }
+    private void AddBindingTargetToLookupTable(DependencyObject target) => BindingResolver.BindingTargetToBindingResolversMap.Add(target, this);
 
-    public object ResolveBinding(Binding bindingExpression, InversionMode inversionMode)
+    public object ResolveBinding(Binding bindingExpression)
     {
-      var bindingTarget = this.Target.Target as DependencyObject;
-      if (bindingTarget == null)
+      if (!this.Target.TryGetTarget(out DependencyObject bindingTarget))
       {
         throw new InvalidOperationException("Unable to resolve sourceBinding. Binding target is 'null', because the reference has already been garbage collected.");
       }
 
-      AddBindingTargetToLookupTable();
+      AddBindingTargetToLookupTable(bindingTarget);
 
       Binding binding = bindingExpression;
-      this.InversionMode = inversionMode == InversionMode.Default
-        ? BindingResolver.GetInversionModeFromBindingMode(binding.Mode)
-        : inversionMode;
+      this.OriginalBinding = new WeakReference<Binding>(binding);
 
+      // Listen to data source
       Binding sourceBinding = CloneBinding(binding);
       BindingOperations.SetBinding(
         bindingTarget,
         BindingResolver.ResolvedValueProperty,
         sourceBinding);
 
+      // Delegate data source value to original target of the original Binding
       Binding targetBinding = CloneBinding(binding, this);
       targetBinding.Path = new PropertyPath(BindingResolver.ResolvedValueProperty);
 
@@ -215,8 +214,6 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Markup
 
     private static void OnResolvedValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      DependencyObject bindingTarget = null;
-
       if (d is BindingResolver bindingResolver)
       {
         if (bindingResolver.IsUpDating)
@@ -226,7 +223,6 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Markup
 
         bindingResolver.IsUpDating = true;
         bindingResolver.UpdateSource();
-        bindingTarget = bindingResolver.Target.Target as DependencyObject;
         bindingResolver.IsUpDating = false;
       }
       else
@@ -240,7 +236,6 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Markup
 
           bindingResolver.IsUpDating = true;
           bindingResolver.UpdateTarget();
-          bindingTarget = bindingResolver.Target.Target as DependencyObject;
           bindingResolver.IsUpDating = false;
         }
       }
@@ -278,32 +273,26 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Markup
 
     private void UpdateTarget()
     {
-      var target = this.Target.Target as DependencyObject;
-      if (target == null)
+      if (!this.Target.TryGetTarget(out DependencyObject target))
       {
         return;
       }
 
       object resolvedValue = BindingResolver.GetResolvedValue(target);
-      object value = this.InversionMode != InversionMode.OneWayToSource
-        ? this.ValueInverter.InvertValue(resolvedValue)
-        : resolvedValue;
+      object value = this.ResolvedSourceValueFilter.Invoke(resolvedValue);
 
       BindingResolver.SetResolvedValue(this, value);
     }
 
     private void UpdateSource()
     {
-      var target = this.Target.Target as DependencyObject;
-      if (target == null)
+      if (!this.Target.TryGetTarget(out DependencyObject target))
       {
         return;
       }
 
       object resolvedValue = BindingResolver.GetResolvedValue(this);
-      object value = this.InversionMode != InversionMode.OneWay
-        ? this.ValueInverter.InvertValue(resolvedValue)
-        : resolvedValue;
+      object value = this.ResolvedTargetValueFilter.Invoke(resolvedValue);
 
       BindingResolver.SetResolvedValue(target, value);
     }

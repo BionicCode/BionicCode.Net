@@ -4,6 +4,12 @@ using System.Windows.Markup;
 
 namespace BionicCode.Utilities.Net.Core.Wpf.Markup
 {
+  /// <summary>
+  /// XAML Equality comparer.
+  /// </summary>
+  /// <example>Provide the enum type via constructor or by setting the <see cref="EnumType"/> property:<para></para><code>&lt;Trigger Property="Count" Value="{Equals /&gt;</code>
+  /// <para></para>
+  /// <code><ComboBox ItemsSource="{Enum EnumType={x:Type MyEnum}}" /></code></example>
   public class EqualsExtension : MarkupExtension
   {
       private readonly Type typeToEqual;
