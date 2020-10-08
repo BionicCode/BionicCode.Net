@@ -7,11 +7,13 @@ using BionicCode.Utilities.Net.Standard;
 namespace BionicCode.Utilities.Net.Framework.Wpf.Markup
 {
   /// <summary>
-  /// XAML extension to invert the <see cref="Value"/> property using the current <see cref="ValueInverter"/>. Supports every <see cref="MarkupExtension"/> e.g., <see cref="BindingBase"/>.
+  /// XAML extension to invert the <see cref="Value"/> property using the current <see cref="IValueInverter"/>. Supports every <see cref="MarkupExtension"/> e.g., <see cref="BindingBase"/>.
   /// </summary>
   /// <example>Provide the value locally or via data binding:
-  /// <para><code>&lt;TextBox Text="True" /&gt;</code></para>
-  /// <para><code>&lt;TextBox Text="{Binding TextValue}" /&gt;</code></para></example>
+  /// <para><code>&lt;TextBox Text="{Invert True}" /&gt; // False</code>
+  /// <code>&lt;TextBox Text="{Invert 12}" /&gt; // -12</code>
+  /// <code>&lt;TextBox Text="{Invert {x:Static Visibility.Hidden}}" /&gt; // Visibility.Visible</code>
+  /// <code>&lt;TextBox Text="{Invert {Binding TextValue}}" /&gt;</code></para></example>
   public class InvertExtension : MarkupExtension
   {
     /// <summary>

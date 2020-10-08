@@ -16,6 +16,7 @@
     <TextBox Text="{Binding  RelativeSource={RelativeSource AncestorType=Window}, Path=Text, UpdateSourceTrigger=PropertyChanged}"/>
     <TextBlock Text="{bionicFramework:Invert {Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Text}}"/>
     <TextBlock Text="{bionicFramework:Invert 12}"/>
+    <TextBlock Text="{bionicFramework:Invert {x:Static Visibility.Visible}}"/>
     <TextBlock Text="{bionicFramework:Invert True}"/>
     <TextBlock Text="{bionicFramework:Invert 0.12}"/>
     <TextBlock Text="{bionicFramework:Invert False}"/>
