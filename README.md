@@ -694,7 +694,10 @@ Application x:Class="BionicCode.BionicNuGetDeploy.Main.App"
 ## InvertExtension
 
 
-```XAML   <TextBlock Text="{Invert {Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Text}}"/>
+```XAML   
+
+<!-- Use Binding value -->
+<TextBlock Text="{Invert {Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Text}}"/>
 
 <!-- Returns: -12 -->
 <TextBlock Text="{Invert Value=1.2}"/> 
