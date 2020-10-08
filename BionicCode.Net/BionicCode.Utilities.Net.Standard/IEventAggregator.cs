@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace BionicCode.Utilities.Net.Standard
 {
+  /// <summary>
+  /// Allows listening to events without introducing direct coupling between observer and observable. The observer can handle events withou introducing a dependency to the event source.
+  /// </summary>
   public interface IEventAggregator
   {
     /// <summary>

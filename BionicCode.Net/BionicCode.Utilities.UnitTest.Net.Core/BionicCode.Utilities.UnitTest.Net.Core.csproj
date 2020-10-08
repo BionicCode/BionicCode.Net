@@ -15,4 +15,8 @@
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BionicCode.Utilities.Net.Core.Wpf\BionicCode.Utilities.Net.Core.Wpf.csproj" />
+  </ItemGroup>
+
 </Project>

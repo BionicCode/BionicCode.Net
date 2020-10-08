@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 
 namespace BionicCode.Utilities.Net.Standard.ViewModel
 {
@@ -179,6 +180,7 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
     /// <param name="propertyName"> The property name. </param>
     /// <param name="oldValue">The value before the property change.</param>
     /// <param name="newValue">The value after the property change.</param>
+    [NotifyPropertyChangedInvocator]
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null, object oldValue = null, object newValue = null)
     {
       if (this.IsSilent)
@@ -191,6 +193,8 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
 
       this.PropertyValueChanged?.Invoke(this, new PropertyValueChangedArgs<object>(propertyName, oldValue, newValue));
     }
+
+      #region Implementation of IViewModel
 
     #region Implementation of INotifyDataErrorInfo
 
@@ -215,7 +219,6 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
 
       #endregion
 
-      #region Implementation of IBaseViewModel
 
       /// <inheritdoc />
       public event PropertyValueChangedEventHandler<object> PropertyValueChanged;

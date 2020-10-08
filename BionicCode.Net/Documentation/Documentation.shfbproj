@@ -13,8 +13,8 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <!-- SHFB properties -->
-    <FrameworkVersion>.NET Framework 4.8</FrameworkVersion>
-    <OutputPath>.\Help\</OutputPath>
+    <FrameworkVersion>Cross-platform (.NET Core/.NET Standard)</FrameworkVersion>
+    <OutputPath>..\..\Documentation\</OutputPath>
     <HtmlHelpName>Documentation</HtmlHelpName>
     <Language>en-US</Language>
     <TransformComponentArguments>
@@ -31,10 +31,12 @@
       <Argument Key="requestExampleUrl" Value="" />
     </TransformComponentArguments>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\BionicCode.BionicUtilities.Net.Standard\BionicCode.BionicUtilities.Net.Standard.csproj" />
+      <DocumentationSource sourceFile="..\BionicCode.Utilities.Net.Framework\BionicCode.Utilities.Net.Framework.csproj" />
+      <DocumentationSource sourceFile="..\BionicCode.Utilities.Net.Core.Wpf\BionicCode.Utilities.Net.Core.Wpf.csproj" />
+      <DocumentationSource sourceFile="..\BionicCode.Utilities.Net.Standard\BionicCode.Utilities.Net.Standard.csproj" />
     </DocumentationSources>
-    <HelpFileFormat>Website</HelpFileFormat>
-    <SyntaxFilters>C#, Visual Basic, Managed C++, F#, XAML Usage</SyntaxFilters>
+    <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
+    <SyntaxFilters>All</SyntaxFilters>
     <PresentationStyle>VS2013</PresentationStyle>
     <CleanIntermediates>True</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
@@ -46,21 +48,24 @@
     <BinaryTOC>True</BinaryTOC>
     <IncludeFavorites>False</IncludeFavorites>
     <WebsiteSdkLinkType>Msdn</WebsiteSdkLinkType>
-    <WebsiteAdContent>https://github.com/BionicCode/BionicUtilities.Net/blob/master/README.md</WebsiteAdContent>
+    <WebsiteAdContent>https://github.com/BionicCode/BionicCode.Net/blob/master/README.md</WebsiteAdContent>
     <AppendMarkdownFileExtensionsToUrls>False</AppendMarkdownFileExtensionsToUrls>
-    <ProjectSummary>&amp;lt%3bh1&amp;gt%3bBionicUtilities.Net&amp;lt%3b/h1&amp;gt%3b
+    <ProjectSummary>&amp;lt%3bh1&amp;gt%3bBionicCode.Net&amp;lt%3b/h1&amp;gt%3b
+&amp;lt%3bp&amp;gt%3b
+A collection of .NET libraries like utilities and controls that target .NET Standard, .NET Core, .NET Framework, .NET Core WPF, .NET Framework WPF and UWP
+&amp;lt%3b/p&amp;gt%3b
 
-Reusable utility and class library for WPF
-
+&amp;lt%3bp&amp;gt%3b
 Project home:
- &amp;lt%3ba href=&amp;quot%3bhttps://github.com/BionicCode/BionicUtilities.Net/blob/master/README.md&amp;quot%3b&amp;gt%3bVisit on GitHub&amp;lt%3b/a&amp;gt%3b </ProjectSummary>
+&amp;lt%3ba href=&amp;quot%3bhttps://github.com/BionicCode/BionicCode.Net&amp;quot%3b&amp;gt%3bVisit on GitHub&amp;lt%3b/a&amp;gt%3b 
+&amp;lt%3b/p&amp;gt%3b</ProjectSummary>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, InheritedFrameworkMembers, Protected, ProtectedInternalAsProtected, NonBrowsable</VisibleItems>
     <ComponentConfigurations>
-      <ComponentConfig id="API Token Resolution" enabled="True" xmlns="">
+      <ComponentConfig id="API Token Resolution" enabled="True">
         <component id="API Token Resolution">{@TokenFiles}
 <replace elements="/*//token" item="string(.)" /></component>
       </ComponentConfig>
-      <ComponentConfig id="Code Block Component" enabled="True" xmlns="">
+      <ComponentConfig id="Code Block Component" enabled="True">
         <component id="Code Block Component">
           <basePath value="{@HtmlEncProjectFolder}" />
           <outputPaths>{@HelpFormatOutputPaths}</outputPaths>
@@ -69,7 +74,7 @@ Project home:
           <colorizer syntaxFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xml" styleFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xsl" stylesheet="{@SHFBFolder}PresentationStyles\Colorizer\highlight.css" scriptFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.js" disabled="{@DisableCodeBlockComponent}" language="cs" tabSize="0" numberLines="false" outlining="false" keepSeeTags="false" defaultTitle="true" />
         </component>
       </ComponentConfig>
-      <ComponentConfig id="Comments Index Data (ESENT Cache)" enabled="True" xmlns="">
+      <ComponentConfig id="Comments Index Data (ESENT Cache)" enabled="False">
         <component id="Comments Index Data (ESENT Cache)">
           <index name="comments" value="/doc/members/member" key="@name" cache="30" localCacheSize="2500" frameworkCachePath="{@LocalDataFolder}Cache\CommentsIndexCache" projectCachePath="">
 	{@FrameworkCommentList}
@@ -78,7 +83,7 @@ Project home:
           <copy name="comments" source="*" target="/document/comments" />
         </component>
       </ComponentConfig>
-      <ComponentConfig id="Reflection Index Data (ESENT Cache)" enabled="True" xmlns="">
+      <ComponentConfig id="Reflection Index Data (ESENT Cache)" enabled="False">
         <component id="Reflection Index Data (ESENT Cache)">
           <index name="reflection" value="/reflection/apis/api" key="@id" cache="15" localCacheSize="2500" frameworkCachePath="{@LocalDataFolder}Cache\ReflectionIndexCache" projectCachePath="">
             <data base="{@FrameworkReflectionDataFolder}" recurse="true" files="*.xml" duplicateWarning="false" groupId="ReflectionIndexCache">
@@ -89,7 +94,7 @@ Project home:
           <copy name="reflection" source="*" target="/document/reference" />
         </component>
       </ComponentConfig>
-      <ComponentConfig id="Resolve Reference Links (ESENT Cache)" enabled="True" xmlns="">
+      <ComponentConfig id="Resolve Reference Links (ESENT Cache)" enabled="False">
         <component id="Resolve Reference Links (ESENT Cache)">{@HRefFormat}
 <locale value="{@Locale}" /><linkTarget value="{@SdkLinkTarget}" /><helpOutput format="HtmlHelp1"><memberIdUrlCache path="{@LocalDataFolder}Cache\MemberIdUrl.cache" cachePath="{@LocalDataFolder}Cache\ESentMemberIdUrlCache" localCacheSize="2500" /><targets base="{@FrameworkReflectionDataFolder}" recurse="true" files="*.xml" type="{@HtmlSdkLinkType}" id="FrameworkTargets" cachePath="{@LocalDataFolder}Cache\ESentFrameworkTargetCache" localCacheSize="2500">
 		{@ReferenceLinkNamespaceFiles}
@@ -103,7 +108,7 @@ Project home:
 		{@ReferenceLinkNamespaceFiles}
 	</targets><targets files="reflection.xml" type="Local" id="ProjectTargets" cachePath="" localCacheSize="2500" noReload="true" /></helpOutput></component>
       </ComponentConfig>
-      <ComponentConfig id="Syntax Component" enabled="True" xmlns="">
+      <ComponentConfig id="Syntax Component" enabled="True">
         <component id="Syntax Component">
           <syntax input="/document/reference" output="/document/syntax" renderReferenceLinks="true" />
           <generators>
@@ -129,7 +134,86 @@ Project home:
           </configurations>
         </component>
       </ComponentConfig>
+      <ComponentConfig id="IntelliSense Component" enabled="True">
+        <component id="IntelliSense Component">
+          <output includeNamespaces="true" namespacesFile="Namespaces" folder="{@OutputFolder}" boundedCapacity="100" />
+        </component>
+      </ComponentConfig>
     </ComponentConfigurations>
+    <HelpTitle>BionicCode.Net</HelpTitle>
+    <HelpFileVersion>1.0.0.0</HelpFileVersion>
+    <NamingMethod>MemberName</NamingMethod>
+    <RootNamespaceContainer>True</RootNamespaceContainer>
+    <NamespaceGrouping>True</NamespaceGrouping>
+    <MaximumGroupParts>3</MaximumGroupParts>
+    <Preliminary>False</Preliminary>
+    <FeedbackEMailAddress>BionicCode%40outlook.com</FeedbackEMailAddress>
+    <FeedbackEMailLinkText>BionicCode%40outlook.com</FeedbackEMailLinkText>
+    <SdkLinkTarget>Top</SdkLinkTarget>
+    <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
+    <NamespaceSummaries>
+      <NamespaceSummaryItem name="(global)" isDocumented="True">A control library that targets WPF .NET Core.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="BionicCode.Controls.Net.Core.Wpf" isDocumented="True">A control library that targets WPF .NET Core. 
+Reqires .NET Core &gt;= 3.0</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net (Group)" isGroup="True" isDocumented="True">Utility library that target different .NET frameworks like .NET Core, .NET Framework, UWP, .NET Standard.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core (Group)" isGroup="True" isDocumented="True">A utility library that targets WPF .NET Core.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf" isDocumented="True">A utility library that targets WPF .NET Core. 
+Targets .NET Core &gt;= 3.0</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors" isDocumented="True">Provides a collection of attached behaviors for controls like ComboBox, TextBlock, RichTextBox, PasswordBox or Popup.
+
+Targets WPF .NET Core  &gt;= 3.0.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Collections.Generic" isDocumented="True">Provides basic generic collections like ObservablePropertyChangedCollection&lt;T&gt;.
+
+Targets WPF .NET Core  &gt;= 3.0.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Converter" isDocumented="True">Provides a collection of value converters like InvertValueConverter.
+
+Targets WPF .NET Core  &gt;= 3.0.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Dialog" isDocumented="True">Provides infrastructure to display customizable dialogs. 
+This library is intended to be used when implementing the MVVM pattern and allows to show dialogs from the view model.
+
+Targets WPF .NET Core  &gt;= 3.0.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Extensions" isDocumented="True">Provides a collection of useful extension methods like TryFindVisualChildByName&lt;T&gt; or TryFindVisualParent&lt;T&gt;.
+
+Targets WPF .NET Core  &gt;= 3.0.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Generic" isDocumented="True">Provides basic generic types.
+
+Targets WPF .NET Core  &gt;= 3.0.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Markup" isDocumented="True">Provides a collection of XAML markup extensions like InvertExtension or EqualsExtension.
+
+Targets WPF .NET Core  &gt;= 3.0.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Settings" isDocumented="True">Provides a classes to handle application data like MruManager to track most recently used files.
+
+Targets WPF .NET Core  &gt;= 3.0.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework (Group)" isGroup="True" isDocumented="True" />
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework" isDocumented="True" />
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Collections.Generic" isDocumented="True" />
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Converter" isDocumented="True" />
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Dialog" isDocumented="True" />
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Extensions" isDocumented="True" />
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Markup" isDocumented="True">A utility library that targets .NET Framework.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Settings" isDocumented="True" />
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Utility (Group)" isGroup="True" isDocumented="True">A control library that targets WPF .Net Core.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Utility" isDocumented="True" />
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Utility.Generic" isDocumented="True" />
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard (Group)" isGroup="True" isDocumented="True" />
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.Collections.Generic" isDocumented="True" />
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.Exception" isDocumented="True" />
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.Extensions" isDocumented="True" />
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.Generic" isDocumented="True">A utility library that targets .NET Standars.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.IO" isDocumented="True" />
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.ViewModel" isDocumented="True" />
+      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard" isDocumented="True" />
+    </NamespaceSummaries>
+    <ContentPlacement>AboveNamespaces</ContentPlacement>
+    <HeaderText>
+    </HeaderText>
+    <CatalogProductId>VS</CatalogProductId>
+    <CatalogVersion>100</CatalogVersion>
+    <TocOrder>-1</TocOrder>
+    <TocParentId>-1</TocParentId>
+    <TocParentVersion>100</TocParentVersion>
+    <TopicVersion>100</TopicVersion>
+    <MSHelpViewerSdkLinkType>Msdn</MSHelpViewerSdkLinkType>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

@@ -6,6 +6,10 @@
     <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\-Programming-\C#\GitOpenSourceRepository\BionicCode.Net\BionicCode.Net\BionicCode.Controls.Net.Core.Wpf\BionicCode.Controls.Net.Core.Wpf.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <Page Update="Themes\Generic.xaml">
       <SubType>Designer</SubType>

@@ -13,8 +13,12 @@ using BionicCode.Utilities.Net.Standard.Exception;
 
 namespace BionicCode.Utilities.Net.Standard
 {
+  /// <inheritdoc />
   public class EventAggregator : IEventAggregator
   {
+    /// <summary>
+    /// Default constructor.
+    /// </summary>
     public EventAggregator()
     {
       this.EventHandlerTable = new ConcurrentDictionary<string, List<Delegate>>();
@@ -199,7 +203,6 @@ namespace BionicCode.Utilities.Net.Standard
     /// <inheritdoc />
     public bool TryRemoveGlobalObserver(Delegate eventHandler)
     {
-      bool result = false;
       Type normalizedEventHandlerType = NormalizeEventHandlerType(eventHandler.GetType());
 
       return TryRemoveGlobalObserverInternal(normalizedEventHandlerType);
@@ -316,22 +319,6 @@ namespace BionicCode.Utilities.Net.Standard
       }
     }
 
-    private void ThrowIfHandlerSignatureIncompatible(object args, Delegate handler)
-    {
-      MethodInfo delegateInvokeMethodInfo = handler.GetType().GetMethod("Invoke");
-      Type handlerEventArgsType = delegateInvokeMethodInfo?
-        .GetParameters()
-        .ElementAt(1).ParameterType;
-      if (!handlerEventArgsType?.IsInstanceOfType(args) ?? true)
-      {
-        string handlerSignature = delegateInvokeMethodInfo?
-          .GetParameters()
-          .Select(parameterInfo => parameterInfo.ParameterType.FullName)
-          .Aggregate((result, current) => result += ", " + current).TrimEnd(',', ' ');
-        throw new WrongEventHandlerSignatureException(
-          $"The found callback signature does not match the registered delegate{Environment.NewLine}'{FormatTypeName(handler.GetType())}'. {Environment.NewLine}Expected: '{delegateInvokeMethodInfo.ReturnType.Name} {handler.Method.Name}({handlerSignature})'. Actual: '{handler.Method}'.");
-      }
-    }
     private string FormatTypeName(Type typeToFormat, bool isFullyQualified = true)
     {
       if (!typeToFormat.IsGenericType)

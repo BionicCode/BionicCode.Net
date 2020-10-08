@@ -1,0 +1,993 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BionicCode.Utilities.Net.Standard</name>
+    </assembly>
+    <members>
+        <member name="T:BionicCode.Utilities.Net.Standard.EventAggregator">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRegisterObservable(System.Object,System.Collections.Generic.IEnumerable{System.String})">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRemoveObservable(System.Object,System.Collections.Generic.IEnumerable{System.String},System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRemoveObservable(System.Object,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRegisterObserver(System.String,System.Type,System.Delegate)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRegisterObserver``1(System.String,System.Type,System.EventHandler{``0})">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRegisterGlobalObserver(System.String,System.Delegate)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRegisterGlobalObserver``1(System.String,System.EventHandler{``0})">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRegisterGlobalObserver(System.Delegate)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRegisterGlobalObserver``1(System.EventHandler{``0})">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRemoveObserver(System.String,System.Type,System.Delegate)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRemoveObserver``1(System.String,System.Type,System.EventHandler{``0})">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRemoveGlobalObserver(System.String,System.Delegate)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRemoveGlobalObserver``1(System.String,System.EventHandler{``0})">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRemoveGlobalObserver(System.Delegate)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRemoveGlobalObserver``1(System.EventHandler{``0})">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRemoveAllObservers(System.String,System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRemoveAllObservers(System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.EventAggregator.TryRemoveAllObservers(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.Exception.WrongEventHandlerSignatureException">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Exception.WrongEventHandlerSignatureException.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Exception.WrongEventHandlerSignatureException.#ctor(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Exception.WrongEventHandlerSignatureException.#ctor(System.String,System.Exception)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Exception.WrongEventHandlerSignatureException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <inheritdoc />
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.Extensions.HelperExtensions">
+            <summary>
+            A collection of extension methods for various default types
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Extensions.HelperExtensions.AddRange``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Adds a range of items to the <see cref="T:System.Collections.Generic.ICollection`1"/>.
+            </summary>
+            <typeparam name="TItem">The type of the item.</typeparam>
+            <param name="thisCollection">The <see cref="T:System.Collections.Generic.ICollection`1"/> to modify.</param>
+            <param name="range">The items to add.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Extensions.HelperExtensions.AddRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IDictionary{``0,``1})">
+            <summary>
+            Adds a <see cref="T:System.Collections.Generic.IDictionary`2"/> to the <see cref="T:System.Collections.Generic.IDictionary`2"/>.
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <param name="thisCollection">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to modify.</param>
+            <param name="range">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to add.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Extensions.HelperExtensions.AddRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{``0,``1}})">
+            <summary>
+            Adds a range of <c>IEnumerable&lt;KeyValuePair&lt;TKey,TValue&gt;&gt;</c>  to the <see cref="T:System.Collections.Generic.IDictionary`2"/>.
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <param name="thisCollection">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to modify.</param>
+            <param name="range">The <c>IEnumerable&lt;KeyValuePair&lt;TKey,TValue&gt;&gt;</c>  to add.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Extensions.HelperExtensions.AddRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IEnumerable{System.ValueTuple{``0,``1}})">
+            <summary>
+            Adds a range of <c>IEnumerable&lt;(TKey Key,TValue Value)&gt;</c> to the <see cref="T:System.Collections.Generic.IDictionary`2"/>.
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the value.</typeparam>
+            <param name="thisCollection">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to modify.</param>
+            <param name="range">The <c>IEnumerable&lt;(TKey Key,TValue Value&gt;&gt;</c>  to add.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Extensions.HelperExtensions.HasReachedEnd(System.IO.Stream)">
+            <summary>
+            Return whether the end of a <see cref="T:System.IO.Stream"/> is reached.
+            </summary>
+            <param name="streamToCheck"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.FactoryMode">
+            <summary>
+            Describes lifetime scope of object instances
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.FactoryMode.Default">
+            <summary>
+            Unset
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.FactoryMode.Singleton">
+            <summary>
+            Create a shared instance
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.FactoryMode.Transient">
+            <summary>
+            A new instance is created for each request
+            </summary>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.Generic.Factory`1">
+            <summary>
+            Abstract implementation of <see cref="T:BionicCode.Utilities.Net.Standard.Generic.IFactory`1"/> that supports lifetime management using <see cref="T:BionicCode.Utilities.Net.Standard.FactoryMode"/>.
+            </summary>
+            <typeparam name="TObject">The type of the instance to create.</typeparam>
+            <remarks>The internals will handle the lifetime management based on the value of the <see cref="P:BionicCode.Utilities.Net.Standard.Generic.Factory`1.FactoryMode"/> property. Instances are actually created using the abstract <see cref="M:BionicCode.Utilities.Net.Standard.Generic.Factory`1.CreateInstance"/> and <see cref="M:BionicCode.Utilities.Net.Standard.Generic.Factory`1.CreateInstance(System.Object[])"/> members, which needs to  be implemented by the inheritor.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Generic.Factory`1.#ctor">
+            <summary>
+            Initializes the <c>Factory</c> to create instances using <see cref="F:BionicCode.Utilities.Net.Standard.FactoryMode.Singleton"/>. 
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Generic.Factory`1.#ctor(BionicCode.Utilities.Net.Standard.FactoryMode)">
+            <summary>
+            Initializes instance. 
+            </summary>
+            <param name="factoryMode">Describes the created objects lifetime using <see cref="T:BionicCode.Utilities.Net.Standard.FactoryMode"/>.</param>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.Generic.Factory`1.FactoryMode">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Generic.Factory`1.Create">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Generic.Factory`1.Create(System.Object[])">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Generic.Factory`1.CreateInstance">
+            <summary>
+            Implementation to create and initialize instances of type <typeparamref name="TObject"/>.
+            </summary>
+            <returns>An instance of type <typeparamref name="TObject"/>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Generic.Factory`1.CreateInstance(System.Object[])">
+            <summary>
+            Implementation to create and initialize instances of type <typeparamref name="TObject"/>.
+            </summary>
+            <returns>An instance of type <typeparamref name="TObject"/>.</returns>
+            <param name="args">A variable list of arguments.</param>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.Generic.IFactory`1">
+            <summary>
+            Interface to implement Abstract Factory pattern
+            </summary>
+            <typeparam name="TCreate">The type of the instantiated object.</typeparam>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Generic.IFactory`1.Create">
+            <summary>
+            Creates the instance.
+            </summary>
+            <returns>An instance of <typeparamref name="TCreate"/>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Generic.IFactory`1.Create(System.Object[])">
+            <summary>
+            Creates the instance, allowing arguments.
+            </summary>
+            <param name="args">The arguments for the factory to use to instantiate the type.</param>
+            <returns>An instance of <typeparamref name="TCreate"/>.</returns>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.Generic.IFactory`1.FactoryMode">
+            <summary>
+            Configures the lifetime scope of the created object instances.
+            Default is <see cref="F:BionicCode.Utilities.Net.Standard.FactoryMode.Singleton"/>
+            </summary>
+            <value>The lifetime scope  <see cref="F:BionicCode.Utilities.Net.Standard.FactoryMode.Singleton"/> of the created object instances</value>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.Generic.NullObjectFactory`1">
+            <summary>
+            Implementation of <see cref="T:BionicCode.Utilities.Net.Standard.INullObject"/> and <see cref="T:BionicCode.Utilities.Net.Standard.Generic.IFactory`1"/>. Used to create an instance of a <see cref="T:BionicCode.Utilities.Net.Standard.INullObject"/> where <see cref="P:BionicCode.Utilities.Net.Standard.INullObject.IsNull"/> is set to <c>true</c> by default.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Generic.NullObjectFactory`1.#ctor(System.Func{`0})">
+            <summary>
+            Initializes the <see cref="T:BionicCode.Utilities.Net.Standard.Generic.NullObjectFactory`1"/> using a factory method delegate using <see cref="F:BionicCode.Utilities.Net.Standard.FactoryMode.Singleton"/>.
+            </summary>
+            <param name="factoryMethod">The delegate to create instances of type <typeparamref name="TObject"/>.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Generic.NullObjectFactory`1.#ctor(System.Func{`0},BionicCode.Utilities.Net.Standard.FactoryMode)">
+            <summary>
+            Initializes the <see cref="T:BionicCode.Utilities.Net.Standard.Generic.NullObjectFactory`1"/> using a factory method delegate using <see cref="F:BionicCode.Utilities.Net.Standard.FactoryMode.Singleton"/>.
+            </summary>
+            <param name="factoryMethod">The delegate to create instances of type <typeparamref name="TObject"/>.</param>
+            <param name="factoryMode">The lifetime scope of the created instance.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Generic.NullObjectFactory`1.#ctor(BionicCode.Utilities.Net.Standard.Generic.IFactory{`0})">
+            <summary>
+            Initializes the <see cref="T:BionicCode.Utilities.Net.Standard.Generic.NullObjectFactory`1"/> using a <see cref="T:BionicCode.Utilities.Net.Standard.Generic.IFactory`1"/> and its <see cref="P:BionicCode.Utilities.Net.Standard.Generic.IFactory`1.FactoryMode"/> to set the <see cref="T:BionicCode.Utilities.Net.Standard.FactoryMode"/>.
+            </summary>
+            <param name="factory">The <see cref="T:BionicCode.Utilities.Net.Standard.Generic.IFactory`1"/> to create instances of type <typeparamref name="TObject"/>.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Generic.NullObjectFactory`1.CreateInstance">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Generic.NullObjectFactory`1.CreateInstance(System.Object[])">
+            <inheritdoc />
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.Generic.ValueChangedEventArgs`1">
+            <summary>
+            Generic EventArgs implementation that supports value changed information
+            by holding the old and the new value.
+            </summary>
+            <typeparam name="TValue">The type of the value.</typeparam>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Generic.ValueChangedEventArgs`1.#ctor(`0,`0)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="newValue">The new value that replaces the old value.</param>
+            <param name="oldValue">The old value that was replaced by the new value.</param>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.Generic.ValueChangedEventArgs`1.NewValue">
+            <summary>
+            The new value after the change.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.Generic.ValueChangedEventArgs`1.OldValue">
+            <summary>
+            The old value before the change.
+            </summary>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.Generic.ValueEventArgs`1">
+            <summary>
+            Generic EventArgs implementation that supports to store a value.
+            </summary>
+            <typeparam name="TValue">The type of the value.</typeparam>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Generic.ValueEventArgs`1.#ctor(`0)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="value">The value to send as event args.</param>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.Generic.ValueEventArgs`1.Value">
+            <summary>
+            The value to send as event args.
+            </summary>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.IEventAggregator">
+            <summary>
+            Allows listening to events without introducing direct coupling between observer and observable. The observer can handle events withou introducing a dependency to the event source.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRegisterObservable(System.Object,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Register a type as event source.
+            </summary>
+            <param name="eventSource">The publisher instance.</param>
+            <param name="eventNames">A collection of event names that define the observed events of the <paramref name="eventSource"/></param>
+            <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRegisterObserver(System.String,System.Type,System.Delegate)">
+            <summary>
+            Registers an event delegate to handle a specific event published by a specific observable type.
+            </summary>
+            <param name="eventName">The name of the observed event.</param>
+            <param name="eventSourceType">The type of the observable.</param>
+            <param name="eventHandler">A delegate that handles the specified event.</param>
+            <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRegisterObserver``1(System.String,System.Type,System.EventHandler{``0})">
+            <summary>
+            Registers an event delegate to handle a specific event published by a specific observable type.
+            </summary>
+            <typeparam name="TEventArgs">The type of the event args object.</typeparam>
+            <param name="eventName">The name of the observed event.</param>
+            <param name="eventSourceType">The type of the observable.</param>
+            <param name="eventHandler">A delegate that handles the specified event.</param>
+            <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRegisterGlobalObserver(System.String,System.Delegate)">
+            <summary>
+            Register an event delegate to handle a specific event which could be published by any type.
+            </summary>
+            <param name="eventName">The name of the observed event.</param>
+            <param name="eventHandler">A delegate that handles the specified event.</param>
+            <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRegisterGlobalObserver``1(System.String,System.EventHandler{``0})">
+            <summary>
+            Register an event delegate to handle a specific event which could be published by any type.
+            </summary>
+            <typeparam name="TEventArgs">The type of the event args object.</typeparam>
+            <param name="eventName">The name of the observed event.</param>
+            <param name="eventHandler">A delegate that handles the specified event.</param>
+            <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRegisterGlobalObserver(System.Delegate)">
+            <summary>
+            Registers a handler for any registered event source with a compatible event delegate signature.
+            </summary>
+            <param name="eventHandler">A delegate that handles the specified event.</param>
+            <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRegisterGlobalObserver``1(System.EventHandler{``0})">
+            <summary>
+            Registers a handler for any registered event source with a compatible event delegate signature.
+            </summary>
+            <typeparam name="TEventArgs">The type of the event args object.</typeparam>
+            <param name="eventHandler">A delegate that handles the specified event.</param>
+            <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRemoveObservable(System.Object,System.Collections.Generic.IEnumerable{System.String},System.Boolean)">
+            <summary>
+            Unregister the event publisher for a collection of specified events.
+            </summary>
+            <param name="eventSource">The event publisher instance.</param>
+            <param name="eventNames">The names of the events to unregister.</param>
+            <param name="removeEventObservers">If <c>true</c> removes all event listeners of the specified events. The value is <c>false</c> by default.</param>
+            <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRemoveObservable(System.Object,System.Boolean)">
+            <summary>
+            Unregister the event publisher for all events.
+            </summary>
+            <param name="eventSource">The event publisher instance.</param>
+            <param name="removeEventObservers">If <c>true</c> removes all event listeners of the specified events. The value is <c>false</c> by default.</param>
+            <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRemoveObserver(System.String,System.Type,System.Delegate)">
+            <summary>
+            Removes the event handler for a specified event of a certain event publisher type.
+            </summary>
+            <param name="eventName">The event name of the event that the delegate is handling.</param>
+            <param name="eventSourceType">The type of the event publisher.</param>
+            <param name="eventHandler">The event handler to remove.</param>
+            <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRemoveObserver``1(System.String,System.Type,System.EventHandler{``0})">
+            <summary>
+            Removes the event handler for a specified event of a certain event publisher type.
+            </summary>
+            <typeparam name="TEventArgs">The type of the event args object.</typeparam>
+            <param name="eventName">The event name of the event that the delegate is handling.</param>
+            <param name="eventSourceType">The type of the event publisher.</param>
+            <param name="eventHandler">The event handler to remove.</param>
+            <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRemoveAllObservers(System.String)">
+            <summary>
+            Removes all event handlers for a specified event no matter event publisher type.
+            </summary>
+            <param name="eventName">The event name of the event that the delegate is handling.</param>
+            <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRemoveAllObservers(System.String,System.Type)">
+            <summary>
+            Removes all event handlers for a specific event publisher type and specific event.
+            </summary>
+            <param name="eventName">The event name of the event that the delegate is handling.</param>
+            <param name="eventSourceType">The type of the event publisher.</param>
+            <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRemoveAllObservers(System.Type)">
+            <summary>
+            Removes all event handlers for a specified event publisher type.
+            </summary>
+            <param name="eventSourceType">The type of the event publisher.</param>
+            <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRemoveGlobalObserver(System.String,System.Delegate)">
+            <summary>
+            Removes the event handler for a specified event no matter the event publisher type.
+            </summary>
+            <param name="eventName">The event name of the event that the delegate is handling.</param>
+            <param name="eventHandler">The event handler to remove</param>
+            <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRemoveGlobalObserver``1(System.String,System.EventHandler{``0})">
+            <summary>
+            Removes the event handler for a specified event no matter the event publisher type.
+            </summary>
+            <typeparam name="TEventArgs">The type of the event args object.</typeparam>
+            <param name="eventName">The event name of the event that the delegate is handling.</param>
+            <param name="eventHandler">The event handler to remove</param>
+            <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRemoveGlobalObserver(System.Delegate)">
+            <summary>
+            Removes the event handler for all registered events with a compatible event delegate signature.
+            </summary>
+            <param name="eventHandler">The event handler to remove.</param>
+            <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IEventAggregator.TryRemoveGlobalObserver``1(System.EventHandler{``0})">
+            <summary>
+            Removes the event handler for all registered events with a compatible event delegate signature.
+            </summary>
+            <typeparam name="TEventArgs">The type of the event args object.</typeparam>
+            <param name="eventHandler">The event handler to remove.</param>
+            <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.INullObject">
+            <summary>
+            Null-Object Pattern implementation
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.INullObject.IsNull">
+            <summary>
+            Property to indicate whether the current NULL type is a shared instance or a new instance should be created for each request.
+            </summary>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.IO.AutoResetStream">
+            <summary>
+            Decorates a <see cref="T:System.IO.Stream"/> instance to support auto-rewind after read/write access.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.BaseStream">
+            <summary>
+            The decorated <see cref="T:System.IO.Stream"/> instance which will be extended.
+            </summary>
+            <value>An instance of type <see cref="T:System.IO.Stream"/>. This instance will be decorated to extend the default <see cref="T:System.IO.Stream"/> features and behaviors.</value>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.IsDisposingDecoratedStream">
+            <summary>
+            Gets whether the decorated underlying <see cref="T:System.IO.Stream"/> will be closed or disposed when the <see cref="T:BionicCode.Utilities.Net.Standard.IO.AutoResetStream"/> instance is closed or disposed. Use constructor to set the value in order to configure the behavior.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.#ctor">
+            <summary>
+            Default constructor. Creates an instance where the <see cref="P:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.BaseStream"/> is set to a <see cref="T:System.IO.MemoryStream"/>.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.#ctor(System.IO.Stream)">
+            <summary>
+            Constructor which accepts the <see cref="T:System.IO.Stream"/> instance to decorate in order to extend its behavior.
+            </summary>
+            <param name="baseStream">The <see cref="T:System.IO.Stream"/> instance to decorate in order to extend its behavior.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.#ctor(System.IO.Stream,System.Boolean)">
+            <summary>
+            Constructor which accepts the <see cref="T:System.IO.Stream"/> instance to decorate in order to extend its behavior.
+            </summary>
+            <param name="baseStream">The <see cref="T:System.IO.Stream"/> instance to decorate in order to extend its behavior.</param>
+            <param name="isDisposingDecoratedStream">When set to <c>true</c> the decorated underlying <see cref="T:System.IO.Stream"/> will be disposed or closed too, if the <see cref="T:BionicCode.Utilities.Net.Standard.IO.AutoResetStream"/> is disposed or closed.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.Reset(System.IO.SeekOrigin)">
+            <summary>
+            Resets the <see cref="P:System.IO.Stream.Position"/> to an offset of '0' relative to the provided <paramref name="seekOrigin"/>.
+            </summary>
+            <param name="seekOrigin">The optional relative position of the <see cref="T:System.IO.Stream"/> to apply the zero offset to. The default is <see cref="F:System.IO.SeekOrigin.Begin"/>.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.Flush">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.FlushAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.ReadByte">
+            <inheritdoc />
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.ReadTimeout">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.SetLength(System.Int64)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.WriteByte(System.Byte)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.WriteTimeout">
+            <inheritdoc />
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.CanRead">
+            <inheritdoc />
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.CanTimeout">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.Close">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.Dispose(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.InitializeLifetimeService">
+            <inheritdoc />
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.CanSeek">
+            <inheritdoc />
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.CanWrite">
+            <inheritdoc />
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.Length">
+            <inheritdoc />
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.Position">
+            <inheritdoc />
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.IO.FileExtensions">
+            <summary>
+            An enumeration of common file extensions.
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.NotDefined">
+            <summary>
+            Undefined value.
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Any">
+            <summary>
+            Represents wildcard '.*'
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Log">
+            <summary>
+            .log
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Txt">
+            <summary>
+            .txt
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Ini">
+            <summary>
+            .ini
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Csv">
+            <summary>
+            .csv
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Bat">
+            <summary>
+            .bat
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Bak">
+            <summary>
+            .bak
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Config">
+            <summary>
+            .config
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Sys">
+            <summary>
+            .sys
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Reg">
+            <summary>
+            .reg
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Info">
+            <summary>
+            .info
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Inf">
+            <summary>
+            .inf
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Help">
+            <summary>
+            .help
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Hlp">
+            <summary>
+            .hlp
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Dll">
+            <summary>
+            .dll
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Bin">
+            <summary>
+            .bin
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Old">
+            <summary>
+            .old
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Iii">
+            <summary>
+            .iii
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Xml">
+            <summary>
+            .xml
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Jpg">
+            <summary>
+            .jpg
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Jpeg">
+            <summary>
+            .jpeg
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Bmp">
+            <summary>
+            .bmp
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Exe">
+            <summary>
+            .exe
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Com">
+            <summary>
+            .com
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Cgc">
+            <summary>
+            .cgc
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Cgt">
+            <summary>
+            .cgt
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Cfg">
+            <summary>
+            .cfg
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Png">
+            <summary>
+            .png
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Zip">
+            <summary>
+            .zip
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Bz2">
+            <summary>
+            .bz2
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Gz">
+            <summary>
+            .gz
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.SevenZip">
+            <summary>
+            .sevenzip
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Xz">
+            <summary>
+            .xz
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Lz">
+            <summary>
+            .lz
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Rar">
+            <summary>
+            .rar
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Tar">
+            <summary>
+            .tar
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Xaml">
+            <summary>
+            .xaml
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Cpp">
+            <summary>
+            .cpp
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.C">
+            <summary>
+            .c
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Cs">
+            <summary>
+            .cs
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Js">
+            <summary>
+            .js
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.Archive">
+            <summary>
+            .archive
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.NonArchive">
+            <summary>
+            .nonarchive
+            </summary>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.IValueInverter">
+            <summary>
+            Provide an implementation to invert an object or objects.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IValueInverter.TryInvertValue(System.Object,System.Object@)">
+            <summary>
+            Trys to invert a value. Won't throw an exception if operation fails.
+            </summary>
+            <param name="value"></param>
+            <param name="invertedValue"></param>
+            <returns><c>true</c> when successful, otherwise <c>false</c></returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IValueInverter.InvertValue(System.Object)">
+            <summary>
+            Throws an exception if operation has failed.
+            </summary>
+            <param name="value"></param>
+            <exception cref="T:System.InvalidOperationException"></exception>
+            <returns>The inverted value.</returns>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.ViewModel.PropertyValueChangedEventHandler`1">
+            <summary>
+            PropertyChanged event handler that supports standard property changed signature events with additional old value and new value parameters.
+            </summary>
+            <typeparam name="TValue"></typeparam>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.ViewModel.IViewModel">
+            <summary>
+            Encapsulates implementations of <see cref="T:System.ComponentModel.INotifyPropertyChanged"/> and <see cref="T:System.ComponentModel.INotifyDataErrorInfo"/> and adds <see cref="E:BionicCode.Utilities.Net.Standard.ViewModel.IViewModel.PropertyValueChanged"/> event which is raised in tandem with <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> except it provides addition data like old value and new value.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.IViewModel.PropertyHasError(System.String)">
+            <summary>
+            Checks whether the specified property has errors or is valid.
+            </summary>
+            <param name="propertyName">The name of the property to check for errors.</param>
+            <returns><c>true</c> when the specified property has at least one error. Otherwise <c>false</c> when the property is valid.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.IViewModel.GetPropertyErrors(System.String)">
+            <summary>
+            Gets all error messages of the specified property. If the <paramref name="propertyName"/> is <c>null</c> all error messages will be returned.
+            </summary>
+            <param name="propertyName">The of the property of which the error messages should be returned.</param>
+            <returns>Returns an <see cref="T:System.Collections.Generic.IEnumerable`1"/> containing all error messages of the specified property.</returns>
+            <remarks>If the <paramref name="propertyName"/> is <c>null</c> all current error messages will be returned.</remarks>
+        </member>
+        <member name="E:BionicCode.Utilities.Net.Standard.ViewModel.IViewModel.PropertyValueChanged">
+            <summary>
+            PropertyChanged implementation that sends old value and new value of the change and raises the INotifyPropertyChanged event.
+            </summary>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.ViewModel.PropertyValueChangedArgs`1">
+            <summary>
+            Event args fro the <see cref="T:BionicCode.Utilities.Net.Standard.ViewModel.PropertyValueChangedEventHandler`1"/> event delegate.
+            </summary>
+            <typeparam name="TValue"></typeparam>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.PropertyValueChangedArgs`1.#ctor(System.String,`0,`0)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="propertyName">The name of the changed property.</param>
+            <param name="oldValue">The value before the change.</param>
+            <param name="newValue">The value that caused the change.</param>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.ViewModel.PropertyValueChangedArgs`1.PropertyName">
+            <summary>
+            Read-only property holding the property's name.
+            </summary>
+            <value>The name of the changed property.</value>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.ViewModel.PropertyValueChangedArgs`1.OldValue">
+            <summary>
+            Read-only property holding the value before the change.
+            </summary>
+            <value>The value before the change.</value>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.ViewModel.PropertyValueChangedArgs`1.NewValue">
+            <summary>
+            Read-only property holding the value after the change.
+            </summary>
+            <value>The value after the change.</value>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.ViewModel.ViewModel">
+            <summary>
+            Base class recommended to use for view models across the application. Encapsulates implementations of <see cref="T:System.ComponentModel.INotifyPropertyChanged"/> and <see cref="T:System.ComponentModel.INotifyDataErrorInfo"/>.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.ViewModel.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.ViewModel.TrySetValue``1(``0,``0@,System.String)">
+            <summary>
+            Generic property setter. Sets the value of any property of the extending view model by passing in a the corresponding property backing field. Automatically raises the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event for this property.
+            </summary>
+            <remarks>If new value equals the old value the value of the property won't change and the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. Uses the <c>Equals</c> implementation to check for equality.</remarks>
+            <typeparam name="TValue">The generic type parameter of the new property value.</typeparam>
+            <param name="value">The new property value.</param>
+            <param name="targetBackingField">The backing field of the target property for the new value. Passed in by reference using <c>ref</c> keyword.</param>
+            <param name="propertyName">The name of the property that changes. By default the property name is automatically set to the property that called this setter method.</param>
+            <returns><c>true</c> when the property has changed or <c>false</c> when the property value didn't change (e.g. on equality of old and new value).</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.ViewModel.TrySetValueSilent``1(``0,``0@,System.String)">
+            <summary>
+            Generic property setter. Silently sets the value of any property of the extending view model by passing in a the corresponding property backing field. Suppresses a <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event for this property.
+            </summary>
+            <remarks>If new value equals the old value the value of the property won't change and the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. Uses the <c>Equals</c> implementation to check for equality.</remarks>
+            <typeparam name="TValue">The generic type parameter of the new property value.</typeparam>
+            <param name="value">The new property value.</param>
+            <param name="targetBackingField">The backing field of the target property for the new value. Passed in by reference using <c>ref</c> keyword.</param>
+            <param name="propertyName">The name of the property that changes. By default the property name is automatically set to the property that called this setter method.</param>
+            <returns><c>true</c> when the property has changed or <c>false</c> when the property value didn't change (e.g. on equality of old and new value).</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.ViewModel.TrySetValue``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.String}}},``0@,System.Boolean,System.Boolean,System.String)">
+            <summary>
+             Sets the value of the referenced property and executes a validation delegate.
+            </summary>
+            <typeparam name="TValue">The generic value type parameter</typeparam>
+            <param name="value">The new value which is to be set to the property.</param>
+            <param name="validationDelegate">The callback that is used to validate the new value.</param>
+            <param name="targetBackingField">The reference to the backing field.</param>
+            <param name="propertyName">The name of the property to set. Default name is the property that called this method.</param>
+            <param name="isRejectInvalidValueEnabled">When <c>true</c> the invalid value is not stored to the backing field.<br/> Use this to ensure that the view model in a valid state.</param>
+            <param name="isThrowExceptionOnValidationErrorEnabled">Enable throwing an <exception cref="T:System.ArgumentException"></exception> if validation failed. Use this when <c>ValidatesOnExceptions</c> on a <c>Binding</c> is set to <c>true</c></param>
+            <exception cref="T:System.ArgumentException">Thrown on validation failed</exception>
+            <returns>Returns <c>true</c> if the new value doesn't equal the old value and the new value is valid. Returns <c>false</c> if the new value equals the old value or the validation has failed.</returns>
+            <remarks>This property setter supports invalid value rejection, which means values are only assigned to the backing field if they are valid which is when the <paramref name="validationDelegate"/> return <c>true</c>.<br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios, <br/> it is recommended to set <paramref name="isThrowExceptionOnValidationErrorEnabled"/> to <c>true</c> and set the validation mode of the binding to <c>Binding.ValidatesOnExceptions</c>.<br/>If not doing so, the binding target will clear the new value and show the last valid value instead.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.ViewModel.TrySetValueSilent``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.String}}},``0@,System.Boolean,System.Boolean,System.String)">
+            <summary>
+             Silently sets the value of the referenced property without raising <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> and executes a validation delegate.
+            </summary>
+            <typeparam name="TValue">The generic value type parameter</typeparam>
+            <param name="value">The new value which is to be set to the property.</param>
+            <param name="validationDelegate">The callback that is used to validate the new value.</param>
+            <param name="targetBackingField">The reference to the backing field.</param>
+            <param name="propertyName">The name of the property to set. Default name is the property that called this method.</param>
+            <param name="isRejectInvalidValueEnabled">When <c>true</c> the invalid value is not stored to the backing field.<br/> Use this to ensure that the view model in a valid state.</param>
+            <param name="isThrowExceptionOnValidationErrorEnabled">Enable throwing an <exception cref="T:System.ArgumentException"></exception> if validation failed. Use this when <c>ValidatesOnExceptions</c> on a <c>Binding</c> is set to <c>true</c></param>
+            <exception cref="T:System.ArgumentException">Thrown on validation failed</exception>
+            <returns>Returns <c>true</c> if the new value doesn't equal the old value and the new value is valid. Returns <c>false</c> if the new value equals the old value or the validation has failed.</returns>
+            <remarks>This property setter supports invalid value rejection, which means values are only assigned to the backing field if they are valid which is when the <paramref name="validationDelegate"/> return <c>true</c>.<br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios, <br/> it is recommended to set <paramref name="isThrowExceptionOnValidationErrorEnabled"/> to <c>true</c> and set the validation mode of the binding to <c>Binding.ValidatesOnExceptions</c>.<br/>If not doing so, the binding target will clear the new value and show the last valid value instead.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.ViewModel.IsValueValid``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.String}}},System.String)">
+            <summary>
+            Can be used to check whether a value is valid.
+            </summary>
+            <typeparam name="TValue">Generic type parameter of the value to check.</typeparam>
+            <param name="value">The value to check.</param>
+            <param name="validationDelegate">The validation delegate <see cref="T:System.Func`2"/>which is invoked on the value.</param>
+            <param name="propertyName">The name of the property to set. Default name is the property that called this method.</param>
+            <returns><c>true</c> when the value is valid, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.ViewModel.PropertyHasError(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.ViewModel.GetPropertyErrors(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="E:BionicCode.Utilities.Net.Standard.ViewModel.ViewModel.PropertyChanged">
+            <summary>
+            Event fired whenever a child property changes its value.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.ViewModel.OnPropertyChanged(System.String,System.Object,System.Object)">
+            <summary>
+            Method called to fire a <see cref="E:BionicCode.Utilities.Net.Standard.ViewModel.ViewModel.PropertyChanged"/> event.
+            Also raises the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event to support binding.
+            </summary>
+            <param name="propertyName"> The property name. </param>
+            <param name="oldValue">The value before the property change.</param>
+            <param name="newValue">The value after the property change.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.ViewModel.GetErrors(System.String)">
+            <summary>
+            Gets all error messages of the specified property. If the <paramref name="propertyName"/> is <c>null</c> all error messages will be returned.
+            </summary>
+            <param name="propertyName">The of the property of which the error messages should be returned.</param>
+            <returns>An <see cref="T:System.Collections.IEnumerable"/> containing all error messages of the specified property.</returns>
+            <remarks>If the <paramref name="propertyName"/> is <c>null</c> all current error messages will be returned.</remarks>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.ViewModel.ViewModel.HasErrors">
+            <inheritdoc />
+        </member>
+        <member name="E:BionicCode.Utilities.Net.Standard.ViewModel.ViewModel.ErrorsChanged">
+            <inheritdoc />
+        </member>
+        <member name="E:BionicCode.Utilities.Net.Standard.ViewModel.ViewModel.PropertyValueChanged">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.ViewModel.OnErrorsChanged(System.String)">
+            <summary>
+            Raised when the validation state of the view model has changed (e.g. error added or removed).
+            </summary>
+            <param name="propertyName"></param>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,1124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<HelpKI>
+  <HelpKINode Title="Aborted enumeration member" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogResult.htm" />
+  <HelpKINode Title="Accepted enumeration member" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogResult.htm" />
+  <HelpKINode Title="AddMostRecentlyUsedFile method">
+    <HelpKINode Title="IMruManager.AddMostRecentlyUsedFile Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_AddMostRecentlyUsedFile.htm" />
+    <HelpKINode Title="MruManager.AddMostRecentlyUsedFile Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_AddMostRecentlyUsedFile.htm" />
+  </HelpKINode>
+  <HelpKINode Title="AddRange method" Url="html/Overload_BionicCode_Utilities_Net_Standard_Extensions_HelperExtensions_AddRange.htm" />
+  <HelpKINode Title="Any enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="AppSettingsConnector class">
+    <HelpKINode Title="AppSettingsConnector Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector.htm" />
+  </HelpKINode>
+  <HelpKINode Title="AppSettingsConnector.TryReadBool method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_TryReadBool.htm" />
+  <HelpKINode Title="AppSettingsConnector.TryReadDouble method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_TryReadDouble.htm" />
+  <HelpKINode Title="AppSettingsConnector.TryReadInt method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_TryReadInt.htm" />
+  <HelpKINode Title="AppSettingsConnector.TryReadString method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_TryReadString.htm" />
+  <HelpKINode Title="AppSettingsConnector.WriteBool method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_WriteBool.htm" />
+  <HelpKINode Title="AppSettingsConnector.WriteDouble method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_WriteDouble.htm" />
+  <HelpKINode Title="AppSettingsConnector.WriteInt method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_WriteInt.htm" />
+  <HelpKINode Title="AppSettingsConnector.WriteString method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_WriteString.htm" />
+  <HelpKINode Title="Archive enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="AsyncRelayCommand class">
+    <HelpKINode Title="AsyncRelayCommand Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand__ctor.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand.htm" />
+  </HelpKINode>
+  <HelpKINode Title="AsyncRelayCommand(Of TParam) class">
+    <HelpKINode Title="AsyncRelayCommand(TParam) Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1__ctor.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="AsyncRelayCommand(Of TParam).AsyncRelayCommand constructor" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1__ctor.htm" />
+  <HelpKINode Title="AsyncRelayCommand(Of TParam).CanExecute method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1_CanExecute.htm" />
+  <HelpKINode Title="AsyncRelayCommand(Of TParam).Execute method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1_Execute.htm" />
+  <HelpKINode Title="AsyncRelayCommand(Of TParam).ExecuteAsync method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1_ExecuteAsync.htm" />
+  <HelpKINode Title="AsyncRelayCommand.AsyncRelayCommand constructor" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand__ctor.htm" />
+  <HelpKINode Title="AsyncRelayCommand.CanExecute method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_CanExecute.htm" />
+  <HelpKINode Title="AsyncRelayCommand.CanExecuteChanged event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_CanExecuteChanged.htm" />
+  <HelpKINode Title="AsyncRelayCommand.CanExecuteNoParam field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_CanExecuteNoParam.htm" />
+  <HelpKINode Title="AsyncRelayCommand.Execute method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_Execute.htm" />
+  <HelpKINode Title="AsyncRelayCommand.ExecuteAsync method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_ExecuteAsync.htm" />
+  <HelpKINode Title="AsyncRelayCommand.ExecuteAsyncNoParam field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_ExecuteAsyncNoParam.htm" />
+  <HelpKINode Title="AsyncRelayCommand.ExecuteNoParam field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_ExecuteNoParam.htm" />
+  <HelpKINode Title="AsyncRelayCommand&lt;TParam&gt; class">
+    <HelpKINode Title="AsyncRelayCommand(TParam) Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1__ctor.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="AsyncRelayCommand&lt;TParam&gt;.AsyncRelayCommand constructor" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1__ctor.htm" />
+  <HelpKINode Title="AsyncRelayCommand&lt;TParam&gt;.CanExecute method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1_CanExecute.htm" />
+  <HelpKINode Title="AsyncRelayCommand&lt;TParam&gt;.Execute method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1_Execute.htm" />
+  <HelpKINode Title="AsyncRelayCommand&lt;TParam&gt;.ExecuteAsync method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1_ExecuteAsync.htm" />
+  <HelpKINode Title="AutoResetStream class">
+    <HelpKINode Title="AutoResetStream Class" Url="html/T_BionicCode_Utilities_Net_Standard_IO_AutoResetStream.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_BionicCode_Utilities_Net_Standard_IO_AutoResetStream__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_IO_AutoResetStream.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_IO_AutoResetStream.htm" />
+  </HelpKINode>
+  <HelpKINode Title="AutoResetStream.AutoResetStream constructor" Url="html/Overload_BionicCode_Utilities_Net_Standard_IO_AutoResetStream__ctor.htm" />
+  <HelpKINode Title="AutoResetStream.BaseStream property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_BaseStream.htm" />
+  <HelpKINode Title="AutoResetStream.CanRead property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_CanRead.htm" />
+  <HelpKINode Title="AutoResetStream.CanSeek property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_CanSeek.htm" />
+  <HelpKINode Title="AutoResetStream.CanTimeout property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_CanTimeout.htm" />
+  <HelpKINode Title="AutoResetStream.CanWrite property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_CanWrite.htm" />
+  <HelpKINode Title="AutoResetStream.Close method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Close.htm" />
+  <HelpKINode Title="AutoResetStream.CopyToAsync method" Url="html/Overload_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_CopyToAsync.htm" />
+  <HelpKINode Title="AutoResetStream.Dispose method" Url="html/Overload_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Dispose.htm" />
+  <HelpKINode Title="AutoResetStream.Equals method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Equals.htm" />
+  <HelpKINode Title="AutoResetStream.Flush method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Flush.htm" />
+  <HelpKINode Title="AutoResetStream.FlushAsync method" Url="html/Overload_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_FlushAsync.htm" />
+  <HelpKINode Title="AutoResetStream.GetHashCode method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_GetHashCode.htm" />
+  <HelpKINode Title="AutoResetStream.InitializeLifetimeService method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_InitializeLifetimeService.htm" />
+  <HelpKINode Title="AutoResetStream.IsDisposingDecoratedStream property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_IsDisposingDecoratedStream.htm" />
+  <HelpKINode Title="AutoResetStream.Length property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Length.htm" />
+  <HelpKINode Title="AutoResetStream.Position property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Position.htm" />
+  <HelpKINode Title="AutoResetStream.Read method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Read.htm" />
+  <HelpKINode Title="AutoResetStream.ReadAsync method" Url="html/Overload_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_ReadAsync.htm" />
+  <HelpKINode Title="AutoResetStream.ReadByte method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_ReadByte.htm" />
+  <HelpKINode Title="AutoResetStream.ReadTimeout property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_ReadTimeout.htm" />
+  <HelpKINode Title="AutoResetStream.Reset method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Reset.htm" />
+  <HelpKINode Title="AutoResetStream.Seek method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Seek.htm" />
+  <HelpKINode Title="AutoResetStream.SetLength method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_SetLength.htm" />
+  <HelpKINode Title="AutoResetStream.ToString method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_ToString.htm" />
+  <HelpKINode Title="AutoResetStream.Write method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Write.htm" />
+  <HelpKINode Title="AutoResetStream.WriteAsync method" Url="html/Overload_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_WriteAsync.htm" />
+  <HelpKINode Title="AutoResetStream.WriteByte method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_WriteByte.htm" />
+  <HelpKINode Title="AutoResetStream.WriteTimeout property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_WriteTimeout.htm" />
+  <HelpKINode Title="Bak enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="BaseStream property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_BaseStream.htm" />
+  <HelpKINode Title="Bat enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Bin enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf namespace" Url="html/N_BionicCode_Utilities_Net_Core_Wpf.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors namespace" Url="html/N_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange structure" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighlightRange.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighLightRangeCollection class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighLightRangeCollection.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.PasswordBox class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.Popup class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Collections.Generic namespace" Url="html/N_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Collections.Generic.ObservablePropertyChangedCollection(Of TItem) class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Collections.Generic.ObservablePropertyChangedCollection&lt;TItem&gt; class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Converter namespace" Url="html/N_BionicCode_Utilities_Net_Core_Wpf_Converter.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Converter.BooleanMultiValueConverter class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_BooleanMultiValueConverter.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Converter.BoolToStringConverter class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Converter.DividerValueConverter class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_DividerValueConverter.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Converter.FilePathTruncateConverter class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Converter.InvertBooleanConverter class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertBooleanConverter.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Converter.InvertValueConverter class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertValueConverter.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Converter.IsGreaterThanValueConverter class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.DefaultValueInverter class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_DefaultValueInverter.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Dialog namespace" Url="html/N_BionicCode_Utilities_Net_Core_Wpf_Dialog.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult enumeration" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogResult.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProvider interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModelProvider.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProviderSource interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModelProviderSource.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Extensions namespace" Url="html/N_BionicCode_Utilities_Net_Core_Wpf_Extensions.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Generic namespace" Url="html/N_BionicCode_Utilities_Net_Core_Wpf_Generic.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand(Of TParam) class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand&lt;TParam&gt; class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand(Of TParam) interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand&lt;TParam&gt; interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.IValueInverter interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_IValueInverter.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Markup namespace" Url="html/N_BionicCode_Utilities_Net_Core_Wpf_Markup.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Markup.EnumExtension class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_EnumExtension.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Markup.EqualsExtension class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_EqualsExtension.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Markup.InversionMode enumeration" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_InversionMode.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Markup.InvertExtension class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Settings namespace" Url="html/N_BionicCode_Utilities_Net_Core_Wpf_Settings.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Settings.AppSettingsConnector class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Settings.IMruManager interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Settings.MostRecentlyUsedFileItem class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Settings.MruManager class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Framework.IO namespace" Url="html/N_BionicCode_Utilities_Net_Framework_IO.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Framework.IO.FilePathFilter class" Url="html/T_BionicCode_Utilities_Net_Framework_IO_FilePathFilter.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Framework.IO.IFilePathFilter interface" Url="html/T_BionicCode_Utilities_Net_Framework_IO_IFilePathFilter.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard namespace" Url="html/N_BionicCode_Utilities_Net_Standard.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.EventAggregator class" Url="html/T_BionicCode_Utilities_Net_Standard_EventAggregator.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.Exception namespace" Url="html/N_BionicCode_Utilities_Net_Standard_Exception.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.Exception.WrongEventHandlerSignatureException class" Url="html/T_BionicCode_Utilities_Net_Standard_Exception_WrongEventHandlerSignatureException.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.Extensions namespace" Url="html/N_BionicCode_Utilities_Net_Standard_Extensions.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.Extensions.HelperExtensions class" Url="html/T_BionicCode_Utilities_Net_Standard_Extensions_HelperExtensions.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.FactoryMode enumeration" Url="html/T_BionicCode_Utilities_Net_Standard_FactoryMode.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.Generic namespace" Url="html/N_BionicCode_Utilities_Net_Standard_Generic.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.Generic.Factory(Of TObject) class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_Factory_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.Generic.Factory&lt;TObject&gt; class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_Factory_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.Generic.IFactory(Of TCreate) interface" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_IFactory_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.Generic.IFactory&lt;TCreate&gt; interface" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_IFactory_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.Generic.NullObjectFactory(Of TObject) class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_NullObjectFactory_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.Generic.NullObjectFactory&lt;TObject&gt; class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_NullObjectFactory_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.Generic.ValueChangedEventArgs(Of TValue) class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.Generic.ValueChangedEventArgs&lt;TValue&gt; class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.Generic.ValueEventArgs(Of TValue) class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.Generic.ValueEventArgs&lt;TValue&gt; class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.IEventAggregator interface" Url="html/T_BionicCode_Utilities_Net_Standard_IEventAggregator.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.INullObject interface" Url="html/T_BionicCode_Utilities_Net_Standard_INullObject.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.IO namespace" Url="html/N_BionicCode_Utilities_Net_Standard_IO.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.IO.AutoResetStream class" Url="html/T_BionicCode_Utilities_Net_Standard_IO_AutoResetStream.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.IO.FileExtensions enumeration" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.IValueInverter interface" Url="html/T_BionicCode_Utilities_Net_Standard_IValueInverter.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.ViewModel namespace" Url="html/N_BionicCode_Utilities_Net_Standard_ViewModel.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.ViewModel.IViewModel interface" Url="html/T_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.ViewModel.PropertyValueChangedArgs(Of TValue) class" Url="html/T_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.ViewModel.PropertyValueChangedArgs&lt;TValue&gt; class" Url="html/T_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.ViewModel.PropertyValueChangedEventHandler(Of TValue) delegate" Url="html/T_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedEventHandler_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.ViewModel.PropertyValueChangedEventHandler&lt;TValue&gt; delegate" Url="html/T_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedEventHandler_1.htm" />
+  <HelpKINode Title="BionicCode.Utilities.Net.Standard.ViewModel.ViewModel class" Url="html/T_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel.htm" />
+  <HelpKINode Title="Bmp enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Boolean property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension_Boolean.htm" />
+  <HelpKINode Title="BooleanMultiValueConverter class">
+    <HelpKINode Title="BooleanMultiValueConverter Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_BooleanMultiValueConverter.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BooleanMultiValueConverter__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Converter_BooleanMultiValueConverter.htm" />
+  </HelpKINode>
+  <HelpKINode Title="BooleanMultiValueConverter.BooleanMultiValueConverter constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BooleanMultiValueConverter__ctor.htm" />
+  <HelpKINode Title="BooleanMultiValueConverter.Convert method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BooleanMultiValueConverter_Convert.htm" />
+  <HelpKINode Title="BooleanMultiValueConverter.ConvertBack method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BooleanMultiValueConverter_ConvertBack.htm" />
+  <HelpKINode Title="BoolToStringConverter class">
+    <HelpKINode Title="BoolToStringConverter Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter__ctor.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter.htm" />
+  </HelpKINode>
+  <HelpKINode Title="BoolToStringConverter.BoolToStringConverter constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter__ctor.htm" />
+  <HelpKINode Title="BoolToStringConverter.Convert method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_Convert.htm" />
+  <HelpKINode Title="BoolToStringConverter.ConvertBack method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_ConvertBack.htm" />
+  <HelpKINode Title="BoolToStringConverter.FalseValue property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_FalseValue.htm" />
+  <HelpKINode Title="BoolToStringConverter.FalseValueProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_FalseValueProperty.htm" />
+  <HelpKINode Title="BoolToStringConverter.NullValue property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_NullValue.htm" />
+  <HelpKINode Title="BoolToStringConverter.NullValueProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_NullValueProperty.htm" />
+  <HelpKINode Title="BoolToStringConverter.TrueValue property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_TrueValue.htm" />
+  <HelpKINode Title="BoolToStringConverter.TrueValueProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_TrueValueProperty.htm" />
+  <HelpKINode Title="Bz2 enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="C enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="CanExecute method">
+    <HelpKINode Title="AsyncRelayCommand(TParam).CanExecute Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1_CanExecute.htm" />
+    <HelpKINode Title="AsyncRelayCommand.CanExecute Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_CanExecute.htm" />
+    <HelpKINode Title="IAsyncRelayCommand(TParam).CanExecute Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1_CanExecute.htm" />
+    <HelpKINode Title="IAsyncRelayCommand.CanExecute Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand_CanExecute.htm" />
+  </HelpKINode>
+  <HelpKINode Title="CanExecuteChanged event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_CanExecuteChanged.htm" />
+  <HelpKINode Title="CanExecuteNoParam field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_CanExecuteNoParam.htm" />
+  <HelpKINode Title="CanRead property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_CanRead.htm" />
+  <HelpKINode Title="CanSeek property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_CanSeek.htm" />
+  <HelpKINode Title="CanTimeout property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_CanTimeout.htm" />
+  <HelpKINode Title="CanWrite property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_CanWrite.htm" />
+  <HelpKINode Title="Cfg enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Cgc enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Cgt enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Clear method">
+    <HelpKINode Title="IMruManager.Clear Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_Clear.htm" />
+    <HelpKINode Title="MruManager.Clear Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_Clear.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ClearItems method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1_ClearItems.htm" />
+  <HelpKINode Title="Close method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Close.htm" />
+  <HelpKINode Title="Com enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Command attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox_Command.htm" />
+  <HelpKINode Title="CommandProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox_CommandProperty.htm" />
+  <HelpKINode Title="Comparer property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_Comparer.htm" />
+  <HelpKINode Title="ComparerProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_ComparerProperty.htm" />
+  <HelpKINode Title="CompareValue property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_CompareValue.htm" />
+  <HelpKINode Title="CompareValueProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_CompareValueProperty.htm" />
+  <HelpKINode Title="Config enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Convert method">
+    <HelpKINode Title="BooleanMultiValueConverter.Convert Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BooleanMultiValueConverter_Convert.htm" />
+    <HelpKINode Title="BoolToStringConverter.Convert Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_Convert.htm" />
+    <HelpKINode Title="DividerValueConverter.Convert Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_DividerValueConverter_Convert.htm" />
+    <HelpKINode Title="FilePathTruncateConverter.Convert Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter_Convert.htm" />
+    <HelpKINode Title="InvertBooleanConverter.Convert Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertBooleanConverter_Convert.htm" />
+    <HelpKINode Title="InvertValueConverter.Convert Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertValueConverter_Convert.htm" />
+    <HelpKINode Title="IsGreaterThanValueConverter.Convert Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_Convert.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ConvertBack method">
+    <HelpKINode Title="BooleanMultiValueConverter.ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BooleanMultiValueConverter_ConvertBack.htm" />
+    <HelpKINode Title="BoolToStringConverter.ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_ConvertBack.htm" />
+    <HelpKINode Title="DividerValueConverter.ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_DividerValueConverter_ConvertBack.htm" />
+    <HelpKINode Title="FilePathTruncateConverter.ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter_ConvertBack.htm" />
+    <HelpKINode Title="InvertBooleanConverter.ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertBooleanConverter_ConvertBack.htm" />
+    <HelpKINode Title="InvertValueConverter.ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertValueConverter_ConvertBack.htm" />
+    <HelpKINode Title="IsGreaterThanValueConverter.ConvertBack Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_ConvertBack.htm" />
+  </HelpKINode>
+  <HelpKINode Title="CopyToAsync method" Url="html/Overload_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_CopyToAsync.htm" />
+  <HelpKINode Title="Cpp enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Create method">
+    <HelpKINode Title="Factory(TObject).Create Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_Factory_1_Create.htm" />
+    <HelpKINode Title="IFactory(TCreate).Create Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_IFactory_1_Create.htm" />
+  </HelpKINode>
+  <HelpKINode Title="CreateInstance method">
+    <HelpKINode Title="Factory(TObject).CreateInstance Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_Factory_1_CreateInstance.htm" />
+    <HelpKINode Title="NullObjectFactory(TObject).CreateInstance Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_NullObjectFactory_1_CreateInstance.htm" />
+  </HelpKINode>
+  <HelpKINode Title="Cs enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Csv enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="DataTemplateSelector attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_DataTemplateSelector.htm" />
+  <HelpKINode Title="DataTemplateSelectorProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_DataTemplateSelectorProperty.htm" />
+  <HelpKINode Title="Default enumeration member">
+    <HelpKINode Title="FactoryMode Enumeration" Url="html/T_BionicCode_Utilities_Net_Standard_FactoryMode.htm" />
+    <HelpKINode Title="InversionMode Enumeration" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_InversionMode.htm" />
+  </HelpKINode>
+  <HelpKINode Title="DefaultValueInverter class">
+    <HelpKINode Title="DefaultValueInverter Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_DefaultValueInverter.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_DefaultValueInverter__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_DefaultValueInverter.htm" />
+  </HelpKINode>
+  <HelpKINode Title="DefaultValueInverter.DefaultValueInverter constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_DefaultValueInverter__ctor.htm" />
+  <HelpKINode Title="DefaultValueInverter.InvertValue method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_DefaultValueInverter_InvertValue.htm" />
+  <HelpKINode Title="DefaultValueInverter.TryInvertValue method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_DefaultValueInverter_TryInvertValue.htm" />
+  <HelpKINode Title="Denied enumeration member" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogResult.htm" />
+  <HelpKINode Title="Dialog class">
+    <HelpKINode Title="Dialog Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog.htm" />
+    <HelpKINode Title="attached properties" Url="html/AttachedProperties_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog__ctor.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog.htm" />
+  </HelpKINode>
+  <HelpKINode Title="Dialog.DataTemplateSelector attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_DataTemplateSelector.htm" />
+  <HelpKINode Title="Dialog.DataTemplateSelectorProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_DataTemplateSelectorProperty.htm" />
+  <HelpKINode Title="Dialog.Dialog constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog__ctor.htm" />
+  <HelpKINode Title="Dialog.DialogDataContext attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_DialogDataContext.htm" />
+  <HelpKINode Title="Dialog.DialogDataContextProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_DialogDataContextProperty.htm" />
+  <HelpKINode Title="Dialog.GetDataTemplateSelector method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_GetDataTemplateSelector.htm" />
+  <HelpKINode Title="Dialog.GetDialogDataContext method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_GetDialogDataContext.htm" />
+  <HelpKINode Title="Dialog.GetStyle method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_GetStyle.htm" />
+  <HelpKINode Title="Dialog.SetDataTemplateSelector method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_SetDataTemplateSelector.htm" />
+  <HelpKINode Title="Dialog.SetDialogDataContext method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_SetDialogDataContext.htm" />
+  <HelpKINode Title="Dialog.SetStyle method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_SetStyle.htm" />
+  <HelpKINode Title="Dialog.Style attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_Style.htm" />
+  <HelpKINode Title="Dialog.StyleProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_StyleProperty.htm" />
+  <HelpKINode Title="Dialog.TryGetDialog method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_TryGetDialog.htm" />
+  <HelpKINode Title="DialogDataContext attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_DialogDataContext.htm" />
+  <HelpKINode Title="DialogDataContextProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_DialogDataContextProperty.htm" />
+  <HelpKINode Title="DialogRequested event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModelProviderSource_DialogRequested.htm" />
+  <HelpKINode Title="DialogResult enumeration" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogResult.htm" />
+  <HelpKINode Title="DialogResult property">
+    <HelpKINode Title="DialogViewModel.DialogResult Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_DialogResult.htm" />
+    <HelpKINode Title="IDialogViewModel.DialogResult Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_DialogResult.htm" />
+  </HelpKINode>
+  <HelpKINode Title="DialogViewModel class">
+    <HelpKINode Title="DialogViewModel Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel__ctor.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel.htm" />
+  </HelpKINode>
+  <HelpKINode Title="DialogViewModel property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModelProvider_DialogViewModel.htm" />
+  <HelpKINode Title="DialogViewModel.DialogResult property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_DialogResult.htm" />
+  <HelpKINode Title="DialogViewModel.DialogViewModel constructor" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel__ctor.htm" />
+  <HelpKINode Title="DialogViewModel.InteractionCompleted event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_InteractionCompleted.htm" />
+  <HelpKINode Title="DialogViewModel.Message property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_Message.htm" />
+  <HelpKINode Title="DialogViewModel.OnInteractionCompleted method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_OnInteractionCompleted.htm" />
+  <HelpKINode Title="DialogViewModel.OnSendResponseAsyncCommandExecuted method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_OnSendResponseAsyncCommandExecuted.htm" />
+  <HelpKINode Title="DialogViewModel.ResponseCallbackAsync property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_ResponseCallbackAsync.htm" />
+  <HelpKINode Title="DialogViewModel.SendResponseAsyncCommand property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_SendResponseAsyncCommand.htm" />
+  <HelpKINode Title="DialogViewModel.Title property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_Title.htm" />
+  <HelpKINode Title="DialogViewModel.TitleBarIcon property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_TitleBarIcon.htm" />
+  <HelpKINode Title="Dispose method" Url="html/Overload_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Dispose.htm" />
+  <HelpKINode Title="DividerValueConverter class">
+    <HelpKINode Title="DividerValueConverter Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_DividerValueConverter.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_DividerValueConverter__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Converter_DividerValueConverter.htm" />
+  </HelpKINode>
+  <HelpKINode Title="DividerValueConverter.Convert method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_DividerValueConverter_Convert.htm" />
+  <HelpKINode Title="DividerValueConverter.ConvertBack method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_DividerValueConverter_ConvertBack.htm" />
+  <HelpKINode Title="DividerValueConverter.DividerValueConverter constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_DividerValueConverter__ctor.htm" />
+  <HelpKINode Title="Dll enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Double property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension_Double.htm" />
+  <HelpKINode Title="EndIndex property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighlightRange_EndIndex.htm" />
+  <HelpKINode Title="EnumerateFiles method">
+    <HelpKINode Title="FilePathFilter.EnumerateFiles Method " Url="html/Overload_BionicCode_Utilities_Net_Framework_IO_FilePathFilter_EnumerateFiles.htm" />
+    <HelpKINode Title="IFilePathFilter.EnumerateFiles Method " Url="html/Overload_BionicCode_Utilities_Net_Framework_IO_IFilePathFilter_EnumerateFiles.htm" />
+  </HelpKINode>
+  <HelpKINode Title="EnumerateFileSystem method">
+    <HelpKINode Title="FilePathFilter.EnumerateFileSystem Method " Url="html/Overload_BionicCode_Utilities_Net_Framework_IO_FilePathFilter_EnumerateFileSystem.htm" />
+    <HelpKINode Title="IFilePathFilter.EnumerateFileSystem Method " Url="html/Overload_BionicCode_Utilities_Net_Framework_IO_IFilePathFilter_EnumerateFileSystem.htm" />
+  </HelpKINode>
+  <HelpKINode Title="EnumExtension class">
+    <HelpKINode Title="EnumExtension Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_EnumExtension.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Markup_EnumExtension__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Markup_EnumExtension.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Markup_EnumExtension.htm" />
+  </HelpKINode>
+  <HelpKINode Title="EnumExtension.EnumExtension constructor" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Markup_EnumExtension__ctor.htm" />
+  <HelpKINode Title="EnumExtension.EnumType property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_EnumExtension_EnumType.htm" />
+  <HelpKINode Title="EnumExtension.ProvideValue method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_EnumExtension_ProvideValue.htm" />
+  <HelpKINode Title="EnumType property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_EnumExtension_EnumType.htm" />
+  <HelpKINode Title="Equality operator" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_op_Equality.htm" />
+  <HelpKINode Title="Equals method">
+    <HelpKINode Title="AutoResetStream.Equals Method " Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Equals.htm" />
+    <HelpKINode Title="MostRecentlyUsedFileItem.Equals Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_Equals.htm" />
+  </HelpKINode>
+  <HelpKINode Title="EqualsExtension class">
+    <HelpKINode Title="EqualsExtension Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_EqualsExtension.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Markup_EqualsExtension__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Markup_EqualsExtension.htm" />
+  </HelpKINode>
+  <HelpKINode Title="EqualsExtension.EqualsExtension constructor" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Markup_EqualsExtension__ctor.htm" />
+  <HelpKINode Title="EqualsExtension.ProvideValue method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_EqualsExtension_ProvideValue.htm" />
+  <HelpKINode Title="ErrorsChanged event" Url="html/E_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_ErrorsChanged.htm" />
+  <HelpKINode Title="EventAggregator class">
+    <HelpKINode Title="EventAggregator Class" Url="html/T_BionicCode_Utilities_Net_Standard_EventAggregator.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_EventAggregator.htm" />
+  </HelpKINode>
+  <HelpKINode Title="EventAggregator.EventAggregator constructor" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator__ctor.htm" />
+  <HelpKINode Title="EventAggregator.TryRegisterGlobalObserver method" Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRegisterGlobalObserver.htm" />
+  <HelpKINode Title="EventAggregator.TryRegisterObservable method" Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRegisterObservable.htm" />
+  <HelpKINode Title="EventAggregator.TryRegisterObserver method" Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRegisterObserver.htm" />
+  <HelpKINode Title="EventAggregator.TryRemoveAllObservers method" Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveAllObservers.htm" />
+  <HelpKINode Title="EventAggregator.TryRemoveGlobalObserver method" Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveGlobalObserver.htm" />
+  <HelpKINode Title="EventAggregator.TryRemoveObservable method" Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveObservable.htm" />
+  <HelpKINode Title="EventAggregator.TryRemoveObserver method" Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveObserver.htm" />
+  <HelpKINode Title="Exe enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Execute method">
+    <HelpKINode Title="AsyncRelayCommand(TParam).Execute Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1_Execute.htm" />
+    <HelpKINode Title="AsyncRelayCommand.Execute Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_Execute.htm" />
+    <HelpKINode Title="IAsyncRelayCommand(TParam).Execute Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1_Execute.htm" />
+    <HelpKINode Title="IAsyncRelayCommand.Execute Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand_Execute.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ExecuteAsync method">
+    <HelpKINode Title="AsyncRelayCommand(TParam).ExecuteAsync Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_AsyncRelayCommand_1_ExecuteAsync.htm" />
+    <HelpKINode Title="AsyncRelayCommand.ExecuteAsync Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_ExecuteAsync.htm" />
+    <HelpKINode Title="IAsyncRelayCommand(TParam).ExecuteAsync Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1_ExecuteAsync.htm" />
+    <HelpKINode Title="IAsyncRelayCommand.ExecuteAsync Method " Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand_ExecuteAsync.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ExecuteAsyncNoParam field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_ExecuteAsyncNoParam.htm" />
+  <HelpKINode Title="ExecuteNoParam field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AsyncRelayCommand_ExecuteNoParam.htm" />
+  <HelpKINode Title="Factory(Of TObject) class">
+    <HelpKINode Title="Factory(TObject) Class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_Factory_1.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_Factory_1__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Generic_Factory_1.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_Generic_Factory_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="Factory(Of TObject).Create method" Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_Factory_1_Create.htm" />
+  <HelpKINode Title="Factory(Of TObject).CreateInstance method" Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_Factory_1_CreateInstance.htm" />
+  <HelpKINode Title="Factory(Of TObject).Factory constructor" Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_Factory_1__ctor.htm" />
+  <HelpKINode Title="Factory(Of TObject).FactoryMode property" Url="html/P_BionicCode_Utilities_Net_Standard_Generic_Factory_1_FactoryMode.htm" />
+  <HelpKINode Title="Factory&lt;TObject&gt; class">
+    <HelpKINode Title="Factory(TObject) Class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_Factory_1.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_Factory_1__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Generic_Factory_1.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_Generic_Factory_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="Factory&lt;TObject&gt;.Create method" Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_Factory_1_Create.htm" />
+  <HelpKINode Title="Factory&lt;TObject&gt;.CreateInstance method" Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_Factory_1_CreateInstance.htm" />
+  <HelpKINode Title="Factory&lt;TObject&gt;.Factory constructor" Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_Factory_1__ctor.htm" />
+  <HelpKINode Title="Factory&lt;TObject&gt;.FactoryMode property" Url="html/P_BionicCode_Utilities_Net_Standard_Generic_Factory_1_FactoryMode.htm" />
+  <HelpKINode Title="FactoryMode enumeration" Url="html/T_BionicCode_Utilities_Net_Standard_FactoryMode.htm" />
+  <HelpKINode Title="FactoryMode property">
+    <HelpKINode Title="Factory(TObject).FactoryMode Property " Url="html/P_BionicCode_Utilities_Net_Standard_Generic_Factory_1_FactoryMode.htm" />
+    <HelpKINode Title="IFactory(TCreate).FactoryMode Property " Url="html/P_BionicCode_Utilities_Net_Standard_Generic_IFactory_1_FactoryMode.htm" />
+  </HelpKINode>
+  <HelpKINode Title="FalseValue property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_FalseValue.htm" />
+  <HelpKINode Title="FalseValueProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_FalseValueProperty.htm" />
+  <HelpKINode Title="FileAdded event">
+    <HelpKINode Title="IMruManager.FileAdded Event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_FileAdded.htm" />
+    <HelpKINode Title="MruManager.FileAdded Event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_FileAdded.htm" />
+  </HelpKINode>
+  <HelpKINode Title="FileExtensions enumeration" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="FileInfo property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_FileInfo.htm" />
+  <HelpKINode Title="FilePathFilter class">
+    <HelpKINode Title="FilePathFilter Class" Url="html/T_BionicCode_Utilities_Net_Framework_IO_FilePathFilter.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Framework_IO_FilePathFilter__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_IO_FilePathFilter.htm" />
+  </HelpKINode>
+  <HelpKINode Title="FilePathFilter.EnumerateFiles method" Url="html/Overload_BionicCode_Utilities_Net_Framework_IO_FilePathFilter_EnumerateFiles.htm" />
+  <HelpKINode Title="FilePathFilter.EnumerateFileSystem method" Url="html/Overload_BionicCode_Utilities_Net_Framework_IO_FilePathFilter_EnumerateFileSystem.htm" />
+  <HelpKINode Title="FilePathFilter.FilePathFilter constructor" Url="html/M_BionicCode_Utilities_Net_Framework_IO_FilePathFilter__ctor.htm" />
+  <HelpKINode Title="FilePathTruncateConverter class">
+    <HelpKINode Title="FilePathTruncateConverter Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter__ctor.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter.htm" />
+  </HelpKINode>
+  <HelpKINode Title="FilePathTruncateConverter.Convert method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter_Convert.htm" />
+  <HelpKINode Title="FilePathTruncateConverter.ConvertBack method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter_ConvertBack.htm" />
+  <HelpKINode Title="FilePathTruncateConverter.FilePathTruncateConverter constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter__ctor.htm" />
+  <HelpKINode Title="FilePathTruncateConverter.MaxLength property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter_MaxLength.htm" />
+  <HelpKINode Title="FilePathTruncateConverter.MaxLengthProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter_MaxLengthProperty.htm" />
+  <HelpKINode Title="FindVisualChildElements(Of TChildren) method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_FindVisualChildElements__1.htm" />
+  <HelpKINode Title="FindVisualChildElements&lt;TChildren&gt; method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_FindVisualChildElements__1.htm" />
+  <HelpKINode Title="Flush method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Flush.htm" />
+  <HelpKINode Title="FlushAsync method" Url="html/Overload_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_FlushAsync.htm" />
+  <HelpKINode Title="FullName property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_FullName.htm" />
+  <HelpKINode Title="GetCommand method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox_GetCommand.htm" />
+  <HelpKINode Title="GetDataTemplateSelector method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_GetDataTemplateSelector.htm" />
+  <HelpKINode Title="GetDialogDataContext method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_GetDialogDataContext.htm" />
+  <HelpKINode Title="GetErrors method" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_GetErrors.htm" />
+  <HelpKINode Title="GetHashCode method">
+    <HelpKINode Title="AutoResetStream.GetHashCode Method " Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_GetHashCode.htm" />
+    <HelpKINode Title="MostRecentlyUsedFileItem.GetHashCode Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_GetHashCode.htm" />
+  </HelpKINode>
+  <HelpKINode Title="GetHighlightBackground method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_GetHighlightBackground.htm" />
+  <HelpKINode Title="GetHighlightForeground method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_GetHighlightForeground.htm" />
+  <HelpKINode Title="GetHighlightRanges method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_GetHighlightRanges.htm" />
+  <HelpKINode Title="GetIsHighlightingEnabled method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_GetIsHighlightingEnabled.htm" />
+  <HelpKINode Title="GetIsSticky method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup_GetIsSticky.htm" />
+  <HelpKINode Title="GetPropertyErrors method">
+    <HelpKINode Title="IViewModel.GetPropertyErrors Method " Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel_GetPropertyErrors.htm" />
+    <HelpKINode Title="ViewModel.GetPropertyErrors Method " Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_GetPropertyErrors.htm" />
+  </HelpKINode>
+  <HelpKINode Title="GetStyle method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_GetStyle.htm" />
+  <HelpKINode Title="GetText method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_GetText.htm" />
+  <HelpKINode Title="GetValueToInvertFromMarkupExtension method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension_GetValueToInvertFromMarkupExtension.htm" />
+  <HelpKINode Title="Gz enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="HasErrors property" Url="html/P_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_HasErrors.htm" />
+  <HelpKINode Title="HasReachedEnd method" Url="html/M_BionicCode_Utilities_Net_Standard_Extensions_HelperExtensions_HasReachedEnd.htm" />
+  <HelpKINode Title="Help enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="HelperExtensions class">
+    <HelpKINode Title="HelperExtensions Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions.htm" />
+    <HelpKINode Title="HelperExtensions Class" Url="html/T_BionicCode_Utilities_Net_Standard_Extensions_HelperExtensions.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Extensions_HelperExtensions.htm" />
+  </HelpKINode>
+  <HelpKINode Title="HelperExtensions.AddRange method" Url="html/Overload_BionicCode_Utilities_Net_Standard_Extensions_HelperExtensions_AddRange.htm" />
+  <HelpKINode Title="HelperExtensions.FindVisualChildElements(Of TChildren) method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_FindVisualChildElements__1.htm" />
+  <HelpKINode Title="HelperExtensions.FindVisualChildElements&lt;TChildren&gt; method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_FindVisualChildElements__1.htm" />
+  <HelpKINode Title="HelperExtensions.HasReachedEnd method" Url="html/M_BionicCode_Utilities_Net_Standard_Extensions_HelperExtensions_HasReachedEnd.htm" />
+  <HelpKINode Title="HelperExtensions.ToDictionary method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_ToDictionary.htm" />
+  <HelpKINode Title="HelperExtensions.TryFindVisualChildElement(Of TChild) method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_TryFindVisualChildElement__1.htm" />
+  <HelpKINode Title="HelperExtensions.TryFindVisualChildElement&lt;TChild&gt; method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_TryFindVisualChildElement__1.htm" />
+  <HelpKINode Title="HelperExtensions.TryFindVisualChildElementByName method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_TryFindVisualChildElementByName.htm" />
+  <HelpKINode Title="HelperExtensions.TryFindVisualParentElement(Of TParent) method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_TryFindVisualParentElement__1.htm" />
+  <HelpKINode Title="HelperExtensions.TryFindVisualParentElement&lt;TParent&gt; method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_TryFindVisualParentElement__1.htm" />
+  <HelpKINode Title="HelperExtensions.TryFindVisualParentElementByName method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_TryFindVisualParentElementByName.htm" />
+  <HelpKINode Title="HighlightBackground attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightBackground.htm" />
+  <HelpKINode Title="HighlightBackgroundProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightBackgroundProperty.htm" />
+  <HelpKINode Title="HighlightForeground attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightForeground.htm" />
+  <HelpKINode Title="HighlightForegroundProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightForegroundProperty.htm" />
+  <HelpKINode Title="HighlightRange structure">
+    <HelpKINode Title="HighlightRange Structure" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighlightRange.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighlightRange__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighlightRange.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighlightRange.htm" />
+  </HelpKINode>
+  <HelpKINode Title="HighlightRange.EndIndex property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighlightRange_EndIndex.htm" />
+  <HelpKINode Title="HighlightRange.HighlightRange constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighlightRange__ctor.htm" />
+  <HelpKINode Title="HighlightRange.StartIndex property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighlightRange_StartIndex.htm" />
+  <HelpKINode Title="HighLightRangeCollection class">
+    <HelpKINode Title="HighLightRangeCollection Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighLightRangeCollection.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighLightRangeCollection__ctor.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighLightRangeCollection.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighLightRangeCollection.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighLightRangeCollection.htm" />
+  </HelpKINode>
+  <HelpKINode Title="HighLightRangeCollection.HighLightRangeCollection constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighLightRangeCollection__ctor.htm" />
+  <HelpKINode Title="HighlightRanges attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightRanges.htm" />
+  <HelpKINode Title="HighlightRangesProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightRangesProperty.htm" />
+  <HelpKINode Title="Hlp enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="IAsyncRelayCommand interface">
+    <HelpKINode Title="IAsyncRelayCommand Interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IAsyncRelayCommand(Of TParam) interface">
+    <HelpKINode Title="IAsyncRelayCommand(TParam) Interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IAsyncRelayCommand(Of TParam).CanExecute method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1_CanExecute.htm" />
+  <HelpKINode Title="IAsyncRelayCommand(Of TParam).Execute method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1_Execute.htm" />
+  <HelpKINode Title="IAsyncRelayCommand(Of TParam).ExecuteAsync method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1_ExecuteAsync.htm" />
+  <HelpKINode Title="IAsyncRelayCommand.CanExecute method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand_CanExecute.htm" />
+  <HelpKINode Title="IAsyncRelayCommand.Execute method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand_Execute.htm" />
+  <HelpKINode Title="IAsyncRelayCommand.ExecuteAsync method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand_ExecuteAsync.htm" />
+  <HelpKINode Title="IAsyncRelayCommand&lt;TParam&gt; interface">
+    <HelpKINode Title="IAsyncRelayCommand(TParam) Interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IAsyncRelayCommand&lt;TParam&gt;.CanExecute method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1_CanExecute.htm" />
+  <HelpKINode Title="IAsyncRelayCommand&lt;TParam&gt;.Execute method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1_Execute.htm" />
+  <HelpKINode Title="IAsyncRelayCommand&lt;TParam&gt;.ExecuteAsync method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1_ExecuteAsync.htm" />
+  <HelpKINode Title="IDialogViewModel interface">
+    <HelpKINode Title="IDialogViewModel Interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IDialogViewModel.DialogResult property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_DialogResult.htm" />
+  <HelpKINode Title="IDialogViewModel.InteractionCompleted event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_InteractionCompleted.htm" />
+  <HelpKINode Title="IDialogViewModel.Message property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_Message.htm" />
+  <HelpKINode Title="IDialogViewModel.ResponseCallbackAsync property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_ResponseCallbackAsync.htm" />
+  <HelpKINode Title="IDialogViewModel.SendResponseAsyncCommand property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_SendResponseAsyncCommand.htm" />
+  <HelpKINode Title="IDialogViewModel.Title property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_Title.htm" />
+  <HelpKINode Title="IDialogViewModel.TitleBarIcon property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_TitleBarIcon.htm" />
+  <HelpKINode Title="IDialogViewModelProvider interface">
+    <HelpKINode Title="IDialogViewModelProvider Interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModelProvider.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModelProvider.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IDialogViewModelProvider.DialogViewModel property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModelProvider_DialogViewModel.htm" />
+  <HelpKINode Title="IDialogViewModelProviderSource interface">
+    <HelpKINode Title="IDialogViewModelProviderSource Interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModelProviderSource.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModelProviderSource.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IDialogViewModelProviderSource.DialogRequested event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModelProviderSource_DialogRequested.htm" />
+  <HelpKINode Title="IEventAggregator interface">
+    <HelpKINode Title="IEventAggregator Interface" Url="html/T_BionicCode_Utilities_Net_Standard_IEventAggregator.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_IEventAggregator.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IEventAggregator.TryRegisterGlobalObserver method" Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRegisterGlobalObserver.htm" />
+  <HelpKINode Title="IEventAggregator.TryRegisterObservable method" Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRegisterObservable.htm" />
+  <HelpKINode Title="IEventAggregator.TryRegisterObserver method" Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRegisterObserver.htm" />
+  <HelpKINode Title="IEventAggregator.TryRemoveAllObservers method" Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveAllObservers.htm" />
+  <HelpKINode Title="IEventAggregator.TryRemoveGlobalObserver method" Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveGlobalObserver.htm" />
+  <HelpKINode Title="IEventAggregator.TryRemoveObservable method" Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveObservable.htm" />
+  <HelpKINode Title="IEventAggregator.TryRemoveObserver method" Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveObserver.htm" />
+  <HelpKINode Title="IFactory(Of TCreate) interface">
+    <HelpKINode Title="IFactory(TCreate) Interface" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_IFactory_1.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Generic_IFactory_1.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_Generic_IFactory_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IFactory(Of TCreate).Create method" Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_IFactory_1_Create.htm" />
+  <HelpKINode Title="IFactory(Of TCreate).FactoryMode property" Url="html/P_BionicCode_Utilities_Net_Standard_Generic_IFactory_1_FactoryMode.htm" />
+  <HelpKINode Title="IFactory&lt;TCreate&gt; interface">
+    <HelpKINode Title="IFactory(TCreate) Interface" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_IFactory_1.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Generic_IFactory_1.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_Generic_IFactory_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IFactory&lt;TCreate&gt;.Create method" Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_IFactory_1_Create.htm" />
+  <HelpKINode Title="IFactory&lt;TCreate&gt;.FactoryMode property" Url="html/P_BionicCode_Utilities_Net_Standard_Generic_IFactory_1_FactoryMode.htm" />
+  <HelpKINode Title="IFilePathFilter interface">
+    <HelpKINode Title="IFilePathFilter Interface" Url="html/T_BionicCode_Utilities_Net_Framework_IO_IFilePathFilter.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Framework_IO_IFilePathFilter.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IFilePathFilter.EnumerateFiles method" Url="html/Overload_BionicCode_Utilities_Net_Framework_IO_IFilePathFilter_EnumerateFiles.htm" />
+  <HelpKINode Title="IFilePathFilter.EnumerateFileSystem method" Url="html/Overload_BionicCode_Utilities_Net_Framework_IO_IFilePathFilter_EnumerateFileSystem.htm" />
+  <HelpKINode Title="Iii enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="IMruManager interface">
+    <HelpKINode Title="IMruManager Interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IMruManager.AddMostRecentlyUsedFile method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_AddMostRecentlyUsedFile.htm" />
+  <HelpKINode Title="IMruManager.Clear method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_Clear.htm" />
+  <HelpKINode Title="IMruManager.FileAdded event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_FileAdded.htm" />
+  <HelpKINode Title="IMruManager.MaxMostRecentlyUsedCount property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_MaxMostRecentlyUsedCount.htm" />
+  <HelpKINode Title="IMruManager.MostRecentlyUsedFile property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_MostRecentlyUsedFile.htm" />
+  <HelpKINode Title="IMruManager.MostRecentlyUsedFiles property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_MostRecentlyUsedFiles.htm" />
+  <HelpKINode Title="Inequality operator" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_op_Inequality.htm" />
+  <HelpKINode Title="Inf enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Info enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Ini enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="InitializeLifetimeService method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_InitializeLifetimeService.htm" />
+  <HelpKINode Title="InsertItem method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1_InsertItem.htm" />
+  <HelpKINode Title="Int32 property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension_Int32.htm" />
+  <HelpKINode Title="InteractionCompleted event">
+    <HelpKINode Title="DialogViewModel.InteractionCompleted Event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_InteractionCompleted.htm" />
+    <HelpKINode Title="IDialogViewModel.InteractionCompleted Event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_InteractionCompleted.htm" />
+  </HelpKINode>
+  <HelpKINode Title="InternalMostRecentlyUsedFiles property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_InternalMostRecentlyUsedFiles.htm" />
+  <HelpKINode Title="INullObject interface">
+    <HelpKINode Title="INullObject Interface" Url="html/T_BionicCode_Utilities_Net_Standard_INullObject.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_INullObject.htm" />
+  </HelpKINode>
+  <HelpKINode Title="INullObject.IsNull property" Url="html/P_BionicCode_Utilities_Net_Standard_INullObject_IsNull.htm" />
+  <HelpKINode Title="InversionMode enumeration" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_InversionMode.htm" />
+  <HelpKINode Title="InvertBooleanConverter class">
+    <HelpKINode Title="InvertBooleanConverter Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertBooleanConverter.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertBooleanConverter__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertBooleanConverter.htm" />
+  </HelpKINode>
+  <HelpKINode Title="InvertBooleanConverter.Convert method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertBooleanConverter_Convert.htm" />
+  <HelpKINode Title="InvertBooleanConverter.ConvertBack method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertBooleanConverter_ConvertBack.htm" />
+  <HelpKINode Title="InvertBooleanConverter.InvertBooleanConverter constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertBooleanConverter__ctor.htm" />
+  <HelpKINode Title="InvertExtension class">
+    <HelpKINode Title="InvertExtension Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension.htm" />
+  </HelpKINode>
+  <HelpKINode Title="InvertExtension.GetValueToInvertFromMarkupExtension method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension_GetValueToInvertFromMarkupExtension.htm" />
+  <HelpKINode Title="InvertExtension.InvertExtension constructor" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension__ctor.htm" />
+  <HelpKINode Title="InvertExtension.Mode property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension_Mode.htm" />
+  <HelpKINode Title="InvertExtension.ProvideValue method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension_ProvideValue.htm" />
+  <HelpKINode Title="InvertExtension.Value property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension_Value.htm" />
+  <HelpKINode Title="InvertValue method">
+    <HelpKINode Title="DefaultValueInverter.InvertValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_DefaultValueInverter_InvertValue.htm" />
+    <HelpKINode Title="IValueInverter.InvertValue Method " Url="html/M_BionicCode_Utilities_Net_Standard_IValueInverter_InvertValue.htm" />
+    <HelpKINode Title="IValueInverter.InvertValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_IValueInverter_InvertValue.htm" />
+  </HelpKINode>
+  <HelpKINode Title="InvertValueConverter class">
+    <HelpKINode Title="InvertValueConverter Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertValueConverter.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertValueConverter__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertValueConverter.htm" />
+  </HelpKINode>
+  <HelpKINode Title="InvertValueConverter.Convert method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertValueConverter_Convert.htm" />
+  <HelpKINode Title="InvertValueConverter.ConvertBack method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertValueConverter_ConvertBack.htm" />
+  <HelpKINode Title="InvertValueConverter.InvertValueConverter constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertValueConverter__ctor.htm" />
+  <HelpKINode Title="IsDisposingDecoratedStream property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_IsDisposingDecoratedStream.htm" />
+  <HelpKINode Title="IsGreaterThanValueConverter class">
+    <HelpKINode Title="IsGreaterThanValueConverter Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter__ctor.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IsGreaterThanValueConverter.Comparer property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_Comparer.htm" />
+  <HelpKINode Title="IsGreaterThanValueConverter.ComparerProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_ComparerProperty.htm" />
+  <HelpKINode Title="IsGreaterThanValueConverter.CompareValue property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_CompareValue.htm" />
+  <HelpKINode Title="IsGreaterThanValueConverter.CompareValueProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_CompareValueProperty.htm" />
+  <HelpKINode Title="IsGreaterThanValueConverter.Convert method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_Convert.htm" />
+  <HelpKINode Title="IsGreaterThanValueConverter.ConvertBack method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter_ConvertBack.htm" />
+  <HelpKINode Title="IsGreaterThanValueConverter.IsGreaterThanValueConverter constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Converter_IsGreaterThanValueConverter__ctor.htm" />
+  <HelpKINode Title="IsHighlightingEnabled attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_IsHighlightingEnabled.htm" />
+  <HelpKINode Title="IsHighlightingEnabledProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_IsHighlightingEnabledProperty.htm" />
+  <HelpKINode Title="IsMruCountValid method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_IsMruCountValid.htm" />
+  <HelpKINode Title="IsNull property" Url="html/P_BionicCode_Utilities_Net_Standard_INullObject_IsNull.htm" />
+  <HelpKINode Title="IsSticky attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup_IsSticky.htm" />
+  <HelpKINode Title="IsStickyProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup_IsStickyProperty.htm" />
+  <HelpKINode Title="IsValueValid(Of TValue) method" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_IsValueValid__1.htm" />
+  <HelpKINode Title="IsValueValid&lt;TValue&gt; method" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_IsValueValid__1.htm" />
+  <HelpKINode Title="IValueInverter interface">
+    <HelpKINode Title="IValueInverter Interface" Url="html/T_BionicCode_Utilities_Net_Standard_IValueInverter.htm" />
+    <HelpKINode Title="IValueInverter Interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_IValueInverter.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_IValueInverter.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_IValueInverter.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IValueInverter.InvertValue method">
+    <HelpKINode Title="IValueInverter.InvertValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_IValueInverter_InvertValue.htm" />
+    <HelpKINode Title="IValueInverter.InvertValue Method " Url="html/M_BionicCode_Utilities_Net_Standard_IValueInverter_InvertValue.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IValueInverter.TryInvertValue method">
+    <HelpKINode Title="IValueInverter.TryInvertValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_IValueInverter_TryInvertValue.htm" />
+    <HelpKINode Title="IValueInverter.TryInvertValue Method " Url="html/M_BionicCode_Utilities_Net_Standard_IValueInverter_TryInvertValue.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IViewModel interface">
+    <HelpKINode Title="IViewModel Interface" Url="html/T_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel.htm" />
+  </HelpKINode>
+  <HelpKINode Title="IViewModel.GetPropertyErrors method" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel_GetPropertyErrors.htm" />
+  <HelpKINode Title="IViewModel.PropertyHasError method" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel_PropertyHasError.htm" />
+  <HelpKINode Title="IViewModel.PropertyValueChanged event" Url="html/E_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel_PropertyValueChanged.htm" />
+  <HelpKINode Title="Jpeg enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Jpg enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Js enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Length property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Length.htm" />
+  <HelpKINode Title="Log enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Lz enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="MaxLength property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter_MaxLength.htm" />
+  <HelpKINode Title="MaxLengthProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_FilePathTruncateConverter_MaxLengthProperty.htm" />
+  <HelpKINode Title="MaxMostRecentlyUsedCount property">
+    <HelpKINode Title="IMruManager.MaxMostRecentlyUsedCount Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_MaxMostRecentlyUsedCount.htm" />
+    <HelpKINode Title="MruManager.MaxMostRecentlyUsedCount Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_MaxMostRecentlyUsedCount.htm" />
+  </HelpKINode>
+  <HelpKINode Title="Message property">
+    <HelpKINode Title="DialogViewModel.Message Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_Message.htm" />
+    <HelpKINode Title="IDialogViewModel.Message Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_Message.htm" />
+  </HelpKINode>
+  <HelpKINode Title="Mode property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension_Mode.htm" />
+  <HelpKINode Title="MostRecentlyUsedFile property">
+    <HelpKINode Title="IMruManager.MostRecentlyUsedFile Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_MostRecentlyUsedFile.htm" />
+    <HelpKINode Title="MruManager.MostRecentlyUsedFile Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_MostRecentlyUsedFile.htm" />
+  </HelpKINode>
+  <HelpKINode Title="MostRecentlyUsedFileItem class">
+    <HelpKINode Title="MostRecentlyUsedFileItem Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem__ctor.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem.htm" />
+    <HelpKINode Title="operators" Url="html/Operators_T_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem.htm" />
+  </HelpKINode>
+  <HelpKINode Title="MostRecentlyUsedFileItem.Equality operator" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_op_Equality.htm" />
+  <HelpKINode Title="MostRecentlyUsedFileItem.Equals method" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_Equals.htm" />
+  <HelpKINode Title="MostRecentlyUsedFileItem.FileInfo property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_FileInfo.htm" />
+  <HelpKINode Title="MostRecentlyUsedFileItem.FullName property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_FullName.htm" />
+  <HelpKINode Title="MostRecentlyUsedFileItem.GetHashCode method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_GetHashCode.htm" />
+  <HelpKINode Title="MostRecentlyUsedFileItem.Inequality operator" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_op_Inequality.htm" />
+  <HelpKINode Title="MostRecentlyUsedFileItem.MostRecentlyUsedFileItem constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem__ctor.htm" />
+  <HelpKINode Title="MostRecentlyUsedFileItem.Name property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_Name.htm" />
+  <HelpKINode Title="MostRecentlyUsedFiles property">
+    <HelpKINode Title="IMruManager.MostRecentlyUsedFiles Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_IMruManager_MostRecentlyUsedFiles.htm" />
+    <HelpKINode Title="MruManager.MostRecentlyUsedFiles Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_MostRecentlyUsedFiles.htm" />
+  </HelpKINode>
+  <HelpKINode Title="MruManager class">
+    <HelpKINode Title="MruManager Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager__ctor.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager.htm" />
+  </HelpKINode>
+  <HelpKINode Title="MruManager.AddMostRecentlyUsedFile method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_AddMostRecentlyUsedFile.htm" />
+  <HelpKINode Title="MruManager.Clear method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_Clear.htm" />
+  <HelpKINode Title="MruManager.FileAdded event" Url="html/E_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_FileAdded.htm" />
+  <HelpKINode Title="MruManager.InternalMostRecentlyUsedFiles property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_InternalMostRecentlyUsedFiles.htm" />
+  <HelpKINode Title="MruManager.IsMruCountValid method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_IsMruCountValid.htm" />
+  <HelpKINode Title="MruManager.MaxMostRecentlyUsedCount property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_MaxMostRecentlyUsedCount.htm" />
+  <HelpKINode Title="MruManager.MostRecentlyUsedFile property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_MostRecentlyUsedFile.htm" />
+  <HelpKINode Title="MruManager.MostRecentlyUsedFiles property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_MostRecentlyUsedFiles.htm" />
+  <HelpKINode Title="MruManager.MruManager constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager__ctor.htm" />
+  <HelpKINode Title="MruManager.OnFileAdded method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_OnFileAdded.htm" />
+  <HelpKINode Title="Name property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Settings_MostRecentlyUsedFileItem_Name.htm" />
+  <HelpKINode Title="NewValue property">
+    <HelpKINode Title="PropertyValueChangedArgs(TValue).NewValue Property " Url="html/P_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1_NewValue.htm" />
+    <HelpKINode Title="ValueChangedEventArgs(TValue).NewValue Property " Url="html/P_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1_NewValue.htm" />
+  </HelpKINode>
+  <HelpKINode Title="NonArchive enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="None enumeration member" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogResult.htm" />
+  <HelpKINode Title="NotDefined enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="NullObjectFactory(Of TObject) class">
+    <HelpKINode Title="NullObjectFactory(TObject) Class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_NullObjectFactory_1.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_NullObjectFactory_1__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Generic_NullObjectFactory_1.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_Generic_NullObjectFactory_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="NullObjectFactory(Of TObject).CreateInstance method" Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_NullObjectFactory_1_CreateInstance.htm" />
+  <HelpKINode Title="NullObjectFactory(Of TObject).NullObjectFactory constructor" Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_NullObjectFactory_1__ctor.htm" />
+  <HelpKINode Title="NullObjectFactory&lt;TObject&gt; class">
+    <HelpKINode Title="NullObjectFactory(TObject) Class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_NullObjectFactory_1.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_NullObjectFactory_1__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Generic_NullObjectFactory_1.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_Generic_NullObjectFactory_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="NullObjectFactory&lt;TObject&gt;.CreateInstance method" Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_NullObjectFactory_1_CreateInstance.htm" />
+  <HelpKINode Title="NullObjectFactory&lt;TObject&gt;.NullObjectFactory constructor" Url="html/Overload_BionicCode_Utilities_Net_Standard_Generic_NullObjectFactory_1__ctor.htm" />
+  <HelpKINode Title="NullValue property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_NullValue.htm" />
+  <HelpKINode Title="NullValueProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_NullValueProperty.htm" />
+  <HelpKINode Title="ObservablePropertyChangedCollection(Of TItem) class">
+    <HelpKINode Title="ObservablePropertyChangedCollection(TItem) Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1__ctor.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ObservablePropertyChangedCollection(Of TItem).ClearItems method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1_ClearItems.htm" />
+  <HelpKINode Title="ObservablePropertyChangedCollection(Of TItem).InsertItem method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1_InsertItem.htm" />
+  <HelpKINode Title="ObservablePropertyChangedCollection(Of TItem).ObservablePropertyChangedCollection constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1__ctor.htm" />
+  <HelpKINode Title="ObservablePropertyChangedCollection(Of TItem).RemoveItem method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1_RemoveItem.htm" />
+  <HelpKINode Title="ObservablePropertyChangedCollection(Of TItem).SetItem method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1_SetItem.htm" />
+  <HelpKINode Title="ObservablePropertyChangedCollection&lt;TItem&gt; class">
+    <HelpKINode Title="ObservablePropertyChangedCollection(TItem) Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1__ctor.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ObservablePropertyChangedCollection&lt;TItem&gt;.ClearItems method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1_ClearItems.htm" />
+  <HelpKINode Title="ObservablePropertyChangedCollection&lt;TItem&gt;.InsertItem method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1_InsertItem.htm" />
+  <HelpKINode Title="ObservablePropertyChangedCollection&lt;TItem&gt;.ObservablePropertyChangedCollection constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1__ctor.htm" />
+  <HelpKINode Title="ObservablePropertyChangedCollection&lt;TItem&gt;.RemoveItem method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1_RemoveItem.htm" />
+  <HelpKINode Title="ObservablePropertyChangedCollection&lt;TItem&gt;.SetItem method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1_SetItem.htm" />
+  <HelpKINode Title="Old enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="OldValue property">
+    <HelpKINode Title="PropertyValueChangedArgs(TValue).OldValue Property " Url="html/P_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1_OldValue.htm" />
+    <HelpKINode Title="ValueChangedEventArgs(TValue).OldValue Property " Url="html/P_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1_OldValue.htm" />
+  </HelpKINode>
+  <HelpKINode Title="OnErrorsChanged method" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_OnErrorsChanged.htm" />
+  <HelpKINode Title="OneTime enumeration member" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_InversionMode.htm" />
+  <HelpKINode Title="OneWay enumeration member" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_InversionMode.htm" />
+  <HelpKINode Title="OneWayToSource enumeration member" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_InversionMode.htm" />
+  <HelpKINode Title="OnFileAdded method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_MruManager_OnFileAdded.htm" />
+  <HelpKINode Title="OnInteractionCompleted method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_OnInteractionCompleted.htm" />
+  <HelpKINode Title="OnPropertyChanged method" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_OnPropertyChanged.htm" />
+  <HelpKINode Title="OnSendResponseAsyncCommandExecuted method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_OnSendResponseAsyncCommandExecuted.htm" />
+  <HelpKINode Title="PasswordBox class">
+    <HelpKINode Title="PasswordBox Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox.htm" />
+    <HelpKINode Title="attached properties" Url="html/AttachedProperties_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox__ctor.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox.htm" />
+  </HelpKINode>
+  <HelpKINode Title="PasswordBox.Command attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox_Command.htm" />
+  <HelpKINode Title="PasswordBox.CommandProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox_CommandProperty.htm" />
+  <HelpKINode Title="PasswordBox.GetCommand method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox_GetCommand.htm" />
+  <HelpKINode Title="PasswordBox.PasswordBox constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox__ctor.htm" />
+  <HelpKINode Title="PasswordBox.SetCommand method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox_SetCommand.htm" />
+  <HelpKINode Title="Png enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Popup class">
+    <HelpKINode Title="Popup Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup.htm" />
+    <HelpKINode Title="attached properties" Url="html/AttachedProperties_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup__ctor.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup.htm" />
+  </HelpKINode>
+  <HelpKINode Title="Popup.GetIsSticky method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup_GetIsSticky.htm" />
+  <HelpKINode Title="Popup.IsSticky attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup_IsSticky.htm" />
+  <HelpKINode Title="Popup.IsStickyProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup_IsStickyProperty.htm" />
+  <HelpKINode Title="Popup.Popup constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup__ctor.htm" />
+  <HelpKINode Title="Popup.SetIsSticky method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup_SetIsSticky.htm" />
+  <HelpKINode Title="Position property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Position.htm" />
+  <HelpKINode Title="PrimitiveTypeExtension class">
+    <HelpKINode Title="PrimitiveTypeExtension Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension.htm" />
+  </HelpKINode>
+  <HelpKINode Title="PrimitiveTypeExtension.Boolean property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension_Boolean.htm" />
+  <HelpKINode Title="PrimitiveTypeExtension.Double property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension_Double.htm" />
+  <HelpKINode Title="PrimitiveTypeExtension.Int32 property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension_Int32.htm" />
+  <HelpKINode Title="PrimitiveTypeExtension.PrimitiveTypeExtension constructor" Url="html/Overload_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension__ctor.htm" />
+  <HelpKINode Title="PrimitiveTypeExtension.ProvideValue method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension_ProvideValue.htm" />
+  <HelpKINode Title="PrimitiveTypeExtension.String property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension_String.htm" />
+  <HelpKINode Title="PropertyChanged event" Url="html/E_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_PropertyChanged.htm" />
+  <HelpKINode Title="PropertyHasError method">
+    <HelpKINode Title="IViewModel.PropertyHasError Method " Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel_PropertyHasError.htm" />
+    <HelpKINode Title="ViewModel.PropertyHasError Method " Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_PropertyHasError.htm" />
+  </HelpKINode>
+  <HelpKINode Title="PropertyName property" Url="html/P_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1_PropertyName.htm" />
+  <HelpKINode Title="PropertyValueChanged event">
+    <HelpKINode Title="IViewModel.PropertyValueChanged Event" Url="html/E_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel_PropertyValueChanged.htm" />
+    <HelpKINode Title="ViewModel.PropertyValueChanged Event" Url="html/E_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_PropertyValueChanged.htm" />
+  </HelpKINode>
+  <HelpKINode Title="PropertyValueChangedArgs(Of TValue) class">
+    <HelpKINode Title="PropertyValueChangedArgs(TValue) Class" Url="html/T_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="PropertyValueChangedArgs(Of TValue).NewValue property" Url="html/P_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1_NewValue.htm" />
+  <HelpKINode Title="PropertyValueChangedArgs(Of TValue).OldValue property" Url="html/P_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1_OldValue.htm" />
+  <HelpKINode Title="PropertyValueChangedArgs(Of TValue).PropertyName property" Url="html/P_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1_PropertyName.htm" />
+  <HelpKINode Title="PropertyValueChangedArgs(Of TValue).PropertyValueChangedArgs constructor" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1__ctor.htm" />
+  <HelpKINode Title="PropertyValueChangedArgs&lt;TValue&gt; class">
+    <HelpKINode Title="PropertyValueChangedArgs(TValue) Class" Url="html/T_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="PropertyValueChangedArgs&lt;TValue&gt;.NewValue property" Url="html/P_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1_NewValue.htm" />
+  <HelpKINode Title="PropertyValueChangedArgs&lt;TValue&gt;.OldValue property" Url="html/P_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1_OldValue.htm" />
+  <HelpKINode Title="PropertyValueChangedArgs&lt;TValue&gt;.PropertyName property" Url="html/P_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1_PropertyName.htm" />
+  <HelpKINode Title="PropertyValueChangedArgs&lt;TValue&gt;.PropertyValueChangedArgs constructor" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedArgs_1__ctor.htm" />
+  <HelpKINode Title="PropertyValueChangedEventHandler(Of TValue) delegate" Url="html/T_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedEventHandler_1.htm" />
+  <HelpKINode Title="PropertyValueChangedEventHandler&lt;TValue&gt; delegate" Url="html/T_BionicCode_Utilities_Net_Standard_ViewModel_PropertyValueChangedEventHandler_1.htm" />
+  <HelpKINode Title="ProvideValue method">
+    <HelpKINode Title="EnumExtension.ProvideValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_EnumExtension_ProvideValue.htm" />
+    <HelpKINode Title="EqualsExtension.ProvideValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_EqualsExtension_ProvideValue.htm" />
+    <HelpKINode Title="InvertExtension.ProvideValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension_ProvideValue.htm" />
+    <HelpKINode Title="PrimitiveTypeExtension.ProvideValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension_ProvideValue.htm" />
+  </HelpKINode>
+  <HelpKINode Title="Rar enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Read method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Read.htm" />
+  <HelpKINode Title="ReadAsync method" Url="html/Overload_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_ReadAsync.htm" />
+  <HelpKINode Title="ReadByte method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_ReadByte.htm" />
+  <HelpKINode Title="ReadTimeout property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_ReadTimeout.htm" />
+  <HelpKINode Title="Reg enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="RemoveItem method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1_RemoveItem.htm" />
+  <HelpKINode Title="Reset method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Reset.htm" />
+  <HelpKINode Title="ResponseCallbackAsync property">
+    <HelpKINode Title="DialogViewModel.ResponseCallbackAsync Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_ResponseCallbackAsync.htm" />
+    <HelpKINode Title="IDialogViewModel.ResponseCallbackAsync Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_ResponseCallbackAsync.htm" />
+  </HelpKINode>
+  <HelpKINode Title="Seek method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Seek.htm" />
+  <HelpKINode Title="SendResponseAsyncCommand property">
+    <HelpKINode Title="DialogViewModel.SendResponseAsyncCommand Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_SendResponseAsyncCommand.htm" />
+    <HelpKINode Title="IDialogViewModel.SendResponseAsyncCommand Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_SendResponseAsyncCommand.htm" />
+  </HelpKINode>
+  <HelpKINode Title="SetCommand method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_PasswordBox_SetCommand.htm" />
+  <HelpKINode Title="SetDataTemplateSelector method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_SetDataTemplateSelector.htm" />
+  <HelpKINode Title="SetDialogDataContext method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_SetDialogDataContext.htm" />
+  <HelpKINode Title="SetHighlightBackground method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_SetHighlightBackground.htm" />
+  <HelpKINode Title="SetHighlightForeground method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_SetHighlightForeground.htm" />
+  <HelpKINode Title="SetHighlightRanges method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_SetHighlightRanges.htm" />
+  <HelpKINode Title="SetIsHighlightingEnabled method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_SetIsHighlightingEnabled.htm" />
+  <HelpKINode Title="SetIsSticky method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_Popup_SetIsSticky.htm" />
+  <HelpKINode Title="SetItem method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Collections_Generic_ObservablePropertyChangedCollection_1_SetItem.htm" />
+  <HelpKINode Title="SetLength method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_SetLength.htm" />
+  <HelpKINode Title="SetStyle method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_SetStyle.htm" />
+  <HelpKINode Title="SetText method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_SetText.htm" />
+  <HelpKINode Title="SevenZip enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Singleton enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_FactoryMode.htm" />
+  <HelpKINode Title="StartIndex property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_HighlightRange_StartIndex.htm" />
+  <HelpKINode Title="String property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_PrimitiveTypeExtension_String.htm" />
+  <HelpKINode Title="Style attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_Style.htm" />
+  <HelpKINode Title="StyleProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_StyleProperty.htm" />
+  <HelpKINode Title="Sys enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Tar enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Text attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_Text.htm" />
+  <HelpKINode Title="TextControl class">
+    <HelpKINode Title="TextControl Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl.htm" />
+    <HelpKINode Title="attached properties" Url="html/AttachedProperties_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl__ctor.htm" />
+    <HelpKINode Title="fields" Url="html/Fields_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl.htm" />
+  </HelpKINode>
+  <HelpKINode Title="TextControl.GetHighlightBackground method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_GetHighlightBackground.htm" />
+  <HelpKINode Title="TextControl.GetHighlightForeground method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_GetHighlightForeground.htm" />
+  <HelpKINode Title="TextControl.GetHighlightRanges method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_GetHighlightRanges.htm" />
+  <HelpKINode Title="TextControl.GetIsHighlightingEnabled method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_GetIsHighlightingEnabled.htm" />
+  <HelpKINode Title="TextControl.GetText method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_GetText.htm" />
+  <HelpKINode Title="TextControl.HighlightBackground attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightBackground.htm" />
+  <HelpKINode Title="TextControl.HighlightBackgroundProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightBackgroundProperty.htm" />
+  <HelpKINode Title="TextControl.HighlightForeground attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightForeground.htm" />
+  <HelpKINode Title="TextControl.HighlightForegroundProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightForegroundProperty.htm" />
+  <HelpKINode Title="TextControl.HighlightRanges attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightRanges.htm" />
+  <HelpKINode Title="TextControl.HighlightRangesProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_HighlightRangesProperty.htm" />
+  <HelpKINode Title="TextControl.IsHighlightingEnabled attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_IsHighlightingEnabled.htm" />
+  <HelpKINode Title="TextControl.IsHighlightingEnabledProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_IsHighlightingEnabledProperty.htm" />
+  <HelpKINode Title="TextControl.SetHighlightBackground method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_SetHighlightBackground.htm" />
+  <HelpKINode Title="TextControl.SetHighlightForeground method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_SetHighlightForeground.htm" />
+  <HelpKINode Title="TextControl.SetHighlightRanges method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_SetHighlightRanges.htm" />
+  <HelpKINode Title="TextControl.SetIsHighlightingEnabled method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_SetIsHighlightingEnabled.htm" />
+  <HelpKINode Title="TextControl.SetText method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_SetText.htm" />
+  <HelpKINode Title="TextControl.Text attached property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_Text.htm" />
+  <HelpKINode Title="TextControl.TextControl constructor" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl__ctor.htm" />
+  <HelpKINode Title="TextControl.TextProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_TextProperty.htm" />
+  <HelpKINode Title="TextProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_AttachedBehaviors_TextControl_TextProperty.htm" />
+  <HelpKINode Title="Title property">
+    <HelpKINode Title="DialogViewModel.Title Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_Title.htm" />
+    <HelpKINode Title="IDialogViewModel.Title Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_Title.htm" />
+  </HelpKINode>
+  <HelpKINode Title="TitleBarIcon property">
+    <HelpKINode Title="DialogViewModel.TitleBarIcon Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_DialogViewModel_TitleBarIcon.htm" />
+    <HelpKINode Title="IDialogViewModel.TitleBarIcon Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Dialog_IDialogViewModel_TitleBarIcon.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ToDictionary method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_ToDictionary.htm" />
+  <HelpKINode Title="ToString method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_ToString.htm" />
+  <HelpKINode Title="Transient enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_FactoryMode.htm" />
+  <HelpKINode Title="TrueValue property" Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_TrueValue.htm" />
+  <HelpKINode Title="TrueValueProperty field" Url="html/F_BionicCode_Utilities_Net_Core_Wpf_Converter_BoolToStringConverter_TrueValueProperty.htm" />
+  <HelpKINode Title="TryFindVisualChildElement(Of TChild) method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_TryFindVisualChildElement__1.htm" />
+  <HelpKINode Title="TryFindVisualChildElement&lt;TChild&gt; method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_TryFindVisualChildElement__1.htm" />
+  <HelpKINode Title="TryFindVisualChildElementByName method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_TryFindVisualChildElementByName.htm" />
+  <HelpKINode Title="TryFindVisualParentElement(Of TParent) method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_TryFindVisualParentElement__1.htm" />
+  <HelpKINode Title="TryFindVisualParentElement&lt;TParent&gt; method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_TryFindVisualParentElement__1.htm" />
+  <HelpKINode Title="TryFindVisualParentElementByName method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_TryFindVisualParentElementByName.htm" />
+  <HelpKINode Title="TryGetDialog method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_TryGetDialog.htm" />
+  <HelpKINode Title="TryInvertValue method">
+    <HelpKINode Title="DefaultValueInverter.TryInvertValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_DefaultValueInverter_TryInvertValue.htm" />
+    <HelpKINode Title="IValueInverter.TryInvertValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_IValueInverter_TryInvertValue.htm" />
+    <HelpKINode Title="IValueInverter.TryInvertValue Method " Url="html/M_BionicCode_Utilities_Net_Standard_IValueInverter_TryInvertValue.htm" />
+  </HelpKINode>
+  <HelpKINode Title="TryReadBool method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_TryReadBool.htm" />
+  <HelpKINode Title="TryReadDouble method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_TryReadDouble.htm" />
+  <HelpKINode Title="TryReadInt method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_TryReadInt.htm" />
+  <HelpKINode Title="TryReadString method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_TryReadString.htm" />
+  <HelpKINode Title="TryRegisterGlobalObserver method">
+    <HelpKINode Title="EventAggregator.TryRegisterGlobalObserver Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRegisterGlobalObserver.htm" />
+    <HelpKINode Title="IEventAggregator.TryRegisterGlobalObserver Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRegisterGlobalObserver.htm" />
+  </HelpKINode>
+  <HelpKINode Title="TryRegisterObservable method">
+    <HelpKINode Title="EventAggregator.TryRegisterObservable Method " Url="html/M_BionicCode_Utilities_Net_Standard_EventAggregator_TryRegisterObservable.htm" />
+    <HelpKINode Title="IEventAggregator.TryRegisterObservable Method " Url="html/M_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRegisterObservable.htm" />
+  </HelpKINode>
+  <HelpKINode Title="TryRegisterObserver method">
+    <HelpKINode Title="EventAggregator.TryRegisterObserver Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRegisterObserver.htm" />
+    <HelpKINode Title="IEventAggregator.TryRegisterObserver Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRegisterObserver.htm" />
+  </HelpKINode>
+  <HelpKINode Title="TryRemoveAllObservers method">
+    <HelpKINode Title="EventAggregator.TryRemoveAllObservers Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveAllObservers.htm" />
+    <HelpKINode Title="IEventAggregator.TryRemoveAllObservers Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveAllObservers.htm" />
+  </HelpKINode>
+  <HelpKINode Title="TryRemoveGlobalObserver method">
+    <HelpKINode Title="EventAggregator.TryRemoveGlobalObserver Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveGlobalObserver.htm" />
+    <HelpKINode Title="IEventAggregator.TryRemoveGlobalObserver Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveGlobalObserver.htm" />
+  </HelpKINode>
+  <HelpKINode Title="TryRemoveObservable method">
+    <HelpKINode Title="EventAggregator.TryRemoveObservable Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveObservable.htm" />
+    <HelpKINode Title="IEventAggregator.TryRemoveObservable Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveObservable.htm" />
+  </HelpKINode>
+  <HelpKINode Title="TryRemoveObserver method">
+    <HelpKINode Title="EventAggregator.TryRemoveObserver Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_EventAggregator_TryRemoveObserver.htm" />
+    <HelpKINode Title="IEventAggregator.TryRemoveObserver Method " Url="html/Overload_BionicCode_Utilities_Net_Standard_IEventAggregator_TryRemoveObserver.htm" />
+  </HelpKINode>
+  <HelpKINode Title="TrySetValue method" Url="html/Overload_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_TrySetValue.htm" />
+  <HelpKINode Title="TrySetValueSilent method" Url="html/Overload_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_TrySetValueSilent.htm" />
+  <HelpKINode Title="TwoWay enumeration member" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_InversionMode.htm" />
+  <HelpKINode Title="Txt enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Value property">
+    <HelpKINode Title="InvertExtension.Value Property " Url="html/P_BionicCode_Utilities_Net_Core_Wpf_Markup_InvertExtension_Value.htm" />
+    <HelpKINode Title="ValueEventArgs(TValue).Value Property " Url="html/P_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1_Value.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ValueChangedEventArgs(Of TValue) class">
+    <HelpKINode Title="ValueChangedEventArgs(TValue) Class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ValueChangedEventArgs(Of TValue).NewValue property" Url="html/P_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1_NewValue.htm" />
+  <HelpKINode Title="ValueChangedEventArgs(Of TValue).OldValue property" Url="html/P_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1_OldValue.htm" />
+  <HelpKINode Title="ValueChangedEventArgs(Of TValue).ValueChangedEventArgs constructor" Url="html/M_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1__ctor.htm" />
+  <HelpKINode Title="ValueChangedEventArgs&lt;TValue&gt; class">
+    <HelpKINode Title="ValueChangedEventArgs(TValue) Class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ValueChangedEventArgs&lt;TValue&gt;.NewValue property" Url="html/P_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1_NewValue.htm" />
+  <HelpKINode Title="ValueChangedEventArgs&lt;TValue&gt;.OldValue property" Url="html/P_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1_OldValue.htm" />
+  <HelpKINode Title="ValueChangedEventArgs&lt;TValue&gt;.ValueChangedEventArgs constructor" Url="html/M_BionicCode_Utilities_Net_Standard_Generic_ValueChangedEventArgs_1__ctor.htm" />
+  <HelpKINode Title="ValueEventArgs(Of TValue) class">
+    <HelpKINode Title="ValueEventArgs(TValue) Class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ValueEventArgs(Of TValue).Value property" Url="html/P_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1_Value.htm" />
+  <HelpKINode Title="ValueEventArgs(Of TValue).ValueEventArgs constructor" Url="html/M_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1__ctor.htm" />
+  <HelpKINode Title="ValueEventArgs&lt;TValue&gt; class">
+    <HelpKINode Title="ValueEventArgs(TValue) Class" Url="html/T_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1__ctor.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ValueEventArgs&lt;TValue&gt;.Value property" Url="html/P_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1_Value.htm" />
+  <HelpKINode Title="ValueEventArgs&lt;TValue&gt;.ValueEventArgs constructor" Url="html/M_BionicCode_Utilities_Net_Standard_Generic_ValueEventArgs_1__ctor.htm" />
+  <HelpKINode Title="version">
+    <HelpKINode Title="1.0.0.0" Url="html/e3f796bb-fafc-41a5-a922-eb3f43610968.htm" />
+    <HelpKINode Title="history" Url="html/c5da87fe-d1a3-43fb-9427-d5a468d39c51.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ViewModel class">
+    <HelpKINode Title="ViewModel Class" Url="html/T_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel.htm" />
+    <HelpKINode Title="constructor" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel__ctor.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ViewModel.ErrorsChanged event" Url="html/E_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_ErrorsChanged.htm" />
+  <HelpKINode Title="ViewModel.GetErrors method" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_GetErrors.htm" />
+  <HelpKINode Title="ViewModel.GetPropertyErrors method" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_GetPropertyErrors.htm" />
+  <HelpKINode Title="ViewModel.HasErrors property" Url="html/P_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_HasErrors.htm" />
+  <HelpKINode Title="ViewModel.IsValueValid(Of TValue) method" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_IsValueValid__1.htm" />
+  <HelpKINode Title="ViewModel.IsValueValid&lt;TValue&gt; method" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_IsValueValid__1.htm" />
+  <HelpKINode Title="ViewModel.OnErrorsChanged method" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_OnErrorsChanged.htm" />
+  <HelpKINode Title="ViewModel.OnPropertyChanged method" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_OnPropertyChanged.htm" />
+  <HelpKINode Title="ViewModel.PropertyChanged event" Url="html/E_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_PropertyChanged.htm" />
+  <HelpKINode Title="ViewModel.PropertyHasError method" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_PropertyHasError.htm" />
+  <HelpKINode Title="ViewModel.PropertyValueChanged event" Url="html/E_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_PropertyValueChanged.htm" />
+  <HelpKINode Title="ViewModel.TrySetValue method" Url="html/Overload_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_TrySetValue.htm" />
+  <HelpKINode Title="ViewModel.TrySetValueSilent method" Url="html/Overload_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_TrySetValueSilent.htm" />
+  <HelpKINode Title="ViewModel.ViewModel constructor" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel__ctor.htm" />
+  <HelpKINode Title="Welcome" Url="html/15cadd46-fec9-403c-9db4-d611b51370ca.htm" />
+  <HelpKINode Title="Write method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_Write.htm" />
+  <HelpKINode Title="WriteAsync method" Url="html/Overload_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_WriteAsync.htm" />
+  <HelpKINode Title="WriteBool method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_WriteBool.htm" />
+  <HelpKINode Title="WriteByte method" Url="html/M_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_WriteByte.htm" />
+  <HelpKINode Title="WriteDouble method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_WriteDouble.htm" />
+  <HelpKINode Title="WriteInt method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_WriteInt.htm" />
+  <HelpKINode Title="WriteString method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_WriteString.htm" />
+  <HelpKINode Title="WriteTimeout property" Url="html/P_BionicCode_Utilities_Net_Standard_IO_AutoResetStream_WriteTimeout.htm" />
+  <HelpKINode Title="WrongEventHandlerSignatureException class">
+    <HelpKINode Title="WrongEventHandlerSignatureException Class" Url="html/T_BionicCode_Utilities_Net_Standard_Exception_WrongEventHandlerSignatureException.htm" />
+    <HelpKINode Title="constructor" Url="html/Overload_BionicCode_Utilities_Net_Standard_Exception_WrongEventHandlerSignatureException__ctor.htm" />
+    <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Standard_Exception_WrongEventHandlerSignatureException.htm" />
+    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_Exception_WrongEventHandlerSignatureException.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_BionicCode_Utilities_Net_Standard_Exception_WrongEventHandlerSignatureException.htm" />
+  </HelpKINode>
+  <HelpKINode Title="WrongEventHandlerSignatureException.WrongEventHandlerSignatureException constructor" Url="html/Overload_BionicCode_Utilities_Net_Standard_Exception_WrongEventHandlerSignatureException__ctor.htm" />
+  <HelpKINode Title="Xaml enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Xml enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Xz enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+  <HelpKINode Title="Zip enumeration member" Url="html/T_BionicCode_Utilities_Net_Standard_IO_FileExtensions.htm" />
+</HelpKI>

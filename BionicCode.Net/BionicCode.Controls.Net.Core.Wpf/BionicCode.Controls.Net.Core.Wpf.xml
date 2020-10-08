@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BionicCode.Controls.Net.Core.Wpf</name>
+    </assembly>
+    <members>
+        <!-- Badly formed XML comment ignored for member "T:BionicCode.Controls.Net.Core.Wpf.Control.ClosableTabControl" -->
+        <member name="T:BionicCode.Controls.Net.Core.Wpf.Control.IMatchFormatter">
+            <summary>
+            Implement this interface to apply a custom highlight style for more complex scenarios e.g., code editors.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Controls.Net.Core.Wpf.Control.IMatchFormatter.FormatMatch(BionicCode.Controls.Net.Core.Wpf.Control.MatchInfo,BionicCode.Controls.Net.Core.Wpf.Control.HighlightArgs)">
+            <summary>
+            Executes when the <see cref="T:BionicCode.Controls.Net.Core.Wpf.Control.HighlightRichTextBox"/> highlights found matches.
+            </summary>
+            <param name="matchInfo">A <see cref="T:BionicCode.Controls.Net.Core.Wpf.Control.MatchInfo"/> that contains the match to give access to the actual <see cref="T:System.Windows.Documents.TextRange"/>.</param>
+            <param name="args">A <see cref="T:BionicCode.Controls.Net.Core.Wpf.Control.HighlightArgs"/> that holds the current configured highlight formatting attributes of the <see cref="T:BionicCode.Controls.Net.Core.Wpf.Control.HighlightRichTextBox"/> and a reference to the actual <see cref="T:BionicCode.Controls.Net.Core.Wpf.Control.HighlightRichTextBox"/>.</param>
+        </member>
+        <member name="M:BionicCode.Controls.Net.Core.Wpf.Control.DefaultMatchFormatter.FormatMatch(BionicCode.Controls.Net.Core.Wpf.Control.MatchInfo,BionicCode.Controls.Net.Core.Wpf.Control.HighlightArgs)">
+            <inheritdoc />
+        </member>
+        <member name="T:BionicCode.Controls.Net.Core.Wpf.Control.DelimiterPair">
+            <summary>
+            Describes a pair of opening and closing delimiters that encloses text to highlight on match.
+            </summary>
+        </member>
+        <member name="T:BionicCode.Controls.Net.Core.Wpf.Control.HighlightArgs">
+            <summary>
+            Holds formatting attributes that should be applied to the match results.
+            </summary>
+        </member>
+        <member name="T:BionicCode.Controls.Net.Core.Wpf.Control.MatchFoundEventArgs">
+            <summary>
+            Holds formatting attributes that should be applied to the match results.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:BionicCode.Controls.Net.Core.Wpf.Control.NormalizingNumericTextBox" -->
+        <member name="M:BionicCode.Controls.Net.Core.Wpf.Control.NormalizingNumericTextBox.OnApplyTemplate">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Controls.Net.Core.Wpf.Control.NormalizingNumericTextBox.OnTextChanged(System.Windows.Controls.TextChangedEventArgs)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Controls.Net.Core.Wpf.Control.NormalizingNumericTextBox.OnTextInput(System.Windows.Input.TextCompositionEventArgs)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Controls.Net.Core.Wpf.Control.ScrollModeListBox.OnApplyTemplate">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Controls.Net.Core.Wpf.Control.ScrollModeListBox.OnItemsChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Controls.Net.Core.Wpf.Unit.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:XamlGeneratedNamespace.GeneratedInternalTypeHelper">
+            <summary>
+            GeneratedInternalTypeHelper
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
+            <summary>
+            CreateInstance
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            GetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            SetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
+            <summary>
+            CreateDelegate
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
+            <summary>
+            AddEventHandler
+            </summary>
+        </member>
+    </members>
+</doc>

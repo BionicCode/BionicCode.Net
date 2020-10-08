@@ -1,0 +1,1745 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>BionicCode.Controls.Net.Core.Wpf</name>
+  </assembly>
+  <members>
+    <member name="T:BionicCode.Controls.Net.Core.Wpf.ClosableTabControl">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Controls.Net.Core.Wpf.ClosableTabControl</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.ClosableTabControl.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Controls.Net.Core.Wpf.ClosableTabControl</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.ClosableTabControl.CloseTabRoutedCommand">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.ClosableTabControl.CloseTabRoutedCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:BionicCode.Controls.Net.Core.Wpf.DefaultMatchFormatter">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Controls.Net.Core.Wpf.DefaultMatchFormatter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.DefaultMatchFormatter.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Controls.Net.Core.Wpf.DefaultMatchFormatter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.DefaultMatchFormatter.FormatMatch(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DefaultMatchFormatter.FormatMatch(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="matchInfo">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>matchInfo</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DefaultMatchFormatter.FormatMatch(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="args">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>args</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DefaultMatchFormatter.FormatMatch(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="T:BionicCode.Controls.Net.Core.Wpf.DelimiterPair">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Controls.Net.Core.Wpf.DelimiterPair</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.#ctor(System.String,System.String)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Controls.Net.Core.Wpf.DelimiterPair</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="start">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>start</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.#ctor(System.String,System.String)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="end">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>end</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.#ctor(System.String,System.String)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.End">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.End</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.Equals(BionicCode.Controls.Net.Core.Wpf.DelimiterPair)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.Equals(BionicCode.Controls.Net.Core.Wpf.DelimiterPair)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="other">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>other</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.Equals(BionicCode.Controls.Net.Core.Wpf.DelimiterPair)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.Equals(BionicCode.Controls.Net.Core.Wpf.DelimiterPair)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.Equals(System.Object)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.Equals(System.Object)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="obj">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>obj</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.Equals(System.Object)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.Equals(System.Object)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.GetHashCode">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.GetHashCode</parameter>
+          </include>
+        </markup>
+      </summary>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.GetHashCode</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.op_Equality(BionicCode.Controls.Net.Core.Wpf.DelimiterPair,BionicCode.Controls.Net.Core.Wpf.DelimiterPair)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.op_Equality(BionicCode.Controls.Net.Core.Wpf.DelimiterPair,BionicCode.Controls.Net.Core.Wpf.DelimiterPair)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="left">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>left</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.op_Equality(BionicCode.Controls.Net.Core.Wpf.DelimiterPair,BionicCode.Controls.Net.Core.Wpf.DelimiterPair)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="right">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>right</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.op_Equality(BionicCode.Controls.Net.Core.Wpf.DelimiterPair,BionicCode.Controls.Net.Core.Wpf.DelimiterPair)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.op_Equality(BionicCode.Controls.Net.Core.Wpf.DelimiterPair,BionicCode.Controls.Net.Core.Wpf.DelimiterPair)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.op_Inequality(BionicCode.Controls.Net.Core.Wpf.DelimiterPair,BionicCode.Controls.Net.Core.Wpf.DelimiterPair)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.op_Inequality(BionicCode.Controls.Net.Core.Wpf.DelimiterPair,BionicCode.Controls.Net.Core.Wpf.DelimiterPair)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="left">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>left</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.op_Inequality(BionicCode.Controls.Net.Core.Wpf.DelimiterPair,BionicCode.Controls.Net.Core.Wpf.DelimiterPair)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="right">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>right</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.op_Inequality(BionicCode.Controls.Net.Core.Wpf.DelimiterPair,BionicCode.Controls.Net.Core.Wpf.DelimiterPair)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.op_Inequality(BionicCode.Controls.Net.Core.Wpf.DelimiterPair,BionicCode.Controls.Net.Core.Wpf.DelimiterPair)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.Start">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.DelimiterPair.Start</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:BionicCode.Controls.Net.Core.Wpf.HighlightArgs">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Controls.Net.Core.Wpf.HighlightArgs</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.#ctor(System.Windows.Media.Brush,System.Windows.Media.Brush,System.Windows.FontStretch,System.Windows.FontStyle,System.Windows.FontWeight,System.Windows.Media.FontFamily,System.Double,BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Controls.Net.Core.Wpf.HighlightArgs</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="foreground">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>foreground</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.#ctor(System.Windows.Media.Brush,System.Windows.Media.Brush,System.Windows.FontStretch,System.Windows.FontStyle,System.Windows.FontWeight,System.Windows.Media.FontFamily,System.Double,BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="background">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>background</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.#ctor(System.Windows.Media.Brush,System.Windows.Media.Brush,System.Windows.FontStretch,System.Windows.FontStyle,System.Windows.FontWeight,System.Windows.Media.FontFamily,System.Double,BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="fontStretch">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>fontStretch</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.#ctor(System.Windows.Media.Brush,System.Windows.Media.Brush,System.Windows.FontStretch,System.Windows.FontStyle,System.Windows.FontWeight,System.Windows.Media.FontFamily,System.Double,BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="fontStyle">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>fontStyle</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.#ctor(System.Windows.Media.Brush,System.Windows.Media.Brush,System.Windows.FontStretch,System.Windows.FontStyle,System.Windows.FontWeight,System.Windows.Media.FontFamily,System.Double,BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="fontWeight">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>fontWeight</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.#ctor(System.Windows.Media.Brush,System.Windows.Media.Brush,System.Windows.FontStretch,System.Windows.FontStyle,System.Windows.FontWeight,System.Windows.Media.FontFamily,System.Double,BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="fontFamily">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>fontFamily</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.#ctor(System.Windows.Media.Brush,System.Windows.Media.Brush,System.Windows.FontStretch,System.Windows.FontStyle,System.Windows.FontWeight,System.Windows.Media.FontFamily,System.Double,BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="fontSize">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>fontSize</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.#ctor(System.Windows.Media.Brush,System.Windows.Media.Brush,System.Windows.FontStretch,System.Windows.FontStyle,System.Windows.FontWeight,System.Windows.Media.FontFamily,System.Double,BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="richTextBox">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>richTextBox</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.#ctor(System.Windows.Media.Brush,System.Windows.Media.Brush,System.Windows.FontStretch,System.Windows.FontStyle,System.Windows.FontWeight,System.Windows.Media.FontFamily,System.Double,BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.Background">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.Background</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.Equals(BionicCode.Controls.Net.Core.Wpf.HighlightArgs)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.Equals(BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="other">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>other</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.Equals(BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.Equals(BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.Equals(System.Object)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.Equals(System.Object)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="obj">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>obj</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.Equals(System.Object)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.Equals(System.Object)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.FontFamily">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.FontFamily</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.FontSize">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.FontSize</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.FontStretch">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.FontStretch</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.FontStyle">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.FontStyle</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.FontWeight">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.FontWeight</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.Foreground">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.Foreground</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.GetHashCode">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.GetHashCode</parameter>
+          </include>
+        </markup>
+      </summary>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.GetHashCode</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.op_Equality(BionicCode.Controls.Net.Core.Wpf.HighlightArgs,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.op_Equality(BionicCode.Controls.Net.Core.Wpf.HighlightArgs,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="left">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>left</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.op_Equality(BionicCode.Controls.Net.Core.Wpf.HighlightArgs,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="right">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>right</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.op_Equality(BionicCode.Controls.Net.Core.Wpf.HighlightArgs,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.op_Equality(BionicCode.Controls.Net.Core.Wpf.HighlightArgs,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.op_Inequality(BionicCode.Controls.Net.Core.Wpf.HighlightArgs,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.op_Inequality(BionicCode.Controls.Net.Core.Wpf.HighlightArgs,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="left">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>left</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.op_Inequality(BionicCode.Controls.Net.Core.Wpf.HighlightArgs,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="right">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>right</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.op_Inequality(BionicCode.Controls.Net.Core.Wpf.HighlightArgs,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.op_Inequality(BionicCode.Controls.Net.Core.Wpf.HighlightArgs,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.RichTextBox">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightArgs.RichTextBox</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.DelimiterPairs">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.DelimiterPairs</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.DelimiterPairsProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.DelimiterPairsProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.EnumerateSearch">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.EnumerateSearch</parameter>
+          </include>
+        </markup>
+      </summary>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.EnumerateSearch</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.EnumerateSearch(System.Int32)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.EnumerateSearch(System.Int32)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="documentOffset">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>documentOffset</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.EnumerateSearch(System.Int32)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.EnumerateSearch(System.Int32)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.EnumerateSearch(System.Int32,System.Collections.Generic.IEnumerable{BionicCode.Controls.Net.Core.Wpf.DelimiterPair})">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.EnumerateSearch(System.Int32,System.Collections.Generic.IEnumerable{BionicCode.Controls.Net.Core.Wpf.DelimiterPair})</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="documentOffset">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>documentOffset</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.EnumerateSearch(System.Int32,System.Collections.Generic.IEnumerable{BionicCode.Controls.Net.Core.Wpf.DelimiterPair})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="delimiters">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>delimiters</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.EnumerateSearch(System.Int32,System.Collections.Generic.IEnumerable{BionicCode.Controls.Net.Core.Wpf.DelimiterPair})</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.EnumerateSearch(System.Int32,System.Collections.Generic.IEnumerable{BionicCode.Controls.Net.Core.Wpf.DelimiterPair})</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.EnumerateSearch(System.Int32,System.Collections.Generic.IEnumerable{System.String})">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.EnumerateSearch(System.Int32,System.Collections.Generic.IEnumerable{System.String})</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="documentOffset">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>documentOffset</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.EnumerateSearch(System.Int32,System.Collections.Generic.IEnumerable{System.String})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="searchKeys">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>searchKeys</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.EnumerateSearch(System.Int32,System.Collections.Generic.IEnumerable{System.String})</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.EnumerateSearch(System.Int32,System.Collections.Generic.IEnumerable{System.String})</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightBackground">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightBackground</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightBackgroundProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightBackgroundProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontFamily">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontFamily</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontFamilyProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontFamilyProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontSize">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontSize</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontSizeProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontSizeProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontStretch">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontStretch</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontStretchProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontStretchProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontStyle">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontStyle</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontStyleProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontStyleProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontWeight">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontWeight</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontWeightProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightFontWeightProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightForeground">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightForeground</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightForegroundProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.HighlightForegroundProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.IsAutoHighlightingEnabled">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.IsAutoHighlightingEnabled</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.IsAutoHighlightingEnabledProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.IsAutoHighlightingEnabledProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.IsLiveSearchEnabled">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.IsLiveSearchEnabled</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.IsLiveSearchEnabledProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.IsLiveSearchEnabledProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.MatchFormatter">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.MatchFormatter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.MatchFormatterProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.MatchFormatterProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="E:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.MatchFound">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>E:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.MatchFound</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.MatchHistory">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.MatchHistory</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.MatchHistoryProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.MatchHistoryProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.MatchHistoryPropertyKey">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.MatchHistoryPropertyKey</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.OnDelimiterPairsChanged(System.Collections.Generic.IEnumerable{BionicCode.Controls.Net.Core.Wpf.DelimiterPair},System.Collections.Generic.IEnumerable{BionicCode.Controls.Net.Core.Wpf.DelimiterPair})">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.OnDelimiterPairsChanged(System.Collections.Generic.IEnumerable{BionicCode.Controls.Net.Core.Wpf.DelimiterPair},System.Collections.Generic.IEnumerable{BionicCode.Controls.Net.Core.Wpf.DelimiterPair})</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="newValue">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>newValue</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.OnDelimiterPairsChanged(System.Collections.Generic.IEnumerable{BionicCode.Controls.Net.Core.Wpf.DelimiterPair},System.Collections.Generic.IEnumerable{BionicCode.Controls.Net.Core.Wpf.DelimiterPair})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="oldValue">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>oldValue</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.OnDelimiterPairsChanged(System.Collections.Generic.IEnumerable{BionicCode.Controls.Net.Core.Wpf.DelimiterPair},System.Collections.Generic.IEnumerable{BionicCode.Controls.Net.Core.Wpf.DelimiterPair})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.OnMatchFound(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.OnMatchFound(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="matchInfo">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>matchInfo</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.OnMatchFound(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="highlightArgs">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>highlightArgs</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.OnMatchFound(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.OnTextChanged(System.Windows.Controls.TextChangedEventArgs)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.OnTextChanged(System.Windows.Controls.TextChangedEventArgs)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="e">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>e</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.OnTextChanged(System.Windows.Controls.TextChangedEventArgs)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.Search">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.Search</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.Search(System.Int32)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.Search(System.Int32)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="documentOffset">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>documentOffset</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.Search(System.Int32)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.Search(System.Int32,System.Collections.Generic.IEnumerable{BionicCode.Controls.Net.Core.Wpf.DelimiterPair})">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.Search(System.Int32,System.Collections.Generic.IEnumerable{BionicCode.Controls.Net.Core.Wpf.DelimiterPair})</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="documentOffset">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>documentOffset</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.Search(System.Int32,System.Collections.Generic.IEnumerable{BionicCode.Controls.Net.Core.Wpf.DelimiterPair})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="delimiters">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>delimiters</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.Search(System.Int32,System.Collections.Generic.IEnumerable{BionicCode.Controls.Net.Core.Wpf.DelimiterPair})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.Search(System.Int32,System.Collections.Generic.IEnumerable{System.String})">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.Search(System.Int32,System.Collections.Generic.IEnumerable{System.String})</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="documentOffset">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>documentOffset</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.Search(System.Int32,System.Collections.Generic.IEnumerable{System.String})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="searchKeys">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>searchKeys</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.Search(System.Int32,System.Collections.Generic.IEnumerable{System.String})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.SearchKeys">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.SearchKeys</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.SearchKeysProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.SearchKeysProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.StartMatchOffsets">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.StartMatchOffsets</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.StringComparison">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.StringComparison</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.StringComparisonProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.StringComparisonProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.TotalMatchCount">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.TotalMatchCount</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.TotalMatchCountProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.TotalMatchCountProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:BionicCode.Controls.Net.Core.Wpf.IMatchFormatter">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Controls.Net.Core.Wpf.IMatchFormatter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.IMatchFormatter.FormatMatch(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.IMatchFormatter.FormatMatch(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="matchInfo">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>matchInfo</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.IMatchFormatter.FormatMatch(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="args">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>args</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.IMatchFormatter.FormatMatch(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.HighlightArgs)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="T:BionicCode.Controls.Net.Core.Wpf.MatchFoundEventArgs">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Controls.Net.Core.Wpf.MatchFoundEventArgs</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.MatchFoundEventArgs.CancelAutomaticHighlight">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchFoundEventArgs.CancelAutomaticHighlight</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.MatchFoundEventArgs.FormattingAttributes">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.MatchFoundEventArgs.FormattingAttributes</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.MatchFoundEventArgs.MatchInfo">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.MatchFoundEventArgs.MatchInfo</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:BionicCode.Controls.Net.Core.Wpf.MatchInfo">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Controls.Net.Core.Wpf.MatchInfo</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.#ctor(System.Int32,System.Int32,System.String,System.Windows.Documents.TextRange)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Controls.Net.Core.Wpf.MatchInfo</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="startIndex">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>startIndex</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.#ctor(System.Int32,System.Int32,System.String,System.Windows.Documents.TextRange)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="length">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>length</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.#ctor(System.Int32,System.Int32,System.String,System.Windows.Documents.TextRange)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.#ctor(System.Int32,System.Int32,System.String,System.Windows.Documents.TextRange)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="textRange">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>textRange</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.#ctor(System.Int32,System.Int32,System.String,System.Windows.Documents.TextRange)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.Equals(BionicCode.Controls.Net.Core.Wpf.MatchInfo)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.Equals(BionicCode.Controls.Net.Core.Wpf.MatchInfo)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="other">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>other</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.Equals(BionicCode.Controls.Net.Core.Wpf.MatchInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.Equals(BionicCode.Controls.Net.Core.Wpf.MatchInfo)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.Equals(System.Object)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.Equals(System.Object)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="obj">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>obj</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.Equals(System.Object)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.Equals(System.Object)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.GetHashCode">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.GetHashCode</parameter>
+          </include>
+        </markup>
+      </summary>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.GetHashCode</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.MatchInfo.Length">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.MatchInfo.Length</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.op_Equality(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.MatchInfo)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.op_Equality(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.MatchInfo)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="left">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>left</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.op_Equality(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.MatchInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="right">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>right</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.op_Equality(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.MatchInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.op_Equality(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.MatchInfo)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.op_Inequality(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.MatchInfo)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.op_Inequality(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.MatchInfo)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="left">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>left</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.op_Inequality(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.MatchInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="right">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>right</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.op_Inequality(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.MatchInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.MatchInfo.op_Inequality(BionicCode.Controls.Net.Core.Wpf.MatchInfo,BionicCode.Controls.Net.Core.Wpf.MatchInfo)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.MatchInfo.StartIndex">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.MatchInfo.StartIndex</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.MatchInfo.TextRange">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.MatchInfo.TextRange</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.MatchInfo.Value">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.MatchInfo.Value</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.NormalizedValue">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.NormalizedValue</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.NormalizedValueProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.NormalizedValueProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.OnApplyTemplate">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.OnApplyTemplate</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.OnTextChanged(System.Windows.Controls.TextChangedEventArgs)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.OnTextChanged(System.Windows.Controls.TextChangedEventArgs)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="e">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>e</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.OnTextChanged(System.Windows.Controls.TextChangedEventArgs)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.OnTextInput(System.Windows.Input.TextCompositionEventArgs)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.OnTextInput(System.Windows.Input.TextCompositionEventArgs)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="e">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>e</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.OnTextInput(System.Windows.Input.TextCompositionEventArgs)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.SelectedUnit">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.SelectedUnit</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.SelectedUnitProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.SelectedUnitProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.Units">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.Units</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.UnitsProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.UnitsProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:BionicCode.Controls.Net.Core.Wpf.Unit">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Controls.Net.Core.Wpf.Unit</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.Unit.#ctor(System.String,System.Decimal)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Controls.Net.Core.Wpf.Unit</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="name">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>name</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.Unit.#ctor(System.String,System.Decimal)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="baseFactor">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>baseFactor</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.Unit.#ctor(System.String,System.Decimal)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.Unit.BaseFactor">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.Unit.BaseFactor</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Controls.Net.Core.Wpf.Unit.Name">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Controls.Net.Core.Wpf.Unit.Name</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Controls.Net.Core.Wpf.Unit.ToString">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.Unit.ToString</parameter>
+          </include>
+        </markup>
+      </summary>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Controls.Net.Core.Wpf.Unit.ToString</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+  </members>
+</doc>

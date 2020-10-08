@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>BionicCode.Utilities.Net.Framework</name>
+  </assembly>
+  <members>
+    <member name="T:BionicCode.Utilities.Net.Framework.IO.FilePathFilter">
+      <summary>
+            API to enumerate the filesystem e.g., by extension
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.IO.FilePathFilter.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.IO.FilePathFilter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)">
+      <summary>
+              Extracts valid paths or paths with a specified extension from a collection of paths.
+              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
+              will be applied to all containing files.
+            </summary>
+      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
+      <param name="fileExtensionsToCollect">
+            The flagged Enum type <see cref="T:BionicCode.Utilities.Net.Standard.IO.FileExtensions" /> that defines one or more extensions to filter from the folder.
+            </param>
+      <param name="isIncludingSubdirectories">
+              Sets the filter whether to apply to sub directories or not.
+              <c>True</c> includes subdirectories and <c>False</c> ignores them.
+              Is <c>false</c> by default.
+            </param>
+      <param name="folderPath">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>folderPath</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.Boolean)">
+      <summary>
+            Extracts valid paths or paths with a specified extension from a collection of paths.
+              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
+              will be applied to all containing files.
+            </summary>
+      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
+      <param name="filterPredicate">
+              A delegate used to filter the <see cref="T:System.IO.FileInfo" /> items.
+            </param>
+      <param name="isIncludingSubdirectories">
+              Sets the filter whether to apply to sub directories or not.
+              <c>True</c> includes subdirectories and <c>False</c> ignores them.
+              Is <c>false</c> by default.
+            </param>
+      <param name="folderPath">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>folderPath</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.IO.FilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)">
+      <summary>
+            Extracts valid paths or paths with a specified extension from a collection of paths.
+              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
+              will be applied to all containing files.
+            </summary>
+      <param name="folderPath">The path to the folder to filter.</param>
+      <param name="fileExtensionsToCollect">
+              The flagged Enum type <see cref="T:BionicCode.Utilities.Net.Standard.IO.FileExtensions" /> that defines one or more extensions to filter from the folder.
+            </param>
+      <param name="isIncludingSubdirectories">
+              Sets the filter whether to apply to sub directories or not.
+              <c>True</c> includes subdirectories and <c>False</c> ignores them.
+              Is <c>false</c> by default.
+            </param>
+      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.IO.FilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.Boolean)">
+      <summary>
+            Extracts valid paths or paths with a specified extension from a collection of paths.
+              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
+              will be applied to all containing files.
+            </summary>
+      <param name="folderPath">The path to the folder to filter.</param>
+      <param name="filterPredicate">
+              A delegate used to filter the <see cref="T:System.IO.FileInfo" /> items.
+            </param>
+      <param name="isIncludingSubdirectories">
+              Sets the filter whether to apply to sub directories or not.
+              <c>True</c> includes subdirectories and <c>False</c> ignores them.
+              Is <c>false</c> by default.
+            </param>
+      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.IO.FilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.Boolean)">
+      <summary>
+            Extracts valid paths or paths with a specified extension from a collection of paths.
+              The path collection can be a mix-up of files and folders. 
+            </summary>
+      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
+      <param name="filterPredicate">
+              A delegate used to filter the <see cref="T:System.IO.FileSystemInfo" /> items.
+            </param>
+      <param name="isIncludingSubdirectories">
+              Sets the filter whether to apply to sub directories or not.
+              <c>True</c> includes subdirectories and <c>False</c> ignores them.
+              Is <c>false</c> by default.
+            </param>
+      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.IO.FilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.Boolean)">
+      <summary>
+            Extracts valid paths or paths with a specified extension from a collection of paths.
+              The path collection can be a mix-up of files and folders. 
+            </summary>
+      <param name="folderPath">The path to the folder to filter.</param>
+      <param name="filterPredicate">
+              A delegate used to filter the <see cref="T:System.IO.FileSystemInfo" /> items.
+            </param>
+      <param name="isIncludingSubdirectories">
+              Sets the filter whether to apply to sub directories or not.
+              <c>True</c> includes subdirectories and <c>False</c> ignores them.
+              Is <c>false</c> by default.
+            </param>
+      <param name="path">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>path</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.IO.FilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.IO.IFilePathFilter">
+      <summary>
+            API to enumerate the filesystem e.g., by extension
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)">
+      <summary>
+              Extracts valid paths or paths with a specified extension from a collection of paths.
+              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
+              will be applied to all containing files.
+            </summary>
+      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
+      <param name="fileExtensionsToCollect">
+            The flagged Enum type <see cref="T:BionicCode.Utilities.Net.Standard.IO.FileExtensions" /> that defines one or more extensions to filter from the folder.
+            </param>
+      <param name="isIncludingSubdirectories">
+              Sets the filter whether to apply to sub directories or not.
+              <c>True</c> includes subdirectories and <c>False</c> ignores them.
+              Is <c>false</c> by default.
+            </param>
+      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.Boolean)">
+      <summary>
+            Extracts valid paths or paths with a specified extension from a collection of paths.
+              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
+              will be applied to all containing files.
+            </summary>
+      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
+      <param name="filterPredicate">
+              A delegate used to filter the <see cref="T:System.IO.FileInfo" /> items.
+            </param>
+      <param name="isIncludingSubdirectories">
+              Sets the filter whether to apply to sub directories or not.
+              <c>True</c> includes subdirectories and <c>False</c> ignores them.
+              Is <c>false</c> by default.
+            </param>
+      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.IO.IFilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)">
+      <summary>
+            Extracts valid paths or paths with a specified extension from a collection of paths.
+              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
+              will be applied to all containing files.
+            </summary>
+      <param name="folderPath">The path to the folder to filter.</param>
+      <param name="fileExtensionsToCollect">
+              The flagged Enum type <see cref="T:BionicCode.Utilities.Net.Standard.IO.FileExtensions" /> that defines one or more extensions to filter from the folder.
+            </param>
+      <param name="isIncludingSubdirectories">
+              Sets the filter whether to apply to sub directories or not.
+              <c>True</c> includes subdirectories and <c>False</c> ignores them.
+              Is <c>false</c> by default.
+            </param>
+      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.IO.IFilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.Boolean)">
+      <summary>
+            Extracts valid paths or paths with a specified extension from a collection of paths.
+              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
+              will be applied to all containing files.
+            </summary>
+      <param name="folderPath">The path to the folder to filter.</param>
+      <param name="filterPredicate">
+              A delegate used to filter the <see cref="T:System.IO.FileInfo" /> items.
+            </param>
+      <param name="isIncludingSubdirectories">
+              Sets the filter whether to apply to sub directories or not.
+              <c>True</c> includes subdirectories and <c>False</c> ignores them.
+              Is <c>false</c> by default.
+            </param>
+      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.IO.IFilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.Boolean)">
+      <summary>
+            Extracts valid paths or paths with a specified extension from a collection of paths.
+              The path collection can be a mix-up of files and folders. 
+            </summary>
+      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
+      <param name="filterPredicate">
+              A delegate used to filter the <see cref="T:System.IO.FileSystemInfo" /> items.
+            </param>
+      <param name="isIncludingSubdirectories">
+              Sets the filter whether to apply to sub directories or not.
+              <c>True</c> includes subdirectories and <c>False</c> ignores them.
+              Is <c>false</c> by default.
+            </param>
+      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.IO.IFilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.Boolean)">
+      <summary>
+            Extracts valid paths or paths with a specified extension from a collection of paths.
+              The path collection can be a mix-up of files and folders. 
+            </summary>
+      <param name="folderPath">The path to the folder to filter.</param>
+      <param name="filterPredicate">
+              A delegate used to filter the <see cref="T:System.IO.FileSystemInfo" /> items.
+            </param>
+      <param name="isIncludingSubdirectories">
+              Sets the filter whether to apply to sub directories or not.
+              <c>True</c> includes subdirectories and <c>False</c> ignores them.
+              Is <c>false</c> by default.
+            </param>
+      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+    </member>
+  </members>
+</doc>

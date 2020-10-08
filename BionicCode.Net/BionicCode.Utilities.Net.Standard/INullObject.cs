@@ -6,8 +6,8 @@
   public interface INullObject
   {
     /// <summary>
-    /// Property to indicate whether the current type is NULL
+    /// Property to indicate whether the current NULL type is a shared instance or a new instance should be created for each request.
     /// </summary>
-    bool IsNull { get; }
+    bool IsNull { get; set; }
   }
 }
