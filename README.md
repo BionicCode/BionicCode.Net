@@ -1,4 +1,4 @@
-# BionicCode.Net ![GitHub](https://img.shields.io/github/license/BionicCode/BionicUtilities.Net)
+# BionicCode.Net ![GitHub](https://img.shields.io/github/license/BionicCode/BionicCode.Net) ![Release](https://img.shields.io/github/last-commit/BionicCode/BionicCode.Net) 
 Collection of .NET libraries like utilities and controls that target .NET Standard, .NET Core, .NET Framework, .NET Core WPF, .NET Framework WPF and UWP
 
 ![BC](https://img.shields.io/badge/.NET-Core-informational)
@@ -38,7 +38,7 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 
 
 
-## Contains 
+## Table of Contents 
 * [`BaseViewModel`](https://github.com/BionicCode/BionicCode.Net#baseviewmodel)
 * [`AsyncRelayCommand<T>`](https://github.com/BionicCode/BionicCode.Net#asyncrelaycomandt)
 * Extension Methods for WPF e.g.
