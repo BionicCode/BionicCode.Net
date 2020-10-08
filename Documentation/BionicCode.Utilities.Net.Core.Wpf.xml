@@ -188,66 +188,20 @@
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.DefaultValueInverter.InvertValue(System.Object)">
       <summary>
-        <markup>
-          <include item="SMCMissingTag">
-            <parameter>summary</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.DefaultValueInverter.InvertValue(System.Object)</parameter>
-          </include>
-        </markup>
-      </summary>
-      <param name="value">
-        <markup>
-          <include item="SMCMissingParamTag">
-            <parameter>param</parameter>
-            <parameter>value</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.DefaultValueInverter.InvertValue(System.Object)</parameter>
-          </include>
-        </markup>
-      </param>
-      <returns>
-        <markup>
-          <include item="SMCMissingTag">
-            <parameter>returns</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.DefaultValueInverter.InvertValue(System.Object)</parameter>
-          </include>
-        </markup>
-      </returns>
+            Throws an exception if operation has failed.
+            </summary>
+      <param name="value"></param>
+      <returns>The inverted value.</returns>
+      <exception cref="T:System.InvalidOperationException"></exception>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.DefaultValueInverter.TryInvertValue(System.Object,System.Object@)">
       <summary>
-        <markup>
-          <include item="SMCMissingTag">
-            <parameter>summary</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.DefaultValueInverter.TryInvertValue(System.Object,System.Object@)</parameter>
-          </include>
-        </markup>
-      </summary>
-      <param name="value">
-        <markup>
-          <include item="SMCMissingParamTag">
-            <parameter>param</parameter>
-            <parameter>value</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.DefaultValueInverter.TryInvertValue(System.Object,System.Object@)</parameter>
-          </include>
-        </markup>
-      </param>
-      <param name="invertedValue">
-        <markup>
-          <include item="SMCMissingParamTag">
-            <parameter>param</parameter>
-            <parameter>invertedValue</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.DefaultValueInverter.TryInvertValue(System.Object,System.Object@)</parameter>
-          </include>
-        </markup>
-      </param>
+            Trys to invert a value. Won't throw an exception if operation fails.
+            </summary>
+      <param name="value"></param>
+      <param name="invertedValue"></param>
       <returns>
-        <markup>
-          <include item="SMCMissingTag">
-            <parameter>returns</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.DefaultValueInverter.TryInvertValue(System.Object,System.Object@)</parameter>
-          </include>
-        </markup>
-      </returns>
+        <c>true</c> when successful, otherwise <c>false</c></returns>
     </member>
     <member name="T:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand">
       <summary>
@@ -315,79 +269,6 @@
           <include item="SMCMissingTag">
             <parameter>returns</parameter>
             <parameter>M:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.ExecuteAsync(System.Object)</parameter>
-          </include>
-        </markup>
-      </returns>
-    </member>
-    <member name="T:BionicCode.Utilities.Net.Core.Wpf.IValueInverter">
-      <summary>
-        <markup>
-          <include item="SMCMissingTag">
-            <parameter>summary</parameter>
-            <parameter>T:BionicCode.Utilities.Net.Core.Wpf.IValueInverter</parameter>
-          </include>
-        </markup>
-      </summary>
-    </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.IValueInverter.InvertValue(System.Object)">
-      <summary>
-        <markup>
-          <include item="SMCMissingTag">
-            <parameter>summary</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.IValueInverter.InvertValue(System.Object)</parameter>
-          </include>
-        </markup>
-      </summary>
-      <param name="value">
-        <markup>
-          <include item="SMCMissingParamTag">
-            <parameter>param</parameter>
-            <parameter>value</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.IValueInverter.InvertValue(System.Object)</parameter>
-          </include>
-        </markup>
-      </param>
-      <returns>
-        <markup>
-          <include item="SMCMissingTag">
-            <parameter>returns</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.IValueInverter.InvertValue(System.Object)</parameter>
-          </include>
-        </markup>
-      </returns>
-    </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.IValueInverter.TryInvertValue(System.Object,System.Object@)">
-      <summary>
-        <markup>
-          <include item="SMCMissingTag">
-            <parameter>summary</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.IValueInverter.TryInvertValue(System.Object,System.Object@)</parameter>
-          </include>
-        </markup>
-      </summary>
-      <param name="value">
-        <markup>
-          <include item="SMCMissingParamTag">
-            <parameter>param</parameter>
-            <parameter>value</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.IValueInverter.TryInvertValue(System.Object,System.Object@)</parameter>
-          </include>
-        </markup>
-      </param>
-      <param name="invertedValue">
-        <markup>
-          <include item="SMCMissingParamTag">
-            <parameter>param</parameter>
-            <parameter>invertedValue</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.IValueInverter.TryInvertValue(System.Object,System.Object@)</parameter>
-          </include>
-        </markup>
-      </param>
-      <returns>
-        <markup>
-          <include item="SMCMissingTag">
-            <parameter>returns</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.IValueInverter.TryInvertValue(System.Object,System.Object@)</parameter>
           </include>
         </markup>
       </returns>
@@ -3045,7 +2926,7 @@
     </member>
     <member name="T:BionicCode.Utilities.Net.Core.Wpf.Markup.InvertExtension">
       <summary>
-            XAML extension to invert the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Markup.InvertExtension.Value" /> property using the current <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Markup.InvertExtension.ValueInverter" />. Supports every <see cref="T:System.Windows.Markup.MarkupExtension" /> e.g., <see cref="T:System.Windows.Data.BindingBase" />.
+            XAML extension to invert the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Markup.InvertExtension.Value" /> property using the current <see cref="T:BionicCode.Utilities.Net.Standard.IValueInverter" />. Supports every <see cref="T:System.Windows.Markup.MarkupExtension" /> e.g., <see cref="T:System.Windows.Data.BindingBase" />.
             </summary>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.InvertExtension.#ctor">

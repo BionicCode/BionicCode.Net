@@ -132,7 +132,6 @@
   <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand(Of TParam) interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1.htm" />
   <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand&lt;TParam&gt; interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Generic_IAsyncRelayCommand_1.htm" />
   <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_IAsyncRelayCommand.htm" />
-  <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.IValueInverter interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_IValueInverter.htm" />
   <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Markup namespace" Url="html/N_BionicCode_Utilities_Net_Core_Wpf_Markup.htm" />
   <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Markup.EnumExtension class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_EnumExtension.htm" />
   <HelpKINode Title="BionicCode.Utilities.Net.Core.Wpf.Markup.EqualsExtension class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Markup_EqualsExtension.htm" />
@@ -653,7 +652,6 @@
   <HelpKINode Title="InvertValue method">
     <HelpKINode Title="DefaultValueInverter.InvertValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_DefaultValueInverter_InvertValue.htm" />
     <HelpKINode Title="IValueInverter.InvertValue Method " Url="html/M_BionicCode_Utilities_Net_Standard_IValueInverter_InvertValue.htm" />
-    <HelpKINode Title="IValueInverter.InvertValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_IValueInverter_InvertValue.htm" />
   </HelpKINode>
   <HelpKINode Title="InvertValueConverter class">
     <HelpKINode Title="InvertValueConverter Class" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_Converter_InvertValueConverter.htm" />
@@ -688,18 +686,10 @@
   <HelpKINode Title="IsValueValid&lt;TValue&gt; method" Url="html/M_BionicCode_Utilities_Net_Standard_ViewModel_ViewModel_IsValueValid__1.htm" />
   <HelpKINode Title="IValueInverter interface">
     <HelpKINode Title="IValueInverter Interface" Url="html/T_BionicCode_Utilities_Net_Standard_IValueInverter.htm" />
-    <HelpKINode Title="IValueInverter Interface" Url="html/T_BionicCode_Utilities_Net_Core_Wpf_IValueInverter.htm" />
     <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Standard_IValueInverter.htm" />
-    <HelpKINode Title="methods" Url="html/Methods_T_BionicCode_Utilities_Net_Core_Wpf_IValueInverter.htm" />
   </HelpKINode>
-  <HelpKINode Title="IValueInverter.InvertValue method">
-    <HelpKINode Title="IValueInverter.InvertValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_IValueInverter_InvertValue.htm" />
-    <HelpKINode Title="IValueInverter.InvertValue Method " Url="html/M_BionicCode_Utilities_Net_Standard_IValueInverter_InvertValue.htm" />
-  </HelpKINode>
-  <HelpKINode Title="IValueInverter.TryInvertValue method">
-    <HelpKINode Title="IValueInverter.TryInvertValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_IValueInverter_TryInvertValue.htm" />
-    <HelpKINode Title="IValueInverter.TryInvertValue Method " Url="html/M_BionicCode_Utilities_Net_Standard_IValueInverter_TryInvertValue.htm" />
-  </HelpKINode>
+  <HelpKINode Title="IValueInverter.InvertValue method" Url="html/M_BionicCode_Utilities_Net_Standard_IValueInverter_InvertValue.htm" />
+  <HelpKINode Title="IValueInverter.TryInvertValue method" Url="html/M_BionicCode_Utilities_Net_Standard_IValueInverter_TryInvertValue.htm" />
   <HelpKINode Title="IViewModel interface">
     <HelpKINode Title="IViewModel Interface" Url="html/T_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel.htm" />
     <HelpKINode Title="events" Url="html/Events_T_BionicCode_Utilities_Net_Standard_ViewModel_IViewModel.htm" />
@@ -998,7 +988,6 @@
   <HelpKINode Title="TryGetDialog method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Dialog_Dialog_TryGetDialog.htm" />
   <HelpKINode Title="TryInvertValue method">
     <HelpKINode Title="DefaultValueInverter.TryInvertValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_DefaultValueInverter_TryInvertValue.htm" />
-    <HelpKINode Title="IValueInverter.TryInvertValue Method " Url="html/M_BionicCode_Utilities_Net_Core_Wpf_IValueInverter_TryInvertValue.htm" />
     <HelpKINode Title="IValueInverter.TryInvertValue Method " Url="html/M_BionicCode_Utilities_Net_Standard_IValueInverter_TryInvertValue.htm" />
   </HelpKINode>
   <HelpKINode Title="TryReadBool method" Url="html/M_BionicCode_Utilities_Net_Core_Wpf_Settings_AppSettingsConnector_TryReadBool.htm" />
