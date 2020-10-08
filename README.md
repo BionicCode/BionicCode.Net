@@ -2,8 +2,14 @@
 Collection of .NET libraries like utilities and controls that target .NET Standard, .NET Core, .NET Framework, .NET Core WPF, .NET Framework WPF and UWP
 
 
+![BC](https://img.shields.io/badge/Framework-.NET_4.8/.NET_Standard_2.0-informational)
+![GitHub](https://img.shields.io/github/license/BionicCode/BionicUtilities.Net)
+[![NuGet Package](https://img.shields.io/nuget/v/BionicUtilities.Net.svg)](https://www.nuget.org/packages/BionicUtilities.Net/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/BionicUtilities.Net.svg)](https://www.nuget.org/packages/BionicUtilities.Net/)
+
 
 ## [NuGet package](///)
+[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/nuget/v/BionicUtilities.Net.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
 
 ## [Class Reference](https://rawcdn.githack.com/BionicCode/BionicUtilities.Net/d1765f5da61687fac04e0fd7fc3ca4142935ecf1/BionicUtilities.Net/Documentation/Help/index.html)
 
