@@ -36,6 +36,8 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 
 [![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/b958994379a255df81933039642d4f3f572a8222/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)
 
+
+
 ## Contains 
 * [`BaseViewModel`](https://github.com/BionicCode/BionicCode.Net#baseviewmodel)
 * [`AsyncRelayCommand<T>`](https://github.com/BionicCode/BionicCode.Net#asyncrelaycomandt)
@@ -55,13 +57,15 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
   * `InvertValueConverter`
 * Collections
   * `ObservablePropertyChangedCollection<T>`
-* MarkupExtensions
+* Markup Extensions
+  * `InvertExtension`
   * `PrimitiveTypeExtension`
+  * `EqualsExtension`
 * [`Profiler`](https://github.com/BionicCode/BionicCode.Net#Profiler)
-* [`AppSettingsConnector`](https://github.com/BionicCode/BionicCode.Net#AppSettingsConnector) - A defaul API to the AppSettings that provides strongly typed reading and writing (e.g. `boo`, `int`, `double`, `string`) of key-value pair values
+* [`AppSettingsConnector`](https://github.com/BionicCode/BionicCode.Net#AppSettingsConnector) - A default API to the `AppSettings` that provides strongly typed reading and writing (e.g. `bool`, `int`, `double`, `string`) of key-value pair values
 * [`MruManager`](https://github.com/BionicCode/BionicCode.Net#mru-most-recently-used-file-manager) - Most Recently Used (MRU) file manager. An API that maintains an MRU table stored in the Application Settings file. 
-* [`EventAggregator`](https://github.com/BionicCode/BionicCode.Net#eventaggregator) - Implememtation of the EventAggregator pattern that supports dynamic aggregation of different typed event sources
-* Easy to use [`Dialog` attached behavior](https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior) and infrastucture to allow MVVM friendly dialog handling from the view models in a fire-and-forget manner. To display dialogs implement `IDialogViewModel` classes and create a `DataTemplate` for each implementation. The `DataTemplate is the rendered in a native `Window`. Addition attached properties allow for styling of the dialog `Window` or to assign an optional `DataTemplateSelector`. The attached behavior will handle showing and closing of  the dialog.
+* [`EventAggregator`](https://github.com/BionicCode/BionicCode.Net#eventaggregator) - Implementation of the Event Aggregator pattern that supports dynamic aggregation of different typed event sources
+* Easy to use [`Dialog` attached behavior](https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior) and infrastructure to allow MVVM friendly dialog handling from the view models in a fire-and-forget manner. To display dialogs implement `IDialogViewModel` classes and create a `DataTemplate` for each implementation. The `DataTemplate` is the rendered in a native `Window`. Addition attached properties allow for styling of the dialog `Window` or to assign an optional `DataTemplateSelector`. The attached behavior will handle showing and closing of  the dialog.
   
 ### `BaseViewModel`
 * Implements and encapsulates `INotifyPropertyChanged` and `INotifyDataErrorInfo`. 
