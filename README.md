@@ -21,6 +21,11 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 [![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Standard.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)
 
 ## [Class Reference](https://rawcdn.githack.com/BionicCode/BionicUtilities.Net/d1765f5da61687fac04e0fd7fc3ca4142935ecf1/BionicUtilities.Net/Documentation/Help/index.html)
+[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/.NET_Core_WPF-BionicCode.Utilities.Net.Core.Wpf-informational)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
+
+[![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/.NET_Framework_4.8_WPF-BionicCode.Utilities.Net.Framework.Wpf-informational)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)
+
+[![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/.NET_Standard-BionicCode.Utilities.Net.Standard-informational)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)
 
 ## Contains 
 * [`BaseViewModel`](https://github.com/BionicCode/BionicLibraryNet#baseviewmodel)
