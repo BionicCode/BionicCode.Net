@@ -1,0 +1,3254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>BionicCode.Utilities.Net.Framework.Wpf</name>
+  </assembly>
+  <members>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand">
+      <summary>
+            A  reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand" /> with support for async/await. Enables instant creation of an ICommand without implementing the ICommand interface for each command.
+            The individual <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.Execute" />, <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.ExecuteAsync" /> and <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecute" /> members are supplied via delegates.
+              <seealso cref="T:System.Windows.Input.ICommand" /></summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Action)">
+      <summary>
+              Creates a new parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecute" /> always returns <code>true</code>).
+            </summary>
+      <param name="executeNoParam">The awaitable execution handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Action,System.Func{System.Boolean})">
+      <summary>
+              Creates a new parameterless command.
+            </summary>
+      <param name="executeNoParam">The execution handler.</param>
+      <param name="canExecuteNoParam">The execution status handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Action{System.Object})">
+      <summary>
+              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecute" /> always returns <code>true</code>).
+            </summary>
+      <param name="execute">The awaitable execution handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})">
+      <summary>
+              Creates a new command.
+            </summary>
+      <param name="execute">The execution handler.</param>
+      <param name="canExecute">The execution status handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeAsyncNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeAsyncNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})">
+      <summary>
+              Creates a parameterless new asynchronous command.
+            </summary>
+      <param name="executeAsyncNoParam">The awaitable execution handler.</param>
+      <param name="canExecuteNoParam">The execution status handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task})">
+      <summary>
+              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecute" /> always returns <code>true</code>).
+            </summary>
+      <param name="executeAsync">The awaitable execution handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task},System.Predicate{System.Object})">
+      <summary>
+              Creates a new asynchronous command.
+            </summary>
+      <param name="executeAsync">The awaitable execution handler.</param>
+      <param name="canExecute">The can execute handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecute">
+      <summary>
+              Determines whether this AsyncRelayCommand can execute.
+            </summary>
+      <returns>
+        <code>true</code>code&gt; if this command can be executed, otherwise <code>false</code>.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecute(System.Object)">
+      <summary>
+              Determines whether this AsyncRelayCommand can execute.
+            </summary>
+      <param name="parameter">
+              Data used by the command. 
+            </param>
+      <returns>
+        <code>true</code>code&gt; if this command can be executed, otherwise <code>false</code>.</returns>
+    </member>
+    <member name="E:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecuteChanged">
+      <summary>
+              Raised when RaiseCanExecuteChanged is called.
+            </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecuteNoParam">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecuteNoParam</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.Execute">
+      <summary>
+              Executes the AsyncRelayCommand on the current command target. 
+            </summary>
+      <param name="parameter">
+              Data used by the command. 
+            </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.Execute(System.Object)">
+      <summary>
+              Executes the AsyncRelayCommand on the current command target. 
+            </summary>
+      <param name="parameter">
+              Data used by the command. 
+            </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.ExecuteAsync">
+      <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.ExecuteAsync</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.ExecuteAsync(System.Object)">
+      <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+      <param name="parameter">
+              Data used by the command. If the command does not require data to be passed,
+              this object can be set to null.
+            </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.ExecuteAsync(System.Object)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.ExecuteAsyncNoParam">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.ExecuteAsyncNoParam</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.ExecuteNoParam">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.ExecuteNoParam</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.DefaultValueInverter">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.DefaultValueInverter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.DefaultValueInverter.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.DefaultValueInverter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.DefaultValueInverter.InvertValue(System.Object)">
+      <summary>
+            Throws an exception if operation has failed.
+            </summary>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.DefaultValueInverter.InvertValue(System.Object)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>The inverted value.</returns>
+      <exception cref="T:System.InvalidOperationException"></exception>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.DefaultValueInverter.TryInvertValue(System.Object,System.Object@)">
+      <summary>
+            Trys to invert a value. Won't throw an exception if operation fails.
+            </summary>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.DefaultValueInverter.TryInvertValue(System.Object,System.Object@)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="invertedValue">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>invertedValue</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.DefaultValueInverter.TryInvertValue(System.Object,System.Object@)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <c>true</c> when successful, otherwise <c>false</c></returns>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.CanExecute">
+      <summary>
+            Executes the AsyncRelayCommand on the current command target.
+            </summary>
+      <param name="parameter">
+            Data used by the command. If the command does not require data to be passed, 
+            this object can be set to null.
+            </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.CanExecute</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.Execute">
+      <summary>
+            Executes the AsyncRelayCommand on the current command target.
+            </summary>
+      <param name="parameter">
+            Data used by the command. If the command does not require data to be passed, 
+            this object can be set to null.
+            </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.ExecuteAsync">
+      <summary>
+            Executes the AsyncRelayCommand on the current command target.
+            </summary>
+      <param name="parameter">
+            Data used by the command. If the command does not require data to be passed, 
+            this object can be set to null.
+            </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.ExecuteAsync</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.ExecuteAsync(System.Object)">
+      <summary>
+            Asynchronously executes the AsyncRelayCommand on the current command target.
+            </summary>
+      <param name="parameter">
+            Data used by the command. If the command does not require data to be passed, 
+            this object can be set to null.
+            </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.ExecuteAsync(System.Object)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Collections.Generic.ObservablePropertyChangedCollection`1">
+      <summary>
+            Raises <see cref="E:System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged"></see> event when the property of an item raised <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged" />. The <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction" /> for this particular notification is <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset" /> with a reference to the notifying item and the item's index. .
+            </summary>
+      <typeparam name="TItem"></typeparam>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Collections.Generic.ObservablePropertyChangedCollection`1.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Collections.Generic.ObservablePropertyChangedCollection`1</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Collections.Generic.ObservablePropertyChangedCollection`1.ClearItems">
+      <summary>Removes all items from the collection.</summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Collections.Generic.ObservablePropertyChangedCollection`1.InsertItem(System.Int32,`0)">
+      <summary>Inserts an item into the collection at the specified index.</summary>
+      <param name="index">The zero-based index at which <paramref name="item" /> should be inserted.</param>
+      <param name="item">The object to insert.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Collections.Generic.ObservablePropertyChangedCollection`1.RemoveItem(System.Int32)">
+      <summary>Removes the item at the specified index of the collection.</summary>
+      <param name="index">The zero-based index of the element to remove.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Collections.Generic.ObservablePropertyChangedCollection`1.SetItem(System.Int32,`0)">
+      <summary>Replaces the element at the specified index.</summary>
+      <param name="index">The zero-based index of the element to replace.</param>
+      <param name="item">The new value for the element at the specified index.</param>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter.Convert(System.Object[],System.Type,System.Object,System.Globalization.CultureInfo)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter.Convert(System.Object[],System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="values">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>values</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter.Convert(System.Object[],System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="targetType">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>targetType</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter.Convert(System.Object[],System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter.Convert(System.Object[],System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="culture">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>culture</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter.Convert(System.Object[],System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter.Convert(System.Object[],System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter.ConvertBack(System.Object,System.Type[],System.Object,System.Globalization.CultureInfo)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter.ConvertBack(System.Object,System.Type[],System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter.ConvertBack(System.Object,System.Type[],System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="targetTypes">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>targetTypes</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter.ConvertBack(System.Object,System.Type[],System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter.ConvertBack(System.Object,System.Type[],System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="culture">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>culture</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter.ConvertBack(System.Object,System.Type[],System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter.ConvertBack(System.Object,System.Type[],System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="targetType">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>targetType</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="culture">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>culture</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="targetType">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>targetType</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="culture">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>culture</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.FalseValue">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.FalseValue</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.FalseValueProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.FalseValueProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.NullValue">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.NullValue</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.NullValueProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.NullValueProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.TrueValue">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.TrueValue</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.TrueValueProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.TrueValueProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="targetType">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>targetType</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="culture">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>culture</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="targetType">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>targetType</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="culture">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>culture</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter">
+      <summary>
+              Converter to truncate file paths exceeding a specific length by replacing a number of characters with an ellipsis.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="targetType">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>targetType</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="culture">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>culture</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="targetType">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>targetType</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="culture">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>culture</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.MaxLength">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.MaxLength</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.MaxLengthProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.MaxLengthProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="targetType">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>targetType</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="culture">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>culture</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="targetType">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>targetType</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="culture">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>culture</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="targetType">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>targetType</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="culture">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>culture</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="targetType">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>targetType</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="culture">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>culture</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.Comparer">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.Comparer</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.ComparerProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.ComparerProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.CompareValue">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.CompareValue</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.CompareValueProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.CompareValueProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="targetType">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>targetType</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="culture">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>culture</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="targetType">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>targetType</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="culture">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>culture</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog">
+      <summary>
+            Attached behavior.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.DataTemplateSelector">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.DataTemplateSelector</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.DataTemplateSelectorProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.DataTemplateSelectorProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.DialogDataContext">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.DialogDataContext</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.DialogDataContextProperty">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.DialogDataContextProperty</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.GetDataTemplateSelector(System.Windows.DependencyObject)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.GetDataTemplateSelector(System.Windows.DependencyObject)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="attachingElement">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>attachingElement</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.GetDataTemplateSelector(System.Windows.DependencyObject)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.GetDataTemplateSelector(System.Windows.DependencyObject)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.GetDialogDataContext(System.Windows.DependencyObject)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.GetDialogDataContext(System.Windows.DependencyObject)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="attachingElement">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>attachingElement</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.GetDialogDataContext(System.Windows.DependencyObject)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.GetDialogDataContext(System.Windows.DependencyObject)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.GetStyle(System.Windows.DependencyObject)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.GetStyle(System.Windows.DependencyObject)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="attachingElement">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>attachingElement</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.GetStyle(System.Windows.DependencyObject)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.GetStyle(System.Windows.DependencyObject)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.SetDataTemplateSelector(System.Windows.DependencyObject,System.Windows.Controls.DataTemplateSelector)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.SetDataTemplateSelector(System.Windows.DependencyObject,System.Windows.Controls.DataTemplateSelector)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="attachingElement">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>attachingElement</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.SetDataTemplateSelector(System.Windows.DependencyObject,System.Windows.Controls.DataTemplateSelector)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.SetDataTemplateSelector(System.Windows.DependencyObject,System.Windows.Controls.DataTemplateSelector)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.SetDialogDataContext(System.Windows.DependencyObject,BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.SetDialogDataContext(System.Windows.DependencyObject,BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="attachingElement">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>attachingElement</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.SetDialogDataContext(System.Windows.DependencyObject,BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.SetDialogDataContext(System.Windows.DependencyObject,BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.SetStyle(System.Windows.DependencyObject,System.Windows.Style)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.SetStyle(System.Windows.DependencyObject,System.Windows.Style)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="attachingElement">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>attachingElement</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.SetStyle(System.Windows.DependencyObject,System.Windows.Style)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.SetStyle(System.Windows.DependencyObject,System.Windows.Style)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.Style">
+      <summary>
+            The attached Style property which holds the <see cref="T:System.Windows.Style" /> which should apply to the dialog. <see cref="P:System.Windows.Style.TargetType" /> must be <see cref="T:System.Windows.Window" />.
+            </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.StyleProperty">
+      <summary>
+            The attached Style property which holds the <see cref="T:System.Windows.Style" /> which should apply to the dialog. <see cref="P:System.Windows.Style.TargetType" /> must be <see cref="T:System.Windows.Window" />.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.TryGetDialog(BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel,System.Windows.Window@)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.TryGetDialog(BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel,System.Windows.Window@)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="viewModel">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>viewModel</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.TryGetDialog(BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel,System.Windows.Window@)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="dialog">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>dialog</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.TryGetDialog(BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel,System.Windows.Window@)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.TryGetDialog(BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel,System.Windows.Window@)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogResult">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogResult</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel">
+      <summary>
+            Implementation of <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel" />. This abstract class implements the dialog data handling logic and is therefore preferred over a custom implementation of <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel" />.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.#ctor(System.String,System.String)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="message">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>message</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.#ctor(System.String,System.String)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="title">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>title</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.#ctor(System.String,System.String)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.#ctor(System.String,System.String,System.Func{BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel,System.Threading.Tasks.Task})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="message">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>message</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.#ctor(System.String,System.String,System.Func{BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel,System.Threading.Tasks.Task})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="title">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>title</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.#ctor(System.String,System.String,System.Func{BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel,System.Threading.Tasks.Task})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="sendResponseCallbackAsync">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>sendResponseCallbackAsync</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.#ctor(System.String,System.String,System.Func{BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel,System.Threading.Tasks.Task})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.#ctor(System.String,System.String,System.Windows.Media.ImageSource,System.Func{BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel,System.Threading.Tasks.Task})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="message">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>message</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.#ctor(System.String,System.String,System.Windows.Media.ImageSource,System.Func{BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel,System.Threading.Tasks.Task})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="title">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>title</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.#ctor(System.String,System.String,System.Windows.Media.ImageSource,System.Func{BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel,System.Threading.Tasks.Task})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="titleBarIcon">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>titleBarIcon</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.#ctor(System.String,System.String,System.Windows.Media.ImageSource,System.Func{BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel,System.Threading.Tasks.Task})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="sendResponseCallbackAsync">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>sendResponseCallbackAsync</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.#ctor(System.String,System.String,System.Windows.Media.ImageSource,System.Func{BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel,System.Threading.Tasks.Task})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.DialogResult">
+      <summary>
+            The <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogResult" /> of the user interaction.
+            </summary>
+    </member>
+    <member name="E:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.InteractionCompleted">
+      <summary>
+            Event to signal that the interaction with the dialog is completed.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.Message">
+      <summary>
+            The message for the dialog to show to the user.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.OnInteractionCompleted">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.OnInteractionCompleted</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.OnSendResponseAsyncCommandExecuted(BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogResult)">
+      <summary>
+            Asynchronously called when the SendResponseAsyncCommand is executed.
+            </summary>
+      <param name="result">A <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogResult" /> value that was received by the ICommand.</param>
+      <returns>A <c>Task</c> instance to make this method awaitable.</returns>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.ResponseCallbackAsync">
+      <summary>
+            The asynchronous callback that is invoked during the dialog interaction. Use this callback as continuation of the interrupted flow, after the required data was collected by the dialog.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.SendResponseAsyncCommand">
+      <summary>
+            ICommand that can be bound to the buttons of the dialog. The command parameter is a <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogResult" />.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.Title">
+      <summary>
+            The title of the dialog <c>Window</c></summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.TitleBarIcon">
+      <summary>
+            The icon to display in the title bar of the Window
+            </summary>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel">
+      <summary>
+            The DataContext and binding source for the dialog Window. Implement this interface or the derived abstract <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel" /> to transport data from the view to the view model via binding.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel.DialogResult">
+      <summary>
+            The <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogResult" /> of the user interaction.
+            </summary>
+    </member>
+    <member name="E:BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel.InteractionCompleted">
+      <summary>
+            Event to signal that the interaction with the dialog is completed.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel.Message">
+      <summary>
+            The message for the dialog to show to the user.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel.ResponseCallbackAsync">
+      <summary>
+            The asynchronous callback that is invoked during the dialog interaction. Use this callback as continuation of the interrupted flow, after the required data was collected by the dialog.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel.SendResponseAsyncCommand">
+      <summary>
+            ICommand that can be bound to the buttons of the dialog. The command parameter is a <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogResult" />.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel.Title">
+      <summary>
+            The title of the dialog <c>Window</c></summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel.TitleBarIcon">
+      <summary>
+            The icon to display in the title bar of the Window
+            </summary>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModelProvider">
+      <summary>
+            The binding source for the current dialog view and the attached property <see cref="F:BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.DialogDataContextProperty" />.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModelProvider.DialogViewModel">
+      <summary>
+            The binding source for the current dialog view.
+            </summary>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModelProviderSource">
+      <summary>
+            Interface that supports notification of observers to request display of a dialog.
+            The event args is the view model of <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel" /> which serves as the DataContext and binding source of the dialog.
+            </summary>
+    </member>
+    <member name="E:BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModelProviderSource.DialogRequested">
+      <summary>
+            Event that can be raised to notify a listening view model (or view) that the displaying of dialog is requested. The event args is the view model of <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel" /> which serves as the DataContext and binding source of the dialog.
+            </summary>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions">
+      <summary>
+            Collection of extension methods e.g. visual tree traversal
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.FindVisualChildElements``1(System.Windows.DependencyObject)">
+      <summary>
+            Traverses the visual tree towards the leafs until all elements with a matching element type is found.
+            Returns an <see cref="T:System.Collections.Generic.IEnumerable`1" /> to enable deferred traversal.
+            </summary>
+      <param name="parent"></param>
+      <typeparam name="TChildren">The type the visual children must match.</typeparam>
+      <returns>An enumerable collection of encountered matches.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.TryFindVisualChildElement``1(System.Windows.DependencyObject,``0@)">
+      <summary>
+            Traverses the visual tree towards the leafs until an element with a matching element type is found.
+            </summary>
+      <param name="parent">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parent</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.TryFindVisualChildElement``1(System.Windows.DependencyObject,``0@)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="resultElement">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>resultElement</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.TryFindVisualChildElement``1(System.Windows.DependencyObject,``0@)</parameter>
+          </include>
+        </markup>
+      </param>
+      <typeparam name="TChild">The type the visual child must match.</typeparam>
+      <returns>The child element of matching type.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)">
+      <summary>
+            Traverses the visual tree towards the leafs until an element with a matching element name is found.
+            </summary>
+      <param name="parent">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parent</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="childElementName">The name the visual child's name must match.</param>
+      <param name="resultElement">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>resultElement</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>The parent element of matching name.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.TryFindVisualParentElement``1(System.Windows.DependencyObject,``0@,System.Int32)">
+      <summary>
+            Traverses the visual tree towards the root until an element with a matching element name is found.
+            </summary>
+      <param name="child">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>child</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.TryFindVisualParentElement``1(System.Windows.DependencyObject,``0@,System.Int32)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="resultElement">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>resultElement</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.TryFindVisualParentElement``1(System.Windows.DependencyObject,``0@,System.Int32)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="ancestorLevel">The ancestor level. The number of encountered elements on the upward path starting at the current element  Use 1 to indicate the one nearest to the current element.</param>
+      <typeparam name="TParent">The type the visual parent must match.</typeparam>
+      <returns>The parent element of matching type.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)">
+      <summary>
+            Traverses the visual tree towards the root until an element with a matching element type is found.
+            </summary>
+      <param name="child">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>child</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="elementName">The element name the visual parent must match.</param>
+      <param name="resultElement">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>resultElement</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>The parent element of matching name.</returns>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1">
+      <summary>
+            A reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand" /> with support for async/await. Enables instant creation of an ICommand without implementing the ICommand interface for each command.
+            The individual <see cref="!:Execute()" />, <see cref="!:ExecuteAsync()" /> and <see cref="!:CanExecute()" /> members are supplied via delegates.
+              <seealso cref="T:System.Windows.Input.ICommand" /></summary>
+      <typeparam name="TParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>typeparam</parameter>
+            <parameter>TParam</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </typeparam>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Action)">
+      <summary>
+              Creates a new parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)" /> always returns <code>true</code>).
+            </summary>
+      <param name="executeNoParam">The awaitable execution handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Action,System.Func{System.Boolean})">
+      <summary>
+              Creates a new parameterless command.
+            </summary>
+      <param name="executeNoParam"></param>
+      <param name="canExecuteNoParam">The execution status handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Action{`0})">
+      <summary>
+              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)" /> always returns <code>true</code>).
+            </summary>
+      <param name="execute">The awaitable execution handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Action{`0},System.Predicate{`0})">
+      <summary>
+              Creates a new command.
+            </summary>
+      <param name="execute">The execution handler.</param>
+      <param name="canExecute">The can execute handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.Tasks.Task})">
+      <summary>
+              Creates a new parameterless asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)" /> always returns <code>true</code>).
+            </summary>
+      <param name="executeAsyncNoParam">The awaitable execution handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})">
+      <summary>
+              Creates a new parameterless asynchronous command.
+            </summary>
+      <param name="executeAsyncNoParam">Parameterless execute handler.</param>
+      <param name="canExecuteNoParam">Parameterless can execute handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task})">
+      <summary>
+              Creates a new asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)" /> always returns <code>true</code>).
+            </summary>
+      <param name="executeAsync">The awaitable execution handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task},System.Predicate{`0})">
+      <summary>
+              Creates a new asynchronous command.
+            </summary>
+      <param name="executeAsync">The awaitable execution handler.</param>
+      <param name="canExecute">The can execute handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.Execute(`0)">
+      <summary>
+              Executes the AsyncRelayCommand on the current command target. 
+            </summary>
+      <param name="parameter">
+              Data used by the command. 
+            </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)">
+      <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+      <param name="parameter">
+              Data used by the command. If the command does not require data to be passed,
+              this object can be set to null.
+            </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </summary>
+      <typeparam name="TParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>typeparam</parameter>
+            <parameter>TParam</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </typeparam>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.CanExecute(`0)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.Execute(`0)">
+      <summary>
+            Executes the AsyncRelayCommand on the current command target.
+            </summary>
+      <param name="parameter">
+            Data used by the command. If the command does not require data to be passed, 
+            this object can be set to null.
+            </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0)">
+      <summary>
+            Asynchronously executes the AsyncRelayCommand on the current command target.
+            </summary>
+      <param name="parameter">
+            Data used by the command. If the command does not require data to be passed, 
+            this object can be set to null.
+            </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Markup.EnumExtension">
+      <summary>
+            XAML extension to return the values of an enumeration.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Markup.EnumExtension.#ctor">
+      <summary>
+            Default constructor.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Markup.EnumExtension.#ctor(System.Type)">
+      <summary>
+            Constructor to initialize the <see cref="P:BionicCode.Utilities.Net.Framework.Wpf.Markup.EnumExtension.EnumType" /> property.
+            </summary>
+      <param name="enumType"></param>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Markup.EnumExtension.EnumType">
+      <summary>
+            The enum to enumerate.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Markup.EnumExtension.ProvideValue(System.IServiceProvider)">
+      <summary>When implemented in a derived class, returns an object that is provided as the value of the target property for this markup extension.</summary>
+      <param name="serviceProvider">A service provider helper that can provide services for the markup extension.</param>
+      <returns>The object value to set on the property where the extension is applied.</returns>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension.#ctor(System.Object,System.Object)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="valueX">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>valueX</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension.#ctor(System.Object,System.Object)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="valueY">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>valueY</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension.#ctor(System.Object,System.Object)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension.#ctor(System.Object,System.Type)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="valueXToCompare">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>valueXToCompare</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension.#ctor(System.Object,System.Type)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="expectedType">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>expectedType</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension.#ctor(System.Object,System.Type)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension.ProvideValue(System.IServiceProvider)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension.ProvideValue(System.IServiceProvider)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="serviceProvider">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>serviceProvider</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension.ProvideValue(System.IServiceProvider)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension.ProvideValue(System.IServiceProvider)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension.ValueX">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension.ValueX</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension.ValueY">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension.ValueY</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Markup.InversionMode">
+      <summary>
+            Enumeration to set the inversion direction of the <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension" />.
+            </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Markup.InversionMode.Default">
+      <summary>
+            Default/Unset value
+            </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Markup.InversionMode.OneWay">
+      <summary>
+            Only invert value from binding source to target.
+            </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Markup.InversionMode.OneWayToSource">
+      <summary>
+            Only invert from binding target to source.
+            </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Markup.InversionMode.TwoWay">
+      <summary>
+            Invert bi-directional.
+            </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Markup.InversionMode.OneTime">
+      <summary>
+            Only invert on initialization (from source to target).
+            </summary>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension">
+      <summary>
+            XAML extension to invert the <see cref="P:BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension.Value" /> property using the current <see cref="P:BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension.ValueInverter" />. Supports every <see cref="T:System.Windows.Markup.MarkupExtension" /> e.g., <see cref="T:System.Windows.Data.BindingBase" />.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension.#ctor">
+      <summary>
+            Default constructor.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension.#ctor(System.Object)">
+      <summary>
+            Constructor.
+            </summary>
+      <param name="value">Any value that can be converted by the provided <see cref="P:BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension.ValueInverter" />. Can be any <see cref="T:System.Windows.Markup.MarkupExtension" /> like <see cref="T:System.Windows.Data.BindingBase" /> that can provide a valid value.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension.GetValueToInvertFromMarkupExtension(System.Windows.Markup.MarkupExtension,System.IServiceProvider)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension.GetValueToInvertFromMarkupExtension(System.Windows.Markup.MarkupExtension,System.IServiceProvider)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="wrappedMarkupExtension">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>wrappedMarkupExtension</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension.GetValueToInvertFromMarkupExtension(System.Windows.Markup.MarkupExtension,System.IServiceProvider)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="serviceProvider">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>serviceProvider</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension.GetValueToInvertFromMarkupExtension(System.Windows.Markup.MarkupExtension,System.IServiceProvider)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension.GetValueToInvertFromMarkupExtension(System.Windows.Markup.MarkupExtension,System.IServiceProvider)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension.Mode">
+      <summary>
+            The inversion mode.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension.ProvideValue(System.IServiceProvider)">
+      <summary>When implemented in a derived class, returns an object that is provided as the value of the target property for this markup extension.</summary>
+      <param name="serviceProvider">A service provider helper that can provide services for the markup extension.</param>
+      <returns>The object value to set on the property where the extension is applied.</returns>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension.Value">
+      <summary>
+            The Value to invert. Can everything that the provided <see cref="P:BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension.ValueInverter" /> can invert. The value can also be a <see cref="T:System.Windows.Data.BindingBase" /> or any other <see cref="T:System.Windows.Markup.MarkupExtension" /> that can provide the invertible value.
+            </summary>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.#ctor(System.Boolean)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="booleanValue">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>booleanValue</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.#ctor(System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.#ctor(System.Double)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="doubleValue">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>doubleValue</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.#ctor(System.Double)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.#ctor(System.Int32)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="int32Value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>int32Value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.#ctor(System.Int32)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.#ctor(System.String)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="stringValue">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>stringValue</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.#ctor(System.String)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.Boolean">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.Boolean</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.Double">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.Double</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.Int32">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.Int32</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.ProvideValue(System.IServiceProvider)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.ProvideValue(System.IServiceProvider)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="serviceProvider">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>serviceProvider</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.ProvideValue(System.IServiceProvider)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.ProvideValue(System.IServiceProvider)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.String">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveTypeExtension.String</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Settings.AppSettingsConnector">
+      <summary>
+            Exposes a basic static API to access the AppSettings file in order to manage application settings. 
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.AppSettingsConnector.TryReadBool(System.String,System.Boolean@)">
+      <summary>
+            If exists, this method will return the corresponding value of the specified key.
+            </summary>
+      <param name="key">The key that maps to a specific setting.</param>
+      <param name="value">The actual settings <see cref="T:System.Boolean" /> value of the specified key.</param>
+      <returns>
+        <c>true</c> when an entry for the specified <paramref name="key" /> was found. Otherwise <c>false</c>.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.AppSettingsConnector.TryReadDouble(System.String,System.Double@)">
+      <summary>
+            If exists, this method will return the corresponding value of the specified key.
+            </summary>
+      <param name="key">The key that maps to a specific setting.</param>
+      <param name="value">The actual settings <see cref="T:System.Double" /> value of the specified key.</param>
+      <returns>
+        <c>true</c> when an entry for the specified <paramref name="key" /> was found. Otherwise <c>false</c>.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.AppSettingsConnector.TryReadInt(System.String,System.Int32@)">
+      <summary>
+            If exists, this method will return the corresponding value of the specified key.
+            </summary>
+      <param name="key">The key that maps to a specific setting.</param>
+      <param name="value">The actual settings <see cref="T:System.Int32" /> value of the specified key.</param>
+      <returns>
+        <c>true</c> when an entry for the specified <paramref name="key" /> was found. Otherwise <c>false</c>.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.AppSettingsConnector.TryReadString(System.String,System.String@)">
+      <summary>
+            If exists, this method will return the corresponding value of the specified key.
+            </summary>
+      <param name="key">The key that maps to a specific setting.</param>
+      <param name="value">The actual settings <see cref="T:System.String" /> value of the specified key.</param>
+      <returns>
+        <c>true</c> when an entry for the specified <paramref name="key" /> was found. Otherwise <c>false</c>.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.AppSettingsConnector.WriteBool(System.String,System.Boolean)">
+      <summary>
+            Writes a <see cref="T:System.Boolean" /> value to the settings file which is stored using the specified lookup <paramref name="key" />. If the <paramref name="key" /> already exists, the existing value will be overwritten.
+            </summary>
+      <param name="key">The lookup key for the <paramref name="value" />.</param>
+      <param name="value">The settings value to save to the file.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.AppSettingsConnector.WriteDouble(System.String,System.Double)">
+      <summary>
+            Writes a <see cref="T:System.Double" /> value to the settings file which is stored using the specified lookup <paramref name="key" />. If the <paramref name="key" /> already exists, the existing value will be overwritten.
+            </summary>
+      <param name="key">The lookup key for the <paramref name="value" />.</param>
+      <param name="value">The settings value to save to the file.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.AppSettingsConnector.WriteInt(System.String,System.Int32)">
+      <summary>
+            Writes a <see cref="T:System.Int32" /> value to the settings file which is stored using the specified lookup <paramref name="key" />. If the <paramref name="key" /> already exists, the existing value will be overwritten.
+            </summary>
+      <param name="key">The lookup key for the <paramref name="value" />.</param>
+      <param name="value">The settings value to save to the file.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.AppSettingsConnector.WriteString(System.String,System.String)">
+      <summary>
+            Writes a <see cref="T:System.String" /> value to the settings file which is stored using the specified lookup <paramref name="key" />. If the <paramref name="key" /> already exists, the existing value will be overwritten.
+            </summary>
+      <param name="key">The lookup key for the <paramref name="value" />.</param>
+      <param name="value">The settings value to save to the file.</param>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Settings.IMruManager">
+      <summary>
+            Interface that describes an API that manages a MRU (Most Recently Used files) table which is stored in the AppSettings file.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.IMruManager.AddMostRecentlyUsedFile(System.String)">
+      <summary>
+            Adds a file with the specified path to the MRU table.
+            </summary>
+      <param name="filePath">The path to the file which is to add to the MRU table.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.IMruManager.Clear">
+      <summary>
+            Clears the MRU list.
+            </summary>
+    </member>
+    <member name="E:BionicCode.Utilities.Net.Framework.Wpf.Settings.IMruManager.FileAdded">
+      <summary>
+            Raised when a new file was added to the MRU list. The event args contains the old and the new MostRecentlyUsedFileItem. <br />Once the max <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem" /> limit is reached, the least used file will be removed from the list to make space for the new item. <br />In this case the <see cref="P:BionicCode.Utilities.Net.Standard.Generic.ValueChangedEventArgs`1.OldValue" /> is the removed oldest item in the list. <br />Otherwise <see cref="P:BionicCode.Utilities.Net.Standard.Generic.ValueChangedEventArgs`1.OldValue" /> will be <c>null</c>.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Settings.IMruManager.MaxMostRecentlyUsedCount">
+      <summary>
+            The maximum number of files that are kept in the MRU table.<br />The default value is 10.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Settings.IMruManager.MostRecentlyUsedFile">
+      <summary>
+            Gets the MRU file which is the last file added to the MRU table.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Settings.IMruManager.MostRecentlyUsedFiles">
+      <summary>
+            A <see cref="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1" /> collection of <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem" /> which contains the MRU files.
+            </summary>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem">
+      <summary>
+            An immutable item that represents a Most Recently Used file (MRU) table entry.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.#ctor(System.IO.FileInfo)">
+      <summary>
+            Constructor
+            </summary>
+      <param name="fileInfo">The underlying <see cref="P:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.FileInfo" /> of the item.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.Equals(BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem)">
+      <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+      <param name="other">An object to compare with this object.</param>
+      <returns>
+        <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.Equals(System.Object)">
+      <summary>Determines whether the specified object is equal to the current object.</summary>
+      <param name="obj">The object to compare with the current object.</param>
+      <returns>
+        <see langword="true" /> if the specified object  is equal to the current object; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.FileInfo">
+      <summary>
+            Return the underlying <see cref="P:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.FileInfo" /> of this instance.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.FullName">
+      <summary>
+            Returns the full file path of the file.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.GetHashCode">
+      <summary>Serves as the default hash function.</summary>
+      <returns>A hash code for the current object.</returns>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.Name">
+      <summary>
+            Returns the file name including the extension.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.op_Equality(BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem,BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.op_Equality(BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem,BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="left">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>left</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.op_Equality(BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem,BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="right">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>right</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.op_Equality(BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem,BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.op_Equality(BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem,BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.op_Inequality(BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem,BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.op_Inequality(BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem,BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="left">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>left</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.op_Inequality(BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem,BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="right">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>right</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.op_Inequality(BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem,BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.op_Inequality(BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem,BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager">
+      <summary>
+            API that manages a MRU (Most Recently Used files) table which is stored in the AppSettings file.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager.#ctor">
+      <summary>
+            Default constructor
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager.AddMostRecentlyUsedFile(System.String)">
+      <summary>
+            Adds a file with the specified path to the MRU table.
+            </summary>
+      <param name="filePath">The path to the file which is to add to the MRU table.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager.Clear">
+      <summary>
+            Clears the MRU list.
+            </summary>
+    </member>
+    <member name="E:BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager.FileAdded">
+      <summary>
+            Raised when a new file was added to the MRU list. The event args contains the old and the new MostRecentlyUsedFileItem. <br />Once the max <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem" /> limit is reached, the least used file will be removed from the list to make space for the new item. <br />In this case the <see cref="P:BionicCode.Utilities.Net.Standard.Generic.ValueChangedEventArgs`1.OldValue" /> is the removed oldest item in the list. <br />Otherwise <see cref="P:BionicCode.Utilities.Net.Standard.Generic.ValueChangedEventArgs`1.OldValue" /> will be <c>null</c>.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager.InternalMostRecentlyUsedFiles">
+      <summary>
+            The underlying collection that holds the <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem" /> elements.<br /> This collection is the source for the public <see cref="P:BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager.MostRecentlyUsedFiles" /> property, which is a <see cref="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1" />.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager.IsMruCountValid(System.Int32)">
+      <summary>
+            Property validation delegate. Validates the <see cref="P:BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager.MaxMostRecentlyUsedCount" /> property values.
+            </summary>
+      <param name="count">The max count value for <see cref="P:BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager.MaxMostRecentlyUsedCount" /> to validate.</param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager.IsMruCountValid(System.Int32)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager.MaxMostRecentlyUsedCount">
+      <summary>
+            The maximum number of files that are kept in the MRU table.<br />The default value is 10.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager.MostRecentlyUsedFile">
+      <summary>
+            Gets the MRU file which is the last file added to the MRU table.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager.MostRecentlyUsedFiles">
+      <summary>
+            A <see cref="T:System.Collections.ObjectModel.ReadOnlyObservableCollection`1" /> collection of <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem" /> which contains the MRU files.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager.OnFileAdded(BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem,BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem)">
+      <summary>
+            Called when the <see cref="P:BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager.InternalMostRecentlyUsedFiles" /> has changed.
+            </summary>
+      <param name="oldItem">The removed <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem" /> item.</param>
+      <param name="newItem">The newly added <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem" /> item.</param>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand">
+      <summary>
+            A  reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand" /> with support for async/await. Enables instant creation of an ICommand without implementing the ICommand interface for each command.
+            The individual <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.Execute" />, <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.ExecuteAsync" /> and <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.CanExecute" /> members are supplied via delegates.
+              <seealso cref="T:System.Windows.Input.ICommand" /></summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.#ctor(System.Action)">
+      <summary>
+              Creates a new parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.CanExecute" /> always returns <code>true</code>).
+            </summary>
+      <param name="executeNoParam">The awaitable execution handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.#ctor(System.Action,System.Func{System.Boolean})">
+      <summary>
+              Creates a new parameterless command.
+            </summary>
+      <param name="executeNoParam">The execution handler.</param>
+      <param name="canExecuteNoParam">The execution status handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.#ctor(System.Action{System.Object})">
+      <summary>
+              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.CanExecute" /> always returns <code>true</code>).
+            </summary>
+      <param name="execute">The awaitable execution handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})">
+      <summary>
+              Creates a new command.
+            </summary>
+      <param name="execute">The execution handler.</param>
+      <param name="canExecute">The execution status handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeAsyncNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeAsyncNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})">
+      <summary>
+              Creates a parameterless new asynchronous command.
+            </summary>
+      <param name="executeAsyncNoParam">The awaitable execution handler.</param>
+      <param name="canExecuteNoParam">The execution status handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task})">
+      <summary>
+              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.CanExecute" /> always returns <code>true</code>).
+            </summary>
+      <param name="executeAsync">The awaitable execution handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task},System.Predicate{System.Object})">
+      <summary>
+              Creates a new asynchronous command.
+            </summary>
+      <param name="executeAsync">The awaitable execution handler.</param>
+      <param name="canExecute">The can execute handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.CanExecute">
+      <summary>
+              Determines whether this AsyncRelayCommand can execute.
+            </summary>
+      <returns>
+        <code>true</code>code&gt; if this command can be executed, otherwise <code>false</code>.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.CanExecute(System.Object)">
+      <summary>
+              Determines whether this AsyncRelayCommand can execute.
+            </summary>
+      <param name="parameter">
+              Data used by the command. 
+            </param>
+      <returns>
+        <code>true</code>code&gt; if this command can be executed, otherwise <code>false</code>.</returns>
+    </member>
+    <member name="E:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.CanExecuteChanged">
+      <summary>
+              Raised when RaiseCanExecuteChanged is called.
+            </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.CanExecuteNoParam">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.CanExecuteNoParam</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.Execute">
+      <summary>
+              Executes the AsyncRelayCommand on the current command target. 
+            </summary>
+      <param name="parameter">
+              Data used by the command. 
+            </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.Execute(System.Object)">
+      <summary>
+              Executes the AsyncRelayCommand on the current command target. 
+            </summary>
+      <param name="parameter">
+              Data used by the command. 
+            </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.ExecuteAsync">
+      <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.ExecuteAsync</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.ExecuteAsync(System.Object)">
+      <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+      <param name="parameter">
+              Data used by the command. If the command does not require data to be passed,
+              this object can be set to null.
+            </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.ExecuteAsync(System.Object)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.ExecuteAsyncNoParam">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.ExecuteAsyncNoParam</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.ExecuteNoParam">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Framework.Wpf.Utility.AsyncRelayCommand.ExecuteNoParam</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Utility.IAsyncRelayCommand">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.Utility.IAsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.IAsyncRelayCommand.CanExecute">
+      <summary>
+            Executes the AsyncRelayCommand on the current command target.
+            </summary>
+      <param name="parameter">
+            Data used by the command. If the command does not require data to be passed, 
+            this object can be set to null.
+            </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Utility.IAsyncRelayCommand.CanExecute</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.IAsyncRelayCommand.Execute">
+      <summary>
+            Executes the AsyncRelayCommand on the current command target.
+            </summary>
+      <param name="parameter">
+            Data used by the command. If the command does not require data to be passed, 
+            this object can be set to null.
+            </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.IAsyncRelayCommand.ExecuteAsync">
+      <summary>
+            Executes the AsyncRelayCommand on the current command target.
+            </summary>
+      <param name="parameter">
+            Data used by the command. If the command does not require data to be passed, 
+            this object can be set to null.
+            </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Utility.IAsyncRelayCommand.ExecuteAsync</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.IAsyncRelayCommand.ExecuteAsync(System.Object)">
+      <summary>
+            Asynchronously executes the AsyncRelayCommand on the current command target.
+            </summary>
+      <param name="parameter">
+            Data used by the command. If the command does not require data to be passed, 
+            this object can be set to null.
+            </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Utility.IAsyncRelayCommand.ExecuteAsync(System.Object)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1">
+      <summary>
+            A reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand" /> with support for async/await. Enables instant creation of an ICommand without implementing the ICommand interface for each command.
+            The individual <see cref="!:Execute()" />, <see cref="!:ExecuteAsync()" /> and <see cref="!:CanExecute()" /> members are supplied via delegates.
+              <seealso cref="T:System.Windows.Input.ICommand" /></summary>
+      <typeparam name="TParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>typeparam</parameter>
+            <parameter>TParam</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </typeparam>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.#ctor(System.Action)">
+      <summary>
+              Creates a new parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.CanExecute(`0)" /> always returns <code>true</code>).
+            </summary>
+      <param name="executeNoParam">The awaitable execution handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.#ctor(System.Action,System.Func{System.Boolean})">
+      <summary>
+              Creates a new parameterless command.
+            </summary>
+      <param name="executeNoParam"></param>
+      <param name="canExecuteNoParam">The execution status handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.#ctor(System.Action{`0})">
+      <summary>
+              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.CanExecute(`0)" /> always returns <code>true</code>).
+            </summary>
+      <param name="execute">The awaitable execution handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.#ctor(System.Action{`0},System.Predicate{`0})">
+      <summary>
+              Creates a new command.
+            </summary>
+      <param name="execute">The execution handler.</param>
+      <param name="canExecute">The can execute handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.Tasks.Task})">
+      <summary>
+              Creates a new parameterless asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.CanExecute(`0)" /> always returns <code>true</code>).
+            </summary>
+      <param name="executeAsyncNoParam">The awaitable execution handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})">
+      <summary>
+              Creates a new parameterless asynchronous command.
+            </summary>
+      <param name="executeAsyncNoParam">Parameterless execute handler.</param>
+      <param name="canExecuteNoParam">Parameterless can execute handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task})">
+      <summary>
+              Creates a new asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.CanExecute(`0)" /> always returns <code>true</code>).
+            </summary>
+      <param name="executeAsync">The awaitable execution handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task},System.Predicate{`0})">
+      <summary>
+              Creates a new asynchronous command.
+            </summary>
+      <param name="executeAsync">The awaitable execution handler.</param>
+      <param name="canExecute">The can execute handler.</param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.CanExecute(`0)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.Execute(`0)">
+      <summary>
+              Executes the AsyncRelayCommand on the current command target. 
+            </summary>
+      <param name="parameter">
+              Data used by the command. 
+            </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)">
+      <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+      <param name="parameter">
+              Data used by the command. If the command does not require data to be passed,
+              this object can be set to null.
+            </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.IAsyncRelayCommand`1">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.IAsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </summary>
+      <typeparam name="TParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>typeparam</parameter>
+            <parameter>TParam</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.IAsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </typeparam>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.IAsyncRelayCommand`1.CanExecute(`0)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.IAsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.IAsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.IAsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.IAsyncRelayCommand`1.Execute(`0)">
+      <summary>
+            Executes the AsyncRelayCommand on the current command target.
+            </summary>
+      <param name="parameter">
+            Data used by the command. If the command does not require data to be passed, 
+            this object can be set to null.
+            </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0)">
+      <summary>
+            Asynchronously executes the AsyncRelayCommand on the current command target.
+            </summary>
+      <param name="parameter">
+            Data used by the command. If the command does not require data to be passed, 
+            this object can be set to null.
+            </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+  </members>
+</doc>

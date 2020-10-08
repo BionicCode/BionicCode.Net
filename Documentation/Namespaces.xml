@@ -86,6 +86,106 @@ Targets WPF .NET Core  &gt;= 3.0.</summary>
         </markup>
       </summary>
     </member>
+    <member name="N:BionicCode.Utilities.Net.Framework.Wpf">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>N:BionicCode.Utilities.Net.Framework.Wpf</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="N:BionicCode.Utilities.Net.Framework.Wpf.Collections.Generic">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>N:BionicCode.Utilities.Net.Framework.Wpf.Collections.Generic</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="N:BionicCode.Utilities.Net.Framework.Wpf.Converter">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>N:BionicCode.Utilities.Net.Framework.Wpf.Converter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="N:BionicCode.Utilities.Net.Framework.Wpf.Dialog">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>N:BionicCode.Utilities.Net.Framework.Wpf.Dialog</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="N:BionicCode.Utilities.Net.Framework.Wpf.Extensions">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>N:BionicCode.Utilities.Net.Framework.Wpf.Extensions</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="N:BionicCode.Utilities.Net.Framework.Wpf.Generic">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>N:BionicCode.Utilities.Net.Framework.Wpf.Generic</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="N:BionicCode.Utilities.Net.Framework.Wpf.Markup">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>N:BionicCode.Utilities.Net.Framework.Wpf.Markup</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="N:BionicCode.Utilities.Net.Framework.Wpf.Settings">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>N:BionicCode.Utilities.Net.Framework.Wpf.Settings</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="N:BionicCode.Utilities.Net.Framework.Wpf.Utility">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>N:BionicCode.Utilities.Net.Framework.Wpf.Utility</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="N:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>N:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
     <member name="N:BionicCode.Utilities.Net.Standard">
       <summary>
         <markup>
@@ -163,6 +263,36 @@ Project home:
           <include item="SMCMissingTag">
             <parameter>summary</parameter>
             <parameter>G:BionicCode.Utilities.Net.Standard</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="G:BionicCode.Utilities.Net.Framework.Wpf.Utility">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>G:BionicCode.Utilities.Net.Framework.Wpf.Utility</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="G:BionicCode.Utilities.Net.Framework.Wpf">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>G:BionicCode.Utilities.Net.Framework.Wpf</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="G:BionicCode.Utilities.Net.Framework">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>G:BionicCode.Utilities.Net.Framework</parameter>
           </include>
         </markup>
       </summary>
