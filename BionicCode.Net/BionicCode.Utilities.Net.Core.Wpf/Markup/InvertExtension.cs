@@ -10,8 +10,10 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Markup
   /// XAML extension to invert the <see cref="Value"/> property using the current <see cref="IValueInverter"/>. Supports every <see cref="MarkupExtension"/> e.g., <see cref="BindingBase"/>.
   /// </summary>
   /// <example>Provide the value locally or via data binding:
-  /// <para><code>&lt;TextBox Text="{Invert True}" /&gt;</code></para>
-  /// <para><code>&lt;TextBox Text="{Invert {Binding TextValue}}" /&gt;</code></para></example>
+  /// <para><code>&lt;TextBox Text="{Invert True}" /&gt; // False</code>
+  /// <code>&lt;TextBox Text="{Invert 12}" /&gt; // -12</code>
+  /// <code>&lt;TextBox Text="{Invert {x:Static Visibility.Hidden}}" /&gt; // Visibility.Visible</code>
+  /// <code>&lt;TextBox Text="{Invert {Binding TextValue}}" /&gt;</code></para></example>
   public class InvertExtension : MarkupExtension
   {
     /// <summary>
