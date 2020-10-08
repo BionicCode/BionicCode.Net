@@ -29,7 +29,7 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 [![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Standard.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)
 -->
 
-## [Class Reference](https://rawcdn.githack.com/BionicCode/BionicCode.Net/b958994379a255df81933039642d4f3f572a8222/Documentation/html/R_Project_Documentation.htm)
+## [Class Reference](https://rawcdn.githack.com/BionicCode/BionicCode.Net/f3063930211f1bd1d21b45992e37bdfd59b600a1/Documentation/html/R_Project_Documentation.htm)
 [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/b958994379a255df81933039642d4f3f572a8222/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
 
 [![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Framework-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/f3063930211f1bd1d21b45992e37bdfd59b600a1/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)
