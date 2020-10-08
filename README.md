@@ -1,9 +1,9 @@
 # BionicCode.Net ![GitHub](https://img.shields.io/github/license/BionicCode/BionicUtilities.Net)
 Collection of .NET libraries like utilities and controls that target .NET Standard, .NET Core, .NET Framework, .NET Core WPF, .NET Framework WPF and UWP
 
-![BC](https://img.shields.io/badge/Framework-.NET_Core-informational)
-![BC](https://img.shields.io/badge/Framework-.NET_Standard_2.0-informational)
-![BC](https://img.shields.io/badge/Framework-.NET_Framework_4.8-informational)
+![BC](https://img.shields.io/badge/.NET-Core-informational)
+![BC](https://img.shields.io/badge/.NET-Standard_2.0-informational)
+![BC](https://img.shields.io/badge/.NET-Framework_4.8-informational)
 
 ![BC](https://img.shields.io/badge/Framework-WPF-informational)
 ![BC](https://img.shields.io/badge/Framework-UWP-informational)
