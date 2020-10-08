@@ -34,6 +34,7 @@
       <DocumentationSource sourceFile="..\BionicCode.Utilities.Net.Framework\BionicCode.Utilities.Net.Framework.csproj" />
       <DocumentationSource sourceFile="..\BionicCode.Utilities.Net.Core.Wpf\BionicCode.Utilities.Net.Core.Wpf.csproj" />
       <DocumentationSource sourceFile="..\BionicCode.Utilities.Net.Standard\BionicCode.Utilities.Net.Standard.csproj" />
+      <DocumentationSource sourceFile="..\BionicCode.Utilities.Net.Framework.Wpf\BionicCode.Utilities.Net.Framework.Wpf.csproj" />
     </DocumentationSources>
     <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
     <SyntaxFilters>All</SyntaxFilters>
