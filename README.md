@@ -58,7 +58,8 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 * Collections
   * `ObservablePropertyChangedCollection<T>`
 * Markup Extensions
-  * `InvertExtension`
+  * [`InvertExtension`](https://github.com/BionicCode/BionicCode.Net#invertExtension)
+  * [`EnumExtension`](https://github.com/BionicCode/BionicCode.Net#enumExtension)
   * `PrimitiveTypeExtension`
   * `EqualsExtension`
 * [`Profiler`](https://github.com/BionicCode/BionicCode.Net#Profiler)
@@ -689,3 +690,33 @@ Application x:Class="BionicCode.BionicNuGetDeploy.Main.App"
 </Window>      
 ```
 
+
+## InvertExtension
+
+
+```XAML   <TextBlock Text="{Invert {Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Text}}"/>
+
+<!-- Returns: -12 -->
+<TextBlock Text="{Invert Value=1.2}"/> 
+
+<!-- Returns: 0.12 -->
+<TextBlock Text="{Invert -0.12}"/> 
+
+<!-- Returns: Visibility.Collapsed -->
+<TextBlock Text="{Invert {x:Static Visibility.Visible}}"/>
+
+<!-- Returns: False -->
+<TextBlock Text="{Invert True}"/>
+
+```
+
+## EnumExtension
+
+
+```XAML   
+
+<ComboBox ItemsSource="{Enum {x:Static MyEnum}}"/>
+
+<ComboBox ItemsSource="{Enum EnumType={x:Static MyEnum}}"/>
+
+```
