@@ -2,16 +2,20 @@
 Collection of .NET libraries like utilities and controls that target .NET Standard, .NET Core, .NET Framework, .NET Core WPF, .NET Framework WPF and UWP
 
 ![BC](https://img.shields.io/badge/Framework-.NET_Core-informational)![BC](https://img.shields.io/badge/Framework-.NET_Standard_2.0-informational)![BC](https://img.shields.io/badge/Framework-.NET_Framework_4.8-informational)
+
 ![BC](https://img.shields.io/badge/Framework-WPF-informational)![BC](https://img.shields.io/badge/Framework-UWP-informational)
 
 ![GitHub](https://img.shields.io/github/license/BionicCode/BionicUtilities.Net)
 
 ## NuGet packages
-[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/.NET_Core_WPF-BionicCode.Utilities.Net.Core.Wpf-informational)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)[![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Core.Wpf.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
+[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/.NET_Core_WPF-BionicCode.Utilities.Net.Core.Wpf-informational)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Core.Wpf.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
 
-[![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/.NET_Framework_4.8_WPF-BionicCode.Utilities.Net.Framework.Wpf-informational)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)[![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Framework.Wpf.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)
+[![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/.NET_Framework_4.8_WPF-BionicCode.Utilities.Net.Framework.Wpf-informational)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Framework.Wpf.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)
 
-[![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/.NET_Standard-BionicCode.Utilities.Net.Standard-informational)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)[![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Standard.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)
+[![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/.NET_Standard-BionicCode.Utilities.Net.Standard-informational)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Standard.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)
 
 ## [Class Reference](https://rawcdn.githack.com/BionicCode/BionicUtilities.Net/d1765f5da61687fac04e0fd7fc3ca4142935ecf1/BionicUtilities.Net/Documentation/Help/index.html)
 
