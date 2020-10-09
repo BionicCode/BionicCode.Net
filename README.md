@@ -895,3 +895,28 @@ Setting the `Invert.ValueInverter` property (similar to `Binding.Converter`) all
 <ComboBox ItemsSource="{Enum EnumType={x:Static MyEnum}}"/>
 
 ```
+
+---
+
+### AutoResetStream
+A `Stream` decorator that resets the stream's position after red(write access
+
+#### Example 
+
+```C#   
+using (var fileStream = new FileStream("C:/Temp", FileMode.CreateNew))
+{
+  bool leaveFileStreamOpen = true;
+  
+  using (var autoResetStream = new AutoResetStream(fileStream, leaveFileStreamOpen))
+  {
+    byte[] buffer = new byte[1024];
+    int bytesRead = await autoResetStream.ReadAsync(buffer, 0, buffer.Length);
+    int currentPosition = autoResetStream.Position; // retuns: 0
+  }
+  
+  currentPosition = fileStream.Position; // retuns: 0
+}
+
+```
+---
