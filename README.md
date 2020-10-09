@@ -74,6 +74,7 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 * [`AppSettingsConnector`](https://github.com/BionicCode/BionicCode.Net#AppSettingsConnector) - A default API to the `AppSettings` that provides strongly typed reading and writing (e.g. `bool`, `int`, `double`, `string`) of key-value pair values
 * [`MruManager`](https://github.com/BionicCode/BionicCode.Net#mru-most-recently-used-file-manager) - Most Recently Used (MRU) file manager. An API that maintains an MRU table stored in the Application Settings file. 
 * [`EventAggregator`](https://github.com/BionicCode/BionicCode.Net#eventaggregator) - Implementation of the Event Aggregator pattern that supports dynamic aggregation of different typed event sources
+* `AutoResetStream` - A `Stream` decorator that automatically resets the stream's position after read/write access.
 * Easy to use [`Dialog` attached behavior](https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior) and infrastructure to allow MVVM friendly dialog handling from the view models in a fire-and-forget manner. To display dialogs implement `IDialogViewModel` classes and create a `DataTemplate` for each implementation. The `DataTemplate` is the rendered in a native `Window`. Addition attached properties allow for styling of the dialog `Window` or to assign an optional `DataTemplateSelector`. The attached behavior will handle showing and closing of  the dialog.
   
 ### `BaseViewModel`
