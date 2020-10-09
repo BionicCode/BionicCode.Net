@@ -2,14 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using BionicCode.Utilities.Net.Core.Wpf.Extensions;
 
 namespace BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors
 {
+  /// <summary>
+  /// Set of attached behaviors for the <see cref="System.Windows.Controls.Primitives.Popup"/> control.
+  /// </summary>
+  /// <seealso href="https://github.com/BionicCode/BionicCode.Net#popup">See advanced example</seealso>
   public class Popup : DependencyObject
   {
     #region IsFollowPlacementTargetPositionEnabled attached property
 
+    /// <summary>
+    /// When set to <c>true</c>, the <see cref="System.Windows.Controls.Primitives.Popup"/> is forced to stick to the current <see cref="System.Windows.Controls.Primitives.Popup.PlacementTarget"/>. The <see cref="System.Windows.Controls.Primitives.Popup"/> will follow the <see cref="System.Windows.Controls.Primitives.Popup.PlacementTarget"/> whenever it changes it's screen coordinates.
+    /// </summary>
     public static readonly DependencyProperty IsStickyProperty =
       DependencyProperty.RegisterAttached(
         "IsSticky",
@@ -17,9 +25,19 @@ namespace BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors
         typeof(Popup),
         new PropertyMetadata(default(bool), Popup.OnIsStickyChanged));
 
+    /// <summary>
+    /// The set method of the attached <see cref="IsStickyProperty"/> property.
+    /// </summary>
+    /// <param name="attachingElement">The <see cref="System.Windows.Controls.Primitives.Popup"/> element.</param>
+    /// <param name="value"><c>true</c> to enable the behavior or <c>false</c> to disable it.</param>
     public static void SetIsSticky(DependencyObject attachingElement, bool value) =>
       attachingElement.SetValue(Popup.IsStickyProperty, value);
 
+    /// <summary>
+    /// Get method of the attachecd <see cref="IsStickyProperty"/> property.
+    /// </summary>
+    /// <param name="attachingElement">The <see cref="System.Windows.Controls.Primitives.Popup"/> element.</param>
+    /// <returns><c>true</c> if the behavior is enabled or <c>false</c> if disabled.</returns>
     public static bool GetIsSticky(DependencyObject attachingElement) =>
       (bool)attachingElement.GetValue(Popup.IsStickyProperty);
 

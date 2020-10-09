@@ -9,6 +9,7 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Converter
   {
     #region Implementation of IValueConverter
 
+    
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
       if (value == null)
@@ -26,6 +27,7 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Converter
       return (double) value / divisor;
     }
 
+    
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
       if (value == null)

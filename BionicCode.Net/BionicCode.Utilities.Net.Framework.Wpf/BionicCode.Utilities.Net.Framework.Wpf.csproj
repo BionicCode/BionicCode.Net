@@ -47,6 +47,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncAsyncRelayCommand.cs" />
+    <Compile Include="AttachedBehaviors\HighlightRange.cs" />
+    <Compile Include="AttachedBehaviors\HighlightRangeCollection.cs" />
+    <Compile Include="AttachedBehaviors\PasswordBox.cs" />
+    <Compile Include="AttachedBehaviors\Popup.cs" />
+    <Compile Include="AttachedBehaviors\TextControl.cs" />
     <Compile Include="Collections\Generic\ObservablePropertyChangedCollection.cs" />
     <Compile Include="Converter\BooleanMultiValueConverter.cs" />
     <Compile Include="Converter\BoolToStringConverter.cs" />
@@ -77,16 +82,6 @@
     <Compile Include="Settings\IMruManager.cs" />
     <Compile Include="Settings\MostRecentlyUsedFileItem.cs" />
     <Compile Include="Settings\MruManager.cs" />
-    <Compile Include="Utility\AsyncAsyncRelayCommand.cs" />
-    <Compile Include="Utility\Generic\AsyncAsyncRelayCommand.cs" />
-    <Compile Include="Utility\Generic\IAsyncRelayCommand.cs" />
-    <Compile Include="Utility\IAsyncRelayCommand.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="UiTemplates\ErrorVallidationTemplate.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo.ico" />

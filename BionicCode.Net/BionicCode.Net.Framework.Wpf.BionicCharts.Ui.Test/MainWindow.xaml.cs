@@ -36,6 +36,7 @@ namespace BionicCode.Net.Framework.Wpf.BionicCharts.Ui.Test
     public MainWindow()
     {
       InitializeComponent();
+      this.Text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     }
 
     private void ButtonBase_OnClick(object sender, RoutedEventArgs e)

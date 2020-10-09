@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media.Imaging;
 using BionicCode.Utilities.Net.Core.Wpf.Extensions;
 
 namespace BionicCode.Utilities.Net.Core.Wpf.Dialog
@@ -35,6 +36,7 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Dialog
   /// To close a dialog, raise the <see cref="IDialogViewModel.InteractionCompleted"/> event from the <see cref="IDialogViewModel"/> implementation e.g., by calling <see cref="DialogViewModel.OnInteractionCompleted"/> or by invoking the <see cref="DialogViewModel.SendResponseAsyncCommand"/> (in case you followed the recommendation to extend <see cref="DialogViewModel"/>).
   /// </para>
   /// </remarks>
+  /// <seealso href="https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior">See advanced example</seealso>
   public class Dialog : DependencyObject
   {
     #region DialogDataContext attached property
@@ -48,14 +50,14 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Dialog
     /// <summary>
     /// The setter for the attached <see cref="DialogDataContextProperty"/> property.
     /// </summary>
-    /// <param name="attachingElement">A <see cref="FrameworkElement"/>.</param>
+    /// <param name="attachingElement">The attached <see cref="FrameworkElement"/>.</param>
     /// <param name="value">An instance of <see cref="IDialogViewModel"/>.</param>
     public static void SetDialogDataContext(DependencyObject attachingElement, IDialogViewModel value) => attachingElement.SetValue(Dialog.DialogDataContextProperty, value);
 
     /// <summary>
     /// The getter for the attached <see cref="DialogDataContextProperty"/> property.
     /// </summary>
-    /// <param name="attachingElement">A <see cref="FrameworkElement"/>.</param>
+    /// <param name="attachingElement">The attached <see cref="FrameworkElement"/>.</param>
     /// <returns>The current associated <see cref="IDialogViewModel"/>.</returns>
     public static IDialogViewModel GetDialogDataContext(DependencyObject attachingElement) => (IDialogViewModel)attachingElement.GetValue(Dialog.DialogDataContextProperty);
 
@@ -63,11 +65,24 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Dialog
 
     #region DataTemplateSelector attached property
 
+    /// <summary>
+    /// Attached property to set a <see cref="DataTemplateSelector"/> to use for the displayed dialog <see cref="Window"/> to display the content.
+    /// </summary>
     public static readonly DependencyProperty DataTemplateSelectorProperty = DependencyProperty.RegisterAttached(
       "DataTemplateSelector", typeof(DataTemplateSelector), typeof(Dialog), new PropertyMetadata(default(DataTemplateSelector)));
 
+    /// <summary>
+    /// Set method of the attached <see cref="DataTemplateSelectorProperty"/> property.
+    /// </summary>
+    /// <param name="attachingElement">The attached <see cref="FrameworkElement"/>.</param>
+    /// <param name="value">A <see cref="DataTemplateSelector"/> implementation for the window's content.</param>
     public static void SetDataTemplateSelector(DependencyObject attachingElement, DataTemplateSelector value) => attachingElement.SetValue(Dialog.DataTemplateSelectorProperty, value);
 
+    /// <summary>
+    /// Returns the <see cref="DataTemplateSelector"/> registered with the <paramref name="attachingElement"/>.
+    /// </summary>
+    /// <param name="attachingElement">The attached <see cref="FrameworkElement"/>.</param>
+    /// <returns>The <see cref="DataTemplateSelector"/> registered with the <paramref name="attachingElement"/>.</returns>
     public static DataTemplateSelector GetDataTemplateSelector(DependencyObject attachingElement) => (DataTemplateSelector)attachingElement.GetValue(Dialog.DataTemplateSelectorProperty);
 
     #endregion
@@ -79,19 +94,85 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Dialog
     public static readonly DependencyProperty StyleProperty = DependencyProperty.RegisterAttached(
       "Style", typeof(Style), typeof(Dialog), new PropertyMetadata(default(Style)));
 
+    /// <summary>
+    /// Set method of the attached property <see cref="StyleProperty"/>.
+    /// </summary>
+    /// <param name="attachingElement">The attached <see cref="FrameworkElement"/>.</param>
+    /// <param name="value">The <see cref="Style"/> for the dialog <see cref="Window"/>.</param>
     public static void SetStyle(DependencyObject attachingElement, Style value) => attachingElement.SetValue(Dialog.StyleProperty, value);
 
+    /// <summary>
+    /// Get method of the attached property <see cref="StyleProperty"/>.
+    /// </summary>
+    /// <param name="attachingElement">The attached <see cref="FrameworkElement"/>.</param>
+    /// <returns>The dialog's <see cref="Style"/> registered with the <paramref name="attachingElement"/>.</returns>
     public static Style GetStyle(DependencyObject attachingElement) => (Style)attachingElement.GetValue(Dialog.StyleProperty);
 
     #endregion
 
+    #region IsClosable attached property
+
+    /// <summary>
+    /// Attached property that controls if the user is allowed to explicitly close the <see cref="Window"/>.
+    /// </summary>
+    public static readonly DependencyProperty IsClosableProperty = DependencyProperty.RegisterAttached(
+      "IsClosable", typeof(bool), typeof(Dialog), new PropertyMetadata(default(bool)));
+
+    /// <summary>
+    /// Set method of the <see cref="IsClosableProperty"/> attached property.
+    /// </summary>
+    /// <param name="attachingElement">The attached <see cref="FrameworkElement"/>.</param>
+    /// <param name="value"><c>true</c> to allow the user to close the <see cref="Window"/>, otherwise <c>false</c>. The default is <c>false</c>.</param>
+    public static void SetIsClosable(DependencyObject attachingElement, bool value) => attachingElement.SetValue(Dialog.IsClosableProperty, value);
+
+    /// <summary>
+    /// Get method of the attached property <see cref="IsClosableProperty"/>.
+    /// </summary>
+    /// <param name="attachingElement">The attached <see cref="FrameworkElement"/>.</param>
+    /// <returns><c>true</c> to allow the user to close the <see cref="Window"/>, otherwise <c>false</c>.</returns>
+    public static bool GetIsClosable(DependencyObject attachingElement) => (bool) attachingElement.GetValue(Dialog.IsClosableProperty);
+
+    #endregion
+
+    #region IsModal attached property
+
+    /// <summary>
+    /// Attached property that controls if the <see cref="Window"/> is shown modal.
+    /// </summary>
+    public static readonly DependencyProperty IsModalProperty = DependencyProperty.RegisterAttached(
+      "IsModal", typeof(bool), typeof(Dialog), new PropertyMetadata(default(bool)));
+
+    /// <summary>
+    /// Set method of the <see cref="IsModalProperty"/> attached property.
+    /// </summary>
+    /// <param name="attachingElement">The attached <see cref="FrameworkElement"/>.</param>
+    /// <param name="value"><c>true</c> to show the <see cref="Window"/> modal, otherwise <c>false</c>. The default is <c>false</c>.</param>
+    public static void SetIsModal(DependencyObject attachingElement, bool value) => attachingElement.SetValue(Dialog.IsModalProperty, value);
+
+    /// <summary>
+    /// Get method of the attached property <see cref="IsModalProperty"/>.
+    /// </summary>
+    /// <param name="attachingElement">The attached <see cref="FrameworkElement"/>.</param>
+    /// <returns><c>true</c> to show the <see cref="Window"/> modal, otherwise <c>false</c>.</returns>
+    public static bool GetIsModal(DependencyObject attachingElement) => (bool) attachingElement.GetValue(Dialog.IsModalProperty);
+
+    #endregion
+
     private static Dictionary<IDialogViewModel, Window> ViewModelToDialogMap { get; }
+    private static Dictionary<Window, DependencyObject> DialogToAttachingElementMap { get; }
 
     static Dialog()
     {
       Dialog.ViewModelToDialogMap = new Dictionary<IDialogViewModel, Window>();
+      Dialog.DialogToAttachingElementMap = new Dictionary<Window, DependencyObject>();
     }
 
+    /// <summary>
+    /// Attempts to get the dialog <see cref="Window"/> of the associated <see cref="IDialogViewModel"/> instance.
+    /// </summary>
+    /// <param name="viewModel">The associated data context of the dialog.</param>
+    /// <param name="dialog">The <see cref="Window"/> instance associated with the <paramref name="viewModel"/>.</param>
+    /// <returns><c>true</c> when a <see cref="Window"/> that maps to the <paramref name="viewModel"/> exists, otherwise <c>false</c>.</returns>
     public static bool TryGetDialog(IDialogViewModel viewModel, out Window dialog) => Dialog.ViewModelToDialogMap.TryGetValue(viewModel, out dialog);
 
     private static void OnDialogDataContextChanged(DependencyObject attachingElement, DependencyPropertyChangedEventArgs e)
@@ -123,8 +204,18 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Dialog
       newDialogViewModel.InteractionCompleted += Dialog.CloseDialogOnInteractionCompleted;
       Window window = Dialog.Prepare(attachingElement, newDialogViewModel);
       window.Closed += Dialog.CleanUpOnDialogClosed;
+      window.Closing += Dialog.PreventCloseDialogOnClosing;
       Dialog.ViewModelToDialogMap.Add(newDialogViewModel, window);
-      window.Show();
+      Dialog.DialogToAttachingElementMap.Add(window, attachingElement);
+
+      if (Dialog.GetIsModal(attachingElement))
+      {
+        window.ShowDialog();
+      }
+      else
+      {
+        window.Show();
+      }
     }
 
     private static Window Prepare(DependencyObject attachingElement, IDialogViewModel newDialogViewModel)
@@ -143,7 +234,7 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Dialog
       var titleBinding = new Binding(nameof(IDialogViewModel.Title)) { Source = newDialogViewModel };
       window.SetBinding(Window.TitleProperty, titleBinding);
       var iconBinding = new Binding(nameof(IDialogViewModel.TitleBarIcon)) { Source = newDialogViewModel };
-      window.SetBinding(Window.TitleProperty, iconBinding);
+      window.SetBinding(Window.IconProperty, iconBinding);
 
       if (attachingElement is Window parentWindow
           || attachingElement.TryFindVisualParentElement(out parentWindow))
@@ -153,17 +244,33 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Dialog
       return window;
     }
 
+    private static void PreventCloseDialogOnClosing(object sender, CancelEventArgs e)
+    {
+      var dialog = sender as Window;
+      if (Dialog.DialogToAttachingElementMap.TryGetValue(dialog, out DependencyObject attachedElement) 
+          && !Dialog.GetIsClosable(attachedElement))
+      {
+        e.Cancel = true;
+      }
+    }
+
     private static void CleanUpOnDialogClosed(object sender, EventArgs e)
     {
-      var dialogViewModel = (sender as Window).DataContext as IDialogViewModel;
+      var dialog = sender as Window;
+      var dialogViewModel = dialog?.DataContext as IDialogViewModel;
       Dialog.ViewModelToDialogMap.Remove(dialogViewModel);
+      Dialog.DialogToAttachingElementMap.Remove(dialog);
+      dialog.Closed -= Dialog.CleanUpOnDialogClosed;
+      dialog.Closing -= Dialog.PreventCloseDialogOnClosing;
       dialogViewModel.InteractionCompleted -= Dialog.CloseDialogOnInteractionCompleted;
     }
 
     private static void CloseDialogOnInteractionCompleted(object sender, EventArgs e)
     {
-      if (Dialog.ViewModelToDialogMap.TryGetValue(sender as IDialogViewModel, out Window dialog))
+      var dialogViewModel = sender as IDialogViewModel;
+      if (Dialog.ViewModelToDialogMap.TryGetValue(dialogViewModel, out Window dialog))
       {
+        dialog.Closing -= Dialog.PreventCloseDialogOnClosing;
         dialog.Close();
       }
     }

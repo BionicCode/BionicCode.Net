@@ -48,9 +48,20 @@ namespace BionicCode.Utilities.Net.Framework.Wpf.Settings
 
     /// <inheritdoc />
     public override int GetHashCode() => (this.FileInfo != null ? this.FileInfo.GetHashCode() : 0);
-
+    /// <summary>
+    /// Is equal operator.
+    /// </summary>
+    /// <param name="left">Left argument.</param>
+    /// <param name="right">Right argument.</param>
+    /// <returns><c>true</c> when both arguments are equal, otherwise <c>false</c>.</returns>
     public static bool operator ==(MostRecentlyUsedFileItem left, MostRecentlyUsedFileItem right) => left?.Equals(right) ?? false;
 
+    /// <summary>
+    /// Is not equal operator.
+    /// </summary>
+    /// <param name="left">Left argument.</param>
+    /// <param name="right">Right argument.</param>
+    /// <returns><c>true</c> when both arguments are not equal, otherwise <c>false</c>.</returns>
     public static bool operator !=(MostRecentlyUsedFileItem left, MostRecentlyUsedFileItem right) => !left?.Equals(right) ?? false;
 
     #endregion

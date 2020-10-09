@@ -482,6 +482,14 @@
       <param name="thisCollection">The <see cref="T:System.Collections.Generic.ICollection`1" /> to modify.</param>
       <param name="range">The items to add.</param>
       <typeparam name="TItem">The type of the item.</typeparam>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Standard.Extensions.HelperExtensions.AddRange``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEnumerable{``0})</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Standard.Extensions.HelperExtensions.AddRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IDictionary{``0,``1})">
       <summary>
@@ -491,6 +499,14 @@
       <param name="range">The <see cref="T:System.Collections.Generic.IDictionary`2" /> to add.</param>
       <typeparam name="TKey">The type of the key.</typeparam>
       <typeparam name="TValue">The type of the value.</typeparam>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Standard.Extensions.HelperExtensions.AddRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IDictionary{``0,``1})</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Standard.Extensions.HelperExtensions.AddRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{``0,``1}})">
       <summary>
@@ -500,6 +516,14 @@
       <param name="range">The <c>IEnumerable&lt;KeyValuePair&lt;TKey,TValue&gt;&gt;</c>  to add.</param>
       <typeparam name="TKey">The type of the key.</typeparam>
       <typeparam name="TValue">The type of the value.</typeparam>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Standard.Extensions.HelperExtensions.AddRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{``0,``1}})</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Standard.Extensions.HelperExtensions.AddRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IEnumerable{System.ValueTuple{``0,``1}})">
       <summary>
@@ -509,6 +533,14 @@
       <param name="range">The <c>IEnumerable&lt;(TKey Key,TValue Value&gt;&gt;</c>  to add.</param>
       <typeparam name="TKey">The type of the key.</typeparam>
       <typeparam name="TValue">The type of the value.</typeparam>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Standard.Extensions.HelperExtensions.AddRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IEnumerable{System.ValueTuple{``0,``1}})</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Standard.Extensions.HelperExtensions.HasReachedEnd(System.IO.Stream)">
       <summary>
@@ -1120,6 +1152,122 @@
     <member name="F:BionicCode.Utilities.Net.Standard.IO.FileExtensions.NonArchive">
       <summary>
             .nonarchive
+            </summary>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Standard.ViewModel.BaseViewModel">
+      <summary>
+            Base class recommended to use for view models across the application. Encapsulates implementations of <see cref="T:System.ComponentModel.INotifyPropertyChanged" /> and <see cref="T:System.ComponentModel.INotifyDataErrorInfo" />.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.BaseViewModel.#ctor">
+      <summary>
+            Default constructor
+            </summary>
+    </member>
+    <member name="E:BionicCode.Utilities.Net.Standard.ViewModel.BaseViewModel.ErrorsChanged">
+      <summary>Occurs when the validation errors have changed for a property or for the entire entity.</summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.BaseViewModel.GetErrors(System.String)">
+      <summary>
+            Gets all error messages of the specified property. If the <paramref name="propertyName" /> is <c>null</c> all error messages will be returned.
+            </summary>
+      <param name="propertyName">The of the property of which the error messages should be returned.</param>
+      <returns>An <see cref="T:System.Collections.IEnumerable" /> containing all error messages of the specified property.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.BaseViewModel.GetPropertyErrors(System.String)">
+      <summary>
+            Gets all error messages of the specified property. If the <paramref name="propertyName" /> is <c>null</c> all error messages will be returned.
+            </summary>
+      <param name="propertyName">The of the property of which the error messages should be returned.</param>
+      <returns>Returns an <see cref="T:System.Collections.Generic.IEnumerable`1" /> containing all error messages of the specified property.</returns>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Standard.ViewModel.BaseViewModel.HasErrors">
+      <summary>Gets a value that indicates whether the entity has validation errors.</summary>
+      <returns>
+        <see langword="true" /> if the entity currently has validation errors; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.BaseViewModel.IsValueValid``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.String}}},System.String)">
+      <summary>
+            Can be used to check whether a value is valid.
+            </summary>
+      <param name="value">The value to check.</param>
+      <param name="validationDelegate">The validation delegate <see cref="T:System.Func`2" />which is invoked on the value.</param>
+      <param name="propertyName">The name of the property to set. Default name is the property that called this method.</param>
+      <typeparam name="TValue">Generic type parameter of the value to check.</typeparam>
+      <returns>
+        <c>true</c> when the value is valid, otherwise <c>false</c>.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.BaseViewModel.OnErrorsChanged(System.String)">
+      <summary>
+            Raised when the validation state of the view model has changed (e.g. error added or removed).
+            </summary>
+      <param name="propertyName"></param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.BaseViewModel.OnPropertyChanged(System.String,System.Object,System.Object)">
+      <summary>
+            Method called to fire a <see cref="E:BionicCode.Utilities.Net.Standard.ViewModel.BaseViewModel.PropertyChanged" /> event.
+            Also raises the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged" /> event to support binding.
+            </summary>
+      <param name="propertyName"> The property name. </param>
+      <param name="oldValue">The value before the property change.</param>
+      <param name="newValue">The value after the property change.</param>
+    </member>
+    <member name="E:BionicCode.Utilities.Net.Standard.ViewModel.BaseViewModel.PropertyChanged">
+      <summary>
+            Event fired whenever a child property changes its value.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.BaseViewModel.PropertyHasError(System.String)">
+      <summary>
+            Checks whether the specified property has errors or is valid.
+            </summary>
+      <param name="propertyName">The name of the property to check for errors.</param>
+      <returns>
+        <c>true</c> when the specified property has at least one error. Otherwise <c>false</c> when the property is valid.</returns>
+    </member>
+    <member name="E:BionicCode.Utilities.Net.Standard.ViewModel.BaseViewModel.PropertyValueChanged">
+      <summary>
+            PropertyChanged implementation that sends old value and new value of the change and raises the INotifyPropertyChanged event.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.BaseViewModel.TrySetValue``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.String}}},``0@,System.String,System.Boolean,System.Boolean)">
+      <summary>
+             Sets the value of the referenced property and executes a validation delegate.
+            </summary>
+      <param name="value">The new value which is to be set to the property.</param>
+      <param name="validationDelegate">The callback that is used to validate the new value.</param>
+      <param name="targetBackingField">The reference to the backing field.</param>
+      <param name="propertyName">The name of the property to set. Default name is the property that called this method.</param>
+      <param name="isRejectInvalidValueEnabled">When <c>true</c> the invalid value is not stored to the backing field.<br /> Use this to ensure that the view model in a valid state.</param>
+      <param name="isThrowExceptionOnValidationErrorEnabled">Enable throwing an <exception cref="T:System.ArgumentException"></exception> if validation failed. Use this when <c>ValidatesOnExceptions</c> on a <c>Binding</c> is set to <c>true</c></param>
+      <typeparam name="TValue">The generic value type parameter</typeparam>
+      <returns>Returns <c>true</c> if the new value doesn't equal the old value and the new value is valid. Returns <c>false</c> if the new value equals the old value or the validation has failed.</returns>
+      <exception cref="T:System.ArgumentException">Thrown on validation failed</exception>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Standard.ViewModel.BaseViewModel.TrySetValue``1(``0,``0@,System.String)">
+      <summary>
+            Generic property setter. Sets the value of any property of the extending view model by passing in a the corresponding property backing field. Automatically raises the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged" /> event for this property.
+            </summary>
+      <param name="value">The new property value.</param>
+      <param name="targetBackingField">The backing field of the target property for the new value. Passed in by reference using <c>ref</c> keyword.</param>
+      <param name="propertyName">The name of the property that changes. By default the property name is automatically set to the property that called this setter method.</param>
+      <typeparam name="TValue">The generic type parameter of the new property value.</typeparam>
+      <returns>
+        <c>true</c> when the property has changed or <c>false</c> when the property value didn't change (e.g. on equality of old and new value).</returns>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Standard.ViewModel.IBaseViewModel">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Standard.ViewModel.IBaseViewModel</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="E:BionicCode.Utilities.Net.Standard.ViewModel.IBaseViewModel.PropertyValueChanged">
+      <summary>
+            PropertyChanged implementation that sends old value and new value of the change and raises the INotifyPropertyChanged event.
             </summary>
     </member>
     <member name="T:BionicCode.Utilities.Net.Standard.ViewModel.IViewModel">

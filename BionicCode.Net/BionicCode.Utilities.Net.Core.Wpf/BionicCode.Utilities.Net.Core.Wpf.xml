@@ -12,6 +12,27 @@
             </summary>
             <remarks><c>AsyncRelayCommand</c> implements <see cref="T:System.Windows.Input.ICommand" /></remarks>
         </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteAsyncNoParam">
+            <summary>
+            The registered parameterless async execute delegate.
+            </summary>
+            <value>
+            A delegate that takes no parameter and returns a <see cref="T:System.Threading.Tasks.Task"/>.</value>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteNoParam">
+            <summary>
+            The registered parameterless synchronous execute delegate.
+            </summary>
+            <value>
+            A delegate that takes no parameter and returns void.</value>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecuteNoParam">
+            <summary>
+            The registered parameterless CanExecute delegate.
+            </summary>
+            <value>
+            <c>true</c> if the command can execute, otherwise <c>false</c>.</value>
+        </member>
         <member name="E:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecuteChanged">
             <summary>
               Raised when RaiseCanExecuteChanged is called.
@@ -19,23 +40,28 @@
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Action{System.Object})">
             <summary>
-              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute"/> always returns <code>true</code>).
+              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute"/> will always return <c>true</c>).
             </summary>
             <param name="execute">The awaitable execution handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Action)">
             <summary>
-              Creates a new parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute"/> always returns <code>true</code>).
+              Creates a new parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute"/> will always return <c>true</c>).
             </summary>
             <param name="executeNoParam">The awaitable execution handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task})">
             <summary>
-              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute"/> always returns <code>true</code>).
+              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute"/> will always return <c>true</c>).
             </summary>
             <param name="executeAsync">The awaitable execution handler.</param>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task})" -->
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+              Creates a new parameterless asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute"/> will always return <c>true</c>).
+            </summary>
+            <param name="executeAsyncNoParam">The awaitable execution handler.</param>
+        </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Action,System.Func{System.Boolean})">
             <summary>
               Creates a new parameterless command.
@@ -68,16 +94,15 @@
             <summary>
               Determines whether this AsyncRelayCommand can execute.
             </summary>
-            <returns><code>true</code>code> if this command can be executed, otherwise <code>false</code>.</returns>
+            <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.Execute">
             <summary>
-              Executes the AsyncRelayCommand on the current command target. 
+            Executes the <see cref="T:System.Windows.Input.ICommand"/> on the current command target.
             </summary>
-            <param name="parameter">
-              Data used by the command. 
-            </param>
-            <remarks>If the execute delegate is asynchronous (awaitable) then the execution is asynchronous otherwise synchronous.</remarks>
+            <remarks> When this method is called although an asynchronous execute delegate was registered, this asynchronous delegate will be executed asynchronously, but since the <see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.Execute"/> does not return a <see cref="T:System.Threading.Tasks.Task"/> and is declared as <c>async void</c>, the execution is not awaitable and more important exceptions from an <c>async void</c> method can’t be caught with <c>catch</c>!
+            <para></para>Async void methods have different error-handling semantics. When an exception is thrown out of an <c>async Task</c> or <c>async Task&lt;T&gt;</c> method, that exception is captured and placed on the <see cref="T:System.Threading.Tasks.Task"/> object. With <c>async void</c> methods, there is no Task object, so any exceptions thrown out of an <c>async void</c> method will be raised directly on the SynchronizationContext that was active when the async void method started. Exceptions thrown from <c>async void</c> methods can’t be caught naturally.
+            <para></para>In such a scenario it is highly recommended to always call <see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteAsync"/> instead.</remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteAsync">
             <summary>
@@ -92,7 +117,7 @@
             <param name="parameter">
               Data used by the command. 
             </param>
-            <returns><code>true</code>code> if this command can be executed, otherwise <code>false</code>.</returns>
+            <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.Execute(System.Object)">
             <summary>
@@ -113,6 +138,197 @@
             </param>
             <remarks>If the execute delegate is asynchronous (awaitable) then the execution is asynchronous otherwise the synchronous execute delegate is wrapped into an asynchronous call. This method is always awaitable and all handlers are always asynchronously executed.</remarks>
         </member>
+        <member name="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange">
+            <summary>
+            Represents a text range, described by a <see cref="P:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange.StartIndex"/> and <see cref="P:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange.EndIndex"/>.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Creates a new instance of <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange"/>
+            </summary>
+            <param name="startIndex"></param>
+            <param name="endIndex"></param>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange.StartIndex">
+            <summary>
+            Holds the starting index of the text range.
+            </summary>
+            <value>An integer that describes the starting index of a index based text representation.</value>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange.EndIndex">
+            <summary>
+            Holds the end index of the text range.
+            </summary>
+            <value>An integer that describes the end index of a index based text representation.</value>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRangeCollection">
+            <summary>
+            A collection of <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange"/> items. Can be used in XAML.
+            </summary>
+            <example>
+            <code>
+            &lt;HighlightRangeCollection&gt;
+              &lt;HighlightRange StartIndex="5" EndIndex="20" /&gt;
+            &lt;/HighlightRangeCollection&gt;
+            </code>
+            </example>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.PasswordBox">
+            <summary>
+            Attached behavior for <see cref="T:System.Windows.Controls.PasswordBox"/> that will send the <see cref="T:System.Security.SecureString"/> of the <see cref="P:System.Windows.Controls.PasswordBox.SecurePassword"/> property to a command target e.g., view model using a registered <see cref="T:System.Windows.Input.ICommand"/> registered with the <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.PasswordBox.CommandProperty"/> attached property.
+            </summary>
+            <remarks>The attached behavior does at no point unwrap the the <see cref="T:System.Security.SecureString"/> returned from the <see cref="P:System.Windows.Controls.PasswordBox.SecurePassword"/> property, nor does it access the security critical <see cref="P:System.Windows.Controls.PasswordBox.Password"/> property. The <see cref="P:System.Windows.Controls.PasswordBox.SecurePassword"/> value is simply forwarded to the command target of the registered <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.PasswordBox.CommandProperty"/> attached property.</remarks>
+            <seealso href="https://github.com/BionicCode/BionicCode.Net#passwordbox">See advanced example</seealso>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.PasswordBox.CommandProperty">
+            <summary>
+            Holds the <see cref="T:System.Windows.Input.ICommand"/> which will be invoked with the <see cref="P:System.Windows.Controls.PasswordBox.SecurePassword"/> of type <see cref="T:System.Security.SecureString"/> as command parameter. 
+            </summary>
+            <value>An <see cref="T:System.Windows.Input.ICommand"/> implementation.</value>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.PasswordBox.SetCommand(System.Windows.DependencyObject,System.Windows.Input.ICommand)">
+            <summary>
+            The set method of the attached <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.PasswordBox"/> property.
+            </summary>
+            <param name="attachingElement">The <see cref="T:System.Windows.Controls.PasswordBox"/> element.</param>
+            <param name="value">An <see cref="T:System.Windows.Input.ICommand"/> implementation.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.PasswordBox.GetCommand(System.Windows.DependencyObject)">
+            <summary>
+            The set method of the attached <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.PasswordBox"/> property.
+            </summary>
+            <param name="attachingElement">The <see cref="T:System.Windows.Controls.PasswordBox"/> element.</param>
+            <returns>The <see cref="T:System.Windows.Input.ICommand"/> implementation registered with the <paramref name="attachingElement"/>.</returns>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.Popup">
+            <summary>
+            Set of attached behaviors for the <see cref="T:System.Windows.Controls.Primitives.Popup"/> control.
+            </summary>
+            <seealso href="https://github.com/BionicCode/BionicCode.Net#popup">See advanced example</seealso>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.Popup.IsStickyProperty">
+            <summary>
+            When set to <c>true</c>, the <see cref="T:System.Windows.Controls.Primitives.Popup"/> is forced to stick to the current <see cref="P:System.Windows.Controls.Primitives.Popup.PlacementTarget"/>. The <see cref="T:System.Windows.Controls.Primitives.Popup"/> will follow the <see cref="P:System.Windows.Controls.Primitives.Popup.PlacementTarget"/> whenever it changes it's screen coordinates.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.Popup.SetIsSticky(System.Windows.DependencyObject,System.Boolean)">
+            <summary>
+            The set method of the attached <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.Popup.IsStickyProperty"/> property.
+            </summary>
+            <param name="attachingElement">The <see cref="T:System.Windows.Controls.Primitives.Popup"/> element.</param>
+            <param name="value"><c>true</c> to enable the behavior or <c>false</c> to disable it.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.Popup.GetIsSticky(System.Windows.DependencyObject)">
+            <summary>
+            Get method of the attachecd <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.Popup.IsStickyProperty"/> property.
+            </summary>
+            <param name="attachingElement">The <see cref="T:System.Windows.Controls.Primitives.Popup"/> element.</param>
+            <returns><c>true</c> if the behavior is enabled or <c>false</c> if disabled.</returns>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl">
+            <summary>
+            Attached behavior that supports dynamic text highlighting for controls derived from <see cref="T:System.Windows.Controls.TextBlock"/> or <see cref="T:System.Windows.Controls.RichTextBox"/>.
+            </summary>
+            <seealso href="https://github.com/BionicCode/BionicCode.Net#textcontrol">See advanced example</seealso>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.TextProperty">
+            <summary>
+            Attached property to serve as alternative text property for the <see cref="T:System.Windows.Controls.RichTextBox"/> (instead of using <see cref="P:System.Windows.Controls.RichTextBox.Document"/>). Optional property to use with <see cref="T:System.Windows.Controls.TextBlock"/> (instead of <see cref="P:System.Windows.Controls.TextBlock.Text"/>). The defined <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange"/> items contained in the attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.HighlightRangesProperty"/> collection will always be applied to <see cref="P:System.Windows.Controls.TextBlock.Text"/> and the <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.TextProperty"/> values. 
+            </summary>
+            <remarks>In case of the <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.TextProperty"/> being attached to a <see cref="T:System.Windows.Controls.RichTextBox"/>, the string value will be converted to a <see cref="T:System.Windows.Documents.FlowDocument"/> and assigned to the <see cref="P:System.Windows.Controls.RichTextBox.Document"/> property.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.SetText(System.Windows.DependencyObject,System.String)">
+            <summary>
+            Set method of attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.TextProperty"/>.
+            </summary>
+            <param name="attachingElement">The attaching <see cref="T:System.Windows.Controls.TextBlock"/> or <see cref="T:System.Windows.Controls.RichTextBox"/>.</param>
+            <param name="value">The text to display.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.GetText(System.Windows.DependencyObject)">
+            <summary>
+            Get method of the attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.TextProperty"/>.
+            </summary>
+            <param name="attachingElement">The attaching <see cref="T:System.Windows.Controls.TextBlock"/> or <see cref="T:System.Windows.Controls.RichTextBox"/>.</param>
+            <returns>The current text value.</returns>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.HighlightBackgroundProperty">
+            <summary>
+            Attached property to define the background <see cref="T:System.Windows.Media.Brush"/> for the highlight text, which is defined by <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange"/> items contained in the <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.HighlightRangesProperty"/> attached property. 
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.SetHighlightBackground(System.Windows.DependencyObject,System.Windows.Media.Brush)">
+            <summary>
+            Set method of attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.HighlightBackgroundProperty"/>.
+            </summary>
+            <param name="attachingElement">The attaching <see cref="T:System.Windows.Controls.TextBlock"/> or <see cref="T:System.Windows.Controls.RichTextBox"/>.</param>
+            <param name="value">The <see cref="T:System.Windows.Media.Brush"/> for the background of the highlight text ranges.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.GetHighlightBackground(System.Windows.DependencyObject)">
+            <summary>
+            Get method of the attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.HighlightBackgroundProperty"/>.
+            </summary>
+            <param name="attachingElement">The attaching <see cref="T:System.Windows.Controls.TextBlock"/> or <see cref="T:System.Windows.Controls.RichTextBox"/>.</param>
+            <returns>The <see cref="T:System.Windows.Media.Brush"/> for the background of the highlight text ranges.</returns>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.HighlightForegroundProperty">
+            <summary>
+            Attached property to define the foreground <see cref="T:System.Windows.Media.Brush"/> for the highlight text, which is defined by <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange"/> items contained in the <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.HighlightRangesProperty"/> attached property. 
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.SetHighlightForeground(System.Windows.DependencyObject,System.Windows.Media.Brush)">
+            <summary>
+            Set method of attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.HighlightForegroundProperty"/>.
+            </summary>
+            <param name="attachingElement">The attaching <see cref="T:System.Windows.Controls.TextBlock"/> or <see cref="T:System.Windows.Controls.RichTextBox"/>.</param>
+            <param name="value">The <see cref="T:System.Windows.Media.Brush"/> for the foreground of the highlight text ranges.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.GetHighlightForeground(System.Windows.DependencyObject)">
+            <summary>
+            Get method of the attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.HighlightForegroundProperty"/>.
+            </summary>
+            <param name="attachingElement">The attaching <see cref="T:System.Windows.Controls.TextBlock"/> or <see cref="T:System.Windows.Controls.RichTextBox"/>.</param>
+            <returns>The <see cref="T:System.Windows.Media.Brush"/> for the foreground of the highlight text ranges.</returns>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.IsHighlightingEnabledProperty">
+            <summary>
+            Attached property to enable or disable the highlight attached behavior <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl"/>. cref="HighlightRangesProperty"/> attached property. 
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.SetIsHighlightingEnabled(System.Windows.DependencyObject,System.Boolean)">
+            <summary>
+            Set method of attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.IsHighlightingEnabledProperty"/>.
+            </summary>
+            <param name="attachingElement">The attaching <see cref="T:System.Windows.Controls.TextBlock"/> or <see cref="T:System.Windows.Controls.RichTextBox"/>.</param>
+            <param name="value"><c>true</c> to enable the attached <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl"/> behavior or <c>false</c> to disable it.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.GetIsHighlightingEnabled(System.Windows.DependencyObject)">
+            <summary>
+            Get method of the attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.HighlightForegroundProperty"/>.
+            </summary>
+            <param name="attachingElement">The attaching <see cref="T:System.Windows.Controls.TextBlock"/> or <see cref="T:System.Windows.Controls.RichTextBox"/>.</param>
+            <returns><c>true</c> if the the attached <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl"/> behavior is enabled or <c>false</c> if it is disabled.</returns>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.HighlightRangesProperty">
+            <summary>
+            Attached property to define a <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRangeCollection"/> of <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange"/> items. cref="HighlightRangesProperty"/> attached property. 
+            </summary>
+            <remarks>This collection implements <see cref="T:System.Collections.Specialized.INotifyCollectionChanged"/>.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.SetHighlightRanges(System.Windows.DependencyObject,BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRangeCollection)">
+            <summary>
+            Set method of attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.HighlightRangesProperty"/>.
+            </summary>
+            <param name="attachingElement">The attaching <see cref="T:System.Windows.Controls.TextBlock"/> or <see cref="T:System.Windows.Controls.RichTextBox"/>.</param>
+            <param name="value">A <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRangeCollection"/>.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.GetHighlightRanges(System.Windows.DependencyObject)">
+            <summary>
+            Get method of the attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.HighlightRangesProperty"/>.
+            </summary>
+            <param name="attachingElement">The attaching <see cref="T:System.Windows.Controls.TextBlock"/> or <see cref="T:System.Windows.Controls.RichTextBox"/>.</param>
+            <returns>A <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRangeCollection"/>.</returns>
+        </member>
         <member name="T:BionicCode.Utilities.Net.Core.Wpf.Collections.Generic.ObservablePropertyChangedCollection`1">
             <summary>
             Raises <see cref="E:System.Collections.ObjectModel.ObservableCollection`1.CollectionChanged"></see> event when the property of an item raised <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/>. The <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> for this particular notification is <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> with a reference to the notifying item and the item's index. .
@@ -132,10 +348,108 @@
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Collections.Generic.ObservablePropertyChangedCollection`1.SetItem(System.Int32,`0)">
             <inheritdoc />
         </member>
+        <member name="T:BionicCode.Utilities.Net.Core.Wpf.Converter.BooleanMultiValueConverter">
+            <summary>
+            An <see cref="T:System.Windows.Data.IMultiValueConverter"/> implementation that checks if all values are <c>true</c>. Supports <see cref="F:System.Windows.Data.BindingMode.OneWay"/> or <see cref="F:System.Windows.Data.BindingMode.OneTime"/> only.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Converter.BooleanMultiValueConverter.Convert(System.Object[],System.Type,System.Object,System.Globalization.CultureInfo)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Converter.BooleanMultiValueConverter.ConvertBack(System.Object,System.Type[],System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Not supported.
+            </summary>
+            <param name="value"></param>
+            <param name="targetTypes"></param>
+            <param name="parameter"></param>
+            <param name="culture"></param>
+            <returns></returns>
+            <exception cref="T:System.NotSupportedException">Back conversion is not supported.</exception>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Core.Wpf.Converter.BoolToStringConverter">
+            <summary>
+            Implementation of <see cref="T:System.Windows.Data.IValueConverter"/> that converts a <see cref="T:System.Boolean"/> to a custom string representation e.g., convert <c>true</c> to <c>"Enabled"</c>.
+            </summary>
+            <example>
+            <code>
+            &lt;ToggleButton IsChecked="{Binding IsEnabled}"&gt;
+              &lt;ToggleButton.Content&gt;
+                &lt;Binding Path="IsEnabled"&gt;
+                  &lt;Binding.Converter&gt;
+                    &lt;BoolToStringConverter TrueValue="On" FalseValue="{Binding DisabledText}" NullValue="Undefined" /&gt;
+                  &lt;/Binding.Converter&gt;
+                &lt;/Binding&gt;
+              &lt;/ToggleButton.Content&gt;
+            &lt;/ToggleButton&gt;
+            </code>
+            </example>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.Converter.BoolToStringConverter.TrueValueProperty">
+            <summary>
+            The <see cref="T:System.Windows.DependencyProperty"/> of the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Converter.BoolToStringConverter.TrueValue"/> property.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Core.Wpf.Converter.BoolToStringConverter.TrueValue">
+            <summary>
+            The value to show in case the converter input evaluates to <c>true</c>.
+            </summary>
+            <value>A string representation of <see cref="T:System.Boolean"/> that evaluates to <c>true</c>.</value>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.Converter.BoolToStringConverter.FalseValueProperty">
+            <summary>
+            The <see cref="T:System.Windows.DependencyProperty"/> of the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Converter.BoolToStringConverter.FalseValue"/> property.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Core.Wpf.Converter.BoolToStringConverter.FalseValue">
+            <summary>
+            The value to show in case the converter input evaluates to <c>false</c>.
+            </summary>
+            <value>A string representation of <see cref="T:System.Boolean"/> that evaluates to <c>false</c>.</value>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.Converter.BoolToStringConverter.NullValueProperty">
+            <summary>
+            The <see cref="T:System.Windows.DependencyProperty"/> of the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Converter.BoolToStringConverter.NullValue"/> property.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Core.Wpf.Converter.BoolToStringConverter.NullValue">
+            <summary>
+            The value to show in case the converter input evaluates to <c>true</c>.
+            </summary>
+            <value>A string representation of <see cref="T:System.Nullable"/> that evaluates to <c>null</c>.</value>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Converter.BoolToStringConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Converter.BoolToStringConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <inheritdoc />
+        </member>
         <member name="T:BionicCode.Utilities.Net.Core.Wpf.Converter.FilePathTruncateConverter">
             <summary>
               Converter to truncate file paths exceeding a specific length by replacing a number of characters with an ellipsis.
             </summary>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Core.Wpf.Converter.InvertBooleanConverter">
+            <summary>
+            Implementation of <see cref="T:System.Windows.Data.IValueConverter"/> that inverts a bool value.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Converter.InvertBooleanConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Converter.InvertBooleanConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <inheritdoc />
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Core.Wpf.Converter.InvertValueConverter">
+            <summary>
+            Implementation of <see cref="T:System.Windows.Data.IValueConverter"/> that inverts <see cref="T:System.Boolean"/>, <see cref="T:System.Windows.Visibility"/>, <see cref="T:System.Int32"/>, <see cref="T:System.Double"/>, <see cref="T:System.Decimal"/> and <see cref="T:System.Single"/>
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Converter.InvertValueConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Converter.InvertValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <inheritdoc />
         </member>
         <member name="T:BionicCode.Utilities.Net.Core.Wpf.DefaultValueInverter">
             <summary>
@@ -174,6 +488,7 @@
             To close a dialog, raise the <see cref="E:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.InteractionCompleted"/> event from the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/> implementation e.g., by calling <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.OnInteractionCompleted"/> or by invoking the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.SendResponseAsyncCommand"/> (in case you followed the recommendation to extend <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel"/>).
             </para>
             </remarks>
+            <seealso href="https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior">See advanced example</seealso>
         </member>
         <member name="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.DialogDataContextProperty">
             <summary>
@@ -184,19 +499,123 @@
             <summary>
             The setter for the attached <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.DialogDataContextProperty"/> property.
             </summary>
-            <param name="attachingElement">A <see cref="T:System.Windows.FrameworkElement"/>.</param>
+            <param name="attachingElement">The attached <see cref="T:System.Windows.FrameworkElement"/>.</param>
             <param name="value">An instance of <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/>.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.GetDialogDataContext(System.Windows.DependencyObject)">
             <summary>
             The getter for the attached <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.DialogDataContextProperty"/> property.
             </summary>
-            <param name="attachingElement">A <see cref="T:System.Windows.FrameworkElement"/>.</param>
+            <param name="attachingElement">The attached <see cref="T:System.Windows.FrameworkElement"/>.</param>
             <returns>The current associated <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/>.</returns>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.DataTemplateSelectorProperty">
+            <summary>
+            Attached property to set a <see cref="T:System.Windows.Controls.DataTemplateSelector"/> to use for the displayed dialog <see cref="T:System.Windows.Window"/> to display the content.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.SetDataTemplateSelector(System.Windows.DependencyObject,System.Windows.Controls.DataTemplateSelector)">
+            <summary>
+            Set method of the attached <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.DataTemplateSelectorProperty"/> property.
+            </summary>
+            <param name="attachingElement">The attached <see cref="T:System.Windows.FrameworkElement"/>.</param>
+            <param name="value">A <see cref="T:System.Windows.Controls.DataTemplateSelector"/> implementation for the window's content.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.GetDataTemplateSelector(System.Windows.DependencyObject)">
+            <summary>
+            Returns the <see cref="T:System.Windows.Controls.DataTemplateSelector"/> registered with the <paramref name="attachingElement"/>.
+            </summary>
+            <param name="attachingElement">The attached <see cref="T:System.Windows.FrameworkElement"/>.</param>
+            <returns>The <see cref="T:System.Windows.Controls.DataTemplateSelector"/> registered with the <paramref name="attachingElement"/>.</returns>
         </member>
         <member name="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.StyleProperty">
             <summary>
             The attached Style property which holds the <see cref="T:System.Windows.Style"/> which should apply to the dialog. <see cref="P:System.Windows.Style.TargetType"/> must be <see cref="T:System.Windows.Window"/>.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.SetStyle(System.Windows.DependencyObject,System.Windows.Style)">
+            <summary>
+            Set method of the attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.StyleProperty"/>.
+            </summary>
+            <param name="attachingElement">The attached <see cref="T:System.Windows.FrameworkElement"/>.</param>
+            <param name="value">The <see cref="T:System.Windows.Style"/> for the dialog <see cref="T:System.Windows.Window"/>.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.GetStyle(System.Windows.DependencyObject)">
+            <summary>
+            Get method of the attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.StyleProperty"/>.
+            </summary>
+            <param name="attachingElement">The attached <see cref="T:System.Windows.FrameworkElement"/>.</param>
+            <returns>The dialog's <see cref="T:System.Windows.Style"/> registered with the <paramref name="attachingElement"/>.</returns>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.IsClosableProperty">
+            <summary>
+            Attached property that controls if the user is allowed to explicitly close the <see cref="T:System.Windows.Window"/>.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.SetIsClosable(System.Windows.DependencyObject,System.Boolean)">
+            <summary>
+            Set method of the <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.IsClosableProperty"/> attached property.
+            </summary>
+            <param name="attachingElement">The attached <see cref="T:System.Windows.FrameworkElement"/>.</param>
+            <param name="value"><c>true</c> to allow the user to close the <see cref="T:System.Windows.Window"/>, otherwise <c>false</c>. The default is <c>false</c>.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.GetIsClosable(System.Windows.DependencyObject)">
+            <summary>
+            Get method of the attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.IsClosableProperty"/>.
+            </summary>
+            <param name="attachingElement">The attached <see cref="T:System.Windows.FrameworkElement"/>.</param>
+            <returns><c>true</c> to allow the user to close the <see cref="T:System.Windows.Window"/>, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.IsModalProperty">
+            <summary>
+            Attached property that controls if the <see cref="T:System.Windows.Window"/> is shown modal.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.SetIsModal(System.Windows.DependencyObject,System.Boolean)">
+            <summary>
+            Set method of the <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.IsModalProperty"/> attached property.
+            </summary>
+            <param name="attachingElement">The attached <see cref="T:System.Windows.FrameworkElement"/>.</param>
+            <param name="value"><c>true</c> to show the <see cref="T:System.Windows.Window"/> modal, otherwise <c>false</c>. The default is <c>false</c>.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.GetIsModal(System.Windows.DependencyObject)">
+            <summary>
+            Get method of the attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.IsModalProperty"/>.
+            </summary>
+            <param name="attachingElement">The attached <see cref="T:System.Windows.FrameworkElement"/>.</param>
+            <returns><c>true</c> to show the <see cref="T:System.Windows.Window"/> modal, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.TryGetDialog(BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel,System.Windows.Window@)">
+            <summary>
+            Attempts to get the dialog <see cref="T:System.Windows.Window"/> of the associated <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/> instance.
+            </summary>
+            <param name="viewModel">The associated data context of the dialog.</param>
+            <param name="dialog">The <see cref="T:System.Windows.Window"/> instance associated with the <paramref name="viewModel"/>.</param>
+            <returns><c>true</c> when a <see cref="T:System.Windows.Window"/> that maps to the <paramref name="viewModel"/> exists, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult">
+            <summary>
+            An enumeration to represent the dialog' status after it was closed.
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult.None">
+            <summary>
+            Undefined
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult.Accepted">
+            <summary>
+            Accepted e.g., "OK" button was clicked.
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult.Denied">
+            <summary>
+            Denied e.g. "No" button was clicked
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult.Aborted">
+            <summary>
+            Aborted e.g., "Cancel" button was clicked
             </summary>
         </member>
         <member name="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel">
@@ -204,8 +623,33 @@
             Implementation of <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/>. This abstract class implements the dialog data handling logic and is therefore preferred over a custom implementation of <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/>.
             </summary>
             <remarks>It is recommended to use the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog"/> attached behavior as it handles the view logic. Just bind <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.DialogDataContextProperty"/> to an instance of <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel"/> (or <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/>) and define a DataTemplate for each implementation of <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel"/>.</remarks>
+            <seealso href="https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior">See advanced example</seealso>
         </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.OnSendResponseAsyncCommandExecuted(BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult)">
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.#ctor(System.String,System.String)">
+            <summary>
+            Creates a nw instance of the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel"/> using a do-nothing dialog closed callback.
+            </summary>
+            <param name="message">The dialog message to sow.</param>
+            <param name="title">The dialog caption to appear in the title bar of the Window.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.#ctor(System.String,System.String,System.Func{BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel,System.Threading.Tasks.Task})">
+            <summary>
+            Creates a nw instance of the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel"/> registering a dialog closed callback.
+            </summary>
+            <param name="message">The dialog message to sow.</param>
+            <param name="title">The dialog caption to appear in the title bar of the Window.</param>
+            <param name="sendResponseCallbackAsync">The call back to invoke when the dialog was closed</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.#ctor(System.String,System.String,System.Windows.Media.ImageSource,System.Func{BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel,System.Threading.Tasks.Task})">
+            <summary>
+            Creates a nw instance of the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel"/> registering a dialog closed callback.
+            </summary>
+            <param name="message">The dialog message to sow.</param>
+            <param name="title">The dialog caption to appear in the title bar of the Window.</param>
+            <param name="titleBarIcon">The <see cref="T:System.Windows.Media.ImageSource"/> for the window's title icon.</param>
+            <param name="sendResponseCallbackAsync">The call back to invoke when the dialog was closed</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.ExecuteSendResponseCommandAsync(BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult)">
             <summary>
             Asynchronously called when the SendResponseAsyncCommand is executed.
             </summary>
@@ -213,6 +657,9 @@
             <returns>A <c>Task</c> instance to make this method awaitable.</returns>
         </member>
         <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.Title">
+            <inheritdoc />
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.IsClosable">
             <inheritdoc />
         </member>
         <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.Message">
@@ -233,11 +680,17 @@
         <member name="E:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.InteractionCompleted">
             <inheritdoc />
         </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.OnInteractionCompleted">
+            <summary>
+            Event invocator of the <see cref="E:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.InteractionCompleted"/> event. Raising this event will request the dialog to be closed.
+            </summary>
+        </member>
         <member name="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel">
             <summary>
-            The DataContext and binding source for the dialog Window. Implement this interface or the derived abstract <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel"/> to transport data from the view to the view model via binding.
+            The DataContext and binding source for the dialog Window. Implement this interface or the derived abstract <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel"/> to transport data from the view to the view model via binding. The <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/> will be the content of the dialog window. This means the corresponding DataTemplate can define e.g. an input form that can bind to the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/>. Register a callback with the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.ResponseCallbackAsync"/> property to process the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.DialogResult"/> and the data of the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/>.
             </summary>
             <remarks>It is recommended to extend the abstract class <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel"/> instead as this class already implemented the dialog data handling logic. Also use the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog"/> attached behavior as it handles the view logic. Just bind <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.DialogDataContextProperty"/> to an instance of <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel"/> (or <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/>) and define a DataTemplate for each implementation of <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel"/>.</remarks>
+            <seealso href="https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior">See advanced example</seealso>
         </member>
         <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.Title">
             <summary>
@@ -249,6 +702,11 @@
             The message for the dialog to show to the user.
             </summary>
         </member>
+        <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.IsClosable">
+            <summary>
+            Controls whether the user is allowed to close the dialog Window.
+            </summary>
+        </member>
         <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.DialogResult">
             <summary>
             The <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult"/> of the user interaction.
@@ -258,13 +716,13 @@
             <summary>
             The asynchronous callback that is invoked during the dialog interaction. Use this callback as continuation of the interrupted flow, after the required data was collected by the dialog.
             </summary>
-            <remarks>When using the abstract class <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel"/> this delegate is invoked when invoking the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.SendResponseAsyncCommand"/>. The parameter of this callback is the original <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/>. The <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.ResponseCallbackAsync"/> makes the dialog interaction fire-and-forget as the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProviderSource"/> doesn't need to wait for the  dialog to close and doesn't have to store a reference to the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/>.</remarks>
+            <remarks>When using the abstract class <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel"/> this delegate is invoked when invoking the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.SendResponseAsyncCommand"/>. The parameter of this callback is the original <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/>. The callback can access the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.DialogResult"/> property to get the interaction result. The <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.ResponseCallbackAsync"/> makes the dialog interaction fire-and-forget as the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProviderSource"/> doesn't need to wait for the  dialog to close and doesn't have to store a reference to the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/>.</remarks>
         </member>
         <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.SendResponseAsyncCommand">
             <summary>
             ICommand that can be bound to the buttons of the dialog. The command parameter is a <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult"/>.
             </summary>
-            <remarks>When using the abstract class <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel"/> the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.SendResponseAsyncCommand"/> sets the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.DialogResult"/> property and invokes the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.ResponseCallbackAsync"/> continuation callback. The parameter of this callback is the original <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/>. The <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.ResponseCallbackAsync"/> makes the dialog interaction fire-and-forget as the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProviderSource"/> doesn't need to wait for the  dialog to close and doesn't have to store a reference to the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/>.</remarks>
+            <remarks>When using the abstract class <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel"/> the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.SendResponseAsyncCommand"/> sets the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.DialogResult"/> property and invokes the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.ResponseCallbackAsync"/> continuation callback. The parameter of this callback is the original <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/>. The callback can access the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.DialogResult"/> property to get the interaction result. The <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.ResponseCallbackAsync"/> makes the dialog interaction fire-and-forget as the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProviderSource"/> doesn't need to wait for the  dialog to close and doesn't have to store a reference to the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/>.</remarks>
         </member>
         <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.TitleBarIcon">
             <summary>
@@ -282,20 +740,22 @@
             The binding source for the current dialog view and the attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.DialogDataContextProperty"/>.
             </summary>
             <remarks>The <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/> can be received from instances that implement <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProviderSource"/> by subscribing to their <see cref="E:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProviderSource.DialogRequested"/> event.
-            When used together with the attached <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.DialogDataContextProperty"/> the setting of the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProvider.DialogViewModel"/> property automatically triggers the showing of a dialog. The <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/> is rendered by a custom defined <see cref="!:DataTemplate"/> that targets the concrete type of a <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/> implementation.</remarks>
+            When used together with the attached <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.DialogDataContextProperty"/> the setting of the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProvider.DialogViewModel"/> property automatically triggers the showing of a dialog. The <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/> is rendered by a custom defined <see cref="T:System.Windows.DataTemplate"/> that targets the concrete type of a <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/> implementation.</remarks>
         </member>
         <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProvider.DialogViewModel">
             <summary>
             The binding source for the current dialog view.
             </summary>
             <remarks>The <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/> can be received from instances that implement <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProviderSource"/> by subscribing to their <see cref="E:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProviderSource.DialogRequested"/> event.
-            When used together with the attached <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.DialogDataContextProperty"/> the setting of the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProvider.DialogViewModel"/> property automatically triggers the showing of a dialog. The <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/> is rendered by a custom defined <see cref="!:DataTemplate"/> that targets the concrete type of a <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/> implementation.</remarks>
+            When used together with the attached <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.DialogDataContextProperty"/> the setting of the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProvider.DialogViewModel"/> property automatically triggers the showing of a dialog. The <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/> is rendered by a custom defined <see cref="T:System.Windows.DataTemplate"/> that targets the concrete type of a <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/> implementation.</remarks>
+            <seealso href="https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior">See advanced example</seealso>
         </member>
         <member name="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProviderSource">
             <summary>
             Interface that supports notification of observers to request display of a dialog.
             The event args is the view model of <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel"/> which serves as the DataContext and binding source of the dialog.
             </summary>
+            <seealso href="https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior">See advanced example</seealso>
         </member>
         <member name="E:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProviderSource.DialogRequested">
             <summary>
@@ -340,8 +800,8 @@
             </summary>
             <param name="parent"></param>
             <param name="childElementName">The name the visual child's name must match.</param>
-            <param name="resultElement"></param>
-            <returns></returns>
+            <param name="resultElement">The found element or <c>null</c> if no matching element was found.</param>
+            <returns><c>true</c> when an element with the specified <paramref name="childElementName"/> was found, otherwise <c>false</c>.</returns>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.FindVisualChildElements``1(System.Windows.DependencyObject)">
             <summary>
@@ -349,22 +809,35 @@
             Returns an <see cref="T:System.Collections.Generic.IEnumerable`1"/> to enable deferred traversal.
             </summary>
             <typeparam name="TChildren">The type the visual children must match.</typeparam>
-            <param name="parent"></param>
-            <returns></returns>
+            <param name="parent">The current extended <see cref="T:System.Windows.DependencyObject"/>.</param>
+            <returns>An enumerable collection of matching visual child elements.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.EnumerateVisualChildElements``1(System.Windows.DependencyObject)">
+            <summary>
+            Traverses the visual tree towards the leafs until all elements with a matching element type is found.
+            Returns an <see cref="T:System.Collections.Generic.IEnumerable`1"/> to enable deferred traversal.
+            </summary>
+            <typeparam name="TChildren">The type the visual children must match.</typeparam>
+            <param name="parent">The current extended <see cref="T:System.Windows.DependencyObject"/>.</param>
+            <returns>An enumerable collection of matching visual child elements.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.ToDictionary(System.Object)">
+            <summary>
+            Coverts any type to a <see cref="T:System.Collections.Generic.Dictionary`2"/>, where the <c>TKey</c> is the member name and <c>TValue</c> the member's value.
+            </summary>
+            <param name="instanceToConvert"></param>
+            <returns>A <see cref="T:System.Collections.Generic.Dictionary`2"/>, where the <c>TKey</c> is the member name of type <see cref="T:System.String"/> and <c>TValue</c> the member's value of type <see cref="T:System.Object"/>.</returns>
         </member>
         <member name="T:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1">
             <summary>
             A reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand"/> with support for async/await. Enables instant creation of an ICommand without implementing the ICommand interface for each command.
-            The individual <see cref="!:Execute()"/>, <see cref="!:ExecuteAsync()"/> and <see cref="!:CanExecute()"/> members are supplied via delegates.
+            The individual <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.Execute(`0)"/>, <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)"/> and <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)"/> members are supplied via delegates.
               <seealso cref="T:System.Windows.Input.ICommand" />
             </summary>
-            <remarks><c>AsyncRelayCommand</c> implements <see cref="T:System.Windows.Input.ICommand" /></remarks>
+            <remarks><c>AsyncRelayCommand&lt;T&gt;</c> implements <see cref="T:System.Windows.Input.ICommand" />.</remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.Tasks.Task})">
-            <summary>
-              Creates a new parameterless asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)"/> always returns <code>true</code>).
-            </summary>
-            <param name="executeAsyncNoParam">The awaitable execution handler.</param>
+            <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task})">
             <summary>
@@ -373,10 +846,7 @@
             <param name="executeAsync">The awaitable execution handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Action)">
-            <summary>
-              Creates a new parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)"/> always returns <code>true</code>).
-            </summary>
-            <param name="executeNoParam">The awaitable execution handler.</param>
+            <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Action{`0})">
             <summary>
@@ -385,25 +855,17 @@
             <param name="execute">The awaitable execution handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Action,System.Func{System.Boolean})">
-            <summary>
-              Creates a new parameterless command.
-            </summary>
-            <param name="executeNoParam"></param>
-            <param name="canExecuteNoParam">The execution status handler.</param>
+            <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Action{`0},System.Predicate{`0})">
             <summary>
               Creates a new command.
             </summary>
             <param name="execute">The execution handler.</param>
-            <param name="canExecute">The can execute handler.</param>
+            <param name="canExecute">The CanExecute handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})">
-            <summary>
-              Creates a new parameterless asynchronous command.
-            </summary>
-            <param name="executeAsyncNoParam">Parameterless execute handler.</param>
-            <param name="canExecuteNoParam">Parameterless can execute handler.</param>
+            <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task},System.Predicate{`0})">
             <summary>
@@ -412,15 +874,19 @@
             <param name="executeAsync">The awaitable execution handler.</param>
             <param name="canExecute">The can execute handler.</param>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)" -->
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)">
+            <inheritdoc />
+        </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.Execute(`0)">
             <summary>
-              Executes the AsyncRelayCommand on the current command target. 
+            Executes the AsyncRelayCommand on the current command target.
             </summary>
             <param name="parameter">
-              Data used by the command. 
+            The command parameter.
             </param>
-            <remarks>If the execute delegate is asynchronous (awaitable) then the execution is asynchronous otherwise synchronous.</remarks>
+            <remarks> When this method is called although an asynchronous execute delegate was registered, this asynchronous delegate will be executed asynchronously, but since the <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.Execute(`0)"/> does not return a <see cref="T:System.Threading.Tasks.Task"/> and is declared as <c>async void</c>, the execution is not awaitable and more important exceptions from an <c>async void</c> method can’t be caught with <c>catch</c>!
+            <para></para>Async void methods have different error-handling semantics. When an exception is thrown out of an <c>async Task</c> or <c>async Task&lt;T&gt;</c> method, that exception is captured and placed on the <see cref="T:System.Threading.Tasks.Task"/> object. With <c>async void</c> methods, there is no Task object, so any exceptions thrown out of an <c>async void</c> method will be raised directly on the SynchronizationContext that was active when the async void method started. Exceptions thrown from <c>async void</c> methods can’t be caught naturally.
+            <para></para>In such a scenario it is highly recommended to always call <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)"/> instead.</remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)">
             <summary>
@@ -432,13 +898,25 @@
             </param>
             <remarks>If the execute delegate is asynchronous (awaitable) then the execution is asynchronous otherwise the synchronous execute delegate is wrapped into an asynchronous call. This method is always awaitable and all handlers are always asynchronously executed.</remarks>
         </member>
+        <member name="T:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1">
+            <summary>
+            Extends <see cref="T:System.Windows.Input.ICommand"/> to allow asynchronous command execution, where the accepted parameter of the <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.Execute(`0)"/> and <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.CanExecute(`0)"/> is strongly typed to eliminate type casting inside the registered callbacks.
+            </summary>
+            <typeparam name="TParam">The type of the <see cref="P:System.Windows.Input.ICommandSource.CommandParameter"/>.</typeparam>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.CanExecute(`0)">
+            <summary>
+            Checks if the <see cref="T:System.Windows.Input.ICommand"/> can execute.
+            </summary>
+            <param name="parameter">The command parameter.</param>
+            <returns><c>true</c> when the <see cref="T:System.Windows.Input.ICommand"/> can execute, otherwise <c>false</c>.</returns>
+        </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.Execute(`0)">
             <summary>
             Executes the AsyncRelayCommand on the current command target.
             </summary>
             <param name="parameter">
-            Data used by the command. If the command does not require data to be passed, 
-            this object can be set to null.
+            The command parameter.
             </param>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0)">
@@ -446,40 +924,34 @@
             Asynchronously executes the AsyncRelayCommand on the current command target.
             </summary>
             <param name="parameter">
-            Data used by the command. If the command does not require data to be passed, 
-            this object can be set to null.
+            The command parameter.
             </param>
+            <returns>An awaitable <see cref="T:System.Threading.Tasks.Task"/> instance.</returns>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand">
+            <summary>
+            Extends <see cref="T:System.Windows.Input.ICommand"/> to allow asynchronous command execution.
+            </summary>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.CanExecute">
             <summary>
-            Executes the AsyncRelayCommand on the current command target.
+            Checks if the <see cref="T:System.Windows.Input.ICommand"/> can execute.
             </summary>
-            <param name="parameter">
-            Data used by the command. If the command does not require data to be passed, 
-            this object can be set to null.
-            </param>
+            <returns><c>true</c> when the <see cref="T:System.Windows.Input.ICommand"/> can execute, otherwise <c>false</c>.</returns>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.Execute">
             <summary>
-            Executes the AsyncRelayCommand on the current command target.
+            Executes the AsyncRelayCommand.
             </summary>
-            <param name="parameter">
-            Data used by the command. If the command does not require data to be passed, 
-            this object can be set to null.
-            </param>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.ExecuteAsync">
             <summary>
-            Executes the AsyncRelayCommand on the current command target.
+            Executes the AsyncRelayCommand asynchronously.
             </summary>
-            <param name="parameter">
-            Data used by the command. If the command does not require data to be passed, 
-            this object can be set to null.
-            </param>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.ExecuteAsync(System.Object)">
             <summary>
-            Asynchronously executes the AsyncRelayCommand on the current command target.
+            Asynchronously executes the AsyncRelayCommand.
             </summary>
             <param name="parameter">
             Data used by the command. If the command does not require data to be passed, 
@@ -490,9 +962,10 @@
             <summary>
             XAML extension to return the values of an enumeration.
             </summary>
-            <example>Provide the enum type via constructor or by setting the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Markup.EnumExtension.EnumType"/> property:<para></para><code><ComboBox ItemsSource="{Enum {x:Type MyEnum}}" /></code>
-            <para></para>
-            <code><ComboBox ItemsSource="{Enum EnumType={x:Type MyEnum}}" /></code></example>
+            <example>Provide the enum type via constructor or by setting the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Markup.EnumExtension.EnumType"/> property:
+            <code><ComboBox ItemsSource="{Enum {x:Type MyEnum}}" /></code>
+            <code><ComboBox ItemsSource="{Enum EnumType={x:Type MyEnum}}" /></code>
+            </example>
         </member>
         <member name="P:BionicCode.Utilities.Net.Core.Wpf.Markup.EnumExtension.EnumType">
             <summary>
@@ -518,9 +991,6 @@
             <summary>
             XAML Equality comparer.
             </summary>
-            <example>Provide the enum type via constructor or by setting the <see cref="!:EnumType"/> property:<para></para><code>&lt;Trigger Property="Count" Value="{Equals /&gt;</code>
-            <para></para>
-            <code><ComboBox ItemsSource="{Enum EnumType={x:Type MyEnum}}" /></code></example>
         </member>
         <member name="T:BionicCode.Utilities.Net.Core.Wpf.Markup.InversionMode">
             <summary>
@@ -557,10 +1027,11 @@
             XAML extension to invert the <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Markup.InvertExtension.Value"/> property using the current <see cref="T:BionicCode.Utilities.Net.Standard.IValueInverter"/>. Supports every <see cref="T:System.Windows.Markup.MarkupExtension"/> e.g., <see cref="T:System.Windows.Data.BindingBase"/>.
             </summary>
             <example>Provide the value locally or via data binding:
-            <para><code>&lt;TextBox Text="{Invert True}" /&gt; // False</code>
-            <code>&lt;TextBox Text="{Invert 12}" /&gt; // -12</code>
-            <code>&lt;TextBox Text="{Invert {x:Static Visibility.Hidden}}" /&gt; // Visibility.Visible</code>
+            <para><code>&lt;TextBox Text="{Invert True}" /&gt; // returns: False</code>
+            <code>&lt;TextBox Text="{Invert 12}" /&gt; // returns: -12</code>
+            <code>&lt;TextBox Text="{Invert {x:Static Visibility.Hidden}}" /&gt; // returns: Visibility.Visible</code>
             <code>&lt;TextBox Text="{Invert {Binding TextValue}}" /&gt;</code></para></example>
+            <seealso href="https://github.com/BionicCode/BionicCode.Net#invertExtension">See advanced example</seealso>
         </member>
         <member name="P:BionicCode.Utilities.Net.Core.Wpf.Markup.InvertExtension.Value">
             <summary>
@@ -592,6 +1063,76 @@
             <param name="value">Any value that can be converted by the provided <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Markup.InvertExtension.ValueInverter"/>. Can be any <see cref="T:System.Windows.Markup.MarkupExtension"/> like <see cref="T:System.Windows.Data.BindingBase"/> that can provide a valid value.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.InvertExtension.ProvideValue(System.IServiceProvider)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.InvertExtension.GetValueToInvertFromMarkupExtension(System.Windows.Markup.MarkupExtension,System.IServiceProvider)">
+            <summary>
+            Extracts the value from a <see cref="T:System.Windows.Markup.MarkupExtension"/>.
+            </summary>
+            <param name="wrappedMarkupExtension">The <see cref="T:System.Windows.Markup.MarkupExtension"/> to extract the value form.</param>
+            <param name="serviceProvider">The instance of the <see cref="T:System.IServiceProvider"/> which was passed to the <see cref="M:System.Windows.Markup.MarkupExtension.ProvideValue(System.IServiceProvider)"/> override.</param>
+            <returns>The value of <paramref name="wrappedMarkupExtension"/>.</returns>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension">
+            <summary>
+            XAML markup extension that allows to define primitive type values like <see cref="T:System.Boolean"/> or <see cref="T:System.Int32"/>.
+            </summary>
+            <remarks>Only allows a single value. In case multiple properties are set, the last set value will be used, as every value overrides the previously set.</remarks>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.Boolean">
+            <summary>
+            Holds a <see cref="T:System.Boolean"/>.
+            </summary>
+            <value>A <see cref="T:System.Boolean"/>.</value>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.Int32">
+            <summary>
+            Holds a <see cref="T:System.Int32"/>.
+            </summary>
+            <value>A <see cref="T:System.Int32"/>.</value>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.Double">
+            <summary>
+            Holds a <see cref="T:System.Double"/>.
+            </summary>
+            <value>A <see cref="T:System.Double"/>.</value>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.String">
+            <summary>
+            Holds a <see cref="T:System.String"/>.
+            </summary>
+            <value>A <see cref="T:System.String"/>.</value>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.#ctor">
+            <summary>
+            Initializes a new instance of <seealso cref="T:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension"/>.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new instance of <seealso cref="T:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension"/>.
+            </summary>
+            <param name="booleanValue">The value of type <see cref="T:System.Boolean"/>.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.#ctor(System.Double)">
+            <summary>
+            Initializes a new instance of <seealso cref="T:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension"/>.
+            </summary>
+            <param name="doubleValue">The value of type <see cref="T:System.Double"/>.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of <seealso cref="T:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension"/>.
+            </summary>
+            <param name="stringValue">The value of type <see cref="T:System.String"/>.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of <seealso cref="T:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension"/>.
+            </summary>
+            <param name="int32Value">The value of type <see cref="T:System.Int32"/>.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.ProvideValue(System.IServiceProvider)">
             <inheritdoc />
         </member>
         <member name="T:BionicCode.Utilities.Net.Core.Wpf.Settings.AppSettingsConnector">
@@ -716,6 +1257,22 @@
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Settings.MostRecentlyUsedFileItem.GetHashCode">
             <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Settings.MostRecentlyUsedFileItem.op_Equality(BionicCode.Utilities.Net.Core.Wpf.Settings.MostRecentlyUsedFileItem,BionicCode.Utilities.Net.Core.Wpf.Settings.MostRecentlyUsedFileItem)">
+            <summary>
+            Is equal operator.
+            </summary>
+            <param name="left">Left argument.</param>
+            <param name="right">Right argument.</param>
+            <returns><c>true</c> when both arguments are equal, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Settings.MostRecentlyUsedFileItem.op_Inequality(BionicCode.Utilities.Net.Core.Wpf.Settings.MostRecentlyUsedFileItem,BionicCode.Utilities.Net.Core.Wpf.Settings.MostRecentlyUsedFileItem)">
+            <summary>
+            Is not equal operator.
+            </summary>
+            <param name="left">Left argument.</param>
+            <param name="right">Right argument.</param>
+            <returns><c>true</c> when both arguments are not equal, otherwise <c>false</c>.</returns>
         </member>
         <member name="P:BionicCode.Utilities.Net.Core.Wpf.Settings.MostRecentlyUsedFileItem.FileInfo">
             <summary>

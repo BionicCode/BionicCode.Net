@@ -6,9 +6,10 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Markup
   /// <summary>
   /// XAML extension to return the values of an enumeration.
   /// </summary>
-  /// <example>Provide the enum type via constructor or by setting the <see cref="EnumType"/> property:<para></para><code><ComboBox ItemsSource="{Enum {x:Type MyEnum}}" /></code>
-  /// <para></para>
-  /// <code><ComboBox ItemsSource="{Enum EnumType={x:Type MyEnum}}" /></code></example>
+  /// <example>Provide the enum type via constructor or by setting the <see cref="EnumType"/> property:
+  /// <code><ComboBox ItemsSource="{Enum {x:Type MyEnum}}" /></code>
+  /// <code><ComboBox ItemsSource="{Enum EnumType={x:Type MyEnum}}" /></code>
+  /// </example>
   public class EnumExtension : MarkupExtension
   {
     /// <summary>

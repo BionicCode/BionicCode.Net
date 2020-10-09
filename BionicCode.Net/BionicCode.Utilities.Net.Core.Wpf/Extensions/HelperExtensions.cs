@@ -108,8 +108,8 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Extensions
     /// </summary>
     /// <param name="parent"></param>
     /// <param name="childElementName">The name the visual child's name must match.</param>
-    /// <param name="resultElement"></param>
-    /// <returns></returns>
+    /// <param name="resultElement">The found element or <c>null</c> if no matching element was found.</param>
+    /// <returns><c>true</c> when an element with the specified <paramref name="childElementName"/> was found, otherwise <c>false</c>.</returns>
     public static bool TryFindVisualChildElementByName(
       this DependencyObject parent,
       string childElementName,
@@ -150,11 +150,12 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Extensions
 
     /// <summary>
     /// Traverses the visual tree towards the leafs until all elements with a matching element type is found.
-    /// Returns an <see cref="IEnumerable&lt;TChildren&gt;"/> to enable deferred traversal.
+    /// Returns an <see cref="IEnumerable{T}"/> to enable deferred traversal.
     /// </summary>
     /// <typeparam name="TChildren">The type the visual children must match.</typeparam>
-    /// <param name="parent"></param>
-    /// <returns></returns>
+    /// <param name="parent">The current extended <see cref="DependencyObject"/>.</param>
+    /// <returns>An enumerable collection of matching visual child elements.</returns>
+    [Obsolete("Use 'EnumerateVisualChildElements()' instead")]
     public static IEnumerable<TChildren> FindVisualChildElements<TChildren>(this DependencyObject parent)
       where TChildren : DependencyObject
     {
@@ -178,6 +179,43 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Extensions
         }
       }
     }
+
+    /// <summary>
+    /// Traverses the visual tree towards the leafs until all elements with a matching element type is found.
+    /// Returns an <see cref="IEnumerable{T}"/> to enable deferred traversal.
+    /// </summary>
+    /// <typeparam name="TChildren">The type the visual children must match.</typeparam>
+    /// <param name="parent">The current extended <see cref="DependencyObject"/>.</param>
+    /// <returns>An enumerable collection of matching visual child elements.</returns>
+    public static IEnumerable<TChildren> EnumerateVisualChildElements<TChildren>(this DependencyObject parent)
+      where TChildren : DependencyObject
+    {
+      for (var childIndex = 0; childIndex < VisualTreeHelper.GetChildrenCount(parent); childIndex++)
+      {
+        DependencyObject childElement = VisualTreeHelper.GetChild(parent, childIndex);
+
+        if (childElement is Popup popup)
+        {
+          childElement = popup.Child;
+        }
+
+        if (childElement is TChildren element)
+        {
+          yield return element;
+        }
+
+        foreach (TChildren visualChildElement in childElement.EnumerateVisualChildElements<TChildren>())
+        {
+          yield return visualChildElement;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Coverts any type to a <see cref="Dictionary{TKey,TValue}"/>, where the <c>TKey</c> is the member name and <c>TValue</c> the member's value.
+    /// </summary>
+    /// <param name="instanceToConvert"></param>
+    /// <returns>A <see cref="Dictionary{TKey,TValue}"/>, where the <c>TKey</c> is the member name of type <see cref="string"/> and <c>TValue</c> the member's value of type <see cref="object"/>.</returns>
     public static Dictionary<string, object> ToDictionary(this object instanceToConvert)
     {
       Dictionary<string, object> resultDictionary = instanceToConvert.GetType()

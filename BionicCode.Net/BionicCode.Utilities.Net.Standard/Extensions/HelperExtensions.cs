@@ -17,7 +17,7 @@ namespace BionicCode.Utilities.Net.Standard.Extensions
     /// <param name="thisCollection">The <see cref="ICollection{T}"/> to modify.</param>
     /// <param name="range">The items to add.</param>
     #region Collection
-    public static void AddRange<TItem>(this ICollection<TItem> thisCollection, IEnumerable<TItem> range)
+    public static IEnumerable<TItem> AddRange<TItem>(this ICollection<TItem> thisCollection, IEnumerable<TItem> range)
     {
       if (thisCollection.IsReadOnly)
       {
@@ -25,6 +25,7 @@ namespace BionicCode.Utilities.Net.Standard.Extensions
       }
 
       range.ToList().ForEach(thisCollection.Add);
+      return thisCollection;
     }
 
     /// <summary>
@@ -34,7 +35,7 @@ namespace BionicCode.Utilities.Net.Standard.Extensions
     /// <typeparam name="TValue">The type of the value.</typeparam>
     /// <param name="thisCollection">The <see cref="IDictionary{TKey,TValue}"/> to modify.</param>
     /// <param name="range">The <see cref="IDictionary{TKey,TValue}"/> to add.</param>
-    public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> thisCollection, IDictionary<TKey, TValue> range)
+    public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(this IDictionary<TKey, TValue> thisCollection, IDictionary<TKey, TValue> range)
     {
       if (thisCollection.IsReadOnly)
       {
@@ -42,6 +43,7 @@ namespace BionicCode.Utilities.Net.Standard.Extensions
       }
 
       range.ToList().ForEach(thisCollection.Add);
+      return thisCollection;
     }
 
     /// <summary>
@@ -51,7 +53,7 @@ namespace BionicCode.Utilities.Net.Standard.Extensions
     /// <typeparam name="TValue">The type of the value.</typeparam>
     /// <param name="thisCollection">The <see cref="IDictionary{TKey,TValue}"/> to modify.</param>
     /// <param name="range">The <c>IEnumerable&lt;KeyValuePair&lt;TKey,TValue&gt;&gt;</c>  to add.</param>
-    public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> thisCollection, IEnumerable<KeyValuePair<TKey, TValue>> range)
+    public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(this IDictionary<TKey, TValue> thisCollection, IEnumerable<KeyValuePair<TKey, TValue>> range)
     {
       if (thisCollection.IsReadOnly)
       {
@@ -59,6 +61,7 @@ namespace BionicCode.Utilities.Net.Standard.Extensions
       }
 
       range.ToList().ForEach(thisCollection.Add);
+      return thisCollection;
     }
 
     /// <summary>
@@ -68,7 +71,7 @@ namespace BionicCode.Utilities.Net.Standard.Extensions
     /// <typeparam name="TValue">The type of the value.</typeparam>
     /// <param name="thisCollection">The <see cref="IDictionary{TKey,TValue}"/> to modify.</param>
     /// <param name="range">The <c>IEnumerable&lt;(TKey Key,TValue Value&gt;&gt;</c>  to add.</param>
-    public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> thisCollection, IEnumerable<(TKey Key, TValue Value)> range)
+    public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(this IDictionary<TKey, TValue> thisCollection, IEnumerable<(TKey Key, TValue Value)> range)
     {
       if (thisCollection.IsReadOnly)
       {
@@ -79,6 +82,7 @@ namespace BionicCode.Utilities.Net.Standard.Extensions
         .Select(entry => new KeyValuePair<TKey, TValue>(entry.Key, entry.Value))
         .ToList()
         .ForEach(thisCollection.Add);
+      return thisCollection;
     }
 
     #endregion

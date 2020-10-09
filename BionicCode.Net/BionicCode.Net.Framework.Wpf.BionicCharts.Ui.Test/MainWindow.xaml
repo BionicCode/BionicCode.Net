@@ -6,19 +6,25 @@
         xmlns:local="clr-namespace:BionicCode.Net.Framework.Wpf.BionicCharts.Ui.Test"
         xmlns:bionicCharts="clr-namespace:BionicCode.Controls.Net.Framework.Wpf.BionicCharts;assembly=BionicCode.Controls.Net.Framework.Wpf"
         xmlns:bionicFramework="clr-namespace:BionicCode.Utilities.Net.Framework.Wpf.Markup;assembly=BionicCode.Utilities.Net.Framework.Wpf"
+        xmlns:attachedBehaviors="clr-namespace:BionicCode.Utilities.Net.Framework.Wpf.AttachedBehaviors;assembly=BionicCode.Utilities.Net.Framework.Wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="800">
   <Window.DataContext>
     <local:CartesianChartViewModel />
   </Window.DataContext>
   <StackPanel>
-    <ComboBox ItemsSource="{bionicFramework:Enum EnumType={x:Type local:MyEnum}}"/>
+    <TextBlock attachedBehaviors:TextControl.HighlightBackground="Chocolate" attachedBehaviors:TextControl.HighlightForeground="Cornsilk" attachedBehaviors:TextControl.IsHighlightingEnabled="True" attachedBehaviors:TextControl.Text="0123456789" >
+      <attachedBehaviors:TextControl.HighlightRanges>
+        <attachedBehaviors:HighlightRange StartIndex="2" EndIndex="8"/>
+      </attachedBehaviors:TextControl.HighlightRanges>
+    </TextBlock>
+    <ComboBox ItemsSource="{bionicFramework:Enum {x:Type local:MyEnum}}"/>
     <TextBox Text="{Binding  RelativeSource={RelativeSource AncestorType=Window}, Path=Text, UpdateSourceTrigger=PropertyChanged}"/>
     <TextBlock Text="{bionicFramework:Invert {Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Text}}"/>
     <TextBlock Text="{bionicFramework:Invert 12}"/>
     <TextBlock Text="{bionicFramework:Invert {x:Static Visibility.Visible}}"/>
     <TextBlock Text="{bionicFramework:Invert True}"/>
-    <TextBlock Text="{bionicFramework:Invert 0.12}"/>
+    <TextBlock Text="{bionicFramework:Invert Value=0.12}"/>
     <TextBlock Text="{bionicFramework:Invert False}"/>
     <TextBox Text="{bionicFramework:Invert {Binding  RelativeSource={RelativeSource AncestorType=Window}, Path=Text}, Mode=TwoWay}"/>
     <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Text}"/>
