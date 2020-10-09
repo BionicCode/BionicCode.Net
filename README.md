@@ -379,8 +379,8 @@ aggregator.TryRegisterObservable(
   new[] {nameof(INotifyPropertyChanged.PropertyChanged)});
 ```
 
-##### Listen to all aggregated event sources by event name
-Subscribe to the `EventAggregator` and listen to specific events of all aggregated event sources:
+##### Listen to *all* aggregated event sources *by event name*
+Subscribe to the `EventAggregator` and listen to specific events of **all** aggregated event sources:
 
 ```C#
 // Listen to everything that publishes the 'INotifyPropertyChanged.PropertyChanged' event
@@ -389,8 +389,8 @@ aggregator.TryRegisterObserver<PropertyChangedEventHandler>(
   ShowMessage_OnPropertyChanged);
 ```
 
-##### Listen to specific aggregated event sources by event name
-Subscribe to the `EventAggregator` and listen to specific events of specific aggregated event sources:
+##### Listen to *specific* aggregated event sources by event name
+Subscribe to the `EventAggregator` and listen to specific events of **specific** aggregated event sources (by source type):
 
 ```C#
 // Only listen to the 'INotifyPropertyChanged.PropertyChanged' event raised by any instance of type 'MainWindowViewModel' 
@@ -406,13 +406,17 @@ aggregator.TryRegisterObserver<PropertyChangedEventHandler>(
   ShowMessage_OnPropertyChanged);
 ```
 ##### Listen to all events that match the signature of the event handler or that use a matching `EventArgs` type
-Subscribe to the `EventAggregator` and listen to specific events of specific aggregated event sources:
 
+Subscribe to the `EventAggregator` and listen to all events that have an event delegate with matching signature:
 ```C#
 
 // Subscribe by defining the event delegate explicitly
 aggregator.TryRegisterGlobalObserver(new PropertyChangedEventHandler(ShowMessage_OnPropertyChanged));
+```
 
+Subscribe to the `EventAggregator` and listen to all events that use a matching `EventArgs` type:
+
+```C#
 // Subscribe by defining the EventArgs as generic type parameter
 aggregator.TryRegisterGlobalObserver<PropertyChangedEventArgs>(ShowMessage_OnPropertyChanged);
 ```
