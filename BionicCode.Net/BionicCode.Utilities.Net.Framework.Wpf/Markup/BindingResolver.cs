@@ -1,7 +1,7 @@
 ﻿#region Info
 
 // //  
-// BionicCode.BionicUtilities.Net
+// BionicCode.BionicUtilities.Net.Core.Wpf
 
 #endregion
 
@@ -11,6 +11,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Data;
+
+[assembly: InternalsVisibleTo("BionicCode.Utilities.UnitTest.Net.Core")]
 
 namespace BionicCode.Utilities.Net.Framework.Wpf.Markup
 {
@@ -143,66 +145,66 @@ namespace BionicCode.Utilities.Net.Framework.Wpf.Markup
       switch (sourceBinding)
       {
         case Binding binding:
-          {
-            var newBinding = clonedBinding as Binding;
-            newBinding.AsyncState = binding.AsyncState;
-            newBinding.BindingGroupName = binding.BindingGroupName;
-            newBinding.BindsDirectlyToSource = binding.BindsDirectlyToSource;
-            newBinding.Converter = binding.Converter;
-            newBinding.ConverterCulture = binding.ConverterCulture;
-            newBinding.ConverterParameter = binding.ConverterParameter;
-            newBinding.FallbackValue = binding.FallbackValue;
-            newBinding.IsAsync = binding.IsAsync;
-            newBinding.Mode = binding.Mode;
-            newBinding.NotifyOnSourceUpdated = binding.NotifyOnSourceUpdated;
-            newBinding.NotifyOnTargetUpdated = binding.NotifyOnTargetUpdated;
-            newBinding.NotifyOnValidationError = binding.NotifyOnValidationError;
-            newBinding.Path = binding.Path;
-            newBinding.StringFormat = binding.StringFormat;
-            newBinding.TargetNullValue = binding.TargetNullValue;
-            newBinding.UpdateSourceExceptionFilter = binding.UpdateSourceExceptionFilter;
-            newBinding.UpdateSourceTrigger = binding.UpdateSourceTrigger;
-            newBinding.ValidatesOnDataErrors = binding.ValidatesOnDataErrors;
-            newBinding.ValidatesOnExceptions = binding.ValidatesOnExceptions;
-            newBinding.XPath = binding.XPath;
-            newBinding.Delay = binding.Delay;
-            newBinding.ValidatesOnNotifyDataErrors = binding.ValidatesOnNotifyDataErrors;
-            binding.ValidationRules.ToList().ForEach(newBinding.ValidationRules.Add);
-            break;
-          }
+        {
+          var newBinding = clonedBinding as Binding;
+          newBinding.AsyncState = binding.AsyncState;
+          newBinding.BindingGroupName = binding.BindingGroupName;
+          newBinding.BindsDirectlyToSource = binding.BindsDirectlyToSource;
+          newBinding.Converter = binding.Converter;
+          newBinding.ConverterCulture = binding.ConverterCulture;
+          newBinding.ConverterParameter = binding.ConverterParameter;
+          newBinding.FallbackValue = binding.FallbackValue;
+          newBinding.IsAsync = binding.IsAsync;
+          newBinding.Mode = binding.Mode;
+          newBinding.NotifyOnSourceUpdated = binding.NotifyOnSourceUpdated;
+          newBinding.NotifyOnTargetUpdated = binding.NotifyOnTargetUpdated;
+          newBinding.NotifyOnValidationError = binding.NotifyOnValidationError;
+          newBinding.Path = binding.Path;
+          newBinding.StringFormat = binding.StringFormat;
+          newBinding.TargetNullValue = binding.TargetNullValue;
+          newBinding.UpdateSourceExceptionFilter = binding.UpdateSourceExceptionFilter;
+          newBinding.UpdateSourceTrigger = binding.UpdateSourceTrigger;
+          newBinding.ValidatesOnDataErrors = binding.ValidatesOnDataErrors;
+          newBinding.ValidatesOnExceptions = binding.ValidatesOnExceptions;
+          newBinding.XPath = binding.XPath;
+          newBinding.Delay = binding.Delay;
+          newBinding.ValidatesOnNotifyDataErrors = binding.ValidatesOnNotifyDataErrors;
+          binding.ValidationRules.ToList().ForEach(newBinding.ValidationRules.Add);
+          break;
+        }
         case PriorityBinding priorityBinding:
-          {
-            var newBinding = clonedBinding as PriorityBinding;
-            newBinding.BindingGroupName = priorityBinding.BindingGroupName;
-            newBinding.FallbackValue = priorityBinding.FallbackValue;
-            newBinding.StringFormat = priorityBinding.StringFormat;
-            newBinding.TargetNullValue = priorityBinding.TargetNullValue;
-            newBinding.Delay = priorityBinding.Delay;
-            break;
-          }
+        {
+          var newBinding = clonedBinding as PriorityBinding;
+          newBinding.BindingGroupName = priorityBinding.BindingGroupName;
+          newBinding.FallbackValue = priorityBinding.FallbackValue;
+          newBinding.StringFormat = priorityBinding.StringFormat;
+          newBinding.TargetNullValue = priorityBinding.TargetNullValue;
+          newBinding.Delay = priorityBinding.Delay;
+          break;
+        }
         case MultiBinding multiBinding:
-          {
-            var newBinding = clonedBinding as MultiBinding;
-            newBinding.BindingGroupName = multiBinding.BindingGroupName;
-            newBinding.Converter = multiBinding.Converter;
-            newBinding.ConverterCulture = multiBinding.ConverterCulture;
-            newBinding.ConverterParameter = multiBinding.ConverterParameter;
-            newBinding.FallbackValue = multiBinding.FallbackValue;
-            newBinding.Mode = multiBinding.Mode;
-            newBinding.NotifyOnSourceUpdated = multiBinding.NotifyOnSourceUpdated;
-            newBinding.NotifyOnTargetUpdated = multiBinding.NotifyOnTargetUpdated;
-            newBinding.NotifyOnValidationError = multiBinding.NotifyOnValidationError;
-            newBinding.StringFormat = multiBinding.StringFormat;
-            newBinding.TargetNullValue = multiBinding.TargetNullValue;
-            newBinding.UpdateSourceExceptionFilter = multiBinding.UpdateSourceExceptionFilter;
-            newBinding.UpdateSourceTrigger = multiBinding.UpdateSourceTrigger;
-            newBinding.ValidatesOnDataErrors = multiBinding.ValidatesOnDataErrors;
-            newBinding.ValidatesOnExceptions = multiBinding.ValidatesOnExceptions;
-            newBinding.Delay = multiBinding.Delay;
-            newBinding.ValidatesOnNotifyDataErrors = multiBinding.ValidatesOnNotifyDataErrors;
-            multiBinding.ValidationRules.ToList().ForEach(newBinding.ValidationRules.Add);
-            break;
-          }
+        {
+          var newBinding = clonedBinding as MultiBinding;
+          newBinding.BindingGroupName = multiBinding.BindingGroupName;
+          newBinding.Converter = multiBinding.Converter;
+          newBinding.ConverterCulture = multiBinding.ConverterCulture;
+          newBinding.ConverterParameter = multiBinding.ConverterParameter;
+          newBinding.FallbackValue = multiBinding.FallbackValue;
+          newBinding.Mode = multiBinding.Mode;
+          newBinding.NotifyOnSourceUpdated = multiBinding.NotifyOnSourceUpdated;
+          newBinding.NotifyOnTargetUpdated = multiBinding.NotifyOnTargetUpdated;
+          newBinding.NotifyOnValidationError = multiBinding.NotifyOnValidationError;
+          newBinding.StringFormat = multiBinding.StringFormat;
+          newBinding.TargetNullValue = multiBinding.TargetNullValue;
+          newBinding.UpdateSourceExceptionFilter = multiBinding.UpdateSourceExceptionFilter;
+          newBinding.UpdateSourceTrigger = multiBinding.UpdateSourceTrigger;
+          newBinding.ValidatesOnDataErrors = multiBinding.ValidatesOnDataErrors;
+          newBinding.ValidatesOnExceptions = multiBinding.ValidatesOnExceptions;
+          newBinding.Delay = multiBinding.Delay;
+          newBinding.ValidatesOnNotifyDataErrors = multiBinding.ValidatesOnNotifyDataErrors;
+          multiBinding.ValidationRules.ToList().ForEach(newBinding.ValidationRules.Add);
+          break;
+        }
         default: return null;
       }
 

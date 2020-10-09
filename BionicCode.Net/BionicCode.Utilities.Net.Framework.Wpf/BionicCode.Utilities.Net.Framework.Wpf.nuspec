@@ -10,7 +10,7 @@
     <iconUrl>https://avatars2.githubusercontent.com/u/39948423?s=400%26u%3D9fa449b3bc919b95843c67e4c4643e0a69e7d9bf%26v%3D4</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Reusable utility and class library for WPF .NET Framework 4.8 - Featuring: AsyncRelayCommand&lt;T&gt;, ObservablePropertyChangedCollection, ViewModel, Visual Tree Helpers, Profiling, Extension Methods, ValueChangedEventArgs, MruManager (Most Recently Used files), AppSettingsConnector, InverExtension MarkupExtension, EnumExtension MarkupExtension, EventAggregator, MVVM DialogService and more.</description>
-    <releaseNotes>Successor of legacy 'BionicUtilities.Net' package and library. 'BionicUtilities.Net' will no longer be maintained (except bug fixes).
+    <releaseNotes>Successor of legacy 'BionicUtilities.Net' package and library. 'BionicUtilities.Net' will no longer be maintained (except bug fixes) use this library for pure .NET Framework or when targeting WPF install the BionicCode.Net.Framework.Wpf package.
     
     ---------------------------------------------------------
     For bug reports or feature requests please visit the project home on GutHub (follow the "Project Site" link on the right) and then open an issue (open the "issue" tab, click "New Issue" and select the appropriate template) or send  a mail to BionicCode@outlook.com. Thank you very much.</releaseNotes>

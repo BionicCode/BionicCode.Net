@@ -10,10 +10,11 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Markup
   /// XAML extension to invert the <see cref="Value"/> property using the current <see cref="IValueInverter"/>. Supports every <see cref="MarkupExtension"/> e.g., <see cref="BindingBase"/>.
   /// </summary>
   /// <example>Provide the value locally or via data binding:
-  /// <para><code>&lt;TextBox Text="{Invert True}" /&gt; // False</code>
-  /// <code>&lt;TextBox Text="{Invert 12}" /&gt; // -12</code>
-  /// <code>&lt;TextBox Text="{Invert {x:Static Visibility.Hidden}}" /&gt; // Visibility.Visible</code>
+  /// <para><code>&lt;TextBox Text="{Invert True}" /&gt; // returns: False</code>
+  /// <code>&lt;TextBox Text="{Invert 12}" /&gt; // returns: -12</code>
+  /// <code>&lt;TextBox Text="{Invert {x:Static Visibility.Hidden}}" /&gt; // returns: Visibility.Visible</code>
   /// <code>&lt;TextBox Text="{Invert {Binding TextValue}}" /&gt;</code></para></example>
+  /// <seealso href="https://github.com/BionicCode/BionicCode.Net#invertExtension">See advanced example</seealso>
   public class InvertExtension : MarkupExtension
   {
     /// <summary>
@@ -32,7 +33,7 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Markup
     /// The implementation of <see cref="IValueInverter"/>.
     /// </summary>
     /// <value>An implementation of <see cref="IValueInverter"/> to ise for the conversion.</value>
-    private IValueInverter ValueInverter { get; set; }
+    public IValueInverter ValueInverter { get; set; }
 
     /// <summary>
     /// Default constructor.
@@ -84,6 +85,12 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Markup
     }
     #endregion
 
+    /// <summary>
+    /// Extracts the value from a <see cref="MarkupExtension"/>.
+    /// </summary>
+    /// <param name="wrappedMarkupExtension">The <see cref="MarkupExtension"/> to extract the value form.</param>
+    /// <param name="serviceProvider">The instance of the <see cref="IServiceProvider"/> which was passed to the <see cref="MarkupExtension.ProvideValue"/> override.</param>
+    /// <returns>The value of <paramref name="wrappedMarkupExtension"/>.</returns>
     protected object GetValueToInvertFromMarkupExtension(MarkupExtension wrappedMarkupExtension,
       IServiceProvider serviceProvider)
     {

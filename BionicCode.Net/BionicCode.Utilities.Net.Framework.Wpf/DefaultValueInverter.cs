@@ -18,7 +18,7 @@ namespace BionicCode.Utilities.Net.Framework.Wpf
   /// Supports inversion of <see cref="byte"/>, <see cref="int"/>, <see cref="double"/>, <see cref="decimal"/>, <see cref="float"/>, <see cref="bool"/> and <see cref="Visibility"/>. <para>This class can be used with the <see cref="InvertExtension"/>.</para>
   /// </summary>
   /// <remarks>The <see cref="DefaultValueInverter"/> will check if the value is of type string. The string representation is then converted to the native type, inverted and then converted back to string using the provided <see cref="object.ToString"/> implementation provided by the native type.</remarks>
-  /// <seealso 
+  /// <seealso cref="InvertExtension"/>
   public class DefaultValueInverter : IValueInverter
   {
     #region Implementation of IValueInverter
@@ -35,7 +35,7 @@ namespace BionicCode.Utilities.Net.Framework.Wpf
       {
         return invertedValue;
       }
-      throw new InvalidOperationException("Value could not be inverted.");
+      throw new InvalidOperationException($"The value {value} could not be inverted.");
     }
 
     /// <inheritdoc />

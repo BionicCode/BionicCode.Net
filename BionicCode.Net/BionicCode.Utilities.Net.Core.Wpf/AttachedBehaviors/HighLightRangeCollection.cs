@@ -9,7 +9,17 @@ using System.Collections.ObjectModel;
 
 namespace BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors
 {
-  public class HighLightRangeCollection : ObservableCollection<HighlightRange>
+  /// <summary>
+  /// A collection of <see cref="HighlightRange"/> items. Can be used in XAML.
+  /// </summary>
+  /// <example>
+  /// <code>
+  /// &lt;HighlightRangeCollection&gt;
+  ///   &lt;HighlightRange StartIndex="5" EndIndex="20" /&gt;
+  /// &lt;/HighlightRangeCollection&gt;
+  /// </code>
+  /// </example>
+  public class HighlightRangeCollection : ObservableCollection<HighlightRange>
   {
 
   }

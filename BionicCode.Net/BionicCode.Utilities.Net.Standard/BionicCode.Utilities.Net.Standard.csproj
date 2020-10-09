@@ -12,9 +12,9 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/BionicCode/BionicCode.Net</PackageProjectUrl>
     <PackageIcon>BionicCode_Logo.png</PackageIcon>
-    <PackageTags>ViewModel BaseViewModel Profiler Profiling Measure Measuring View Model ViewModel ExtensionMethods EventAggregator Aggregator Event MVVM NullObject NullObjectFactory Factory IFatory ValueChangedEventArgs AutoResetStream Stream PropertyValueChangedArgs FileExtension FileExtensions PropertyValueChanged</PackageTags>
+    <PackageTags>ViewModel BaseViewModel Base View Model Profiler Profiling Measure Measuring View Model ViewModel ExtensionMethods EventAggregator Aggregator Event MVVM NullObject NullObjectFactory Factory IFatory ValueChangedEventArgs AutoResetStream Stream PropertyValueChangedArgs FileExtension FileExtensions PropertyValueChanged</PackageTags>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <RepositoryUrl>https://github.com/BionicCode/BionicCode.Net.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes>Successor of legacy 'BionicUtilities.Net' package and library. 'BionicUtilities.Net' will no longer be maintained (except bug fixes).

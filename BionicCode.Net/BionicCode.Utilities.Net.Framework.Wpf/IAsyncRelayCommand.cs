@@ -3,34 +3,26 @@ using System.Windows.Input;
 
 namespace BionicCode.Utilities.Net.Framework.Wpf
 {
+  /// <summary>
+  /// Extends <see cref="ICommand"/> to allow asynchronous command execution.
+  /// </summary>
   public interface IAsyncRelayCommand : ICommand
   {
     /// <summary>
-    /// Executes the AsyncRelayCommand on the current command target.
+    /// Checks if the <see cref="ICommand"/> can execute.
     /// </summary>
-    /// <param name="parameter">
-    /// Data used by the command. If the command does not require data to be passed, 
-    /// this object can be set to null.
-    /// </param>
+    /// <returns><c>true</c> when the <see cref="ICommand"/> can execute, otherwise <c>false</c>.</returns>
     bool CanExecute();
     /// <summary>
-    /// Executes the AsyncRelayCommand on the current command target.
+    /// Executes the AsyncRelayCommand.
     /// </summary>
-    /// <param name="parameter">
-    /// Data used by the command. If the command does not require data to be passed, 
-    /// this object can be set to null.
-    /// </param>
     void Execute();
     /// <summary>
-    /// Executes the AsyncRelayCommand on the current command target.
+    /// Executes the AsyncRelayCommand asynchronously.
     /// </summary>
-    /// <param name="parameter">
-    /// Data used by the command. If the command does not require data to be passed, 
-    /// this object can be set to null.
-    /// </param>
     Task ExecuteAsync();
     /// <summary>
-    /// Asynchronously executes the AsyncRelayCommand on the current command target.
+    /// Asynchronously executes the AsyncRelayCommand.
     /// </summary>
     /// <param name="parameter">
     /// Data used by the command. If the command does not require data to be passed, 

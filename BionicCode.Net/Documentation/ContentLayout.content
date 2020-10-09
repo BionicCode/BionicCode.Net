@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Topics>
-  <Topic id="15cadd46-fec9-403c-9db4-d611b51370ca" visible="True" isDefault="true" isSelected="true" title="Welcome to the [TODO: Add project name]">
+  <Topic id="15cadd46-fec9-403c-9db4-d611b51370ca" visible="True" isDefault="true" isSelected="true" title="Welcome to BionicCode.Net">
     <HelpKeywords>
       <HelpKeyword index="K" term="Welcome" />
     </HelpKeywords>

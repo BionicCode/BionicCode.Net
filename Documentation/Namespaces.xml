@@ -4,6 +4,16 @@
     <name>Namespaces</name>
   </assembly>
   <members>
+    <member name="N:BionicCode.Utilities.Net.Core.IO">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>N:BionicCode.Utilities.Net.Core.IO</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
     <member name="N:BionicCode.Utilities.Net.Core.Wpf">
       <summary>A utility library that targets WPF .NET Core. 
 Targets .NET Core &gt;= 3.0</summary>
@@ -96,6 +106,16 @@ Targets WPF .NET Core  &gt;= 3.0.</summary>
         </markup>
       </summary>
     </member>
+    <member name="N:BionicCode.Utilities.Net.Framework.Wpf.AttachedBehaviors">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>N:BionicCode.Utilities.Net.Framework.Wpf.AttachedBehaviors</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
     <member name="N:BionicCode.Utilities.Net.Framework.Wpf.Collections.Generic">
       <summary>
         <markup>
@@ -162,26 +182,6 @@ Targets WPF .NET Core  &gt;= 3.0.</summary>
           <include item="SMCMissingTag">
             <parameter>summary</parameter>
             <parameter>N:BionicCode.Utilities.Net.Framework.Wpf.Settings</parameter>
-          </include>
-        </markup>
-      </summary>
-    </member>
-    <member name="N:BionicCode.Utilities.Net.Framework.Wpf.Utility">
-      <summary>
-        <markup>
-          <include item="SMCMissingTag">
-            <parameter>summary</parameter>
-            <parameter>N:BionicCode.Utilities.Net.Framework.Wpf.Utility</parameter>
-          </include>
-        </markup>
-      </summary>
-    </member>
-    <member name="N:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic">
-      <summary>
-        <markup>
-          <include item="SMCMissingTag">
-            <parameter>summary</parameter>
-            <parameter>N:BionicCode.Utilities.Net.Framework.Wpf.Utility.Generic</parameter>
           </include>
         </markup>
       </summary>
@@ -253,7 +253,7 @@ Targets WPF .NET Core  &gt;= 3.0.</summary>
 A collection of .NET libraries like utilities and controls that target .NET Standard, .NET Core, .NET Framework, .NET Core WPF, .NET Framework WPF and UWP
 </p>
         <p>
-Project home:
+Project home and NuGet package downloads:
 <a href="https://github.com/BionicCode/BionicCode.Net">Visit on GitHub</a></p>
       </summary>
     </member>
@@ -263,16 +263,6 @@ Project home:
           <include item="SMCMissingTag">
             <parameter>summary</parameter>
             <parameter>G:BionicCode.Utilities.Net.Standard</parameter>
-          </include>
-        </markup>
-      </summary>
-    </member>
-    <member name="G:BionicCode.Utilities.Net.Framework.Wpf.Utility">
-      <summary>
-        <markup>
-          <include item="SMCMissingTag">
-            <parameter>summary</parameter>
-            <parameter>G:BionicCode.Utilities.Net.Framework.Wpf.Utility</parameter>
           </include>
         </markup>
       </summary>
@@ -293,6 +283,16 @@ Project home:
           <include item="SMCMissingTag">
             <parameter>summary</parameter>
             <parameter>G:BionicCode.Utilities.Net.Framework</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="G:BionicCode.Utilities.Net.Core.Wpf">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>G:BionicCode.Utilities.Net.Core.Wpf</parameter>
           </include>
         </markup>
       </summary>

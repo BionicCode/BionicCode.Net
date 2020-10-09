@@ -3,6 +3,8 @@
 // BionicUtilities.Net
 #endregion
 
+using System.Windows;
+
 namespace BionicCode.Utilities.Net.Framework.Wpf.Dialog
 {
   /// <summary>
@@ -10,6 +12,7 @@ namespace BionicCode.Utilities.Net.Framework.Wpf.Dialog
   /// </summary>
   /// <remarks>The <see cref="IDialogViewModel"/> can be received from instances that implement <see cref="IDialogViewModelProviderSource"/> by subscribing to their <see cref="IDialogViewModelProviderSource.DialogRequested"/> event.
   /// When used together with the attached <see cref="Dialog.DialogDataContextProperty"/> the setting of the <see cref="DialogViewModel"/> property automatically triggers the showing of a dialog. The <see cref="IDialogViewModel"/> is rendered by a custom defined <see cref="DataTemplate"/> that targets the concrete type of a <see cref="IDialogViewModel"/> implementation.</remarks>
+  /// <seealso href="https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior">See advanced example</seealso>
   public interface IDialogViewModelProvider
   {
     /// <summary>

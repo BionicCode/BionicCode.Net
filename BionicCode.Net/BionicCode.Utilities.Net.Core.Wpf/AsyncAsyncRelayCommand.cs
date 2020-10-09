@@ -12,8 +12,23 @@ namespace BionicCode.Utilities.Net.Core.Wpf
   /// <remarks><c>AsyncRelayCommand</c> implements <see cref="System.Windows.Input.ICommand" /></remarks>
   public class AsyncRelayCommand : IAsyncRelayCommand
   {
+    /// <summary>
+    /// The registered parameterless async execute delegate.
+    /// </summary>
+    /// <value>
+    /// A delegate that takes no parameter and returns a <see cref="Task"/>.</value>
     protected readonly Func<Task> ExecuteAsyncNoParam;
+    /// <summary>
+    /// The registered parameterless synchronous execute delegate.
+    /// </summary>
+    /// <value>
+    /// A delegate that takes no parameter and returns void.</value>
     protected readonly Action ExecuteNoParam;
+    /// <summary>
+    /// The registered parameterless CanExecute delegate.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the command can execute, otherwise <c>false</c>.</value>
     protected readonly Func<bool> CanExecuteNoParam;
     private readonly Func<object, Task> executeAsync;
     private readonly Action<object> execute;
@@ -29,7 +44,7 @@ namespace BionicCode.Utilities.Net.Core.Wpf
     }
 
     /// <summary>
-    ///   Creates a new command that can always execute (<see cref="CanExecute()"/> always returns <code>true</code>).
+    ///   Creates a new command that can always execute (<see cref="CanExecute()"/> will always return <c>true</c>).
     /// </summary>
     /// <param name="execute">The awaitable execution handler.</param>
     public AsyncRelayCommand(Action<object> execute)
@@ -38,7 +53,7 @@ namespace BionicCode.Utilities.Net.Core.Wpf
     }
 
     /// <summary>
-    ///   Creates a new parameterless command that can always execute (<see cref="CanExecute()"/> always returns <code>true</code>).
+    ///   Creates a new parameterless command that can always execute (<see cref="CanExecute()"/> will always return <c>true</c>).
     /// </summary>
     /// <param name="executeNoParam">The awaitable execution handler.</param>
     public AsyncRelayCommand(Action executeNoParam)
@@ -47,7 +62,7 @@ namespace BionicCode.Utilities.Net.Core.Wpf
     }
 
     /// <summary>
-    ///   Creates a new command that can always execute (<see cref="CanExecute()"/> always returns <code>true</code>).
+    ///   Creates a new command that can always execute (<see cref="CanExecute()"/> will always return <c>true</c>).
     /// </summary>
     /// <param name="executeAsync">The awaitable execution handler.</param>
     public AsyncRelayCommand(Func<object, Task> executeAsync)
@@ -56,7 +71,7 @@ namespace BionicCode.Utilities.Net.Core.Wpf
     }
 
     /// <summary>
-    ///   Creates a new parameterless asynchronous command that can always execute (<see cref="CanExecute()")/> always returns <code>true</code>).
+    ///   Creates a new parameterless asynchronous command that can always execute (<see cref="CanExecute()"/> will always return <c>true</c>).
     /// </summary>
     /// <param name="executeAsyncNoParam">The awaitable execution handler.</param>
     public AsyncRelayCommand(Func<Task> executeAsyncNoParam)
@@ -111,16 +126,15 @@ namespace BionicCode.Utilities.Net.Core.Wpf
     /// <summary>
     ///   Determines whether this AsyncRelayCommand can execute.
     /// </summary>
-    /// <returns><code>true</code>code> if this command can be executed, otherwise <code>false</code>.</returns>
+    /// <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
     public bool CanExecute() => this.CanExecuteNoParam != null && this.CanExecuteNoParam() || this.canExecute != null && this.canExecute(null);
-
+    
     /// <summary>
-    ///   Executes the AsyncRelayCommand on the current command target. 
+    /// Executes the <see cref="ICommand"/> on the current command target.
     /// </summary>
-    /// <param name="parameter">
-    ///   Data used by the command. 
-    /// </param>
-    /// <remarks>If the execute delegate is asynchronous (awaitable) then the execution is asynchronous otherwise synchronous.</remarks>
+    /// <remarks> When this method is called although an asynchronous execute delegate was registered, this asynchronous delegate will be executed asynchronously, but since the <see cref="Execute()"/> does not return a <see cref="Task"/> and is declared as <c>async void</c>, the execution is not awaitable and more important exceptions from an <c>async void</c> method can’t be caught with <c>catch</c>!
+    /// <para></para>Async void methods have different error-handling semantics. When an exception is thrown out of an <c>async Task</c> or <c>async Task&lt;T&gt;</c> method, that exception is captured and placed on the <see cref="Task"/> object. With <c>async void</c> methods, there is no Task object, so any exceptions thrown out of an <c>async void</c> method will be raised directly on the SynchronizationContext that was active when the async void method started. Exceptions thrown from <c>async void</c> methods can’t be caught naturally.
+    /// <para></para>In such a scenario it is highly recommended to always call <see cref="ExecuteAsync()"/> instead.</remarks>
     public async void Execute()
     {
       if (this.executeAsync != null)
@@ -171,7 +185,7 @@ namespace BionicCode.Utilities.Net.Core.Wpf
     /// <param name="parameter">
     ///   Data used by the command. 
     /// </param>
-    /// <returns><code>true</code>code> if this command can be executed, otherwise <code>false</code>.</returns>
+    /// <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
     public bool CanExecute(object parameter) => this.canExecute != null && this.canExecute(parameter) || this.CanExecuteNoParam != null && this.CanExecuteNoParam();
 
     /// <summary>

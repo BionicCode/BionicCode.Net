@@ -35,6 +35,7 @@
       <DocumentationSource sourceFile="..\BionicCode.Utilities.Net.Core.Wpf\BionicCode.Utilities.Net.Core.Wpf.csproj" />
       <DocumentationSource sourceFile="..\BionicCode.Utilities.Net.Standard\BionicCode.Utilities.Net.Standard.csproj" />
       <DocumentationSource sourceFile="..\BionicCode.Utilities.Net.Framework.Wpf\BionicCode.Utilities.Net.Framework.Wpf.csproj" />
+      <DocumentationSource sourceFile="..\BionicCode.Utilities.Net.Core\BionicCode.Utilities.Net.Core.csproj" />
     </DocumentationSources>
     <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
     <SyntaxFilters>All</SyntaxFilters>
@@ -57,7 +58,7 @@ A collection of .NET libraries like utilities and controls that target .NET Stan
 &amp;lt%3b/p&amp;gt%3b
 
 &amp;lt%3bp&amp;gt%3b
-Project home:
+Project home and NuGet package downloads:
 &amp;lt%3ba href=&amp;quot%3bhttps://github.com/BionicCode/BionicCode.Net&amp;quot%3b&amp;gt%3bVisit on GitHub&amp;lt%3b/a&amp;gt%3b 
 &amp;lt%3b/p&amp;gt%3b</ProjectSummary>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, InheritedFrameworkMembers, Protected, ProtectedInternalAsProtected, NonBrowsable</VisibleItems>
@@ -154,57 +155,57 @@ Project home:
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="(global)" isDocumented="True">A control library that targets WPF .NET Core.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="BionicCode.Controls.Net.Core.Wpf" isDocumented="True">A control library that targets WPF .NET Core. 
+<NamespaceSummaryItem name="BionicCode.Controls.Net.Core.Wpf" isDocumented="True">A control library that targets WPF .NET Core. 
 Reqires .NET Core &gt;= 3.0</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net (Group)" isGroup="True" isDocumented="True">Utility library that target different .NET frameworks like .NET Core, .NET Framework, UWP, .NET Standard.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core (Group)" isGroup="True" isDocumented="True">A utility library that targets WPF .NET Core.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf" isDocumented="True">A utility library that targets WPF .NET Core. 
+<NamespaceSummaryItem name="BionicCode.Utilities.Net (Group)" isGroup="True" isDocumented="True">Utility library that target different .NET frameworks like .NET Core, .NET Framework, UWP, .NET Standard.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Core (Group)" isGroup="True" isDocumented="True">A utility library that targets .NET Core.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf" isDocumented="True">A utility library that targets WPF .NET Core. 
 Targets .NET Core &gt;= 3.0</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors" isDocumented="True">Provides a collection of attached behaviors for controls like ComboBox, TextBlock, RichTextBox, PasswordBox or Popup.
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors" isDocumented="True">Provides a collection of attached behaviors for controls like ComboBox, TextBlock, RichTextBox, PasswordBox or Popup.
 
 Targets WPF .NET Core  &gt;= 3.0.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Collections.Generic" isDocumented="True">Provides basic generic collections like ObservablePropertyChangedCollection&lt;T&gt;.
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Collections.Generic" isDocumented="True">Provides basic generic collections like ObservablePropertyChangedCollection&lt;T&gt;.
 
 Targets WPF .NET Core  &gt;= 3.0.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Converter" isDocumented="True">Provides a collection of value converters like InvertValueConverter.
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Converter" isDocumented="True">Provides a collection of value converters like InvertValueConverter.
 
 Targets WPF .NET Core  &gt;= 3.0.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Dialog" isDocumented="True">Provides infrastructure to display customizable dialogs. 
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Dialog" isDocumented="True">Provides infrastructure to display customizable dialogs. 
 This library is intended to be used when implementing the MVVM pattern and allows to show dialogs from the view model.
 
 Targets WPF .NET Core  &gt;= 3.0.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Extensions" isDocumented="True">Provides a collection of useful extension methods like TryFindVisualChildByName&lt;T&gt; or TryFindVisualParent&lt;T&gt;.
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Extensions" isDocumented="True">Provides a collection of useful extension methods like TryFindVisualChildByName&lt;T&gt; or TryFindVisualParent&lt;T&gt;.
 
 Targets WPF .NET Core  &gt;= 3.0.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Generic" isDocumented="True">Provides basic generic types.
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Generic" isDocumented="True">Provides basic generic types.
 
 Targets WPF .NET Core  &gt;= 3.0.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Markup" isDocumented="True">Provides a collection of XAML markup extensions like InvertExtension or EqualsExtension.
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Markup" isDocumented="True">Provides a collection of XAML markup extensions like InvertExtension or EqualsExtension.
 
 Targets WPF .NET Core  &gt;= 3.0.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Settings" isDocumented="True">Provides a classes to handle application data like MruManager to track most recently used files.
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf.Settings" isDocumented="True">Provides a classes to handle application data like MruManager to track most recently used files.
 
 Targets WPF .NET Core  &gt;= 3.0.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework (Group)" isGroup="True" isDocumented="True" />
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework" isDocumented="True" />
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Collections.Generic" isDocumented="True" />
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Converter" isDocumented="True" />
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Dialog" isDocumented="True" />
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Extensions" isDocumented="True" />
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Markup" isDocumented="True">A utility library that targets .NET Framework.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Settings" isDocumented="True" />
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Utility (Group)" isGroup="True" isDocumented="True">A control library that targets WPF .Net Core.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Utility" isDocumented="True" />
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Utility.Generic" isDocumented="True" />
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard (Group)" isGroup="True" isDocumented="True" />
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.Collections.Generic" isDocumented="True" />
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.Exception" isDocumented="True" />
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.Extensions" isDocumented="True" />
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.Generic" isDocumented="True">A utility library that targets .NET Standars.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.IO" isDocumented="True" />
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.ViewModel" isDocumented="True" />
-      <NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard" isDocumented="True" />
-    </NamespaceSummaries>
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework (Group)" isGroup="True" isDocumented="True" />
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework" isDocumented="True" />
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Collections.Generic" isDocumented="True" />
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Converter" isDocumented="True" />
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Dialog" isDocumented="True" />
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Extensions" isDocumented="True" />
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Markup" isDocumented="True">A utility library that targets .NET Framework.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Settings" isDocumented="True" />
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Utility (Group)" isGroup="True" isDocumented="True">A control library that targets WPF .Net Core.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Utility" isDocumented="True" />
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Framework.Utility.Generic" isDocumented="True" />
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard (Group)" isGroup="True" isDocumented="True" />
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.Collections.Generic" isDocumented="True" />
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.Exception" isDocumented="True" />
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.Extensions" isDocumented="True" />
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.Generic" isDocumented="True">A utility library that targets .NET Standars.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.IO" isDocumented="True" />
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard.ViewModel" isDocumented="True" />
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Standard" isDocumented="True" />
+<NamespaceSummaryItem name="BionicCode.Utilities.Net.Core.Wpf (Group)" isGroup="True" isDocumented="True">A utility library that targets WPF .NET Core.</NamespaceSummaryItem></NamespaceSummaries>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <HeaderText>
     </HeaderText>
