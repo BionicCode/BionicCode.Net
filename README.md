@@ -134,6 +134,7 @@ StringAsyncCommand.Execute("String value");
     
 ```
 
+----
 ### `BoolToStringConverter`
 
 #### Example
@@ -152,6 +153,7 @@ StringAsyncCommand.Execute("String value");
 </ToggleButton>
   
   ```
+----
 ### `Profiler`
 Static helper methods to measure performance e.g. the execution time of a code portion.
 
@@ -171,6 +173,7 @@ List<TimeSpan> elapsedTime = Profiler.LogTimes(() => ReadFromDatabase(), 1000);
 TimeSpan elapsedTime = Profiler.LogTime(() => ReadFromDatabase());
 ```
 
+----
 ### `ValueChangedEventArgs<T>`
 Generic `EventArgs` implementation that provides value change information like `OldValue` and `NewValue`.
 
@@ -198,6 +201,7 @@ private void OnCompleted(object sender, ValueChangedEventArgs<(bool HasError, st
 }
 ```
 
+----
 ### `ValueEventArgs<T>`
 Generic `EventArgs` implementation that provides to carry a value.
 
@@ -220,6 +224,7 @@ private void OnCompleted(object sender, ValueEventArgs<int> e)
 }
 ```
 
+----
 ### `AppSettingsConnector` 
 A static default API to the AppSettings that provides strongly typed reading and writing (e.g. `boo`, `int`, `double`, `string`) of key-value pair values.
 
@@ -236,6 +241,7 @@ if (TryReadInt("mruCount", out int mruCount))
 }
 ```
 
+----
 ### MRU (Most Recently Used) file manager
 The `MruManager` maintains a collection of `MostRecentlyUsedFileItem` elrecentlyements that map to a recently used file. Once the max number of recently used files is reached and a new file is added, the `MruManager` automatically removes the least used file to free the MRU table.
 
@@ -273,6 +279,7 @@ MostRecentlyUsedFileItem lastUsedFile = mruManager.MostRecentlyUsedFile;
 ReadOnlyObservableCollection<MostRecentlyUsedFileItem> mruList = mruManager.MostRecentlyUsedFiles;
 ```
 
+----
 ### `EventAggregator`
 Dynamic implementation of the EventAggregator design pattern. Listen to events broadcasted by a specific type or by a specific event.
 
@@ -375,6 +382,8 @@ class MainWindowViewModel : INotifyPropertyChanged
   protected virtual void OnItemCreated() => this.ItemCreated?.Invoke(this, EventArgs.Empty);
 }
 ```
+
+----
 ### MVVM Dialog attached behavior
 Provides a clean way to show dialogs that are requested by view models. This apporach uses dialog view models that are templated by specific `DataTemplate` definitions, This templates are rendered as content of native dialog `Window` instances.
 
@@ -735,9 +744,13 @@ Application x:Class="BionicCode.BionicNuGetDeploy.Main.App"
 </Window>      
 ```
 
+----
 
-## InvertExtension
+### InvertExtension
+`MarkupExtension`that inverts a value provided locally or by any `MarkupExtension` e.g., `Binding`.
+Setting the `Invert.ValueInverter` property (similar to `Binding.Converter`) allows to specify a custom inversion logic and conversion type support.
 
+#### Example
 
 ```XAML   
 
@@ -747,8 +760,8 @@ Application x:Class="BionicCode.BionicNuGetDeploy.Main.App"
 <!-- Returns: -12 -->
 <TextBlock Text="{Invert Value=1.2}"/> 
 
-<!-- Returns: 0.12 -->
-<TextBlock Text="{Invert -0.12}"/> 
+<!-- Provide a custom implementation of IValueInverter. Returns: 0.12 -->
+<TextBlock Text="{Invert -0.12, ValueInverter={StaticResource CustomValueInverter}"/> 
 
 <!-- Returns: Visibility.Collapsed -->
 <TextBlock Text="{Invert {x:Static Visibility.Visible}}"/>
@@ -758,8 +771,10 @@ Application x:Class="BionicCode.BionicNuGetDeploy.Main.App"
 
 ```
 
-## EnumExtension
+### EnumExtension
+`MarkupExtension` to display return a collection of enumeration values of a specific `enum` type.
 
+#### Example 
 
 ```XAML   
 
