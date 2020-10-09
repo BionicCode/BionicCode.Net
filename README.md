@@ -162,11 +162,13 @@ Generic `EventArgs` implementation that provides value change information like `
 // Specify a named ValueTuple as event argument
 event EventHandler<ValueChangedEventArgs<(bool HasError, string Message)>> Completed;    
     
+// Publish event
 protected virtual void RaiseCompleted((bool HasError, string Message) oldValue, (bool HasError, string Message) newValue)
 {
   this.Completed?.Invoke(this, new ValueChangedEventArgs<(bool HasError, string Message)>(oldValue, newValue));
 }
 
+// Receive event
 private void OnCompleted(object sender, ValueChangedEventArgs<(bool HasError, string Message)> e)
 {
   (bool HasError, string Message) newValue = e.NewValue;
