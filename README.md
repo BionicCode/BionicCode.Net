@@ -348,7 +348,8 @@ ReadOnlyObservableCollection<MostRecentlyUsedFileItem> mruList = mruManager.Most
 
 ----
 ### `EventAggregator`
-Dynamic implementation of the EventAggregator design pattern. Listen to events broadcasted by a specific type or by a specific event.
+Dynamic implementation of the EventAggregator design pattern. Listen to events broadcasted by a specific type or by a specific event or by matching event handler signature.
+Allows to listen to an event without the need to reference the source instance.
 
 #### Example
 ##### Aggregate events
@@ -369,8 +370,13 @@ aggregator.TryRegisterObservable(mainWindowViewModel,
     nameof(INotifyPropertyChanged.PropertyChanged), 
     nameof(MainWindowViewModel.ItemCreated)
   });
-aggregator.TryRegisterObservable(mainPageViewModel, new[] {nameof(INotifyPropertyChanged.PropertyChanged)});
-aggregator.TryRegisterObservable(settingsPageViewModel, new[] {nameof(INotifyPropertyChanged.PropertyChanged)});
+  
+aggregator.TryRegisterObservable(
+  mainPageViewModel, 
+  new[] {nameof(INotifyPropertyChanged.PropertyChanged)});
+aggregator.TryRegisterObservable(
+  settingsPageViewModel, 
+  new[] {nameof(INotifyPropertyChanged.PropertyChanged)});
 ```
 
 ##### Listen to all aggregated event sources by event name
@@ -378,23 +384,49 @@ Subscribe to the `EventAggregator` and listen to specific events of all aggregat
 
 ```C#
 // Listen to everything that publishes the 'INotifyPropertyChanged.PropertyChanged' event
-aggregator.TryRegisterObserver<PropertyChangedEventHandler>(nameof(INotifyPropertyChanged.PropertyChanged), (s, args) => MessageBox.Show($"'PropertyChanged event'. Sender={sender.GetType().Name}; Value={args.PropertyName}"));
+aggregator.TryRegisterObserver<PropertyChangedEventHandler>(
+  nameof(INotifyPropertyChanged.PropertyChanged), 
+  ShowMessage_OnPropertyChanged);
 ```
 
 ##### Listen to specific aggregated event sources by event name
 Subscribe to the `EventAggregator` and listen to specific events of specific aggregated event sources:
 
 ```C#
-// Only listen to the 'INotifyPropertyChanged.PropertyChanged' event of the 'mainWindowViewModel' instance
-aggregator.TryRegisterObserver<PropertyChangedEventHandler>(nameof(INotifyPropertyChanged.PropertyChanged), mainWindowViewModel.GetType(), (s, args) => MessageBox.Show($"'PropertyChanged event'. Sender={sender.GetType().Name}; Value={args.PropertyName}"));
+// Only listen to the 'INotifyPropertyChanged.PropertyChanged' event raised by any instance of type 'MainWindowViewModel' 
+aggregator.TryRegisterObserver<PropertyChangedEventHandler>(
+  nameof(INotifyPropertyChanged.PropertyChanged), 
+  mainWindowViewModel.GetType(), 
+  ShowMessage_OnPropertyChanged);
 
-// Only listen to the 'INotifyPropertyChanged.PropertyChanged' event of all instances that implemnt 'IPage'
-aggregator.TryRegisterObserver<PropertyChangedEventHandler>(nameof(INotifyPropertyChanged.PropertyChanged), typeof(IPage), (s, args) => MessageBox.Show($"'PropertyChanged event'. Sender={sender.GetType().Name}; Value={args.PropertyName}"));
+// Only listen to the 'INotifyPropertyChanged.PropertyChanged' event of all instances that implement 'IPage'
+aggregator.TryRegisterObserver<PropertyChangedEventHandler>(
+  nameof(INotifyPropertyChanged.PropertyChanged), 
+  typeof(IPage), 
+  ShowMessage_OnPropertyChanged);
 ```
+##### Listen to all events that match the signature of the event handler or that use a matching `EventArgs` type
+Subscribe to the `EventAggregator` and listen to specific events of specific aggregated event sources:
 
+```C#
+
+// Subscribe by defining the event delegate explicitly
+aggregator.TryRegisterGlobalObserver(new PropertyChangedEventHandler(ShowMessage_OnPropertyChanged));
+
+// Subscribe by defining the EventArgs as generic type parameter
+aggregator.TryRegisterGlobalObserver<PropertyChangedEventArgs>(ShowMessage_OnPropertyChanged);
+```
+      
 ##### Type declarations used in examples
 
 ```C#
+// Event callback
+private void ShowMessage_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+{
+  MessageBox.Show($"Handling 'PropertyChanged event'. Sender={sender.GetType().Name}; Value={e.PropertyName}");
+}
+
+// Event sources
 class MainPageViewModel : IPage, INotifyPropertyChanged
 {
   public string Title 
