@@ -47,9 +47,10 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
   * `TryFindVisualChildElement<TChild> : bool`
   * `TryFindVisualChildElementByName : bool`
   * `FindVisualChildElements<TChildren> : IEnumerable<TChildren>`
-  * `ICollection.AddRange<T>`
+  * `ICollection.AddRange<TItem> : IEnumerable<TItem>`
 * EventArgs
   * [`ValueChangedEventArgs<T>`](https://github.com/BionicCode/BionicCode.Net#valuechangedeventargst)
+  * [`ValueEventArgs<T>`](https://github.com/BionicCode/BionicCode.Net#valueeventargst)
 * ValueConverters
   * `BoolToStringConverter`
   * `BooleanMultiValueConverter`
@@ -175,6 +176,35 @@ private void OnCompleted(object sender, ValueChangedEventArgs<(bool HasError, st
   this.TaskCompletionSource.TrySetResult(true);
 }
 ```
+
+```
+### `ValueEventArgs<T>`
+Generic `EventArgs` implementation that provides to carry a value.
+
+#### Example
+
+```c#
+// Specify a named ValueTuple as event argument
+event EventHandler<ValueEventArgs<(bool HasError, string Message)>> Completed;    
+    
+// Publish event
+protected virtual void RaiseCompleted((bool HasError, string Message) value)
+{
+  this.Completed?.Invoke(this, new ValueEventArgs<(bool HasError, string Message)>(value));
+}
+
+// Receive event
+private void OnCompleted(object sender, ValueEventArgs<(bool HasError, string Message)> e)
+{
+  (bool HasError, string Message) value = e.Value;
+  if (newValue.HasError)
+  {
+    this.TaskCompletionSource.TrySetException(new InvalidOperationException(value.Message));
+  }
+  this.TaskCompletionSource.TrySetResult(true);
+}
+```
+
 ### `AppSettingsConnector` 
 A static default API to the AppSettings that provides strongly typed reading and writing (e.g. `boo`, `int`, `double`, `string`) of key-value pair values.
 
