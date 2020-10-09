@@ -771,6 +771,7 @@ Setting the `Invert.ValueInverter` property (similar to `Binding.Converter`) all
 
 ```
 
+----
 ### EnumExtension
 `MarkupExtension` to display return a collection of enumeration values of a specific `enum` type.
 
