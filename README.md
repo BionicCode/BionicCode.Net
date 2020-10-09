@@ -348,12 +348,14 @@ ReadOnlyObservableCollection<MostRecentlyUsedFileItem> mruList = mruManager.Most
 
 ----
 ### `EventAggregator`
-Dynamic implementation of the EventAggregator design pattern. Listen to events broadcasted by a specific type or by a specific event or by matching event handler signature.
+Dynamic implementation of the EventAggregator design pattern. 
+Listen to broadcasted events by a specific source type, by a specific event name, by matching event handler signature or by matching `EventArgs` type.
+
 Allows to listen to an event without the need to reference the source instance.
 
 #### Example
 ##### Aggregate events
-Let the `EventAggregator` subscribe to events:
+Register event sources with an instance of `EventAggregator`:
 
 ```C#
 var aggregator = new EventAggregator();
@@ -379,8 +381,8 @@ aggregator.TryRegisterObservable(
   new[] {nameof(INotifyPropertyChanged.PropertyChanged)});
 ```
 
-##### Listen to *all* aggregated event sources *by event name*
-Subscribe to the `EventAggregator` and listen to specific events of **all** aggregated event sources:
+##### Listen to events by name, raised by any aggregated event source
+Subscribe to the `EventAggregator` and listen to **specific events** of **all event sources**:
 
 ```C#
 // Listen to everything that publishes the 'INotifyPropertyChanged.PropertyChanged' event
@@ -389,8 +391,8 @@ aggregator.TryRegisterObserver<PropertyChangedEventHandler>(
   ShowMessage_OnPropertyChanged);
 ```
 
-##### Listen to *specific* aggregated event sources by event name
-Subscribe to the `EventAggregator` and listen to specific events of **specific** aggregated event sources (by source type):
+##### Listen to events by name, raised by all event sources that match a specific type (e.g., class or interface)
+Subscribe to the `EventAggregator` and listen to **specific events** of **specific event sources** (by source type):
 
 ```C#
 // Only listen to the 'INotifyPropertyChanged.PropertyChanged' event raised by any instance of type 'MainWindowViewModel' 
@@ -399,29 +401,30 @@ aggregator.TryRegisterObserver<PropertyChangedEventHandler>(
   mainWindowViewModel.GetType(), 
   ShowMessage_OnPropertyChanged);
 
-// Only listen to the 'INotifyPropertyChanged.PropertyChanged' event of all instances that implement 'IPage'
+// Only listen to the 'INotifyPropertyChanged.PropertyChanged' event of all instances that implement 'IPage' interface
 aggregator.TryRegisterObserver<PropertyChangedEventHandler>(
   nameof(INotifyPropertyChanged.PropertyChanged), 
   typeof(IPage), 
   ShowMessage_OnPropertyChanged);
+  
 ```
 ##### Listen to all events that match the signature of the event handler or that use a matching `EventArgs` type
 
-Subscribe to the `EventAggregator` and listen to all events that have an event delegate with matching signature:
+Subscribe to the `EventAggregator` and listen to all events that have an **event delegate with matching signature**:
 ```C#
 
 // Subscribe by defining the event delegate explicitly
 aggregator.TryRegisterGlobalObserver(new PropertyChangedEventHandler(ShowMessage_OnPropertyChanged));
 ```
 
-Subscribe to the `EventAggregator` and listen to all events that use a matching `EventArgs` type:
+Subscribe to the `EventAggregator` and listen to all events that use a **matching `EventArgs` type**:
 
 ```C#
 // Subscribe by defining the EventArgs as generic type parameter
 aggregator.TryRegisterGlobalObserver<PropertyChangedEventArgs>(ShowMessage_OnPropertyChanged);
 ```
       
-##### Type declarations used in examples
+##### Type declarations used in above examples
 
 ```C#
 // Event callback
