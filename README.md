@@ -152,6 +152,7 @@ List<TimeSpan> elapsedTime = Profiler.LogTimes(() => ReadFromDatabase(), 1000);
 // Measure the execution time.
 TimeSpan elapsedTime = Profiler.LogTime(() => ReadFromDatabase());
 ```
+
 ### `ValueChangedEventArgs<T>`
 Generic `EventArgs` implementation that provides value change information like `OldValue` and `NewValue`.
 
@@ -177,7 +178,6 @@ private void OnCompleted(object sender, ValueChangedEventArgs<(bool HasError, st
 }
 ```
 
-```
 ### `ValueEventArgs<T>`
 Generic `EventArgs` implementation that provides to carry a value.
 
