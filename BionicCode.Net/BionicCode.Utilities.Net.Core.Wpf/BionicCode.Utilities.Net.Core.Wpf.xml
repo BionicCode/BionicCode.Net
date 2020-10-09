@@ -659,9 +659,6 @@
         <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.Title">
             <inheritdoc />
         </member>
-        <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.IsClosable">
-            <inheritdoc />
-        </member>
         <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.Message">
             <inheritdoc />
         </member>
@@ -700,11 +697,6 @@
         <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.Message">
             <summary>
             The message for the dialog to show to the user.
-            </summary>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.IsClosable">
-            <summary>
-            Controls whether the user is allowed to close the dialog Window.
             </summary>
         </member>
         <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.DialogResult">

@@ -70,15 +70,6 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Dialog
     /// <inheritdoc />
     public string Title { get => this.title; set => TrySetValue(value, ref this.title); }
 
-    private bool isClosable;
-
-    /// <inheritdoc />
-    public bool IsClosable
-    {
-      get => this.isClosable;
-      set => TrySetValue(value, ref this.isClosable);
-    }
-
     private string message;
     /// <inheritdoc />
     public string Message { get => this.message; set => TrySetValue(value, ref this.message); }

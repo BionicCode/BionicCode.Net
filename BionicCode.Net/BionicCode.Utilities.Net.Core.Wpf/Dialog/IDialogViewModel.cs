@@ -27,10 +27,6 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Dialog
     /// </summary>
     string Message { get; set; }
     /// <summary>
-    /// Controls whether the user is allowed to close the dialog Window.
-    /// </summary>
-    bool IsClosable { get; set; }
-    /// <summary>
     /// The <see cref="Wpf.Dialog.DialogResult"/> of the user interaction.
     /// </summary>
     DialogResult DialogResult { get; set; }
