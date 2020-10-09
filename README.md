@@ -48,6 +48,13 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
   * `TryFindVisualChildElementByName : bool`
   * `FindVisualChildElements<TChildren> : IEnumerable<TChildren>`
   * `ICollection.AddRange<TItem> : IEnumerable<TItem>`
+* Attached Behaviors for WPF e.g.
+  * [`Popup`](https://github.com/BionicCode/BionicCode.Net#popup) - e.g., allows to make the `Popup` sticky and moves it with the current placement target. 
+  * [`TextControl`](https://github.com/BionicCode/BionicCode.Net#textcontrol) - Allows to highlight text ranges in `TextBlock` and `RichTextBox` controls
+  * [`PasswordBox`](https://github.com/BionicCode/BionicCode.Net#passwordbox) - Enables to send the `PasswordBox.SecurePassword` value to the view model using a `ICommand`.
+  * `TryFindVisualChildElementByName : bool`
+  * `FindVisualChildElements<TChildren> : IEnumerable<TChildren>`
+  * `ICollection.AddRange<TItem> : IEnumerable<TItem>`
 * EventArgs
   * [`ValueChangedEventArgs<T>`](https://github.com/BionicCode/BionicCode.Net#valuechangedeventargst)
   * [`ValueEventArgs<T>`](https://github.com/BionicCode/BionicCode.Net#valueeventargst)
@@ -173,6 +180,66 @@ List<TimeSpan> elapsedTime = Profiler.LogTimes(() => ReadFromDatabase(), 1000);
 TimeSpan elapsedTime = Profiler.LogTime(() => ReadFromDatabase());
 ```
 
+--------
+### `PasswordBox`
+Invokes a `ICommand` when `PasswordBox.PasswordChanged`event was raised. The password is send as `SecureString` to secure the value.
+
+#### Example
+
+```XAML
+
+<PasswordBox PasswordBox.Command="{Binding VerifyPasswordCommand}" />
+  
+  ```
+----
+### `TextControl`
+Attached behavior that supports dynamic text highlighting for controls derived from `TextBlock` or `RichTextBox`.
+
+#### Example
+
+```XAML
+
+<!-- Bind Text and HighlightRanges to a view model -->
+<TextBlock Text="{Binding Message}" 
+           TextControl.HighlighBackground="Orange" 
+           TextControl.HighlighForeground="White" 
+           TextControl.HighlightRanges="{Binding HighlightTextRanges}"
+           TextControl.IsHighlighEnabled="True" />
+           
+ 
+<!-- Alternatively define the HighlightRange items inline -->
+<TextBlock Text="{Binding Message}" 
+           TextControl.HighlighBackground="Orange" 
+           TextControl.HighlighForeground="White" 
+           TextControl.IsHighlighEnabled="True">
+  <attachedBehaviors:TextControl.HighlightRanges>
+    <attachedBehaviors:HighlightRange StartIndex="2" EndIndex="8"/>
+    <attachedBehaviors:HighlightRange StartIndex="12" EndIndex="15"/>
+  </attachedBehaviors:TextControl.HighlightRanges>
+</TextBlock>
+  
+<!-- 
+  Use a RichTextBox and bind it to a string by binding TextControl.Text instead of RichTextBox.Document.
+  The text will be automatically converted to a FlowDocument and assigned to RichTextBox.Document.
+-->
+<RichTextBox TextControlText="{Binding Message}" 
+             TextControl.HighlighBackground="Orange" 
+             TextControl.HighlighForeground="White" 
+             TextControl.IsHighlighEnabled="True" 
+             TextControl.HighlightRanges="{Binding HighlightTextRanges}" />
+  ```
+----
+### `Popup`
+Set of attached behaviors for the `System.Windows.Controls.Primitives.Popup` control.
+When `Popup.IsSticky` is set to `true`, the `Popup` is forced to stick to the current `Popup.PlacementTarget`. The `Popup` will follow the `Popup.PlacementTarget` whenever it changes it's screen coordinates.
+
+#### Example
+
+```XAML
+
+<Popup Popup.IsSticky="True" />
+  
+  ```
 ----
 ### `ValueChangedEventArgs<T>`
 Generic `EventArgs` implementation that provides value change information like `OldValue` and `NewValue`.
