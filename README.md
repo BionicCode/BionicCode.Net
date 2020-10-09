@@ -32,9 +32,9 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 ## [Class Reference](https://rawcdn.githack.com/BionicCode/BionicCode.Net/5611b3eb6af32cbfd605d2dbd702917b2546d481/Documentation/html/R_Project_Documentation.htm)
 [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/5611b3eb6af32cbfd605d2dbd702917b2546d481/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
 
-[![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Framework-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/ff3c4313fded52718bd817cb3a8615e0e7b25b3b/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)
+[![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Framework-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/5611b3eb6af32cbfd605d2dbd702917b2546d481/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)
 
-[![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/b958994379a255df81933039642d4f3f572a8222/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)
+[![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/5611b3eb6af32cbfd605d2dbd702917b2546d481/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)
 
 
 
