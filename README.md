@@ -52,8 +52,8 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
   * [`ValueChangedEventArgs<T>`](https://github.com/BionicCode/BionicCode.Net#valuechangedeventargst)
   * [`ValueEventArgs<T>`](https://github.com/BionicCode/BionicCode.Net#valueeventargst)
 * ValueConverters
-  * `BoolToStringConverter`
-  * `BooleanMultiValueConverter`
+  * [`BoolToStringConverter`](https://github.com/BionicCode/BionicCode.Net#boolToStringConverter) - Implementation of `IValueConverter` that converts a `bool` to a custom string representation e.g., convert `true` to `"Enabled"`.
+  * `BooleanMultiValueConverter` - Implementation of `IMultiValueConverter` that checks if all values are `true`.
   * `FilePathTruncateConverter`
   * `InvertValueConverter`
 * Collections
@@ -134,6 +134,24 @@ StringAsyncCommand.Execute("String value");
     
 ```
 
+### `BoolToStringConverter`
+
+#### Example
+
+```XAML
+<ToggleButton IsChecked="{Binding IsEnabled}">
+  <ToggleButton.Content>
+    <Binding Path="IsEnabled">
+      <Binding.Converter>
+        <BoolToStringConverter TrueValue="On" 
+                               FalseValue="{Binding DisabledText}" 
+                               NullValue="Undefined" />
+      </Binding.Converter>
+    </Binding>
+  </ToggleButton.Content>
+</ToggleButton>
+  
+  ```
 ### `Profiler`
 Static helper methods to measure performance e.g. the execution time of a code portion.
 
