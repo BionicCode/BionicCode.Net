@@ -616,7 +616,7 @@ Application x:Class="BionicCode.BionicNuGetDeploy.Main.App"
         xmlns:dialog="clr-namespace:BionicUtilities.Net.Dialog;assembly=BionicUtilities.Net"
         mc:Ignorable="d"
         Title="MainWindow"
-        dialog:Dialog.DialogDataContext="{Binding DialogViewModel}">
+        Dialog.DialogDataContext="{Binding DialogViewModel}">
 </Window>      
 ```
 
@@ -807,7 +807,10 @@ Application x:Class="BionicCode.BionicNuGetDeploy.Main.App"
         xmlns:dialog="clr-namespace:BionicUtilities.Net.Dialog;assembly=BionicUtilities.Net"
         mc:Ignorable="d"
         Title="MainWindow"
-        dialog:Dialog.DialogDataContext="{Binding DialogViewModel}">
+        Dialog.DialogDataContext="{Binding DialogViewModel}"
+        Dialog.DialogDataContext="{Binding DialogViewModel}"
+        Dialog.IsModal="True"
+        Dialog.IsClosable="False">
 </Window>      
 ```
 
