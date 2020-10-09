@@ -376,6 +376,7 @@ aggregator.TryRegisterObservable(mainWindowViewModel,
 aggregator.TryRegisterObservable(
   mainPageViewModel, 
   new[] {nameof(INotifyPropertyChanged.PropertyChanged)});
+  
 aggregator.TryRegisterObservable(
   settingsPageViewModel, 
   new[] {nameof(INotifyPropertyChanged.PropertyChanged)});
