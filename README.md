@@ -899,7 +899,7 @@ Setting the `Invert.ValueInverter` property (similar to `Binding.Converter`) all
 ---
 
 ### AutoResetStream
-A `Stream` decorator that resets the stream's position after red(write access
+A `Stream` decorator that resets the stream's position after read/write access. Resets to the optionally provided `SeekOrigin` assigned to `AutoResetStream.ResetOrigin`
 
 #### Example 
 
