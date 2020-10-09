@@ -185,23 +185,18 @@ Generic `EventArgs` implementation that provides to carry a value.
 
 ```c#
 // Specify a named ValueTuple as event argument
-event EventHandler<ValueEventArgs<(bool HasError, string Message)>> Completed;    
+event EventHandler<ValueEventArgs<int> Completed;    
     
 // Publish event
-protected virtual void RaiseCompleted((bool HasError, string Message) value)
+protected virtual void RaiseCompleted(int value)
 {
-  this.Completed?.Invoke(this, new ValueEventArgs<(bool HasError, string Message)>(value));
+  this.Completed?.Invoke(this, new ValueEventArgs<int>(value));
 }
 
 // Receive event
-private void OnCompleted(object sender, ValueEventArgs<(bool HasError, string Message)> e)
+private void OnCompleted(object sender, ValueEventArgs<int> e)
 {
-  (bool HasError, string Message) value = e.Value;
-  if (newValue.HasError)
-  {
-    this.TaskCompletionSource.TrySetException(new InvalidOperationException(value.Message));
-  }
-  this.TaskCompletionSource.TrySetResult(true);
+  int value = e.Value;  
 }
 ```
 
