@@ -29,12 +29,12 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 [![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Standard.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)
 -->
 
-## [Class Reference](https://rawcdn.githack.com/BionicCode/BionicCode.Net/5611b3eb6af32cbfd605d2dbd702917b2546d481/Documentation/html/R_Project_Documentation.htm)
-[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/5611b3eb6af32cbfd605d2dbd702917b2546d481/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+## [Class Reference](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/R_Project_Documentation.htm)
+[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
 
-[![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Framework-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/5611b3eb6af32cbfd605d2dbd702917b2546d481/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)
+[![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Framework-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)
 
-[![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/5611b3eb6af32cbfd605d2dbd702917b2546d481/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)
+[![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)
 
 
 
