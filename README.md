@@ -53,6 +53,7 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 
 * Attached Behaviors for WPF e.g.
   * [`Popup`](https://github.com/BionicCode/BionicCode.Net#popup) [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) 
+
       *e.g., allows to make the `Popup` sticky and moves it with the current placement target.* 
   * [`TextControl`](https://github.com/BionicCode/BionicCode.Net#textcontrol) [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) 
       *Allows to highlight text ranges in `TextBlock` and `RichTextBox` controls*
