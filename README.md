@@ -52,25 +52,15 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
   * `EnumerateVisualChildElements<TChildren> : IEnumerable<TChildren>` 
   * `ICollection.AddRange<TItem> : IEnumerable<TItem>`
 * Attached Behaviors for WPF e.g.
-  * [`Popup`](https://github.com/BionicCode/BionicCode.Net#popup) 
-
-      e.g., allows to make the `Popup` sticky and moves it with the current placement target.
-  * [`TextControl`](https://github.com/BionicCode/BionicCode.Net#textcontrol) 
- 
-      Allows to highlight text ranges in `TextBlock` and `RichTextBox` controls
-  * [`PasswordBox`](https://github.com/BionicCode/BionicCode.Net#passwordbox) 
-
-      Enables to send the `PasswordBox.SecurePassword` value to the view model using a `ICommand`.
+  * [`Popup`](https://github.com/BionicCode/BionicCode.Net#popup) - e.g., allows to make the `Popup` sticky and moves it with the current placement target.
+  * [`TextControl`](https://github.com/BionicCode/BionicCode.Net#textcontrol) - Allows to highlight text ranges in `TextBlock` and `RichTextBox` controls
+  * [`PasswordBox`](https://github.com/BionicCode/BionicCode.Net#passwordbox) - Enables to send the `PasswordBox.SecurePassword` value to the view model using a `ICommand`.
 * EventArgs 
   * [`ValueChangedEventArgs<T>`](https://github.com/BionicCode/BionicCode.Net#valuechangedeventargst) 
   * [`ValueEventArgs<T>`](https://github.com/BionicCode/BionicCode.Net#valueeventargst) 
 * ValueConverters
-  * [`BoolToStringConverter`](https://github.com/BionicCode/BionicCode.Net#boolToStringConverter) 
-
-      Implementation of `IValueConverter` that converts a `bool` to a custom string representation e.g., convert `true` to `"Enabled"`.
-  * `BooleanMultiValueConverter` 
-
-      Implementation of `IMultiValueConverter` that checks if all values are `true`.
+  * [`BoolToStringConverter`](https://github.com/BionicCode/BionicCode.Net#boolToStringConverter) - Implementation of `IValueConverter` that converts a `bool` to a custom string representation e.g., convert `true` to `"Enabled"`.
+  * `BooleanMultiValueConverter` - Implementation of `IMultiValueConverter` that checks if all values are `true`.
   * `FilePathTruncateConverter` 
   * `InvertValueConverter` 
 * Collections
@@ -81,22 +71,11 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
   * `PrimitiveTypeExtension` 
   * `EqualsExtension` 
 * [`Profiler`](https://github.com/BionicCode/BionicCode.Net#Profiler)
-* [`AppSettingsConnector`](https://github.com/BionicCode/BionicCode.Net#AppSettingsConnector)
-
-    A default API to the `AppSettings` that provides strongly typed reading and writing (e.g. `bool`, `int`, `double`, `string`) of key-value pair values.
-* [`MruManager`](https://github.com/BionicCode/BionicCode.Net#mru-most-recently-used-file-manager) 
-
-    Most Recently Used (MRU) file manager. An API that maintains an MRU table stored in the Application Settings file.
-* [`EventAggregator`](https://github.com/BionicCode/BionicCode.Net#eventaggregator)
-
-    Implementation of the Event Aggregator pattern that supports dynamic aggregation of different typed event sources.
-* [`AutoResetStream`](https://github.com/BionicCode/BionicCode.Net#autoresetstream) 
-
-    A `Stream` decorator that automatically resets the stream's position after read/write access.
-* [`Dialog`](https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior) 
-
-    Easy to use attached behavior and infrastructure to allow MVVM friendly dialog handling from a view model class in a fire-and-forget manner. 
-    To display dialogs implement `IDialogViewModel` classes and create a `DataTemplate` for each implementation. The `DataTemplate` is the rendered in a native `Window`. Addition attached properties allow for styling of the dialog `Window` or to assign an optional `DataTemplateSelector`. The attached behavior will handle showing and closing of  the dialog.
+* [`AppSettingsConnector`](https://github.com/BionicCode/BionicCode.Net#AppSettingsConnector) - A default API to the `AppSettings` that provides strongly typed reading and writing (e.g. `bool`, `int`, `double`, `string`) of key-value pair values.
+* [`MruManager`](https://github.com/BionicCode/BionicCode.Net#mru-most-recently-used-file-manager) - Most Recently Used (MRU) file manager. An API that maintains an MRU table stored in the Application Settings file.
+* [`EventAggregator`](https://github.com/BionicCode/BionicCode.Net#eventaggregator) - Implementation of the Event Aggregator pattern that supports dynamic aggregation of different typed event sources.
+* [`AutoResetStream`](https://github.com/BionicCode/BionicCode.Net#autoresetstream) - A `Stream` decorator that automatically resets the stream's position after read/write access.
+* [`Dialog`](https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior) - Easy to use attached behavior and infrastructure to allow MVVM friendly dialog handling from a view model class in a fire-and-forget manner. To display dialogs implement `IDialogViewModel` classes and create a `DataTemplate` for each implementation. The `DataTemplate` is the rendered in a native `Window`. Addition attached properties allow for styling of the dialog `Window` or to assign an optional `DataTemplateSelector`. The attached behavior will handle showing and closing of  the dialog.
  
 ---
 ### `BaseViewModel`
