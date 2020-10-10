@@ -39,43 +39,57 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 
 
 ## Table of Contents 
-* [`BaseViewModel`](https://github.com/BionicCode/BionicCode.Net#baseviewmodel)
-* [`AsyncRelayCommand<T>`](https://github.com/BionicCode/BionicCode.Net#asyncrelaycomandt)
+* [`BaseViewModel`](https://github.com/BionicCode/BionicCode.Net#baseviewmodel) [![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)
+
+* [`AsyncRelayCommand<T>`](https://github.com/BionicCode/BionicCode.Net#asyncrelaycomandt) [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+
 * Extension Methods for WPF e.g.
-  * `TryFindVisualParentElement<TParent> : bool` 
-  * `TryFindVisualParentElementByName : bool` 
-  * `TryFindVisualChildElement<TChild> : bool`
-  * `TryFindVisualChildElementByName : bool`
-  * `FindVisualChildElements<TChildren> : IEnumerable<TChildren>`
-  * `ICollection.AddRange<TItem> : IEnumerable<TItem>`
+  * `TryFindVisualParentElement<TParent> : bool` [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+  * `TryFindVisualParentElementByName : bool` [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+  * `TryFindVisualChildElement<TChild> : bool` [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+  * `TryFindVisualChildElementByName : bool` [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+  * `FindVisualChildElements<TChildren> : IEnumerable<TChildren>` [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+  * `ICollection.AddRange<TItem> : IEnumerable<TItem>` [![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)
+
 * Attached Behaviors for WPF e.g.
-  * [`Popup`](https://github.com/BionicCode/BionicCode.Net#popup) - e.g., allows to make the `Popup` sticky and moves it with the current placement target. 
-  * [`TextControl`](https://github.com/BionicCode/BionicCode.Net#textcontrol) - Allows to highlight text ranges in `TextBlock` and `RichTextBox` controls
-  * [`PasswordBox`](https://github.com/BionicCode/BionicCode.Net#passwordbox) - Enables to send the `PasswordBox.SecurePassword` value to the view model using a `ICommand`.
-  * `TryFindVisualChildElementByName : bool`
-  * `FindVisualChildElements<TChildren> : IEnumerable<TChildren>`
-  * `ICollection.AddRange<TItem> : IEnumerable<TItem>`
-* EventArgs
-  * [`ValueChangedEventArgs<T>`](https://github.com/BionicCode/BionicCode.Net#valuechangedeventargst)
-  * [`ValueEventArgs<T>`](https://github.com/BionicCode/BionicCode.Net#valueeventargst)
+  * [`Popup`](https://github.com/BionicCode/BionicCode.Net#popup) [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) 
+      *e.g., allows to make the `Popup` sticky and moves it with the current placement target.* 
+  * [`TextControl`](https://github.com/BionicCode/BionicCode.Net#textcontrol) [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) 
+      *Allows to highlight text ranges in `TextBlock` and `RichTextBox` controls*
+  * [`PasswordBox`](https://github.com/BionicCode/BionicCode.Net#passwordbox) [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+      *Enables to send the `PasswordBox.SecurePassword` value to the view model using a `ICommand`.*
+* EventArgs 
+  * [`ValueChangedEventArgs<T>`](https://github.com/BionicCode/BionicCode.Net#valuechangedeventargst) [![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)
+
+  * [`ValueEventArgs<T>`](https://github.com/BionicCode/BionicCode.Net#valueeventargst) [![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)
+
 * ValueConverters
-  * [`BoolToStringConverter`](https://github.com/BionicCode/BionicCode.Net#boolToStringConverter) - Implementation of `IValueConverter` that converts a `bool` to a custom string representation e.g., convert `true` to `"Enabled"`.
-  * `BooleanMultiValueConverter` - Implementation of `IMultiValueConverter` that checks if all values are `true`.
-  * `FilePathTruncateConverter`
-  * `InvertValueConverter`
+  * [`BoolToStringConverter`](https://github.com/BionicCode/BionicCode.Net#boolToStringConverter) [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+      *Implementation of `IValueConverter` that converts a `bool` to a custom string representation e.g., convert `true` to `"Enabled"`.*
+  * `BooleanMultiValueConverter` [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+      *Implementation of `IMultiValueConverter` that checks if all values are `true`.*
+  * `FilePathTruncateConverter` [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+  * `InvertValueConverter` [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
 * Collections
-  * `ObservablePropertyChangedCollection<T>`
+  * `ObservablePropertyChangedCollection<T>` [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
 * Markup Extensions
-  * [`InvertExtension`](https://github.com/BionicCode/BionicCode.Net#invertExtension)
-  * [`EnumExtension`](https://github.com/BionicCode/BionicCode.Net#enumExtension)
-  * `PrimitiveTypeExtension`
-  * `EqualsExtension`
-* [`Profiler`](https://github.com/BionicCode/BionicCode.Net#Profiler)
-* [`AppSettingsConnector`](https://github.com/BionicCode/BionicCode.Net#AppSettingsConnector) - A default API to the `AppSettings` that provides strongly typed reading and writing (e.g. `bool`, `int`, `double`, `string`) of key-value pair values
-* [`MruManager`](https://github.com/BionicCode/BionicCode.Net#mru-most-recently-used-file-manager) - Most Recently Used (MRU) file manager. An API that maintains an MRU table stored in the Application Settings file. 
-* [`EventAggregator`](https://github.com/BionicCode/BionicCode.Net#eventaggregator) - Implementation of the Event Aggregator pattern that supports dynamic aggregation of different typed event sources
-* [`AutoResetStream`](https://github.com/BionicCode/BionicCode.Net#autoresetstream) - A `Stream` decorator that automatically resets the stream's position after read/write access.
-* Easy to use [`Dialog` attached behavior](https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior) and infrastructure to allow MVVM friendly dialog handling from the view models in a fire-and-forget manner. To display dialogs implement `IDialogViewModel` classes and create a `DataTemplate` for each implementation. The `DataTemplate` is the rendered in a native `Window`. Addition attached properties allow for styling of the dialog `Window` or to assign an optional `DataTemplateSelector`. The attached behavior will handle showing and closing of  the dialog.
+  * [`InvertExtension`](https://github.com/BionicCode/BionicCode.Net#invertExtension) [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+  * [`EnumExtension`](https://github.com/BionicCode/BionicCode.Net#enumExtension) [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+  * `PrimitiveTypeExtension` [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+  * `EqualsExtension` [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+* [`Profiler`](https://github.com/BionicCode/BionicCode.Net#Profiler) [![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)
+
+* [`AppSettingsConnector`](https://github.com/BionicCode/BionicCode.Net#AppSettingsConnector) [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+    *A default API to the `AppSettings` that provides strongly typed reading and writing (e.g. `bool`, `int`, `double`, `string`) of key-value pair values*
+* [`MruManager`](https://github.com/BionicCode/BionicCode.Net#mru-most-recently-used-file-manager) [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+    *Most Recently Used (MRU) file manager. An API that maintains an MRU table stored in the Application Settings file. *
+* [`EventAggregator`](https://github.com/BionicCode/BionicCode.Net#eventaggregator) [![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm) 
+    *Implementation of the Event Aggregator pattern that supports dynamic aggregation of different typed event sources.*
+* [`AutoResetStream`](https://github.com/BionicCode/BionicCode.Net#autoresetstream) [![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm) 
+    *A `Stream` decorator that automatically resets the stream's position after read/write access.*
+* [`Dialog`](https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior) [![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm) 
+    *Easy to use attached behavior and infrastructure to allow MVVM friendly dialog handling from a view model class in a fire-and-forget manner. 
+    *To display dialogs implement `IDialogViewModel` classes and create a `DataTemplate` for each implementation. The `DataTemplate` is the rendered in a native `Window`. Addition attached properties allow for styling of the dialog `Window` or to assign an optional `DataTemplateSelector`. The attached behavior will handle showing and closing of  the dialog.*
   
 ### `BaseViewModel`
 * Implements and encapsulates `INotifyPropertyChanged` and `INotifyDataErrorInfo`. 
