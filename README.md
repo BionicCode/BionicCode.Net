@@ -47,7 +47,7 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 | Extension Methods for .NET Standard |   |[![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)   |
 | Attached Behaviors for WPF  |   |[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Core.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)|
 |  EventArgs |   | [![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)  |
-| ValueConverters  |   | [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Core.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm) |
+| [ValueConverters](https://github.com/BionicCode/BionicCode.Net#ValueConverters)  |   | [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Core.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm) |
 |  `ObservablePropertyChangedCollection<T>`  |   |[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Core.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)  |
 |  Markup Extensions |   |[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Core.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)   |
 |  [`Profiler`](https://github.com/BionicCode/BionicCode.Net#Profiler) |   | [![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)  |
@@ -63,13 +63,6 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 
 
 
-* Extension Methods for WPF e.g.
-  * `TryFindVisualParentElement<TParent> : bool` 
-  * `TryFindVisualParentElementByName : bool` 
-  * `TryFindVisualChildElement<TChild> : bool` 
-  * `TryFindVisualChildElementByName : bool` 
-  * `EnumerateVisualChildElements<TChildren> : IEnumerable<TChildren>` 
-  * `ICollection.AddRange<TItem> : IEnumerable<TItem>`
 * Attached Behaviors for WPF e.g.
   * [`Popup`](https://github.com/BionicCode/BionicCode.Net#popup) - e.g., allows to make the `Popup` sticky and moves it with the current placement target.
   * [`TextControl`](https://github.com/BionicCode/BionicCode.Net#textcontrol) - Allows to highlight text ranges in `TextBlock` and `RichTextBox` controls
@@ -77,11 +70,6 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 * EventArgs 
   * [`ValueChangedEventArgs<T>`](https://github.com/BionicCode/BionicCode.Net#valuechangedeventargst) 
   * [`ValueEventArgs<T>`](https://github.com/BionicCode/BionicCode.Net#valueeventargst) 
-* ValueConverters
-  * [`BoolToStringConverter`](https://github.com/BionicCode/BionicCode.Net#boolToStringConverter) - Implementation of `IValueConverter` that converts a `bool` to a custom string representation e.g., convert `true` to `"Enabled"`.
-  * `BooleanMultiValueConverter` - Implementation of `IMultiValueConverter` that checks if all values are `true`.
-  * `FilePathTruncateConverter` 
-  * `InvertValueConverter` 
 * Markup Extensions
   * [`InvertExtension`](https://github.com/BionicCode/BionicCode.Net#invertExtension) 
   * [`EnumExtension`](https://github.com/BionicCode/BionicCode.Net#enumExtension)
@@ -179,10 +167,34 @@ foreach (TextBox childTextBox in myControl.EnumerateVisualChildElements<TextBox>
   childTextBox.Text = string.Empty;
 }
 ```
----
-### `BoolToStringConverter`
 
-#### Example
+```C#
+var listView = new ListView();
+if (listView.TryFindVisualParentElement(out MyControl myControl)
+{
+  myControl.DoSomething();
+}
+```
+```C#
+var listView = new ListView();
+if (listView.TryFindVisualParentElementByName("MyControl", out MyControl myControl)
+{
+  myControl.DoSomething();
+}
+```
+
+
+```C#
+var myClass = new MyClass();
+Dictionary<string, object> myClassDictionary = myClass.ToDictionary();
+object value = myClass["PropertyName"];
+```
+---
+### ValueConverters
+E.g., `BooleanMultiValueConverter`, `FilePathTruncateConverter`, `BoolToStringConverter`, `InvertValueConverter`
+
+#### `BoolToStringConverter`
+Implementation of `IValueConverter` that converts a `bool` to a custom string representation e.g., convert `true` to `"Enabled"`.
 
 ```XAML
 <ToggleButton IsChecked="{Binding IsEnabled}">
@@ -198,7 +210,23 @@ foreach (TextBox childTextBox in myControl.EnumerateVisualChildElements<TextBox>
 </ToggleButton>
   
   ```
+#### `InvertValueConverter`
+Implementation of `IValueConverter` that inverts a `bool`, `Visibility`, `double`, `decimal`, `float`, `int`.
+
+```XAML
+<ToggleButton>
+  <ToggleButton.IsChecked>
+    <Binding>
+      <Binding.Converter>
+        <InvertValueConverter />
+      </Binding.Converter>
+    </Binding>
+  </ToggleButton.IsChecked>
+</ToggleButton>
+  
+  ```
 ----
+
 ### `Profiler`
 Static helper methods to measure performance e.g. the execution time of a code portion.
 
