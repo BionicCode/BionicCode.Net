@@ -43,7 +43,7 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 |---|---|---|
 |  [`ViewModel`](https://github.com/BionicCode/BionicCode.Net#baseviewmodel)  |   | [![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)  |  
 | [`AsyncRelayCommand<T>`](https://github.com/BionicCode/BionicCode.Net#asyncrelaycomandt)   |   | [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Core.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)| 
-| Extension Methods for WPF   |   | [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Core.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)| 
+| [Extension Methods for WPF](https://github.com/BionicCode/BionicCode.Net#Extension-Methods-WPF)   |   | [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Core.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)| 
 | Extension Methods for .NET Standard |   |[![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)   |
 | Attached Behaviors for WPF  |   |[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Core.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)|
 |  EventArgs |   | [![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)  |
@@ -155,6 +155,31 @@ StringAsyncCommand.Execute("String value");
 ```
 
 ----
+### Extension Methods WPF
+
+```C#
+var listView = new ListView();
+if (listView.TryFindVisualChildElement(out ScrollViewer scrollViewer)
+{
+  scrollViewer.ScrollToVerticalOffset(12);
+}
+```
+```C#
+var myControl = new MyControl();
+if (myControl.TryFindVisualChildElementByName("PART_ContentHost", out ContentPresenter contentPresenter)
+{
+  var content = contentPresenter.Content;
+}
+```
+
+```C#
+var myControl = new MyControl();
+foreach (TextBox childTextBox in myControl.EnumerateVisualChildElements<TextBox>()
+{
+  childTextBox.Text = string.Empty;
+}
+```
+---
 ### `BoolToStringConverter`
 
 #### Example
