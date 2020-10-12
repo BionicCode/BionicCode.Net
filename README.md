@@ -48,7 +48,7 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 | Attached Behaviors for WPF  |   |[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Core.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)|
 |  EventArgs |   | [![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)  |
 | ValueConverters  |   | [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Core.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm) |
-|  Collections |   |[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Core.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)  |
+|  `ObservablePropertyChangedCollection<T>`  |   |[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Core.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)  |
 |  Markup Extensions |   |[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Core.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)   |
 |  [`Profiler`](https://github.com/BionicCode/BionicCode.Net#Profiler) |   | [![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)  |
 | [`AppSettingsConnector`](https://github.com/BionicCode/BionicCode.Net#AppSettingsConnector)  | A default API to the `AppSettings` that provides strongly typed reading and writing (e.g. `bool`, `int`, `double`, `string`) of key-value pair values.  |[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Core.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)  |
@@ -60,9 +60,7 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 |   |   |   |
 |   |   |   |
 |   |   |   |
-* [`BaseViewModel`](https://github.com/BionicCode/BionicCode.Net#baseviewmodel) 
 
-* [`AsyncRelayCommand<T>`](https://github.com/BionicCode/BionicCode.Net#asyncrelaycomandt) 
 
 
 * Extension Methods for WPF e.g.
@@ -84,19 +82,11 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
   * `BooleanMultiValueConverter` - Implementation of `IMultiValueConverter` that checks if all values are `true`.
   * `FilePathTruncateConverter` 
   * `InvertValueConverter` 
-* Collections
-  * `ObservablePropertyChangedCollection<T>` 
 * Markup Extensions
   * [`InvertExtension`](https://github.com/BionicCode/BionicCode.Net#invertExtension) 
   * [`EnumExtension`](https://github.com/BionicCode/BionicCode.Net#enumExtension)
   * `PrimitiveTypeExtension` 
   * `EqualsExtension` 
-* [`Profiler`](https://github.com/BionicCode/BionicCode.Net#Profiler)
-* [`AppSettingsConnector`](https://github.com/BionicCode/BionicCode.Net#AppSettingsConnector) - A default API to the `AppSettings` that provides strongly typed reading and writing (e.g. `bool`, `int`, `double`, `string`) of key-value pair values.
-* [`MruManager`](https://github.com/BionicCode/BionicCode.Net#mru-most-recently-used-file-manager) - Most Recently Used (MRU) file manager. An API that maintains an MRU table stored in the Application Settings file.
-* [`EventAggregator`](https://github.com/BionicCode/BionicCode.Net#eventaggregator) - Implementation of the Event Aggregator pattern that supports dynamic aggregation of different typed event sources.
-* [`AutoResetStream`](https://github.com/BionicCode/BionicCode.Net#autoresetstream) - A `Stream` decorator that automatically resets the stream's position after read/write access.
-* [`Dialog`](https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior) - Easy to use attached behavior and infrastructure to allow MVVM friendly dialog handling from a view model class in a fire-and-forget manner. To display dialogs implement `IDialogViewModel` classes and create a `DataTemplate` for each implementation. The `DataTemplate` is the rendered in a native `Window`. Addition attached properties allow for styling of the dialog `Window` or to assign an optional `DataTemplateSelector`. The attached behavior will handle showing and closing of  the dialog.
  
 ---
 ### `BaseViewModel`
