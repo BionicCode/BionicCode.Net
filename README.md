@@ -17,26 +17,16 @@
 [![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Core.Wpf.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
 -->
 
-[![BionicCode.Utilities.Net.Core](https://img.shields.io/badge/.NET_Core-BionicCode.Utilities.Net.Core-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core/)
-[![BionicCode.Utilities.Net.Core.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Core.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core/)
+[![BionicCode.Utilities.Net.Core](https://img.shields.io/badge/.NET_Core-BionicCode.Utilities.Net.Core-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core/)[![BionicCode.Utilities.Net.Core.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Core.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core/)
 <!--
 [![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Core.Wpf.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
 -->
 
-[![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/.NET_Standard-BionicCode.Utilities.Net.Standard-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)
-[![BionicCode.Utilities.Net.Standard.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Standard.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)
+[![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/.NET_Standard-BionicCode.Utilities.Net.Standard-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)[![BionicCode.Utilities.Net.Standard.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Standard.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)
 
-[![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/.NET_Framework_4.8_WPF-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)
-[![BionicCode.Utilities.Net.Framework.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Framework.Wpf.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)
+[![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/.NET_Framework_4.8_WPF-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)[![BionicCode.Utilities.Net.Framework.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Framework.Wpf.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)
 
-[![BionicCode.Utilities.Net.Framework](https://img.shields.io/badge/.NET_Framework_4.8-BionicCode.Utilities.Net.Framework-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework/)
-[![BionicCode.Utilities.Net.Framework.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Framework.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework/)
-<!--
-[![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Framework.Wpf.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)
--->
-<!--
-[![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Standard.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)
--->
+[![BionicCode.Utilities.Net.Framework](https://img.shields.io/badge/.NET_Framework_4.8-BionicCode.Utilities.Net.Framework-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework/)[![BionicCode.Utilities.Net.Framework.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Framework.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework/)
 
 ## [Class Reference](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/R_Project_Documentation.htm)
 [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/4de60b27e4c14fb6a9dfa2c288846cf709a649a6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
