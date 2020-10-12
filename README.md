@@ -12,8 +12,7 @@
 
 
 ## NuGet packages
-[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/.NET_Core_WPF-BionicCode.Utilities.Net.Core.Wpf-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
-[![BionicCode.Utilities.Net.Core.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Core.Wpf.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
+[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/.NET_Core_WPF-BionicCode.Utilities.Net.Core.Wpf-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)[![BionicCode.Utilities.Net.Core.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Core.Wpf.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
 <!--
 [![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Core.Wpf.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
 -->
