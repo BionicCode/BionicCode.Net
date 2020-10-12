@@ -7,24 +7,30 @@
 
 ![BC](https://img.shields.io/badge/-WPF-informational?logo=windows)
 ![BC](https://img.shields.io/badge/-UWP-informational?logo=windows)
+![BC](https://img.shields.io/badge/-Windows_Forms-informational?logo=windows)
 
 
 
 ## NuGet packages
 [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/.NET_Core_WPF-BionicCode.Utilities.Net.Core.Wpf-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
 [![BionicCode.Utilities.Net.Core.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Core.Wpf.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
-<!--
 [![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Core.Wpf.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
--->
 
-[![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/.NET_Framework_4.8_WPF-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)
-[![BionicCode.Utilities.Net.Framework.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Framework.Wpf.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)
-<!--
-[![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Framework.Wpf.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)
--->
+[![BionicCode.Utilities.Net.Core](https://img.shields.io/badge/.NET_Core-BionicCode.Utilities.Net.Core-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core/)
+[![BionicCode.Utilities.Net.Core.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Core.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Core.Wpf.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
 
 [![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/.NET_Standard-BionicCode.Utilities.Net.Standard-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)
 [![BionicCode.Utilities.Net.Standard.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Standard.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)
+
+[![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/.NET_Framework_4.8_WPF-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)
+[![BionicCode.Utilities.Net.Framework.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Framework.Wpf.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)
+
+[![BionicCode.Utilities.Net.Framework](https://img.shields.io/badge/.NET_Framework_4.8-BionicCode.Utilities.Net.Framework-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework/)
+[![BionicCode.Utilities.Net.Framework.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Framework.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework/)
+<!--
+[![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Framework.Wpf.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)
+-->
 <!--
 [![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Standard.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)
 -->
