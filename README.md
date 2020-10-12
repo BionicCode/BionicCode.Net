@@ -5,8 +5,8 @@ Collection of .NET libraries like utilities and controls that target .NET Standa
 ![BC](https://img.shields.io/badge/.NET-Standard_2.0-informational)
 ![BC](https://img.shields.io/badge/.NET-Framework_4.8-informational)
 
-![BC](https://img.shields.io/badge/Framework-WPF-informational)
-![BC](https://img.shields.io/badge/Framework-UWP-informational)
+![BC](https://img.shields.io/badge/-WPF-informational?logo=windows)
+![BC](https://img.shields.io/badge/-UWP-informational?logo=windows)
 
 
 
