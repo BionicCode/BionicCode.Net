@@ -14,11 +14,15 @@
 ## NuGet packages
 [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/.NET_Core_WPF-BionicCode.Utilities.Net.Core.Wpf-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
 [![BionicCode.Utilities.Net.Core.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Core.Wpf.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
+<!--
 [![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Core.Wpf.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
+-->
 
 [![BionicCode.Utilities.Net.Core](https://img.shields.io/badge/.NET_Core-BionicCode.Utilities.Net.Core-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core/)
 [![BionicCode.Utilities.Net.Core.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Core.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core/)
+<!--
 [![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Core.Wpf.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
+-->
 
 [![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/.NET_Standard-BionicCode.Utilities.Net.Standard-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)
 [![BionicCode.Utilities.Net.Standard.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Standard.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)
