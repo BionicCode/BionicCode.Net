@@ -107,13 +107,28 @@ public string Name
 
 ### `AsyncRelayComand<T>` 
 Reusable generic command class that encapsulates `ICommand` and allows asynchronous execution.
-When used with a `Binding` the command will execute asynchronously when an awaitable execute handler is assigned to the command.
+When used with a `Binding`, the command will always execute asynchronously as long as an awaitable execute handler is assigned to the command.
 
 #### Example
+
+Declare `ICommand`
 
 ```c#
 // ICommand property
 public IAsyncRelayCommand<string> StringAsyncCommand => new AsyncRelayCommand<string>(ProcessStringAsync);
+```
+Execute XAML:
+
+```XAML
+
+<!-- Executes asynchronously, because an awaitable delegate was registered with the IAsyncRelayCommand -->
+<Button Command="{Binding StringAsyncCommand}" />
+
+```
+
+Execute C#
+
+```C#
     
 // Execute asynchronously
 await StringAsyncCommand.ExecuteAsync("String value");
