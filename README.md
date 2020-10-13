@@ -1,13 +1,13 @@
-# BionicCode.Net ![GitHub](https://img.shields.io/github/license/BionicCode/BionicCode.Net) ![Release](https://img.shields.io/github/last-commit/BionicCode/BionicCode.Net) 
+# BionicCode.Net [![GitHub](https://img.shields.io/github/license/BionicCode/BionicCode.Net)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--) [![Release](https://img.shields.io/github/last-commit/BionicCode/BionicCode.Net)9(https://github.com/BionicCode/BionicCode.Net#bioniccodenet--) 
 .NET libraries containing utilities and controls that target .NET Standard, .NET Core, .NET Framework, .NET Core WPF, .NET Framework WPF and UWP
 
-![BC](https://img.shields.io/badge/.NET-Core-informational)
-![BC](https://img.shields.io/badge/.NET-Standard_2.0-informational)
-![BC](https://img.shields.io/badge/.NET-Framework_4.8-informational?logo=windows)
+[![BC](https://img.shields.io/badge/.NET-Core-informational)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
+[![BC](https://img.shields.io/badge/.NET-Standard_2.0-informational)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
+[![BC](https://img.shields.io/badge/.NET-Framework_4.8-informational?logo=windows)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
 
-![BC](https://img.shields.io/badge/-WPF-informational?logo=windows)
-![BC](https://img.shields.io/badge/-UWP-informational?logo=windows)
-![BC](https://img.shields.io/badge/-Windows_Forms-informational?logo=windows)
+[![BC](https://img.shields.io/badge/-WPF-informational?logo=windows)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
+[![BC](https://img.shields.io/badge/-UWP-informational?logo=windows)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
+[![BC](https://img.shields.io/badge/-Windows_Forms-informational?logo=windows)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
 
 
 
