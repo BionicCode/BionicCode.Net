@@ -461,6 +461,12 @@
             </summary>
             <value>An instance of type <see cref="T:System.IO.Stream"/>. This instance will be decorated to extend the default <see cref="T:System.IO.Stream"/> features and behaviors.</value>
         </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.ResetOrigin">
+            <summary>
+            Defines the position to which the stream should reset to.
+            </summary>
+            <value>A <see cref="T:System.IO.SeekOrigin"/> value.</value>
+        </member>
         <member name="P:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.IsDisposingDecoratedStream">
             <summary>
             Gets whether the decorated underlying <see cref="T:System.IO.Stream"/> will be closed or disposed when the <see cref="T:BionicCode.Utilities.Net.Standard.IO.AutoResetStream"/> instance is closed or disposed. Use constructor to set the value in order to configure the behavior.
@@ -482,7 +488,15 @@
             Constructor which accepts the <see cref="T:System.IO.Stream"/> instance to decorate in order to extend its behavior.
             </summary>
             <param name="baseStream">The <see cref="T:System.IO.Stream"/> instance to decorate in order to extend its behavior.</param>
-            <param name="isDisposingDecoratedStream">When set to <c>true</c> the decorated underlying <see cref="T:System.IO.Stream"/> will be disposed or closed too, if the <see cref="T:BionicCode.Utilities.Net.Standard.IO.AutoResetStream"/> is disposed or closed.</param>
+            <param name="leaveDecoratedStreamOpen">When set to <c>true</c> the decorated underlying <see cref="T:System.IO.Stream"/> will be disposed or closed too, if the <see cref="T:BionicCode.Utilities.Net.Standard.IO.AutoResetStream"/> is disposed or closed.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.#ctor(System.IO.Stream,System.IO.SeekOrigin,System.Boolean)">
+            <summary>
+            Constructor which accepts the <see cref="T:System.IO.Stream"/> instance to decorate in order to extend its behavior.
+            </summary>
+            <param name="baseStream">The <see cref="T:System.IO.Stream"/> instance to decorate in order to extend its behavior.</param>
+            <param name="resetOrigin">The origin to which the stream should be reset to.</param>
+            <param name="leaveDecoratedStreamOpen">When set to <c>true</c> the decorated underlying <see cref="T:System.IO.Stream"/> will be disposed or closed too, if the <see cref="T:BionicCode.Utilities.Net.Standard.IO.AutoResetStream"/> is disposed or closed.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.Standard.IO.AutoResetStream.Reset(System.IO.SeekOrigin)">
             <summary>

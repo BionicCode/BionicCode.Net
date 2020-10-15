@@ -26,6 +26,7 @@ namespace BionicCode.Utilities.UnitTest.Net.Standard
 
     private void FillStream()
     {
+      var f = new FileStream("C:/Temp", FileMode.CreateNew);
       var memStream = new MemoryStream();
       using (var streamWriter = new StreamWriter(memStream, Encoding.Default, 1024, true))
       {
