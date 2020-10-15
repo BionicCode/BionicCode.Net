@@ -3,7 +3,7 @@
 
 [![BC](https://img.shields.io/badge/.NET-Core-informational)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
 [![BC](https://img.shields.io/badge/.NET-Standard-informational)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
-[![BC](https://img.shields.io/badge/.NET-Framework-informational?logo=windows)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
+[![BC](https://img.shields.io/badge/.NET-Framework-informational)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
 
 [![BC](https://img.shields.io/badge/-WPF-informational?logo=windows)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
 [![BC](https://img.shields.io/badge/-UWP-informational?logo=windows)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
