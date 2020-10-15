@@ -15,7 +15,7 @@
     <Copyright>2020</Copyright>
     <RepositoryUrl>https://github.com/BionicCode/BionicCode.Net.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>d TextControl to highlight custom text ranges. Added missing documentation. Added feature to control modality of MVVM dialog behavior and control property whether user can close the dialog window or not.
+    <PackageReleaseNotes>Added TextControl attached behavior to highlight custom text ranges. Added missing documentation. Added feature to control modality of MVVM dialog behavior and control property whether user can close the dialog window or not.
 
 ---------------------------------------------------------
 For bug reports or feature requests please visit the project home on GutHub (follow the "Project Site" link on the right) and then open an issue (open the "issue" tab, click "New Issue" and select the appropriate template) or send  a mail to BionicCode@outlook.com. Thank you very much.</PackageReleaseNotes>

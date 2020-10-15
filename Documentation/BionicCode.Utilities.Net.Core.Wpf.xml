@@ -1314,11 +1314,6 @@
             Event to signal that the interaction with the dialog is completed.
             </summary>
     </member>
-    <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.IsClosable">
-      <summary>
-            Controls whether the user is allowed to close the dialog Window.
-            </summary>
-    </member>
     <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.Message">
       <summary>
             The message for the dialog to show to the user.
@@ -1361,11 +1356,6 @@
     <member name="E:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.InteractionCompleted">
       <summary>
             Event to signal that the interaction with the dialog is completed.
-            </summary>
-    </member>
-    <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.IsClosable">
-      <summary>
-            Controls whether the user is allowed to close the dialog Window.
             </summary>
     </member>
     <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.Message">
@@ -1475,13 +1465,22 @@
         </markup>
       </returns>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)">
+    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName``1(System.Windows.DependencyObject,System.String,``0@)">
       <summary>
             Traverses the visual tree towards the leafs until an element with a matching element name is found.
             </summary>
       <param name="parent"></param>
       <param name="childElementName">The name the visual child's name must match.</param>
       <param name="resultElement">The found element or <c>null</c> if no matching element was found.</param>
+      <typeparam name="TChild">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>typeparam</parameter>
+            <parameter>TChild</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName``1(System.Windows.DependencyObject,System.String,``0@)</parameter>
+          </include>
+        </markup>
+      </typeparam>
       <returns>
         <c>true</c> when an element with the specified <paramref name="childElementName" /> was found, otherwise <c>false</c>.</returns>
     </member>
@@ -1517,7 +1516,7 @@
         </markup>
       </returns>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)">
+    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName``1(System.Windows.DependencyObject,System.String,``0@)">
       <summary>
             Traverses the visual tree towards the root until an element with a matching element type is found.
             </summary>
@@ -1526,7 +1525,7 @@
           <include item="SMCMissingParamTag">
             <parameter>param</parameter>
             <parameter>child</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName``1(System.Windows.DependencyObject,System.String,``0@)</parameter>
           </include>
         </markup>
       </param>
@@ -1536,15 +1535,24 @@
           <include item="SMCMissingParamTag">
             <parameter>param</parameter>
             <parameter>resultElement</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName``1(System.Windows.DependencyObject,System.String,``0@)</parameter>
           </include>
         </markup>
       </param>
+      <typeparam name="TChild">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>typeparam</parameter>
+            <parameter>TChild</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName``1(System.Windows.DependencyObject,System.String,``0@)</parameter>
+          </include>
+        </markup>
+      </typeparam>
       <returns>
         <markup>
           <include item="SMCMissingTag">
             <parameter>returns</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName``1(System.Windows.DependencyObject,System.String,``0@)</parameter>
           </include>
         </markup>
       </returns>

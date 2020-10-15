@@ -825,6 +825,43 @@
             <exception cref="T:System.InvalidOperationException"></exception>
             <returns>The inverted value.</returns>
         </member>
+        <member name="T:BionicCode.Utilities.Net.Standard.Profiling.Profiler">
+            <summary>
+            Helper methods to measure code execution time.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Standard.Profiling.Profiler.LogPrinter">
+            <summary>
+            A <see cref="T:System.Action`1"/> delegate that can be used to redirect the log output. By default the log output will be send to the output window.
+            </summary>
+            <value>A <see cref="T:System.Action`1"/> delegate which will be invoked to output the elapsed <see cref="T:System.TimeSpan"/>. The default delegate will print the output to the output window.</value>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Profiling.Profiler.LogTime(System.Action)">
+            <summary>
+            Measures the execution time of a method.
+            </summary>
+            <param name="action">The code to measure execution time.</param>
+            <returns>The execution time as a <see cref="T:System.TimeSpan"/>.</returns>
+            <remarks>Specify a <see cref="P:BionicCode.Utilities.Net.Standard.Profiling.Profiler.LogPrinter"/> <see cref="T:System.Action"/> to customize the output target and formatting.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Profiling.Profiler.LogTimes(System.Action,System.Int32)">
+            <summary>
+            Measures the execution time of a method.
+            </summary>
+            <param name="action">The code to measure execution time.</param>
+            <param name="runCount">Number of iterations the <paramref name="action"/> should be executed.</param>
+            <returns>A list of execution times for all <paramref name="runCount"/> number of iterations <see cref="T:System.TimeSpan"/>.</returns>
+            <remarks>Specify a <see cref="P:BionicCode.Utilities.Net.Standard.Profiling.Profiler.LogPrinter"/> <see cref="T:System.Action"/> to customize the output target and formatting.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Standard.Profiling.Profiler.LogAverageTime(System.Action,System.Int32)">
+            <summary>
+            Measures the execution time of a method.
+            </summary>
+            <param name="action">The code to measure execution time.</param>
+            <param name="runCount">Number of iterations the <paramref name="action"/> should be executed.</param>
+            <returns>The average execution time of all <paramref name="runCount"/> number of iterations as <see cref="T:System.TimeSpan"/>.</returns>
+            <remarks>Specify a <see cref="P:BionicCode.Utilities.Net.Standard.Profiling.Profiler.LogPrinter"/> <see cref="T:System.Action"/> to customize the output target and formatting.</remarks>
+        </member>
         <member name="T:BionicCode.Utilities.Net.Standard.ViewModel.BaseViewModel">
             <summary>
             Base class recommended to use for view models across the application. Encapsulates implementations of <see cref="T:System.ComponentModel.INotifyPropertyChanged"/> and <see cref="T:System.ComponentModel.INotifyDataErrorInfo"/>.

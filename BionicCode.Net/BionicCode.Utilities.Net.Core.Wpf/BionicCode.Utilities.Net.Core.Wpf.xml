@@ -768,7 +768,7 @@
             <param name="resultElement"></param>
             <returns></returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)">
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName``1(System.Windows.DependencyObject,System.String,``0@)">
             <summary>
             Traverses the visual tree towards the root until an element with a matching element type is found.
             </summary>
@@ -786,7 +786,7 @@
             <param name="resultElement"></param>
             <returns></returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)">
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName``1(System.Windows.DependencyObject,System.String,``0@)">
             <summary>
             Traverses the visual tree towards the leafs until an element with a matching element name is found.
             </summary>

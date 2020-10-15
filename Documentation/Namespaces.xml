@@ -236,6 +236,16 @@ Targets WPF .NET Core  &gt;= 3.0.</summary>
         </markup>
       </summary>
     </member>
+    <member name="N:BionicCode.Utilities.Net.Standard.Profiling">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>N:BionicCode.Utilities.Net.Standard.Profiling</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
     <member name="N:BionicCode.Utilities.Net.Standard.ViewModel">
       <summary>
         <markup>
