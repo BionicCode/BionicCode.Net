@@ -8,8 +8,8 @@
 [![BC](https://img.shields.io/badge/-WPF-informational?logo=windows)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
 [![BC](https://img.shields.io/badge/-UWP-informational?logo=windows)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
 [![BC](https://img.shields.io/badge/-Windows_Forms-informational?logo=windows)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
-[![BC](https://img.shields.io/badge/--informational?logo=linux)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
-[![BC](https://img.shields.io/badge/--informational?logo=apple)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
+[![BC](https://img.shields.io/badge/-Linux-informational?logo=linux)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
+[![BC](https://img.shields.io/badge/-macOS-informational?logo=apple)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
 
 
 
