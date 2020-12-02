@@ -6,8 +6,13 @@
   <members>
     <member name="T:BionicCode.Utilities.Net.Core.IO.FilePathFilter">
       <summary>
-            API to enumerate the filesystem e.g., by extension
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Core.IO.FilePathFilter</parameter>
+          </include>
+        </markup>
+      </summary>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.#ctor">
       <summary>
@@ -20,19 +25,13 @@
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)">
       <summary>
-              Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
-              will be applied to all containing files.
-            </summary>
-      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
-      <param name="fileExtensionsToCollect">
-            The flagged Enum type <see cref="T:BionicCode.Utilities.Net.Standard.IO.FileExtensions" /> that defines one or more extensions to filter from the folder.
-            </param>
-      <param name="isIncludingSubdirectories">
-              Sets the filter whether to apply to sub directories or not.
-              <c>True</c> includes subdirectories and <c>False</c> ignores them.
-              Is <c>false</c> by default.
-            </param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </summary>
       <param name="folderPath">
         <markup>
           <include item="SMCMissingParamTag">
@@ -42,21 +41,42 @@
           </include>
         </markup>
       </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+      <param name="fileExtensionsToCollect">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>fileExtensionsToCollect</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="isIncludingSubdirectories">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>isIncludingSubdirectories</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)">
       <summary>
-              Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
-              will be applied to all containing files.
-            </summary>
-      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
-      <param name="fileExtensionsToCollect">
-            The flagged Enum type <see cref="T:BionicCode.Utilities.Net.Standard.IO.FileExtensions" /> that defines one or more extensions to filter from the folder.
-            </param>
-      <param name="enumerationOptions">
-              An instance of <see cref="T:System.IO.EnumerationOptions" /> to configures the enumeration behavior.
-            </param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </summary>
       <param name="folderPath">
         <markup>
           <include item="SMCMissingParamTag">
@@ -66,23 +86,42 @@
           </include>
         </markup>
       </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+      <param name="fileExtensionsToCollect">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>fileExtensionsToCollect</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="enumerationOptions">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>enumerationOptions</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.Boolean)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
-              will be applied to all containing files.
-            </summary>
-      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
-      <param name="filterPredicate">
-              A delegate used to filter the <see cref="T:System.IO.FileInfo" /> items.
-            </param>
-      <param name="isIncludingSubdirectories">
-              Sets the filter whether to apply to sub directories or not.
-              <c>True</c> includes subdirectories and <c>False</c> ignores them.
-              Is <c>false</c> by default.
-            </param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </summary>
       <param name="folderPath">
         <markup>
           <include item="SMCMissingParamTag">
@@ -92,21 +131,42 @@
           </include>
         </markup>
       </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+      <param name="filterPredicate">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>filterPredicate</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="isIncludingSubdirectories">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>isIncludingSubdirectories</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
-              will be applied to all containing files.
-            </summary>
-      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
-      <param name="filterPredicate">
-              A delegate used to filter the <see cref="T:System.IO.FileInfo" /> items.
-            </param>
-      <param name="enumerationOptions">
-              An instance of <see cref="T:System.IO.EnumerationOptions" /> to configures the enumeration behavior.
-            </param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </summary>
       <param name="folderPath">
         <markup>
           <include item="SMCMissingParamTag">
@@ -116,116 +176,312 @@
           </include>
         </markup>
       </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+      <param name="filterPredicate">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>filterPredicate</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="enumerationOptions">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>enumerationOptions</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
-              will be applied to all containing files.
-            </summary>
-      <param name="folderPath">The path to the folder to filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="folderPath">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>folderPath</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="fileExtensionsToCollect">
-              The flagged Enum type <see cref="T:BionicCode.Utilities.Net.Standard.IO.FileExtensions" /> that defines one or more extensions to filter from the folder.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>fileExtensionsToCollect</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="isIncludingSubdirectories">
-              Sets the filter whether to apply to sub directories or not.
-              <c>True</c> includes subdirectories and <c>False</c> ignores them.
-              Is <c>false</c> by default.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>isIncludingSubdirectories</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
-              will be applied to all containing files.
-            </summary>
-      <param name="folderPath">The path to the folder to filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="folderPath">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>folderPath</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="fileExtensionsToCollect">
-              The flagged Enum type <see cref="T:BionicCode.Utilities.Net.Standard.IO.FileExtensions" /> that defines one or more extensions to filter from the folder.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>fileExtensionsToCollect</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="enumerationOptions">
-              An instance of <see cref="T:System.IO.EnumerationOptions" /> to configures the enumeration behavior.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>enumerationOptions</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.Boolean)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
-              will be applied to all containing files.
-            </summary>
-      <param name="folderPath">The path to the folder to filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="folderPath">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>folderPath</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="filterPredicate">
-              A delegate used to filter the <see cref="T:System.IO.FileInfo" /> items.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>filterPredicate</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="isIncludingSubdirectories">
-              Sets the filter whether to apply to sub directories or not.
-              <c>True</c> includes subdirectories and <c>False</c> ignores them.
-              Is <c>false</c> by default.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>isIncludingSubdirectories</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
-              will be applied to all containing files.
-            </summary>
-      <param name="folderPath">The path to the folder to filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="folderPath">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>folderPath</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="filterPredicate">
-              A delegate used to filter the <see cref="T:System.IO.FileInfo" /> items.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>filterPredicate</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="enumerationOptions">
-              An instance of <see cref="T:System.IO.EnumerationOptions" /> to configures the enumeration behavior.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>enumerationOptions</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.Boolean)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. 
-            </summary>
-      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="pathEntries">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>pathEntries</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="filterPredicate">
-              A delegate used to filter the <see cref="T:System.IO.FileSystemInfo" /> items.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>filterPredicate</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="isIncludingSubdirectories">
-              Sets the filter whether to apply to sub directories or not.
-              <c>True</c> includes subdirectories and <c>False</c> ignores them.
-              Is <c>false</c> by default.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>isIncludingSubdirectories</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. 
-            </summary>
-      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="pathEntries">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>pathEntries</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="filterPredicate">
-              A delegate used to filter the <see cref="T:System.IO.FileSystemInfo" /> items.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>filterPredicate</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="enumerationOptions">
-              An instance of <see cref="T:System.IO.EnumerationOptions" /> to configures the enumeration behavior.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>enumerationOptions</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.Boolean)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. 
-            </summary>
-      <param name="folderPath">The path to the folder to filter.</param>
-      <param name="filterPredicate">
-              A delegate used to filter the <see cref="T:System.IO.FileSystemInfo" /> items.
-            </param>
-      <param name="isIncludingSubdirectories">
-              Sets the filter whether to apply to sub directories or not.
-              <c>True</c> includes subdirectories and <c>False</c> ignores them.
-              Is <c>false</c> by default.
-            </param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </summary>
       <param name="path">
         <markup>
           <include item="SMCMissingParamTag">
@@ -235,20 +491,42 @@
           </include>
         </markup>
       </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+      <param name="filterPredicate">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>filterPredicate</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="isIncludingSubdirectories">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>isIncludingSubdirectories</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. 
-            </summary>
-      <param name="folderPath">The path to the folder to filter.</param>
-      <param name="filterPredicate">
-              A delegate used to filter the <see cref="T:System.IO.FileSystemInfo" /> items.
-            </param>
-      <param name="enumerationOptions">
-              An instance of <see cref="T:System.IO.EnumerationOptions" /> to configures the enumeration behavior.
-            </param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </summary>
       <param name="path">
         <markup>
           <include item="SMCMissingParamTag">
@@ -258,200 +536,582 @@
           </include>
         </markup>
       </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+      <param name="filterPredicate">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>filterPredicate</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="enumerationOptions">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>enumerationOptions</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.FilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="T:BionicCode.Utilities.Net.Core.IO.IFilePathFilter">
       <summary>
-            API to enumerate the filesystem e.g., by extension
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Core.IO.IFilePathFilter</parameter>
+          </include>
+        </markup>
+      </summary>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)">
       <summary>
-              Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
-              will be applied to all containing files.
-            </summary>
-      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="pathEntries">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>pathEntries</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="fileExtensionsToCollect">
-            The flagged Enum type <see cref="T:BionicCode.Utilities.Net.Standard.IO.FileExtensions" /> that defines one or more extensions to filter from the folder.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>fileExtensionsToCollect</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="isIncludingSubdirectories">
-              Sets the filter whether to apply to sub directories or not.
-              <c>True</c> includes subdirectories and <c>False</c> ignores them.
-              Is <c>false</c> by default.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>isIncludingSubdirectories</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)">
       <summary>
-              Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
-              will be applied to all containing files.
-            </summary>
-      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="pathEntries">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>pathEntries</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="fileExtensionsToCollect">
-            The flagged Enum type <see cref="T:BionicCode.Utilities.Net.Standard.IO.FileExtensions" /> that defines one or more extensions to filter from the folder.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>fileExtensionsToCollect</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="enumerationOptions">
-              An instance of <see cref="T:System.IO.EnumerationOptions" /> to configures the enumeration behavior.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>enumerationOptions</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.Boolean)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
-              will be applied to all containing files.
-            </summary>
-      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="pathEntries">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>pathEntries</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="filterPredicate">
-              A delegate used to filter the <see cref="T:System.IO.FileInfo" /> items.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>filterPredicate</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="isIncludingSubdirectories">
-              Sets the filter whether to apply to sub directories or not.
-              <c>True</c> includes subdirectories and <c>False</c> ignores them.
-              Is <c>false</c> by default.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>isIncludingSubdirectories</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
-              will be applied to all containing files.
-            </summary>
-      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="pathEntries">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>pathEntries</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="filterPredicate">
-              A delegate used to filter the <see cref="T:System.IO.FileInfo" /> items.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>filterPredicate</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="enumerationOptions">
-              An instance of <see cref="T:System.IO.EnumerationOptions" /> to configures the enumeration behavior.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>enumerationOptions</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
-              will be applied to all containing files.
-            </summary>
-      <param name="folderPath">The path to the folder to filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="folderPath">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>folderPath</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="fileExtensionsToCollect">
-              The flagged Enum type <see cref="T:BionicCode.Utilities.Net.Standard.IO.FileExtensions" /> that defines one or more extensions to filter from the folder.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>fileExtensionsToCollect</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="isIncludingSubdirectories">
-              Sets the filter whether to apply to sub directories or not.
-              <c>True</c> includes subdirectories and <c>False</c> ignores them.
-              Is <c>false</c> by default.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>isIncludingSubdirectories</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.Boolean)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
-              will be applied to all containing files.
-            </summary>
-      <param name="folderPath">The path to the folder to filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="folderPath">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>folderPath</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="fileExtensionsToCollect">
-              The flagged Enum type <see cref="T:BionicCode.Utilities.Net.Standard.IO.FileExtensions" /> that defines one or more extensions to filter from the folder.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>fileExtensionsToCollect</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="enumerationOptions">
-              An instance of <see cref="T:System.IO.EnumerationOptions" /> to configures the enumeration behavior.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>enumerationOptions</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,BionicCode.Utilities.Net.Standard.IO.FileExtensions,System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.Boolean)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
-              will be applied to all containing files.
-            </summary>
-      <param name="folderPath">The path to the folder to filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="folderPath">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>folderPath</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="filterPredicate">
-              A delegate used to filter the <see cref="T:System.IO.FileInfo" /> items.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>filterPredicate</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="isIncludingSubdirectories">
-              Sets the filter whether to apply to sub directories or not.
-              <c>True</c> includes subdirectories and <c>False</c> ignores them.
-              Is <c>false</c> by default.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>isIncludingSubdirectories</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
-              will be applied to all containing files.
-            </summary>
-      <param name="folderPath">The path to the folder to filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="folderPath">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>folderPath</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="filterPredicate">
-              A delegate used to filter the <see cref="T:System.IO.FileInfo" /> items.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>filterPredicate</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="enumerationOptions">
-              An instance of <see cref="T:System.IO.EnumerationOptions" /> to configures the enumeration behavior.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>enumerationOptions</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.Boolean)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. 
-            </summary>
-      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="pathEntries">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>pathEntries</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="filterPredicate">
-              A delegate used to filter the <see cref="T:System.IO.FileSystemInfo" /> items.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>filterPredicate</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="isIncludingSubdirectories">
-              Sets the filter whether to apply to sub directories or not.
-              <c>True</c> includes subdirectories and <c>False</c> ignores them.
-              Is <c>false</c> by default.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>isIncludingSubdirectories</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. 
-            </summary>
-      <param name="pathEntries">A string collection holding folder and/ or file paths filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="pathEntries">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>pathEntries</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="filterPredicate">
-              A delegate used to filter the <see cref="T:System.IO.FileSystemInfo" /> items.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>filterPredicate</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="enumerationOptions">
-              An instance of <see cref="T:System.IO.EnumerationOptions" /> to configures the enumeration behavior.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>enumerationOptions</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.Boolean)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. 
-            </summary>
-      <param name="folderPath">The path to the folder to filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="folderPath">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>folderPath</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="filterPredicate">
-              A delegate used to filter the <see cref="T:System.IO.FileSystemInfo" /> items.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>filterPredicate</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="isIncludingSubdirectories">
-              Sets the filter whether to apply to sub directories or not.
-              <c>True</c> includes subdirectories and <c>False</c> ignores them.
-              Is <c>false</c> by default.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>isIncludingSubdirectories</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.Boolean)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)">
       <summary>
-            Extracts valid paths or paths with a specified extension from a collection of paths.
-              The path collection can be a mix-up of files and folders. 
-            </summary>
-      <param name="folderPath">The path to the folder to filter.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="folderPath">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>folderPath</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="filterPredicate">
-              A delegate used to filter the <see cref="T:System.IO.FileSystemInfo" /> items.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>filterPredicate</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="enumerationOptions">
-              An instance of <see cref="T:System.IO.EnumerationOptions" /> to configures the enumeration behavior.
-            </param>
-      <returns>A enumerable collection of <see cref="T:System.IO.FileInfo" />.</returns>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>enumerationOptions</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
   </members>
 </doc>

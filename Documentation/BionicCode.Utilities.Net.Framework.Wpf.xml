@@ -7,12 +7,12 @@
     <member name="T:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand">
       <summary>
             A  reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand" /> with support for async/await. Enables instant creation of an ICommand without implementing the ICommand interface for each command.
-            The individual <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.Execute" />, <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.ExecuteAsync" /> and <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecute" /> members are supplied via delegates.
+            The <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand" /> accepts asynchronous command handlers.
               <seealso cref="T:System.Windows.Input.ICommand" /></summary>
     </member>
     <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Action)">
       <summary>
-              Creates a new parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecute" /> will always return <c>true</c>).
+              Creates a new parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute" /> will always return <c>true</c>).
             </summary>
       <param name="executeNoParam">The awaitable execution handler.</param>
     </member>
@@ -25,20 +25,52 @@
     </member>
     <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Action{System.Object})">
       <summary>
-              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecute" /> will always return <c>true</c>).
-            </summary>
-      <param name="execute">The awaitable execution handler.</param>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="execute">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>execute</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Action{System.Object})</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})">
       <summary>
-              Creates a new command.
-            </summary>
-      <param name="execute">The execution handler.</param>
-      <param name="canExecute">The execution status handler.</param>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="execute">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>execute</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="canExecute">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>canExecute</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task})">
       <summary>
-              Creates a new parameterless asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecute" /> will always return <c>true</c>).
+              Creates a new parameterless asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute" /> will always return <c>true</c>).
             </summary>
       <param name="executeAsyncNoParam">The awaitable execution handler.</param>
     </member>
@@ -51,96 +83,48 @@
     </member>
     <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task})">
       <summary>
-              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecute" /> will always return <c>true</c>).
-            </summary>
-      <param name="executeAsync">The awaitable execution handler.</param>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeAsync">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeAsync</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task})</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task},System.Predicate{System.Object})">
       <summary>
-              Creates a new asynchronous command.
-            </summary>
-      <param name="executeAsync">The awaitable execution handler.</param>
-      <param name="canExecute">The can execute handler.</param>
-    </member>
-    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecute">
-      <summary>
-              Determines whether this AsyncRelayCommand can execute.
-            </summary>
-      <returns>
-        <c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
-    </member>
-    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecute(System.Object)">
-      <summary>
-              Determines whether this AsyncRelayCommand can execute.
-            </summary>
-      <param name="parameter">
-              Data used by the command. 
-            </param>
-      <returns>
-        <c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
-    </member>
-    <member name="E:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecuteChanged">
-      <summary>
-              Raised when RaiseCanExecuteChanged is called.
-            </summary>
-    </member>
-    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecuteNoParam">
-      <summary>
-            The registered parameterless CanExecute delegate.
-            </summary>
-    </member>
-    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.Execute">
-      <summary>
-            Executes the <see cref="T:System.Windows.Input.ICommand" /> on the current command target.
-            </summary>
-    </member>
-    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.Execute(System.Object)">
-      <summary>
-              Executes the AsyncRelayCommand on the current command target. 
-            </summary>
-      <param name="parameter">
-              Data used by the command. 
-            </param>
-    </member>
-    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.ExecuteAsync">
-      <summary>
-              Executes the AsyncRelayCommand on the current command target asynchronously.
-            </summary>
-      <returns>
         <markup>
-          <include item="SMCMissingTag">
-            <parameter>returns</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.ExecuteAsync</parameter>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand</parameter>
           </include>
         </markup>
-      </returns>
-    </member>
-    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.ExecuteAsync(System.Object)">
-      <summary>
-              Executes the AsyncRelayCommand on the current command target asynchronously.
-            </summary>
-      <param name="parameter">
-              Data used by the command. If the command does not require data to be passed,
-              this object can be set to null.
-            </param>
-      <returns>
+      </summary>
+      <param name="executeAsync">
         <markup>
-          <include item="SMCMissingTag">
-            <parameter>returns</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.ExecuteAsync(System.Object)</parameter>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeAsync</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task},System.Predicate{System.Object})</parameter>
           </include>
         </markup>
-      </returns>
-    </member>
-    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.ExecuteAsyncNoParam">
-      <summary>
-            The registered parameterless async execute delegate.
-            </summary>
-    </member>
-    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.ExecuteNoParam">
-      <summary>
-            The registered parameterless synchronous execute delegate.
-            </summary>
+      </param>
+      <param name="canExecute">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>canExecute</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task},System.Predicate{System.Object})</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
     <member name="T:BionicCode.Utilities.Net.Framework.Wpf.DefaultValueInverter">
       <summary>
@@ -185,11 +169,6 @@
       <returns>
         <c>true</c> when the <see cref="T:System.Windows.Input.ICommand" /> can execute, otherwise <c>false</c>.</returns>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.Execute">
-      <summary>
-            Executes the AsyncRelayCommand.
-            </summary>
-    </member>
     <member name="M:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.ExecuteAsync">
       <summary>
             Executes the AsyncRelayCommand asynchronously.
@@ -205,20 +184,54 @@
     </member>
     <member name="M:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.ExecuteAsync(System.Object)">
       <summary>
-            Asynchronously executes the AsyncRelayCommand.
+            Asynchronously executes the AsyncRelayCommand on the current command target.
             </summary>
       <param name="parameter">
-            Data used by the command. If the command does not require data to be passed, 
-            this object can be set to null.
+            The command parameter.
             </param>
+      <returns>An awaitable <see cref="T:System.Threading.Tasks.Task" /> instance.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.ExecuteAsync(System.Object,System.Threading.CancellationToken)">
+      <summary>
+            Asynchronously executes the AsyncRelayCommand on the current command target.
+            </summary>
+      <param name="parameter">
+            The command parameter.
+            </param>
+      <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken" /> to cancel the execution.</param>
+      <returns>An awaitable <see cref="T:System.Threading.Tasks.Task" /> instance.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.ExecuteAsync(System.Threading.CancellationToken)">
+      <summary>
+            Executes the AsyncRelayCommand asynchronously.
+            </summary>
+      <param name="cancellationToken">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>cancellationToken</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.ExecuteAsync(System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </param>
       <returns>
         <markup>
           <include item="SMCMissingTag">
             <parameter>returns</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.ExecuteAsync(System.Object)</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.ExecuteAsync(System.Threading.CancellationToken)</parameter>
           </include>
         </markup>
       </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.InvalidateCommand">
+      <summary>
+            Raises the <seealso cref="E:System.Windows.Input.ICommand.CanExecuteChanged" /> event of this particular command only.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.IsExecuting">
+      <summary>
+            A flag to signal if the asynchronous operation has completed.
+            </summary>
     </member>
     <member name="T:BionicCode.Utilities.Net.Framework.Wpf.AttachedBehaviors.HighlightRange">
       <summary>
@@ -1560,7 +1573,7 @@
     <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1">
       <summary>
             A reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand" /> with support for async/await. Enables instant creation of an ICommand without implementing the ICommand interface for each command.
-            The individual <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.Execute(`0)" />, <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)" /> and <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)" /> members are supplied via delegates.
+            The <see cref="T:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand" /> accepts asynchronous command handlers.
               <seealso cref="T:System.Windows.Input.ICommand" /></summary>
       <typeparam name="TParam">
         <markup>
@@ -1574,7 +1587,7 @@
     </member>
     <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Action)">
       <summary>
-              Creates a new parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecute" /> will always return <c>true</c>).
+              Creates a new parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute" /> will always return <c>true</c>).
             </summary>
       <param name="executeNoParam">The awaitable execution handler.</param>
     </member>
@@ -1587,7 +1600,7 @@
     </member>
     <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Action{`0})">
       <summary>
-              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)" /> always returns <code>true</code>).
+              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute" /> will always return <c>true</c>).
             </summary>
       <param name="execute">The awaitable execution handler.</param>
     </member>
@@ -1596,11 +1609,11 @@
               Creates a new command.
             </summary>
       <param name="execute">The execution handler.</param>
-      <param name="canExecute">The CanExecute handler.</param>
+      <param name="canExecute">The execution status handler.</param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.Tasks.Task})">
       <summary>
-              Creates a new parameterless asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.CanExecute" /> will always return <c>true</c>).
+              Creates a new parameterless asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute" /> will always return <c>true</c>).
             </summary>
       <param name="executeAsyncNoParam">The awaitable execution handler.</param>
     </member>
@@ -1613,7 +1626,7 @@
     </member>
     <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task})">
       <summary>
-              Creates a new asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)" /> always returns <code>true</code>).
+              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute" /> will always return <c>true</c>).
             </summary>
       <param name="executeAsync">The awaitable execution handler.</param>
     </member>
@@ -1624,21 +1637,84 @@
       <param name="executeAsync">The awaitable execution handler.</param>
       <param name="canExecute">The can execute handler.</param>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)">
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.BionicCode#Utilities#Net#Framework#Wpf#IAsyncRelayCommand#ExecuteAsync(System.Object)">
       <summary>
-            Checks if the <see cref="T:System.Windows.Input.ICommand" /> can execute.
-            </summary>
-      <param name="parameter">The command parameter.</param>
-      <returns>
-        <c>true</c> when the <see cref="T:System.Windows.Input.ICommand" /> can execute, otherwise <c>false</c>.</returns>
-    </member>
-    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.Execute(`0)">
-      <summary>
-            Executes the AsyncRelayCommand on the current command target.
+            Asynchronously executes the AsyncRelayCommand on the current command target.
             </summary>
       <param name="parameter">
             The command parameter.
             </param>
+      <returns>An awaitable <see cref="T:System.Threading.Tasks.Task" /> instance.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.BionicCode#Utilities#Net#Framework#Wpf#IAsyncRelayCommand#ExecuteAsync(System.Object,System.Threading.CancellationToken)">
+      <summary>
+            Asynchronously executes the AsyncRelayCommand on the current command target.
+            </summary>
+      <param name="parameter">
+            The command parameter.
+            </param>
+      <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken" /> to cancel the execution.</param>
+      <returns>An awaitable <see cref="T:System.Threading.Tasks.Task" /> instance.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute">
+      <summary>
+              Determines whether this AsyncRelayCommand can execute.
+            </summary>
+      <returns>
+        <c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)">
+      <summary>
+              Determines whether this AsyncRelayCommand can execute.
+            </summary>
+      <param name="parameter">
+              Data used by the command. 
+            </param>
+      <returns>
+        <c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
+    </member>
+    <member name="E:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecuteChanged">
+      <summary>Occurs when changes occur that affect whether or not the command should execute.</summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecuteNoParam">
+      <summary>
+            The registered parameterless CanExecute delegate.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync">
+      <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)">
+      <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+      <param name="cancellationToken">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>cancellationToken</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)">
       <summary>
@@ -1657,11 +1733,81 @@
         </markup>
       </returns>
     </member>
-    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1">
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)">
       <summary>
-            Extends <see cref="T:System.Windows.Input.ICommand" /> to allow asynchronous command execution, where the accepted parameter of the <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.Execute(`0)" /> and <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.CanExecute(`0)" /> is strongly typed to eliminate type casting inside the registered callbacks.
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+      <param name="parameter">
+              Data used by the command. If the command does not require data to be passed,
+              this object can be set to null.
+            </param>
+      <param name="cancellationToken">An instance of <seealso cref="T:System.Threading.CancellationToken" />.</param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsyncNoParam">
+      <summary>
+            The registered parameterless async execute delegate.
+            </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.ExecuteNoParam">
+      <summary>
+            The registered parameterless synchronous execute delegate.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.InvalidateCommand">
+      <summary>
+            Extends <see cref="T:System.Windows.Input.ICommand" /> to allow asynchronous command execution, where the accepted parameter of the <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0)" /> and <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.CanExecute" /> is strongly typed to eliminate type casting inside the registered callbacks.
             </summary>
       <typeparam name="TParam">The type of the <see cref="P:System.Windows.Input.ICommandSource.CommandParameter" />.</typeparam>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.IsExecuting">
+      <summary>
+            Extends <see cref="T:System.Windows.Input.ICommand" /> to allow asynchronous command execution, where the accepted parameter of the <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0)" /> and <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.CanExecute" /> is strongly typed to eliminate type casting inside the registered callbacks.
+            </summary>
+      <typeparam name="TParam">The type of the <see cref="P:System.Windows.Input.ICommandSource.CommandParameter" />.</typeparam>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.OnCanExecuteChanged">
+      <summary>
+            Raises the <see cref="E:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.CanExecuteChanged" /> event.
+            </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.System#Windows#Input#ICommand#CanExecute(System.Object)">
+      <summary>
+             Explicit <see cref="T:System.Windows.Input.ICommand" /> implementation. Determines whether this AsyncRelayCommand can execute.
+            </summary>
+      <param name="parameter">
+              Data used by the command. 
+            </param>
+      <returns>
+        <c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand`1.System#Windows#Input#ICommand#Execute(System.Object)">
+      <summary>
+            Explicit <see cref="T:System.Windows.Input.ICommand" /> implementation. Executes the AsyncRelayCommand on the current command target. 
+            </summary>
+      <param name="parameter">
+              Data used by the command. 
+            </param>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1">
+      <summary>
+            Extends <see cref="T:System.Windows.Input.ICommand" /> to allow asynchronous command execution, where the accepted parameter of the <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0)" /> and <see cref="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.CanExecute" /> is strongly typed to eliminate type casting inside the registered callbacks.
+            </summary>
+      <typeparam name="TParam">The type of the <see cref="P:System.Windows.Input.ICommandSource.CommandParameter" />.</typeparam>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.CanExecute">
+      <summary>
+            Checks if the <see cref="T:System.Windows.Input.ICommand" /> can execute.
+            </summary>
+      <returns>
+        <c>true</c> when the <see cref="T:System.Windows.Input.ICommand" /> can execute, otherwise <c>false</c>.</returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.CanExecute(`0)">
       <summary>
@@ -1671,13 +1817,40 @@
       <returns>
         <c>true</c> when the <see cref="T:System.Windows.Input.ICommand" /> can execute, otherwise <c>false</c>.</returns>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.Execute(`0)">
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync">
       <summary>
-            Executes the AsyncRelayCommand on the current command target.
+            Executes the AsyncRelayCommand asynchronously.
             </summary>
-      <param name="parameter">
-            The command parameter.
-            </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)">
+      <summary>
+            Executes the AsyncRelayCommand asynchronously.
+            </summary>
+      <param name="cancellationToken">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>cancellationToken</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0)">
       <summary>
@@ -1687,6 +1860,26 @@
             The command parameter.
             </param>
       <returns>An awaitable <see cref="T:System.Threading.Tasks.Task" /> instance.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)">
+      <summary>
+            Asynchronously executes the AsyncRelayCommand on the current command target.
+            </summary>
+      <param name="parameter">
+            The command parameter.
+            </param>
+      <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken" /> to cancel the execution.</param>
+      <returns>An awaitable <see cref="T:System.Threading.Tasks.Task" /> instance.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.InvalidateCommand">
+      <summary>
+            Raises the <seealso cref="E:System.Windows.Input.ICommand.CanExecuteChanged" /> event of this particular command only.
+            </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand`1.IsExecuting">
+      <summary>
+            A flag to signal if the asynchronous operation has completed.
+            </summary>
     </member>
     <member name="T:BionicCode.Utilities.Net.Framework.Wpf.Markup.EnumExtension">
       <summary>

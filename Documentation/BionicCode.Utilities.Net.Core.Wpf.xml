@@ -7,105 +7,292 @@
     <member name="T:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand">
       <summary>
             A  reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand" /> with support for async/await. Enables instant creation of an ICommand without implementing the ICommand interface for each command.
-            The individual <see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.Execute" />, <see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteAsync" /> and <see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute" /> members are supplied via delegates.
+            The <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand" /> accepts asynchronous command handlers.
               <seealso cref="T:System.Windows.Input.ICommand" /></summary>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Action)">
       <summary>
-              Creates a new parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute" /> will always return <c>true</c>).
-            </summary>
-      <param name="executeNoParam">The awaitable execution handler.</param>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Action)</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Action,System.Func{System.Boolean})">
       <summary>
-              Creates a new parameterless command.
-            </summary>
-      <param name="executeNoParam">The execution handler.</param>
-      <param name="canExecuteNoParam">The execution status handler.</param>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Action,System.Func{System.Boolean})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="canExecuteNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>canExecuteNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Action,System.Func{System.Boolean})</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Action{System.Object})">
       <summary>
-              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute" /> will always return <c>true</c>).
-            </summary>
-      <param name="execute">The awaitable execution handler.</param>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="execute">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>execute</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Action{System.Object})</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})">
       <summary>
-              Creates a new command.
-            </summary>
-      <param name="execute">The execution handler.</param>
-      <param name="canExecute">The execution status handler.</param>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="execute">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>execute</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="canExecute">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>canExecute</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task})">
       <summary>
-              Creates a new parameterless asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute" /> will always return <c>true</c>).
-            </summary>
-      <param name="executeAsyncNoParam">The awaitable execution handler.</param>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeAsyncNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeAsyncNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task})</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})">
       <summary>
-              Creates a parameterless new asynchronous command.
-            </summary>
-      <param name="executeAsyncNoParam">The awaitable execution handler.</param>
-      <param name="canExecuteNoParam">The execution status handler.</param>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeAsyncNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeAsyncNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="canExecuteNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>canExecuteNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task})">
       <summary>
-              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute" /> will always return <c>true</c>).
-            </summary>
-      <param name="executeAsync">The awaitable execution handler.</param>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeAsync">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeAsync</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task})</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task},System.Predicate{System.Object})">
       <summary>
-              Creates a new asynchronous command.
-            </summary>
-      <param name="executeAsync">The awaitable execution handler.</param>
-      <param name="canExecute">The can execute handler.</param>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeAsync">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeAsync</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task},System.Predicate{System.Object})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="canExecute">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>canExecute</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task},System.Predicate{System.Object})</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute">
       <summary>
-              Determines whether this AsyncRelayCommand can execute.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute</parameter>
+          </include>
+        </markup>
+      </summary>
       <returns>
-        <c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute(System.Object)">
       <summary>
-              Determines whether this AsyncRelayCommand can execute.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute(System.Object)</parameter>
+          </include>
+        </markup>
+      </summary>
       <param name="parameter">
-              Data used by the command. 
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute(System.Object)</parameter>
+          </include>
+        </markup>
+      </param>
       <returns>
-        <c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute(System.Object)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="E:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecuteChanged">
       <summary>
-              Raised when RaiseCanExecuteChanged is called.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>E:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecuteChanged</parameter>
+          </include>
+        </markup>
+      </summary>
     </member>
     <member name="F:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecuteNoParam">
       <summary>
-            The registered parameterless CanExecute delegate.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecuteNoParam</parameter>
+          </include>
+        </markup>
+      </summary>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.Execute">
       <summary>
-            Executes the <see cref="T:System.Windows.Input.ICommand" /> on the current command target.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.Execute</parameter>
+          </include>
+        </markup>
+      </summary>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.Execute(System.Object)">
       <summary>
-              Executes the AsyncRelayCommand on the current command target. 
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.Execute(System.Object)</parameter>
+          </include>
+        </markup>
+      </summary>
       <param name="parameter">
-              Data used by the command. 
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.Execute(System.Object)</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteAsync">
       <summary>
-              Executes the AsyncRelayCommand on the current command target asynchronously.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteAsync</parameter>
+          </include>
+        </markup>
+      </summary>
       <returns>
         <markup>
           <include item="SMCMissingTag">
@@ -117,12 +304,22 @@
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteAsync(System.Object)">
       <summary>
-              Executes the AsyncRelayCommand on the current command target asynchronously.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteAsync(System.Object)</parameter>
+          </include>
+        </markup>
+      </summary>
       <param name="parameter">
-              Data used by the command. If the command does not require data to be passed,
-              this object can be set to null.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteAsync(System.Object)</parameter>
+          </include>
+        </markup>
+      </param>
       <returns>
         <markup>
           <include item="SMCMissingTag">
@@ -134,13 +331,23 @@
     </member>
     <member name="F:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteAsyncNoParam">
       <summary>
-            The registered parameterless async execute delegate.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteAsyncNoParam</parameter>
+          </include>
+        </markup>
+      </summary>
     </member>
     <member name="F:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteNoParam">
       <summary>
-            The registered parameterless synchronous execute delegate.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteNoParam</parameter>
+          </include>
+        </markup>
+      </summary>
     </member>
     <member name="T:BionicCode.Utilities.Net.Core.Wpf.DefaultValueInverter">
       <summary>
@@ -187,8 +394,13 @@
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.Execute">
       <summary>
-            Executes the AsyncRelayCommand.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.Execute</parameter>
+          </include>
+        </markup>
+      </summary>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.ExecuteAsync">
       <summary>
@@ -205,20 +417,12 @@
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.ExecuteAsync(System.Object)">
       <summary>
-            Asynchronously executes the AsyncRelayCommand.
+            Asynchronously executes the AsyncRelayCommand on the current command target.
             </summary>
       <param name="parameter">
-            Data used by the command. If the command does not require data to be passed, 
-            this object can be set to null.
+            The command parameter.
             </param>
-      <returns>
-        <markup>
-          <include item="SMCMissingTag">
-            <parameter>returns</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.ExecuteAsync(System.Object)</parameter>
-          </include>
-        </markup>
-      </returns>
+      <returns>An awaitable <see cref="T:System.Threading.Tasks.Task" /> instance.</returns>
     </member>
     <member name="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange">
       <summary>
@@ -241,16 +445,21 @@
             Holds the starting index of the text range.
             </summary>
     </member>
-    <member name="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRangeCollection">
+    <member name="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighLightRangeCollection">
       <summary>
-            A collection of <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange" /> items. Can be used in XAML.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighLightRangeCollection</parameter>
+          </include>
+        </markup>
+      </summary>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRangeCollection.#ctor">
+    <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighLightRangeCollection.#ctor">
       <summary>
         <markup>
           <include item="SMCAutoDocConstructor">
-            <parameter>BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRangeCollection</parameter>
+            <parameter>BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighLightRangeCollection</parameter>
           </include>
         </markup>
       </summary>
@@ -437,12 +646,33 @@
       <param name="attachingElement">The attaching <see cref="T:System.Windows.Controls.TextBlock" /> or <see cref="T:System.Windows.Controls.RichTextBox" />.</param>
       <param name="value">The <see cref="T:System.Windows.Media.Brush" /> for the foreground of the highlight text ranges.</param>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.SetHighlightRanges(System.Windows.DependencyObject,BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRangeCollection)">
+    <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.SetHighlightRanges(System.Windows.DependencyObject,BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighLightRangeCollection)">
       <summary>
-            Set method of attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.HighlightRangesProperty" />.
-            </summary>
-      <param name="attachingElement">The attaching <see cref="T:System.Windows.Controls.TextBlock" /> or <see cref="T:System.Windows.Controls.RichTextBox" />.</param>
-      <param name="value">A <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRangeCollection" />.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.SetHighlightRanges(System.Windows.DependencyObject,BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighLightRangeCollection)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="attachingElement">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>attachingElement</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.SetHighlightRanges(System.Windows.DependencyObject,BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighLightRangeCollection)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.SetHighlightRanges(System.Windows.DependencyObject,BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighLightRangeCollection)</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.SetIsHighlightingEnabled(System.Windows.DependencyObject,System.Boolean)">
       <summary>
@@ -1144,48 +1374,12 @@
       <param name="attachingElement">The attached <see cref="T:System.Windows.FrameworkElement" />.</param>
       <returns>The current associated <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel" />.</returns>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.GetIsClosable(System.Windows.DependencyObject)">
-      <summary>
-            Get method of the attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.IsClosableProperty" />.
-            </summary>
-      <param name="attachingElement">The attached <see cref="T:System.Windows.FrameworkElement" />.</param>
-      <returns>
-        <c>true</c> to allow the user to close the <see cref="T:System.Windows.Window" />, otherwise <c>false</c>.</returns>
-    </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.GetIsModal(System.Windows.DependencyObject)">
-      <summary>
-            Get method of the attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.IsModalProperty" />.
-            </summary>
-      <param name="attachingElement">The attached <see cref="T:System.Windows.FrameworkElement" />.</param>
-      <returns>
-        <c>true</c> to show the <see cref="T:System.Windows.Window" /> modal, otherwise <c>false</c>.</returns>
-    </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.GetStyle(System.Windows.DependencyObject)">
       <summary>
             Get method of the attached property <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.StyleProperty" />.
             </summary>
       <param name="attachingElement">The attached <see cref="T:System.Windows.FrameworkElement" />.</param>
       <returns>The dialog's <see cref="T:System.Windows.Style" /> registered with the <paramref name="attachingElement" />.</returns>
-    </member>
-    <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.IsClosable">
-      <summary>
-            Attached property that controls if the user is allowed to explicitly close the <see cref="T:System.Windows.Window" />.
-            </summary>
-    </member>
-    <member name="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.IsClosableProperty">
-      <summary>
-            Attached property that controls if the user is allowed to explicitly close the <see cref="T:System.Windows.Window" />.
-            </summary>
-    </member>
-    <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.IsModal">
-      <summary>
-            Attached property that controls if the <see cref="T:System.Windows.Window" /> is shown modal.
-            </summary>
-    </member>
-    <member name="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.IsModalProperty">
-      <summary>
-            Attached property that controls if the <see cref="T:System.Windows.Window" /> is shown modal.
-            </summary>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.SetDataTemplateSelector(System.Windows.DependencyObject,System.Windows.Controls.DataTemplateSelector)">
       <summary>
@@ -1200,22 +1394,6 @@
             </summary>
       <param name="attachingElement">The attached <see cref="T:System.Windows.FrameworkElement" />.</param>
       <param name="value">An instance of <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel" />.</param>
-    </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.SetIsClosable(System.Windows.DependencyObject,System.Boolean)">
-      <summary>
-            Set method of the <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.IsClosableProperty" /> attached property.
-            </summary>
-      <param name="attachingElement">The attached <see cref="T:System.Windows.FrameworkElement" />.</param>
-      <param name="value">
-        <c>true</c> to allow the user to close the <see cref="T:System.Windows.Window" />, otherwise <c>false</c>. The default is <c>false</c>.</param>
-    </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.SetIsModal(System.Windows.DependencyObject,System.Boolean)">
-      <summary>
-            Set method of the <see cref="F:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.IsModalProperty" /> attached property.
-            </summary>
-      <param name="attachingElement">The attached <see cref="T:System.Windows.FrameworkElement" />.</param>
-      <param name="value">
-        <c>true</c> to show the <see cref="T:System.Windows.Window" /> modal, otherwise <c>false</c>. The default is <c>false</c>.</param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.SetStyle(System.Windows.DependencyObject,System.Windows.Style)">
       <summary>
@@ -1302,13 +1480,6 @@
             The <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult" /> of the user interaction.
             </summary>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.ExecuteSendResponseCommandAsync(BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult)">
-      <summary>
-            Asynchronously called when the SendResponseAsyncCommand is executed.
-            </summary>
-      <param name="result">A <see cref="T:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult" /> value that was received by the ICommand.</param>
-      <returns>A <c>Task</c> instance to make this method awaitable.</returns>
-    </member>
     <member name="E:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.InteractionCompleted">
       <summary>
             Event to signal that the interaction with the dialog is completed.
@@ -1323,6 +1494,33 @@
       <summary>
             Event invocator of the <see cref="E:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.InteractionCompleted" /> event. Raising this event will request the dialog to be closed.
             </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.OnSendResponseAsyncCommandExecuted(BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.OnSendResponseAsyncCommandExecuted(BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="result">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>result</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.OnSendResponseAsyncCommandExecuted(BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.OnSendResponseAsyncCommandExecuted(BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="P:BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.ResponseCallbackAsync">
       <summary>
@@ -1408,15 +1606,6 @@
             Collection of extension methods e.g. visual tree traversal
             </summary>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.EnumerateVisualChildElements``1(System.Windows.DependencyObject)">
-      <summary>
-            Traverses the visual tree towards the leafs until all elements with a matching element type is found.
-            Returns an <see cref="T:System.Collections.Generic.IEnumerable`1" /> to enable deferred traversal.
-            </summary>
-      <param name="parent">The current extended <see cref="T:System.Windows.DependencyObject" />.</param>
-      <typeparam name="TChildren">The type the visual children must match.</typeparam>
-      <returns>An enumerable collection of matching visual child elements.</returns>
-    </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.FindVisualChildElements``1(System.Windows.DependencyObject)">
       <summary>
             Traverses the visual tree towards the leafs until all elements with a matching element type is found.
@@ -1465,24 +1654,50 @@
         </markup>
       </returns>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName``1(System.Windows.DependencyObject,System.String,``0@)">
+    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)">
       <summary>
-            Traverses the visual tree towards the leafs until an element with a matching element name is found.
-            </summary>
-      <param name="parent"></param>
-      <param name="childElementName">The name the visual child's name must match.</param>
-      <param name="resultElement">The found element or <c>null</c> if no matching element was found.</param>
-      <typeparam name="TChild">
         <markup>
-          <include item="SMCMissingParamTag">
-            <parameter>typeparam</parameter>
-            <parameter>TChild</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName``1(System.Windows.DependencyObject,System.String,``0@)</parameter>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)</parameter>
           </include>
         </markup>
-      </typeparam>
+      </summary>
+      <param name="parent">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parent</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="childElementName">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>childElementName</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="resultElement">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>resultElement</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)</parameter>
+          </include>
+        </markup>
+      </param>
       <returns>
-        <c>true</c> when an element with the specified <paramref name="childElementName" /> was found, otherwise <c>false</c>.</returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElement``1(System.Windows.DependencyObject,``0@)">
       <summary>
@@ -1516,43 +1731,47 @@
         </markup>
       </returns>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName``1(System.Windows.DependencyObject,System.String,``0@)">
+    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)">
       <summary>
-            Traverses the visual tree towards the root until an element with a matching element type is found.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)</parameter>
+          </include>
+        </markup>
+      </summary>
       <param name="child">
         <markup>
           <include item="SMCMissingParamTag">
             <parameter>param</parameter>
             <parameter>child</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName``1(System.Windows.DependencyObject,System.String,``0@)</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)</parameter>
           </include>
         </markup>
       </param>
-      <param name="elementName">The element name the visual parent must match.</param>
+      <param name="elementName">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>elementName</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)</parameter>
+          </include>
+        </markup>
+      </param>
       <param name="resultElement">
         <markup>
           <include item="SMCMissingParamTag">
             <parameter>param</parameter>
             <parameter>resultElement</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName``1(System.Windows.DependencyObject,System.String,``0@)</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)</parameter>
           </include>
         </markup>
       </param>
-      <typeparam name="TChild">
-        <markup>
-          <include item="SMCMissingParamTag">
-            <parameter>typeparam</parameter>
-            <parameter>TChild</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName``1(System.Windows.DependencyObject,System.String,``0@)</parameter>
-          </include>
-        </markup>
-      </typeparam>
       <returns>
         <markup>
           <include item="SMCMissingTag">
             <parameter>returns</parameter>
-            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName``1(System.Windows.DependencyObject,System.String,``0@)</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)</parameter>
           </include>
         </markup>
       </returns>
@@ -1560,7 +1779,7 @@
     <member name="T:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1">
       <summary>
             A reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand" /> with support for async/await. Enables instant creation of an ICommand without implementing the ICommand interface for each command.
-            The individual <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.Execute(`0)" />, <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)" /> and <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)" /> members are supplied via delegates.
+            The <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand" /> accepts asynchronous command handlers.
               <seealso cref="T:System.Windows.Input.ICommand" /></summary>
       <typeparam name="TParam">
         <markup>
@@ -1574,7 +1793,7 @@
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Action)">
       <summary>
-              Creates a new parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute" /> will always return <c>true</c>).
+              Creates a new parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute" /> will always return <c>true</c>).
             </summary>
       <param name="executeNoParam">The awaitable execution handler.</param>
     </member>
@@ -1587,7 +1806,7 @@
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Action{`0})">
       <summary>
-              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)" /> always returns <code>true</code>).
+              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute" /> will always return <c>true</c>).
             </summary>
       <param name="execute">The awaitable execution handler.</param>
     </member>
@@ -1596,11 +1815,11 @@
               Creates a new command.
             </summary>
       <param name="execute">The execution handler.</param>
-      <param name="canExecute">The CanExecute handler.</param>
+      <param name="canExecute">The execution status handler.</param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.Tasks.Task})">
       <summary>
-              Creates a new parameterless asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute" /> will always return <c>true</c>).
+              Creates a new parameterless asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute" /> will always return <c>true</c>).
             </summary>
       <param name="executeAsyncNoParam">The awaitable execution handler.</param>
     </member>
@@ -1613,7 +1832,7 @@
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task})">
       <summary>
-              Creates a new asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)" /> always returns <code>true</code>).
+              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute" /> will always return <c>true</c>).
             </summary>
       <param name="executeAsync">The awaitable execution handler.</param>
     </member>
@@ -1626,19 +1845,32 @@
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)">
       <summary>
-            Checks if the <see cref="T:System.Windows.Input.ICommand" /> can execute.
+              Determines whether this AsyncRelayCommand can execute.
             </summary>
-      <param name="parameter">The command parameter.</param>
+      <param name="parameter">
+              Data used by the command. 
+            </param>
       <returns>
-        <c>true</c> when the <see cref="T:System.Windows.Input.ICommand" /> can execute, otherwise <c>false</c>.</returns>
+        <c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.Execute(`0)">
       <summary>
-            Executes the AsyncRelayCommand on the current command target.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.Execute(`0)</parameter>
+          </include>
+        </markup>
+      </summary>
       <param name="parameter">
-            The command parameter.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.Execute(`0)</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)">
       <summary>
@@ -1659,7 +1891,7 @@
     </member>
     <member name="T:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1">
       <summary>
-            Extends <see cref="T:System.Windows.Input.ICommand" /> to allow asynchronous command execution, where the accepted parameter of the <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.Execute(`0)" /> and <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.CanExecute(`0)" /> is strongly typed to eliminate type casting inside the registered callbacks.
+            Extends <see cref="T:System.Windows.Input.ICommand" /> to allow asynchronous command execution, where the accepted parameter of the <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0)" /> and <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.CanExecute" /> is strongly typed to eliminate type casting inside the registered callbacks.
             </summary>
       <typeparam name="TParam">The type of the <see cref="P:System.Windows.Input.ICommandSource.CommandParameter" />.</typeparam>
     </member>
@@ -1673,11 +1905,22 @@
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.Execute(`0)">
       <summary>
-            Executes the AsyncRelayCommand on the current command target.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.Execute(`0)</parameter>
+          </include>
+        </markup>
+      </summary>
       <param name="parameter">
-            The command parameter.
-            </param>
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.Execute(`0)</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
     <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0)">
       <summary>
@@ -1869,69 +2112,163 @@
             The Value to invert. Can everything that the provided <see cref="P:BionicCode.Utilities.Net.Core.Wpf.Markup.InvertExtension.ValueInverter" /> can invert. The value can also be a <see cref="T:System.Windows.Data.BindingBase" /> or any other <see cref="T:System.Windows.Markup.MarkupExtension" /> that can provide the invertible value.
             </summary>
     </member>
-    <member name="P:BionicCode.Utilities.Net.Core.Wpf.Markup.InvertExtension.ValueInverter">
+    <member name="T:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension">
       <summary>
-            The implementation of <see cref="T:BionicCode.Utilities.Net.Standard.IValueInverter" />.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension</parameter>
+          </include>
+        </markup>
+      </summary>
     </member>
-    <member name="T:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension">
+    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.#ctor">
       <summary>
-            XAML markup extension that allows to define primitive type values like <see cref="T:System.Boolean" /> or <see cref="T:System.Int32" />.
-            </summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension</parameter>
+          </include>
+        </markup>
+      </summary>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.#ctor">
+    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.#ctor(System.Boolean)">
       <summary>
-            Initializes a new instance of <seealso cref="T:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension" />.
-            </summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="booleanValue">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>booleanValue</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.#ctor(System.Boolean)</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.#ctor(System.Boolean)">
+    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.#ctor(System.Double)">
       <summary>
-            Initializes a new instance of <seealso cref="T:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension" />.
-            </summary>
-      <param name="booleanValue">The value of type <see cref="T:System.Boolean" />.</param>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="doubleValue">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>doubleValue</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.#ctor(System.Double)</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.#ctor(System.Double)">
+    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.#ctor(System.Int32)">
       <summary>
-            Initializes a new instance of <seealso cref="T:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension" />.
-            </summary>
-      <param name="doubleValue">The value of type <see cref="T:System.Double" />.</param>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="int32Value">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>int32Value</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.#ctor(System.Int32)</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.#ctor(System.Int32)">
+    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.#ctor(System.String)">
       <summary>
-            Initializes a new instance of <seealso cref="T:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension" />.
-            </summary>
-      <param name="int32Value">The value of type <see cref="T:System.Int32" />.</param>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="stringValue">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>stringValue</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.#ctor(System.String)</parameter>
+          </include>
+        </markup>
+      </param>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.#ctor(System.String)">
+    <member name="P:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.Boolean">
       <summary>
-            Initializes a new instance of <seealso cref="T:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension" />.
-            </summary>
-      <param name="stringValue">The value of type <see cref="T:System.String" />.</param>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.Boolean</parameter>
+          </include>
+        </markup>
+      </summary>
     </member>
-    <member name="P:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.Boolean">
+    <member name="P:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.Double">
       <summary>
-            Holds a <see cref="T:System.Boolean" />.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.Double</parameter>
+          </include>
+        </markup>
+      </summary>
     </member>
-    <member name="P:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.Double">
+    <member name="P:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.Int32">
       <summary>
-            Holds a <see cref="T:System.Double" />.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.Int32</parameter>
+          </include>
+        </markup>
+      </summary>
     </member>
-    <member name="P:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.Int32">
+    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.ProvideValue(System.IServiceProvider)">
       <summary>
-            Holds a <see cref="T:System.Int32" />.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.ProvideValue(System.IServiceProvider)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="serviceProvider">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>serviceProvider</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.ProvideValue(System.IServiceProvider)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.ProvideValue(System.IServiceProvider)</parameter>
+          </include>
+        </markup>
+      </returns>
     </member>
-    <member name="M:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.ProvideValue(System.IServiceProvider)">
-      <summary>When implemented in a derived class, returns an object that is provided as the value of the target property for this markup extension.</summary>
-      <param name="serviceProvider">A service provider helper that can provide services for the markup extension.</param>
-      <returns>The object value to set on the property where the extension is applied.</returns>
-    </member>
-    <member name="P:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.String">
+    <member name="P:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.String">
       <summary>
-            Holds a <see cref="T:System.String" />.
-            </summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveTypeExtension.String</parameter>
+          </include>
+        </markup>
+      </summary>
     </member>
     <member name="T:BionicCode.Utilities.Net.Core.Wpf.Settings.AppSettingsConnector">
       <summary>
