@@ -46,7 +46,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncAsyncRelayCommand.cs" />
+    <Compile Include="AsyncRelayCommand.cs" />
     <Compile Include="AttachedBehaviors\HighlightRange.cs" />
     <Compile Include="AttachedBehaviors\HighlightRangeCollection.cs" />
     <Compile Include="AttachedBehaviors\PasswordBox.cs" />
@@ -68,7 +68,7 @@
     <Compile Include="Dialog\IDialogViewModelProvider.cs" />
     <Compile Include="Dialog\IDialogViewModelProviderSource.cs" />
     <Compile Include="Extensions\HelperExtensions.cs" />
-    <Compile Include="Generic\AsyncAsyncRelayCommand.cs" />
+    <Compile Include="Generic\AsyncRelayCommand.cs" />
     <Compile Include="Generic\IAsyncRelayCommand.cs" />
     <Compile Include="IAsyncRelayCommand.cs" />
     <Compile Include="Markup\BindingResolver.cs" />

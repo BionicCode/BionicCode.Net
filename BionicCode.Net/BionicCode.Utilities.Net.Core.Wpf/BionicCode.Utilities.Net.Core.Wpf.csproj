@@ -9,17 +9,17 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/BionicCode/BionicCode.Net</PackageProjectUrl>
     <PackageIcon>BionicCode_Logo.png</PackageIcon>
-    <PackageTags>Base View Model ViewModel BaseViewModel AsyncRelayCommand Async RelayCommand WPF VisualTreeHelper Profiler Profiling Measure Measuring View Model ViewModel ExtensionMethods ObservablePropertyChangedCollection Collection ApplicationSettings Settings AppSettings MRU MostRecentlyUsedFile LastUsedFile RecentlyUsedFile EventAggregator Aggregator Event MVVMDialog MVVM Dialog DialogService ExtensioMethod EnumExtension InvertExtension MarkupExtension EventAggregator Aggregator Event MVVM NullObject NullObjectFactory Factory IFatory ValueChangedEventArgs AutoResetStream Stream PropertyValueChangedArgs FileExtension FileExtensions PropertyValueChanged RichTextBox AttachedBehavior Attached Behavior</PackageTags>
+    <PackageTags>Base View Model ViewModel BaseViewModel AsyncRelayCommand Async RelayCommand WPF VisualTreeHelper Profiler Profiling Measure Measuring View Model ViewModel ExtensionMethods ObservablePropertyChangedCollection Collection ApplicationSettings Settings AppSettings MRU MostRecentlyUsedFile LastUsedFile RecentlyUsedFile EventAggregator Aggregator Event MVVMDialog MVVM Dialog DialogService ExtensioMethod EnumExtension Enum Extension InvertExtension MarkupExtension EventAggregator Aggregator Event MVVM NullObject NullObjectFactory Factory IFatory ValueChangedEventArgs AutoResetStream Stream PropertyValueChangedArgs FileExtension FileExtensions PropertyValueChanged RichTextBox AttachedBehavior Attached Behavior</PackageTags>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Company>BionicCode</Company>
     <Copyright>2020</Copyright>
     <RepositoryUrl>https://github.com/BionicCode/BionicCode.Net.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>d TextControl to highlight custom text ranges. Added missing documentation. Added feature to control modality of MVVM dialog behavior and control property whether user can close the dialog window or not.
+    <PackageReleaseNotes>Added TextControl attached behavior to highlight custom text ranges. Added missing documentation. Added feature to control modality of MVVM dialog behavior and control property whether user can close the dialog window or not.
 
 ---------------------------------------------------------
 For bug reports or feature requests please visit the project home on GutHub (follow the "Project Site" link on the right) and then open an issue (open the "issue" tab, click "New Issue" and select the appropriate template) or send  a mail to BionicCode@outlook.com. Thank you very much.</PackageReleaseNotes>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -32,6 +32,7 @@ For bug reports or feature requests please visit the project home on GutHub (fol
 
   <ItemGroup>
     <ProjectReference Include="..\BionicCode.Utilities.Net.Core\BionicCode.Utilities.Net.Core.csproj" />
+    <ProjectReference Include="..\BionicCode.Utilities.Net.Framework.Wpf\BionicCode.Utilities.Net.Framework.Wpf.csproj" />
     <ProjectReference Include="..\BionicCode.Utilities.Net.Standard\BionicCode.Utilities.Net.Standard.csproj" />
   </ItemGroup>
 

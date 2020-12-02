@@ -7,136 +7,34 @@
         <member name="T:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand">
             <summary>
             A  reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand"/> with support for async/await. Enables instant creation of an ICommand without implementing the ICommand interface for each command.
-            The individual <see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.Execute"/>, <see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteAsync"/> and <see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute"/> members are supplied via delegates.
+            The <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand"/> accepts asynchronous command handlers.
               <seealso cref="T:System.Windows.Input.ICommand" />
             </summary>
-            <remarks><c>AsyncRelayCommand</c> implements <see cref="T:System.Windows.Input.ICommand" /></remarks>
-        </member>
-        <member name="F:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteAsyncNoParam">
-            <summary>
-            The registered parameterless async execute delegate.
-            </summary>
-            <value>
-            A delegate that takes no parameter and returns a <see cref="T:System.Threading.Tasks.Task"/>.</value>
-        </member>
-        <member name="F:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteNoParam">
-            <summary>
-            The registered parameterless synchronous execute delegate.
-            </summary>
-            <value>
-            A delegate that takes no parameter and returns void.</value>
-        </member>
-        <member name="F:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecuteNoParam">
-            <summary>
-            The registered parameterless CanExecute delegate.
-            </summary>
-            <value>
-            <c>true</c> if the command can execute, otherwise <c>false</c>.</value>
-        </member>
-        <member name="E:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecuteChanged">
-            <summary>
-              Raised when RaiseCanExecuteChanged is called.
-            </summary>
+            <remarks><c>AsyncRelayCommand</c> implements <see cref="T:System.Windows.Input.ICommand" />. In case <see cref="M:System.Windows.Input.ICommand.Execute(System.Object)"/> is invoked with a registered asynchronous command handler (e.g., by an implementation of <see cref="T:System.Windows.Input.ICommandSource"/>), the handler is executed asynchronously. In case the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand"/> is executed explicitly, especially with an asynchronous command handler registered, it is highly recommended to invoke the awaitable ExecuteAsync(object) or one of its overloads instead!</remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Action{System.Object})">
-            <summary>
-              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute"/> will always return <c>true</c>).
-            </summary>
-            <param name="execute">The awaitable execution handler.</param>
+            <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Action)">
-            <summary>
-              Creates a new parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute"/> will always return <c>true</c>).
-            </summary>
-            <param name="executeNoParam">The awaitable execution handler.</param>
+            <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task})">
-            <summary>
-              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute"/> will always return <c>true</c>).
-            </summary>
-            <param name="executeAsync">The awaitable execution handler.</param>
+            <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task})">
-            <summary>
-              Creates a new parameterless asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute"/> will always return <c>true</c>).
-            </summary>
-            <param name="executeAsyncNoParam">The awaitable execution handler.</param>
+            <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Action,System.Func{System.Boolean})">
-            <summary>
-              Creates a new parameterless command.
-            </summary>
-            <param name="executeNoParam">The execution handler.</param>
-            <param name="canExecuteNoParam">The execution status handler.</param>
+            <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})">
-            <summary>
-              Creates a new command.
-            </summary>
-            <param name="execute">The execution handler.</param>
-            <param name="canExecute">The execution status handler.</param>
+            <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})">
-            <summary>
-              Creates a parameterless new asynchronous command.
-            </summary>
-            <param name="executeAsyncNoParam">The awaitable execution handler.</param>
-            <param name="canExecuteNoParam">The execution status handler.</param>
+            <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task},System.Predicate{System.Object})">
-            <summary>
-              Creates a new asynchronous command.
-            </summary>
-            <param name="executeAsync">The awaitable execution handler.</param>
-            <param name="canExecute">The can execute handler.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute">
-            <summary>
-              Determines whether this AsyncRelayCommand can execute.
-            </summary>
-            <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.Execute">
-            <summary>
-            Executes the <see cref="T:System.Windows.Input.ICommand"/> on the current command target.
-            </summary>
-            <remarks> When this method is called although an asynchronous execute delegate was registered, this asynchronous delegate will be executed asynchronously, but since the <see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.Execute"/> does not return a <see cref="T:System.Threading.Tasks.Task"/> and is declared as <c>async void</c>, the execution is not awaitable and more important exceptions from an <c>async void</c> method can’t be caught with <c>catch</c>!
-            <para></para>Async void methods have different error-handling semantics. When an exception is thrown out of an <c>async Task</c> or <c>async Task&lt;T&gt;</c> method, that exception is captured and placed on the <see cref="T:System.Threading.Tasks.Task"/> object. With <c>async void</c> methods, there is no Task object, so any exceptions thrown out of an <c>async void</c> method will be raised directly on the SynchronizationContext that was active when the async void method started. Exceptions thrown from <c>async void</c> methods can’t be caught naturally.
-            <para></para>In such a scenario it is highly recommended to always call <see cref="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteAsync"/> instead.</remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteAsync">
-            <summary>
-              Executes the AsyncRelayCommand on the current command target asynchronously.
-            </summary>
-            <remarks>If the execute delegate is asynchronous (awaitable) then the execution is asynchronous otherwise the synchronous execute delegate is wrapped into an asynchronous call. This method is always awaitable and all handlers are always asynchronously executed.</remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.CanExecute(System.Object)">
-            <summary>
-              Determines whether this AsyncRelayCommand can execute.
-            </summary>
-            <param name="parameter">
-              Data used by the command. 
-            </param>
-            <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.Execute(System.Object)">
-            <summary>
-              Executes the AsyncRelayCommand on the current command target. 
-            </summary>
-            <param name="parameter">
-              Data used by the command. 
-            </param>
-            <remarks>If the execute delegate is asynchronous (awaitable) then the execution is asynchronous otherwise synchronous.</remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.ExecuteAsync(System.Object)">
-            <summary>
-              Executes the AsyncRelayCommand on the current command target asynchronously.
-            </summary>
-            <param name="parameter">
-              Data used by the command. If the command does not require data to be passed,
-              this object can be set to null.
-            </param>
-            <remarks>If the execute delegate is asynchronous (awaitable) then the execution is asynchronous otherwise the synchronous execute delegate is wrapped into an asynchronous call. This method is always awaitable and all handlers are always asynchronously executed.</remarks>
+            <inheritdoc />
         </member>
         <member name="T:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange">
             <summary>
@@ -768,7 +666,7 @@
             <param name="resultElement"></param>
             <returns></returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)">
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName``1(System.Windows.DependencyObject,System.String,``0@)">
             <summary>
             Traverses the visual tree towards the root until an element with a matching element type is found.
             </summary>
@@ -786,7 +684,7 @@
             <param name="resultElement"></param>
             <returns></returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName(System.Windows.DependencyObject,System.String,System.Windows.FrameworkElement@)">
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName``1(System.Windows.DependencyObject,System.String,``0@)">
             <summary>
             Traverses the visual tree towards the leafs until an element with a matching element name is found.
             </summary>
@@ -823,41 +721,82 @@
         <member name="T:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1">
             <summary>
             A reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand"/> with support for async/await. Enables instant creation of an ICommand without implementing the ICommand interface for each command.
-            The individual <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.Execute(`0)"/>, <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)"/> and <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)"/> members are supplied via delegates.
+            The <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand"/> accepts asynchronous command handlers.
               <seealso cref="T:System.Windows.Input.ICommand" />
             </summary>
-            <remarks><c>AsyncRelayCommand&lt;T&gt;</c> implements <see cref="T:System.Windows.Input.ICommand" />.</remarks>
+            <remarks><c>AsyncRelayCommand</c> implements <see cref="T:System.Windows.Input.ICommand" />. In case <see cref="M:System.Windows.Input.ICommand.Execute(System.Object)"/> is invoked with a registered asynchronous command handler (e.g., by an implementation of <see cref="T:System.Windows.Input.ICommandSource"/>), the handler is executed asynchronously. In case the <see cref="T:BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand"/> is executed explicitly, especially with an asynchronous command handler registered, it is highly recommended to invoke the awaitable <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync"/> or its overloads instead!</remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.Tasks.Task})">
-            <inheritdoc />
+        <member name="P:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.IsExecuting">
+            <inheritdoc cref="T:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1"/>
         </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task})">
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsyncNoParam">
             <summary>
-              Creates a new asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)"/> always returns <code>true</code>).
+            The registered parameterless async execute delegate.
             </summary>
-            <param name="executeAsync">The awaitable execution handler.</param>
+            <value>
+            A delegate that takes no parameter and returns a <see cref="T:System.Threading.Tasks.Task"/>.</value>
         </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Action)">
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.ExecuteNoParam">
+            <summary>
+            The registered parameterless synchronous execute delegate.
+            </summary>
+            <value>
+            A delegate that takes no parameter and returns void.</value>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecuteNoParam">
+            <summary>
+            The registered parameterless CanExecute delegate.
+            </summary>
+            <value>
+            <c>true</c> if the command can execute, otherwise <c>false</c>.</value>
+        </member>
+        <member name="E:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecuteChanged">
             <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Action{`0})">
             <summary>
-              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)"/> always returns <code>true</code>).
+              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute"/> will always return <c>true</c>).
             </summary>
             <param name="execute">The awaitable execution handler.</param>
         </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Action)">
+            <summary>
+              Creates a new parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute"/> will always return <c>true</c>).
+            </summary>
+            <param name="executeNoParam">The awaitable execution handler.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task})">
+            <summary>
+              Creates a new command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute"/> will always return <c>true</c>).
+            </summary>
+            <param name="executeAsync">The awaitable execution handler.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+              Creates a new parameterless asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute"/> will always return <c>true</c>).
+            </summary>
+            <param name="executeAsyncNoParam">The awaitable execution handler.</param>
+        </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Action,System.Func{System.Boolean})">
-            <inheritdoc />
+            <summary>
+              Creates a new parameterless command.
+            </summary>
+            <param name="executeNoParam">The execution handler.</param>
+            <param name="canExecuteNoParam">The execution status handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Action{`0},System.Predicate{`0})">
             <summary>
               Creates a new command.
             </summary>
             <param name="execute">The execution handler.</param>
-            <param name="canExecute">The CanExecute handler.</param>
+            <param name="canExecute">The execution status handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})">
-            <inheritdoc />
+            <summary>
+              Creates a parameterless new asynchronous command.
+            </summary>
+            <param name="executeAsyncNoParam">The awaitable execution handler.</param>
+            <param name="canExecuteNoParam">The execution status handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task},System.Predicate{`0})">
             <summary>
@@ -866,19 +805,57 @@
             <param name="executeAsync">The awaitable execution handler.</param>
             <param name="canExecute">The can execute handler.</param>
         </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)">
-            <inheritdoc />
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.Execute(`0)">
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute">
             <summary>
-            Executes the AsyncRelayCommand on the current command target.
+              Determines whether this AsyncRelayCommand can execute.
+            </summary>
+            <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecute(`0)">
+            <summary>
+              Determines whether this AsyncRelayCommand can execute.
             </summary>
             <param name="parameter">
-            The command parameter.
+              Data used by the command. 
             </param>
-            <remarks> When this method is called although an asynchronous execute delegate was registered, this asynchronous delegate will be executed asynchronously, but since the <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.Execute(`0)"/> does not return a <see cref="T:System.Threading.Tasks.Task"/> and is declared as <c>async void</c>, the execution is not awaitable and more important exceptions from an <c>async void</c> method can’t be caught with <c>catch</c>!
-            <para></para>Async void methods have different error-handling semantics. When an exception is thrown out of an <c>async Task</c> or <c>async Task&lt;T&gt;</c> method, that exception is captured and placed on the <see cref="T:System.Threading.Tasks.Task"/> object. With <c>async void</c> methods, there is no Task object, so any exceptions thrown out of an <c>async void</c> method will be raised directly on the SynchronizationContext that was active when the async void method started. Exceptions thrown from <c>async void</c> methods can’t be caught naturally.
-            <para></para>In such a scenario it is highly recommended to always call <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)"/> instead.</remarks>
+            <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.System#Windows#Input#ICommand#CanExecute(System.Object)">
+            <summary>
+             Explicit <see cref="T:System.Windows.Input.ICommand"/> implementation. Determines whether this AsyncRelayCommand can execute.
+            </summary>
+            <param name="parameter">
+              Data used by the command. 
+            </param>
+            <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.System#Windows#Input#ICommand#Execute(System.Object)">
+            <summary>
+            Explicit <see cref="T:System.Windows.Input.ICommand"/> implementation. Executes the AsyncRelayCommand on the current command target. 
+            </summary>
+            <param name="parameter">
+              Data used by the command. 
+            </param>
+            <remarks>For asynchronous command handlers always prefer to call <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync"/> instead!
+            <para>If the command handler is asynchronous (awaitable) then the execution is asynchronous otherwise the delegate is executed synchronously.</para></remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.BionicCode#Utilities#Net#Core#Wpf#IAsyncRelayCommand#ExecuteAsync(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.BionicCode#Utilities#Net#Core#Wpf#IAsyncRelayCommand#ExecuteAsync(System.Object,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync">
+            <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+            <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)">
+            <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+            <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.</remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)">
             <summary>
@@ -888,13 +865,48 @@
               Data used by the command. If the command does not require data to be passed,
               this object can be set to null.
             </param>
-            <remarks>If the execute delegate is asynchronous (awaitable) then the execution is asynchronous otherwise the synchronous execute delegate is wrapped into an asynchronous call. This method is always awaitable and all handlers are always asynchronously executed.</remarks>
+            <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+            <param name="parameter">
+              Data used by the command. If the command does not require data to be passed,
+              this object can be set to null.
+            </param>
+            <param name="cancellationToken">An instance of <seealso cref="T:System.Threading.CancellationToken"/>.</param>
+            <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.InvalidateCommand">
+            <inheritdoc cref="T:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1"/>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.OnCanExecuteChanged">
+            <summary>
+            Raises the <see cref="E:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.CanExecuteChanged"/> event.
+            </summary>
         </member>
         <member name="T:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1">
             <summary>
-            Extends <see cref="T:System.Windows.Input.ICommand"/> to allow asynchronous command execution, where the accepted parameter of the <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.Execute(`0)"/> and <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.CanExecute(`0)"/> is strongly typed to eliminate type casting inside the registered callbacks.
+            Extends <see cref="T:System.Windows.Input.ICommand"/> to allow asynchronous command execution, where the accepted parameter of the <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0)"/> and <see cref="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.CanExecute"/> is strongly typed to eliminate type casting inside the registered callbacks.
             </summary>
             <typeparam name="TParam">The type of the <see cref="P:System.Windows.Input.ICommandSource.CommandParameter"/>.</typeparam>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.CanExecute">
+            <summary>
+            Checks if the <see cref="T:System.Windows.Input.ICommand"/> can execute.
+            </summary>
+            <returns><c>true</c> when the <see cref="T:System.Windows.Input.ICommand"/> can execute, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync">
+            <summary>
+            Executes the AsyncRelayCommand asynchronously.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)">
+            <summary>
+            Executes the AsyncRelayCommand asynchronously.
+            </summary>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.CanExecute(`0)">
             <summary>
@@ -902,14 +914,6 @@
             </summary>
             <param name="parameter">The command parameter.</param>
             <returns><c>true</c> when the <see cref="T:System.Windows.Input.ICommand"/> can execute, otherwise <c>false</c>.</returns>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.Execute(`0)">
-            <summary>
-            Executes the AsyncRelayCommand on the current command target.
-            </summary>
-            <param name="parameter">
-            The command parameter.
-            </param>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0)">
             <summary>
@@ -919,6 +923,26 @@
             The command parameter.
             </param>
             <returns>An awaitable <see cref="T:System.Threading.Tasks.Task"/> instance.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously executes the AsyncRelayCommand on the current command target.
+            </summary>
+            <param name="parameter">
+            The command parameter.
+            </param>
+            <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to cancel the execution.</param>
+            <returns>An awaitable <see cref="T:System.Threading.Tasks.Task"/> instance.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.InvalidateCommand">
+            <summary>
+            Raises the <seealso cref="E:System.Windows.Input.ICommand.CanExecuteChanged"/> event of this particular command only.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand`1.IsExecuting">
+            <summary>
+            A flag to signal if the asynchronous operation has completed.
+            </summary>
         </member>
         <member name="T:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand">
             <summary>
@@ -931,24 +955,44 @@
             </summary>
             <returns><c>true</c> when the <see cref="T:System.Windows.Input.ICommand"/> can execute, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.Execute">
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.ExecuteAsync">
             <summary>
-            Executes the AsyncRelayCommand.
+            Executes the AsyncRelayCommand asynchronously.
             </summary>
         </member>
-        <member name="M:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.ExecuteAsync">
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.ExecuteAsync(System.Threading.CancellationToken)">
             <summary>
             Executes the AsyncRelayCommand asynchronously.
             </summary>
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.ExecuteAsync(System.Object)">
             <summary>
-            Asynchronously executes the AsyncRelayCommand.
+            Asynchronously executes the AsyncRelayCommand on the current command target.
             </summary>
             <param name="parameter">
-            Data used by the command. If the command does not require data to be passed, 
-            this object can be set to null.
+            The command parameter.
             </param>
+            <returns>An awaitable <see cref="T:System.Threading.Tasks.Task"/> instance.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.ExecuteAsync(System.Object,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously executes the AsyncRelayCommand on the current command target.
+            </summary>
+            <param name="parameter">
+            The command parameter.
+            </param>
+            <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to cancel the execution.</param>
+            <returns>An awaitable <see cref="T:System.Threading.Tasks.Task"/> instance.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.InvalidateCommand">
+            <summary>
+            Raises the <seealso cref="E:System.Windows.Input.ICommand.CanExecuteChanged"/> event of this particular command only.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.IsExecuting">
+            <summary>
+            A flag to signal if the asynchronous operation has completed.
+            </summary>
         </member>
         <member name="T:BionicCode.Utilities.Net.Core.Wpf.Markup.EnumExtension">
             <summary>

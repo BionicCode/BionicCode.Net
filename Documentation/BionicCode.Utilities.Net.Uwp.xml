@@ -1,0 +1,1041 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>BionicCode.Utilities.Net.Uwp</name>
+  </assembly>
+  <members>
+    <member name="T:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Action)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Uwp.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Action)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Action,System.Func{System.Boolean})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Uwp.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Action,System.Func{System.Boolean})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="canExecuteNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>canExecuteNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Action,System.Func{System.Boolean})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Action{System.Object})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Uwp.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="execute">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>execute</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Action{System.Object})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Uwp.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="execute">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>execute</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="canExecute">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>canExecute</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Uwp.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeAsyncNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeAsyncNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Uwp.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeAsyncNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeAsyncNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="canExecuteNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>canExecuteNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Uwp.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeAsync">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeAsync</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task},System.Predicate{System.Object})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Uwp.AsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeAsync">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeAsync</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task},System.Predicate{System.Object})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="canExecute">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>canExecute</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task},System.Predicate{System.Object})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.CanExecute">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.CanExecute</parameter>
+          </include>
+        </markup>
+      </summary>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.CanExecute</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.ExecuteAsync">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.ExecuteAsync</parameter>
+          </include>
+        </markup>
+      </summary>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.ExecuteAsync</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.ExecuteAsync(System.Object)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.ExecuteAsync(System.Object)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.ExecuteAsync(System.Object)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.ExecuteAsync(System.Object)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.ExecuteAsync(System.Object,System.Threading.CancellationToken)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.ExecuteAsync(System.Object,System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.ExecuteAsync(System.Object,System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="cancellationToken">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>cancellationToken</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.ExecuteAsync(System.Object,System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.ExecuteAsync(System.Object,System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.ExecuteAsync(System.Threading.CancellationToken)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.ExecuteAsync(System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="cancellationToken">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>cancellationToken</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.ExecuteAsync(System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.ExecuteAsync(System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.InvalidateCommand">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.InvalidateCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.IsExecuting">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.IsExecuting</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </summary>
+      <typeparam name="TParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>typeparam</parameter>
+            <parameter>TParam</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </typeparam>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Action)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Action)</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Action,System.Func{System.Boolean})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Action,System.Func{System.Boolean})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="canExecuteNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>canExecuteNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Action,System.Func{System.Boolean})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Action{`0})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="execute">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>execute</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Action{`0})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Action{`0},System.Predicate{`0})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="execute">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>execute</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Action{`0},System.Predicate{`0})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="canExecute">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>canExecute</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Action{`0},System.Predicate{`0})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.Tasks.Task})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeAsyncNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeAsyncNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.Tasks.Task})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeAsyncNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeAsyncNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="canExecuteNoParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>canExecuteNoParam</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeAsync">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeAsync</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task},System.Predicate{`0})">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="executeAsync">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>executeAsync</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task},System.Predicate{`0})</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="canExecute">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>canExecute</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task},System.Predicate{`0})</parameter>
+          </include>
+        </markup>
+      </param>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.BionicCode#Utilities#Net#Uwp#IAsyncRelayCommand#ExecuteAsync(System.Object)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.BionicCode#Utilities#Net#Uwp#IAsyncRelayCommand#ExecuteAsync(System.Object)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.BionicCode#Utilities#Net#Uwp#IAsyncRelayCommand#ExecuteAsync(System.Object)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.BionicCode#Utilities#Net#Uwp#IAsyncRelayCommand#ExecuteAsync(System.Object)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.BionicCode#Utilities#Net#Uwp#IAsyncRelayCommand#ExecuteAsync(System.Object,System.Threading.CancellationToken)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.BionicCode#Utilities#Net#Uwp#IAsyncRelayCommand#ExecuteAsync(System.Object,System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.BionicCode#Utilities#Net#Uwp#IAsyncRelayCommand#ExecuteAsync(System.Object,System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="cancellationToken">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>cancellationToken</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.BionicCode#Utilities#Net#Uwp#IAsyncRelayCommand#ExecuteAsync(System.Object,System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.BionicCode#Utilities#Net#Uwp#IAsyncRelayCommand#ExecuteAsync(System.Object,System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.CanExecute">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.CanExecute</parameter>
+          </include>
+        </markup>
+      </summary>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.CanExecute</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.CanExecute(`0)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="E:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.CanExecuteChanged">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>E:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.CanExecuteChanged</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.CanExecuteNoParam">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.CanExecuteNoParam</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsync">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsync</parameter>
+          </include>
+        </markup>
+      </summary>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsync</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="cancellationToken">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>cancellationToken</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsync(`0)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="cancellationToken">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>cancellationToken</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsyncNoParam">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteAsyncNoParam</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteNoParam">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>F:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.ExecuteNoParam</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.InvalidateCommand">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.InvalidateCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.IsExecuting">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.IsExecuting</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.OnCanExecuteChanged">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.OnCanExecuteChanged</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.System#Windows#Input#ICommand#CanExecute(System.Object)">
+      <summary>Defines the method that determines whether the command can execute in its current state.</summary>
+      <param name="parameter">Data used by the command.  If the command does not require data to be passed, this object can be set to <see langword="null" />.</param>
+      <returns>
+        <see langword="true" /> if this command can be executed; otherwise, <see langword="false" />.</returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand`1.System#Windows#Input#ICommand#Execute(System.Object)">
+      <summary>Defines the method to be called when the command is invoked.</summary>
+      <param name="parameter">Data used by the command.  If the command does not require data to be passed, this object can be set to <see langword="null" />.</param>
+    </member>
+    <member name="T:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </summary>
+      <typeparam name="TParam">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>typeparam</parameter>
+            <parameter>TParam</parameter>
+            <parameter>T:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1</parameter>
+          </include>
+        </markup>
+      </typeparam>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.CanExecute">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.CanExecute</parameter>
+          </include>
+        </markup>
+      </summary>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.CanExecute</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.CanExecute(`0)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.CanExecute(`0)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.ExecuteAsync">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.ExecuteAsync</parameter>
+          </include>
+        </markup>
+      </summary>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.ExecuteAsync</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="cancellationToken">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>cancellationToken</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </summary>
+      <param name="parameter">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>parameter</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </param>
+      <param name="cancellationToken">
+        <markup>
+          <include item="SMCMissingParamTag">
+            <parameter>param</parameter>
+            <parameter>cancellationToken</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </param>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
+    <member name="M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.InvalidateCommand">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>M:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.InvalidateCommand</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.IsExecuting">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>P:BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand`1.IsExecuting</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+  </members>
+</doc>

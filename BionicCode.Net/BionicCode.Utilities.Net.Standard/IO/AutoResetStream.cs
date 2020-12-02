@@ -26,6 +26,12 @@ namespace BionicCode.Utilities.Net.Standard.IO
     }
 
     /// <summary>
+    /// Defines the position to which the stream should reset to.
+    /// </summary>
+    /// <value>A <see cref="SeekOrigin"/> value.</value>
+    public SeekOrigin ResetOrigin { get; set; }
+
+    /// <summary>
     /// Gets whether the decorated underlying <see cref="Stream"/> will be closed or disposed when the <see cref="AutoResetStream"/> instance is closed or disposed. Use constructor to set the value in order to configure the behavior.
     /// </summary>
     public bool IsDisposingDecoratedStream { get; }
@@ -42,7 +48,7 @@ namespace BionicCode.Utilities.Net.Standard.IO
     /// Constructor which accepts the <see cref="Stream"/> instance to decorate in order to extend its behavior.
     /// </summary>
     /// <param name="baseStream">The <see cref="Stream"/> instance to decorate in order to extend its behavior.</param>
-    public AutoResetStream(Stream baseStream) : this(baseStream, true)
+    public AutoResetStream(Stream baseStream) : this(baseStream, SeekOrigin.Begin, true)
     {
     }
 
@@ -50,18 +56,31 @@ namespace BionicCode.Utilities.Net.Standard.IO
     /// Constructor which accepts the <see cref="Stream"/> instance to decorate in order to extend its behavior.
     /// </summary>
     /// <param name="baseStream">The <see cref="Stream"/> instance to decorate in order to extend its behavior.</param>
-    /// <param name="isDisposingDecoratedStream">When set to <c>true</c> the decorated underlying <see cref="Stream"/> will be disposed or closed too, if the <see cref="AutoResetStream"/> is disposed or closed.</param>
-    public AutoResetStream(Stream baseStream, bool isDisposingDecoratedStream)
+    /// <param name="leaveDecoratedStreamOpen">When set to <c>true</c> the decorated underlying <see cref="Stream"/> will be disposed or closed too, if the <see cref="AutoResetStream"/> is disposed or closed.</param>
+    public AutoResetStream(Stream baseStream, bool leaveDecoratedStreamOpen) : this(baseStream, SeekOrigin.Begin, leaveDecoratedStreamOpen)
     {
       this.BaseStream = baseStream;
-      this.IsDisposingDecoratedStream = isDisposingDecoratedStream;
+      this.IsDisposingDecoratedStream = leaveDecoratedStreamOpen;
+    }
+
+    /// <summary>
+    /// Constructor which accepts the <see cref="Stream"/> instance to decorate in order to extend its behavior.
+    /// </summary>
+    /// <param name="baseStream">The <see cref="Stream"/> instance to decorate in order to extend its behavior.</param>
+    /// <param name="resetOrigin">The origin to which the stream should be reset to.</param>
+    /// <param name="leaveDecoratedStreamOpen">When set to <c>true</c> the decorated underlying <see cref="Stream"/> will be disposed or closed too, if the <see cref="AutoResetStream"/> is disposed or closed.</param>
+    public AutoResetStream(Stream baseStream, SeekOrigin resetOrigin, bool leaveDecoratedStreamOpen)
+    {
+      this.BaseStream = baseStream;
+      this.IsDisposingDecoratedStream = leaveDecoratedStreamOpen;
+      this.ResetOrigin = resetOrigin;
     }
 
     /// <summary>
     /// Resets the <see cref="Stream.Position"/> to an offset of '0' relative to the provided <paramref name="seekOrigin"/>.
     /// </summary>
     /// <param name="seekOrigin">The optional relative position of the <see cref="Stream"/> to apply the zero offset to. The default is <see cref="SeekOrigin.Begin"/>.</param>
-    public void Reset(SeekOrigin seekOrigin = SeekOrigin.Begin) => this.BaseStream.Seek(0, seekOrigin);
+    public void Reset(SeekOrigin seekOrigin = SeekOrigin.Current) => this.BaseStream.Seek(0, seekOrigin == SeekOrigin.Current ? this.ResetOrigin : seekOrigin);
 
     #region Overrides of Stream
 

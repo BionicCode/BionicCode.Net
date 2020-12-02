@@ -4,11 +4,32 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using BionicCode.Controls.Net.Framework.Wpf.BionicCharts;
+using BionicCode.Utilities.Net.Framework.Wpf;
+using BionicCode.Utilities.Net.Framework.Wpf.Generic;
 using BionicCode.Utilities.Net.Standard.ViewModel;
 
 namespace BionicCode.Net.Framework.Wpf.BionicCharts.Ui.Test
 {
+  class MyClass :ICommand
+  {
+    #region Implementation of ICommand
+
+    /// <inheritdoc />
+    public bool CanExecute(object parameter) => throw new NotImplementedException();
+
+    /// <inheritdoc />
+    public void Execute(object parameter)
+    {
+      throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public event EventHandler CanExecuteChanged;
+
+    #endregion
+  }
   class CartesianChartViewModel : ViewModel
   {
     private ObservableCollection<ICartesianChartPoint> chartPoints;   
@@ -16,6 +37,23 @@ namespace BionicCode.Net.Framework.Wpf.BionicCharts.Ui.Test
     {
       get => this.chartPoints;
       set => TrySetValue(value, ref this.chartPoints);
+    }
+
+    public IAsyncRelayCommand AsyncRelayTestCommand => new AsyncRelayCommand<string>(ExecuteCommandTest);
+    public IAsyncRelayCommand<string> SynchronousRelayTestCommand => new AsyncRelayCommand<string>(ExecuteCommandTestSynchronously);
+
+    private void ExecuteCommandTestSynchronously(string obj)
+    {
+      ;
+      //throw new InvalidCastException("SynchronousRelayTestCommandHandler");
+    }
+  
+
+    private async Task ExecuteCommandTest(string arg)
+    {
+      await this.SynchronousRelayTestCommand.ExecuteAsync();
+      await this.SynchronousRelayTestCommand.ExecuteAsync("123");
+      throw new InvalidCastException("AsyncRelayTestCommandHandler");
     }
 
     public CartesianChartViewModel()

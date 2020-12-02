@@ -44,19 +44,19 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Extensions
     /// <param name="elementName">The element name the visual parent must match.</param>
     /// <param name="resultElement"></param>
     /// <returns></returns>
-    public static bool TryFindVisualParentElementByName(
+    public static bool TryFindVisualParentElementByName<TChild>(
       this DependencyObject child,
       string elementName,
-      out FrameworkElement resultElement)
+      out TChild resultElement) where TChild : FrameworkElement
     {
       resultElement = null;
 
-      var parentElement = VisualTreeHelper.GetParent(child);
+      DependencyObject parentElement = VisualTreeHelper.GetParent(child);
 
       if (parentElement is FrameworkElement frameworkElement &&
           frameworkElement.Name.Equals(elementName, StringComparison.OrdinalIgnoreCase))
       {
-        resultElement = frameworkElement;
+        resultElement = frameworkElement as TChild;
         return true;
       }
 
@@ -110,14 +110,13 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Extensions
     /// <param name="childElementName">The name the visual child's name must match.</param>
     /// <param name="resultElement">The found element or <c>null</c> if no matching element was found.</param>
     /// <returns><c>true</c> when an element with the specified <paramref name="childElementName"/> was found, otherwise <c>false</c>.</returns>
-    public static bool TryFindVisualChildElementByName(
+    public static bool TryFindVisualChildElementByName<TChild>(
       this DependencyObject parent,
       string childElementName,
-      out FrameworkElement resultElement)
+      out TChild resultElement) where TChild : FrameworkElement
     {
       resultElement = null;
-
-
+      
       if (parent is Popup popup)
       {
         parent = popup.Child;
@@ -132,10 +131,10 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Extensions
         DependencyObject childElement = VisualTreeHelper.GetChild(parent, childIndex);
 
         if (childElement is FrameworkElement uiElement && uiElement.Name.Equals(
-              childElementName,
-              StringComparison.OrdinalIgnoreCase))
+          childElementName,
+          StringComparison.OrdinalIgnoreCase))
         {
-          resultElement = uiElement;
+          resultElement = uiElement as TChild;
           return true;
         }
 

@@ -236,12 +236,42 @@ Targets WPF .NET Core  &gt;= 3.0.</summary>
         </markup>
       </summary>
     </member>
+    <member name="N:BionicCode.Utilities.Net.Standard.Profiling">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>N:BionicCode.Utilities.Net.Standard.Profiling</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
     <member name="N:BionicCode.Utilities.Net.Standard.ViewModel">
       <summary>
         <markup>
           <include item="SMCMissingTag">
             <parameter>summary</parameter>
             <parameter>N:BionicCode.Utilities.Net.Standard.ViewModel</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="N:BionicCode.Utilities.Net.Uwp">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>N:BionicCode.Utilities.Net.Uwp</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="N:BionicCode.Utilities.Net.Uwp.Generic">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>N:BionicCode.Utilities.Net.Uwp.Generic</parameter>
           </include>
         </markup>
       </summary>
@@ -255,6 +285,16 @@ A collection of .NET libraries like utilities and controls that target .NET Stan
         <p>
 Project home and NuGet package downloads:
 <a href="https://github.com/BionicCode/BionicCode.Net">Visit on GitHub</a></p>
+      </summary>
+    </member>
+    <member name="G:BionicCode.Utilities.Net.Uwp">
+      <summary>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>summary</parameter>
+            <parameter>G:BionicCode.Utilities.Net.Uwp</parameter>
+          </include>
+        </markup>
       </summary>
     </member>
     <member name="G:BionicCode.Utilities.Net.Standard">
