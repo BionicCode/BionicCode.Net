@@ -16,6 +16,10 @@
 # Mono auto generated files
 mono_crash.*
 
+# NuGet
+*.nupkg
+*.nuspec
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
