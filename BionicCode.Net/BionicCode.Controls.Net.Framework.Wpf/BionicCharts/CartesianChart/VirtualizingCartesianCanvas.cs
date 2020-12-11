@@ -196,7 +196,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCharts
         : new GeneratorPosition(0, 0);
       int index = this.ItemContainerGenerator.IndexFromGeneratorPosition(generatorPosition);
       return (firstItem, index, generatorPosition);
-    }
+    } 
 
     private (UIElement Item, int GeneratorIndex, GeneratorPosition GeneratorStartPosition) GetLastGeneratedItem()
     {
@@ -528,9 +528,9 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCharts
       this._virtualizationBounds.Scale(xZoomFactor, yZoomFactor);
     }
 
-    private void ScrollVirtualizationBounds(double horizonalOffset, double verticalOffset)
+    private void ScrollVirtualizationBounds(double horizontalOffset, double verticalOffset)
     {
-      this._virtualizationBounds.X = horizonalOffset;
+      this._virtualizationBounds.X = horizontalOffset;
       this._virtualizationBounds.Y = verticalOffset;
     }
 
@@ -770,7 +770,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCharts
         ScrollVirtualizationBounds(
           this.HorizontalOffset - VirtualizingPanel.GetCacheLength(this.Owner).CacheBeforeViewport * this.ViewportWidth,
           this.VerticalOffset);
-        RecycleObsoleteItems(generatorDirection);
+        //RecycleObsoleteItems(generatorDirection);
       }
     }
 
@@ -798,17 +798,23 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCharts
           return 0;
         }
 
+        bool isRemoveingBefore = true;
         while (firstGeneratedItemInfo.Item != null)
         {
           (Point ChartPoint, Point Minima, Point Maxima) pointInfo = this.Owner.ConvertItemToPointInfo(firstGeneratedItemInfo.Item);
-          if (!IsPointInsideVirtualizationBounds(pointInfo.ChartPoint, pointInfo.Maxima))
+          if (IsPointInsideVirtualizationBounds(pointInfo.ChartPoint, pointInfo.Maxima))
           {
+            //if (isRemoveingBefore)
+            //{
+            //  isRemoveingBefore = false;
+            //  firstGeneratedItemInfo = GetLastGeneratedItem();
+            //  continue;
+            //}
             break;
           }
-
           (this.ItemContainerGenerator as IRecyclingItemContainerGenerator).Recycle(firstGeneratedItemInfo.GeneratorStartPosition, 1);
           RemoveInternalChildRange(0, 1);
-          firstGeneratedItemInfo = GetFirstGeneratedItem();
+          firstGeneratedItemInfo = isRemoveingBefore ? GetFirstGeneratedItem() : GetLastGeneratedItem();
           recycleItemsCount++;
         }
       }

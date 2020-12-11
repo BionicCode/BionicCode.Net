@@ -9,7 +9,7 @@
     <projectUrl>https://github.com/BionicCode/BionicCode.Net</projectUrl>
     <iconUrl>https://avatars2.githubusercontent.com/u/39948423?s=400%26u%3D9fa449b3bc919b95843c67e4c4643e0a69e7d9bf%26v%3D4</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Reusable utility and class library for UWP - Featuring: AsyncRelayCommand&lt;T&gt;.</description>
+    <description>Reusable utility and class library for UWP - Featuring: AsyncRelayCommand&lt;T&gt;, EventAggregator, ViewModel (base class that implements INotifyPropertyChanged and INotifyDataErrorInfo), AutoResetStream etc.</description>
     <releaseNotes>
 
     

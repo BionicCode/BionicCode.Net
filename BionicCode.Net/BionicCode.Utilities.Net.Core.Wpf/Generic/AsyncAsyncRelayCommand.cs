@@ -15,7 +15,7 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Generic
   public class AsyncRelayCommand<TParam> : IAsyncRelayCommand<TParam>, IAsyncRelayCommand
   {
     /// <inheritdoc cref="IAsyncRelayCommand{TParam}"/>
-    public bool IsExecuting { get; private set; }
+    public bool IsExecuting => this.executionCount > 0;
 
     /// <summary>
     /// The registered parameterless async execute delegate.
@@ -41,6 +41,7 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Generic
     private readonly Action<TParam> execute;
     private readonly Predicate<TParam> canExecute;
     private EventHandler canExecuteChangedDelegate;
+    private int executionCount;
 
     /// <inheritdoc />
     public event EventHandler CanExecuteChanged
@@ -218,7 +219,7 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Generic
     {
       try
       {
-        this.IsExecuting = true;
+        Interlocked.Increment(ref this.executionCount);
         cancellationToken.ThrowIfCancellationRequested();
         if (this.executeAsync != null)
         {
@@ -240,7 +241,7 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Generic
       }
       finally
       {
-        this.IsExecuting = false;
+        Interlocked.Decrement(ref this.executionCount);
       }
     }
 

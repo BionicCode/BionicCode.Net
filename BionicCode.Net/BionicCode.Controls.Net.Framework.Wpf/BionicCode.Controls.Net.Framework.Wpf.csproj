@@ -52,6 +52,22 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BionicCalendar\Calendar.cs" />
+    <Compile Include="BionicCalendar\CalendarDate.cs" />
+    <Compile Include="BionicCalendar\CalendarDateColumnHeaderItem.cs" />
+    <Compile Include="BionicCalendar\CalendarDateItem.cs" />
+    <Compile Include="BionicCalendar\CalendarEvent.cs" />
+    <Compile Include="BionicCalendar\CalendarEventItem.cs" />
+    <Compile Include="BionicCalendar\CalendarPanel.cs" />
+    <Compile Include="BionicCalendar\CalendarRowItem.cs" />
+    <Compile Include="BionicCalendar\DateColumnHeaderGeneratorArgs.cs" />
+    <Compile Include="BionicCalendar\DateGeneratorArgs.cs" />
+    <Compile Include="BionicCalendar\DayChangeWatcher.cs" />
+    <Compile Include="BionicCalendar\EventGeneratorArgs.cs" />
+    <Compile Include="BionicCalendar\EventResizeAdorner.cs" />
+    <Compile Include="BionicCalendar\ICalendarDate.cs" />
+    <Compile Include="BionicCalendar\ICalendarEvent.cs" />
+    <Compile Include="BionicCalendar\SpanningRequestedRoutedEventArgs.cs" />
     <Compile Include="BionicCharts\CartesianChart\VirtualizingCartesianCanvas.cs" />
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -14,9 +14,8 @@
     <local:CartesianChartViewModel />
   </Window.DataContext>
   <StackPanel>
-<Button Content="Test Command" Command="{Binding AsyncRelayTestCommand}"/>
-    <!--<bionicCalendar:Calendar Height="1000" Width="1000" />-->
-
+<!--<Button Content="Test Command" Command="{Binding AsyncRelayTestCommand}"/>-->
+    <bionicCalendar:Calendar VerticalContentAlignment="Stretch" Background="Red"/>
 
     <!--<ListBox x:Name="ListBox" Height="800" ItemsSource="{Binding ChartPoints}" VirtualizingPanel.CacheLength="10" VirtualizingPanel.VirtualizationMode="Recycling" />-->
       <!--<TextBlock attachedBehaviors:TextControl.HighlightBackground="Chocolate" attachedBehaviors:TextControl.HighlightForeground="Cornsilk" attachedBehaviors:TextControl.IsHighlightingEnabled="True" attachedBehaviors:TextControl.Text="0123456789" >
@@ -62,11 +61,11 @@
         </Style>
       </ListBox.ItemContainerStyle>--><!--
     </ListBox>-->
-    <bionicCharts:CartesianChart x:Name="CartesianChart" Height="700" Width="700" VirtualizingPanel.CacheLengthUnit="Page" VirtualizingPanel.CacheLength="5,5"  bionicCharts:VirtualizingCartesianCanvas.XZoomFactor="3" bionicCharts:VirtualizingCartesianCanvas.YZoomFactor="1" 
+    <!--<bionicCharts:CartesianChart x:Name="CartesianChart" Height="700" Width="700" VirtualizingPanel.CacheLengthUnit="Page" VirtualizingPanel.CacheLength="5,5"  bionicCharts:VirtualizingCartesianCanvas.XZoomFactor="3" bionicCharts:VirtualizingCartesianCanvas.YZoomFactor="1" 
                                 ItemsSource="{Binding ChartPoints}"  Background="CadetBlue">
-      <!--<bionicCharts:CartesianChart.Items>
+      --><!--<bionicCharts:CartesianChart.Items>
         <bionicCharts:CartesianChartItem X="100" Y="20"><Ellipse Height="10" Width="10" StrokeThickness="2" Stroke="Black"/></bionicCharts:CartesianChartItem>
-      </bionicCharts:CartesianChart.Items>-->
-    </bionicCharts:CartesianChart>
+      </bionicCharts:CartesianChart.Items>--><!--
+    </bionicCharts:CartesianChart>-->
   </StackPanel>
 </Window>

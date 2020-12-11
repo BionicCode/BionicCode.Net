@@ -24,7 +24,7 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Collections.Generic
       base.InsertItem(index, item);
       if (item is INotifyPropertyChanged propertyChangedItem)
       {
-        PropertyChangedEventManager.AddHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
+        StartListenToItemPropertyChanged(propertyChangedItem);
       }
     }
 
@@ -36,7 +36,7 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Collections.Generic
         TItem item = this.Items[index];
         if (item is INotifyPropertyChanged propertyChangedItem)
         {
-          PropertyChangedEventManager.RemoveHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
+          StopListenToItemPropertyChanged(propertyChangedItem);
         }
       }
 
@@ -48,8 +48,7 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Collections.Generic
     {
       this.Items.OfType<INotifyPropertyChanged>()
         .ToList()
-        .ForEach(propertyChangedItem =>
-          PropertyChangedEventManager.RemoveHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty));
+        .ForEach(StopListenToItemPropertyChanged);
 
       base.ClearItems();
     }
@@ -61,23 +60,50 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Collections.Generic
       {
         if (this.Items[index] is INotifyPropertyChanged oldPropertyChangedItem)
         {
-          PropertyChangedEventManager.RemoveHandler(oldPropertyChangedItem, OnItemPropertyChanged, string.Empty);
+          StopListenToItemPropertyChanged(oldPropertyChangedItem);
         }
 
         if (item is INotifyPropertyChanged newPropertyChangedItem)
         {
-          PropertyChangedEventManager.AddHandler(newPropertyChangedItem, OnItemPropertyChanged, string.Empty);
+          StartListenToItemPropertyChanged(newPropertyChangedItem);
         }
       }
 
       base.SetItem(index, item);
     }
 
+    private void StartListenToItemPropertyChanged(INotifyPropertyChanged propertyChangedItem) => PropertyChangedEventManager.AddHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
+
+    private void StopListenToItemPropertyChanged(INotifyPropertyChanged propertyChangedItem) => PropertyChangedEventManager.RemoveHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
+
     #endregion Overrides of ObservableCollection<TItem>
 
-    private void OnItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private PropertyChangedEventHandler childPropertyChanged;
+
+    #region Overrides of ObservableCollection<TItem>
+
+    /// <inheritdoc />
+    protected override event PropertyChangedEventHandler PropertyChanged
     {
-      OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset, sender, IndexOf((TItem)sender)));
+      add
+      {
+        base.PropertyChanged += value;
+        this.childPropertyChanged = (PropertyChangedEventHandler)Delegate.Combine(this.childPropertyChanged, value);
+      }
+      remove
+      {
+        base.PropertyChanged -= value;
+        this.childPropertyChanged = (PropertyChangedEventHandler)Delegate.Remove(this.childPropertyChanged, value);
+      }
+    }
+
+    #endregion
+
+    private void OnItemPropertyChanged(object item, PropertyChangedEventArgs e)
+    {
+      OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, IndexOf((TItem)item), IndexOf((TItem)item)));
+
+      this.childPropertyChanged?.Invoke(item, e);
     }
   }
 }

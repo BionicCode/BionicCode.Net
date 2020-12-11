@@ -246,6 +246,9 @@
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Collections.Generic.ObservablePropertyChangedCollection`1.SetItem(System.Int32,`0)">
             <inheritdoc />
         </member>
+        <member name="E:BionicCode.Utilities.Net.Core.Wpf.Collections.Generic.ObservablePropertyChangedCollection`1.PropertyChanged">
+            <inheritdoc />
+        </member>
         <member name="T:BionicCode.Utilities.Net.Core.Wpf.Converter.BooleanMultiValueConverter">
             <summary>
             An <see cref="T:System.Windows.Data.IMultiValueConverter"/> implementation that checks if all values are <c>true</c>. Supports <see cref="F:System.Windows.Data.BindingMode.OneWay"/> or <see cref="F:System.Windows.Data.BindingMode.OneTime"/> only.

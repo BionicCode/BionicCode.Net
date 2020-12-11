@@ -15,11 +15,11 @@
     <Copyright>2020</Copyright>
     <RepositoryUrl>https://github.com/BionicCode/BionicCode.Net.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Added TextControl attached behavior to highlight custom text ranges. Added missing documentation. Added feature to control modality of MVVM dialog behavior and control property whether user can close the dialog window or not.
+    <PackageReleaseNotes>Refactored AsyncRelayCommand. Removed redundant dependency to BionicCode.Utilities.Net.Framework.Wpf.
 
 ---------------------------------------------------------
 For bug reports or feature requests please visit the project home on GutHub (follow the "Project Site" link on the right) and then open an issue (open the "issue" tab, click "New Issue" and select the appropriate template) or send  a mail to BionicCode@outlook.com. Thank you very much.</PackageReleaseNotes>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -32,7 +32,6 @@ For bug reports or feature requests please visit the project home on GutHub (fol
 
   <ItemGroup>
     <ProjectReference Include="..\BionicCode.Utilities.Net.Core\BionicCode.Utilities.Net.Core.csproj" />
-    <ProjectReference Include="..\BionicCode.Utilities.Net.Framework.Wpf\BionicCode.Utilities.Net.Framework.Wpf.csproj" />
     <ProjectReference Include="..\BionicCode.Utilities.Net.Standard\BionicCode.Utilities.Net.Standard.csproj" />
   </ItemGroup>
 
