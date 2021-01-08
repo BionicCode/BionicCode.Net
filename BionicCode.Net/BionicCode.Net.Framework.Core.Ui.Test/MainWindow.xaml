@@ -1,0 +1,19 @@
+﻿<Window x:Class="BionicCode.Net.Framework.Core.Ui.Test.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BionicCode.Net.Framework.Core.Ui.Test"
+        xmlns:wpf="clr-namespace:BionicCode.Controls.Net.Core.Wpf;assembly=BionicCode.Controls.Net.Core.Wpf"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+  <StackPanel>
+    <wpf:TimePicker x:Name="TimePicker" IsSecondsEnabled="True" IsOpen="True"/>
+
+    <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedTime}"/>
+    <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedHours}"/>
+    <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedMinutes}"/>
+    <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedSeconds}"/>
+    <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedMeridiem}"/>
+  </StackPanel>
+</Window>

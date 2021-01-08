@@ -15,7 +15,7 @@
   </Window.DataContext>
   <StackPanel>
 <!--<Button Content="Test Command" Command="{Binding AsyncRelayTestCommand}"/>-->
-    <bionicCalendar:Calendar VerticalContentAlignment="Stretch" Background="Red"/>
+    <bionicCalendar:Calendar VerticalContentAlignment="Stretch" Background="Red" FirstDayOfWeek="Monday"/>
 
     <!--<ListBox x:Name="ListBox" Height="800" ItemsSource="{Binding ChartPoints}" VirtualizingPanel.CacheLength="10" VirtualizingPanel.VirtualizationMode="Recycling" />-->
       <!--<TextBlock attachedBehaviors:TextControl.HighlightBackground="Chocolate" attachedBehaviors:TextControl.HighlightForeground="Cornsilk" attachedBehaviors:TextControl.IsHighlightingEnabled="True" attachedBehaviors:TextControl.Text="0123456789" >

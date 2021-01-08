@@ -88,7 +88,7 @@
     <Setter Property="Padding" Value="0,0,8,0" />
     <Setter Property="Margin" Value="0,0,0,1" />
     <Setter Property="Height" Value="16" />
-    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
     <Setter Property="HorizontalAlignment" Value="Stretch" />
     <Setter Property="VerticalAlignment" Value="Top" />
     <Setter Property="VerticalContentAlignment" Value="Top" />
@@ -110,7 +110,8 @@
               <Border Grid.Column="1" Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}">
-                <ContentPresenter />
+                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
               </Border>
               <Border x:Name="ResizeGripRight" Grid.Column="2" 
                       Margin="{TemplateBinding Padding}" 
@@ -176,6 +177,9 @@
     <Setter Property="BorderBrush" Value="{StaticResource DateItemBorderBrush}" />
     <Setter Property="bionicCalendar:Calendar.Day" Value="{Binding Day}" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Top" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <!--<Setter Property="Height" Value="24" />-->
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="bionicCalendar:CalendarDateItem">
@@ -185,24 +189,16 @@
                   Background="{TemplateBinding Background}">
 
             <Grid>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="24" />
-                <RowDefinition />
-              </Grid.RowDefinitions>
               <Border x:Name="TodayMarker"
-                      Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
+                      Grid.Row="0" Grid.Column="0"
                       Visibility="Collapsed"
                       Background="Red" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
               <Border x:Name="SelectionBorder"
-                    Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
+                    Grid.Row="0" Grid.Column="0"
                     Visibility="Collapsed"
                     Background="Yellow" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
               <ContentPresenter Grid.Row="0" Grid.Column="0"
-                                HorizontalAlignment="Left"
-                                ContentSource="Header" />
-              <ItemsPresenter x:Name="EventItemsHost" Grid.Row="1" Grid.Column="0" 
-                              Margin="0"
-                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
+                                ContentSource="Header" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"  />
             </Grid>
           </Border>
           <ControlTemplate.Triggers>
@@ -212,10 +208,6 @@
             <Trigger Property="IsSelected" Value="True">
               <Setter TargetName="SelectionBorder" Property="Visibility" Value="Visible" />
             </Trigger>
-            <Trigger Property="HasItems" Value="True">
-              <Setter TargetName="EventItemsHost" Property="Margin" Value="0,0,0,24" />
-            </Trigger>
-
           </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>

@@ -97,27 +97,30 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
 
       if (d is CalendarEventItem eventItemContainer)
       {
-        if (!Calendar.Instance.ItemContainerToItemMap.ContainsKey(eventItemContainer))
-        {
-          Calendar.Instance.ItemContainerToItemMap.Add(eventItemContainer, eventItemContainer.Content);
-          Calendar.Instance.PrepareContainerForEventItemOverride(eventItemContainer, eventItemContainer.Content);
-        }
-        if (Calendar.DateToDateItemContainerMap.TryGetValue(
-          oldCalendarDate.Date,
-          out UIElement oldCalendarDateItem) && oldCalendarDateItem is HeaderedItemsControl oldHeaderedItemsControl)
-        {
-          oldHeaderedItemsControl.Items.Remove(eventItemContainer);
-        }
-        if (Calendar.DateToDateItemContainerMap.TryGetValue(
-          newCalendarDate.Date,
-          out UIElement calendarDateItem) && calendarDateItem is HeaderedItemsControl headeredItemsControl)
-        {
-          if (!headeredItemsControl.Items.Contains(eventItemContainer))
-          {
-            headeredItemsControl.Items.Add(eventItemContainer);
-            Calendar.IsItemsHostLayoutDirty = true;
-          }
-        }
+        //Calendar.IsItemsHostLayoutDirty = true;
+        //if (!Calendar.Instance.ItemContainerToItemMap.ContainsKey(eventItemContainer))
+        //{
+        //  Calendar.Instance.ItemContainerToItemMap.Add(eventItemContainer, eventItemContainer.Content);
+        //  Calendar.Instance.PrepareContainerForEventItemOverride(eventItemContainer, eventItemContainer.Content);
+        //}
+
+
+        //if (Calendar.DateToDateItemContainerMap.TryGetValue(
+        //  oldCalendarDate.Date,
+        //  out UIElement oldCalendarDateItem) && oldCalendarDateItem is HeaderedItemsControl oldHeaderedItemsControl)
+        //{
+        //  oldHeaderedItemsControl.Items.Remove(eventItemContainer);
+        //}
+        //if (Calendar.DateToDateItemContainerMap.TryGetValue(
+        //  newCalendarDate.Date,
+        //  out UIElement calendarDateItem) && calendarDateItem is HeaderedItemsControl headeredItemsControl)
+        //{
+        //  if (!headeredItemsControl.Items.Contains(eventItemContainer))
+        //  {
+        //    headeredItemsControl.Items.Add(eventItemContainer);
+        //    Calendar.IsItemsHostLayoutDirty = true;
+        //  }
+        //}
       }
 
       if (d is CalendarDateItem dateItemContainer)
@@ -324,6 +327,11 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
       this.DayChangeWatcher = new DayChangeWatcher();
     }
 
+    private void SpanEventItemOnSpanningRequested(object sender, EventItemDragDropArgs e)
+    {
+      ;
+    }
+
     private void OnItemSelected(object sender, RoutedEventArgs e)
     {
       if (e.OriginalSource is CalendarDateItem)
@@ -337,25 +345,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
     }
 
     #endregion
-
-    private void SpanEventItemOnSpanningRequested(object sender, SpanningRequestedRoutedEventArgs e)
-    {
-      if (e.SpanDirection == ExpandDirection.Right)
-      {
-        //EventGeneratorArgs containerData = CreateEventGeneratorArgsFor(sender as UIElement);
-        //if (containerData.ItemsHost.DefaultEventPanel.Children.Contains(containerData.ItemContainer))
-        //{
-        //    containerData.ItemsHost.DefaultEventPanel.Children.Remove(containerData.ItemContainer);
-        //}
-
-        //if (!containerData.ItemsHost.SpanningPanel.Children.Contains(containerData.ItemContainer))
-        //{
-        //    containerData.ItemsHost.SpanningPanel.Children.Add(containerData.ItemContainer);
-        //}
-
-        //Grid.SetColumnSpan(containerData.ItemContainer, Grid.GetColumnSpan(containerData.ItemContainer) + 1);
-      }
-    }
+    
 
     #region Overrides of FrameworkElement
 
@@ -369,14 +359,23 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
       }
       var dates = new List<ICalendarDate>();
       int daysInMonth = this.CalendarSource.GetDaysInMonth(DateTime.Today.Year, DateTime.Today.Month);
-      var date = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-      while (date.DayOfWeek != this.FirstDayOfWeek)
+      var lastDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, daysInMonth);
+      var firstDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+      while (firstDate.DayOfWeek != this.FirstDayOfWeek)
       {
-        date = date.Subtract(TimeSpan.FromDays(1));
+        firstDate = firstDate.Subtract(TimeSpan.FromDays(1));
       }
-      for (var dayIndex = 0; dayIndex < 35; dayIndex++)
+
+      while (lastDate.AddDays(1).DayOfWeek != this.FirstDayOfWeek)
       {
-        DateTime currentDay = date.AddDays(dayIndex);
+        lastDate = lastDate.AddDays(1);
+      }
+
+      int daysInCalendarView = lastDate.Subtract(firstDate).Days + 1;
+      this.ItemsHost.RowCount = (int) Math.Ceiling(daysInCalendarView / (double) this.ItemsHost.ColumnCount);
+      for (var dayIndex = 0; dayIndex < this.ItemsHost.RowCount * this.ItemsHost.ColumnCount; dayIndex++)
+      {
+        DateTime currentDay = firstDate.AddDays(dayIndex);
         var calendarDateItem = new CalendarDate
         {
           Day = currentDay,
@@ -398,7 +397,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
       var events = new ObservableCollection<ICalendarEvent>();
       for (var day = 0; day < daysInMonth; day++)
       {
-        DateTime currentDay = date.AddDays(day);
+        DateTime currentDay = firstDate.AddDays(day);
 
         for (var count = 0; count < 2; count++)
         {
@@ -406,7 +405,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
           {
             Start = new DateTime(currentDay.Year, currentDay.Month, currentDay.Day, 14, 30 + count, 0),
             Stop = new DateTime(currentDay.Year, currentDay.Month, currentDay.Day, 15, count, 0),
-            Summary = "This is some event data"
+            Summary = $"{currentDay.ToShortDateString()}/#{count} This is some event data"
           };
           events.Add(calendarEvent);
         }
@@ -640,10 +639,10 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
 
     private void InitializeNewEventItems(IEnumerable newItems)
     {
-      var itemContainers = new List<UIElement>();
+      var itemContainers = new List<FrameworkElement>();
       foreach (object item in newItems)
       {
-        var eventItemContainer = GetContainerForEventItemOverride() as FrameworkElement;
+        var eventItemContainer = GetContainerForEventItemOverride();
         PrepareContainerForEventItemOverride(eventItemContainer, item);
         RegisterItemContainer(eventItemContainer, item);
         itemContainers.Add(eventItemContainer);
@@ -654,14 +653,14 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
 
     private void RemoveOlEventItems(IEnumerable newItems)
     {
-      var itemContainers = new List<UIElement>();
+      var itemContainers = new List<FrameworkElement>();
       foreach (object item in newItems)
       {
         if (this.ItemToItemContainerMap.TryGetValue(item, out UIElement dateItemContainer))
         {
           UnregisterItemContainer(dateItemContainer, item);
           Calendar.UnregisterDateItemContainer(dateItemContainer);
-          itemContainers.Add(dateItemContainer);
+          itemContainers.Add(dateItemContainer as FrameworkElement);
         }
       }
 
@@ -704,6 +703,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
         }
       }
 
+      this.ItemsHost.get
       switch (routedEventArgs.OriginalSource)
       {
         case HeaderedItemsControl headeredItemsControl:
@@ -736,7 +736,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
       RaiseEvent(new RoutedEventArgs(Selector.SelectedEvent, this));
     }
 
-    protected virtual DependencyObject GetContainerForEventItemOverride() => new CalendarEventItem();
+    protected virtual FrameworkElement GetContainerForEventItemOverride() => new CalendarEventItem();
     protected DependencyObject GetContainerForDateItem() => new CalendarDateItem();
     protected DependencyObject GetContainerForDateColumnHeaderItem() => new CalendarDateColumnHeaderItem();
 
@@ -946,11 +946,13 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
     private void CreateDateColumnHeaderItems()
     {
       var dateColumnHeaderItemContainers = new List<UIElement>();
-      string[] daysOfWeek = Enum.GetNames(typeof(DayOfWeek));
-
-      for (var columnIndex = 0; columnIndex < 7; columnIndex++)
+      List<int> dayOfWeekValues = Enum.GetValues(typeof(DayOfWeek)).Cast<int>().ToList();
+      List<int> daysOfWeekToWrap = dayOfWeekValues.TakeWhile(dayValue => dayValue < (int) this.FirstDayOfWeek).ToList();
+      dayOfWeekValues.RemoveRange(0, daysOfWeekToWrap.Count);
+      dayOfWeekValues.AddRange(daysOfWeekToWrap);
+      IEnumerable<string> daysOfWeek = dayOfWeekValues.Select(dayOfWeekValue => ((DayOfWeek) dayOfWeekValue).ToString());
+      foreach (string dayOfWeekName in daysOfWeek)
       {
-        string dayOfWeekName = daysOfWeek[columnIndex];
         var dateContainer = GetContainerForDateColumnHeaderItem() as UIElement;
         PrepareContainerForCalendarDateColumnHeaderItemOverride(dateContainer, dayOfWeekName);
 

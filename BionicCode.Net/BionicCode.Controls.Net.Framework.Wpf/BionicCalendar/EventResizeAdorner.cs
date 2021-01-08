@@ -92,23 +92,23 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
 
       Point leavePosition = e.GetPosition(this);
 
-      RaiseEvent(
-        new SpanningRequestedRoutedEventArgs(
-          Calendar.SpanningRequestedRoutedEvent,
-          this,
-          leavePosition.X > 0 ? ExpandDirection.Right : ExpandDirection.Left));
+      //RaiseEvent(
+      //  new SpanningRequestedRoutedEventArgs(
+      //    Calendar.SpanningRequestedRoutedEvent,
+      //    this,
+      //    leavePosition.X > 0 ? ExpandDirection.Right : ExpandDirection.Left));
 
-      if (this.AdornedElement.TryFindVisualParentElement(out CalendarPanel calendarPanel))
-      {
-        calendarPanel.SpanEventItemOnSpanningRequested(
-          this.AdornedElement,
-          new SpanningRequestedRoutedEventArgs(
-            Calendar.SpanningRequestedRoutedEvent,
-            this.AdornedElement,
-            leavePosition.X > (this.AdornedElement as FrameworkElement).ActualWidth
-              ? ExpandDirection.Right
-              : ExpandDirection.Left));
-      }
+      //if (this.AdornedElement.TryFindVisualParentElement(out CalendarPanel calendarPanel))
+      //{
+      //  calendarPanel.SpanEventItemOnSpanningRequested(
+      //    this.AdornedElement,
+      //    new SpanningRequestedRoutedEventArgs(
+      //      Calendar.SpanningRequestedRoutedEvent,
+      //      this.AdornedElement,
+      //      leavePosition.X > (this.AdornedElement as FrameworkElement).ActualWidth
+      //        ? ExpandDirection.Right
+      //        : ExpandDirection.Left));
+      //}
     }
 
     /// <inheritdoc />
@@ -168,25 +168,25 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
         return;
       }
 
-      if (currentMousePosition.X < (this.AdornedElement as FrameworkElement).ActualWidth -
-        this.AdornedElement.DesiredSize.Width)
-      {
-        calendarPanel.SpanEventItemOnSpanningRequested(
-          this.AdornedElement,
-          new SpanningRequestedRoutedEventArgs(
-            Calendar.SpanningRequestedRoutedEvent,
-            this.AdornedElement,
-            ExpandDirection.Left));
-      }
-      else if (currentMousePosition.X > (this.AdornedElement as FrameworkElement).ActualWidth + 20)
-      {
-        calendarPanel.SpanEventItemOnSpanningRequested(
-          this.AdornedElement,
-          new SpanningRequestedRoutedEventArgs(
-            Calendar.SpanningRequestedRoutedEvent,
-            this.AdornedElement,
-            ExpandDirection.Right));
-      }
+      //if (currentMousePosition.X < (this.AdornedElement as FrameworkElement).ActualWidth -
+      //  this.AdornedElement.DesiredSize.Width)
+      //{
+      //  calendarPanel.SpanEventItemOnSpanningRequested(
+      //    this.AdornedElement,
+      //    new SpanningRequestedRoutedEventArgs(
+      //      Calendar.SpanningRequestedRoutedEvent,
+      //      this.AdornedElement,
+      //      ExpandDirection.Left));
+      //}
+      //else if (currentMousePosition.X > (this.AdornedElement as FrameworkElement).ActualWidth + 20)
+      //{
+      //  calendarPanel.SpanEventItemOnSpanningRequested(
+      //    this.AdornedElement,
+      //    new SpanningRequestedRoutedEventArgs(
+      //      Calendar.SpanningRequestedRoutedEvent,
+      //      this.AdornedElement,
+      //      ExpandDirection.Right));
+      //}
     }
 
     #endregion

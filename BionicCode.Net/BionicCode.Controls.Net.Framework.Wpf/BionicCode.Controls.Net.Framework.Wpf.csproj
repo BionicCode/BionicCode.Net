@@ -64,11 +64,13 @@
     <Compile Include="BionicCalendar\DateGeneratorArgs.cs" />
     <Compile Include="BionicCalendar\DayChangeWatcher.cs" />
     <Compile Include="BionicCalendar\EventGeneratorArgs.cs" />
+    <Compile Include="BionicCalendar\EventItemDragDropArgs.cs" />
     <Compile Include="BionicCalendar\EventResizeAdorner.cs" />
     <Compile Include="BionicCalendar\ICalendarDate.cs" />
     <Compile Include="BionicCalendar\ICalendarEvent.cs" />
     <Compile Include="BionicCalendar\SpanningRequestedRoutedEventArgs.cs" />
     <Compile Include="BionicCharts\CartesianChart\VirtualizingCartesianCanvas.cs" />
+    <Compile Include="TimeTextBox.cs" />
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

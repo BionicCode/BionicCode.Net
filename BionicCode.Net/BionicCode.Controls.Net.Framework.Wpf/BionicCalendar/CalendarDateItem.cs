@@ -121,10 +121,15 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
     public CalendarDateItem()
     {
       this.AllowDrop = true;
+      AddHandler(Calendar.PreviewSelectedRoutedEvent, new RoutedEventHandler(OnEventItemSelected));
     }
 
     #endregion
 
+    private void OnEventItemSelected(object sender, RoutedEventArgs e)
+    {
+      ;
+    }
     #region
 
     /// <inheritdoc />
@@ -158,35 +163,54 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
     #region Overrides of UIElement
 
     /// <inheritdoc />
+    protected override void OnDragOver(DragEventArgs e)
+    {
+      base.OnDragOver(e);
+      if (e.AllowedEffects.HasFlag(DragDropEffects.Move))
+      {
+        return;
+      }
+
+      var eventItemDragDropArgs = e.Data.GetData(DataFormats.Serializable) as EventItemDragDropArgs;
+
+      if (eventItemDragDropArgs == null)
+      {
+        return;
+      }
+      RaiseEvent(new EventItemDragDropArgs(eventItemDragDropArgs, Calendar.SpanningRequestedRoutedEvent, this));
+    }
+
+    /// <inheritdoc />
     protected override void OnDrop(DragEventArgs e)
     {
       base.OnDragEnter(e);
-      var eventItem = e.Data.GetData(DataFormats.Serializable) as UIElement;
+      var eventItemDragDropArgs = e.Data.GetData(DataFormats.Serializable) as EventItemDragDropArgs;
 
-      if (eventItem == null || this.Items.Contains(eventItem))
+      if (eventItemDragDropArgs == null || this.Items.Contains(eventItemDragDropArgs))
       {
         return;
       }
 
       if (e.AllowedEffects.HasFlag(DragDropEffects.Move))
       {
-        Calendar.SetDay(eventItem, Calendar.GetDay(this));
+        Calendar.SetDay(eventItemDragDropArgs.ItemContainer, Calendar.GetDay(this));
+        RaiseEvent(eventItemDragDropArgs);
       }
       if (e.AllowedEffects.HasFlag(DragDropEffects.Link))
       {
-        var newItem = new CalendarEventItem(eventItem as CalendarEventItem){Tag = "qwertz"};
-        newItem.IsSpanningTarget = true;
-        this.Items.Insert(0, newItem);
-        DateTime tt = Calendar.GetDay(this);
-        if (Calendar.DateToDateItemContainerMap.TryGetValue(
-          tt.Date,
-          out UIElement calendarDateItem))
-        {
-          var eq = ReferenceEquals(this, calendarDateItem);
-          var eq1 = ReferenceEquals(this, newItem.Parent);
-          var eq2 = ReferenceEquals(newItem.Parent, calendarDateItem);
-        }
-        Calendar.SetDay(newItem, tt);
+        //var newItem = new CalendarEventItem(eventItemDragDropArgs as CalendarEventItem){Tag = "qwertz"};
+        //newItem.IsSpanningTarget = true;
+        //this.Items.Insert(0, newItem);
+        //DateTime tt = Calendar.GetDay(this);
+        //if (Calendar.DateToDateItemContainerMap.TryGetValue(
+        //  tt.Date,
+        //  out UIElement calendarDateItem))
+        //{
+        //  var eq = ReferenceEquals(this, calendarDateItem);
+        //  var eq1 = ReferenceEquals(this, newItem.Parent);
+        //  var eq2 = ReferenceEquals(newItem.Parent, calendarDateItem);
+        //}
+        //Calendar.SetDay(newItem, tt);
       }
     }
 
