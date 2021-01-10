@@ -7,6 +7,8 @@
         xmlns:wpf="clr-namespace:BionicCode.Controls.Net.Core.Wpf;assembly=BionicCode.Controls.Net.Core.Wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+  <Window.Resources>
+  </Window.Resources>
   <StackPanel>
     <wpf:TimePicker x:Name="TimePicker" IsSecondsEnabled="True" IsOpen="True"/>
 

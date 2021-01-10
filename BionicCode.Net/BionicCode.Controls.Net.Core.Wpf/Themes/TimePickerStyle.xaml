@@ -297,14 +297,14 @@
                   <VisualState Name="{x:Static local:TimePicker.VisualStatePickerOpen}">
                     <Storyboard>
                       <DoubleAnimation Storyboard.TargetName="PickerPanel"
-                                       Storyboard.TargetProperty="Height" From="0" To="480"
+                                       Storyboard.TargetProperty="MaxHeight" From="0" To="1000"
                                        Duration="0:0:0.1"/>
                     </Storyboard>
                   </VisualState>
                   <VisualState Name="{x:Static local:TimePicker.VisualStatePickerClosed}">
                     <Storyboard>
                       <DoubleAnimation Storyboard.TargetName="PickerPanel"
-                                       Storyboard.TargetProperty="Height" From="320" To="0" />
+                                       Storyboard.TargetProperty="MaxHeight" To="0" />
                     </Storyboard>
                   </VisualState>
                 </VisualStateGroup.States>
@@ -342,7 +342,6 @@
               </StackPanel>
             </Border>
             <Popup x:Name="PickerPanel"
-                   Height="0"
                    PlacementTarget="{Binding ElementName=Expander}"
                    IsOpen="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsOpen}"
                    AllowsTransparency="True"
@@ -356,7 +355,7 @@
                   <DropShadowEffect Opacity="0.7" Color="DimGray" />
                 </Border.Effect>
 
-                <Canvas x:Name="PART_ClockCanvas"/>
+                <ContentPresenter x:Name="PART_ClockHost" />
               </Border>
             </Popup>
           </StackPanel>

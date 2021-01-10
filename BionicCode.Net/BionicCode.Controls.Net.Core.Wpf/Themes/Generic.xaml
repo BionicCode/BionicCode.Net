@@ -5,6 +5,8 @@
     xmlns:controls="clr-namespace:BionicCode.Controls.Net.Core.Wpf.Controls">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/BionicCode.Controls.Net.Core.Wpf;component/Themes/TimePickerStyle.xaml" />
+    <ResourceDictionary Source="/BionicCode.Controls.Net.Core.Wpf;component/Themes/AnalogTimePickerStyle.xaml" />
+    <ResourceDictionary Source="/BionicCode.Controls.Net.Core.Wpf;component/Themes/AnalogClockFaceStyle.xaml" />
   </ResourceDictionary.MergedDictionaries>
   <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Pink"/>
 

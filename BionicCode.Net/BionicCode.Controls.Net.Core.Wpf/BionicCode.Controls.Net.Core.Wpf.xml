@@ -4,6 +4,12 @@
         <name>BionicCode.Controls.Net.Core.Wpf</name>
     </assembly>
     <members>
+        <member name="M:BionicCode.Controls.Net.Core.Wpf.AnalogClockFace.MeasureOverride(System.Windows.Size)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Controls.Net.Core.Wpf.AnalogTimePicker.MeasureOverride(System.Windows.Size)">
+            <inheritdoc />
+        </member>
         <!-- Badly formed XML comment ignored for member "T:BionicCode.Controls.Net.Core.Wpf.Controls.ClosableTabControl" -->
         <member name="T:BionicCode.Controls.Net.Core.Wpf.Controls.IMatchFormatter">
             <summary>
@@ -105,15 +111,6 @@
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "T:BionicCode.Controls.Net.Core.Wpf.TimePicker" -->
-        <member name="M:BionicCode.Controls.Net.Core.Wpf.TimePicker.OnApplyTemplate">
-            <inheritdoc />
-        </member>
-        <member name="M:BionicCode.Controls.Net.Core.Wpf.TimePicker.OnPreviewMouseMove(System.Windows.Input.MouseEventArgs)">
-            <inheritdoc />
-        </member>
-        <member name="M:BionicCode.Controls.Net.Core.Wpf.TimePicker.OnPreviewMouseLeftButtonUp(System.Windows.Input.MouseButtonEventArgs)">
-            <inheritdoc />
-        </member>
         <member name="M:BionicCode.Controls.Net.Core.Wpf.TimeTextBox.OnPreviewKeyUp(System.Windows.Input.KeyEventArgs)">
             <inheritdoc />
         </member>

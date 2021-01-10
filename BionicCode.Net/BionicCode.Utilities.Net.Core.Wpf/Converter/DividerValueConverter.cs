@@ -17,12 +17,13 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Converter
         return Binding.DoNothing;
       }
 
-      double divisor = 1;
-
-      if (parameter != null)
-      {
-        divisor = ((double) parameter).Equals(0) ? 1 : (double) parameter;
-      }
+      double divisor = parameter is double doubleValue 
+        ? doubleValue.Equals(0) 
+          ? 1 
+          : doubleValue
+        : parameter is string stringValue && double.TryParse(stringValue, out doubleValue) 
+          ? doubleValue
+          : 1;
 
       return (double) value / divisor;
     }
