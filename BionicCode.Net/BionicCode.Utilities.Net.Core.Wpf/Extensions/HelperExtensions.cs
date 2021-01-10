@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Markup;
 using System.Windows.Media;
 using Popup = System.Windows.Controls.Primitives.Popup;
 
@@ -312,6 +315,102 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Extensions
       items.Add("IsCollection", true);
       items.Add("Count", index);
       return items;
+    }
+
+    public static UIElement CloneElement(this UIElement elementToClone)
+    {
+      string serializedElement = XamlWriter.Save(elementToClone);
+      var cloneElement = XamlReader.Parse(serializedElement) as UIElement;
+      return cloneElement;
+    }
+
+    public static bool TryAssignValueToUnknownElement(this FrameworkElement frameworkElement, object value)
+    {
+      switch (frameworkElement)
+      {
+        case Border border: 
+          if (value is UIElement)
+          {
+            border.Child = value as UIElement;
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        case Panel panel: 
+          if (value is UIElement)
+          {
+            panel.Children.Add(value as UIElement);
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        case TextBlock textBlock:
+          textBlock.Text = value?.ToString();
+          break;
+        case TextBox textBox:
+          textBox.Text = value?.ToString();
+          break;
+        case ContentControl contentControl:
+        {
+          Type type = contentControl.GetType();
+          string propertyName = type.GetCustomAttribute<ContentPropertyAttribute>()?.Name;
+          if (string.IsNullOrWhiteSpace(propertyName) 
+              || propertyName.Equals(nameof(contentControl.Content), StringComparison.Ordinal))
+          {
+            contentControl.Content = value;
+          }
+          else
+          {
+            if (!HelperExtensions.TrySetValueToPropertyOfType(value, type, propertyName, contentControl))
+            {
+              return false;
+            }
+            }
+          break;
+        }
+        case ContentPresenter contentPresenter:
+          contentPresenter.Content = value;
+          break;
+        case Control control:
+        {
+          Type type = control.GetType();
+          string propertyName = type.GetCustomAttribute<ContentPropertyAttribute>()?.Name;
+          if (string.IsNullOrWhiteSpace(propertyName))
+          {
+            control.DataContext = value;
+          }
+          else
+          {
+            if (!HelperExtensions.TrySetValueToPropertyOfType(value, type, propertyName, control))
+            {
+              return false;
+            }
+          }
+
+          break;
+        }
+        default:
+          frameworkElement.DataContext = value;
+          break;
+      }
+      return true;
+    }
+
+    private static bool TrySetValueToPropertyOfType(object value, Type type, string contentPropertyName, Control control)
+    {
+      PropertyInfo propertyInfo = type.GetProperty(contentPropertyName);
+      if (propertyInfo == null
+          || !propertyInfo.PropertyType.IsInstanceOfType(value))
+      {
+        return false;
+      }
+
+      propertyInfo.SetValue(control, value);
+      return true;
     }
   }
 }

@@ -36,14 +36,15 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Converter
         return Binding.DoNothing;
       }
 
-      double multiplier = 1;
+      double divisor = parameter is double doubleValue
+        ? doubleValue.Equals(0)
+          ? 1
+          : doubleValue
+        : parameter is string stringValue && double.TryParse(stringValue, out doubleValue)
+          ? doubleValue
+          : 1;
 
-      if (parameter != null)
-      {
-        multiplier = ((double)parameter).Equals(0) ? 1 : (double)parameter;
-      }
-
-      return (double)value * multiplier;
+      return (double)value * divisor;
     }
 
     #endregion

@@ -13,17 +13,7 @@
     <Setter Property="ClockDiameter" Value="400"/>
     <Setter Property="AnalogClockFace">
       <Setter.Value>
-<wpf:AnalogClockFace>
-          <!--<wpf:AnalogClockFace.MinuteIntervalElement>
-            <Ellipse Height="2" Width="2" Fill="{StaticResource ApplicationWhiteBrush}"/>
-          </wpf:AnalogClockFace.MinuteIntervalElement>
-  <wpf:AnalogClockFace.FiveMinuteIntervalElement>
-            <Ellipse Height="4" Width="4" Fill="{StaticResource ApplicationWhiteBrush}"/>
-          </wpf:AnalogClockFace.FiveMinuteIntervalElement>
-  <wpf:AnalogClockFace.FifteenMinuteIntervalElement>
-            <Ellipse Height="8" Width="8" Fill="{StaticResource ApplicationWhiteBrush}"/>
-          </wpf:AnalogClockFace.FifteenMinuteIntervalElement>-->
-</wpf:AnalogClockFace>
+        <wpf:AnalogClockFace />
       </Setter.Value>
     </Setter>
     <Setter Property="Template">

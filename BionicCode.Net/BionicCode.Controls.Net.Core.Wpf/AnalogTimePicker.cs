@@ -20,25 +20,13 @@ namespace BionicCode.Controls.Net.Core.Wpf
 
     public static readonly DependencyProperty AnalogClockFaceProperty = DependencyProperty.Register(
       "AnalogClockFace",
-      typeof(Canvas),
+      typeof(FrameworkElement),
       typeof(AnalogTimePicker),
-      new PropertyMetadata(default(Canvas), OnAnalogClockFaceChanged));
+      new FrameworkPropertyMetadata(default(FrameworkElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AnalogTimePicker.OnAnalogClockFaceChanged));
 
-    public AnalogClockFace AnalogClockFace { get => (AnalogClockFace) GetValue(AnalogTimePicker.AnalogClockFaceProperty); set => SetValue(AnalogTimePicker.AnalogClockFaceProperty, value); }
+    public FrameworkElement AnalogClockFace { get => (FrameworkElement) GetValue(AnalogTimePicker.AnalogClockFaceProperty); set => SetValue(AnalogTimePicker.AnalogClockFaceProperty, value); }
 
     #endregion AnalogClockFace dependency property
-
-    #region AnalogClockFaceStyle dependency property
-
-    public static readonly DependencyProperty AnalogClockFaceStyleProperty = DependencyProperty.Register(
-      "AnalogClockFaceStyle",
-      typeof(Style),
-      typeof(AnalogTimePicker),
-      new PropertyMetadata(default));
-
-    public Style AnalogClockFaceStyle { get => (Style) GetValue(AnalogTimePicker.AnalogClockFaceStyleProperty); set => SetValue(AnalogTimePicker.AnalogClockFaceStyleProperty, value); }
-
-    #endregion AnalogClockFaceStyle dependency property
 
     #region ClockDiameter dependency property
 
@@ -46,7 +34,7 @@ namespace BionicCode.Controls.Net.Core.Wpf
       "ClockDiameter",
       typeof(double),
       typeof(AnalogTimePicker),
-      new FrameworkPropertyMetadata(default(double), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
+      new FrameworkPropertyMetadata(default(double), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AnalogTimePicker.OnClockDiameterChanged));
 
     public double ClockDiameter { get => (double) GetValue(AnalogTimePicker.ClockDiameterProperty); set => SetValue(AnalogTimePicker.ClockDiameterProperty, value); }
 
@@ -83,10 +71,9 @@ namespace BionicCode.Controls.Net.Core.Wpf
     /// <inheritdoc />
     protected override Size MeasureOverride(Size constraint)
     {
-      constraint = new Size(this.ClockDiameter, this.ClockDiameter);
-      this.AnalogClockFace.Diameter = this.ClockDiameter;
+      //constraint = new Size(this.ClockDiameter, this.ClockDiameter);
       //this.AnalogClockFace.Measure(constraint);
-      base.MeasureOverride(constraint);
+      constraint = base.MeasureOverride(constraint);
       return constraint;
     }
 
@@ -97,8 +84,29 @@ namespace BionicCode.Controls.Net.Core.Wpf
       (d as AnalogTimePicker).OnAnalogClockFaceChanged();
     }
 
+    private static void OnClockDiameterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+      (d as AnalogTimePicker).OnClockDiameterChanged((double) e.OldValue, (double) e.NewValue);
+    }
+
+    protected virtual void OnClockDiameterChanged(double oldValue, double newValue)
+    {
+      if (this.AnalogClockFace == null)
+      {
+        return;
+      }
+      this.AnalogClockFace.Width = newValue;
+      this.AnalogClockFace.Height = newValue;
+    }
+
     protected virtual void OnAnalogClockFaceChanged()
     {
+      if (this.AnalogClockFace == null)
+      {
+        return;
+      }
+      this.AnalogClockFace.Width = this.ClockDiameter;
+      this.AnalogClockFace.Height = this.ClockDiameter;
       // this.AnalogClockFace.ClockFaceLoaded += OnClockFaceLoaded;
     }
 
