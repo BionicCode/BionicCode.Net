@@ -17,15 +17,26 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Converter
         return Binding.DoNothing;
       }
 
-      double divisor = parameter is double doubleValue 
-        ? doubleValue.Equals(0) 
-          ? 1 
-          : doubleValue
-        : parameter is string stringValue && double.TryParse(stringValue, out doubleValue) 
-          ? doubleValue
-          : 1;
+      double divident = value is double doubleValue
+        ? doubleValue
+        : parameter is int intValue
+          ? System.Convert.ToDouble(intValue)
+          : parameter is string stringValue && double.TryParse(stringValue, out doubleValue)
+            ? doubleValue
+            : 1;
 
-      return (double) value / divisor;
+      double divisor = parameter is double doubleParameter
+        ? doubleParameter
+        : parameter is int intParameter
+        ? System.Convert.ToDouble(intParameter)
+        : parameter is string stringParameter && double.TryParse(stringParameter, out doubleParameter) 
+          ? doubleParameter
+          : 1;
+      if (divisor.Equals(0))
+      {
+        divisor = 1;
+      }
+      return divident / divisor;
     }
 
     
@@ -36,15 +47,22 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Converter
         return Binding.DoNothing;
       }
 
-      double divisor = parameter is double doubleValue
-        ? doubleValue.Equals(0)
-          ? 1
-          : doubleValue
-        : parameter is string stringValue && double.TryParse(stringValue, out doubleValue)
-          ? doubleValue
-          : 1;
+      double multiplier = value is double doubleValue
+        ? doubleValue
+        : parameter is int intValue
+          ? System.Convert.ToDouble(intValue)
+          : parameter is string stringValue && double.TryParse(stringValue, out doubleValue)
+            ? doubleValue
+            : 1;
 
-      return (double)value * divisor;
+      double multiplicant = parameter is double doubleParameter
+        ? doubleParameter
+        : parameter is int intParameter
+          ? System.Convert.ToDouble(intParameter)
+          : parameter is string stringParameter && double.TryParse(stringParameter, out doubleParameter)
+            ? doubleParameter
+            : 1;
+      return multiplier * multiplicant;
     }
 
     #endregion

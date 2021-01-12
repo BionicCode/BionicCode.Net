@@ -4,10 +4,10 @@
         <name>BionicCode.Controls.Net.Core.Wpf</name>
     </assembly>
     <members>
-        <member name="M:BionicCode.Controls.Net.Core.Wpf.AnalogClockFace.OnApplyTemplate">
+        <member name="M:BionicCode.Controls.Net.Core.Wpf.AnalogClockFace.MeasureOverride(System.Windows.Size)">
             <inheritdoc />
         </member>
-        <member name="M:BionicCode.Controls.Net.Core.Wpf.AnalogClockFace.MeasureOverride(System.Windows.Size)">
+        <member name="M:BionicCode.Controls.Net.Core.Wpf.AnalogClockFace.OnRenderSizeChanged(System.Windows.SizeChangedInfo)">
             <inheritdoc />
         </member>
         <member name="M:BionicCode.Controls.Net.Core.Wpf.AnalogTimePicker.MeasureOverride(System.Windows.Size)">
@@ -128,6 +128,36 @@
         </member>
         <member name="M:BionicCode.Controls.Net.Core.Wpf.Unit.ToString">
             <inheritdoc />
+        </member>
+        <member name="T:XamlGeneratedNamespace.GeneratedInternalTypeHelper">
+            <summary>
+            GeneratedInternalTypeHelper
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
+            <summary>
+            CreateInstance
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            GetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            SetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
+            <summary>
+            CreateDelegate
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
+            <summary>
+            AddEventHandler
+            </summary>
         </member>
     </members>
 </doc>
