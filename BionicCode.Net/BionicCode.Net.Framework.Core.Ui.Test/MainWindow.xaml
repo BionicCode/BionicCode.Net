@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BionicCode.Net.Framework.Core.Ui.Test"
-        xmlns:wpf="clr-namespace:BionicCode.Controls.Net.Core.Wpf;assembly=BionicCode.Controls.Net.Core.Wpf"
+        xmlns:wpf="clr-namespace:BionicCode.Controls.Net.Wpf;assembly=BionicCode.Controls.Net.Wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
   <Window.Resources>

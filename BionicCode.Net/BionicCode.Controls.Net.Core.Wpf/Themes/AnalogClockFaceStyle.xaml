@@ -6,71 +6,119 @@
     <ResourceDictionary Source="/BionicCode.Controls.Net.Core.Wpf;component/Resources/Colors.xaml" />
   </ResourceDictionary.MergedDictionaries>
   <converter:DividerValueConverter x:Key="DividerValueConverter" />
+  <converter:PercentageToPixelConverter x:Key="PercentageToPixelConverter" />
 
   <Style TargetType="wpf:AnalogClockFace">
+    <Setter Property="IntervalLabelRadiusOffset" Value="{Binding RelativeSource={RelativeSource Self}, Path=Diameter, Converter={StaticResource PercentageToPixelConverter}, ConverterParameter=-6}" />
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="FontSize" Value="16" />
     <Setter Property="FontStretch" Value="UltraExpanded" />
     <Setter Property="FontWeight" Value="UltraLight" />
-    <Setter Property="Foreground" Value="{StaticResource ApplicationWhiteBrush}" />
-    <Setter Property="SelectedHour" Value="10.6842"/>
+    <Setter Property="Foreground" Value="AntiqueWhite" />
     <Setter Property="HourHandElement">
       <Setter.Value>
         <Canvas Height="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Diameter}" Width="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Diameter}">
-          <Line Margin="0,24,0,0"
+          <Line
             X1="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}"
             Y1="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}"
             X2="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}"
-            Y2="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Diameter, Converter={StaticResource DividerValueConverter}, ConverterParameter=8}"
-            Stroke="{StaticResource ApplicationWhiteBrush}"
-            StrokeThickness="4" />
-          <Ellipse Height="16" Width="16" Fill="{StaticResource ApplicationWhiteBrush}" Canvas.Left="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}" Canvas.Top="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}" Margin="-8,-8,0,0"/>
+            Y2="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Diameter, Converter={StaticResource PercentageToPixelConverter}, ConverterParameter=12}"
+            Stroke="AntiqueWhite"
+            StrokeThickness="4">
+            <Line.Margin>
+              <Binding RelativeSource="{RelativeSource AncestorType=wpf:AnalogClockFace}" Path="Diameter">
+                <Binding.Converter>
+                  <converter:PercentageToThicknessConverter ThicknessPercentage="0,8,0,0"/>
+                </Binding.Converter>
+              </Binding>
+            </Line.Margin>
+            <Line.Effect>
+              <DropShadowEffect Opacity="0.6"/>
+            </Line.Effect>
+          </Line>
         </Canvas>
       </Setter.Value>
     </Setter>
     <Setter Property="MinuteHandElement">
       <Setter.Value>
-
-        <Canvas Height="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Diameter}" Width="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Diameter}">
-          <Line Margin="0,24,0,0"
-                X1="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}"
+        <Canvas Height="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Diameter}" 
+                Width="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Diameter}"
+                Panel.ZIndex="1">
+          <Line X1="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}"
                 Y1="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}"
                 X2="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}"
-                Y2="0"
-                Stroke="{StaticResource ApplicationWhiteBrush}"
-                StrokeThickness="4" />
-          <Ellipse Height="16" Width="16" Fill="{StaticResource ApplicationWhiteBrush}" Canvas.Left="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}" Canvas.Top="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}" Margin="-8,-8,0,0"/>
+                Y2="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Diameter, Converter={StaticResource PercentageToPixelConverter}, ConverterParameter=-4}"
+                Stroke="AntiqueWhite"
+                StrokeThickness="4">
+            <Line.Margin>
+              <Binding RelativeSource="{RelativeSource AncestorType=wpf:AnalogClockFace}" Path="Diameter">
+                <Binding.Converter>
+                  <converter:PercentageToThicknessConverter ThicknessPercentage="0,8,0,0"/>
+                </Binding.Converter>
+              </Binding>
+            </Line.Margin>
+            <Line.Effect>
+              <DropShadowEffect Opacity="0.6"/>
+            </Line.Effect>
+          </Line>
         </Canvas>
       </Setter.Value>
     </Setter>
     <Setter Property="SecondHandElement">
       <Setter.Value>
-        <Canvas Height="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Diameter}" Width="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Diameter}">
-          <Line Margin="0,24,0,0"
-                X1="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}"
+        <Canvas Height="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Diameter}" 
+                Width="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Diameter}"
+                Panel.ZIndex="2">
+          <Line X1="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}"
                 Y1="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}"
                 X2="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}"
-                Y2="0"
-                Stroke="{StaticResource ApplicationWhiteBrush}"
-                StrokeThickness="1" />
-          <Ellipse Height="16" Width="16" Fill="{StaticResource ApplicationWhiteBrush}" Canvas.Left="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}" Canvas.Top="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}" Margin="-8,-8,0,0"/>
+                Y2="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Diameter, Converter={StaticResource PercentageToPixelConverter}, ConverterParameter=-4}"
+                Stroke="DarkRed"
+                StrokeThickness="2">
+            <Line.Margin>
+              <Binding RelativeSource="{RelativeSource AncestorType=wpf:AnalogClockFace}" Path="Diameter">
+                <Binding.Converter>
+                  <converter:PercentageToThicknessConverter ThicknessPercentage="0,8,0,0"/>
+                </Binding.Converter>
+              </Binding>
+            </Line.Margin>
+            <Line.Effect>
+              <DropShadowEffect Opacity="0.6"/>
+            </Line.Effect>
+          </Line>
+          <Ellipse Height="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Diameter, Converter={StaticResource PercentageToPixelConverter}, ConverterParameter=4}" 
+                   Width="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Diameter, Converter={StaticResource PercentageToPixelConverter}, ConverterParameter=4}" 
+                   Fill="AntiqueWhite" 
+                   Canvas.Left="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Radius}" 
+                   Canvas.Top="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace},Path=Radius}" Panel.ZIndex="2">
+            <Ellipse.Margin>
+              <Binding RelativeSource="{RelativeSource AncestorType=wpf:AnalogClockFace}" Path="Diameter">
+                <Binding.Converter>
+                  <converter:PercentageToThicknessConverter ThicknessPercentage="-2,-2,0,0"/>
+                </Binding.Converter>
+              </Binding>
+            </Ellipse.Margin>
+            <Ellipse.Effect>
+              <DropShadowEffect Opacity="0.6"/>
+            </Ellipse.Effect>
+          </Ellipse>
         </Canvas>
       </Setter.Value>
     </Setter>
     <Setter Property="FifteenMinuteIntervalElement">
       <Setter.Value>
-        <Ellipse Height="8" Width="8" Fill="{StaticResource ApplicationWhiteBrush}"/>
+        <Ellipse Height="8" Width="8" Fill="AntiqueWhite"/>
       </Setter.Value>
     </Setter>
     <Setter Property="FiveMinuteIntervalElement">
       <Setter.Value>
-        <Rectangle Height="8" Width="2" Fill="{StaticResource ApplicationWhiteBrush}" 
+        <Rectangle Height="8" Width="2" Fill="AntiqueWhite" 
                    wpf:AnalogClockFace.IsCenterElementOnCircumferenceEnabled="False" />
       </Setter.Value>
     </Setter>
     <Setter Property="MinuteIntervalElement">
       <Setter.Value>
-        <Ellipse Height="2" Width="2" Fill="{StaticResource ApplicationWhiteBrush}"/>
+        <Ellipse Height="2" Width="2" Fill="AntiqueWhite"/>
       </Setter.Value>
     </Setter>
     <Setter Property="Template">
@@ -79,11 +127,12 @@
           <Border Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}">
+            <!--<Viewbox Stretch="UniformToFill" VerticalAlignment="Top" HorizontalAlignment="Left">-->
             <ContentPresenter />
+            <!--</Viewbox>-->
           </Border>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
   </Style>
-
 </ResourceDictionary>

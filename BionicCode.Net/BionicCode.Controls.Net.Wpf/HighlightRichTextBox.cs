@@ -12,7 +12,7 @@ using System.Windows.Media;
 
 #endregion
 
-namespace BionicCode.Controls.Net.Core.Wpf.Controls
+namespace BionicCode.Controls.Net.Wpf
 {
   /// <summary>
   /// Implement this interface to apply a custom highlight style for more complex scenarios e.g., code editors.

@@ -19,8 +19,8 @@ namespace BionicCode.Utilities.Net.Core.Wpf.Converter
 
       double divident = value is double doubleValue
         ? doubleValue
-        : parameter is int intValue
-          ? System.Convert.ToDouble(intValue)
+        : value is IConvertible convertibleValue
+          ? System.Convert.ToDouble(convertibleValue)
           : parameter is string stringValue && double.TryParse(stringValue, out doubleValue)
             ? doubleValue
             : 1;

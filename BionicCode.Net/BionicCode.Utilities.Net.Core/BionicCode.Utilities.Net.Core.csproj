@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFrameworks>netcoreapp3.0;net48</TargetFrameworks>
     <Authors>Brian Sampoh</Authors>
     <Company>BionicCode</Company>
     <Description>Reusable utility and class library for .NET Core &gt;= 3.0 - Featuring: ViewModel (abstract base class), Profiling, Extension Methods, ValueChangedEventArgs, EventAggregator, AutoResetStream and more.</Description>

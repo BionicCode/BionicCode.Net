@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BionicCode.Controls.Net.Core.Wpf\BionicCode.Controls.Net.Core.Wpf.csproj" />
+    <ProjectReference Include="..\BionicCode.Controls.Net.Wpf\BionicCode.Controls.Net.Wpf.csproj" />
   </ItemGroup>
 
 </Project>

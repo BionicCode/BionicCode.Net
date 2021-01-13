@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace BionicCode.Controls.Net.Core.Wpf.Controls
+namespace BionicCode.Controls.Net.Wpf
 {
   public enum ItemsUpdatingScrollMode
   {

@@ -7,15 +7,11 @@
 
 using System;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using BionicCode.Controls.Net.Core.Wpf.Converters;
-using BionicCode.Utilities.Net.Core.Wpf.Converter;
 using BionicCode.Utilities.Net.Core.Wpf.Extensions;
 
 namespace BionicCode.Controls.Net.Core.Wpf
@@ -230,6 +226,30 @@ namespace BionicCode.Controls.Net.Core.Wpf
     public double SelectedSecond { get => (double) GetValue(AnalogClockFace.SelectedSecondProperty); set => SetValue(AnalogClockFace.SelectedSecondProperty, value); }
 
     #endregion SelectedSecond dependency property
+
+    #region SelectedTime dependency property
+
+    public static readonly DependencyProperty SelectedTimeProperty = DependencyProperty.Register(
+      "SelectedTime",
+      typeof(DateTime),
+      typeof(AnalogClockFace),
+      new FrameworkPropertyMetadata(default(DateTime), FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, AnalogClockFace.OnSelectedTimeChanged));
+
+    public DateTime SelectedTime { get => (DateTime) GetValue(AnalogClockFace.SelectedTimeProperty); set => SetValue(AnalogClockFace.SelectedTimeProperty, value); }
+
+    #endregion SelectedTime dependency property
+
+    #region IntervalLabelRadiusOffset dependency property
+
+    public static readonly DependencyProperty IntervalLabelRadiusOffsetProperty = DependencyProperty.Register(
+      "IntervalLabelRadiusOffset",
+      typeof(double),
+      typeof(AnalogClockFace),
+      new PropertyMetadata(default));
+
+    public double IntervalLabelRadiusOffset { get => (double) GetValue(AnalogClockFace.IntervalLabelRadiusOffsetProperty); set => SetValue(AnalogClockFace.IntervalLabelRadiusOffsetProperty, value); }
+
+    #endregion IntervalLabelRadiusOffset dependency property
     
     #region ClockFaceLoadedRoutedEvent
 
@@ -297,6 +317,8 @@ namespace BionicCode.Controls.Net.Core.Wpf
     private RotateTransform MinuteHandTransform { get; set; }
     private RotateTransform SecondHandTransform { get; set; }
     private RotateTransform IntervalElementTransform { get; set; }
+    private bool IsUpdatingSelectedTimeComponent { get; set; }
+    private bool IsUpdatingSelectedTime { get; set; }
 
     static AnalogClockFace()
     {
@@ -390,12 +412,24 @@ namespace BionicCode.Controls.Net.Core.Wpf
       (d as AnalogClockFace).OnSelectedSecondChanged((double)e.OldValue, (double)e.NewValue);
     }
 
-    //private static void OnDiameterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    //{
-    //  (d as AnalogClockFace).OnDiameterChanged((double)e.OldValue, (double)e.NewValue);
-    //}
+    private static void OnSelectedTimeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+      var this_ = d as AnalogClockFace;
 
-    private bool IsUpdatingSelectedTimeComponent { get; set; }
+      this_.OnSelectedTimeChanged((DateTime) e.OldValue, (DateTime) e.NewValue);
+    }
+
+    protected virtual void OnSelectedTimeChanged(DateTime oldValue, DateTime newValue)
+    {
+      if (this.IsUpdatingSelectedTimeComponent)
+      {
+        return;
+      }
+      this.IsUpdatingSelectedTime = true;
+      this.SelectedSecond = newValue.TimeOfDay.TotalSeconds;
+      this.IsUpdatingSelectedTime = false;
+    }
+
     private static object CoerceHours(DependencyObject d, object basevalue)
     {
       var this_ = d as AnalogClockFace;
@@ -408,9 +442,10 @@ namespace BionicCode.Controls.Net.Core.Wpf
       var hourValue = (double)basevalue;
       double decimalPart = hourValue - Math.Truncate(hourValue);
       var decimalMinutes = decimalPart * 60;
-      this_.SelectedMinute = Math.Truncate(decimalPart * 60);
+      this_.SelectedMinute = Math.Truncate(decimalMinutes);
       decimalPart = decimalMinutes - Math.Truncate(decimalMinutes);
-      this_.SelectedSecond = Math.Round(decimalPart * 60, MidpointRounding.AwayFromZero);
+      var decimalSeconds = decimalPart * 60;
+      this_.SelectedSecond = Math.Round(decimalMinutes, MidpointRounding.AwayFromZero);
       
       this_.IsUpdatingSelectedTimeComponent = false;
       return hourValue % 12 == 0
@@ -428,11 +463,14 @@ namespace BionicCode.Controls.Net.Core.Wpf
       }
       this_.IsUpdatingSelectedTimeComponent = true;
       var minuteValue = (double) basevalue;
-      this_.SelectedHour = (int) Math.Truncate(minuteValue / 60) % 12;
-      var decimalMinutes = minuteValue % 60;
+      double decimalHours = minuteValue / 60;
+      this_.SelectedHour = Math.Truncate(decimalHours) % 12;
+      double decimalPart = decimalHours - Math.Truncate(decimalHours);
+      var decimalMinutes = decimalPart * 60;
       var minutes = Math.Truncate(decimalMinutes);
-      double decimalPart = decimalMinutes - Math.Truncate(decimalMinutes);
-      this_.SelectedSecond = (int) Math.Round(decimalPart * 60, MidpointRounding.AwayFromZero);
+      decimalPart = decimalMinutes - Math.Truncate(decimalMinutes);
+      double decimalSeconds = decimalPart * 60;
+      this_.SelectedSecond = Math.Round(decimalSeconds, MidpointRounding.AwayFromZero);
 
       this_.IsUpdatingSelectedTimeComponent = false;
       return minutes;
@@ -448,37 +486,56 @@ namespace BionicCode.Controls.Net.Core.Wpf
       }
       this_.IsUpdatingSelectedTimeComponent = true;
       var secondsValue = (double) basevalue;
-      this_.SelectedHour = (int) Math.Truncate(secondsValue / 3600) % 12;
-      double decimalMinutes = secondsValue % 60;
-      this_.SelectedMinute = (int) Math.Truncate(decimalMinutes);
-      double decimalPart = decimalMinutes - Math.Truncate(decimalMinutes);
-      var seconds = decimalPart * 60;
+      double decimalHours = secondsValue / 3600;
+      this_.SelectedHour = Math.Truncate(decimalHours) % 12;
+      var decimalPart = decimalHours - Math.Truncate(decimalHours);
+      double decimalMinutes = decimalPart * 60;
+      this_.SelectedMinute = Math.Truncate(decimalMinutes);
+      decimalPart = decimalMinutes - Math.Truncate(decimalMinutes);
+      double decimalSeconds = decimalPart * 60;
+      var seconds = Math.Round(decimalSeconds, MidpointRounding.AwayFromZero);
 
       this_.IsUpdatingSelectedTimeComponent = false;
       return seconds;
     }
 
-    //protected virtual void OnDiameterChanged(double oldValue, double newValue)
-    //{
-    //  this.Radius = newValue / 2;
-    //}
-
     protected virtual void OnSelectedHourChanged(double oldValue, double newValue)
     {
       double angle = GetClockAngle(newValue, 12);
       this.HourHandTransform.Angle = angle;
+
+      if (this.IsUpdatingSelectedTime)
+      {
+        return;
+      }
+
+      this.SelectedTime = new DateTime(this.SelectedTime.Year, this.SelectedTime.Month, this.SelectedTime.Day, (int) newValue, (int) this.SelectedMinute, (int) this.SelectedSecond);
     }
 
     protected virtual void OnSelectedMinuteChanged(double oldValue, double newValue)
     {
       double angle = GetClockAngle(newValue, 60);
       this.MinuteHandTransform.Angle = angle;
+
+      if (this.IsUpdatingSelectedTime)
+      {
+        return;
+      }
+
+      this.SelectedTime = new DateTime(this.SelectedTime.Year, this.SelectedTime.Month, this.SelectedTime.Day, (int) this.SelectedHour, (int) newValue, (int)this.SelectedSecond);
     }
 
     protected virtual void OnSelectedSecondChanged(double oldValue, double newValue)
     {
       double angle = GetClockAngle(newValue, 60);
       this.SecondHandTransform.Angle = angle;
+
+      if (this.IsUpdatingSelectedTime)
+      {
+        return;
+      }
+
+      this.SelectedTime = new DateTime(this.SelectedTime.Year, this.SelectedTime.Month, this.SelectedTime.Day, (int) this.SelectedHour, (int)this.SelectedMinute, (int) newValue);
     }
 
     protected virtual void OnHourHandElementChanged(UIElement oldClockHand, UIElement newClockHand)
@@ -691,112 +748,162 @@ namespace BionicCode.Controls.Net.Core.Wpf
       {
         return;
       }
+
       double steps = 60.0;
       double degreeOfStep = 360.0 / steps;
       double intervalMarkerCenterPositionRadius = -1;
       for (int step = 0; step < steps; step++)
       {
-        UIElement intervalMarker;
-        UIElement intervalMarkerLabel = null;
         double degreesOfCurrentStep = step * degreeOfStep;
 
-        switch (step)
+        UIElement intervalMarker = CreateIntervalMarker(step);
+        if (intervalMarkerCenterPositionRadius.Equals(-1))
         {
-          case { } is15MinutesStep when is15MinutesStep % 15 == 0:
-          {
-            intervalMarker = this.Is15MinuteIntervalEnabled 
-              ? Create15MinuteIntervalVisual() 
-              : this.Is5MinuteIntervalEnabled 
-                ? Create5MinuteIntervalVisual() 
-                : CreateMinuteIntervalVisual();
-            if (intervalMarkerCenterPositionRadius.Equals(-1))
-            {
-              double radiusOffset = CalculateIntervalMarkerCenterRadiusOffset(intervalMarker);
-              intervalMarkerCenterPositionRadius = this.Radius + radiusOffset;
-            }
-
-            var stepLabel = GetStepLabel(step);
-            intervalMarkerLabel = this.Is15MinuteIntervalEnabled
-              ? Create15MinuteIntervalLabel(stepLabel)
-              : this.Is5MinuteIntervalEnabled
-                ? Create5MinuteIntervalLabel(stepLabel)
-                : CreateMinuteIntervalLabel(stepLabel);
-            break;
-          }
-          case { } is5MinutesStep when is5MinutesStep % 5 == 0:
-          {
-            intervalMarker = Create5MinuteIntervalVisual();
-            if (!this.Is15MinuteIntervalEnabled && intervalMarkerCenterPositionRadius.Equals(-1))
-            {
-              double radiusOffset = CalculateIntervalMarkerCenterRadiusOffset(intervalMarker);
-              intervalMarkerCenterPositionRadius = this.Radius + radiusOffset;
-            }
-
-            var stepLabel = GetStepLabel(step);
-            intervalMarkerLabel = Create5MinuteIntervalLabel(stepLabel);
-            break;
-          }
-          default:
-          {
-            intervalMarker = CreateMinuteIntervalVisual();
-            if (!this.Is15MinuteIntervalEnabled && !this.Is5MinuteIntervalEnabled && intervalMarkerCenterPositionRadius.Equals(-1))
-            {
-              double radiusOffset = CalculateIntervalMarkerCenterRadiusOffset(intervalMarker);
-              intervalMarkerCenterPositionRadius = this.Radius + radiusOffset;
-            }
-
-            if (this.Is24HModeEnabled)
-            {
-              var stepLabel = GetStepLabel(step);
-              intervalMarkerLabel = CreateMinuteIntervalLabel(stepLabel);
-            }
-            break;
-          }
+          InitializeRadiusOfIntervalMarkers(out intervalMarkerCenterPositionRadius, intervalMarker);
         }
 
-        RotateTransform rotateTransform;
-        if (intervalMarker.RenderTransform is TransformGroup transformGroup)
+        DrawIntervalMarker(degreesOfCurrentStep, intervalMarkerCenterPositionRadius, intervalMarker);
+        
+        UIElement intervalMarkerLabel = CreateIntervalLabel(step);
+        if (intervalMarkerLabel != null)
         {
-          rotateTransform = transformGroup.Children.OfType<RotateTransform>().FirstOrDefault();
+          DrawIntervalLabel(intervalMarkerCenterPositionRadius, degreesOfCurrentStep, intervalMarkerLabel);
         }
-        else
-        {
-          rotateTransform = intervalMarker.RenderTransform as RotateTransform;
-        }
-
-        if (rotateTransform != null)
-        {
-          rotateTransform.Angle = degreesOfCurrentStep;
-        }
-
-        Point cartesianPoint = GetCartesianPointOfStep(degreesOfCurrentStep, intervalMarkerCenterPositionRadius);
-        if (AnalogClockFace.GetIsCenterElementOnCircumferenceEnabled(intervalMarker))
-        {
-          AlignElementCenterPointToRadius(ref cartesianPoint, intervalMarker);
-        }
-
-        AddCartesianElementToClockFace(intervalMarker, cartesianPoint);
-
-        if (intervalMarkerLabel == null)
-        {
-          continue;
-        }
-          
-        double labelRadiusOffset = -24;
-        double intervalMarkerLabelCenterPositionRadius = intervalMarkerCenterPositionRadius + labelRadiusOffset;
-        cartesianPoint = GetCartesianPointOfStep(degreesOfCurrentStep, intervalMarkerLabelCenterPositionRadius);
-        AlignElementCenterPointToRadius(ref cartesianPoint, intervalMarkerLabel);
-        cartesianPoint.Offset(0, 4);
-        AddCartesianElementToClockFace(intervalMarkerLabel, cartesianPoint);
       }
 
+      DrawClockFaceBackground(intervalMarkerCenterPositionRadius);
+
+      AddClockHands();
+      OnClockFaceLoaded();
+    }
+
+    private void DrawClockFaceBackground(double intervalMarkerCenterPositionRadius)
+    {
       double deltaToMiddleRadius = (this.Radius - intervalMarkerCenterPositionRadius) * 2;
       var clockFaceBackgroundPosition = new Point();
       clockFaceBackgroundPosition.Offset(deltaToMiddleRadius / 2, deltaToMiddleRadius / 2);
-      AddElementToClockFace(new Ellipse() { Height = this.Diameter - deltaToMiddleRadius, Width = this.Diameter - deltaToMiddleRadius, Fill = Brushes.DarkRed }, clockFaceBackgroundPosition, 0);
-      
-      AddClockHands();
-      OnClockFaceLoaded();
+      AddElementToClockFace(
+        new Ellipse()
+        {
+          Height = this.Diameter - deltaToMiddleRadius, Width = this.Diameter - deltaToMiddleRadius, Fill = this.Background
+        },
+        clockFaceBackgroundPosition,
+        0);
+    }
+
+    private void DrawIntervalLabel(
+      double intervalMarkerCenterPositionRadius,
+      double degreesOfCurrentStep,
+      UIElement intervalMarkerLabel)
+    {
+      Point cartesianPoint;
+      double intervalMarkerLabelCenterPositionRadius = intervalMarkerCenterPositionRadius + this.IntervalLabelRadiusOffset;
+      cartesianPoint = GetCartesianPointOfStep(degreesOfCurrentStep, intervalMarkerLabelCenterPositionRadius);
+      AlignElementCenterPointToRadius(ref cartesianPoint, intervalMarkerLabel);
+      AddCartesianElementToClockFace(intervalMarkerLabel, cartesianPoint);
+    }
+
+    private void DrawIntervalMarker(
+      double degreesOfCurrentStep,
+      double intervalMarkerCenterPositionRadius,
+      UIElement intervalMarker)
+    {
+      AnalogClockFace.RotateIntervalMarker(degreesOfCurrentStep, intervalMarker);
+      Point cartesianPoint = GetCartesianPointOfStep(degreesOfCurrentStep, intervalMarkerCenterPositionRadius);
+      if (AnalogClockFace.GetIsCenterElementOnCircumferenceEnabled(intervalMarker))
+      {
+        AlignElementCenterPointToRadius(ref cartesianPoint, intervalMarker);
+      }
+
+      AddCartesianElementToClockFace(intervalMarker, cartesianPoint);
+    }
+
+    private static void RotateIntervalMarker(double degreesOfCurrentStep, UIElement intervalMarker)
+    {
+      RotateTransform rotateTransform;
+      if (intervalMarker.RenderTransform is TransformGroup transformGroup)
+      {
+        rotateTransform = transformGroup.Children.OfType<RotateTransform>().FirstOrDefault();
+      }
+      else
+      {
+        rotateTransform = intervalMarker.RenderTransform as RotateTransform;
+      }
+
+      if (rotateTransform != null)
+      {
+        rotateTransform.Angle = degreesOfCurrentStep;
+      }
+    }
+
+    private UIElement CreateIntervalMarker(int step)
+    {
+      UIElement intervalMarker;
+      switch (step)
+      {
+        case { } is15MinutesStep when is15MinutesStep % 15 == 0:
+        {
+          intervalMarker = this.Is15MinuteIntervalEnabled
+            ? Create15MinuteIntervalVisual()
+            : this.Is5MinuteIntervalEnabled
+              ? Create5MinuteIntervalVisual()
+              : CreateMinuteIntervalVisual();
+          break;
+        }
+        case { } is5MinutesStep when is5MinutesStep % 5 == 0:
+        {
+          intervalMarker = Create5MinuteIntervalVisual();
+          break;
+        }
+        default:
+        {
+          intervalMarker = CreateMinuteIntervalVisual();
+          break;
+        }
+      }
+
+      return intervalMarker;
+    }
+
+    private UIElement CreateIntervalLabel(int step)
+    {
+      UIElement intervalMarkerLabel = null;
+      switch (step)
+      {
+        case { } is15MinutesStep when is15MinutesStep % 15 == 0:
+        {
+          var stepLabel = GetStepLabel(step);
+          intervalMarkerLabel = this.Is15MinuteIntervalEnabled
+            ? Create15MinuteIntervalLabel(stepLabel)
+            : this.Is5MinuteIntervalEnabled
+              ? Create5MinuteIntervalLabel(stepLabel)
+              : CreateMinuteIntervalLabel(stepLabel);
+          break;
+        }
+        case { } is5MinutesStep when is5MinutesStep % 5 == 0:
+        {
+          var stepLabel = GetStepLabel(step);
+          intervalMarkerLabel = Create5MinuteIntervalLabel(stepLabel);
+          break;
+        }
+        default:
+        {
+          if (this.Is24HModeEnabled)
+          {
+            var stepLabel = GetStepLabel(step);
+            intervalMarkerLabel = CreateMinuteIntervalLabel(stepLabel);
+          }
+          break;
+        }
+      }
+
+      return intervalMarkerLabel;
+    }
+
+    private void InitializeRadiusOfIntervalMarkers(out double intervalMarkerCenterPositionRadius, UIElement intervalMarker)
+    {
+      double radiusOffset = CalculateIntervalMarkerCenterRadiusOffset(intervalMarker);
+      intervalMarkerCenterPositionRadius = this.Radius + radiusOffset;
     }
 
     private void AlignElementCenterPointToRadius(ref Point cartesianPoint, UIElement element)
@@ -816,16 +923,15 @@ namespace BionicCode.Controls.Net.Core.Wpf
     {
       if (this.HourHandElement != null)
       {
-        AddElementToClockFace(this.HourHandElement, new Point(Canvas.GetLeft(this.HourHandElement), Canvas.GetTop(this.HourHandElement)), 2);
+        AddElementToClockFace(this.HourHandElement, new Point(Canvas.GetLeft(this.HourHandElement), Canvas.GetTop(this.HourHandElement)), Panel.GetZIndex(this.HourHandElement) + 2);
       }
       if (this.MinuteHandElement != null)
       {
-        AddElementToClockFace(this.MinuteHandElement, new Point(Canvas.GetLeft(this.MinuteHandElement), Canvas.GetTop(this.MinuteHandElement)), 2);
+        AddElementToClockFace(this.MinuteHandElement, new Point(Canvas.GetLeft(this.MinuteHandElement), Canvas.GetTop(this.MinuteHandElement)), Panel.GetZIndex(this.MinuteHandElement) + 3);
       }
-
       if (this.SecondHandElement != null)
       {
-        AddElementToClockFace(this.SecondHandElement, new Point(Canvas.GetLeft(this.SecondHandElement), Canvas.GetTop(this.SecondHandElement)), 2);
+        AddElementToClockFace(this.SecondHandElement, new Point(Canvas.GetLeft(this.SecondHandElement), Canvas.GetTop(this.SecondHandElement)), Panel.GetZIndex(this.SecondHandElement) + 4);
       }
     }
 
@@ -842,6 +948,7 @@ namespace BionicCode.Controls.Net.Core.Wpf
     private Point GetCartesianPointOfStep(double degreesOfCurrentStep, double radius)
     {
       double axisOffset = this.Radius;
+
       // Rotate and invert degrees in order to move the 0 clock value to the top
       // (instead of the original right -> cartesian based circle)
       double rotatedDegrees = degreesOfCurrentStep - 90;

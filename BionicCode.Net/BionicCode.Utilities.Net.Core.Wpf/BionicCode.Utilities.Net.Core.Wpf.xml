@@ -352,6 +352,18 @@
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Converter.InvertValueConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
             <inheritdoc />
         </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Converter.PercentageToPixelConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Converter.PercentageToPixelConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Converter.PercentageToThicknessConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.Core.Wpf.Converter.PercentageToThicknessConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <inheritdoc />
+        </member>
         <member name="T:BionicCode.Utilities.Net.Core.Wpf.DefaultValueInverter">
             <summary>
             Class that inverts a value.
