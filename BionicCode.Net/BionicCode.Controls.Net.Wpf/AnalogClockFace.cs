@@ -611,7 +611,7 @@ namespace BionicCode.Controls.Net.Wpf
       this.ClockFaceCanvas = new Canvas
       {
         RenderTransform = this.ClockFaceScaleTransform,
-        Background = Brushes.PaleVioletRed,
+        Background = Brushes.Transparent,
         Width = this.Diameter,
         Height = this.Diameter,
         HorizontalAlignment = HorizontalAlignment.Left,
@@ -889,6 +889,8 @@ namespace BionicCode.Controls.Net.Wpf
         this.HourHandTransform.Angle = angle;
       }
 
+      DrawArcFromZeroToCurrent();
+
       if (this.IsUpdatingSelectedTime)
       {
         return;
@@ -1124,6 +1126,35 @@ namespace BionicCode.Controls.Net.Wpf
         return;
       }
 
+      DrawIntervals();
+      DrawClockFaceBackground();
+      DrawSelectionArcs();
+
+      if (this.IsDisplayDateEnabled)
+      {
+        AddDateElement();
+      }
+
+      AddClockHands();
+      OnClockFaceLoaded();
+    }
+
+    private void DrawSelectionArcs()
+    {
+      if (!this.IsMinuteSelectionArcEnabled)
+      {
+        return;
+      }
+
+      AddElementToClockFace(
+        this.SelectedMinuteArcRectangle,
+        new Point(),
+        1);
+      DrawArcFromZeroToCurrent();
+    }
+
+    private void DrawIntervals()
+    {
       double steps = 60.0;
       double degreeOfStep = 360.0 / steps;
       this.IntervalMarkerCenterRadius = -1;
@@ -1139,32 +1170,17 @@ namespace BionicCode.Controls.Net.Wpf
 
         DrawIntervalMarker(degreesOfCurrentStep, intervalMarker);
 
-        if (this.IsDisplayIntervalLabelsEnabled)
+        if (!this.IsDisplayIntervalLabelsEnabled)
         {
-          FrameworkElement intervalMarkerLabel = CreateIntervalLabel(step);
-          if (intervalMarkerLabel != null)
-          {
-            DrawIntervalLabel(degreesOfCurrentStep, intervalMarkerLabel);
-          }
+          continue;
+        }
+
+        FrameworkElement intervalMarkerLabel = CreateIntervalLabel(step);
+        if (intervalMarkerLabel != null)
+        {
+          DrawIntervalLabel(degreesOfCurrentStep, intervalMarkerLabel);
         }
       }
-
-      DrawClockFaceBackground();
-      if (this.IsMinuteSelectionArcEnabled)
-      {
-        AddElementToClockFace(
-          this.SelectedMinuteArcRectangle,
-          new Point());
-        DrawArcFromZeroToCurrent();
-      }
-      
-      if (this.IsDisplayDateEnabled)
-      {
-        AddDateElement();
-      }
-
-      AddClockHands();
-      OnClockFaceLoaded();
     }
 
     protected virtual void DrawAnalog24Clock()
@@ -1261,7 +1277,7 @@ namespace BionicCode.Controls.Net.Wpf
         return;
       }
       
-      AddElementToClockFace(this.DateElement, new Point(Canvas.GetLeft(this.DateElement), Canvas.GetTop(this.DateElement)));
+      AddElementToClockFace(this.DateElement, new Point(Canvas.GetLeft(this.DateElement), Canvas.GetTop(this.DateElement)), 2);
     }
 
     private void DrawClockFaceBackground()
@@ -1296,7 +1312,7 @@ namespace BionicCode.Controls.Net.Wpf
                 this.SelectedMinuteArcPoint,
                 this.SelectionArcSize,
                 0,
-                true,
+                this.IsLargeSelectionMinuteArc,
                 SweepDirection.Clockwise,
                 false)
             },
@@ -1320,7 +1336,7 @@ namespace BionicCode.Controls.Net.Wpf
       Point cartesianPoint;
       cartesianPoint = GetCartesianPointOfStep(degreesOfCurrentStep, this.IntervalMarkerCenterRadius + this.IntervalLabelRadiusOffset);
       AlignElementCenterPointToRadius(ref cartesianPoint, intervalMarkerLabel);
-      AddCartesianElementToClockFace(intervalMarkerLabel, cartesianPoint);
+      AddCartesianElementToClockFace(intervalMarkerLabel, cartesianPoint, 2);
     }
 
     private void DrawIntervalMarker(
@@ -1334,7 +1350,7 @@ namespace BionicCode.Controls.Net.Wpf
         AlignElementCenterPointToRadius(ref cartesianPoint, intervalMarker);
       }
 
-      AddCartesianElementToClockFace(intervalMarker, cartesianPoint);
+      AddCartesianElementToClockFace(intervalMarker, cartesianPoint, 2);
     }
 
     private static void RotateIntervalMarker(double degreesOfCurrentStep, FrameworkElement intervalMarker)
@@ -1443,15 +1459,15 @@ namespace BionicCode.Controls.Net.Wpf
     {
       if (this.HourHandElement != null)
       {
-        AddElementToClockFace(this.HourHandElement, new Point(Canvas.GetLeft(this.HourHandElement), Canvas.GetTop(this.HourHandElement)), Panel.GetZIndex(this.HourHandElement) + 2);
+        AddElementToClockFace(this.HourHandElement, new Point(Canvas.GetLeft(this.HourHandElement), Canvas.GetTop(this.HourHandElement)), Panel.GetZIndex(this.HourHandElement) + 3);
       }
       if (this.MinuteHandElement != null)
       {
-        AddElementToClockFace(this.MinuteHandElement, new Point(Canvas.GetLeft(this.MinuteHandElement), Canvas.GetTop(this.MinuteHandElement)), Panel.GetZIndex(this.MinuteHandElement) + 3);
+        AddElementToClockFace(this.MinuteHandElement, new Point(Canvas.GetLeft(this.MinuteHandElement), Canvas.GetTop(this.MinuteHandElement)), Panel.GetZIndex(this.MinuteHandElement) + 4);
       }
       if (this.SecondHandElement != null)
       {
-        AddElementToClockFace(this.SecondHandElement, new Point(Canvas.GetLeft(this.SecondHandElement), Canvas.GetTop(this.SecondHandElement)), Panel.GetZIndex(this.SecondHandElement) + 4);
+        AddElementToClockFace(this.SecondHandElement, new Point(Canvas.GetLeft(this.SecondHandElement), Canvas.GetTop(this.SecondHandElement)), Panel.GetZIndex(this.SecondHandElement) + 5);
       }
     }
 
@@ -1485,10 +1501,10 @@ namespace BionicCode.Controls.Net.Wpf
       return cartesianPoint;
     }
 
-    public void AddCartesianElementToClockFace(FrameworkElement clockElement, Point cartesianPoint)
+    public void AddCartesianElementToClockFace(FrameworkElement clockElement, Point cartesianPoint, int zIndex = 1)
     {
       Point screenPoint = cartesianPoint.ToScreenPoint(this.Diameter);
-      AddElementToClockFace(clockElement, screenPoint);
+      AddElementToClockFace(clockElement, screenPoint, zIndex);
     }
 
     public void AddElementToClockFace(FrameworkElement clockElement, Point screenPoint, int zIndex = 1)
