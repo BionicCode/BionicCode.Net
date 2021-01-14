@@ -7,6 +7,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Shapes;
 
@@ -50,6 +51,16 @@ namespace BionicCode.Controls.Net.Wpf
     {
       //this.AnalogClockFace = new AnalogClockFace() {Background = Brushes.PaleVioletRed};
     }
+
+    #region Overrides of UIElement
+
+    /// <inheritdoc />
+    protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
+    {
+      base.OnPreviewMouseLeftButtonDown(e);
+    }
+
+    #endregion
 
     #region Overrides of AnalogClockFace
 
