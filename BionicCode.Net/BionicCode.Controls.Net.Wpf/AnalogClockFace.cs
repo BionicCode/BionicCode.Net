@@ -6,6 +6,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -73,11 +74,11 @@ namespace BionicCode.Controls.Net.Wpf
 
     public static readonly DependencyProperty FifteenMinuteIntervalElementProperty = DependencyProperty.Register(
       "FifteenMinuteIntervalElement",
-      typeof(UIElement),
+      typeof(FrameworkElement),
       typeof(AnalogClockFace),
       new FrameworkPropertyMetadata(default, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
-    public UIElement FifteenMinuteIntervalElement { get => (UIElement) GetValue(AnalogClockFace.FifteenMinuteIntervalElementProperty); set => SetValue(AnalogClockFace.FifteenMinuteIntervalElementProperty, value); }
+    public FrameworkElement FifteenMinuteIntervalElement { get => (FrameworkElement) GetValue(AnalogClockFace.FifteenMinuteIntervalElementProperty); set => SetValue(AnalogClockFace.FifteenMinuteIntervalElementProperty, value); }
 
     #endregion FifteenMinuteIntervalElement dependency property
 
@@ -85,11 +86,11 @@ namespace BionicCode.Controls.Net.Wpf
 
     public static readonly DependencyProperty FiveMinuteIntervalElementProperty = DependencyProperty.Register(
       "FiveMinuteIntervalElement",
-      typeof(UIElement),
+      typeof(FrameworkElement),
       typeof(AnalogClockFace),
       new FrameworkPropertyMetadata(default, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
-    public UIElement FiveMinuteIntervalElement { get => (UIElement) GetValue(AnalogClockFace.FiveMinuteIntervalElementProperty); set => SetValue(AnalogClockFace.FiveMinuteIntervalElementProperty, value); }
+    public FrameworkElement FiveMinuteIntervalElement { get => (FrameworkElement) GetValue(AnalogClockFace.FiveMinuteIntervalElementProperty); set => SetValue(AnalogClockFace.FiveMinuteIntervalElementProperty, value); }
 
     #endregion FiveMinuteIntervalElement dependency property
 
@@ -97,11 +98,11 @@ namespace BionicCode.Controls.Net.Wpf
 
     public static readonly DependencyProperty MinuteIntervalElementProperty = DependencyProperty.Register(
       "MinuteIntervalElement",
-      typeof(UIElement),
+      typeof(FrameworkElement),
       typeof(AnalogClockFace),
       new FrameworkPropertyMetadata(default, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
-    public UIElement MinuteIntervalElement { get => (UIElement) GetValue(AnalogClockFace.MinuteIntervalElementProperty); set => SetValue(AnalogClockFace.MinuteIntervalElementProperty, value); }
+    public FrameworkElement MinuteIntervalElement { get => (FrameworkElement) GetValue(AnalogClockFace.MinuteIntervalElementProperty); set => SetValue(AnalogClockFace.MinuteIntervalElementProperty, value); }
 
     #endregion MinuteIntervalElement dependency property
 
@@ -109,11 +110,11 @@ namespace BionicCode.Controls.Net.Wpf
 
     public static readonly DependencyProperty FifteenMinuteIntervalLabelProperty = DependencyProperty.Register(
       "FifteenMinuteIntervalLabel",
-      typeof(ContentControl),
+      typeof(FrameworkElement),
       typeof(AnalogClockFace),
       new FrameworkPropertyMetadata(default, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
-    public ContentControl FifteenMinuteIntervalLabel { get => (ContentControl) GetValue(AnalogClockFace.FifteenMinuteIntervalLabelProperty); set => SetValue(AnalogClockFace.FifteenMinuteIntervalLabelProperty, value); }
+    public FrameworkElement FifteenMinuteIntervalLabel { get => (FrameworkElement) GetValue(AnalogClockFace.FifteenMinuteIntervalLabelProperty); set => SetValue(AnalogClockFace.FifteenMinuteIntervalLabelProperty, value); }
 
     #endregion FifteenMinuteIntervalLabel dependency property
 
@@ -121,11 +122,11 @@ namespace BionicCode.Controls.Net.Wpf
 
     public static readonly DependencyProperty FiveMinuteIntervalLabelProperty = DependencyProperty.Register(
       "FiveMinuteIntervalLabel",
-      typeof(ContentControl),
+      typeof(FrameworkElement),
       typeof(AnalogClockFace),
       new FrameworkPropertyMetadata(default, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
-    public ContentControl FiveMinuteIntervalLabel { get => (ContentControl) GetValue(AnalogClockFace.FiveMinuteIntervalLabelProperty); set => SetValue(AnalogClockFace.FiveMinuteIntervalLabelProperty, value); }
+    public FrameworkElement FiveMinuteIntervalLabel { get => (FrameworkElement) GetValue(AnalogClockFace.FiveMinuteIntervalLabelProperty); set => SetValue(AnalogClockFace.FiveMinuteIntervalLabelProperty, value); }
 
     #endregion FiveMinuteIntervalLabel dependency property
 
@@ -133,15 +134,27 @@ namespace BionicCode.Controls.Net.Wpf
 
  public static readonly DependencyProperty MinuteIntervalLabelProperty = DependencyProperty.Register(
    "MinuteIntervalLabel",
-   typeof(ContentControl),
+   typeof(FrameworkElement),
    typeof(AnalogClockFace),
    new FrameworkPropertyMetadata(
-     default,
+     default(FrameworkElement),
      FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
-    public ContentControl MinuteIntervalLabel { get => (ContentControl) GetValue(AnalogClockFace.MinuteIntervalLabelProperty); set => SetValue(AnalogClockFace.MinuteIntervalLabelProperty, value); }
+    public FrameworkElement MinuteIntervalLabel { get => (FrameworkElement) GetValue(AnalogClockFace.MinuteIntervalLabelProperty); set => SetValue(AnalogClockFace.MinuteIntervalLabelProperty, value); }
 
     #endregion MinuteIntervalLabel dependency property
+
+    #region IsDisplayIntervalLabelsEnabled dependency property
+
+    public static readonly DependencyProperty IsDisplayIntervalLabelsEnabledProperty = DependencyProperty.Register(
+      "IsDisplayIntervalLabelsEnabled",
+      typeof(bool),
+      typeof(AnalogClockFace),
+      new PropertyMetadata(true));
+
+    public bool IsDisplayIntervalLabelsEnabled { get => (bool) GetValue(AnalogClockFace.IsDisplayIntervalLabelsEnabledProperty); set => SetValue(AnalogClockFace.IsDisplayIntervalLabelsEnabledProperty, value); }
+
+    #endregion IsDisplayIntervalLabelsEnabled dependency property
 
     #region IntervalLabelFormatter dependency property
 
@@ -159,11 +172,11 @@ namespace BionicCode.Controls.Net.Wpf
 
     public static readonly DependencyProperty HourHandElementProperty = DependencyProperty.Register(
       "HourHandElement",
-      typeof(UIElement),
+      typeof(FrameworkElement),
       typeof(AnalogClockFace),
-      new FrameworkPropertyMetadata(default(UIElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AnalogClockFace.OnHourHandElementChanged));
+      new FrameworkPropertyMetadata(default(FrameworkElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AnalogClockFace.OnHourHandElementChanged));
 
-    public UIElement HourHandElement { get => (UIElement) GetValue(AnalogClockFace.HourHandElementProperty); set => SetValue(AnalogClockFace.HourHandElementProperty, value); }
+    public FrameworkElement HourHandElement { get => (FrameworkElement) GetValue(AnalogClockFace.HourHandElementProperty); set => SetValue(AnalogClockFace.HourHandElementProperty, value); }
 
     #endregion HourHandElement dependency property
 
@@ -171,11 +184,11 @@ namespace BionicCode.Controls.Net.Wpf
 
     public static readonly DependencyProperty MinuteHandElementProperty = DependencyProperty.Register(
       "MinuteHandElement",
-      typeof(UIElement),
+      typeof(FrameworkElement),
       typeof(AnalogClockFace),
-      new FrameworkPropertyMetadata(default(UIElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AnalogClockFace.OnMinuteHandElementChanged));
+      new FrameworkPropertyMetadata(default(FrameworkElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AnalogClockFace.OnMinuteHandElementChanged));
 
-    public UIElement MinuteHandElement { get => (UIElement) GetValue(AnalogClockFace.MinuteHandElementProperty); set => SetValue(AnalogClockFace.MinuteHandElementProperty, value); }
+    public FrameworkElement MinuteHandElement { get => (FrameworkElement) GetValue(AnalogClockFace.MinuteHandElementProperty); set => SetValue(AnalogClockFace.MinuteHandElementProperty, value); }
 
     #endregion MinuteHandElement dependency property
 
@@ -183,13 +196,25 @@ namespace BionicCode.Controls.Net.Wpf
 
     public static readonly DependencyProperty SecondHandElementProperty = DependencyProperty.Register(
       "SecondHandElement",
-      typeof(UIElement),
+      typeof(FrameworkElement),
       typeof(AnalogClockFace),
-      new FrameworkPropertyMetadata(default(UIElement3D), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AnalogClockFace.OnSecondHandElementChanged));
+      new FrameworkPropertyMetadata(default(FrameworkElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AnalogClockFace.OnSecondHandElementChanged));
 
-    public UIElement SecondHandElement { get => (UIElement) GetValue(AnalogClockFace.SecondHandElementProperty); set => SetValue(AnalogClockFace.SecondHandElementProperty, value); }
+    public FrameworkElement SecondHandElement { get => (FrameworkElement) GetValue(AnalogClockFace.SecondHandElementProperty); set => SetValue(AnalogClockFace.SecondHandElementProperty, value); }
 
     #endregion SecondHandElement dependency property
+
+    #region DateElement dependency property
+
+    public static readonly DependencyProperty DateElementProperty = DependencyProperty.Register(
+      "DateElement",
+      typeof(FrameworkElement),
+      typeof(AnalogClockFace),
+      new FrameworkPropertyMetadata(default(FrameworkElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AnalogClockFace.OnDateElementChanged));
+
+    public FrameworkElement DateElement { get => (FrameworkElement)GetValue(AnalogClockFace.DateElementProperty); set => SetValue(AnalogClockFace.DateElementProperty, value); }
+
+    #endregion DateElement dependency property
 
     #region SelectedHour dependency property
 
@@ -233,11 +258,103 @@ namespace BionicCode.Controls.Net.Wpf
       "SelectedTime",
       typeof(DateTime),
       typeof(AnalogClockFace),
-      new FrameworkPropertyMetadata(default(DateTime), FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, AnalogClockFace.OnSelectedTimeChanged));
+      new FrameworkPropertyMetadata(DateTime.Now, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, AnalogClockFace.OnSelectedTimeChanged));
 
     public DateTime SelectedTime { get => (DateTime) GetValue(AnalogClockFace.SelectedTimeProperty); set => SetValue(AnalogClockFace.SelectedTimeProperty, value); }
 
     #endregion SelectedTime dependency property
+
+    #region SelectedMinuteArcPoint read-only dependency property
+    protected static readonly DependencyPropertyKey SelectedMinuteArcPointPropertyKey = DependencyProperty.RegisterReadOnly(
+      "SelectedMinuteArcPoint",
+      typeof(Point),
+      typeof(AnalogClockFace),
+      new PropertyMetadata(default(Point)));
+
+    public static readonly DependencyProperty SelectedMinuteArcPointProperty = AnalogClockFace.SelectedMinuteArcPointPropertyKey.DependencyProperty;
+
+    public Point SelectedMinuteArcPoint
+    {
+      get => (Point) GetValue(AnalogClockFace.SelectedMinuteArcPointProperty);
+      private set => SetValue(AnalogClockFace.SelectedMinuteArcPointPropertyKey, value);
+    }
+
+    #endregion SelectedMinuteArcPoint read-only dependency property
+
+    #region IsLargeSelectionMinuteArc read-only dependency property
+    protected static readonly DependencyPropertyKey IsLargeSelectionMinuteArcPropertyKey = DependencyProperty.RegisterReadOnly(
+      "IsLargeSelectionMinuteArc",
+      typeof(bool),
+      typeof(AnalogClockFace),
+      new PropertyMetadata(default(bool)));
+
+    public static readonly DependencyProperty IsLargeSelectionMinuteArcProperty = AnalogClockFace.IsLargeSelectionMinuteArcPropertyKey.DependencyProperty;
+
+    public bool IsLargeSelectionMinuteArc
+    {
+      get => (bool) GetValue(AnalogClockFace.IsLargeSelectionMinuteArcProperty);
+      private set => SetValue(AnalogClockFace.IsLargeSelectionMinuteArcPropertyKey, value);
+    }
+
+    #endregion IsLargeSelectionMinuteArc read-only dependency property
+
+    #region MinuteSelectionArc dependency property
+
+    public static readonly DependencyProperty MinuteSelectionArcProperty = DependencyProperty.Register(
+      "MinuteSelectionArc",
+      typeof(Geometry),
+      typeof(AnalogClockFace),
+      new PropertyMetadata(default));
+
+    public Geometry MinuteSelectionArc { get => (Geometry) GetValue(AnalogClockFace.MinuteSelectionArcProperty); set => SetValue(AnalogClockFace.MinuteSelectionArcProperty, value); }
+
+    #endregion MinuteSelectionArc dependency property
+
+    #region MinuteSelectionArcBrush dependency property
+
+    public static readonly DependencyProperty MinuteSelectionArcBrushProperty = DependencyProperty.Register(
+      "MinuteSelectionArcBrush",
+      typeof(Brush),
+      typeof(AnalogClockFace),
+      new PropertyMetadata(default));
+
+    public Brush MinuteSelectionArcBrush { get => (Brush) GetValue(AnalogClockFace.MinuteSelectionArcBrushProperty); set => SetValue(AnalogClockFace.MinuteSelectionArcBrushProperty, value); }
+
+    #endregion MinuteSelectionArcBrush dependency property
+
+    #region SelectionArcStart read-only dependency property
+    protected static readonly DependencyPropertyKey SelectionArcStartPropertyKey = DependencyProperty.RegisterReadOnly(
+      "SelectionArcStart",
+      typeof(Point),
+      typeof(AnalogClockFace),
+      new PropertyMetadata(default(Point)));
+
+    public static readonly DependencyProperty SelectionArcStartProperty = AnalogClockFace.SelectionArcStartPropertyKey.DependencyProperty;
+
+    public Point SelectionArcStart
+    {
+      get => (Point) GetValue(AnalogClockFace.SelectionArcStartProperty);
+      private set => SetValue(AnalogClockFace.SelectionArcStartPropertyKey, value);
+    }
+
+    #endregion SelectionArcStart read-only dependency property
+
+    #region SelectionArcSize read-only dependency property
+    protected static readonly DependencyPropertyKey SelectionArcSizePropertyKey = DependencyProperty.RegisterReadOnly(
+      "SelectionArcSize",
+      typeof(Size),
+      typeof(AnalogClockFace),
+      new PropertyMetadata(default(Size)));
+
+    public static readonly DependencyProperty SelectionArcSizeProperty = AnalogClockFace.SelectionArcSizePropertyKey.DependencyProperty;
+
+    public Size SelectionArcSize
+    {
+      get => (Size) GetValue(AnalogClockFace.SelectionArcSizeProperty);
+      private set => SetValue(AnalogClockFace.SelectionArcSizePropertyKey, value);
+    }
+
+    #endregion SelectionArcSize read-only dependency property
 
     #region IntervalLabelRadiusOffset dependency property
 
@@ -264,23 +381,21 @@ namespace BionicCode.Controls.Net.Wpf
 
     #endregion
 
-    #region Diameter read-only dependecy property
+    #region Diameter dependecy property
 
-    protected static readonly DependencyPropertyKey DiameterPropertyKey = DependencyProperty.RegisterReadOnly(
+    protected static readonly DependencyProperty DiameterProperty = DependencyProperty.Register(
       "Diameter",
       typeof(double),
       typeof(AnalogClockFace),
-      new PropertyMetadata(default(double)));
-
-    public static readonly DependencyProperty DiameterProperty = AnalogClockFace.DiameterPropertyKey.DependencyProperty;
+      new PropertyMetadata(default(double), AnalogClockFace.OnDiameterChanged));
 
     public double Diameter
     {
       get => (double)GetValue(AnalogClockFace.DiameterProperty);
-      private set => SetValue(AnalogClockFace.DiameterPropertyKey, value);
+      set => SetValue(AnalogClockFace.DiameterProperty, value);
     }
 
-    #endregion Diameter read-only dependecy property
+    #endregion Diameter dependecy property
 
     #region Radius read-only dependecy property
 
@@ -299,6 +414,40 @@ namespace BionicCode.Controls.Net.Wpf
     }
 
     #endregion Radius read-only dependecy property
+
+    #region Center read-only dependency property
+    protected static readonly DependencyPropertyKey CenterPropertyKey = DependencyProperty.RegisterReadOnly(
+      "Center",
+      typeof(Point),
+      typeof(AnalogClockFace),
+      new PropertyMetadata(default(Point)));
+
+    public static readonly DependencyProperty CenterProperty = AnalogClockFace.CenterPropertyKey.DependencyProperty;
+
+    public Point Center
+    {
+      get => (Point) GetValue(AnalogClockFace.CenterProperty);
+      private set => SetValue(AnalogClockFace.CenterPropertyKey, value);
+    }
+
+    #endregion Center read-only dependency property
+
+    #region IntervalMarkerCenterRadius read-only dependency property
+    protected static readonly DependencyPropertyKey IntervalMarkerCenterRadiusPropertyKey = DependencyProperty.RegisterReadOnly(
+      "IntervalMarkerCenterRadius",
+      typeof(double),
+      typeof(AnalogClockFace),
+      new PropertyMetadata(default(double)));
+
+    public static readonly DependencyProperty IntervalMarkerCenterRadiusProperty = AnalogClockFace.IntervalMarkerCenterRadiusPropertyKey.DependencyProperty;
+
+    public double IntervalMarkerCenterRadius
+    {
+      get => (double) GetValue(AnalogClockFace.IntervalMarkerCenterRadiusProperty);
+      private set => SetValue(AnalogClockFace.IntervalMarkerCenterRadiusPropertyKey, value);
+    }
+
+    #endregion IntervalMarkerCenterRadius read-only dependency property
 
     #region HourHandRadius dependency property
 
@@ -398,11 +547,38 @@ namespace BionicCode.Controls.Net.Wpf
 
     #endregion Is24HModeEnabled dependency property
 
+    #region IsDisplayDateEnabled dependency property
+
+    public static readonly DependencyProperty IsDisplayDateEnabledProperty = DependencyProperty.Register(
+      "IsDisplayDateEnabled",
+      typeof(bool),
+      typeof(AnalogClockFace),
+      new FrameworkPropertyMetadata(default(bool), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
+
+    public bool IsDisplayDateEnabled { get => (bool)GetValue(AnalogClockFace.IsDisplayDateEnabledProperty); set => SetValue(AnalogClockFace.IsDisplayDateEnabledProperty, value); }
+
+    #endregion IsDisplayDateEnabled dependency property
+
+    #region IsMinuteSelectionArcEnabled dependency property
+
+    public static readonly DependencyProperty IsMinuteSelectionArcEnabledProperty = DependencyProperty.Register(
+      "IsMinuteSelectionArcEnabled",
+      typeof(bool),
+      typeof(AnalogClockFace),
+      new PropertyMetadata(default));
+
+    public bool IsMinuteSelectionArcEnabled { get => (bool) GetValue(AnalogClockFace.IsMinuteSelectionArcEnabledProperty); set => SetValue(AnalogClockFace.IsMinuteSelectionArcEnabledProperty, value); }
+
+    #endregion IsMinuteSelectionArcEnabled dependency property
+
     private Canvas ClockFaceCanvas { get; set; }
     private RotateTransform HourHandTransform { get; set; }
     private RotateTransform MinuteHandTransform { get; set; }
     private RotateTransform SecondHandTransform { get; set; }
+    private RotateTransform DateElementTransform { get; set; }
     private RotateTransform IntervalElementTransform { get; set; }
+    private ScaleTransform ClockFaceScaleTransform { get; set; }
+    private Rectangle SelectedMinuteArcRectangle { get; set; }
     private bool IsUpdatingSelectedTimeComponent { get; set; }
     private bool IsUpdatingSelectedTime { get; set; }
 
@@ -412,19 +588,40 @@ namespace BionicCode.Controls.Net.Wpf
     }
     public AnalogClockFace()
     {
+      this.Diameter = 100;
       InitializeClockRotateTransforms();
       InitializeClockFaceCanvas();
+      this.SelectedMinuteArcRectangle = new Rectangle()
+      {
+        Opacity = 0.6,
+        Height = this.Diameter,
+        Width = this.Diameter
+      };
+      var selectedMinuteArcBinding = new Binding(nameof(this.MinuteSelectionArc)) { Source = this };
+      this.SelectedMinuteArcRectangle.SetBinding(UIElement.ClipProperty, selectedMinuteArcBinding);
+      var selectedMinuteArcBrushBinding = new Binding(nameof(this.MinuteSelectionArcBrush)) { Source = this };
+      this.SelectedMinuteArcRectangle.SetBinding(Shape.FillProperty, selectedMinuteArcBrushBinding);
+
       this.IntervalLabelFormatter = value => value.ToString();
     }
     
     private void InitializeClockFaceCanvas()
     {
-      this.ClockFaceCanvas = new Canvas();
+      this.ClockFaceScaleTransform = new ScaleTransform(1, 1);
+      this.ClockFaceCanvas = new Canvas
+      {
+        RenderTransform = this.ClockFaceScaleTransform,
+        Background = Brushes.PaleVioletRed,
+        Width = this.Diameter,
+        Height = this.Diameter,
+        HorizontalAlignment = HorizontalAlignment.Left,
+        VerticalAlignment = VerticalAlignment.Top
+      };
       this.Content = this.ClockFaceCanvas;
 
       var widthBinding = new Binding(nameof(this.Diameter)) {Source = this};
       this.ClockFaceCanvas.SetBinding(FrameworkElement.WidthProperty, widthBinding);
-      var heightBinding = new Binding(nameof(this.Height)) {Source = this};
+      var heightBinding = new Binding(nameof(this.Diameter)) {Source = this};
       this.ClockFaceCanvas.SetBinding(FrameworkElement.HeightProperty, heightBinding);
     }
 
@@ -434,6 +631,7 @@ namespace BionicCode.Controls.Net.Wpf
       this.HourHandTransform = new RotateTransform(GetClockAngle(this.SelectedHour, this.Is24HModeEnabled ? 24 : 12), this.Radius, this.Radius);
       this.MinuteHandTransform = new RotateTransform(GetClockAngle(this.SelectedMinute, 60), this.Radius, this.Radius);
       this.SecondHandTransform = new RotateTransform(GetClockAngle(this.SelectedSecond, 60), this.Radius, this.Radius);
+      this.DateElementTransform = new RotateTransform(0, this.Radius, this.Radius);
       var radiusBinding = new Binding(nameof(this.Radius)) { Source = this };
       BindingOperations.SetBinding(this.IntervalElementTransform, RotateTransform.CenterXProperty, radiusBinding);
       BindingOperations.SetBinding(this.IntervalElementTransform, RotateTransform.CenterYProperty, radiusBinding);
@@ -451,8 +649,18 @@ namespace BionicCode.Controls.Net.Wpf
     /// <inheritdoc />
     protected override Size MeasureOverride(Size constraint)
     {
-      constraint = base.MeasureOverride(constraint);
+      double scaleFactor = Math.Min(constraint.Width, constraint.Height) / this.Diameter;
+      double requiredWidth = this.Diameter * scaleFactor;
+      double requiredHeight = this.Diameter * scaleFactor;
+      constraint = new Size(requiredWidth, requiredHeight);
+      base.MeasureOverride(constraint);
+      return constraint;
+    }
 
+
+    /// <inheritdoc />
+    protected override Size ArrangeOverride(Size arrangeBounds)
+    {
       if (this.Is24HModeEnabled)
       {
         DrawAnalog24Clock();
@@ -461,34 +669,77 @@ namespace BionicCode.Controls.Net.Wpf
       {
         DrawAnalogClock();
       }
-      return constraint;
-    }
-
-    /// <inheritdoc />
-    protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
-    {
-      base.OnRenderSizeChanged(sizeInfo);
-      this.Diameter = this.ActualWidth;
-      this.Radius = this.Diameter / 2;
+      double scaleFactor = Math.Min(arrangeBounds.Width, arrangeBounds.Height) / this.Diameter;
+      this.ClockFaceScaleTransform.ScaleX = scaleFactor;
+      this.ClockFaceScaleTransform.ScaleY = scaleFactor;
+      arrangeBounds = base.ArrangeOverride(arrangeBounds);
+      return arrangeBounds;
     }
 
     #endregion
 
 
-    
+    private static void OnDiameterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+      var this_ = d as AnalogClockFace;
+      this_.Radius = (double)e.NewValue / 2;
+      this_.Center = new Point(this_.Radius, this_.Radius);
+      this_.SelectionArcStart = new Point(this_.Radius, this_.IntervalMarkerCenterRadius);
+      this_.SelectionArcSize = new Size(this_.IntervalMarkerCenterRadius, this_.IntervalMarkerCenterRadius);
+    }
+
+
+    private static void OnDateElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+      var this_ = d as AnalogClockFace;
+      this_.OnDateElementChanged(e.OldValue as FrameworkElement, e.NewValue as FrameworkElement);
+    }
+
+    protected virtual void OnDateElementChanged(FrameworkElement oldDateElement, FrameworkElement newDateElement)
+    {
+      if (oldDateElement != null)
+      {
+        if (oldDateElement.RenderTransform is TransformGroup oldTransformGroup)
+        {
+          oldTransformGroup.Children.Remove(this.DateElementTransform);
+        }
+        else
+        {
+          oldDateElement.RenderTransform = null;
+        }
+      }
+
+      RemoveElementFromClockFace(oldDateElement);
+
+      if (newDateElement == null)
+      {
+        return;
+      }
+
+      if (newDateElement.RenderTransform is TransformGroup newTransformGroup)
+      {
+        newTransformGroup.Children.Add(this.DateElementTransform);
+      }
+      else
+      {
+        newDateElement.RenderTransform = this.DateElementTransform;
+      }
+    }
+
+
     private static void OnHourHandElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      (d as AnalogClockFace).OnHourHandElementChanged(e.OldValue as UIElement, e.NewValue as UIElement);
+      (d as AnalogClockFace).OnHourHandElementChanged(e.OldValue as FrameworkElement, e.NewValue as FrameworkElement);
     }
 
     private static void OnMinuteHandElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      (d as AnalogClockFace).OnMinuteHandElementChanged(e.OldValue as UIElement, e.NewValue as UIElement);
+      (d as AnalogClockFace).OnMinuteHandElementChanged(e.OldValue as FrameworkElement, e.NewValue as FrameworkElement);
     }
 
     private static void OnSecondHandElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      (d as AnalogClockFace).OnSecondHandElementChanged(e.OldValue as UIElement, e.NewValue as UIElement);
+      (d as AnalogClockFace).OnSecondHandElementChanged(e.OldValue as FrameworkElement, e.NewValue as FrameworkElement);
     }
 
     private static void OnSelectedHourChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -613,8 +864,11 @@ namespace BionicCode.Controls.Net.Wpf
 
     protected virtual void OnSelectedHourChanged(double oldValue, double newValue)
     {
-      double angle = GetClockAngle(newValue, this.Is24HModeEnabled ? 24 : 12);
-      this.HourHandTransform.Angle = angle;
+      if (this.HourHandTransform != null)
+      {
+        double angle = GetClockAngle(newValue, this.Is24HModeEnabled ? 24 : 12);
+        this.HourHandTransform.Angle = angle;
+      }
 
       if (this.IsUpdatingSelectedTime)
       {
@@ -626,8 +880,14 @@ namespace BionicCode.Controls.Net.Wpf
 
     protected virtual void OnSelectedMinuteChanged(double oldValue, double newValue)
     {
-      double angle = GetClockAngle(newValue, 60);
-      this.MinuteHandTransform.Angle = angle;
+      if (this.MinuteHandTransform != null)
+      {
+        double angle = GetClockAngle(newValue, 60);
+        this.MinuteHandTransform.Angle = angle;
+
+        angle = GetClockAngle(this.SelectedHour + newValue / 60, 12);
+        this.HourHandTransform.Angle = angle;
+      }
 
       if (this.IsUpdatingSelectedTime)
       {
@@ -639,8 +899,11 @@ namespace BionicCode.Controls.Net.Wpf
 
     protected virtual void OnSelectedSecondChanged(double oldValue, double newValue)
     {
-      double angle = GetClockAngle(newValue, 60);
-      this.SecondHandTransform.Angle = angle;
+      if (this.SecondHandTransform != null)
+      {
+        double angle = GetClockAngle(newValue, 60);
+        this.SecondHandTransform.Angle = angle;
+      }
 
       if (this.IsUpdatingSelectedTime)
       {
@@ -650,7 +913,7 @@ namespace BionicCode.Controls.Net.Wpf
       this.SelectedTime = new DateTime(this.SelectedTime.Year, this.SelectedTime.Month, this.SelectedTime.Day, (int) this.SelectedHour, (int)this.SelectedMinute, (int) newValue);
     }
 
-    protected virtual void OnHourHandElementChanged(UIElement oldClockHand, UIElement newClockHand)
+    protected virtual void OnHourHandElementChanged(FrameworkElement oldClockHand, FrameworkElement newClockHand)
     {
       if (oldClockHand != null)
       {
@@ -682,7 +945,7 @@ namespace BionicCode.Controls.Net.Wpf
       AddElementToClockFace(newClockHand, new Point(Canvas.GetLeft(newClockHand), Canvas.GetTop(newClockHand)));
     }
 
-    protected virtual void OnMinuteHandElementChanged(UIElement oldClockHand, UIElement newClockHand)
+    protected virtual void OnMinuteHandElementChanged(FrameworkElement oldClockHand, FrameworkElement newClockHand)
     {
       if (oldClockHand != null)
       {
@@ -714,7 +977,7 @@ namespace BionicCode.Controls.Net.Wpf
       AddElementToClockFace(newClockHand, new Point(Canvas.GetLeft(newClockHand), Canvas.GetTop(newClockHand)));
     }
 
-    protected virtual void OnSecondHandElementChanged(UIElement oldClockHand, UIElement newClockHand)
+    protected virtual void OnSecondHandElementChanged(FrameworkElement oldClockHand, FrameworkElement newClockHand)
     {
       if (oldClockHand != null)
       {
@@ -746,9 +1009,9 @@ namespace BionicCode.Controls.Net.Wpf
       AddElementToClockFace(newClockHand, new Point(Canvas.GetLeft(newClockHand), Canvas.GetTop(newClockHand)));
     }
 
-    protected virtual UIElement Create15MinuteIntervalVisual()
+    protected virtual FrameworkElement Create15MinuteIntervalVisual()
     {
-      UIElement intervalElement = this.FifteenMinuteIntervalElement != null
+      FrameworkElement intervalElement = this.FifteenMinuteIntervalElement != null
         ? CloneElement(this.FifteenMinuteIntervalElement)
         : new Ellipse
         {
@@ -760,9 +1023,9 @@ namespace BionicCode.Controls.Net.Wpf
         return intervalElement;
     }
 
-    protected virtual UIElement Create5MinuteIntervalVisual()
+    protected virtual FrameworkElement Create5MinuteIntervalVisual()
     {
-      UIElement intervalElement = this.FiveMinuteIntervalElement != null
+      FrameworkElement intervalElement = this.FiveMinuteIntervalElement != null
         ? CloneElement(this.FiveMinuteIntervalElement)
         : new Ellipse
         {
@@ -772,9 +1035,9 @@ namespace BionicCode.Controls.Net.Wpf
       return intervalElement;
     }
 
-    protected virtual UIElement CreateMinuteIntervalVisual()
+    protected virtual FrameworkElement CreateMinuteIntervalVisual()
     {
-      UIElement intervalElement = this.MinuteIntervalElement != null
+      FrameworkElement intervalElement = this.MinuteIntervalElement != null
         ? CloneElement(this.MinuteIntervalElement)
         : new Ellipse
         {
@@ -784,7 +1047,7 @@ namespace BionicCode.Controls.Net.Wpf
       return intervalElement;
     }
 
-    protected virtual UIElement Create15MinuteIntervalLabel(int labelValue)
+    protected virtual FrameworkElement Create15MinuteIntervalLabel(int labelValue)
     {
       object formattedLabelValue = this.IntervalLabelFormatter?.Invoke(labelValue) ?? labelValue;
       if (this.FifteenMinuteIntervalLabel != null
@@ -793,10 +1056,10 @@ namespace BionicCode.Controls.Net.Wpf
         return label;
       }
 
-      return new TextBlock { Text = formattedLabelValue.ToString(), Padding = new Thickness(0) };
+      return new TextBlock { Text = formattedLabelValue.ToString(), Padding = new Thickness(0)};
     }
 
-    protected virtual UIElement Create5MinuteIntervalLabel(int labelValue)
+    protected virtual FrameworkElement Create5MinuteIntervalLabel(int labelValue)
     {
       object formattedLabelValue = this.IntervalLabelFormatter?.Invoke(labelValue) ?? labelValue;
       if (this.FiveMinuteIntervalLabel != null
@@ -805,10 +1068,10 @@ namespace BionicCode.Controls.Net.Wpf
         return label;
       }
 
-      return new TextBlock {Text = formattedLabelValue.ToString(), Padding = new Thickness(0) };
+      return new TextBlock { Text = formattedLabelValue.ToString(), Padding = new Thickness(0) };
     }
 
-    protected virtual UIElement CreateMinuteIntervalLabel(int labelValue)
+    protected virtual FrameworkElement CreateMinuteIntervalLabel(int labelValue)
     {
       object formattedLabelValue = this.IntervalLabelFormatter?.Invoke(labelValue) ?? labelValue;
       if (this.MinuteIntervalLabel != null 
@@ -817,10 +1080,10 @@ namespace BionicCode.Controls.Net.Wpf
         return label;
       }
 
-      return new TextBlock {Text = formattedLabelValue.ToString(), Padding = new Thickness(0) };
+      return new TextBlock { Text = formattedLabelValue.ToString(), Padding = new Thickness(0) };
     }
 
-    protected virtual UIElement CloneElement(UIElement elementToClone) => elementToClone.CloneElement();
+    protected virtual FrameworkElement CloneElement(FrameworkElement elementToClone) => elementToClone.CloneElement() as FrameworkElement;
 
     protected virtual void OnClockFaceLoaded() =>
       RaiseEvent(new RoutedEventArgs(AnalogClockFace.ClockFaceLoadedRoutedEvent, this));
@@ -831,7 +1094,7 @@ namespace BionicCode.Controls.Net.Wpf
       ? step 
       : step == 0 ? 12 : step / 5;
 
-    private void AddIntervalElementTransformToElement(UIElement intervalElement)
+    private void AddIntervalElementTransformToElement(FrameworkElement intervalElement)
     {
       if (!(intervalElement is FrameworkElement frameworkElement))
       {
@@ -863,27 +1126,42 @@ namespace BionicCode.Controls.Net.Wpf
 
       double steps = 60.0;
       double degreeOfStep = 360.0 / steps;
-      double intervalMarkerCenterPositionRadius = -1;
+      this.IntervalMarkerCenterRadius = -1;
       for (int step = 0; step < steps; step++)
       {
         double degreesOfCurrentStep = step * degreeOfStep;
 
-        UIElement intervalMarker = CreateIntervalMarker(step);
-        if (intervalMarkerCenterPositionRadius.Equals(-1))
+        FrameworkElement intervalMarker = CreateIntervalMarker(step);
+        if (this.IntervalMarkerCenterRadius.Equals(-1))
         {
-          InitializeRadiusOfIntervalMarkers(out intervalMarkerCenterPositionRadius, intervalMarker, this.Radius);
+          InitializeRadiusOfIntervalMarkers(intervalMarker, this.Radius);
         }
 
-        DrawIntervalMarker(degreesOfCurrentStep, intervalMarkerCenterPositionRadius, intervalMarker);
-        
-        UIElement intervalMarkerLabel = CreateIntervalLabel(step);
-        if (intervalMarkerLabel != null)
+        DrawIntervalMarker(degreesOfCurrentStep, intervalMarker);
+
+        if (this.IsDisplayIntervalLabelsEnabled)
         {
-          DrawIntervalLabel(intervalMarkerCenterPositionRadius, degreesOfCurrentStep, intervalMarkerLabel);
+          FrameworkElement intervalMarkerLabel = CreateIntervalLabel(step);
+          if (intervalMarkerLabel != null)
+          {
+            DrawIntervalLabel(degreesOfCurrentStep, intervalMarkerLabel);
+          }
         }
       }
 
-      DrawClockFaceBackground(intervalMarkerCenterPositionRadius);
+      DrawClockFaceBackground();
+      if (this.IsMinuteSelectionArcEnabled)
+      {
+        AddElementToClockFace(
+          this.SelectedMinuteArcRectangle,
+          new Point());
+        DrawArcFromZeroToCurrent();
+      }
+      
+      if (this.IsDisplayDateEnabled)
+      {
+        AddDateElement();
+      }
 
       AddClockHands();
       OnClockFaceLoaded();
@@ -905,20 +1183,20 @@ namespace BionicCode.Controls.Net.Wpf
       {
         double degreesOfCurrentStep = step * degreeOfStep;
 
-        UIElement intervalMarker = CreateIntervalMarker(step);
+        FrameworkElement intervalMarker = CreateIntervalMarker(step);
         if (intervalMarkerCenterPositionRadius.Equals(-1))
         {
-          InitializeRadiusOfIntervalMarkers(out intervalMarkerCenterPositionRadius, intervalMarker, this.MinuteHandRadius);
+          InitializeRadiusOfIntervalMarkers(intervalMarker, this.MinuteHandRadius);
         }
 
-        DrawIntervalMarker(degreesOfCurrentStep, intervalMarkerCenterPositionRadius, intervalMarker);
+        DrawIntervalMarker(degreesOfCurrentStep, intervalMarker);
 
         if (step % 5 == 0)
         {
-          UIElement intervalMarkerLabel = CreateIntervalLabel(step);
+          FrameworkElement intervalMarkerLabel = CreateIntervalLabel(step);
           if (intervalMarkerLabel != null)
           {
-            DrawIntervalLabel(intervalMarkerCenterPositionRadius, degreesOfCurrentStep, intervalMarkerLabel);
+            DrawIntervalLabel(degreesOfCurrentStep, intervalMarkerLabel);
           }
         }
       }
@@ -930,18 +1208,18 @@ namespace BionicCode.Controls.Net.Wpf
       {
         double degreesOfCurrentStep = step * degreeOfStep;
 
-        UIElement intervalMarker = CreateIntervalMarker(step);
+        FrameworkElement intervalMarker = CreateIntervalMarker(step);
         if (intervalMarkerCenterPositionRadius.Equals(-1))
         {
-          InitializeRadiusOfIntervalMarkers(out intervalMarkerCenterPositionRadius, intervalMarker, this.HourHandRadius);
+          InitializeRadiusOfIntervalMarkers(intervalMarker, this.HourHandRadius);
         }
 
-        DrawIntervalMarker(degreesOfCurrentStep, intervalMarkerCenterPositionRadius, intervalMarker);
+        DrawIntervalMarker(degreesOfCurrentStep, intervalMarker);
         
-        UIElement intervalMarkerLabel = CreateIntervalLabel(step);
+        FrameworkElement intervalMarkerLabel = CreateIntervalLabel(step);
         if (intervalMarkerLabel != null)
         {
-          DrawIntervalLabel(intervalMarkerCenterPositionRadius, degreesOfCurrentStep, intervalMarkerLabel);
+          DrawIntervalLabel(degreesOfCurrentStep, intervalMarkerLabel);
         }
       }
 
@@ -954,15 +1232,15 @@ namespace BionicCode.Controls.Net.Wpf
         {
           double degreesOfCurrentStep = step * degreeOfStep;
 
-          UIElement intervalMarker = CreateIntervalMarker(step);
+          FrameworkElement intervalMarker = CreateIntervalMarker(step);
           if (intervalMarkerCenterPositionRadius.Equals(-1))
           {
-            InitializeRadiusOfIntervalMarkers(out intervalMarkerCenterPositionRadius, intervalMarker, this.SecondHandRadius);
+            InitializeRadiusOfIntervalMarkers(intervalMarker, this.SecondHandRadius);
           }
 
-          DrawIntervalMarker(degreesOfCurrentStep, intervalMarkerCenterPositionRadius, intervalMarker);
+          DrawIntervalMarker(degreesOfCurrentStep, intervalMarker);
         
-          //UIElement intervalMarkerLabel = CreateIntervalLabel(step);
+          //FrameworkElement intervalMarkerLabel = CreateIntervalLabel(step);
           //if (intervalMarkerLabel != null)
           //{
           //  DrawIntervalLabel(intervalMarkerCenterPositionRadius, degreesOfCurrentStep, intervalMarkerLabel);
@@ -976,18 +1254,54 @@ namespace BionicCode.Controls.Net.Wpf
       OnClockFaceLoaded();
     }
 
-    private void DrawClockFaceBackground(double intervalMarkerCenterPositionRadius)
+    private void AddDateElement()
     {
-      double deltaToMiddleRadius = (this.Radius - intervalMarkerCenterPositionRadius) * 2;
+      if (this.DateElement == null)
+      {
+        return;
+      }
+      
+      AddElementToClockFace(this.DateElement, new Point(Canvas.GetLeft(this.DateElement), Canvas.GetTop(this.DateElement)));
+    }
+
+    private void DrawClockFaceBackground()
+    {
+      double deltaToMiddleRadius = (this.Radius - this.IntervalMarkerCenterRadius) * 2;
       var clockFaceBackgroundPosition = new Point();
       clockFaceBackgroundPosition.Offset(deltaToMiddleRadius / 2, deltaToMiddleRadius / 2);
-      AddElementToClockFace(
-        new Ellipse()
+      var ellipse = new Ellipse()
+      {
+        Height = this.Diameter - deltaToMiddleRadius, Width = this.Diameter - deltaToMiddleRadius, Fill = this.Background
+      };
+      AddElementToClockFace(ellipse, clockFaceBackgroundPosition, 0);
+    }
+
+    private void DrawArcFromZeroToCurrent()
+    {
+      double angle = GetClockAngle(this.SelectedMinute, 60);
+      Point cartesianMinutePointOnArc = GetCartesianPointOfStep(angle, this.IntervalMarkerCenterRadius);
+      this.IsLargeSelectionMinuteArc = angle > 180.0;
+      this.SelectedMinuteArcPoint = cartesianMinutePointOnArc.ToScreenPoint(this.Diameter);
+      this.SelectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerCenterRadius);
+      this.SelectionArcSize = new Size(this.IntervalMarkerCenterRadius, this.IntervalMarkerCenterRadius);
+      this.MinuteSelectionArc = new PathGeometry(
+        new List<PathFigure>()
         {
-          Height = this.Diameter - deltaToMiddleRadius, Width = this.Diameter - deltaToMiddleRadius, Fill = this.Background
-        },
-        clockFaceBackgroundPosition,
-        0);
+          new PathFigure(
+            this.Center,
+            new List<PathSegment>()
+            {
+              new LineSegment(this.SelectionArcStart, false),
+              new ArcSegment(
+                this.SelectedMinuteArcPoint,
+                this.SelectionArcSize,
+                0,
+                true,
+                SweepDirection.Clockwise,
+                false)
+            },
+            true)
+        });
     }
 
     private void Draw24ClockFaceBackground(double intervalMarkerCenterPositionRadius)
@@ -1001,25 +1315,20 @@ namespace BionicCode.Controls.Net.Wpf
         0);
     }
 
-    private void DrawIntervalLabel(
-      double intervalMarkerCenterPositionRadius,
-      double degreesOfCurrentStep,
-      UIElement intervalMarkerLabel)
+    private void DrawIntervalLabel(double degreesOfCurrentStep, FrameworkElement intervalMarkerLabel)
     {
       Point cartesianPoint;
-      double intervalMarkerLabelCenterPositionRadius = intervalMarkerCenterPositionRadius + this.IntervalLabelRadiusOffset;
-      cartesianPoint = GetCartesianPointOfStep(degreesOfCurrentStep, intervalMarkerLabelCenterPositionRadius);
+      cartesianPoint = GetCartesianPointOfStep(degreesOfCurrentStep, this.IntervalMarkerCenterRadius + this.IntervalLabelRadiusOffset);
       AlignElementCenterPointToRadius(ref cartesianPoint, intervalMarkerLabel);
       AddCartesianElementToClockFace(intervalMarkerLabel, cartesianPoint);
     }
 
     private void DrawIntervalMarker(
       double degreesOfCurrentStep,
-      double intervalMarkerCenterPositionRadius,
-      UIElement intervalMarker)
+      FrameworkElement intervalMarker)
     {
       AnalogClockFace.RotateIntervalMarker(degreesOfCurrentStep, intervalMarker);
-      Point cartesianPoint = GetCartesianPointOfStep(degreesOfCurrentStep, intervalMarkerCenterPositionRadius);
+      Point cartesianPoint = GetCartesianPointOfStep(degreesOfCurrentStep, this.IntervalMarkerCenterRadius);
       if (AnalogClockFace.GetIsCenterElementOnCircumferenceEnabled(intervalMarker))
       {
         AlignElementCenterPointToRadius(ref cartesianPoint, intervalMarker);
@@ -1028,7 +1337,7 @@ namespace BionicCode.Controls.Net.Wpf
       AddCartesianElementToClockFace(intervalMarker, cartesianPoint);
     }
 
-    private static void RotateIntervalMarker(double degreesOfCurrentStep, UIElement intervalMarker)
+    private static void RotateIntervalMarker(double degreesOfCurrentStep, FrameworkElement intervalMarker)
     {
       RotateTransform rotateTransform;
       if (intervalMarker.RenderTransform is TransformGroup transformGroup)
@@ -1046,9 +1355,9 @@ namespace BionicCode.Controls.Net.Wpf
       }
     }
 
-    private UIElement CreateIntervalMarker(int step)
+    private FrameworkElement CreateIntervalMarker(int step)
     {
-      UIElement intervalMarker;
+      FrameworkElement intervalMarker;
       switch (step)
       {
         case { } is15MinutesStep when is15MinutesStep % 15 == 0:
@@ -1075,9 +1384,9 @@ namespace BionicCode.Controls.Net.Wpf
       return intervalMarker;
     }
 
-    private UIElement CreateIntervalLabel(int step)
+    private FrameworkElement CreateIntervalLabel(int step)
     {
-      UIElement intervalMarkerLabel = null;
+      FrameworkElement intervalMarkerLabel = null;
       switch (step)
       {
         case { } is15MinutesStep when is15MinutesStep % 15 == 0:
@@ -1110,17 +1419,18 @@ namespace BionicCode.Controls.Net.Wpf
       return intervalMarkerLabel;
     }
 
-    private void InitializeRadiusOfIntervalMarkers(out double intervalMarkerCenterPositionRadius, UIElement intervalMarker, double radius)
+    private void InitializeRadiusOfIntervalMarkers(FrameworkElement intervalMarker, double radius)
     {
       double radiusOffset = CalculateIntervalMarkerCenterRadiusOffset(intervalMarker);
-      intervalMarkerCenterPositionRadius = radius + radiusOffset;
+      this.IntervalMarkerCenterRadius = radius + radiusOffset;
     }
 
-    private void AlignElementCenterPointToRadius(ref Point cartesianPoint, UIElement element)
+    private void AlignElementCenterPointToRadius(ref Point cartesianPoint, FrameworkElement element)
     {
       if (!element.IsMeasureValid)
       {
         element.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+        element.Arrange(new Rect(new Point(), element.DesiredSize));
       }
 
       double elementVerticalCenterPointOffset = element.DesiredSize.Height / 2;
@@ -1145,7 +1455,7 @@ namespace BionicCode.Controls.Net.Wpf
       }
     }
 
-    private double CalculateIntervalMarkerCenterRadiusOffset(UIElement intervalMarker)
+    private double CalculateIntervalMarkerCenterRadiusOffset(FrameworkElement intervalMarker)
     {
       if (!intervalMarker.IsMeasureValid)
       {
@@ -1175,16 +1485,13 @@ namespace BionicCode.Controls.Net.Wpf
       return cartesianPoint;
     }
 
-    // Adjust/flip y-axis
-    protected Point ConvertCartesianPointToScreenPoint(Point point, double yMax) => new Point(point.X, yMax - 0 - point.Y);
-
-    public void AddCartesianElementToClockFace(UIElement clockElement, Point cartesianPoint)
+    public void AddCartesianElementToClockFace(FrameworkElement clockElement, Point cartesianPoint)
     {
-      Point screenPoint = ConvertCartesianPointToScreenPoint(cartesianPoint, this.Diameter);
+      Point screenPoint = cartesianPoint.ToScreenPoint(this.Diameter);
       AddElementToClockFace(clockElement, screenPoint);
     }
 
-    public void AddElementToClockFace(UIElement clockElement, Point screenPoint, int zIndex = 1)
+    public void AddElementToClockFace(FrameworkElement clockElement, Point screenPoint, int zIndex = 1)
     {
       Canvas.SetLeft(clockElement, screenPoint.X);
       Canvas.SetTop(clockElement, screenPoint.Y);
@@ -1192,6 +1499,6 @@ namespace BionicCode.Controls.Net.Wpf
       this.ClockFaceCanvas.Children.Add(clockElement);
     }
 
-    public void RemoveElementFromClockFace(UIElement clockElement) => this.ClockFaceCanvas.Children.Remove(clockElement);
+    public void RemoveElementFromClockFace(FrameworkElement clockElement) => this.ClockFaceCanvas.Children.Remove(clockElement);
   }
 }

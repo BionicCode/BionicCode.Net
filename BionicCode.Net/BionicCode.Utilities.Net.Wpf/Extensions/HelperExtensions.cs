@@ -411,5 +411,7 @@ namespace BionicCode.Utilities.Net.Wpf.Extensions
       propertyInfo.SetValue(control, value);
       return true;
     }
+
+    public static System.Windows.Point ToScreenPoint(this Point cartesianPoint, double height) => new Point(cartesianPoint.X, height - cartesianPoint.Y);
   }
 }

@@ -6,10 +6,13 @@
         xmlns:local="clr-namespace:BionicCode.Net.Framework.Core.Ui.Test"
         xmlns:wpf="clr-namespace:BionicCode.Controls.Net.Wpf;assembly=BionicCode.Controls.Net.Wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Name="Window">
   <Window.Resources>
   </Window.Resources>
-  <StackPanel>
+  <Grid>
+    <wpf:AnalogClockFace Background="DimGray" SelectedTime="{Binding ElementName=Window, Path=CurrentDateTime}"/>
+  </Grid>
+  <!--<StackPanel>
     <wpf:TimePicker x:Name="TimePicker" IsSecondsEnabled="True" IsOpen="True"/>
 
     <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedTime}"/>
@@ -17,5 +20,5 @@
     <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedMinutes}"/>
     <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedSeconds}"/>
     <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedMeridiem}"/>
-  </StackPanel>
+  </StackPanel>-->
 </Window>
