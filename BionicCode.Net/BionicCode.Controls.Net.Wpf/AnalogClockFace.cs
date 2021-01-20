@@ -1367,7 +1367,7 @@ namespace BionicCode.Controls.Net.Wpf
       Draw24HHourIntervals();
       Draw24HMinuteIntervals();
       Draw24HSecondIntervals();
-      Draw24ClockFaceBackground(this.IntervalMarkerMinuteCenterRadius);
+      Draw24ClockFaceBackground();
       DrawTimePickerSelectionArcs();
       if (!this.IsTimePickerModeEnabled || this.IsTimePickerClockHandVisible)
       {
@@ -1799,9 +1799,9 @@ namespace BionicCode.Controls.Net.Wpf
           });
     }
 
-    private void Draw24ClockFaceBackground(double intervalMarkerCenterPositionRadius)
+    private void Draw24ClockFaceBackground()
     {
-      double deltaToMiddleRadius = (this.Radius - this.IntervalMarkerMinuteCenterRadius) * 2;
+      double deltaToMiddleRadius = (this.Radius - this.IntervalMarkerCenterRadius) * 2;
       var clockFaceBackgroundPosition = new Point();
       clockFaceBackgroundPosition.Offset(deltaToMiddleRadius / 2, deltaToMiddleRadius / 2);
       var ellipse = new Ellipse()

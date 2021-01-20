@@ -16,7 +16,7 @@
         <SolidColorBrush Color="DodgerBlue" Opacity="0.6" />
       </Setter.Value>
     </Setter>
-    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Background" Value="#FF252526" />
     <Setter Property="FontSize" Value="8" />
     <Setter Property="FontStretch" Value="UltraExpanded" />
     <Setter Property="FontWeight" Value="UltraLight" />

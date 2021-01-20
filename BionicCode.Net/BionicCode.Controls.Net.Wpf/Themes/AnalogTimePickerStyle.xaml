@@ -19,7 +19,8 @@
       <Setter.Value>
         <wpf:AnalogClockFace x:Name="AnalogClockFace"
                                IsTimePickerModeEnabled="True"
-                               Is24HModeEnabled="True" />
+                               Is24HModeEnabled="True" 
+                               Background="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogTimePicker}, Path=Background}" />
       </Setter.Value>
     </Setter>
     <Setter Property="Template">
@@ -94,8 +95,8 @@
                 <ScaleTransform x:Name="PopupScaleTransform"/>
               </Popup.RenderTransform>-->
               <Border BorderThickness="1"
-                      BorderBrush="DarkGray"
-                      Background="#24292E"
+                      BorderBrush="DimGray"
+                      Background="{TemplateBinding Background}"
                       Margin="8"
                       Padding="8">
                 <Border.Effect>
