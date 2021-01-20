@@ -413,5 +413,7 @@ namespace BionicCode.Utilities.Net.Wpf.Extensions
     }
 
     public static System.Windows.Point ToScreenPoint(this Point cartesianPoint, double height) => new Point(cartesianPoint.X, height - cartesianPoint.Y);
+
+    public static System.Windows.Point ToCartesianPoint(this Point cartesianPoint, double height) => new Point(cartesianPoint.X, height - cartesianPoint.Y);
   }
 }

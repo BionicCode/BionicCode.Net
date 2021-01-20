@@ -11,6 +11,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using BionicCode.Utilities.Net.Wpf.Extensions;
@@ -449,6 +450,40 @@ namespace BionicCode.Controls.Net.Wpf
 
     #endregion IntervalMarkerCenterRadius read-only dependency property
 
+    #region IntervalMarkerMinuteCenterRadius read-only dependency property
+    protected static readonly DependencyPropertyKey IntervalMarkerInnerCenterRadiusPropertyKey = DependencyProperty.RegisterReadOnly(
+      "IntervalMarkerMinuteCenterRadius",
+      typeof(double),
+      typeof(AnalogClockFace),
+      new PropertyMetadata(default(double)));
+
+    public static readonly DependencyProperty IntervalMarkerMinuteCenterRadiusProperty = AnalogClockFace.IntervalMarkerInnerCenterRadiusPropertyKey.DependencyProperty;
+
+    public double IntervalMarkerMinuteCenterRadius
+    {
+      get => (double) GetValue(AnalogClockFace.IntervalMarkerMinuteCenterRadiusProperty);
+      private set => SetValue(AnalogClockFace.IntervalMarkerInnerCenterRadiusPropertyKey, value);
+    }
+
+    #endregion IntervalMarkerMinuteCenterRadius read-only dependency property
+
+    #region IntervalMarkerSecondCenterRadius read-only dependency property
+    protected static readonly DependencyPropertyKey IntervalMarkerSecondCenterRadiusPropertyKey = DependencyProperty.RegisterReadOnly(
+      "IntervalMarkerSecondCenterRadius",
+      typeof(double),
+      typeof(AnalogClockFace),
+      new PropertyMetadata(default(double)));
+
+    public static readonly DependencyProperty IntervalMarkerSecondCenterRadiusProperty = AnalogClockFace.IntervalMarkerSecondCenterRadiusPropertyKey.DependencyProperty;
+
+    public double IntervalMarkerSecondCenterRadius
+    {
+      get => (double) GetValue(AnalogClockFace.IntervalMarkerSecondCenterRadiusProperty);
+      private set => SetValue(AnalogClockFace.IntervalMarkerSecondCenterRadiusPropertyKey, value);
+    }
+
+    #endregion IntervalMarkerSecondCenterRadius read-only dependency property
+
     #region HourHandRadius dependency property
 
     public static readonly DependencyProperty HourHandRadiusProperty = DependencyProperty.Register(
@@ -571,6 +606,18 @@ namespace BionicCode.Controls.Net.Wpf
 
     #endregion IsMinuteSelectionArcEnabled dependency property
 
+    #region IsTimePickerModeEnabled dependency property
+
+    public static readonly DependencyProperty IsTimePickerModeEnabledProperty = DependencyProperty.Register(
+      "IsTimePickerModeEnabled",
+      typeof(bool),
+      typeof(AnalogClockFace),
+      new PropertyMetadata(default));
+
+    public bool IsTimePickerModeEnabled { get => (bool) GetValue(AnalogClockFace.IsTimePickerModeEnabledProperty); set => SetValue(AnalogClockFace.IsTimePickerModeEnabledProperty, value); }
+
+    #endregion IsTimePickerModeEnabled dependency property
+
     private Canvas ClockFaceCanvas { get; set; }
     private RotateTransform HourHandTransform { get; set; }
     private RotateTransform MinuteHandTransform { get; set; }
@@ -579,6 +626,12 @@ namespace BionicCode.Controls.Net.Wpf
     private RotateTransform IntervalElementTransform { get; set; }
     private ScaleTransform ClockFaceScaleTransform { get; set; }
     private Rectangle SelectedMinuteArcRectangle { get; set; }
+    private Path SelectedHourArc { get; set; }
+    private Path SelectedMinuteArc { get; set; }
+    private Path SelectedSecondArc { get; set; }
+    private PathGeometry SelectedHourArcBounds { get; set; }
+    private PathGeometry SelectedMinuteArcBounds { get; set; }
+    private PathGeometry SelectedSecondArcBounds { get; set; }
     private bool IsUpdatingSelectedTimeComponent { get; set; }
     private bool IsUpdatingSelectedTime { get; set; }
 
@@ -589,6 +642,9 @@ namespace BionicCode.Controls.Net.Wpf
     public AnalogClockFace()
     {
       this.Diameter = 100;
+      this.SelectedHourArc = new Path();
+      this.SelectedMinuteArc = new Path();
+      this.SelectedSecondArc = new Path();
       InitializeClockRotateTransforms();
       InitializeClockFaceCanvas();
       this.SelectedMinuteArcRectangle = new Rectangle()
@@ -661,7 +717,7 @@ namespace BionicCode.Controls.Net.Wpf
     /// <inheritdoc />
     protected override Size ArrangeOverride(Size arrangeBounds)
     {
-      if (this.Is24HModeEnabled)
+      if (this.Is24HModeEnabled || this.IsTimePickerModeEnabled)
       {
         DrawAnalog24Clock();
       }
@@ -669,11 +725,54 @@ namespace BionicCode.Controls.Net.Wpf
       {
         DrawAnalogClock();
       }
+      Draw24HTimePickerSelectionBounds();
       double scaleFactor = Math.Min(arrangeBounds.Width, arrangeBounds.Height) / this.Diameter;
       this.ClockFaceScaleTransform.ScaleX = scaleFactor;
       this.ClockFaceScaleTransform.ScaleY = scaleFactor;
       arrangeBounds = base.ArrangeOverride(arrangeBounds);
       return arrangeBounds;
+    }
+
+    #endregion
+
+    #region Overrides of UIElement
+
+    /// <inheritdoc />
+    protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
+    {
+      base.OnPreviewMouseLeftButtonDown(e);
+      if (!this.IsTimePickerModeEnabled)
+      {
+        return;
+      }
+      Point screenPoint = e.GetPosition(this.ClockFaceCanvas);
+      var clockAngle = GetAngleFromCartesianPoint(screenPoint);
+      this.IsUpdatingSelectedTimeComponent = true;
+      double steps;
+      double degreeOfStep;
+
+      switch (screenPoint)
+      {
+        case { } when this.SelectedHourArcBounds.FillContains(screenPoint):
+          steps = this.Is24HModeEnabled ? 24 : 12;
+          degreeOfStep = 360 / steps;
+          double hourValue = Math.Round(clockAngle / degreeOfStep, MidpointRounding.AwayFromZero);
+          this.SelectedHour = hourValue;
+          break;
+        case { } when this.SelectedMinuteArcBounds.FillContains(screenPoint):
+          steps = 60;
+          degreeOfStep = 360 / steps;
+          double minuteValue = Math.Round(clockAngle / degreeOfStep, MidpointRounding.AwayFromZero);
+          this.SelectedMinute = minuteValue;
+          break;
+        case { } when this.SelectedSecondArcBounds.FillContains(screenPoint):
+          steps = 60;
+          degreeOfStep = 360 / steps;
+          double secondValue = Math.Round(clockAngle / degreeOfStep, MidpointRounding.AwayFromZero);
+          this.SelectedSecond = secondValue;
+          break;
+      }
+      this.IsUpdatingSelectedTimeComponent = false;
     }
 
     #endregion
@@ -803,17 +902,20 @@ namespace BionicCode.Controls.Net.Wpf
       this_.IsUpdatingSelectedTimeComponent = true;
 
       var hourValue = (double)basevalue;
+      double hours = this_.Is24HModeEnabled 
+        ? Math.Truncate(hourValue) % 24 
+        : Math.Truncate(hourValue) % 12 == 0
+          ? 12
+          : Math.Truncate(hourValue) % 12;
       double decimalPart = hourValue - Math.Truncate(hourValue);
       var decimalMinutes = decimalPart * 60;
       this_.SelectedMinute = Math.Truncate(decimalMinutes);
       decimalPart = decimalMinutes - Math.Truncate(decimalMinutes);
       var decimalSeconds = decimalPart * 60;
-      this_.SelectedSecond = Math.Round(decimalMinutes, MidpointRounding.AwayFromZero);
+      this_.SelectedSecond = Math.Round(decimalSeconds, MidpointRounding.AwayFromZero);
       
       this_.IsUpdatingSelectedTimeComponent = false;
-      return hourValue % 12 == 0
-        ? 12
-        : hourValue % 12;
+      return hours;
     }
 
     // Accept time in minutes (convert to h:m:s)
@@ -827,7 +929,11 @@ namespace BionicCode.Controls.Net.Wpf
       this_.IsUpdatingSelectedTimeComponent = true;
       var minuteValue = (double) basevalue;
       double decimalHours = minuteValue / 60;
-      this_.SelectedHour = Math.Truncate(decimalHours) % 12;
+      this_.SelectedHour = this_.Is24HModeEnabled 
+        ? Math.Truncate(decimalHours) % 24 
+        : Math.Truncate(decimalHours) % 12 == 0
+          ? 12
+          : Math.Truncate(decimalHours) % 12;
       double decimalPart = decimalHours - Math.Truncate(decimalHours);
       var decimalMinutes = decimalPart * 60;
       var minutes = Math.Truncate(decimalMinutes);
@@ -850,7 +956,11 @@ namespace BionicCode.Controls.Net.Wpf
       this_.IsUpdatingSelectedTimeComponent = true;
       var secondsValue = (double) basevalue;
       double decimalHours = secondsValue / 3600;
-      this_.SelectedHour = Math.Truncate(decimalHours) % 12;
+      this_.SelectedHour = this_.Is24HModeEnabled
+        ? Math.Truncate(decimalHours) % 24
+        : Math.Truncate(decimalHours) % 12 == 0
+          ? 12
+          : Math.Truncate(decimalHours) % 12;
       var decimalPart = decimalHours - Math.Truncate(decimalHours);
       double decimalMinutes = decimalPart * 60;
       this_.SelectedMinute = Math.Truncate(decimalMinutes);
@@ -870,6 +980,11 @@ namespace BionicCode.Controls.Net.Wpf
         this.HourHandTransform.Angle = angle;
       }
 
+      if (this.IsTimePickerModeEnabled)
+      {
+        Draw24HHourArcFromZeroToCurrent();
+      }
+
       if (this.IsUpdatingSelectedTime)
       {
         return;
@@ -885,11 +1000,20 @@ namespace BionicCode.Controls.Net.Wpf
         double angle = GetClockAngle(newValue, 60);
         this.MinuteHandTransform.Angle = angle;
 
-        angle = GetClockAngle(this.SelectedHour + newValue / 60, 12);
-        this.HourHandTransform.Angle = angle;
+        if (!this.IsTimePickerModeEnabled)
+        {
+          OnSelectedHourChanged(this.SelectedHour, this.SelectedHour + newValue / 60);
+        }
       }
 
-      DrawArcFromZeroToCurrent();
+      if (this.Is24HModeEnabled)
+      {
+        Draw24HMinuteArcFromZeroToCurrent();
+      }
+      else
+      {
+        DrawArcFromZeroToCurrent();
+      }
 
       if (this.IsUpdatingSelectedTime)
       {
@@ -905,6 +1029,11 @@ namespace BionicCode.Controls.Net.Wpf
       {
         double angle = GetClockAngle(newValue, 60);
         this.SecondHandTransform.Angle = angle;
+      }
+
+      if (this.Is24HModeEnabled)
+      {
+        Draw24HSecondArcFromZeroToCurrent();
       }
 
       if (this.IsUpdatingSelectedTime)
@@ -1153,6 +1282,13 @@ namespace BionicCode.Controls.Net.Wpf
       DrawArcFromZeroToCurrent();
     }
 
+    private void DrawTimePickerSelectionArcs()
+    {
+      Draw24HHourArcFromZeroToCurrent();
+      Draw24HMinuteArcFromZeroToCurrent();
+      Draw24HSecondArcFromZeroToCurrent();
+    }
+
     private void DrawIntervals()
     {
       double steps = 60.0;
@@ -1192,82 +1328,88 @@ namespace BionicCode.Controls.Net.Wpf
         return;
       }
 
-      double steps = 60.0;
+      Draw24HHourIntervals();
+      Draw24HMinuteIntervals();
+      Draw24HSecondIntervals();
+      Draw24ClockFaceBackground(this.IntervalMarkerMinuteCenterRadius);
+      DrawTimePickerSelectionArcs();
+      AddClockHands();
+      OnClockFaceLoaded();
+    }
+
+    private void Draw24HHourIntervals()
+    {
+      double steps = 24.0;
       double degreeOfStep = 360.0 / steps;
-      double intervalMarkerCenterPositionRadius = -1;
+      this.IntervalMarkerCenterRadius = -1;
       for (int step = 0; step < steps; step++)
       {
         double degreesOfCurrentStep = step * degreeOfStep;
 
         FrameworkElement intervalMarker = CreateIntervalMarker(step);
-        if (intervalMarkerCenterPositionRadius.Equals(-1))
-        {
-          InitializeRadiusOfIntervalMarkers(intervalMarker, this.MinuteHandRadius);
-        }
-
-        DrawIntervalMarker(degreesOfCurrentStep, intervalMarker);
-
-        if (step % 5 == 0)
-        {
-          FrameworkElement intervalMarkerLabel = CreateIntervalLabel(step);
-          if (intervalMarkerLabel != null)
-          {
-            DrawIntervalLabel(degreesOfCurrentStep, intervalMarkerLabel);
-          }
-        }
-      }
-
-      steps = 24.0;
-      degreeOfStep = 360.0 / steps;
-      intervalMarkerCenterPositionRadius = -1;
-      for (int step = 0; step < steps; step++)
-      {
-        double degreesOfCurrentStep = step * degreeOfStep;
-
-        FrameworkElement intervalMarker = CreateIntervalMarker(step);
-        if (intervalMarkerCenterPositionRadius.Equals(-1))
+        if (this.IntervalMarkerCenterRadius.Equals(-1))
         {
           InitializeRadiusOfIntervalMarkers(intervalMarker, this.HourHandRadius);
         }
 
         DrawIntervalMarker(degreesOfCurrentStep, intervalMarker);
-        
+
         FrameworkElement intervalMarkerLabel = CreateIntervalLabel(step);
         if (intervalMarkerLabel != null)
         {
           DrawIntervalLabel(degreesOfCurrentStep, intervalMarkerLabel);
         }
       }
+    }
 
+    private void Draw24HMinuteIntervals()
+    {
+      var steps = 60.0;
+      double degreeOfStep = 360.0 / steps;
+      this.IntervalMarkerMinuteCenterRadius = -1;
+      for (int step = 0; step < steps; step++)
+      {
+        double degreesOfCurrentStep = step * degreeOfStep;
+
+        FrameworkElement intervalMarker = CreateIntervalMarker(step);
+        if (this.IntervalMarkerMinuteCenterRadius.Equals(-1))
+        {
+          InitializeRadiusOfMinuteIntervalMarkers(intervalMarker, this.MinuteHandRadius);
+        }
+
+        Draw24HMinuteIntervalMarker(degreesOfCurrentStep, intervalMarker);
+
+        if (step % 5 == 0)
+        {
+          FrameworkElement intervalMarkerLabel = CreateIntervalLabel(step);
+          if (intervalMarkerLabel != null)
+          {
+            Draw24HMinuteIntervalLabel(degreesOfCurrentStep, intervalMarkerLabel);
+          }
+        }
+      }
+    }
+
+    private void Draw24HSecondIntervals()
+    {
       if (this.MinuteHandRadius != this.SecondHandRadius)
       {
-        steps = 60.0;
-        degreeOfStep = 360.0 / steps;
-        intervalMarkerCenterPositionRadius = -1;
+        var steps = 60.0;
+        double degreeOfStep = 360.0 / steps;
+        this.IntervalMarkerSecondCenterRadius = -1;
         for (int step = 0; step < steps; step++)
         {
           double degreesOfCurrentStep = step * degreeOfStep;
 
           FrameworkElement intervalMarker = CreateIntervalMarker(step);
-          if (intervalMarkerCenterPositionRadius.Equals(-1))
+          if (this.IntervalMarkerSecondCenterRadius.Equals(-1))
           {
-            InitializeRadiusOfIntervalMarkers(intervalMarker, this.SecondHandRadius);
+            InitializeRadiusOfSecondIntervalMarkers(intervalMarker, this.SecondHandRadius);
           }
 
-          DrawIntervalMarker(degreesOfCurrentStep, intervalMarker);
-        
-          //FrameworkElement intervalMarkerLabel = CreateIntervalLabel(step);
-          //if (intervalMarkerLabel != null)
-          //{
-          //  DrawIntervalLabel(intervalMarkerCenterPositionRadius, degreesOfCurrentStep, intervalMarkerLabel);
-          //}
+          Draw24HSecondIntervalMarker(degreesOfCurrentStep, intervalMarker);
         }
       }
-
-      Draw24ClockFaceBackground(intervalMarkerCenterPositionRadius);
-
-      AddClockHands();
-      OnClockFaceLoaded();
     }
 
     private void AddDateElement()
@@ -1320,15 +1462,294 @@ namespace BionicCode.Controls.Net.Wpf
         });
     }
 
+    protected virtual void Draw24HHourArcFromZeroToCurrent()
+    {
+      RemoveElementFromClockFace(this.SelectedHourArc);
+
+      double hourValue = this.IsTimePickerModeEnabled 
+        ? this.SelectedHour 
+        : this.SelectedHour + this.SelectedMinute / 60;
+      double angle = GetClockAngle(hourValue, 24);
+      bool isLargeSelectionMinuteArc = angle > 180.0;
+      Point cartesianHourPointOnArc = GetCartesianPointOfStep(angle, this.IntervalMarkerCenterRadius);
+      Point outerSelectedHourArcPoint = cartesianHourPointOnArc.ToScreenPoint(this.Diameter);
+      Point cartesianInnerSelectedHourArcPoint = GetCartesianPointOfStep(angle, this.IntervalMarkerMinuteCenterRadius);
+      Point innerSelectedHourArcPoint = cartesianInnerSelectedHourArcPoint.ToScreenPoint(this.Diameter);
+      var innerSelectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerMinuteCenterRadius);
+      var outerSelectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerCenterRadius);
+      var outerSelectionArcSize = new Size(this.IntervalMarkerCenterRadius, this.IntervalMarkerCenterRadius);
+      var innerSelectionArcSize = new Size(this.IntervalMarkerMinuteCenterRadius, this.IntervalMarkerMinuteCenterRadius);
+      var selectionArcPathBrush = new SolidColorBrush(Colors.DodgerBlue) {Opacity = 0.6};
+      this.SelectedHourArc = new Path
+      {
+        Data = new PathGeometry(
+          new List<PathFigure>()
+          {
+            new PathFigure(
+              innerSelectionArcStart,
+              new List<PathSegment>()
+              {
+                new LineSegment(outerSelectionArcStart, false),
+                new ArcSegment(
+                  outerSelectedHourArcPoint,
+                  outerSelectionArcSize,
+                  0,
+                  isLargeSelectionMinuteArc,
+                  SweepDirection.Clockwise,
+                  false),
+                new LineSegment(innerSelectedHourArcPoint, false),
+                new ArcSegment(
+                  innerSelectionArcStart,
+                  innerSelectionArcSize,
+                  0,
+                  isLargeSelectionMinuteArc,
+                  SweepDirection.Counterclockwise,
+                  false)
+              },
+              true)
+          }),
+        Fill = selectionArcPathBrush
+      };
+      AddElementToClockFace(this.SelectedHourArc, new Point(), 1);
+    }
+
+    protected virtual void Draw24HMinuteArcFromZeroToCurrent()
+    {
+      RemoveElementFromClockFace(this.SelectedMinuteArc);
+
+      double angle = GetClockAngle(this.SelectedMinute, 60);
+      bool isLargeSelectionMinuteArc = angle > 180.0;
+      Point cartesianHourPointOnArc = GetCartesianPointOfStep(angle, this.IntervalMarkerMinuteCenterRadius);
+      Point outerSelectedHourArcPoint = cartesianHourPointOnArc.ToScreenPoint(this.Diameter);
+      Point cartesianInnerSelectedHourArcPoint = GetCartesianPointOfStep(angle, this.IntervalMarkerSecondCenterRadius);
+      Point innerSelectedHourArcPoint = cartesianInnerSelectedHourArcPoint.ToScreenPoint(this.Diameter);
+      var innerSelectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerSecondCenterRadius);
+      var outerSelectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerMinuteCenterRadius);
+      var outerSelectionArcSize = new Size(this.IntervalMarkerMinuteCenterRadius, this.IntervalMarkerMinuteCenterRadius);
+      var innerSelectionArcSize = new Size(this.IntervalMarkerSecondCenterRadius, this.IntervalMarkerSecondCenterRadius);
+      var selectionArcPathBrush = new SolidColorBrush(Colors.IndianRed) {Opacity = 0.6};
+      this.SelectedMinuteArc = new Path
+      {
+        Data = new PathGeometry(
+          new List<PathFigure>()
+          {
+            new PathFigure(
+              innerSelectionArcStart,
+              new List<PathSegment>()
+              {
+                new LineSegment(outerSelectionArcStart, false),
+                new ArcSegment(
+                  outerSelectedHourArcPoint,
+                  outerSelectionArcSize,
+                  0,
+                  isLargeSelectionMinuteArc,
+                  SweepDirection.Clockwise,
+                  false),
+                new LineSegment(innerSelectedHourArcPoint, false),
+                new ArcSegment(
+                  innerSelectionArcStart,
+                  innerSelectionArcSize,
+                  0,
+                  isLargeSelectionMinuteArc,
+                  SweepDirection.Counterclockwise,
+                  false)
+              },
+              true)
+          }),
+        Fill = selectionArcPathBrush
+      };
+      AddElementToClockFace(this.SelectedMinuteArc, new Point(), 1);
+    }
+
+    protected virtual void Draw24HSecondArcFromZeroToCurrent()
+    {
+      RemoveElementFromClockFace(this.SelectedSecondArc);
+
+      double angle = GetClockAngle(this.SelectedSecond, 60);
+      bool isLargeSelectionMinuteArc = angle > 180.0;
+      Point cartesianHourPointOnArc = GetCartesianPointOfStep(angle, this.IntervalMarkerSecondCenterRadius);
+      Point outerSelectedHourArcPoint = cartesianHourPointOnArc.ToScreenPoint(this.Diameter);
+      Point cartesianInnerSelectedHourArcPoint = GetCartesianPointOfStep(angle, 0);
+      Point innerSelectedHourArcPoint = cartesianInnerSelectedHourArcPoint.ToScreenPoint(this.Diameter);
+      var innerSelectionArcStart = new Point(this.Radius, this.Radius - 0);
+      var outerSelectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerSecondCenterRadius);
+      var outerSelectionArcSize = new Size(this.IntervalMarkerSecondCenterRadius, this.IntervalMarkerSecondCenterRadius);
+      var innerSelectionArcSize = new Size(0, 0);
+      var selectionArcPathBrush = new SolidColorBrush(Colors.SpringGreen) {Opacity = 0.6};
+      this.SelectedSecondArc = new Path
+      {
+        Data = new PathGeometry(
+          new List<PathFigure>()
+          {
+            new PathFigure(
+              innerSelectionArcStart,
+              new List<PathSegment>()
+              {
+                new LineSegment(outerSelectionArcStart, false),
+                new ArcSegment(
+                  outerSelectedHourArcPoint,
+                  outerSelectionArcSize,
+                  0,
+                  isLargeSelectionMinuteArc,
+                  SweepDirection.Clockwise,
+                  false),
+                new LineSegment(innerSelectedHourArcPoint, false),
+                new ArcSegment(
+                  innerSelectionArcStart,
+                  innerSelectionArcSize,
+                  0,
+                  isLargeSelectionMinuteArc,
+                  SweepDirection.Counterclockwise,
+                  false)
+              },
+              true)
+          }),
+        Fill = selectionArcPathBrush
+      };
+      AddElementToClockFace(this.SelectedSecondArc, new Point(), 1);
+    }
+
+    protected virtual void Draw24HTimePickerSelectionBounds()
+    {
+      DrawTimePickerSecondsSelectionBounds();
+      DrawTimePickerMinutesSelectionBounds();
+      DrawTimePickerHoursSelectionBounds();
+    }
+
+    private void DrawTimePickerSecondsSelectionBounds()
+    {
+      double angle = 359.9999;
+      bool isLargeSelectionMinuteArc = angle > 180.0;
+      Point cartesianHourPointOnArc = GetCartesianPointOfStep(angle, this.IntervalMarkerSecondCenterRadius);
+      Point outerSelectedHourArcPoint = cartesianHourPointOnArc.ToScreenPoint(this.Diameter);
+      Point cartesianInnerSelectedHourArcPoint = GetCartesianPointOfStep(angle, 0);
+      Point innerSelectedHourArcPoint = cartesianInnerSelectedHourArcPoint.ToScreenPoint(this.Diameter);
+      var innerSelectionArcStart = new Point(this.Radius, this.Radius - 0);
+      var outerSelectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerSecondCenterRadius);
+      var outerSelectionArcSize = new Size(this.IntervalMarkerSecondCenterRadius, this.IntervalMarkerSecondCenterRadius);
+      var innerSelectionArcSize = new Size(0, 0);
+      this.SelectedSecondArcBounds = new PathGeometry(
+        new List<PathFigure>()
+        {
+          new PathFigure(
+            innerSelectionArcStart,
+            new List<PathSegment>()
+            {
+              new LineSegment(outerSelectionArcStart, false),
+              new ArcSegment(
+                outerSelectedHourArcPoint,
+                outerSelectionArcSize,
+                0,
+                isLargeSelectionMinuteArc,
+                SweepDirection.Clockwise,
+                false),
+              new LineSegment(innerSelectedHourArcPoint, false),
+              new ArcSegment(
+                innerSelectionArcStart,
+                innerSelectionArcSize,
+                0,
+                isLargeSelectionMinuteArc,
+                SweepDirection.Counterclockwise,
+                false)
+            },
+            true)
+        });
+    }
+
+    protected virtual void DrawTimePickerMinutesSelectionBounds()
+    {
+      double angle = 359.9999;
+      bool isLargeSelectionMinuteArc = angle > 180.0;
+      Point cartesianHourPointOnArc = GetCartesianPointOfStep(angle, this.IntervalMarkerMinuteCenterRadius);
+      Point outerSelectedHourArcPoint = cartesianHourPointOnArc.ToScreenPoint(this.Diameter);
+      Point cartesianInnerSelectedHourArcPoint = GetCartesianPointOfStep(angle, this.IntervalMarkerSecondCenterRadius);
+      Point innerSelectedHourArcPoint = cartesianInnerSelectedHourArcPoint.ToScreenPoint(this.Diameter);
+      var innerSelectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerSecondCenterRadius);
+      var outerSelectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerMinuteCenterRadius);
+      var outerSelectionArcSize = new Size(this.IntervalMarkerMinuteCenterRadius, this.IntervalMarkerMinuteCenterRadius);
+      var innerSelectionArcSize = new Size(this.IntervalMarkerSecondCenterRadius, this.IntervalMarkerSecondCenterRadius);
+      var selectionArcPathBrush = new SolidColorBrush(Colors.Red) { Opacity = 0.6 };
+      this.SelectedMinuteArcBounds = new PathGeometry(
+          new List<PathFigure>()
+          {
+            new PathFigure(
+              innerSelectionArcStart,
+              new List<PathSegment>()
+              {
+                new LineSegment(outerSelectionArcStart, false),
+                new ArcSegment(
+                  outerSelectedHourArcPoint,
+                  outerSelectionArcSize,
+                  0,
+                  isLargeSelectionMinuteArc,
+                  SweepDirection.Clockwise,
+                  false),
+                new LineSegment(innerSelectedHourArcPoint, false),
+                new ArcSegment(
+                  innerSelectionArcStart,
+                  innerSelectionArcSize,
+                  0,
+                  isLargeSelectionMinuteArc,
+                  SweepDirection.Counterclockwise,
+                  false)
+              },
+              true)
+          });
+    }
+
+    protected virtual void DrawTimePickerHoursSelectionBounds()
+    {
+      double angle = 359.9999;
+      bool isLargeSelectionMinuteArc = angle > 180.0;
+      Point cartesianHourPointOnArc = GetCartesianPointOfStep(angle, this.IntervalMarkerCenterRadius);
+      Point outerSelectedHourArcPoint = cartesianHourPointOnArc.ToScreenPoint(this.Diameter);
+      Point cartesianInnerSelectedHourArcPoint = GetCartesianPointOfStep(angle, this.IntervalMarkerMinuteCenterRadius);
+      Point innerSelectedHourArcPoint = cartesianInnerSelectedHourArcPoint.ToScreenPoint(this.Diameter);
+      var innerSelectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerMinuteCenterRadius);
+      var outerSelectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerCenterRadius);
+      var outerSelectionArcSize = new Size(this.IntervalMarkerCenterRadius, this.IntervalMarkerCenterRadius);
+      var innerSelectionArcSize = new Size(this.IntervalMarkerMinuteCenterRadius, this.IntervalMarkerMinuteCenterRadius);
+      var selectionArcPathBrush = new SolidColorBrush(Colors.Black) { Opacity = 0.6 };
+      this.SelectedHourArcBounds = new PathGeometry(
+          new List<PathFigure>()
+          {
+            new PathFigure(
+              innerSelectionArcStart,
+              new List<PathSegment>()
+              {
+                new LineSegment(outerSelectionArcStart, false),
+                new ArcSegment(
+                  outerSelectedHourArcPoint,
+                  outerSelectionArcSize,
+                  0,
+                  isLargeSelectionMinuteArc,
+                  SweepDirection.Clockwise,
+                  false),
+                new LineSegment(innerSelectedHourArcPoint, false),
+                new ArcSegment(
+                  innerSelectionArcStart,
+                  innerSelectionArcSize,
+                  0,
+                  isLargeSelectionMinuteArc,
+                  SweepDirection.Counterclockwise,
+                  false)
+              },
+              true)
+          });
+    }
+
     private void Draw24ClockFaceBackground(double intervalMarkerCenterPositionRadius)
     {
-      AddElementToClockFace(
-        new Ellipse()
-        {
-          Height = this.Diameter, Width = this.Diameter, Fill = this.Background
-        },
-        new Point(),
-        0);
+      double deltaToMiddleRadius = (this.Radius - this.IntervalMarkerMinuteCenterRadius) * 2;
+      var clockFaceBackgroundPosition = new Point();
+      clockFaceBackgroundPosition.Offset(deltaToMiddleRadius / 2, deltaToMiddleRadius / 2);
+      var ellipse = new Ellipse()
+      {
+        Height = this.Diameter - deltaToMiddleRadius,
+        Width = this.Diameter - deltaToMiddleRadius,
+        Fill = this.Background
+      };
+      AddElementToClockFace(ellipse, clockFaceBackgroundPosition, 0);
     }
 
     private void DrawIntervalLabel(double degreesOfCurrentStep, FrameworkElement intervalMarkerLabel)
@@ -1337,6 +1758,50 @@ namespace BionicCode.Controls.Net.Wpf
       cartesianPoint = GetCartesianPointOfStep(degreesOfCurrentStep, this.IntervalMarkerCenterRadius + this.IntervalLabelRadiusOffset);
       AlignElementCenterPointToRadius(ref cartesianPoint, intervalMarkerLabel);
       AddCartesianElementToClockFace(intervalMarkerLabel, cartesianPoint, 2);
+    }
+
+    private void Draw24HMinuteIntervalLabel(double degreesOfCurrentStep, FrameworkElement intervalMarkerLabel)
+    {
+      Point cartesianPoint;
+      cartesianPoint = GetCartesianPointOfStep(degreesOfCurrentStep, this.IntervalMarkerMinuteCenterRadius + this.IntervalLabelRadiusOffset);
+      AlignElementCenterPointToRadius(ref cartesianPoint, intervalMarkerLabel);
+      AddCartesianElementToClockFace(intervalMarkerLabel, cartesianPoint, 2);
+    }
+
+    private void Draw24HSecondIntervalLabel(double degreesOfCurrentStep, FrameworkElement intervalMarkerLabel)
+    {
+      Point cartesianPoint;
+      cartesianPoint = GetCartesianPointOfStep(degreesOfCurrentStep, this.IntervalMarkerSecondCenterRadius + this.IntervalLabelRadiusOffset);
+      AlignElementCenterPointToRadius(ref cartesianPoint, intervalMarkerLabel);
+      AddCartesianElementToClockFace(intervalMarkerLabel, cartesianPoint, 2);
+    }
+
+    private void Draw24HSecondIntervalMarker(
+      double degreesOfCurrentStep,
+      FrameworkElement intervalMarker)
+    {
+      AnalogClockFace.RotateIntervalMarker(degreesOfCurrentStep, intervalMarker);
+      Point cartesianPoint = GetCartesianPointOfStep(degreesOfCurrentStep, this.IntervalMarkerSecondCenterRadius);
+      if (AnalogClockFace.GetIsCenterElementOnCircumferenceEnabled(intervalMarker))
+      {
+        AlignElementCenterPointToRadius(ref cartesianPoint, intervalMarker);
+      }
+
+      AddCartesianElementToClockFace(intervalMarker, cartesianPoint, 2);
+    }
+
+    private void Draw24HMinuteIntervalMarker(
+      double degreesOfCurrentStep,
+      FrameworkElement intervalMarker)
+    {
+      AnalogClockFace.RotateIntervalMarker(degreesOfCurrentStep, intervalMarker);
+      Point cartesianPoint = GetCartesianPointOfStep(degreesOfCurrentStep, this.IntervalMarkerMinuteCenterRadius);
+      if (AnalogClockFace.GetIsCenterElementOnCircumferenceEnabled(intervalMarker))
+      {
+        AlignElementCenterPointToRadius(ref cartesianPoint, intervalMarker);
+      }
+
+      AddCartesianElementToClockFace(intervalMarker, cartesianPoint, 2);
     }
 
     private void DrawIntervalMarker(
@@ -1441,6 +1906,18 @@ namespace BionicCode.Controls.Net.Wpf
       this.IntervalMarkerCenterRadius = radius + radiusOffset;
     }
 
+    private void InitializeRadiusOfMinuteIntervalMarkers(FrameworkElement intervalMarker, double radius)
+    {
+      double radiusOffset = CalculateIntervalMarkerCenterRadiusOffset(intervalMarker);
+      this.IntervalMarkerMinuteCenterRadius = radius + radiusOffset;
+    }
+
+    private void InitializeRadiusOfSecondIntervalMarkers(FrameworkElement intervalMarker, double radius)
+    {
+      double radiusOffset = CalculateIntervalMarkerCenterRadiusOffset(intervalMarker);
+      this.IntervalMarkerSecondCenterRadius = radius + radiusOffset;
+    }
+
     private void AlignElementCenterPointToRadius(ref Point cartesianPoint, FrameworkElement element)
     {
       if (!element.IsMeasureValid)
@@ -1488,7 +1965,7 @@ namespace BionicCode.Controls.Net.Wpf
       // Rotate and invert degrees in order to move the 0 clock value to the top
       // (instead of the original right -> cartesian based circle)
       double rotatedDegrees = degreesOfCurrentStep - 90;
-      double invertedDegrees = 360 - rotatedDegrees;
+      double invertedDegrees =  -rotatedDegrees;
       var arcRadiantDegree = invertedDegrees * Math.PI / 180;
 
       double x = Math.Cos(arcRadiantDegree) * radius;
@@ -1499,6 +1976,21 @@ namespace BionicCode.Controls.Net.Wpf
       // so that full circle is inside first quadrant
       cartesianPoint.Offset(axisOffset, axisOffset);
       return cartesianPoint;
+    }
+
+    private double GetAngleFromCartesianPoint(Point screenPoint)
+    {
+      var cartesianPoint = screenPoint.ToCartesianPoint(this.Diameter);
+      double axisOffset = this.Radius;
+      cartesianPoint.Offset(-axisOffset, -axisOffset);
+
+      double angleFromCartesianPoint = Math.Atan(cartesianPoint.Y / cartesianPoint.X) / Math.PI * 180;
+
+      // Rotate and invert degrees in order to move the 0 clock value to the top
+      // (instead of the original right -> cartesian based circle)
+      double rotatedDegrees = angleFromCartesianPoint - 90;
+      double invertedDegrees = -rotatedDegrees;
+      return cartesianPoint.X < 0 ? 180 + invertedDegrees : invertedDegrees;
     }
 
     public void AddCartesianElementToClockFace(FrameworkElement clockElement, Point cartesianPoint, int zIndex = 1)

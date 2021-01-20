@@ -8,29 +8,27 @@
   <converter:DividerValueConverter x:Key="DividerValueConverter" />
   <converter:PercentageToPixelConverter x:Key="PercentageToPixelConverter" />
 
-  <Style TargetType="wpf:AnalogClockFace">
+  <!--<Style TargetType="wpf:AnalogClockFace">
     <Setter Property="IsDisplayIntervalLabelsEnabled" Value="True" />
-    <Setter Property="Is24HModeEnabled" Value="False" />
+    --><!--<Setter Property="Is24HModeEnabled" Value="True" />--><!--
     <Setter Property="IsDisplayDateEnabled" Value="True" />
     <Setter Property="IsMinuteSelectionArcEnabled" Value="True" />
 
-    <Setter Property="MinuteHandRadius"
-            Value="{Binding RelativeSource={RelativeSource Self}, Path=Diameter, Converter={StaticResource PercentageToPixelConverter}, ConverterParameter=35}" />
-    <Setter Property="SecondHandRadius"
-            Value="{Binding RelativeSource={RelativeSource Self}, Path=Diameter, Converter={StaticResource PercentageToPixelConverter}, ConverterParameter=23}" />
-    <!--<Setter Property="Diameter" Value="100"/>-->
-    <Setter Property="HourHandRadius" Value="200" />
-    <!--<Setter Property="SelectedHour" Value="3"/>
+    <Setter Property="Diameter" Value="100"/>
+    <Setter Property="HourHandRadius" Value="50" />
+    <Setter Property="MinuteHandRadius" Value="34" />
+    <Setter Property="SecondHandRadius" Value="18" />
+    --><!--<Setter Property="SelectedHour" Value="3"/>
     <Setter Property="SelectedMinute" Value="50"/>
-    <Setter Property="SelectedSecond" Value="30"/>-->
-    <Setter Property="IntervalLabelRadiusOffset" Value="-11" />
+    <Setter Property="SelectedSecond" Value="30"/>--><!--
+    <Setter Property="IntervalLabelRadiusOffset" Value="-8" />
     <Setter Property="MinuteSelectionArcBrush">
       <Setter.Value>
         <SolidColorBrush Color="DodgerBlue" Opacity="0.6" />
       </Setter.Value>
     </Setter>
-    <Setter Property="Background" Value="Transparent" />
-    <Setter Property="FontSize" Value="8" />
+    <Setter Property="Background" Value="OrangeRed" />
+    <Setter Property="FontSize" Value="7" />
     <Setter Property="FontStretch" Value="UltraExpanded" />
     <Setter Property="FontWeight" Value="UltraLight" />
     <Setter Property="Foreground" Value="AntiqueWhite" />
@@ -78,7 +76,165 @@
     </Setter>
     <Setter Property="MinuteIntervalLabel">
       <Setter.Value>
-        <TextBlock Width="10" Height="6" TextAlignment="Center" Padding="0" />
+        <TextBlock Width="10" Height="10" TextAlignment="Center" Padding="0" />
+      </Setter.Value>
+    </Setter>
+    <Setter Property="HourHandElement">
+      <Setter.Value>
+        <Line X1="50"
+              Y1="50"
+              X2="50"
+              Y2="2"
+              Stroke="AntiqueWhite"
+              StrokeThickness="1">
+          <Line.Effect>
+            <DropShadowEffect Opacity="1" RenderingBias="Quality" ShadowDepth="3" />
+          </Line.Effect>
+        </Line>
+
+      </Setter.Value>
+    </Setter>
+    <Setter Property="MinuteHandElement">
+      <Setter.Value>
+        <Line X1="50"
+              Y1="50"
+              X2="50"
+              Y2="22"
+              Stroke="AntiqueWhite"
+              StrokeThickness="1">
+          <Line.Effect>
+            <DropShadowEffect Opacity="1" RenderingBias="Quality" ShadowDepth="3" />
+          </Line.Effect>
+        </Line>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="SecondHandElement">
+      <Setter.Value>
+        <Canvas>
+          <Line X1="50"
+                Y1="50"
+                X2="50"
+                Y2="37"
+                Stroke="DarkRed"
+                StrokeThickness="0.5">
+            <Line.Effect>
+              <DropShadowEffect Opacity="1" RenderingBias="Quality" ShadowDepth="3" />
+            </Line.Effect>
+          </Line>
+          <Ellipse Height="4"
+                   Width="4"
+                   Fill="AntiqueWhite"
+                   Canvas.Left="48"
+                   Canvas.Top="48" Panel.ZIndex="2">
+            <Ellipse.Effect>
+              <DropShadowEffect Opacity="0.7" RenderingBias="Quality" ShadowDepth="3" />
+            </Ellipse.Effect>
+          </Ellipse>
+        </Canvas>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="FifteenMinuteIntervalElement">
+      <Setter.Value>
+        <Rectangle Height="4" Width="0.5" Fill="AntiqueWhite"
+                   wpf:AnalogClockFace.IsCenterElementOnCircumferenceEnabled="False" />
+      </Setter.Value>
+    </Setter>
+    <Setter Property="FiveMinuteIntervalElement">
+      <Setter.Value>
+        <Rectangle Height="4" Width="0.5" Fill="AntiqueWhite"
+                   wpf:AnalogClockFace.IsCenterElementOnCircumferenceEnabled="False" />
+      </Setter.Value>
+    </Setter>
+    <Setter Property="MinuteIntervalElement">
+      <Setter.Value>
+        <Ellipse Height="1" Width="1" Fill="AntiqueWhite" />
+      </Setter.Value>
+    </Setter>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="wpf:AnalogClockFace">
+          <Border BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <ContentPresenter />
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>-->
+  
+  <Style TargetType="wpf:AnalogClockFace">
+    <Setter Property="IsDisplayIntervalLabelsEnabled" Value="True" />
+    <Setter Property="Is24HModeEnabled" Value="False" />
+    <Setter Property="IsTimePickerModeEnabled" Value="False" />
+    <Setter Property="IsDisplayDateEnabled" Value="True" />
+    <Setter Property="IsMinuteSelectionArcEnabled" Value="True" />
+
+    <Setter Property="MinuteHandRadius"
+            Value="{Binding RelativeSource={RelativeSource Self}, Path=Diameter, Converter={StaticResource PercentageToPixelConverter}, ConverterParameter=35}" />
+    <Setter Property="SecondHandRadius"
+            Value="{Binding RelativeSource={RelativeSource Self}, Path=Diameter, Converter={StaticResource PercentageToPixelConverter}, ConverterParameter=23}" />
+    <Setter Property="Diameter" Value="100"/>
+    <Setter Property="HourHandRadius" Value="200" />
+    <Setter Property="SelectedHour" Value="3"/>
+    <Setter Property="SelectedMinute" Value="50"/>
+    <Setter Property="SelectedSecond" Value="30"/>
+    <Setter Property="IntervalLabelRadiusOffset" Value="-11" />
+    <Setter Property="MinuteSelectionArcBrush">
+      <Setter.Value>
+        <SolidColorBrush Color="DodgerBlue" Opacity="0.6" />
+      </Setter.Value>
+    </Setter>
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="FontSize" Value="8" />
+    <Setter Property="FontStretch" Value="UltraExpanded" />
+    <Setter Property="FontWeight" Value="UltraLight" />
+    <Setter Property="Foreground" Value="AntiqueWhite" />
+    <Setter Property="DateElement">
+      <Setter.Value>
+        <StackPanel Canvas.Left="62" Canvas.Top="45">
+          <TextBlock
+            Text="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=SelectedTime.Date.DayOfWeek}"
+            Foreground="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Foreground}"
+            Padding="0"
+            FontStretch="UltraExpanded"
+            FontSize="4" />
+          <Line X1="0" Y1="0" X2="19" Y2="0"
+                Stroke="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Foreground}"
+                StrokeThickness="0.5" />
+            <Border Margin="0,1,0,0"
+              BorderBrush="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Foreground}"
+              BorderThickness="0.5">
+          <StackPanel Orientation="Horizontal">
+            <TextBlock
+              Text="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=SelectedTime.Date.Day}"
+              Background="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Foreground}"
+              Foreground="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Background}"
+              Padding="2,0"
+              FontWeight="ExtraBold"
+              FontSize="4" />
+              <TextBlock
+                Text="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=SelectedTime.Date, StringFormat='{}{0:MMM}'}"
+                Background="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Background}"
+                Foreground="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Foreground}"
+                Padding="2,0" FontSize="4" VerticalAlignment="Top" />
+          </StackPanel>
+            </Border>
+        </StackPanel>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="FifteenMinuteIntervalLabel">
+      <Setter.Value>
+        <TextBlock Width="10" Height="10" TextAlignment="Center" Padding="0" />
+      </Setter.Value>
+    </Setter>
+    <Setter Property="FiveMinuteIntervalLabel">
+      <Setter.Value>
+        <TextBlock Width="10" Height="10" TextAlignment="Center" Padding="0" />
+      </Setter.Value>
+    </Setter>
+    <Setter Property="MinuteIntervalLabel">
+      <Setter.Value>
+        <TextBlock Width="10" Height="10" TextAlignment="Center" Padding="0" />
       </Setter.Value>
     </Setter>
     <Setter Property="HourHandElement">
@@ -163,133 +319,4 @@
       </Setter.Value>
     </Setter>
   </Style>
-
-  <!--<Style TargetType="clock:AnalogClockFace">
-    <Setter Property="RenderOptions.BitmapScalingMode" Value="Fant" />
-    --><!--<Setter Property="SnapsToDevicePixels" Value="True" />-->
-  <!--<Setter Property="UseLayoutRounding" Value="True" />--><!--
-  <Setter Property="IntervalLabelRadiusOffset" Value="-24" />
-  <Setter Property="Diameter" Value="400" />
-  <Setter Property="IsDisplayDateEnabled" Value="True" />
-  <Setter Property="Background" Value="#FF444444" />
-  <Setter Property="FontSize" Value="16" />
-  <Setter Property="FontStretch" Value="UltraExpanded" />
-  <Setter Property="FontWeight" Value="UltraLight" />
-  <Setter Property="Foreground" Value="AntiqueWhite" />
-  <Setter Property="DateElement">
-    <Setter.Value>
-      <Canvas Height="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Diameter}" Width="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Diameter}">
-        <StackPanel Canvas.Right="50" Canvas.Top="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Radius}"
-                      Margin="0,-18,0,0">
-          <TextBlock Text="Wednesday"
-                       Foreground="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Foreground}"
-                       Padding="0" TextDecorations="Underline" />
-          <StackPanel Orientation="Horizontal" Margin="0,1,0,0">
-            <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Date.Day}"
-                         Background="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Foreground}" Foreground="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Background}"
-                         Padding="2,0"
-                         FontWeight="ExtraBold"/>
-            <Border BorderBrush="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Foreground}" BorderThickness="1">
-              <TextBlock
-                  Text="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Date, StringFormat='{}{0:MMM}'}"
-                  Background="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Background}"
-                  Foreground="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Foreground}"
-                  Padding="2,0"/>
-            </Border>
-          </StackPanel>
-        </StackPanel>
-      </Canvas>
-    </Setter.Value>
-  </Setter>
-  <Setter Property="HourHandElement">
-    <Setter.Value>
-      <Canvas Height="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Diameter}" Width="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Diameter}">
-        <Line Margin="0,36,0,0"
-            X1="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Radius}"
-            Y1="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Radius}"
-            X2="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Radius}"
-            Y2="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Diameter, Converter={StaticResource PercentageToPixelConverter}, ConverterParameter=8}"
-            Stroke="AntiqueWhite"
-            StrokeThickness="4">
-          <Line.Effect>
-            <DropShadowEffect Opacity="0.6"/>
-          </Line.Effect>
-        </Line>
-      </Canvas>
-    </Setter.Value>
-  </Setter>
-  <Setter Property="MinuteHandElement">
-    <Setter.Value>
-      <Canvas Height="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Diameter}" 
-                Width="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Diameter}"
-                Panel.ZIndex="1">
-        <Line Margin="0,36,0,0" 
-                X1="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Radius}"
-                Y1="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Radius}"
-                X2="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Radius}"
-                Y2="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Diameter, Converter={StaticResource PercentageToPixelConverter}, ConverterParameter=-4}"
-                Stroke="AntiqueWhite"
-                StrokeThickness="4">
-          <Line.Effect>
-            <DropShadowEffect Opacity="0.6"/>
-          </Line.Effect>
-        </Line>
-      </Canvas>
-    </Setter.Value>
-  </Setter>
-  <Setter Property="SecondHandElement">
-    <Setter.Value>
-      <Canvas Height="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Diameter}" 
-                Width="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Diameter}"
-                Panel.ZIndex="2">
-        <Line Margin="0,36,0,0" 
-                X1="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Radius}"
-                Y1="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Radius}"
-                X2="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Radius}"
-                Y2="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Diameter, Converter={StaticResource PercentageToPixelConverter}, ConverterParameter=-4}"
-                Stroke="DarkRed"
-                StrokeThickness="2">
-          <Line.Effect>
-            <DropShadowEffect Opacity="0.6"/>
-          </Line.Effect>
-        </Line>
-        <Ellipse Margin="-8,-8,0,0" 
-                   Height="16" 
-                   Width="16" 
-                   Fill="AntiqueWhite" 
-                   Canvas.Left="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace}, Path=Radius}" 
-                   Canvas.Top="{Binding RelativeSource={RelativeSource AncestorType=clock:AnalogClockFace},Path=Radius}" Panel.ZIndex="2">
-          <Ellipse.Effect>
-            <DropShadowEffect Opacity="0.6"/>
-          </Ellipse.Effect>
-        </Ellipse>
-      </Canvas>
-    </Setter.Value>
-  </Setter>
-  <Setter Property="FifteenMinuteIntervalElement">
-    <Setter.Value>
-      <Ellipse Height="8" Width="8" Fill="AntiqueWhite"/>
-    </Setter.Value>
-  </Setter>
-  <Setter Property="FiveMinuteIntervalElement">
-    <Setter.Value>
-      <Rectangle Height="8" Width="2" Fill="AntiqueWhite" 
-                   clock:AnalogClockFace.IsCenterElementOnCircumferenceEnabled="False" />
-    </Setter.Value>
-  </Setter>
-  <Setter Property="MinuteIntervalElement">
-    <Setter.Value>
-      <Ellipse Height="2" Width="2" Fill="AntiqueWhite"/>
-    </Setter.Value>
-  </Setter>
-  <Setter Property="Template">
-    <Setter.Value>
-      <ControlTemplate TargetType="clock:AnalogClockFace">
-        <Border>
-          <ContentPresenter />
-        </Border>
-      </ControlTemplate>
-    </Setter.Value>
-  </Setter>
-  </Style>-->
 </ResourceDictionary>

@@ -43,7 +43,7 @@ namespace BionicCode.Net.Framework.Core.Ui.Test
 
       this.ClockTimer = new DispatcherTimer(
         TimeSpan.FromMilliseconds(500),
-        DispatcherPriority.Background,
+        DispatcherPriority.Render,
         OnTimerIntervalElapsed,
         this.Dispatcher);
     }
