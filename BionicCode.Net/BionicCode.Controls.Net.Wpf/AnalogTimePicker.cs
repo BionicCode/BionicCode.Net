@@ -5,28 +5,76 @@
 
 #endregion
 
+using System;
+using System.Globalization;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Markup;
-using System.Windows.Shapes;
 
 namespace BionicCode.Controls.Net.Wpf
 {
   [ContentProperty("AnalogClockFace")]
+  [TemplateVisualState(Name = AnalogTimePicker.VisualStatePickerOpen, GroupName = "PanelStates")]
+  [TemplateVisualState(Name = AnalogTimePicker.VisualStatePickerClosed, GroupName = "PanelStates")]
   public class AnalogTimePicker : Control
   {
+    public const string VisualStatePickerOpen = "PickerOpen";
+    public const string VisualStatePickerClosed = "PickerClosed";
     #region AnalogClockFace dependency property
 
     public static readonly DependencyProperty AnalogClockFaceProperty = DependencyProperty.Register(
       "AnalogClockFace",
-      typeof(FrameworkElement),
+      typeof(AnalogClockFace),
       typeof(AnalogTimePicker),
-      new FrameworkPropertyMetadata(default(FrameworkElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AnalogTimePicker.OnAnalogClockFaceChanged));
+      new FrameworkPropertyMetadata(default(AnalogClockFace), AnalogTimePicker.OnAnalogClockFaceChanged));
 
-    public FrameworkElement AnalogClockFace { get => (FrameworkElement) GetValue(AnalogTimePicker.AnalogClockFaceProperty); set => SetValue(AnalogTimePicker.AnalogClockFaceProperty, value); }
+    public AnalogClockFace AnalogClockFace { get => (AnalogClockFace)GetValue(AnalogTimePicker.AnalogClockFaceProperty); set => SetValue(AnalogTimePicker.AnalogClockFaceProperty, value); }
 
     #endregion AnalogClockFace dependency property
+
+    #region SelectedTime dependency property
+
+    public static readonly DependencyProperty SelectedTimeProperty = DependencyProperty.Register(
+      "SelectedTime",
+      typeof(DateTime),
+      typeof(AnalogTimePicker),
+      new FrameworkPropertyMetadata(default(DateTime), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, AnalogTimePicker.OnSelectedTimeChanged));
+
+    public DateTime SelectedTime { get => (DateTime)GetValue(AnalogTimePicker.SelectedTimeProperty); set => SetValue(AnalogTimePicker.SelectedTimeProperty, value); }
+
+    #endregion SelectedTime dependency property
+
+    #region SelectedTimeText dependency property
+
+    public static readonly DependencyProperty SelectedTimeTextProperty = DependencyProperty.Register(
+      "SelectedTimeText",
+      typeof(string),
+      typeof(AnalogTimePicker),
+      new PropertyMetadata(TimeSpan.Zero.ToString()));
+
+    public string SelectedTimeText
+    {
+      get => (string)GetValue(AnalogTimePicker.SelectedTimeTextProperty);
+      set => SetValue(AnalogTimePicker.SelectedTimeTextProperty, value);
+    }
+
+    #endregion SelectedTimeText dependency property
+
+    #region propertyName dependency property
+
+    public static readonly DependencyProperty IsOpenProperty = DependencyProperty.Register(
+      "IsOpen",
+      typeof(bool),
+      typeof(AnalogTimePicker),
+      new FrameworkPropertyMetadata(
+        default(bool),
+        FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+        AnalogTimePicker.OnIsOpenChanged));
+
+    public bool IsOpen { get => (bool)GetValue(AnalogTimePicker.IsOpenProperty); set => SetValue(AnalogTimePicker.IsOpenProperty, value); }
+
+    #endregion propertyName dependency property
 
     #region ClockDiameter dependency property
 
@@ -34,13 +82,24 @@ namespace BionicCode.Controls.Net.Wpf
       "ClockDiameter",
       typeof(double),
       typeof(AnalogTimePicker),
-      new FrameworkPropertyMetadata(default(double), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AnalogTimePicker.OnClockDiameterChanged));
+      new PropertyMetadata(default));
 
-    public double ClockDiameter { get => (double) GetValue(AnalogTimePicker.ClockDiameterProperty); set => SetValue(AnalogTimePicker.ClockDiameterProperty, value); }
+    public double ClockDiameter { get => (double)GetValue(AnalogTimePicker.ClockDiameterProperty); set => SetValue(AnalogTimePicker.ClockDiameterProperty, value); }
 
     #endregion ClockDiameter dependency property
-    private bool IsClockPointerSelectionEnabled { get; set; }
-    private Line ClockSelectionPointer { get; set; }
+
+    #region IsClockHandVisible dependency property
+
+    public static readonly DependencyProperty IsClockHandVisibleProperty = DependencyProperty.Register(
+      "IsClockHandVisible",
+      typeof(bool),
+      typeof(AnalogTimePicker),
+      new PropertyMetadata(default(bool), AnalogTimePicker.OnIsClockHandVisibleChanged));
+
+    public bool IsClockHandVisible { get => (bool)GetValue(AnalogTimePicker.IsClockHandVisibleProperty); set => SetValue(AnalogTimePicker.IsClockHandVisibleProperty, value); }
+
+    #endregion IsClockHandVisible dependency property
+    private string TimeStringFormatPattern { get; set; }
 
     static AnalogTimePicker()
     {
@@ -49,123 +108,81 @@ namespace BionicCode.Controls.Net.Wpf
 
     public AnalogTimePicker()
     {
+      CultureInfo.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+      CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern = "hh.mm.ss";
+      var timePattern = new StringBuilder();
+      //if (this.IsHoursEnabled)
+      {
+        timePattern.Append("hh");
+      }
+
+      timePattern.Append(@"\:mm");
+      //if (this.IsSecondsEnabled)
+      {
+        timePattern.Append(@"\:ss");
+      }
+
+      this.TimeStringFormatPattern = timePattern.ToString();
       //this.AnalogClockFace = new AnalogClockFace() {Background = Brushes.PaleVioletRed};
     }
 
-    #region Overrides of UIElement
-
-    /// <inheritdoc />
-    protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
+    private static void OnSelectedTimeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      base.OnPreviewMouseLeftButtonDown(e);
+      var this_ = d as AnalogTimePicker;
+      this_.SelectedTimeText = this_.FormatTime((DateTime)e.NewValue);
     }
 
-    #endregion
-
-    #region Overrides of AnalogClockFace
-
-    //protected virtual void OnClockFaceLoaded(object sender, RoutedEventArgs routedEventArgs)
-    //{
-    //  double radius = this.ClockDiameter / 2;
-
-    //  this.ClockSelectionPointer = new Line() { X1 = radius, Y1 = radius, X2 = radius, Y2 = 0, Stroke = Brushes.Orange, StrokeThickness = 2 };
-    //  this.AnalogClockFace.AddElementToClockFace(this.ClockSelectionPointer, new Point());
-    //  this.AnalogClockFace.AddElementToClockFace(new Line() { X1 = radius, Y1 = radius, X2 = 0, Y2 = radius, Stroke = Brushes.Orange, StrokeThickness = 2 }, new Point());
-    //  //selectPointer.PreviewMouseLeftButtonDown += timePicker.OnSelectPointerLeftMouseButtonDown;
-    //}
-
-    #endregion
-
-    #region Overrides of Control
-
-    /// <inheritdoc />
-    protected override Size MeasureOverride(Size constraint)
+    private static void OnIsOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      //constraint = new Size(this.ClockDiameter, this.ClockDiameter);
-      //this.AnalogClockFace.Measure(constraint);
-      constraint = base.MeasureOverride(constraint);
-      return constraint;
+      var isOpen = (bool)e.NewValue;
+      (d as AnalogTimePicker).OnIsOpenChanged(isOpen);
     }
 
-    #endregion
+    private string FormatTime(DateTime time) => time.TimeOfDay.ToString(this.TimeStringFormatPattern, CultureInfo.CurrentCulture);
 
     private static void OnAnalogClockFaceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      (d as AnalogTimePicker).OnAnalogClockFaceChanged();
+      (d as AnalogTimePicker).OnAnalogClockFaceChanged(e.OldValue as AnalogClockFace, e.NewValue as AnalogClockFace);
     }
 
-    private static void OnClockDiameterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void OnIsClockHandVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      (d as AnalogTimePicker).OnClockDiameterChanged((double) e.OldValue, (double) e.NewValue);
-    }
-
-    protected virtual void OnClockDiameterChanged(double oldValue, double newValue)
-    {
-      if (this.AnalogClockFace == null)
+      var this_ = d as AnalogTimePicker;
+      if (this_.AnalogClockFace == null)
       {
         return;
       }
-      this.AnalogClockFace.Width = newValue;
-      this.AnalogClockFace.Height = newValue;
+      bool isClockHandVisible = (bool)e.NewValue;
+      this_.AnalogClockFace.IsTimePickerClockHandVisible = isClockHandVisible;
     }
 
-    protected virtual void OnAnalogClockFaceChanged()
+    protected virtual void OnAnalogClockFaceChanged(AnalogClockFace oldValue, AnalogClockFace newValue)
     {
-      if (this.AnalogClockFace == null)
+      if (oldValue != null)
       {
-        return;
+        oldValue.SelectedTimeChanged -= OnSelectedAnalogClockFaceTimeChanged;
       }
-      this.AnalogClockFace.Width = this.ClockDiameter;
-      this.AnalogClockFace.Height = this.ClockDiameter;
-      // this.AnalogClockFace.ClockFaceLoaded += OnClockFaceLoaded;
+
+      if (newValue != null)
+      {
+        newValue.SelectedTimeChanged += OnSelectedAnalogClockFaceTimeChanged;
+        newValue.IsTimePickerClockHandVisible = this.IsClockHandVisible;
+      }
     }
 
-    //private void OnSelectPointerLeftMouseButtonDown(object sender, MouseButtonEventArgs e)
-    //{
-    //  this.IsClockPointerSelectionEnabled = true;
-    //  //CaptureMouse();
-    //}
+    protected virtual void OnIsOpenChanged(bool isOpen)
+    {
+      VisualStateManager.GoToState(
+        this,
+        isOpen
+          ? AnalogTimePicker.VisualStatePickerOpen
+          : AnalogTimePicker.VisualStatePickerClosed,
+        true);
+    }
 
-    //#region Overrides of UIElement
-
-    ///// <inheritdoc />
-    //protected override void OnPreviewMouseMove(MouseEventArgs e)
-    //{
-    //  base.OnPreviewMouseMove(e);
-    //  if (!this.IsClockPointerSelectionEnabled)
-    //  {
-    //    return;
-    //  }
-
-    //  Point mousePosition = e.GetPosition(this.ClockPanel);
-    //  var quadrant = mousePosition.X >= 200 && mousePosition.Y <= 200 ? 1 :
-    //    mousePosition.X < 200 && mousePosition.Y <= 200 ? 2 :
-    //    mousePosition.X < 200 && mousePosition.Y > 200 ? 3 : 4;
-    //  bool isRightQuadrantActive = quadrant == 1 || quadrant == 4;
-    //  bool isTopQuadrantActive = quadrant == 1 || quadrant == 2;
-    //  var intervalPositions = this.ClockPanel.Children
-    //    .Cast<UIElement>()
-    //    .Where(element => !object.ReferenceEquals(element, this.ClockSelectionPointer))
-    //    .Select(element => new Point(Canvas.GetLeft(element), Canvas.GetTop(element)))
-    //    .Where(cartesianPoint => isRightQuadrantActive && isTopQuadrantActive
-    //      ? cartesianPoint.X >= 200 && cartesianPoint.Y <= 200
-    //      : isRightQuadrantActive
-    //      ? cartesianPoint.X >= 200 && cartesianPoint.Y > 200 : isTopQuadrantActive ? cartesianPoint.X < 200 && cartesianPoint.Y <= 200 :
-    //      cartesianPoint.X < 200 && cartesianPoint.Y > 200);
-    //  Point closestIntervalPosition = intervalPositions.Aggregate(intervalPositions.First(), (closestIntervalPosition, intervalPosition) => Math.Abs(intervalPosition.X - mousePosition.X) < Math.Abs(closestIntervalPosition.X - mousePosition.X) && Math.Abs(intervalPosition.Y - mousePosition.Y) < Math.Abs(closestIntervalPosition.Y - mousePosition.Y) ? intervalPosition : closestIntervalPosition);
-
-    //  this.ClockSelectionPointer.X2 = closestIntervalPosition.X;
-    //  this.ClockSelectionPointer.Y2 = closestIntervalPosition.Y;
-    //}
-
-    ///// <inheritdoc />
-    //protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)
-    //{
-    //  base.OnPreviewMouseLeftButtonUp(e);
-    //  this.IsClockPointerSelectionEnabled = false;
-    //  ReleaseMouseCapture();
-    //}
-
-    //#endregion
+    private void OnSelectedAnalogClockFaceTimeChanged(object sender, RoutedEventArgs e)
+    {
+      this.SelectedTime = this.AnalogClockFace.SelectedTime;
+    }
   }
 }

@@ -18,9 +18,33 @@ using BionicCode.Utilities.Net.Wpf.Extensions;
 
 namespace BionicCode.Controls.Net.Wpf
 {
-  [TemplatePart(Name = "PART_ElementHost", Type = typeof(FrameworkElement))]
   public class AnalogClockFace : ContentControl
   {
+    public static ComponentResourceKey DefaultAnalogClockFaceStyleKey { get; } = new()
+    {
+      TypeInTargetAssembly = typeof(AnalogClockFace),
+      ResourceId = "AnalogClockFaceStyle"
+    };
+
+    public static ComponentResourceKey DefaultAnalogClockFaceTimePickerStyleKey { get; } = new()
+    {
+      TypeInTargetAssembly = typeof(AnalogClockFace),
+      ResourceId = "AnalogClockFaceTimePickerStyle"
+    };
+
+    #region SelectedTimeChangedRoutedEvent
+
+    public static readonly RoutedEvent SelectedTimeChangedRoutedEvent = EventManager.RegisterRoutedEvent("SelectedTimeChanged",
+      RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(AnalogClockFace));
+
+    public event RoutedEventHandler SelectedTimeChanged
+    {
+      add { AddHandler(AnalogClockFace.SelectedTimeChangedRoutedEvent, value); }
+      remove { RemoveHandler(AnalogClockFace.SelectedTimeChangedRoutedEvent, value); }
+    }
+
+    #endregion
+
     #region IsCenterElementOnCircumferenceEnabled attached property
 
     public static readonly DependencyProperty IsCenterElementOnCircumferenceEnabledProperty = DependencyProperty.RegisterAttached(
@@ -265,52 +289,6 @@ namespace BionicCode.Controls.Net.Wpf
 
     #endregion SelectedTime dependency property
 
-    #region SelectedMinuteArcPoint read-only dependency property
-    protected static readonly DependencyPropertyKey SelectedMinuteArcPointPropertyKey = DependencyProperty.RegisterReadOnly(
-      "SelectedMinuteArcPoint",
-      typeof(Point),
-      typeof(AnalogClockFace),
-      new PropertyMetadata(default(Point)));
-
-    public static readonly DependencyProperty SelectedMinuteArcPointProperty = AnalogClockFace.SelectedMinuteArcPointPropertyKey.DependencyProperty;
-
-    public Point SelectedMinuteArcPoint
-    {
-      get => (Point) GetValue(AnalogClockFace.SelectedMinuteArcPointProperty);
-      private set => SetValue(AnalogClockFace.SelectedMinuteArcPointPropertyKey, value);
-    }
-
-    #endregion SelectedMinuteArcPoint read-only dependency property
-
-    #region IsLargeSelectionMinuteArc read-only dependency property
-    protected static readonly DependencyPropertyKey IsLargeSelectionMinuteArcPropertyKey = DependencyProperty.RegisterReadOnly(
-      "IsLargeSelectionMinuteArc",
-      typeof(bool),
-      typeof(AnalogClockFace),
-      new PropertyMetadata(default(bool)));
-
-    public static readonly DependencyProperty IsLargeSelectionMinuteArcProperty = AnalogClockFace.IsLargeSelectionMinuteArcPropertyKey.DependencyProperty;
-
-    public bool IsLargeSelectionMinuteArc
-    {
-      get => (bool) GetValue(AnalogClockFace.IsLargeSelectionMinuteArcProperty);
-      private set => SetValue(AnalogClockFace.IsLargeSelectionMinuteArcPropertyKey, value);
-    }
-
-    #endregion IsLargeSelectionMinuteArc read-only dependency property
-
-    #region MinuteSelectionArc dependency property
-
-    public static readonly DependencyProperty MinuteSelectionArcProperty = DependencyProperty.Register(
-      "MinuteSelectionArc",
-      typeof(Geometry),
-      typeof(AnalogClockFace),
-      new PropertyMetadata(default));
-
-    public Geometry MinuteSelectionArc { get => (Geometry) GetValue(AnalogClockFace.MinuteSelectionArcProperty); set => SetValue(AnalogClockFace.MinuteSelectionArcProperty, value); }
-
-    #endregion MinuteSelectionArc dependency property
-
     #region MinuteSelectionArcBrush dependency property
 
     public static readonly DependencyProperty MinuteSelectionArcBrushProperty = DependencyProperty.Register(
@@ -323,39 +301,41 @@ namespace BionicCode.Controls.Net.Wpf
 
     #endregion MinuteSelectionArcBrush dependency property
 
-    #region SelectionArcStart read-only dependency property
-    protected static readonly DependencyPropertyKey SelectionArcStartPropertyKey = DependencyProperty.RegisterReadOnly(
-      "SelectionArcStart",
-      typeof(Point),
+    #region TimePickerHourSelectionArcBrush dependency property
+
+    public static readonly DependencyProperty TimePickerHourSelectionArcBrushProperty = DependencyProperty.Register(
+      "TimePickerHourSelectionArcBrush",
+      typeof(Brush),
       typeof(AnalogClockFace),
-      new PropertyMetadata(default(Point)));
+      new PropertyMetadata(default));
 
-    public static readonly DependencyProperty SelectionArcStartProperty = AnalogClockFace.SelectionArcStartPropertyKey.DependencyProperty;
+    public Brush TimePickerHourSelectionArcBrush { get => (Brush) GetValue(AnalogClockFace.TimePickerHourSelectionArcBrushProperty); set => SetValue(AnalogClockFace.TimePickerHourSelectionArcBrushProperty, value); }
 
-    public Point SelectionArcStart
-    {
-      get => (Point) GetValue(AnalogClockFace.SelectionArcStartProperty);
-      private set => SetValue(AnalogClockFace.SelectionArcStartPropertyKey, value);
-    }
+    #endregion cHourSelectionArcBrush dependency property
 
-    #endregion SelectionArcStart read-only dependency property
+    #region TimePickerMinuteSelectionArcBrush dependency property
 
-    #region SelectionArcSize read-only dependency property
-    protected static readonly DependencyPropertyKey SelectionArcSizePropertyKey = DependencyProperty.RegisterReadOnly(
-      "SelectionArcSize",
-      typeof(Size),
+    public static readonly DependencyProperty TimePickerMinuteSelectionArcBrushProperty = DependencyProperty.Register(
+      "TimePickerMinuteSelectionArcBrush",
+      typeof(Brush),
       typeof(AnalogClockFace),
-      new PropertyMetadata(default(Size)));
+      new PropertyMetadata(default));
 
-    public static readonly DependencyProperty SelectionArcSizeProperty = AnalogClockFace.SelectionArcSizePropertyKey.DependencyProperty;
+    public Brush TimePickerMinuteSelectionArcBrush { get => (Brush) GetValue(AnalogClockFace.TimePickerMinuteSelectionArcBrushProperty); set => SetValue(AnalogClockFace.TimePickerMinuteSelectionArcBrushProperty, value); }
 
-    public Size SelectionArcSize
-    {
-      get => (Size) GetValue(AnalogClockFace.SelectionArcSizeProperty);
-      private set => SetValue(AnalogClockFace.SelectionArcSizePropertyKey, value);
-    }
+    #endregion TimePickerMinuteSelectionArcBrush dependency property
 
-    #endregion SelectionArcSize read-only dependency property
+    #region TimePickerSecondSelectionArcBrush dependency property
+
+    public static readonly DependencyProperty TimePickerSecondSelectionArcBrushProperty = DependencyProperty.Register(
+      "TimePickerSecondSelectionArcBrush",
+      typeof(Brush),
+      typeof(AnalogClockFace),
+      new PropertyMetadata(default));
+
+    public Brush TimePickerSecondSelectionArcBrush { get => (Brush) GetValue(AnalogClockFace.TimePickerSecondSelectionArcBrushProperty); set => SetValue(AnalogClockFace.TimePickerSecondSelectionArcBrushProperty, value); }
+
+    #endregion TimePickerSecondSelectionArcBrush dependency property
 
     #region IntervalLabelRadiusOffset dependency property
 
@@ -612,11 +592,23 @@ namespace BionicCode.Controls.Net.Wpf
       "IsTimePickerModeEnabled",
       typeof(bool),
       typeof(AnalogClockFace),
-      new PropertyMetadata(default));
+      new PropertyMetadata(default(bool), AnalogClockFace.OnIsTimePickerModeEnabledChanged));
 
-    public bool IsTimePickerModeEnabled { get => (bool) GetValue(AnalogClockFace.IsTimePickerModeEnabledProperty); set => SetValue(AnalogClockFace.IsTimePickerModeEnabledProperty, value); }
+    public bool IsTimePickerModeEnabled { get => (bool)GetValue(AnalogClockFace.IsTimePickerModeEnabledProperty); set => SetValue(AnalogClockFace.IsTimePickerModeEnabledProperty, value); }
 
     #endregion IsTimePickerModeEnabled dependency property
+
+    #region IsTimePickerClockHandVisible dependency property
+
+    public static readonly DependencyProperty IsTimePickerClockHandVisibleProperty = DependencyProperty.Register(
+      "IsTimePickerClockHandVisible",
+      typeof(bool),
+      typeof(AnalogClockFace),
+      new PropertyMetadata(default));
+
+    public bool IsTimePickerClockHandVisible { get => (bool)GetValue(AnalogClockFace.IsTimePickerClockHandVisibleProperty); set => SetValue(AnalogClockFace.IsTimePickerClockHandVisibleProperty, value); }
+
+    #endregion IsTimePickerClockHandVisible dependency property
 
     private Canvas ClockFaceCanvas { get; set; }
     private RotateTransform HourHandTransform { get; set; }
@@ -625,7 +617,6 @@ namespace BionicCode.Controls.Net.Wpf
     private RotateTransform DateElementTransform { get; set; }
     private RotateTransform IntervalElementTransform { get; set; }
     private ScaleTransform ClockFaceScaleTransform { get; set; }
-    private Rectangle SelectedMinuteArcRectangle { get; set; }
     private Path SelectedHourArc { get; set; }
     private Path SelectedMinuteArc { get; set; }
     private Path SelectedSecondArc { get; set; }
@@ -647,16 +638,6 @@ namespace BionicCode.Controls.Net.Wpf
       this.SelectedSecondArc = new Path();
       InitializeClockRotateTransforms();
       InitializeClockFaceCanvas();
-      this.SelectedMinuteArcRectangle = new Rectangle()
-      {
-        Opacity = 0.6,
-        Height = this.Diameter,
-        Width = this.Diameter
-      };
-      var selectedMinuteArcBinding = new Binding(nameof(this.MinuteSelectionArc)) { Source = this };
-      this.SelectedMinuteArcRectangle.SetBinding(UIElement.ClipProperty, selectedMinuteArcBinding);
-      var selectedMinuteArcBrushBinding = new Binding(nameof(this.MinuteSelectionArcBrush)) { Source = this };
-      this.SelectedMinuteArcRectangle.SetBinding(Shape.FillProperty, selectedMinuteArcBrushBinding);
 
       this.IntervalLabelFormatter = value => value.ToString();
     }
@@ -698,21 +679,37 @@ namespace BionicCode.Controls.Net.Wpf
       BindingOperations.SetBinding(this.SecondHandTransform, RotateTransform.CenterXProperty, radiusBinding);
       BindingOperations.SetBinding(this.SecondHandTransform, RotateTransform.CenterYProperty, radiusBinding);
     }
-    
 
     #region Overrides of FrameworkElement
-    
+
+    /// <inheritdoc />
+    protected override void OnInitialized(EventArgs e)
+    {
+      base.OnInitialized(e);
+      if (this.IsTimePickerModeEnabled)
+      {
+        this.Style = FindResource(AnalogClockFace.DefaultAnalogClockFaceTimePickerStyleKey) as Style;
+      }
+      else
+      {
+        this.Style = FindResource(AnalogClockFace.DefaultAnalogClockFaceStyleKey) as Style;
+      }
+    }
+
+    #endregion
+
+    #region Overrides of FrameworkElement
+
     /// <inheritdoc />
     protected override Size MeasureOverride(Size constraint)
     {
       double scaleFactor = Math.Min(constraint.Width, constraint.Height) / this.Diameter;
       double requiredWidth = this.Diameter * scaleFactor;
       double requiredHeight = this.Diameter * scaleFactor;
-      constraint = new Size(requiredWidth, requiredHeight);
+      constraint = new Size(double.IsInfinity(requiredWidth) ? this.Diameter : requiredWidth, double.IsInfinity(requiredHeight) ? this.Diameter : requiredHeight);
       base.MeasureOverride(constraint);
       return constraint;
     }
-
 
     /// <inheritdoc />
     protected override Size ArrangeOverride(Size arrangeBounds)
@@ -748,27 +745,55 @@ namespace BionicCode.Controls.Net.Wpf
       Point screenPoint = e.GetPosition(this.ClockFaceCanvas);
       var clockAngle = GetAngleFromCartesianPoint(screenPoint);
       this.IsUpdatingSelectedTimeComponent = true;
-      double steps;
       double degreeOfStep;
 
       switch (screenPoint)
       {
         case { } when this.SelectedHourArcBounds.FillContains(screenPoint):
-          steps = this.Is24HModeEnabled ? 24 : 12;
+          double steps = this.Is24HModeEnabled ? 24 : 12;
           degreeOfStep = 360 / steps;
-          double hourValue = Math.Round(clockAngle / degreeOfStep, MidpointRounding.AwayFromZero);
+          double hourValue = Math.Round(clockAngle / degreeOfStep, MidpointRounding.AwayFromZero) % steps;
           this.SelectedHour = hourValue;
           break;
         case { } when this.SelectedMinuteArcBounds.FillContains(screenPoint):
-          steps = 60;
-          degreeOfStep = 360 / steps;
-          double minuteValue = Math.Round(clockAngle / degreeOfStep, MidpointRounding.AwayFromZero);
+          degreeOfStep = 360 / 60.0;
+          double minuteValue = Math.Round(clockAngle / degreeOfStep, MidpointRounding.AwayFromZero) % 60;
           this.SelectedMinute = minuteValue;
           break;
         case { } when this.SelectedSecondArcBounds.FillContains(screenPoint):
-          steps = 60;
-          degreeOfStep = 360 / steps;
-          double secondValue = Math.Round(clockAngle / degreeOfStep, MidpointRounding.AwayFromZero);
+          degreeOfStep = 360 / 60.0;
+          double secondValue = Math.Round(clockAngle / degreeOfStep, MidpointRounding.AwayFromZero) % 60;
+          this.SelectedSecond = secondValue;
+          break;
+      }
+      this.IsUpdatingSelectedTimeComponent = false;
+    }
+
+    /// <inheritdoc />
+    protected override void OnPreviewMouseWheel(MouseWheelEventArgs e)
+    {
+      base.OnPreviewMouseWheel(e);
+      if (!this.IsTimePickerModeEnabled)
+      {
+        return;
+      }
+      Point screenPoint = e.GetPosition(this.ClockFaceCanvas);
+      this.IsUpdatingSelectedTimeComponent = true;
+      int change = e.Delta > 0 ? -1 : 1;
+
+      switch (screenPoint)
+      {
+        case { } when this.SelectedHourArcBounds.FillContains(screenPoint):
+          double steps = this.Is24HModeEnabled ? 24 : 12;
+          double hourValue = (steps + this.SelectedHour + change) % steps;
+          this.SelectedHour = hourValue;
+          break;
+        case { } when this.SelectedMinuteArcBounds.FillContains(screenPoint):
+          double minuteValue = (60.0 + this.SelectedMinute + change) % 60;
+          this.SelectedMinute = minuteValue;
+          break;
+        case { } when this.SelectedSecondArcBounds.FillContains(screenPoint):
+          double secondValue = (60.0 + this.SelectedSecond + change) % 60;
           this.SelectedSecond = secondValue;
           break;
       }
@@ -783,8 +808,6 @@ namespace BionicCode.Controls.Net.Wpf
       var this_ = d as AnalogClockFace;
       this_.Radius = (double)e.NewValue / 2;
       this_.Center = new Point(this_.Radius, this_.Radius);
-      this_.SelectionArcStart = new Point(this_.Radius, this_.IntervalMarkerCenterRadius);
-      this_.SelectionArcSize = new Size(this_.IntervalMarkerCenterRadius, this_.IntervalMarkerCenterRadius);
     }
 
 
@@ -881,15 +904,9 @@ namespace BionicCode.Controls.Net.Wpf
       this_.SecondHandDiameter = (double)e.NewValue * 2;
     }
 
-    protected virtual void OnSelectedTimeChanged(DateTime oldValue, DateTime newValue)
+    private static void OnIsTimePickerModeEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      if (this.IsUpdatingSelectedTimeComponent)
-      {
-        return;
-      }
-      this.IsUpdatingSelectedTime = true;
-      this.SelectedSecond = newValue.TimeOfDay.TotalSeconds;
-      this.IsUpdatingSelectedTime = false;
+      (d as AnalogClockFace).OnIsTimePickerModeEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
     }
 
     private static object CoerceHours(DependencyObject d, object basevalue)
@@ -970,6 +987,31 @@ namespace BionicCode.Controls.Net.Wpf
 
       this_.IsUpdatingSelectedTimeComponent = false;
       return seconds;
+    }
+
+    protected virtual void OnIsTimePickerModeEnabledChanged(bool oldValue, bool newValue)
+    {
+      if (newValue)
+      {
+        this.Style = FindResource(AnalogClockFace.DefaultAnalogClockFaceTimePickerStyleKey) as Style;
+      }
+      else
+      {
+        this.Style = FindResource(AnalogClockFace.DefaultAnalogClockFaceStyleKey) as Style;
+      }
+    }
+
+    protected virtual void OnSelectedTimeChanged(DateTime oldValue, DateTime newValue)
+    {
+      if (this.IsUpdatingSelectedTimeComponent)
+      {
+        RaiseEvent(new RoutedEventArgs(AnalogClockFace.SelectedTimeChangedRoutedEvent, this));
+        return;
+      }
+      this.IsUpdatingSelectedTime = true;
+      this.SelectedSecond = newValue.TimeOfDay.TotalSeconds;
+      this.IsUpdatingSelectedTime = false;
+      RaiseEvent(new RoutedEventArgs(AnalogClockFace.SelectedTimeChangedRoutedEvent, this));
     }
 
     protected virtual void OnSelectedHourChanged(double oldValue, double newValue)
@@ -1274,11 +1316,6 @@ namespace BionicCode.Controls.Net.Wpf
       {
         return;
       }
-
-      AddElementToClockFace(
-        this.SelectedMinuteArcRectangle,
-        new Point(),
-        1);
       DrawArcFromZeroToCurrent();
     }
 
@@ -1291,10 +1328,9 @@ namespace BionicCode.Controls.Net.Wpf
 
     private void DrawIntervals()
     {
-      double steps = 60.0;
-      double degreeOfStep = 360.0 / steps;
+      double degreeOfStep = 360.0 / 60.0;
       this.IntervalMarkerCenterRadius = -1;
-      for (int step = 0; step < steps; step++)
+      for (int step = 0; step < 60; step++)
       {
         double degreesOfCurrentStep = step * degreeOfStep;
 
@@ -1333,20 +1369,22 @@ namespace BionicCode.Controls.Net.Wpf
       Draw24HSecondIntervals();
       Draw24ClockFaceBackground(this.IntervalMarkerMinuteCenterRadius);
       DrawTimePickerSelectionArcs();
-      AddClockHands();
+      if (!this.IsTimePickerModeEnabled || this.IsTimePickerClockHandVisible)
+      {
+        AddClockHands();
+      }
       OnClockFaceLoaded();
     }
 
     private void Draw24HHourIntervals()
     {
-      double steps = 24.0;
-      double degreeOfStep = 360.0 / steps;
+      double degreeOfStep = 360.0 / 24.0;
       this.IntervalMarkerCenterRadius = -1;
-      for (int step = 0; step < steps; step++)
+      for (int step = 0; step < 24; step++)
       {
         double degreesOfCurrentStep = step * degreeOfStep;
 
-        FrameworkElement intervalMarker = CreateIntervalMarker(step);
+        FrameworkElement intervalMarker = Create24HHoursIntervalMarker(step);
         if (this.IntervalMarkerCenterRadius.Equals(-1))
         {
           InitializeRadiusOfIntervalMarkers(intervalMarker, this.HourHandRadius);
@@ -1360,6 +1398,30 @@ namespace BionicCode.Controls.Net.Wpf
           DrawIntervalLabel(degreesOfCurrentStep, intervalMarkerLabel);
         }
       }
+    }
+
+    private FrameworkElement Create24HHoursIntervalMarker(int step)
+    {
+      FrameworkElement intervalMarker;
+      switch (step)
+      {
+        case { } is15MinutesStep when is15MinutesStep % 2 == 0:
+        {
+          intervalMarker = this.Is15MinuteIntervalEnabled
+            ? Create15MinuteIntervalVisual()
+            : this.Is5MinuteIntervalEnabled
+              ? Create5MinuteIntervalVisual()
+              : CreateMinuteIntervalVisual();
+          break;
+        }
+        default:
+        {
+          intervalMarker = CreateMinuteIntervalVisual();
+          break;
+        }
+      }
+
+      return intervalMarker;
     }
 
     private void Draw24HMinuteIntervals()
@@ -1436,30 +1498,33 @@ namespace BionicCode.Controls.Net.Wpf
 
     private void DrawArcFromZeroToCurrent()
     {
+      RemoveElementFromClockFace(this.SelectedMinuteArc);
+
       double angle = GetClockAngle(this.SelectedMinute, 60);
       Point cartesianMinutePointOnArc = GetCartesianPointOfStep(angle, this.IntervalMarkerCenterRadius);
-      this.IsLargeSelectionMinuteArc = angle > 180.0;
-      this.SelectedMinuteArcPoint = cartesianMinutePointOnArc.ToScreenPoint(this.Diameter);
-      this.SelectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerCenterRadius);
-      this.SelectionArcSize = new Size(this.IntervalMarkerCenterRadius, this.IntervalMarkerCenterRadius);
-      this.MinuteSelectionArc = new PathGeometry(
+      bool isLargeSelectionMinuteArc = angle > 180.0;
+      Point selectedMinuteArcPoint = cartesianMinutePointOnArc.ToScreenPoint(this.Diameter);
+      var selectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerCenterRadius);
+      var selectionArcSize = new Size(this.IntervalMarkerCenterRadius, this.IntervalMarkerCenterRadius);
+      this.SelectedMinuteArc = new Path() { Data = new PathGeometry(
         new List<PathFigure>()
         {
           new PathFigure(
             this.Center,
             new List<PathSegment>()
             {
-              new LineSegment(this.SelectionArcStart, false),
+              new LineSegment(selectionArcStart, false),
               new ArcSegment(
-                this.SelectedMinuteArcPoint,
-                this.SelectionArcSize,
+                selectedMinuteArcPoint,
+                selectionArcSize,
                 0,
-                this.IsLargeSelectionMinuteArc,
+                isLargeSelectionMinuteArc,
                 SweepDirection.Clockwise,
                 false)
             },
             true)
-        });
+        }), Fill = this.MinuteSelectionArcBrush};
+      AddElementToClockFace(this.SelectedMinuteArc, new Point(), 1);
     }
 
     protected virtual void Draw24HHourArcFromZeroToCurrent()
@@ -1479,7 +1544,6 @@ namespace BionicCode.Controls.Net.Wpf
       var outerSelectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerCenterRadius);
       var outerSelectionArcSize = new Size(this.IntervalMarkerCenterRadius, this.IntervalMarkerCenterRadius);
       var innerSelectionArcSize = new Size(this.IntervalMarkerMinuteCenterRadius, this.IntervalMarkerMinuteCenterRadius);
-      var selectionArcPathBrush = new SolidColorBrush(Colors.DodgerBlue) {Opacity = 0.6};
       this.SelectedHourArc = new Path
       {
         Data = new PathGeometry(
@@ -1508,7 +1572,7 @@ namespace BionicCode.Controls.Net.Wpf
               },
               true)
           }),
-        Fill = selectionArcPathBrush
+        Fill = this.TimePickerHourSelectionArcBrush
       };
       AddElementToClockFace(this.SelectedHourArc, new Point(), 1);
     }
@@ -1527,7 +1591,6 @@ namespace BionicCode.Controls.Net.Wpf
       var outerSelectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerMinuteCenterRadius);
       var outerSelectionArcSize = new Size(this.IntervalMarkerMinuteCenterRadius, this.IntervalMarkerMinuteCenterRadius);
       var innerSelectionArcSize = new Size(this.IntervalMarkerSecondCenterRadius, this.IntervalMarkerSecondCenterRadius);
-      var selectionArcPathBrush = new SolidColorBrush(Colors.IndianRed) {Opacity = 0.6};
       this.SelectedMinuteArc = new Path
       {
         Data = new PathGeometry(
@@ -1556,7 +1619,7 @@ namespace BionicCode.Controls.Net.Wpf
               },
               true)
           }),
-        Fill = selectionArcPathBrush
+        Fill = this.TimePickerMinuteSelectionArcBrush
       };
       AddElementToClockFace(this.SelectedMinuteArc, new Point(), 1);
     }
@@ -1575,7 +1638,6 @@ namespace BionicCode.Controls.Net.Wpf
       var outerSelectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerSecondCenterRadius);
       var outerSelectionArcSize = new Size(this.IntervalMarkerSecondCenterRadius, this.IntervalMarkerSecondCenterRadius);
       var innerSelectionArcSize = new Size(0, 0);
-      var selectionArcPathBrush = new SolidColorBrush(Colors.SpringGreen) {Opacity = 0.6};
       this.SelectedSecondArc = new Path
       {
         Data = new PathGeometry(
@@ -1604,7 +1666,7 @@ namespace BionicCode.Controls.Net.Wpf
               },
               true)
           }),
-        Fill = selectionArcPathBrush
+        Fill = this.TimePickerSecondSelectionArcBrush
       };
       AddElementToClockFace(this.SelectedSecondArc, new Point(), 1);
     }
@@ -1668,7 +1730,6 @@ namespace BionicCode.Controls.Net.Wpf
       var outerSelectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerMinuteCenterRadius);
       var outerSelectionArcSize = new Size(this.IntervalMarkerMinuteCenterRadius, this.IntervalMarkerMinuteCenterRadius);
       var innerSelectionArcSize = new Size(this.IntervalMarkerSecondCenterRadius, this.IntervalMarkerSecondCenterRadius);
-      var selectionArcPathBrush = new SolidColorBrush(Colors.Red) { Opacity = 0.6 };
       this.SelectedMinuteArcBounds = new PathGeometry(
           new List<PathFigure>()
           {

@@ -14,19 +14,108 @@
 
 
   <Style TargetType="wpf:AnalogTimePicker">
-    <Setter Property="ClockDiameter" Value="400"/>
+    <Setter Property="ClockDiameter" Value="400" />
     <Setter Property="AnalogClockFace">
       <Setter.Value>
-        <wpf:AnalogClockFace />
+        <wpf:AnalogClockFace x:Name="AnalogClockFace"
+                               IsTimePickerModeEnabled="True"
+                               Is24HModeEnabled="True" />
       </Setter.Value>
     </Setter>
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="wpf:AnalogTimePicker">
-          <ContentPresenter Content="{TemplateBinding AnalogClockFace}" />
+        <ControlTemplate TargetType="{x:Type wpf:AnalogTimePicker}">
+          <StackPanel>
+
+            <!--<VisualStateManager.VisualStateGroups>
+              <VisualStateGroup Name="PanelStates">
+                <VisualStateGroup.States>
+                  <VisualState Name="{x:Static clock:AnalogTimePicker.VisualStatePickerOpen}">
+                    <Storyboard>
+                      <DoubleAnimation Storyboard.TargetName="PickerPanel"
+                                       Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" From="0" To="1"
+                                       Duration="0:0:0.1"/>
+                      <DoubleAnimation Storyboard.TargetName="PickerPanel"
+                                       Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" From="0" To="1"
+                                       Duration="0:0:0.1"/>
+                    </Storyboard>
+                  </VisualState>
+                  <VisualState Name="{x:Static clock:AnalogTimePicker.VisualStatePickerClosed}">
+                    <Storyboard>
+                      <DoubleAnimation Storyboard.TargetName="PickerPanel"
+                                       Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" From="1" To="0"
+                                       Duration="0:0:0.1"/>
+                      <DoubleAnimation Storyboard.TargetName="PickerPanel"
+                                       Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" From="1" To="0"
+                                       Duration="0:0:0.1"/>
+                    </Storyboard>
+                  </VisualState>
+                </VisualStateGroup.States>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>-->
+            <Border Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}">
+              <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="DisplayLabel"
+                           Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SelectedTimeText}"
+                           FontSize="12"
+                           VerticalAlignment="Stretch"
+                           Width="70" />
+                <ToggleButton x:Name="Expander"
+                              Content="Change"
+                              IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsOpen}"
+                              Margin="8,0"
+                              FontSize="10"
+                              Foreground="DodgerBlue">
+                  <ToggleButton.Template>
+                    <ControlTemplate TargetType="ToggleButton">
+                      <TextBlock x:Name="Link"
+                                 Text="{TemplateBinding Content}"
+                                 VerticalAlignment="Center" />
+
+                      <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                          <Setter TargetName="Link" Property="TextDecorations" Value="Underline" />
+                        </Trigger>
+                      </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                  </ToggleButton.Template>
+                </ToggleButton>
+              </StackPanel>
+            </Border>
+            <Popup x:Name="PickerPanel"
+                   Height="{TemplateBinding ClockDiameter}"
+                   PlacementTarget="{Binding ElementName=Expander}"
+                   IsOpen="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsOpen}"
+                   StaysOpen="False"
+                   AllowsTransparency="True">
+              <!--<Popup.RenderTransform>
+                <ScaleTransform x:Name="PopupScaleTransform"/>
+              </Popup.RenderTransform>-->
+              <Border BorderThickness="1"
+                      BorderBrush="DarkGray"
+                      Background="#24292E"
+                      Margin="8"
+                      Padding="8">
+                <Border.Effect>
+                  <DropShadowEffect Opacity="0.7" Color="Black" />
+                </Border.Effect>
+                <DockPanel LastChildFill="True">
+                  <TextBlock DockPanel.Dock="Top" 
+                               Text="{TemplateBinding SelectedTimeText}"
+                               FontSize="44"
+                               FontStretch="UltraExpanded"
+                               FontWeight="UltraLight"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,8" />
+                  <ContentPresenter Content="{TemplateBinding AnalogClockFace}" />
+                </DockPanel>
+              </Border>
+            </Popup>
+          </StackPanel>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
   </Style>
-
 </ResourceDictionary>
