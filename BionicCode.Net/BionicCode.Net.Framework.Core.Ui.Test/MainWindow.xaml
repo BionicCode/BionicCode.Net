@@ -11,9 +11,9 @@
   <Window.Resources>
   </Window.Resources>
   <Grid>
-    <!--<TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedTime}"/>
-    <wpf:AnalogTimePicker x:Name="TimePicker"  Background="#FF252526" Foreground="AntiqueWhite" IsClockHandVisible="False" Margin="0,20" />-->
-    <wpf:AnalogClockFace x:Name="TimePicker"  IsTimePickerModeEnabled="False" SelectedTime="{Binding ElementName=Window, Path=CurrentDateTime}"/>
+    <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedTime}" />
+    <wpf:AnalogTimePicker x:Name="TimePicker"  Background="#FF252526" Foreground="AntiqueWhite" IsClockHandVisible="False" Margin="0,20" IsOverflowEnabled="True" />
+    <!--<wpf:AnalogClockFace x:Name="TimePicker"  IsTimePickerModeEnabled="False" SelectedTime="{Binding ElementName=Window, Path=CurrentDateTime}"/>-->
   </Grid>
   <!--<StackPanel>
     <wpf:TimePicker x:Name="TimePicker" IsSecondsEnabled="True" IsOpen="True"/>

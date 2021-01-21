@@ -6,11 +6,15 @@
 #endregion
 
 using System;
+using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Markup;
+using BionicCode.Utilities.Net.Wpf.Extensions;
 
 namespace BionicCode.Controls.Net.Wpf
 {
@@ -99,6 +103,42 @@ namespace BionicCode.Controls.Net.Wpf
     public bool IsClockHandVisible { get => (bool)GetValue(AnalogTimePicker.IsClockHandVisibleProperty); set => SetValue(AnalogTimePicker.IsClockHandVisibleProperty, value); }
 
     #endregion IsClockHandVisible dependency property
+
+    #region SelectableDays dependency property
+
+    public static readonly DependencyProperty SelectableDaysProperty = DependencyProperty.Register(
+      "SelectableDays",
+      typeof(ObservableCollection<int>),
+      typeof(AnalogTimePicker),
+      new PropertyMetadata(default));
+
+    public ObservableCollection<int> SelectableDays { get => (ObservableCollection<int>) GetValue(AnalogTimePicker.SelectableDaysProperty); set => SetValue(AnalogTimePicker.SelectableDaysProperty, value); }
+
+    #endregion SelectableDays dependency property
+
+    #region IsOverflowEnabled dependency property
+
+    public static readonly DependencyProperty IsOverflowEnabledProperty = DependencyProperty.Register(
+      "IsOverflowEnabled",
+      typeof(bool),
+      typeof(AnalogTimePicker),
+      new PropertyMetadata(default));
+
+    public bool IsOverflowEnabled { get => (bool) GetValue(AnalogTimePicker.IsOverflowEnabledProperty); set => SetValue(AnalogTimePicker.IsOverflowEnabledProperty, value); }
+
+    #endregion IsOverflowEnabled dependency property
+
+    #region SelectedDays dependency property
+
+    public static readonly DependencyProperty SelectedDaysProperty = DependencyProperty.Register(
+      "SelectedDays",
+      typeof(int),
+      typeof(AnalogTimePicker),
+      new PropertyMetadata(default));
+
+    public int SelectedDays { get => (int) GetValue(AnalogTimePicker.SelectedDaysProperty); set => SetValue(AnalogTimePicker.SelectedDaysProperty, value); }
+
+    #endregion SelectedDays dependency property
     private string TimeStringFormatPattern { get; set; }
 
     static AnalogTimePicker()
@@ -108,6 +148,8 @@ namespace BionicCode.Controls.Net.Wpf
 
     public AnalogTimePicker()
     {
+      this.SelectableDays = new ObservableCollection<int>(Enumerable.Range(0, 365));
+      this.SelectedDays = this.SelectableDays.FirstOrDefault();
       CultureInfo.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
       CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern = "hh.mm.ss";
       var timePattern = new StringBuilder();
@@ -123,8 +165,54 @@ namespace BionicCode.Controls.Net.Wpf
       }
 
       this.TimeStringFormatPattern = timePattern.ToString();
-      //this.AnalogClockFace = new AnalogClockFace() {Background = Brushes.PaleVioletRed};
     }
+
+    #region Overrides of FrameworkElement
+
+    /// <inheritdoc />
+    public override void OnApplyTemplate()
+    {
+      base.OnApplyTemplate();
+      var hourPicker = GetTemplateChild("PART_HourDisplay") as UIElement;
+      hourPicker.PreviewMouseWheel += OnMouseWheelHourSelected;
+      var minutePicker = GetTemplateChild("PART_MinuteDisplay") as UIElement;
+      minutePicker.PreviewMouseWheel += OnMouseWheelMinuteSelected;
+      var secondPicker = GetTemplateChild("PART_SecondDisplay") as UIElement;
+      secondPicker.PreviewMouseWheel += OnMouseWheelSecondSelected;
+    }
+
+    private void OnMouseWheelHourSelected(object sender, MouseWheelEventArgs e)
+    {
+      double steps = this.AnalogClockFace.Is24HModeEnabled ? 24 : 12;
+      int change = e.Delta > 0 ? -1 : 1;
+      this.AnalogClockFace.SelectedHour = (steps + this.AnalogClockFace.SelectedHour + change) % steps;
+    }
+
+    private void OnMouseWheelMinuteSelected(object sender, MouseWheelEventArgs e)
+    {
+      double steps = 60;
+      int change = e.Delta > 0 ? -1 : 1;
+      this.AnalogClockFace.SelectedMinute = (steps + this.AnalogClockFace.SelectedMinute + change) % steps;
+    }
+
+    private void OnMouseWheelSecondSelected(object sender, MouseWheelEventArgs e)
+    {
+      double steps = 60;
+      int change = e.Delta > 0 ? -1 : 1;
+      this.AnalogClockFace.SelectedSecond = (steps + this.AnalogClockFace.SelectedSecond + change) % steps;
+    }
+
+    private void OnOverflowPickerScrollChanged(object sender, ScrollChangedEventArgs e)
+    {
+      GenerateSelectableDays(e.VerticalChange);
+    }
+
+    private void GenerateSelectableDays(double verticalChange)
+    {
+      ;
+    }
+
+    #endregion
 
     private static void OnSelectedTimeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {

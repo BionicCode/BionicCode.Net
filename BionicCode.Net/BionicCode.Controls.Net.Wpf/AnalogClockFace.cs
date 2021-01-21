@@ -625,6 +625,9 @@ namespace BionicCode.Controls.Net.Wpf
     private PathGeometry SelectedSecondArcBounds { get; set; }
     private bool IsUpdatingSelectedTimeComponent { get; set; }
     private bool IsUpdatingSelectedTime { get; set; }
+    private bool IsHourDragPickingEnabled { get; set; }
+    private bool IsMinuteDragPickingEnabled { get; set; }
+    private bool IsSecondsDragPickingEnabled { get; set; }
 
     static AnalogClockFace()
     {
@@ -742,6 +745,7 @@ namespace BionicCode.Controls.Net.Wpf
       {
         return;
       }
+
       Point screenPoint = e.GetPosition(this.ClockFaceCanvas);
       var clockAngle = GetAngleFromCartesianPoint(screenPoint);
       this.IsUpdatingSelectedTimeComponent = true;
@@ -750,23 +754,70 @@ namespace BionicCode.Controls.Net.Wpf
       switch (screenPoint)
       {
         case { } when this.SelectedHourArcBounds.FillContains(screenPoint):
+          this.IsHourDragPickingEnabled = true;
           double steps = this.Is24HModeEnabled ? 24 : 12;
           degreeOfStep = 360 / steps;
           double hourValue = Math.Round(clockAngle / degreeOfStep, MidpointRounding.AwayFromZero) % steps;
           this.SelectedHour = hourValue;
           break;
         case { } when this.SelectedMinuteArcBounds.FillContains(screenPoint):
+          this.IsMinuteDragPickingEnabled = true;
           degreeOfStep = 360 / 60.0;
           double minuteValue = Math.Round(clockAngle / degreeOfStep, MidpointRounding.AwayFromZero) % 60;
           this.SelectedMinute = minuteValue;
           break;
         case { } when this.SelectedSecondArcBounds.FillContains(screenPoint):
+          this.IsSecondsDragPickingEnabled = true;
           degreeOfStep = 360 / 60.0;
           double secondValue = Math.Round(clockAngle / degreeOfStep, MidpointRounding.AwayFromZero) % 60;
           this.SelectedSecond = secondValue;
           break;
       }
       this.IsUpdatingSelectedTimeComponent = false;
+    }
+
+    /// <inheritdoc />
+    protected override void OnPreviewMouseMove(MouseEventArgs e)
+    {
+      base.OnPreviewMouseMove(e);
+      if (!this.IsHourDragPickingEnabled && !IsMinuteDragPickingEnabled && !IsSecondsDragPickingEnabled)
+      {
+        return;
+      }
+      Point screenPoint = e.GetPosition(this.ClockFaceCanvas);
+      var clockAngle = GetAngleFromCartesianPoint(screenPoint);
+      this.IsUpdatingSelectedTimeComponent = true;
+      double degreeOfStep;
+
+      switch (screenPoint)
+      {
+        case { } when this.IsHourDragPickingEnabled && this.SelectedHourArcBounds.FillContains(screenPoint):
+          double steps = this.Is24HModeEnabled ? 24 : 12;
+          degreeOfStep = 360 / steps;
+          double hourValue = Math.Round(clockAngle / degreeOfStep, MidpointRounding.AwayFromZero) % steps;
+          this.SelectedHour = hourValue;
+          break;
+        case { } when this.IsMinuteDragPickingEnabled && this.SelectedMinuteArcBounds.FillContains(screenPoint):
+          degreeOfStep = 360 / 60.0;
+          double minuteValue = Math.Round(clockAngle / degreeOfStep, MidpointRounding.AwayFromZero) % 60;
+          this.SelectedMinute = minuteValue;
+          break;
+        case { } when this.IsSecondsDragPickingEnabled && this.SelectedSecondArcBounds.FillContains(screenPoint):
+          degreeOfStep = 360 / 60.0;
+          double secondValue = Math.Round(clockAngle / degreeOfStep, MidpointRounding.AwayFromZero) % 60;
+          this.SelectedSecond = secondValue;
+          break;
+      }
+      this.IsUpdatingSelectedTimeComponent = false;
+    }
+
+    /// <inheritdoc />
+    protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)
+    {
+      base.OnPreviewMouseLeftButtonUp(e);
+      this.IsHourDragPickingEnabled = false;
+      this.IsMinuteDragPickingEnabled = false;
+      this.IsSecondsDragPickingEnabled = false;
     }
 
     /// <inheritdoc />
@@ -926,10 +977,18 @@ namespace BionicCode.Controls.Net.Wpf
           : Math.Truncate(hourValue) % 12;
       double decimalPart = hourValue - Math.Truncate(hourValue);
       var decimalMinutes = decimalPart * 60;
-      this_.SelectedMinute = Math.Truncate(decimalMinutes);
+      bool isOverflow = decimalMinutes >= 1.0;
+      if (isOverflow)
+      {
+        this_.SelectedMinute = Math.Truncate(decimalMinutes);
+      }
       decimalPart = decimalMinutes - Math.Truncate(decimalMinutes);
-      var decimalSeconds = decimalPart * 60;
-      this_.SelectedSecond = Math.Round(decimalSeconds, MidpointRounding.AwayFromZero);
+      var decimalSeconds = Math.Round(decimalPart * 60, MidpointRounding.AwayFromZero);
+      isOverflow = decimalSeconds >= 1.0;
+      if (isOverflow)
+      {
+        this_.SelectedSecond = decimalSeconds;
+      }
       
       this_.IsUpdatingSelectedTimeComponent = false;
       return hours;
@@ -946,17 +1005,26 @@ namespace BionicCode.Controls.Net.Wpf
       this_.IsUpdatingSelectedTimeComponent = true;
       var minuteValue = (double) basevalue;
       double decimalHours = minuteValue / 60;
-      this_.SelectedHour = this_.Is24HModeEnabled 
-        ? Math.Truncate(decimalHours) % 24 
-        : Math.Truncate(decimalHours) % 12 == 0
-          ? 12
-          : Math.Truncate(decimalHours) % 12;
-      double decimalPart = decimalHours - Math.Truncate(decimalHours);
-      var decimalMinutes = decimalPart * 60;
+      bool isOverflow = decimalHours >= 1.0;
+      if (isOverflow)
+      {
+        this_.SelectedHour = this_.Is24HModeEnabled 
+          ? Math.Truncate(decimalHours) % 24 
+          : Math.Truncate(decimalHours) % 12 == 0
+            ? 12
+            : Math.Truncate(decimalHours) % 12;
+      }
+
+      var decimalMinutes = minuteValue % 60;
       var minutes = Math.Truncate(decimalMinutes);
-      decimalPart = decimalMinutes - Math.Truncate(decimalMinutes);
-      double decimalSeconds = decimalPart * 60;
-      this_.SelectedSecond = Math.Round(decimalSeconds, MidpointRounding.AwayFromZero);
+
+      var decimalPart = decimalMinutes - Math.Truncate(decimalMinutes);
+      double decimalSeconds = Math.Round(decimalPart * 60, MidpointRounding.AwayFromZero);
+      isOverflow = decimalSeconds >= 1.0;
+      if (isOverflow)
+      {
+        this_.SelectedSecond = decimalSeconds;
+      }
 
       this_.IsUpdatingSelectedTimeComponent = false;
       return minutes;
@@ -973,16 +1041,25 @@ namespace BionicCode.Controls.Net.Wpf
       this_.IsUpdatingSelectedTimeComponent = true;
       var secondsValue = (double) basevalue;
       double decimalHours = secondsValue / 3600;
-      this_.SelectedHour = this_.Is24HModeEnabled
-        ? Math.Truncate(decimalHours) % 24
-        : Math.Truncate(decimalHours) % 12 == 0
-          ? 12
-          : Math.Truncate(decimalHours) % 12;
-      var decimalPart = decimalHours - Math.Truncate(decimalHours);
-      double decimalMinutes = decimalPart * 60;
-      this_.SelectedMinute = Math.Truncate(decimalMinutes);
-      decimalPart = decimalMinutes - Math.Truncate(decimalMinutes);
-      double decimalSeconds = decimalPart * 60;
+      bool isOverflow = decimalHours >= 1.0;
+      if (isOverflow)
+      {
+        this_.SelectedHour = this_.Is24HModeEnabled
+          ? Math.Truncate(decimalHours) % 24
+          : Math.Truncate(decimalHours) % 12 == 0
+            ? 12
+            : Math.Truncate(decimalHours) % 12;
+      }
+
+      var minutePart = secondsValue % 3600;
+      double decimalMinutes = minutePart / 60;
+      isOverflow = decimalMinutes >= 1.0;
+      if (isOverflow)
+      {
+        this_.SelectedMinute = Math.Truncate(decimalMinutes);
+      }
+      
+      double decimalSeconds = minutePart % 60;
       var seconds = Math.Round(decimalSeconds, MidpointRounding.AwayFromZero);
 
       this_.IsUpdatingSelectedTimeComponent = false;
