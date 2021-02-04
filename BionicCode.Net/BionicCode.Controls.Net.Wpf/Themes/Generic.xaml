@@ -7,7 +7,41 @@
     <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/Themes/AnalogTimePickerStyle.xaml" />
     <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/Themes/AnalogClockFaceStyle.xaml" />
   </ResourceDictionary.MergedDictionaries>
-  <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Pink"/>
+
+  <Style TargetType="wpf:SevenSegmentDigit">
+    <Setter Property="SegmentOnColor" Value="PaleGoldenrod"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="wpf:SevenSegmentDigit">
+          <Border x:Name="PART_HostPanel"/>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style TargetType="wpf:ClockFace">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="wpf:ClockFace">
+          <Border BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <Grid x:Name="PART_HostPanel" />
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter></Style>
+
+  <Style TargetType="wpf:DigitalClockFace">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="wpf:DigitalClockFace">
+          <Border BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <Grid x:Name="PART_HostPanel" />
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter></Style>
 
   <Style TargetType="wpf:NormalizingNumericTextBox">
     <Setter Property="BorderThickness" Value="1" />

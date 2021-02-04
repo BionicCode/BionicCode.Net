@@ -4,7 +4,7 @@
                     xmlns:converter="clr-namespace:BionicCode.Utilities.Net.Wpf.Converter;assembly=BionicCode.Utilities.Net.Wpf"
                     xmlns:attachedBehaviors="clr-namespace:BionicCode.Utilities.Net.Wpf.AttachedBehaviors;assembly=BionicCode.Utilities.Net.Wpf">
   <ResourceDictionary.MergedDictionaries>
-    <!--<ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/Resources/Styles/ScrolBarStyle.xaml" />-->
+    <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/Resources/Styles/ScrollBarStyle.xaml" />
     <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/Resources/Colors.xaml" />
     <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/Resources/Styles/SeparatorBorderStyles.xaml" />
     <ResourceDictionary
@@ -110,7 +110,7 @@
                                                   Storyboard.TargetProperty="(Panel.Background).
                     (SolidColorBrush.Color)">
                       <EasingColorKeyFrame KeyTime="0"
-                                           Value="{StaticResource HighLightColor}" />
+                                           Value="#FF252526" />
                     </ColorAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
@@ -120,7 +120,7 @@
                                                   Storyboard.TargetProperty="(Panel.Background).
                     (SolidColorBrush.Color)">
                       <EasingColorKeyFrame KeyTime="0"
-                                           Value="{StaticResource HighLightColor}" />
+                                           Value="#FF252526" />
                     </ColorAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
@@ -133,7 +133,7 @@
     </Setter>
   </Style>
 
-  <Style x:Key="MeridiemComboBoxStyle" TargetType="ComboBox">
+  <Style x:Key="OverflowComboBoxStyle" TargetType="ComboBox">
     <Setter Property="Width" Value="64" />
     <Setter Property="FontSize" Value="16" />
     <Setter Property="BorderThickness" Value="0" />
@@ -271,7 +271,6 @@
     </Setter>
   </Style>
 
-
   <Style TargetType="wpf:AnalogTimePicker">
     <Setter Property="ClockDiameter" Value="400" />
     <Setter Property="AnalogClockFace">
@@ -372,7 +371,7 @@
                     <ComboBox x:Name="PART_OverflowPicker"
                               ItemsSource="{TemplateBinding SelectableDays}"
                               SelectedItem="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SelectedDays}"
-                              Style="{StaticResource MeridiemComboBoxStyle}"
+                              Style="{StaticResource OverflowComboBoxStyle}"
                               VerticalAlignment="Center"
                               Background="{TemplateBinding Background}"
                               BorderBrush="Transparent"

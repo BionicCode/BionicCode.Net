@@ -33,7 +33,7 @@ namespace SimpleTimer.Main
     protected override void OnPreviewTextInput(TextCompositionEventArgs e)
     {
       base.OnPreviewTextInput(e);
-      if (!IsValidInput(e))
+      if (!IsValidInput(e.Text))
       {
         e.Handled = true;
       }

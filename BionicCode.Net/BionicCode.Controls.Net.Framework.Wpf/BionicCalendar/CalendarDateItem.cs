@@ -162,15 +162,17 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
     }
     #region Overrides of UIElement
 
+    private bool IsAcceptingDrag { get; set; }
     /// <inheritdoc />
-    protected override void OnDragOver(DragEventArgs e)
+    protected override void OnDragEnter(DragEventArgs e)
     {
-      base.OnDragOver(e);
-      if (e.AllowedEffects.HasFlag(DragDropEffects.Move))
+      base.OnDragEnter(e);
+      if (e.AllowedEffects.HasFlag(DragDropEffects.Move) || !this.IsAcceptingDrag)
       {
         return;
       }
 
+      this.IsAcceptingDrag = false;
       var eventItemDragDropArgs = e.Data.GetData(DataFormats.Serializable) as EventItemDragDropArgs;
 
       if (eventItemDragDropArgs == null)
@@ -181,9 +183,17 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
     }
 
     /// <inheritdoc />
+    protected override void OnDragLeave(DragEventArgs e)
+    {
+      base.OnDragLeave(e);
+
+      this.IsAcceptingDrag = true;
+    }
+
+    /// <inheritdoc />
     protected override void OnDrop(DragEventArgs e)
     {
-      base.OnDragEnter(e);
+      base.OnDrop(e);
       var eventItemDragDropArgs = e.Data.GetData(DataFormats.Serializable) as EventItemDragDropArgs;
 
       if (eventItemDragDropArgs == null || this.Items.Contains(eventItemDragDropArgs))

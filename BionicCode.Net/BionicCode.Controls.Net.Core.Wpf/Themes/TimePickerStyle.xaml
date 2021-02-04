@@ -3,7 +3,7 @@
                     xmlns:attachedBehaviors="clr-namespace:BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors;assembly=BionicCode.Utilities.Net.Core.Wpf"
                     xmlns:local="clr-namespace:BionicCode.Controls.Net.Core.Wpf">
   <ResourceDictionary.MergedDictionaries>
-    <ResourceDictionary Source="/BionicCode.Controls.Net.Core.Wpf;component/Resources/Styles/ScrolBarStyle.xaml" />
+    <ResourceDictionary Source="/BionicCode.Controls.Net.Core.Wpf;component/Resources/Styles/ScrollBarStyle.xaml" />
     <ResourceDictionary Source="/BionicCode.Controls.Net.Core.Wpf;component/Resources/Colors.xaml" />
     <ResourceDictionary Source="/BionicCode.Controls.Net.Core.Wpf;component/Resources/Styles/SeparatorBorderStyles.xaml" />
     <ResourceDictionary

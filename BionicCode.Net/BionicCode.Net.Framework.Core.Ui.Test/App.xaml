@@ -2,6 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:BionicCode.Net.Framework.Core.Ui.Test"
+             xmlns:wpf="clr-namespace:BionicCode.Controls.Net.Wpf;assembly=BionicCode.Controls.Net.Wpf"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
       <ResourceDictionary>
@@ -11,6 +12,9 @@
         <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/Resources/ControlResources.xaml" />
         </ResourceDictionary.MergedDictionaries>
       <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Pink"/>
-    </ResourceDictionary>
+      <!--<Style x:Key="{x:Static wpf:AnalogClockFace.DefaultAnalogClockFaceTimePickerStyleKey}" TargetType="wpf:AnalogClockFace" BasedOn="{StaticResource {x:Static wpf:AnalogClockFace.DefaultAnalogClockFaceTimePickerStyleKey}}">
+        <Setter Property="TimePickerMinuteSelectionArcBrush" Value="Yellow"/>
+      </Style>-->
+      </ResourceDictionary>
   </Application.Resources>
 </Application>

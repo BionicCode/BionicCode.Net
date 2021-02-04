@@ -151,7 +151,15 @@ namespace BionicCode.Utilities.Net.Uwp.Generic
     ///   Data used by the command. 
     /// </param>
     /// <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
-    bool ICommand.CanExecute(object parameter) => CanExecute((TParam)parameter);
+    bool ICommand.CanExecute(object parameter)
+    {
+      if (parameter == null)
+      {
+        return CanExecute(default);
+      }
+
+      return CanExecute((TParam) parameter);
+    }
 
     /// <summary>
     /// Explicit <see cref="ICommand"/> implementation. Executes the AsyncRelayCommand on the current command target. 

@@ -842,7 +842,7 @@
             <param name="parameter">
               Data used by the command. 
             </param>
-            <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
+            <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>    
         </member>
         <member name="M:BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand`1.System#Windows#Input#ICommand#Execute(System.Object)">
             <summary>

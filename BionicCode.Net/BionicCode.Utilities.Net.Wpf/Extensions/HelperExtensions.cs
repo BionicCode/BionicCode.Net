@@ -415,5 +415,8 @@ namespace BionicCode.Utilities.Net.Wpf.Extensions
     public static System.Windows.Point ToScreenPoint(this Point cartesianPoint, double height) => new Point(cartesianPoint.X, height - cartesianPoint.Y);
 
     public static System.Windows.Point ToCartesianPoint(this Point cartesianPoint, double height) => new Point(cartesianPoint.X, height - cartesianPoint.Y);
+
+    public static double ToRadians(this double angleDegrees) => angleDegrees * (Math.PI / 180);
+    public static double ToDegrees(this double angleRadians) => angleRadians * (180 / Math.PI);
   }
 }

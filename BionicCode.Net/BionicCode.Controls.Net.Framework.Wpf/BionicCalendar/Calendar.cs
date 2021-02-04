@@ -703,7 +703,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
         }
       }
 
-      this.ItemsHost.get
+      //this.ItemsHost.get
       switch (routedEventArgs.OriginalSource)
       {
         case HeaderedItemsControl headeredItemsControl:

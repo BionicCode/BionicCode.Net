@@ -48,7 +48,7 @@
                 Text="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=SelectedTime.Date, StringFormat='{}{0:MMM}'}"
                 Background="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Background}"
                 Foreground="{Binding RelativeSource={RelativeSource AncestorType=wpf:AnalogClockFace}, Path=Foreground}"
-                Padding="2,0" FontSize="4" VerticalAlignment="Top" />
+                Padding="2,0" FontSize="4" VerticalAlignment="Top" Width="12" />
             </StackPanel>
           </Border>
         </StackPanel>
@@ -145,7 +145,7 @@
         <ControlTemplate TargetType="wpf:AnalogClockFace">
           <Border BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}">
-            <ContentPresenter />
+            <Grid x:Name="PART_HostPanel" />
           </Border>
         </ControlTemplate>
       </Setter.Value>
@@ -181,7 +181,7 @@
     </Setter>
     <Setter Property="TimePickerSecondSelectionArcBrush">
       <Setter.Value>
-        <SolidColorBrush Color="DarkSalmon" Opacity="0.6" />
+        <SolidColorBrush Color="MediumSpringGreen" Opacity="0.6" />
       </Setter.Value>
     </Setter>
     <Setter Property="Background" Value="#24292E" />
@@ -312,7 +312,7 @@
         <ControlTemplate TargetType="wpf:AnalogClockFace">
           <Border BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}">
-            <ContentPresenter />
+            <Grid x:Name="PART_HostPanel" />
           </Border>
         </ControlTemplate>
       </Setter.Value>

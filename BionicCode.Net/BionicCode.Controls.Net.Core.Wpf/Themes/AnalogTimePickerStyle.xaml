@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:wpf="clr-namespace:BionicCode.Controls.Net.Core.Wpf">
   <ResourceDictionary.MergedDictionaries>
-    <ResourceDictionary Source="/BionicCode.Controls.Net.Core.Wpf;component/Resources/Styles/ScrolBarStyle.xaml" />
+    <ResourceDictionary Source="/BionicCode.Controls.Net.Core.Wpf;component/Resources/Styles/ScrollBarStyle.xaml" />
     <ResourceDictionary Source="/BionicCode.Controls.Net.Core.Wpf;component/Resources/Colors.xaml" />
     <ResourceDictionary Source="/BionicCode.Controls.Net.Core.Wpf;component/Resources/Styles/SeparatorBorderStyles.xaml" />
     <ResourceDictionary

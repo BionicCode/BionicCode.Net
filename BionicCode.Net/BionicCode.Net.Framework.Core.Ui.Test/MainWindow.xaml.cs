@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -42,7 +44,7 @@ namespace BionicCode.Net.Framework.Core.Ui.Test
       InitializeComponent();
 
       this.ClockTimer = new DispatcherTimer(
-        TimeSpan.FromMilliseconds(500),
+        TimeSpan.FromMilliseconds(250),
         DispatcherPriority.Render,
         OnTimerIntervalElapsed,
         this.Dispatcher);

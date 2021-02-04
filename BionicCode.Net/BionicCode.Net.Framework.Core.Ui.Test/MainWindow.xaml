@@ -6,13 +6,26 @@
         xmlns:local="clr-namespace:BionicCode.Net.Framework.Core.Ui.Test"
         xmlns:wpf="clr-namespace:BionicCode.Controls.Net.Wpf;assembly=BionicCode.Controls.Net.Wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Name="Window"
+        Title="MainWindow" Height="628" Width="800" Name="Window"
         Background="#FF252526">
   <Window.Resources>
   </Window.Resources>
-  <Grid>
-    <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedTime}" />
-    <wpf:AnalogTimePicker x:Name="TimePicker"  Background="#FF252526" Foreground="AntiqueWhite" IsClockHandVisible="False" Margin="0,20" IsOverflowEnabled="True" />
+  <Grid Margin="0,0,0,0">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+                                                               
+    </Grid.ColumnDefinitions>
+    <wpf:DigitalClockFace />
+    <!--<Canvas VerticalAlignment="Top" 
+            HorizontalAlignment="Left"
+            Width="500" Height="500" Background="AntiqueWhite" Margin="0,0,0,0" Grid.Column="1">
+      <wpf:HorizontalDigitSegment Canvas.Left="129" Width="400" Height="80" Fill="Aquamarine" />
+      <wpf:VerticalDigitSegment Width="400" Height="80" Fill="Aquamarine" Canvas.Left="109" Canvas.Top="20" />
+      <wpf:HorizontalDigitSegment Canvas.Left="60" Canvas.Top="440" Width="400" Height="80" Fill="Aquamarine" />
+    </Canvas>
+    --><!--<TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedTime}" />
+    
+    <wpf:AnalogTimePicker x:Name="TimePicker"  Background="#FF252526" Foreground="AntiqueWhite" IsClockHandVisible="False" Margin="0,20" IsOverflowEnabled="True" />-->
     <!--<wpf:AnalogClockFace x:Name="TimePicker"  IsTimePickerModeEnabled="False" SelectedTime="{Binding ElementName=Window, Path=CurrentDateTime}"/>-->
   </Grid>
   <!--<StackPanel>

@@ -179,7 +179,7 @@
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="VerticalContentAlignment" Value="Top" />
     <Setter Property="VerticalAlignment" Value="Stretch" />
-    <!--<Setter Property="Height" Value="24" />-->
+    <!--<Setter Property="Height" Value="64" />-->
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="bionicCalendar:CalendarDateItem">
@@ -189,6 +189,9 @@
                   Background="{TemplateBinding Background}">
 
             <Grid>
+              <Border x:Name="ClickableBackground"
+                      Grid.Row="0" Grid.Column="0" IsHitTestVisible="True"
+                      Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
               <Border x:Name="TodayMarker"
                       Grid.Row="0" Grid.Column="0"
                       Visibility="Collapsed"
@@ -196,14 +199,17 @@
               <Border x:Name="SelectionBorder"
                     Grid.Row="0" Grid.Column="0"
                     Visibility="Collapsed"
-                    Background="Yellow" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                    Background="Yellow" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" />
               <ContentPresenter Grid.Row="0" Grid.Column="0"
-                                ContentSource="Header" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"  />
+                                Margin="0,0,0,0"
+                                ContentSource="Header" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+
             </Grid>
           </Border>
           <ControlTemplate.Triggers>
             <Trigger Property="bionicCalendar:Calendar.IsToday" Value="True">
               <Setter TargetName="TodayMarker" Property="Visibility" Value="Visible" />
+              <!--<Setter TargetName="SelectionBorder" Property="Margin" Value="0,8,0,0" />-->
             </Trigger>
             <Trigger Property="IsSelected" Value="True">
               <Setter TargetName="SelectionBorder" Property="Visibility" Value="Visible" />
