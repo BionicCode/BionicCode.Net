@@ -7,6 +7,7 @@
 
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Converters;
 using System.Windows.Shapes;
 
 namespace BionicCode.Controls.Net.Wpf
@@ -31,7 +32,7 @@ namespace BionicCode.Controls.Net.Wpf
       "IsOn",
       typeof(bool),
       typeof(DigitSegment),
-      new PropertyMetadata(default(bool)));
+      new PropertyMetadata(default(bool), DigitSegment.OnIsOnChanged));
 
     public bool IsOn { get => (bool)GetValue(DigitSegment.IsOnProperty); set => SetValue(DigitSegment.IsOnProperty, value); }
 
@@ -43,7 +44,7 @@ namespace BionicCode.Controls.Net.Wpf
       "OnColor",
       typeof(Brush),
       typeof(DigitSegment),
-      new PropertyMetadata(default(Brush)));
+      new PropertyMetadata(default, DigitSegment.OnOnColorChanged));
 
     public Brush OnColor { get => (Brush)GetValue(DigitSegment.OnColorProperty); set => SetValue(DigitSegment.OnColorProperty, value); }
 
@@ -55,7 +56,7 @@ namespace BionicCode.Controls.Net.Wpf
       "OffColor",
       typeof(Brush),
       typeof(DigitSegment),
-      new PropertyMetadata(default(Brush)));
+      new PropertyMetadata(default, DigitSegment.OnOffColorChanged));
 
     public Brush OffColor { get => (Brush)GetValue(DigitSegment.OffColorProperty); set => SetValue(DigitSegment.OffColorProperty, value); }
 
@@ -76,12 +77,13 @@ namespace BionicCode.Controls.Net.Wpf
 
     #endregion TiltAngle dependency property
 
+    protected Rect Bounds { get; set; }
+
     protected DigitSegment()
     {
     }
 
     protected abstract Geometry CreateGeometry();
-    protected Rect Bounds { get; set; }
 
     #region Overrides of Shape
     
@@ -95,6 +97,59 @@ namespace BionicCode.Controls.Net.Wpf
       return base.MeasureOverride(constraint);
     }
 
+    /// <inheritdoc />
+    protected override Size ArrangeOverride(Size finalSize)
+    {
+      LightSegment(this.IsOn);
+      return base.ArrangeOverride(finalSize);
+    }
+
     #endregion
+
+    #region OnIsOnChanged dependency property changed handler
+
+    private static void OnIsOnChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
+      (d as DigitSegment).OnIsOnChanged((bool) e.OldValue, (bool) e.NewValue);
+
+    protected virtual void OnIsOnChanged(bool oldValue, bool newValue) => LightSegment(newValue);
+
+    #endregion OnIsOnChanged dependency property changed handler
+
+    #region OnOnColorChanged dependency property changed handler
+
+    private static void OnOnColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
+      (d as DigitSegment).OnOnColorChanged((Brush) e.OldValue, (Brush) e.NewValue);
+
+    protected virtual void OnOnColorChanged(Brush oldValue, Brush newValue)
+    {
+      if (this.IsOn)
+      {
+        LightSegment(true);
+      }
+    }
+
+    #endregion OnOnColorChanged dependency property changed handler
+
+    #region OnOffColorChanged dependency property changed handler
+
+    private static void OnOffColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
+      (d as DigitSegment).OnOffColorChanged((Brush) e.OldValue, (Brush) e.NewValue);
+
+    protected virtual void OnOffColorChanged(Brush oldValue, Brush newValue)
+    {
+      if (!this.IsOn)
+      {
+        LightSegment(false);
+      }
+    }
+
+    #endregion OnOffColorChanged dependency property changed handler
+
+    protected Brush LightSegment(bool newValue)
+    {
+      return this.Fill = newValue
+        ? this.OnColor
+        : this.OffColor;
+    }
   }
 }

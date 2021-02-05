@@ -10,24 +10,21 @@
         Background="#FF252526">
   <Window.Resources>
   </Window.Resources>
-  <Grid Margin="0,0,0,0">
+  <Grid Margin="0,0,0,0" Background="Transparent">
     <Grid.ColumnDefinitions>
-      <ColumnDefinition/>
+      <ColumnDefinition Width="*"/>
                                                                
     </Grid.ColumnDefinitions>
-    <wpf:DigitalClockFace />
-    <!--<Canvas VerticalAlignment="Top" 
-            HorizontalAlignment="Left"
-            Width="500" Height="500" Background="AntiqueWhite" Margin="0,0,0,0" Grid.Column="1">
-      <wpf:HorizontalDigitSegment Canvas.Left="129" Width="400" Height="80" Fill="Aquamarine" />
-      <wpf:VerticalDigitSegment Width="400" Height="80" Fill="Aquamarine" Canvas.Left="109" Canvas.Top="20" />
-      <wpf:HorizontalDigitSegment Canvas.Left="60" Canvas.Top="440" Width="400" Height="80" Fill="Aquamarine" />
-    </Canvas>
-    --><!--<TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedTime}" />
-    
-    <wpf:AnalogTimePicker x:Name="TimePicker"  Background="#FF252526" Foreground="AntiqueWhite" IsClockHandVisible="False" Margin="0,20" IsOverflowEnabled="True" />-->
+    <wpf:DigitalClockFace SelectedTime="{Binding ElementName=Window, Path=CurrentDateTime}" Is24HModeEnabled="True" />
+   
     <!--<wpf:AnalogClockFace x:Name="TimePicker"  IsTimePickerModeEnabled="False" SelectedTime="{Binding ElementName=Window, Path=CurrentDateTime}"/>-->
-  </Grid>
+    
+    <!--<wpf:AnalogTimePicker x:Name="TimePicker"  Background="#FF252526" Foreground="AntiqueWhite" IsClockHandVisible="False" Margin="0,20" IsOverflowEnabled="True" />-->
+
+    <Canvas x:Name="Canvas"/>
+
+    <!--<TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedTime}" />
+  -->
   <!--<StackPanel>
     <wpf:TimePicker x:Name="TimePicker" IsSecondsEnabled="True" IsOpen="True"/>
 
@@ -37,4 +34,5 @@
     <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedSeconds}"/>
     <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedMeridiem}"/>
   </StackPanel>-->
+  </Grid>
 </Window>

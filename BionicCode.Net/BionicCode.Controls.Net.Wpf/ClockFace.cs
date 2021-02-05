@@ -199,8 +199,8 @@ namespace BionicCode.Controls.Net.Wpf
       {
         RenderTransform = this.ClockFaceScaleTransform,
         Background = Brushes.Transparent,
-        Width = this.Width,
-        Height = this.Height,
+        Width = 0,
+        Height = 0,
         HorizontalAlignment = HorizontalAlignment.Left,
         VerticalAlignment = VerticalAlignment.Top
       };
@@ -209,7 +209,7 @@ namespace BionicCode.Controls.Net.Wpf
     protected virtual Point ScaleClockFaceOverride(Size arrangeBounds)
     {
       Size requiredSize = GetNaturalSize();
-      if (requiredSize.Equals(new Size()))
+      if (requiredSize.Equals(new Size()) || requiredSize.Equals(arrangeBounds) || !IsValidArrangeSize(arrangeBounds) ||!IsValidArrangeSize(requiredSize))
       {
         return new Point(1, 1);
       }
@@ -252,6 +252,8 @@ namespace BionicCode.Controls.Net.Wpf
 
       return new Point(horizontalScaleFactor, verticalScaleFactor);
     }
+
+    protected bool IsValidArrangeSize(Size arrangeBounds) => !arrangeBounds.IsEmpty && double.IsNormal(arrangeBounds.Width) && double.IsNormal(arrangeBounds.Height);
 
     protected virtual Size GetNaturalSize() => new Size(this.ClockFaceCanvas.DesiredSize.Width, this.ClockFaceCanvas.DesiredSize.Height);
 
@@ -485,8 +487,12 @@ namespace BionicCode.Controls.Net.Wpf
     public override void OnApplyTemplate()
     {
       base.OnApplyTemplate();
-      var panelHost = GetTemplateChild("PART_HostPanel") as Panel;
-      panelHost.Children.Add(this.ClockFaceCanvas);
+      var hostPanel = GetTemplateChild("PART_HostPanel") as Panel;
+      if (hostPanel == null)
+      {
+        throw new InvalidOperationException("Template part 'PART_HostPanel' of type 'Panel' not found");
+      }
+      hostPanel.Children.Add(this.ClockFaceCanvas);
     }
 
     #endregion
@@ -496,8 +502,11 @@ namespace BionicCode.Controls.Net.Wpf
     /// <inheritdoc />
     protected override Size MeasureOverride(Size constraint)
     {
-      this.ClockFaceCanvas.Width = constraint.Width;
-      this.ClockFaceCanvas.Height = constraint.Height;
+      if (!IsValidArrangeSize(constraint))
+      {
+        constraint = GetNaturalSize();
+      }
+      
       return constraint;
     }
 

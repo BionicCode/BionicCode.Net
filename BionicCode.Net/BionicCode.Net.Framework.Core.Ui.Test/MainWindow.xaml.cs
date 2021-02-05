@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Path = System.Windows.Shapes.Path;
 
 namespace BionicCode.Net.Framework.Core.Ui.Test
 {
@@ -38,7 +39,7 @@ namespace BionicCode.Net.Framework.Core.Ui.Test
     #endregion CurrentDateTime dependency property
 
     private DispatcherTimer ClockTimer { get; }
-
+    
     public MainWindow()
     {
       InitializeComponent();

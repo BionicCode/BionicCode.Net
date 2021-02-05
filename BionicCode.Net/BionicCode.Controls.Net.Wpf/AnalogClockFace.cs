@@ -516,6 +516,7 @@ namespace BionicCode.Controls.Net.Wpf
     private bool IsHourDragPickingEnabled { get; set; }
     private bool IsMinuteDragPickingEnabled { get; set; }
     private bool IsSecondsDragPickingEnabled { get; set; }
+    private bool IsClockFaceInitialized { get; set; }
 
     static AnalogClockFace()
     {
@@ -576,16 +577,6 @@ namespace BionicCode.Controls.Net.Wpf
     #region Overrides of FrameworkElement
 
     /// <inheritdoc />
-    protected override void OnInitialized(EventArgs e)
-    {
-      base.OnInitialized(e);
-    }
-
-    #endregion
-
-    #region Overrides of FrameworkElement
-
-    /// <inheritdoc />
     protected override Size MeasureOverride(Size constraint)
     {
       double scaleFactor = Math.Min(constraint.Width, constraint.Height) / this.Diameter;
@@ -599,15 +590,19 @@ namespace BionicCode.Controls.Net.Wpf
     /// <inheritdoc />
     protected override Size ArrangeOverride(Size arrangeBounds)
     {
-      if (this.Is24HModeEnabled || this.IsTimePickerModeEnabled)
+      if (!this.IsClockFaceInitialized)
       {
-        DrawAnalog24Clock();
+        if (this.Is24HModeEnabled || this.IsTimePickerModeEnabled)
+        {
+          DrawAnalog24Clock();
+        }
+        else
+        {
+          DrawAnalogClock();
+        }
+        Draw24HTimePickerSelectionBounds();
+        this.IsClockFaceInitialized = true;
       }
-      else
-      {
-        DrawAnalogClock();
-      }
-      Draw24HTimePickerSelectionBounds();
       arrangeBounds = base.ArrangeOverride(arrangeBounds);
       return arrangeBounds;
     }
@@ -738,6 +733,7 @@ namespace BionicCode.Controls.Net.Wpf
       var this_ = d as AnalogClockFace;
       this_.Radius = (double)e.NewValue / 2;
       this_.Center = new Point(this_.Radius, this_.Radius);
+      this_.IsClockFaceInitialized = false;
     }
 
     protected override void OnDateElementChanged(FrameworkElement oldDateElement, FrameworkElement newDateElement)
@@ -770,6 +766,7 @@ namespace BionicCode.Controls.Net.Wpf
         newDateElement.RenderTransform = this.DateElementTransform;
       }
 
+      this.IsClockFaceInitialized = false;
       base.OnDateElementChanged(oldDateElement, newDateElement);
     }
 
@@ -793,18 +790,21 @@ namespace BionicCode.Controls.Net.Wpf
     {
       var this_ = d as AnalogClockFace;
       this_.HourHandDiameter = (double) e.NewValue * 2;
+      this_.IsClockFaceInitialized = false;
     }
 
     private static void OnMinuteHandRadiusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
       var this_ = d as AnalogClockFace;
       this_.MinuteHandDiameter = (double)e.NewValue * 2;
+      this_.IsClockFaceInitialized = false;
     }
 
     private static void OnSecondHandRadiusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
       var this_ = d as AnalogClockFace;
       this_.SecondHandDiameter = (double)e.NewValue * 2;
+      this_.IsClockFaceInitialized = false;
     }
 
     private static void OnIsTimePickerModeEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -822,6 +822,7 @@ namespace BionicCode.Controls.Net.Wpf
       {
         this.Style = FindResource(AnalogClockFace.DefaultAnalogClockFaceStyleKey) as Style;
       }
+      this.IsClockFaceInitialized = false;
     }
 
     protected override void OnSelectedHourChanged(double oldValue, double newValue)
@@ -907,6 +908,7 @@ namespace BionicCode.Controls.Net.Wpf
       {
         newClockHand.RenderTransform = this.HourHandTransform;
       }
+      this.IsClockFaceInitialized = false;
       AddElementToClockFace(newClockHand, new Point(Canvas.GetLeft(newClockHand), Canvas.GetTop(newClockHand)));
     }
 
@@ -939,6 +941,7 @@ namespace BionicCode.Controls.Net.Wpf
       {
         newClockHand.RenderTransform = this.MinuteHandTransform;
       }
+      this.IsClockFaceInitialized = false;
       AddElementToClockFace(newClockHand, new Point(Canvas.GetLeft(newClockHand), Canvas.GetTop(newClockHand)));
     }
 
@@ -971,6 +974,7 @@ namespace BionicCode.Controls.Net.Wpf
       {
         newClockHand.RenderTransform = this.SecondHandTransform;
       }
+      this.IsClockFaceInitialized = false;
       AddElementToClockFace(newClockHand, new Point(Canvas.GetLeft(newClockHand), Canvas.GetTop(newClockHand)));
     }
 
@@ -1283,7 +1287,9 @@ namespace BionicCode.Controls.Net.Wpf
       clockFaceBackgroundPosition.Offset(deltaToMiddleRadius / 2, deltaToMiddleRadius / 2);
       var ellipse = new Ellipse()
       {
-        Height = this.Diameter - deltaToMiddleRadius, Width = this.Diameter - deltaToMiddleRadius, Fill = this.Background
+        Height = this.Diameter - deltaToMiddleRadius, 
+        Width = this.Diameter - deltaToMiddleRadius, 
+        Fill = this.Background
       };
       AddElementToClockFace(ellipse, clockFaceBackgroundPosition, 0);
     }

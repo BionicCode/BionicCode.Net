@@ -4,33 +4,65 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace BionicCode.Controls.Net.Wpf
 {
-  public class DigitalClockFace : ClockFace
+  public class DigitalClockFace : ClockFace, ISevenSegmentDisplay
   {
-    static DigitalClockFace()
-    {
-      FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(DigitalClockFace), new FrameworkPropertyMetadata(typeof(DigitalClockFace)));
-    }
-
     public DigitalClockFace()
     {
+      this.Digits = new SortedSet<ISevenSegmentDigit>(Comparer<ISevenSegmentDigit>.Create((digit1, digit2) => digit1.DisplayIndex.CompareTo(digit2.DisplayIndex)));
+      this.SegmentDisplayDriver = new SegmentDisplayDriver(this) { IsPaddingEnabled = true };
+      this.ClockFaceBackgroundFrame = new Rectangle() {Fill = this.Background};
     }
 
+    #region Overrides of ClockFace
+
+    /// <inheritdoc />
+    protected override void OnSelectedTimeChanged(DateTime oldValue, DateTime newValue)
+    {
+      base.OnSelectedTimeChanged(oldValue, newValue);
+
+      double concatenatedTimeValues = this.SelectedHour * 10000 
+                                      + this.SelectedMinute * 100 
+                                      + this.SelectedSecond;
+      this.SegmentDisplayDriver.SetValue((int) concatenatedTimeValues);
+    }
+
+    #endregion
+
     #region Overrides of Control
+
+    #region Overrides of ClockFace
+
+    /// <inheritdoc />
+    protected override Size MeasureOverride(Size constraint)
+    {
+      base.MeasureOverride(constraint);
+      DrawClockFace(constraint);
+      return constraint;
+    }
+
+    #endregion
 
     /// <inheritdoc />
     protected override Size ArrangeOverride(Size arrangeBounds)
     {
+      base.ArrangeOverride(arrangeBounds);
       DrawClockFace(arrangeBounds);
-      return base.ArrangeOverride(arrangeBounds);
+      var minimumArrangeBounds = GetNaturalSize();
+      this.ClockFaceBackgroundFrame.Width = minimumArrangeBounds.Width;
+      this.ClockFaceBackgroundFrame.Height = minimumArrangeBounds.Height;
+      this.ClockFaceBackgroundFrame.Fill = this.Background;
+      return minimumArrangeBounds;
     }
     #endregion
 
@@ -39,29 +71,77 @@ namespace BionicCode.Controls.Net.Wpf
     /// <inheritdoc />
     protected override Size GetNaturalSize()
     {
-      double totalWidth = 0;
-      double totalHeight = 0;
-      foreach (UIElement child in this.ClockFaceCanvas.Children)
+      var child = this.Digits.First() as UIElement;
+      if (!child.IsMeasureValid)
       {
-        if (!child.IsMeasureValid)
-        {
-          child.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-        }
-        totalHeight = Math.Max(totalHeight, child.DesiredSize.Height);
-        totalWidth += child.DesiredSize.Width;
+        child.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
       }
+      double totalWidth = Canvas.GetLeft(child) + child.DesiredSize.Width;
+      double totalHeight = child.DesiredSize.Height;
 
       return new Size(totalWidth, totalHeight);
     }
 
     private void DrawClockFace(Size arrangeBounds)
     {
-      this.ClockFaceCanvas.Children.Clear();
-      var digit0 = new SevenSegmentDigit();
-      this.ClockFaceCanvas.Children.Add(digit0);
+      if (this.ClockFaceCanvas.Children.Count != 0)
+      {
+        return;
+      }
+      //this.ClockFaceCanvas.Children.Clear();
+      //this.Digits.Clear();
+
+      AddElementToClockFace(this.ClockFaceBackgroundFrame, new Point(), 0);
+
+      var hourDigit0 = new SevenSegmentDisplayDigit(5);
+      hourDigit0.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+      double digitWidth = hourDigit0.DesiredSize.Width;
+      double separatorMargin = digitWidth * 0.5;
+
+      var digitPosition = new Point(0, 0);
+
+      AddElementToClockFace(hourDigit0, digitPosition);
+      this.Digits.Add(hourDigit0);
+
+      digitPosition.Offset(digitWidth, 0);
+      var hourDigit1 = new SevenSegmentDisplayDigit(4);
+      AddElementToClockFace(hourDigit1, digitPosition);
+      this.Digits.Add(hourDigit1);
+
+      digitPosition.Offset(digitWidth + separatorMargin / 2, 0);
+      var separatorDisplayDigit0 = new SeparatorDisplayDigit();
+      AddElementToClockFace(separatorDisplayDigit0, digitPosition);
+
+      digitPosition.Offset(separatorMargin / 2, 0);
+      var minuteDigit0 = new SevenSegmentDisplayDigit(3);
+      AddElementToClockFace(minuteDigit0, digitPosition);
+      this.Digits.Add(minuteDigit0);
+
+      digitPosition.Offset(digitWidth, 0);
+      var minuteDigit1 = new SevenSegmentDisplayDigit(2);
+      AddElementToClockFace(minuteDigit1, digitPosition);
+      this.Digits.Add(minuteDigit1);
+
+      digitPosition.Offset(digitWidth + separatorMargin / 2, 0);
+      var separatorDisplayDigit1 = new SeparatorDisplayDigit();
+      AddElementToClockFace(separatorDisplayDigit1, digitPosition);
+
+      digitPosition.Offset(separatorMargin / 2, 0);
+      var secondDigit0 = new SevenSegmentDisplayDigit(1);
+      AddElementToClockFace(secondDigit0, digitPosition);
+      this.Digits.Add(secondDigit0);
+
+      digitPosition.Offset(digitWidth, 0);
+      var secondDigit1 = new SevenSegmentDisplayDigit(0);
+      AddElementToClockFace(secondDigit1, digitPosition);
+      this.Digits.Add(secondDigit1);
     }
 
-
     #endregion
+
+    public SortedSet<ISevenSegmentDigit> Digits { get; }
+    private SegmentDisplayDriver SegmentDisplayDriver { get; }
+    private Rectangle ClockFaceBackgroundFrame { get; }
   }
 }
