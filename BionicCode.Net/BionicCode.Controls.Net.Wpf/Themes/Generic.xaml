@@ -8,6 +8,7 @@
     <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/Themes/AnalogClockFaceStyle.xaml" />
     <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/Themes/DisplayDigitStyle.xaml" />
     <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/Themes/ClockFaceStyle.xaml" />
+    <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/Themes/ClockStyle.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
   

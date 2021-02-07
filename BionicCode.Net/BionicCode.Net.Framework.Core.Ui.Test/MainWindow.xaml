@@ -15,7 +15,10 @@
       <ColumnDefinition Width="*"/>
                                                                
     </Grid.ColumnDefinitions>
-    <wpf:DigitalClockFace SelectedTime="{Binding ElementName=Window, Path=CurrentDateTime}" Is24HModeEnabled="True" />
+
+    <wpf:Clock />
+
+    <!--<wpf:DigitalClockFace SelectedTime="{Binding ElementName=Window, Path=CurrentDateTime}" Is24HModeEnabled="True" />-->
    
     <!--<wpf:AnalogClockFace x:Name="TimePicker"  IsTimePickerModeEnabled="False" SelectedTime="{Binding ElementName=Window, Path=CurrentDateTime}"/>-->
     

@@ -275,19 +275,11 @@ namespace BionicCode.Controls.Net.Wpf
           : Math.Truncate(hourValue) % 12;
       double decimalPart = hourValue - Math.Truncate(hourValue);
       var decimalMinutes = decimalPart * 60;
-      bool isOverflow = decimalMinutes >= 1.0;
-      if (isOverflow)
-      {
-        this_.SelectedMinute = Math.Truncate(decimalMinutes);
-      }
+      this_.SelectedMinute = Math.Truncate(decimalMinutes);
 
       decimalPart = decimalMinutes - Math.Truncate(decimalMinutes);
-      var decimalSeconds = Math.Round(decimalPart * 60, MidpointRounding.AwayFromZero);
-      isOverflow = decimalSeconds >= 1.0;
-      if (isOverflow)
-      {
-        this_.SelectedSecond = decimalSeconds;
-      }
+      var decimalSeconds = Math.Truncate(decimalPart * 60);
+      this_.SelectedSecond = decimalSeconds;
 
       this_.IsUpdatingSelectedTimeComponent = false;
       return hours;
@@ -305,26 +297,18 @@ namespace BionicCode.Controls.Net.Wpf
       this_.IsUpdatingSelectedTimeComponent = true;
       var minuteValue = (double) basevalue;
       double decimalHours = minuteValue / 60;
-      bool isOverflow = decimalHours >= 1.0;
-      if (isOverflow)
-      {
-        this_.SelectedHour = this_.Is24HModeEnabled
-          ? Math.Truncate(decimalHours) % 24
-          : Math.Truncate(decimalHours) % 12 == 0
-            ? 12
-            : Math.Truncate(decimalHours) % 12;
-      }
+      this_.SelectedHour = this_.Is24HModeEnabled
+        ? Math.Truncate(decimalHours) % 24
+        : Math.Truncate(decimalHours) % 12 == 0
+          ? 12
+          : Math.Truncate(decimalHours) % 12;
 
       var decimalMinutes = minuteValue % 60;
       var minutes = Math.Truncate(decimalMinutes);
 
       var decimalPart = decimalMinutes - Math.Truncate(decimalMinutes);
-      double decimalSeconds = Math.Round(decimalPart * 60, MidpointRounding.AwayFromZero);
-      isOverflow = decimalSeconds >= 1.0;
-      if (isOverflow)
-      {
-        this_.SelectedSecond = decimalSeconds;
-      }
+      double decimalSeconds = Math.Truncate(decimalPart * 60);
+      this_.SelectedSecond = decimalSeconds;
 
       this_.IsUpdatingSelectedTimeComponent = false;
       return minutes;
@@ -342,26 +326,18 @@ namespace BionicCode.Controls.Net.Wpf
       this_.IsUpdatingSelectedTimeComponent = true;
       var secondsValue = (double) basevalue;
       double decimalHours = secondsValue / 3600;
-      bool isOverflow = decimalHours >= 1.0;
-      if (isOverflow)
-      {
-        this_.SelectedHour = this_.Is24HModeEnabled
-          ? Math.Truncate(decimalHours) % 24
-          : Math.Truncate(decimalHours) % 12 == 0
-            ? 12
-            : Math.Truncate(decimalHours) % 12;
-      }
+      this_.SelectedHour = this_.Is24HModeEnabled
+        ? Math.Truncate(decimalHours) % 24
+        : Math.Truncate(decimalHours) % 12 == 0
+          ? 12
+          : Math.Truncate(decimalHours) % 12;
 
       var minutePart = secondsValue % 3600;
       double decimalMinutes = minutePart / 60;
-      isOverflow = decimalMinutes >= 1.0;
-      if (isOverflow)
-      {
-        this_.SelectedMinute = Math.Truncate(decimalMinutes);
-      }
+      this_.SelectedMinute = Math.Truncate(decimalMinutes);
 
       double decimalSeconds = minutePart % 60;
-      var seconds = Math.Round(decimalSeconds, MidpointRounding.AwayFromZero);
+      var seconds = Math.Truncate(decimalSeconds);
 
       this_.IsUpdatingSelectedTimeComponent = false;
       return seconds;

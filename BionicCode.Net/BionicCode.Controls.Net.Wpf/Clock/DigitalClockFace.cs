@@ -31,8 +31,8 @@ namespace BionicCode.Controls.Net.Wpf
     {
       base.OnSelectedTimeChanged(oldValue, newValue);
 
-      double concatenatedTimeValues = this.SelectedHour * 10000 
-                                      + this.SelectedMinute * 100 
+      double concatenatedTimeValues = this.SelectedHour * Math.Pow(10, 4) 
+                                      + this.SelectedMinute * Math.Pow(10, 2) 
                                       + this.SelectedSecond;
       this.SegmentDisplayDriver.SetValue((int) concatenatedTimeValues);
     }

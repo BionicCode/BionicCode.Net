@@ -148,7 +148,7 @@ namespace BionicCode.Controls.Net.Wpf
         OffColor = this.SegmentOffColor
       };
       this.SegmentPanel.Children.Add(horizontalBottomSegment);
-      Canvas.SetLeft(horizontalBottomSegment, bounds.X - this.SegmentHeight * 2 + this.GapWidth);
+      Canvas.SetLeft(horizontalBottomSegment, bounds.X + this.GapWidth - horizontalOffset + this.SegmentHeight / 2);
       Canvas.SetTop(horizontalBottomSegment, bounds.Y + 2 * coercedVerticalSegmentHeight + 4 * this.GapWidth);
     }
   }
