@@ -1,6 +1,7 @@
 # BionicCode.Net [![GitHub](https://img.shields.io/github/license/BionicCode/BionicCode.Net)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--) [![Release](https://img.shields.io/github/last-commit/BionicCode/BionicCode.Net)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--) 
 .NET libraries containing utilities and controls that target .NET Standard, .NET Core, .NET Framework, .NET Core WPF, .NET Framework WPF and UWP
 
+[![BC](https://img.shields.io/badge/.NET-5-informational)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
 [![BC](https://img.shields.io/badge/.NET-Core-informational)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
 [![BC](https://img.shields.io/badge/.NET-Standard-informational)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
 [![BC](https://img.shields.io/badge/.NET-Framework-informational)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
@@ -14,6 +15,8 @@
 
 
 ## NuGet Packages Download
+[![BionicCode.Utilities.Net.Wpf](https://img.shields.io/badge/.NET_5_WPF-BionicCode.Utilities.Net.Wpf-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Wpf/)[![BionicCode.Utilities.Net.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Wpf.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Wpf/)
+
 [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/.NET_Core_3.0_WPF-BionicCode.Utilities.Net.Core.Wpf-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)[![BionicCode.Utilities.Net.Core.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Core.Wpf.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
 <!--
 [![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Core.Wpf.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
