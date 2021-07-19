@@ -437,6 +437,9 @@ namespace BionicCode.Controls.Net.Wpf
     {
     }
 
+    protected virtual void OnClockFaceLoaded() =>
+      RaiseEvent(new RoutedEventArgs(ClockFace.ClockFaceLoadedRoutedEvent, this));
+
     public void AddCartesianElementToClockFace(
       FrameworkElement clockElement,
       Point cartesianPoint,
@@ -481,6 +484,10 @@ namespace BionicCode.Controls.Net.Wpf
       if (!IsValidArrangeSize(constraint))
       {
         constraint = GetNaturalSize();
+      }
+      if (!IsValidArrangeSize(constraint))
+      {
+        constraint = base.MeasureOverride(constraint);
       }
       
       return constraint;

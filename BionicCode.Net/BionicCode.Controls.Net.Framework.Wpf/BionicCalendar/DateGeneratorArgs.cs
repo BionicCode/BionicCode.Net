@@ -19,26 +19,34 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
     {
         #region
 
-        public DateGeneratorArgs() : this(null, null, null, -1, -1)
+        public DateGeneratorArgs() : this(null, null, null, -1, -1, 0)
         {
         }
 
-        public DateGeneratorArgs(UIElement itemContainer, Panel itemsHost, object item, int columnIndex, int rowIndex)
+        public DateGeneratorArgs(
+            UIElement itemContainer,
+            Panel itemsHost,
+            object item,
+            int columnIndex,
+            int rowIndex,
+            int weekNumber)
         {
             this.ItemContainer = itemContainer;
             this.ItemsHost = itemsHost;
             this.Item = item;
             this.ColumnIndex = columnIndex;
             this.RowIndex = rowIndex;
+            this.WeekNumber = weekNumber;
         }
 
         #endregion
 
         public bool IsCanceled { get; set; }
-        public UIElement ItemContainer { get; }
-        public Panel ItemsHost { get; }
-        public object Item { get; }
+        public UIElement ItemContainer { get; set; }
+        public Panel ItemsHost { get; set; }
+        public object Item { get; set; }
         public int ColumnIndex { get; set; }
         public int RowIndex { get; set; }
+        public int WeekNumber { get; set; }
     }
 }

@@ -64,6 +64,8 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
       await this.ResponseCallbackAsync.Invoke(this);
     }
 
+    protected virtual bool CanExecuteSendResponseCommand(DialogResult commandParameter) => true;
+
     #region Implementation of IDialogViewModel
 
     private string title;
@@ -79,7 +81,8 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
     public ImageSource TitleBarIcon { get => this.titleBarIcon; set => TrySetValue(value, ref this.titleBarIcon); }
 
     /// <inheritdoc />
-    public IAsyncRelayCommand<DialogResult> SendResponseAsyncCommand => new AsyncRelayCommand<DialogResult>(ExecuteSendResponseCommandAsync);
+    public IAsyncRelayCommand<DialogResult> SendResponseAsyncCommand => new AsyncRelayCommand<DialogResult>(ExecuteSendResponseCommandAsync, CanExecuteSendResponseCommand);
+
     private DialogResult dialogResult;
 
     /// <inheritdoc />

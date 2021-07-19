@@ -1,8 +1,6 @@
-﻿<Application x:Class="BionicCode.Net.Framework.Core.Ui.Test.App"
+﻿<Application x:Class="BionicCode.Net.Wpf.Ui.Test.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:BionicCode.Net.Framework.Core.Ui.Test"
-             xmlns:wpf="clr-namespace:BionicCode.Controls.Net.Wpf;assembly=BionicCode.Controls.Net.Wpf"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
       <ResourceDictionary>

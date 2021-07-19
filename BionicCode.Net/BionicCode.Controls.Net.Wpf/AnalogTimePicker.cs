@@ -65,7 +65,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     #endregion SelectedTimeText dependency property
 
-    #region propertyName dependency property
+    #region IsReplacingView dependency property
 
     public static readonly DependencyProperty IsOpenProperty = DependencyProperty.Register(
       "IsOpen",
@@ -78,7 +78,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public bool IsOpen { get => (bool)GetValue(AnalogTimePicker.IsOpenProperty); set => SetValue(AnalogTimePicker.IsOpenProperty, value); }
 
-    #endregion propertyName dependency property
+    #endregion IsReplacingView dependency property
 
     #region ClockDiameter dependency property
 

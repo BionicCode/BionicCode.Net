@@ -1054,9 +1054,6 @@ namespace BionicCode.Controls.Net.Wpf
 
     protected virtual FrameworkElement CloneElement(FrameworkElement elementToClone) => elementToClone.CloneElement() as FrameworkElement;
 
-    protected virtual void OnClockFaceLoaded() =>
-      RaiseEvent(new RoutedEventArgs(AnalogClockFace.ClockFaceLoadedRoutedEvent, this));
-
     private double GetClockAngle(double reading, int steps) => reading * 360 / steps;
 
     private int GetStepLabel(int step) => this.Is24HModeEnabled 

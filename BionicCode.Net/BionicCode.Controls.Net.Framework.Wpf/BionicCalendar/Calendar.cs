@@ -20,16 +20,22 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
+using BionicCode.Utilities.Net.Framework.Wpf.Extensions;
 
 #endregion
 
 namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
 {
-  [TemplatePart(Name = "PART_ItemsHost", Type = typeof(Panel))]
+  [TemplatePart(Name = "PART_ScrollHost", Type = typeof(Panel))]
   [StyleTypedProperty(Property = "ItemContainerStyle", StyleTargetType = typeof(CalendarEventItem))]
-  public class Calendar : Control
+  public class Calendar : ItemsControl
   {
+    private const string ScrollHostPartName = "PART_ScrollHost";
+
+    public static readonly RoutedUICommand SelectNextMonthViewRoutedCommand = new RoutedUICommand("Select the next calendar month view.", nameof(Calendar.SelectNextMonthViewRoutedCommand), typeof(Calendar));
+
     #region SpanningRequestedRoutedEvent
 
     public static readonly RoutedEvent SpanningRequestedRoutedEvent = EventManager.RegisterRoutedEvent(
@@ -76,8 +82,13 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
       typeof(Calendar),
       new FrameworkPropertyMetadata(
         default(DateTime),
-        FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
         Calendar.OnDayChanged));
+
+    public static DateTime GetDay(DependencyObject attachingElement) =>
+      (DateTime)attachingElement.GetValue(Calendar.DayProperty);
+
+    public static void SetDay(DependencyObject attachingElement, DateTime value) =>
+      attachingElement.SetValue(Calendar.DayProperty, value);
 
     #region IsToday attached property
 
@@ -90,99 +101,48 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
 
     #endregion
 
-    private static void OnDayChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    { 
-      var oldCalendarDate = (DateTime) e.OldValue;
-      var newCalendarDate = (DateTime) e.NewValue;
 
-      if (d is CalendarEventItem eventItemContainer)
-      {
-        //Calendar.IsItemsHostLayoutDirty = true;
-        //if (!Calendar.Instance.ItemContainerToItemMap.ContainsKey(eventItemContainer))
-        //{
-        //  Calendar.Instance.ItemContainerToItemMap.Add(eventItemContainer, eventItemContainer.Content);
-        //  Calendar.Instance.PrepareContainerForEventItemOverride(eventItemContainer, eventItemContainer.Content);
-        //}
+    //public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
+    //  "ItemsSource",
+    //  typeof(IEnumerable),
+    //  typeof(Calendar),
+    //  new PropertyMetadata(default(IEnumerable), Calendar.OnItemsSourceChanged));
 
+    //public static readonly DependencyProperty ItemsProperty = DependencyProperty.Register(
+    //  "Items",
+    //  typeof(CollectionView),
+    //  typeof(Calendar),
+    //  new PropertyMetadata(default(CollectionView)));
 
-        //if (Calendar.DateToDateItemContainerMap.TryGetValue(
-        //  oldCalendarDate.Date,
-        //  out UIElement oldCalendarDateItem) && oldCalendarDateItem is HeaderedItemsControl oldHeaderedItemsControl)
-        //{
-        //  oldHeaderedItemsControl.Items.Remove(eventItemContainer);
-        //}
-        //if (Calendar.DateToDateItemContainerMap.TryGetValue(
-        //  newCalendarDate.Date,
-        //  out UIElement calendarDateItem) && calendarDateItem is HeaderedItemsControl headeredItemsControl)
-        //{
-        //  if (!headeredItemsControl.Items.Contains(eventItemContainer))
-        //  {
-        //    headeredItemsControl.Items.Add(eventItemContainer);
-        //    Calendar.IsItemsHostLayoutDirty = true;
-        //  }
-        //}
-      }
+    //public static readonly DependencyProperty ItemContainerStyleProperty = DependencyProperty.Register(
+    //  "ItemContainerStyle",
+    //  typeof(Style),
+    //  typeof(Calendar),
+    //  new PropertyMetadata(default(Style)));
 
-      if (d is CalendarDateItem dateItemContainer)
-      {
-        if (Calendar.DateItemContainerToDateMap.TryGetValue(dateItemContainer, out DateTime currentCalendarDate))
-        {
-          if (newCalendarDate.Date.Equals(currentCalendarDate.Date))
-          {
-            return;
-          }
+    //public static readonly DependencyProperty ItemTemplateProperty = DependencyProperty.Register(
+    //  "ItemTemplate",
+    //  typeof(DataTemplate),
+    //  typeof(Calendar),
+    //  new PropertyMetadata(default(DataTemplate)));
 
-          Calendar.UnregisterDateItemContainer(dateItemContainer);
-        }
-        
-        Calendar.Instance.HandleTodayChanged();
-        Calendar.RegisterDateItemContainer(dateItemContainer);
-        Calendar.IsItemsHostLayoutDirty = true;
-      }
-    }
+    //public static readonly DependencyProperty ItemTemplateSelectorProperty = DependencyProperty.Register(
+    //  "ItemTemplateSelector",
+    //  typeof(DataTemplateSelector),
+    //  typeof(Calendar),
+    //  new PropertyMetadata(default(DataTemplateSelector)));
 
+    //public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(
+    //  "SelectedItem",
+    //  typeof(object),
+    //  typeof(Calendar),
+    //  new PropertyMetadata(default, Calendar.OnSelectedItemChanged));
 
-    public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
-      "ItemsSource",
-      typeof(IEnumerable),
-      typeof(Calendar),
-      new PropertyMetadata(default(IEnumerable), Calendar.OnItemsSourceChanged));
-
-    public static readonly DependencyProperty ItemsProperty = DependencyProperty.Register(
-      "Items",
-      typeof(CollectionView),
-      typeof(Calendar),
-      new PropertyMetadata(default(CollectionView)));
-
-    public static readonly DependencyProperty ItemContainerStyleProperty = DependencyProperty.Register(
-      "ItemContainerStyle",
-      typeof(Style),
-      typeof(Calendar),
-      new PropertyMetadata(default(Style)));
-
-    public static readonly DependencyProperty ItemTemplateProperty = DependencyProperty.Register(
-      "ItemTemplate",
-      typeof(DataTemplate),
-      typeof(Calendar),
-      new PropertyMetadata(default(DataTemplate)));
-
-    public static readonly DependencyProperty ItemTemplateSelectorProperty = DependencyProperty.Register(
-      "ItemTemplateSelector",
-      typeof(DataTemplateSelector),
-      typeof(Calendar),
-      new PropertyMetadata(default(DataTemplateSelector)));
-
-    public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(
-      "SelectedItem",
-      typeof(object),
-      typeof(Calendar),
-      new PropertyMetadata(default, Calendar.OnSelectedItemChanged));
-
-    public static readonly DependencyProperty SelectedIndexProperty = DependencyProperty.Register(
-      "SelectedIndex",
-      typeof(int),
-      typeof(Calendar),
-      new PropertyMetadata(default(int), Calendar.OnSelectedIndexChanged));
+    //public static readonly DependencyProperty SelectedIndexProperty = DependencyProperty.Register(
+    //  "SelectedIndex",
+    //  typeof(int),
+    //  typeof(Calendar),
+    //  new PropertyMetadata(default(int), Calendar.OnSelectedIndexChanged));
 
     public static readonly DependencyProperty TodayItemIndexProperty = DependencyProperty.Register(
       "TodayItemIndex",
@@ -195,18 +155,6 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
       get => (int) GetValue(Calendar.TodayItemIndexProperty);
       set => SetValue(Calendar.TodayItemIndexProperty, value);
     }
-
-    public static readonly DependencyProperty DateHeaderItemsSourceProperty = DependencyProperty.Register(
-      "DateHeaderItemsSource",
-      typeof(IEnumerable),
-      typeof(Calendar),
-      new PropertyMetadata(default(IEnumerable), Calendar.OnDateHeaderItemsSourceChanged));
-
-    public static readonly DependencyProperty DateHeaderItemsProperty = DependencyProperty.Register(
-      "DateHeaderItems",
-      typeof(CollectionView),
-      typeof(Calendar),
-      new PropertyMetadata(default(CollectionView)));
 
     public static readonly DependencyProperty DateColumnHeaderItemContainerStyleProperty =
       DependencyProperty.Register(
@@ -258,11 +206,28 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
       "FirstDayOfWeek",
       typeof(DayOfWeek),
       typeof(Calendar),
-      new PropertyMetadata(default));
+      new FrameworkPropertyMetadata(DayOfWeek.Sunday, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
     public DayOfWeek FirstDayOfWeek { get => (DayOfWeek) GetValue(Calendar.FirstDayOfWeekProperty); set => SetValue(Calendar.FirstDayOfWeekProperty, value); }
 
     #endregion FirstDayOfWeek dependency property
+
+    #region CurrentMonthView read-only dependency property
+    protected static readonly DependencyPropertyKey CurrentMonthViewPropertyKey = DependencyProperty.RegisterReadOnly(
+      "CurrentMonthView",
+      typeof(CalendarMonthView),
+      typeof(Calendar),
+      new PropertyMetadata(default(CalendarMonthView)));
+
+    public static readonly DependencyProperty CurrentMonthViewProperty = Calendar.CurrentMonthViewPropertyKey.DependencyProperty;
+
+    public CalendarMonthView CurrentMonthView
+    {
+      get => (CalendarMonthView) GetValue(Calendar.CurrentMonthViewProperty);
+      private set => SetValue(Calendar.CurrentMonthViewPropertyKey, value);
+    }
+
+    #endregion CurrentMonthView read-only dependency property
 
     #region Dependency properties
 
@@ -279,30 +244,85 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
       }
     }
 
-    public static DateTime GetDay(DependencyObject attachingElement) =>
-      (DateTime) attachingElement.GetValue(Calendar.DayProperty);
-
-    public static void SetDay(DependencyObject attachingElement, DateTime value) =>
-      attachingElement.SetValue(Calendar.DayProperty, value);
-
-    private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void OnDayChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      (d as Calendar).OnItemsSourceChanged(e.OldValue as IEnumerable, e.NewValue as IEnumerable);
+      var oldCalendarDate = (DateTime)e.OldValue;
+      var newCalendarDate = (DateTime)e.NewValue;
+
+      if (d is CalendarEventItem eventItemContainer)
+      {
+        Calendar.IsItemsHostLayoutDirty = true;
+        //if (!Calendar.Instance.ItemContainerToItemMap.ContainsKey(eventItemContainer))
+        //{
+        //  Calendar.Instance.ItemContainerToItemMap.Add(eventItemContainer, eventItemContainer.Content);
+        //  Calendar.Instance.PrepareContainerForEventItemOverride(eventItemContainer, eventItemContainer.Content);
+        //}
+
+
+        //if (Calendar.DateToDateItemContainerMap.TryGetValue(
+        //  oldCalendarDate.Date,
+        //  out UIElement oldCalendarDateItem) && oldCalendarDateItem is HeaderedItemsControl oldHeaderedItemsControl)
+        //{
+        //  oldHeaderedItemsControl.Items.Remove(eventItemContainer);
+        //}
+        //if (Calendar.DateToDateItemContainerMap.TryGetValue(
+        //  newCalendarDate.Date,
+        //  out UIElement calendarDateItem) && calendarDateItem is HeaderedItemsControl headeredItemsControl)
+        //{
+        //  if (!headeredItemsControl.Items.Contains(eventItemContainer))
+        //  {
+        //    headeredItemsControl.Items.Add(eventItemContainer);
+        //    Calendar.IsItemsHostLayoutDirty = true;
+        //  }
+        //}
+      }
+
+      //if (d is CalendarDateItem dateItemContainer)
+      //{
+      //  if (Calendar.DateItemContainerToDateMap.TryGetValue(dateItemContainer, out DateTime currentCalendarDate))
+      //  {
+      //    if (newCalendarDate.Date.Equals(currentCalendarDate.Date))
+      //    {
+      //      return;
+      //    }
+
+      //    //Calendar.UnregisterDateItemContainer(dateItemContainer);
+      //  }
+
+      //  Calendar.Instance.HandleTodayChanged();
+      //  //Calendar.RegisterDateItemContainer(itemContainer);
+      //  Calendar.IsItemsHostLayoutDirty = true;
+      //}
     }
 
-    private static void OnSelectedIndexChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      (d as Calendar).OnSelectedIndexChanged((int) e.OldValue, (int) e.NewValue);
-    }
+    //private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    //{
+    //  (d as Calendar).OnItemsSourceChanged(e.OldValue as IEnumerable, e.NewValue as IEnumerable);
+    //}
 
-    private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      (d as Calendar).OnSelectedItemChanged(e.OldValue, e.NewValue);
-    }
+    //private static void OnSelectedIndexChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    //{
+    //  (d as Calendar).OnSelectedIndexChanged((int) e.OldValue, (int) e.NewValue);
+    //}
+
+    //private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    //{
+    //  (d as Calendar).OnSelectedItemChanged(e.OldValue, e.NewValue);
+    //}
 
     #endregion
 
     #region
+
+    private bool canVerticallyScroll;
+    private bool canHorizontallyScroll;
+    private double extentWidth;
+    private double extentHeight;
+    private double viewportWidth;
+    private double viewportHeight;
+    private double horizontalOffset;
+    private double verticalOffset;
+    private ScrollViewer scrollOwner;
 
     static Calendar()
     {
@@ -315,17 +335,31 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
 
     public Calendar()
     {
-      Calendar.Instance = this;
       AddHandler(Calendar.SelectedRoutedEvent, new RoutedEventHandler(OnItemSelected));
       AddHandler(Calendar.SelectedRoutedEvent, new RoutedEventHandler(OnItemSelected));
       AddHandler(Calendar.SpanningRequestedRoutedEvent, new SpanningRequestedRoutedEventHandler(SpanEventItemOnSpanningRequested));
+      AddHandler(CalendarPanel.CurrentViewChangedRoutedEvent, new CalendarViewChangedRoutedEventHandler<CalendarMonthView>(OnCalendarViewChanged));
+
+      this.CommandBindings.Add(
+        new CommandBinding(Calendar.SelectNextMonthViewRoutedCommand, ExecuteSelectNextMonthView));
+
       this.Loaded += OnLoaded;
 
       this.CalendarSource = new GregorianCalendar();
       this.ItemContainerToItemMap = new Dictionary<UIElement, object>();
       this.ItemToItemContainerMap = new Dictionary<object, UIElement>();
       this.DayChangeWatcher = new DayChangeWatcher();
+      this.FirstDayOfWeek = DayOfWeek.Sunday;
+
+      Initialize();
     }
+
+    private void OnCalendarViewChanged(object sender, CalendarViewChangedEventArgs<CalendarMonthView> e)
+    {
+      this.CurrentMonthView = e.CurrentView;
+    }
+
+    private void ExecuteSelectNextMonthView(object sender, ExecutedRoutedEventArgs e) => this.ScrollHost.PageDown();
 
     private void SpanEventItemOnSpanningRequested(object sender, EventItemDragDropArgs e)
     {
@@ -351,49 +385,9 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
 
     protected virtual void Initialize()
     {
-      CreateDateColumnHeaderItems();
-
-      if (this.DateHeaderItemsSource != null)
-      {
-        return;
-      }
-      var dates = new List<ICalendarDate>();
-      int daysInMonth = this.CalendarSource.GetDaysInMonth(DateTime.Today.Year, DateTime.Today.Month);
-      var lastDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, daysInMonth);
-      var firstDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-      while (firstDate.DayOfWeek != this.FirstDayOfWeek)
-      {
-        firstDate = firstDate.Subtract(TimeSpan.FromDays(1));
-      }
-
-      while (lastDate.AddDays(1).DayOfWeek != this.FirstDayOfWeek)
-      {
-        lastDate = lastDate.AddDays(1);
-      }
-
-      int daysInCalendarView = lastDate.Subtract(firstDate).Days + 1;
-      this.ItemsHost.RowCount = (int) Math.Ceiling(daysInCalendarView / (double) this.ItemsHost.ColumnCount);
-      for (var dayIndex = 0; dayIndex < this.ItemsHost.RowCount * this.ItemsHost.ColumnCount; dayIndex++)
-      {
-        DateTime currentDay = firstDate.AddDays(dayIndex);
-        var calendarDateItem = new CalendarDate
-        {
-          Day = currentDay,
-          IsHoliday = currentDay.Day % 2 == 0,
-          DayOfWeek = this.CalendarSource.GetDayOfWeek(currentDay),
-          WeekOfYear = this.CalendarSource.GetWeekOfYear(
-            currentDay,
-            CalendarWeekRule.FirstDay,
-            this.FirstDayOfWeek),
-          Annotation = "Special Date Special Date"
-        };
-        dates.Add(calendarDateItem);
-      }
-
-      this.DateHeaderItemsSource = dates;
-
-
       // TODO::Remove
+      int daysInMonth = this.CalendarSource.GetDaysInMonth(DateTime.Today.Year, DateTime.Today.Month);
+      var firstDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
       var events = new ObservableCollection<ICalendarEvent>();
       for (var day = 0; day < daysInMonth; day++)
       {
@@ -411,9 +405,10 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
         }
       }
 
-      this.ItemsSource = events;
+      //this.ItemsSource = events;
       //this.ItemsHost.InvalidateMeasure();
-      this.DayChangeWatcher.CalendarDayChanged += OnTodayChanged;
+      
+      //this.DayChangeWatcher.CalendarDayChanged += OnTodayChanged;
       this.DayChangeWatcher.Start();
     }
 
@@ -424,50 +419,52 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
 
     private void HandleTodayChanged()
     {
-      if (this.TodayItemIndex < 0)
-      {
-        if (!Calendar.DateToDateItemContainerMap.TryGetValue(DateTime.Today, out UIElement todayCalendarDateItem))
-        {
-          return;
-        }
+      //if (this.TodayItemIndex < 0)
+      //{
+      //  if (!Calendar.DateToDateItemContainerMap.TryGetValue(DateTime.Today, out UIElement todayCalendarDateItem))
+      //  {
+      //    return;
+      //  }
 
-        Calendar.SetIsToday(todayCalendarDateItem, true);
+      //  Calendar.SetIsToday(todayCalendarDateItem, true);
 
-        if (this.ItemContainerToItemMap.TryGetValue(todayCalendarDateItem, out object todayItem))
-        {
-          this.TodayItemIndex = this.DateHeaderItems.IndexOf(todayItem);
-        }
+      //  if (this.ItemContainerToItemMap.TryGetValue(todayCalendarDateItem, out object todayItem))
+      //  {
+      //    this.TodayItemIndex = this.DateHeaderItems.IndexOf(todayItem);
+      //  }
 
+      //  return;
+      //}
+
+      //if (this.ItemsHost.TryGetDateItem(DateTime.Today.Subtract(TimeSpan.FromDays(1)), out CalendarDate yesterdayItem) 
+      //    && this.ItemToItemContainerMap.TryGetValue(yesterdayItem, out UIElement yesterdayItemContainer))
+      //{
+      //  Calendar.SetIsToday(yesterdayItemContainer, false);
+      //}
+
+      //if (this.ItemsHost.TryGetDateItem(DateTime.Today, out CalendarDate todayItem)
+      //    && this.ItemToItemContainerMap.TryGetValue(todayItem, out UIElement todayItemContainer))
+      //{
+      //  Calendar.SetIsToday(todayItemContainer, true);
+
+      //  this.TodayItemIndex++;
+
+      //  //// If this.DateHeaderItemsSource is sorted by date, then the next item is the today item
+      //  //object todayItemByIndex = this.DateHeaderItems.GetItemAt(this.TodayItemIndex);
+      //  //if (this.ItemContainerToItemMap.TryGetValue(todayItemContainer, out object todayItem))
+      //  //{
+      //  //  if (object.ReferenceEquals(todayItem, todayItemByIndex))
+      //  //  {
+      //  //    return;
+      //  //  }
+
+      //  //  this.TodayItemIndex = this.DateHeaderItems.IndexOf(todayItem);
+      //  //  return;
+      //  //}
         return;
-      }
+      //}
 
-      object yesterdayItem = this.DateHeaderItems.GetItemAt(this.TodayItemIndex);
-      if (this.ItemToItemContainerMap.TryGetValue(yesterdayItem, out UIElement yesterdayItemContainer))
-      {
-        Calendar.SetIsToday(yesterdayItemContainer, false);
-      }
-
-      if (Calendar.DateToDateItemContainerMap.TryGetValue(DateTime.Today, out UIElement todayItemContainer))
-      {
-        Calendar.SetIsToday(todayItemContainer, true);
-
-        this.TodayItemIndex++;
-
-        // If this.DateHeaderItemsSource is sorted by date, then the next item is the today item
-        object todayItemByIndex = this.DateHeaderItems.GetItemAt(this.TodayItemIndex);
-        if (this.ItemContainerToItemMap.TryGetValue(todayItemContainer, out object todayItem))
-        {
-          if (object.ReferenceEquals(todayItem, todayItemByIndex))
-          {
-            return;
-          }
-
-          this.TodayItemIndex = this.DateHeaderItems.IndexOf(todayItem);
-          return;
-        }
-      }
-
-      this.TodayItemIndex = -1;
+      //this.TodayItemIndex = -1;
     }
 
     #endregion
@@ -476,305 +473,175 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
     public override void OnApplyTemplate()
     {
       base.OnApplyTemplate();
-      this.ItemsHost = GetTemplateChild("PART_ItemsHost") as CalendarPanel;
-      ObserveItemsHost();
-      Initialize();
-      this.ItemsHost.Initialize(this);
+      this.ScrollHost = GetTemplateChild(Calendar.ScrollHostPartName) as ScrollViewer;
+      if (this.ScrollHost == null)
+      {
+        throw new ArgumentNullException(Calendar.ScrollHostPartName,
+          $"Template part '{Calendar.ScrollHostPartName}' of type '{nameof(ScrollViewer)}' not found in template.");
+      }
+      InitializeScrollHost();
     }
 
-    protected virtual void OnSelectedIndexChanged(int oldIndex, int newIndex)
+    private void InitializeScrollHost()
     {
-      if (newIndex < 0)
-      {
-        this.SelectedItem = null;
-      }
-      else if (newIndex > this.Items.Count)
-      {
-        throw new IndexOutOfRangeException();
-      }
-      else
-      {
-        this.SelectedItem = this.Items.GetItemAt(newIndex);
-      }
+      this.ScrollHost.CanContentScroll = true;
+      this.ScrollHost.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
+      this.ScrollHost.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
     }
 
-    protected virtual void OnSelectedItemChanged(object oldValue, object newValue)
+    //protected virtual void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
+    //{
+    //  if (oldValue is INotifyCollectionChanged oldObservableCollection)
+    //  {
+    //    oldObservableCollection.CollectionChanged -= OnItemsSourceCollectionChanged;
+    //  }
+
+    //  //if (oldValue != null)
+    //  //{
+    //  //  RemoveOlEventItems(oldValue);
+    //  //}
+
+    //  this.ItemsHost.ClearEventChildren();
+
+    //  if (newValue == null)
+    //  {
+    //    return;
+    //  }
+
+    //  this.Items = CollectionViewSource.GetDefaultView(newValue) as CollectionView;
+
+    //  if (newValue is INotifyCollectionChanged newObservableCollection)
+    //  {
+    //    newObservableCollection.CollectionChanged += OnItemsSourceCollectionChanged;
+    //  }
+
+
+    //  this.ItemsHost.AddEventChildren(newValue.Cast<object>());
+    //}
+
+    public void ClearItemContainer(UIElement itemContainer)
     {
-      if (newValue != oldValue)
+      switch (itemContainer)
       {
-        this.SelectedIndex = this.Items.IndexOf(newValue);
-      }
-    }
-
-    private static void OnDateHeaderItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      (d as Calendar).OnDateHeaderItemsSourceChanged(e.OldValue as IEnumerable, e.NewValue as IEnumerable);
-    }
-
-    protected virtual void OnDateHeaderItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
-    {
-      if (oldValue is INotifyCollectionChanged oldObservableCollection)
-      {
-        oldObservableCollection.CollectionChanged -= OnDateHeaderItemsSourceCollectionChanged;
-      }
-
-      if (oldValue != null)
-      {
-        RemoveOldDateItems(oldValue);
-      }
-
-      this.ItemsHost.ClearDateHeaderChildren();
-
-      if (newValue == null)
-      {
-        return;
-      }
-
-      this.DateHeaderItems = CollectionViewSource.GetDefaultView(newValue) as CollectionView;
-
-      if (newValue is INotifyCollectionChanged newObservableCollection)
-      {
-        newObservableCollection.CollectionChanged += OnDateHeaderItemsSourceCollectionChanged;
-      }
-
-      InitializeNewDateItems(this.DateHeaderItems);
-    }
-
-    private void OnDateHeaderItemsSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-    {
-      switch (e.Action)
-      {
-        case NotifyCollectionChangedAction.Add:
-          InitializeNewDateItems(e.NewItems);
+        case HeaderedItemsControl headeredItemsControl:
+          headeredItemsControl.Header = null;
+          headeredItemsControl.DataContext = null;
           break;
-        case NotifyCollectionChangedAction.Remove:
-          RemoveOldDateItems(e.OldItems);
+        case ContentControl contentControl:
+          contentControl.Content = null;
+          contentControl.DataContext = null;
           break;
-        case NotifyCollectionChangedAction.Reset:
-          RemoveOldDateItems(e.OldItems);
-
-          Calendar.DateToDateItemContainerMap.Clear();
-          Calendar.DateItemContainerToDateMap.Clear();
-          this.ItemsHost.ClearDateHeaderChildren();
+        case Control control:
+          control.DataContext = null;
           break;
       }
+      //UnregisterItemContainer(itemContainer);
     }
 
-    protected virtual void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
-    {
-      if (oldValue is INotifyCollectionChanged oldObservableCollection)
-      {
-        oldObservableCollection.CollectionChanged -= OnItemsSourceCollectionChanged;
-      }
+    //private void UnregisterItemContainer(UIElement itemContainer, object item = null)
+    //{
+    //  if (item == null)
+    //  {
+    //    this.ItemContainerToItemMap.TryGetValue(itemContainer, out item);
+    //  }
+    //  this.ItemContainerToItemMap.Remove(itemContainer);
+    //  this.ItemToItemContainerMap.Remove(item);
+    //}
 
-      if (oldValue != null)
-      {
-        RemoveOlEventItems(oldValue);
-      }
-
-      this.ItemsHost.ClearEventChildren();
-
-      if (newValue == null)
-      {
-        return;
-      }
-
-      this.Items = CollectionViewSource.GetDefaultView(newValue) as CollectionView;
-
-      if (newValue is INotifyCollectionChanged newObservableCollection)
-      {
-        newObservableCollection.CollectionChanged += OnItemsSourceCollectionChanged;
-      }
-
-     InitializeNewEventItems(this.Items);
-    }
-
-    private void OnItemsSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-    {
-      switch (e.Action)
-      {
-        case NotifyCollectionChangedAction.Add:
-          InitializeNewEventItems(e.NewItems);
-          break;
-        case NotifyCollectionChangedAction.Remove:
-          RemoveOlEventItems(e.OldItems);
-          break;
-        case NotifyCollectionChangedAction.Reset:
-          RemoveOlEventItems(e.OldItems);
-
-          this.ItemsHost.ClearEventChildren();
-          break;
-      }
-    }
-
-    private void InitializeNewDateItems(IEnumerable newItems)
-    {
-      var itemContainers = new List<UIElement>();
-      foreach (object item in newItems)
-      {
-        var dateItemContainer = GetContainerForDateItem() as FrameworkElement;
-        PrepareContainerForCalendarDateItemOverride(dateItemContainer, item);
-        RegisterItemContainer(dateItemContainer, item);
-        itemContainers.Add(dateItemContainer);
-      }
-
-      this.ItemsHost.AddDateHeaderChildren(itemContainers);
-    }
-
-    private void RemoveOldDateItems(IEnumerable newItems)
-    {
-      var itemContainers = new List<UIElement>();
-      foreach (object item in newItems)
-      {
-        if (this.ItemToItemContainerMap.TryGetValue(item, out UIElement dateItemContainer))
-        {
-          UnregisterItemContainer(dateItemContainer, item);
-          Calendar.UnregisterDateItemContainer(dateItemContainer);
-          itemContainers.Add(dateItemContainer);
-        }
-      }
-
-      this.ItemsHost.RemoveDateHeaderChildren(itemContainers);
-    }
-
-    private void InitializeNewEventItems(IEnumerable newItems)
-    {
-      var itemContainers = new List<FrameworkElement>();
-      foreach (object item in newItems)
-      {
-        var eventItemContainer = GetContainerForEventItemOverride();
-        PrepareContainerForEventItemOverride(eventItemContainer, item);
-        RegisterItemContainer(eventItemContainer, item);
-        itemContainers.Add(eventItemContainer);
-      }
-
-      this.ItemsHost.AddEventChildren(itemContainers);
-    }
-
-    private void RemoveOlEventItems(IEnumerable newItems)
-    {
-      var itemContainers = new List<FrameworkElement>();
-      foreach (object item in newItems)
-      {
-        if (this.ItemToItemContainerMap.TryGetValue(item, out UIElement dateItemContainer))
-        {
-          UnregisterItemContainer(dateItemContainer, item);
-          Calendar.UnregisterDateItemContainer(dateItemContainer);
-          itemContainers.Add(dateItemContainer as FrameworkElement);
-        }
-      }
-
-      this.ItemsHost.RemoveEventChildren(itemContainers);
-    }
-
-    private static void UnregisterDateItemContainer(UIElement dateItemContainer)
-    {
-      Calendar.DateToDateItemContainerMap.Remove(Calendar.GetDay(dateItemContainer));
-      Calendar.DateItemContainerToDateMap.Remove(dateItemContainer);
-    }
-
-    private static void RegisterDateItemContainer(UIElement dateItemContainer)
-    {
-      Calendar.DateToDateItemContainerMap.Add(Calendar.GetDay(dateItemContainer), dateItemContainer);
-      Calendar.DateItemContainerToDateMap.Add(dateItemContainer, Calendar.GetDay(dateItemContainer));
-    }
-
-    private void UnregisterItemContainer(UIElement dateItemContainer, object item)
-    {
-      this.ItemContainerToItemMap.Remove(dateItemContainer);
-      this.ItemToItemContainerMap.Remove(item);
-    }
-
-    private void RegisterItemContainer(UIElement dateItemContainer, object item)
-    {
-      this.ItemContainerToItemMap.Add(dateItemContainer, item);
-      this.ItemToItemContainerMap.Add(item, dateItemContainer);
-    }
+    //private void RegisterItemContainer(UIElement itemContainer, object item)
+    //{
+    //  this.ItemContainerToItemMap.Add(itemContainer, item);
+    //  this.ItemToItemContainerMap.Add(item, itemContainer);
+    //}
 
     private void OnCalendarEventItemSelected(object sender, RoutedEventArgs routedEventArgs)
     {
-      foreach (UIElement itemsHostChild in this.ItemsHost.GetEventItems())
-      {
-        if (!object.ReferenceEquals(itemsHostChild, routedEventArgs.OriginalSource)
-            && Selector.GetIsSelected(itemsHostChild))
-        {
-          Selector.SetIsSelected(itemsHostChild, false);
-          RaiseEvent(new RoutedEventArgs(Selector.UnselectedEvent, this));
-        }
-      }
+      //foreach (UIElement itemsHostChild in this.ItemsHost.GetEventItemContainers())
+      //{
+      //  if (!object.ReferenceEquals(itemsHostChild, routedEventArgs.OriginalSource)
+      //      && Selector.GetIsSelected(itemsHostChild))
+      //  {
+      //    Selector.SetIsSelected(itemsHostChild, false);
+      //    RaiseEvent(new RoutedEventArgs(Selector.UnselectedEvent, this));
+      //  }
+      //}
 
-      //this.ItemsHost.get
-      switch (routedEventArgs.OriginalSource)
-      {
-        case HeaderedItemsControl headeredItemsControl:
-          this.SelectedItem = headeredItemsControl.Header;
-          break;
-        case ContentControl contentControl:
-          this.SelectedItem = contentControl.Content;
-          break;
-        case FrameworkElement frameworkElement:
-          this.SelectedItem = frameworkElement.DataContext;
-          break;
-      }
+      ////this.ItemsHost.get
+      //switch (routedEventArgs.OriginalSource)
+      //{
+      //  case HeaderedItemsControl headeredItemsControl:
+      //    this.SelectedItem = headeredItemsControl.Header;
+      //    break;
+      //  case ContentControl contentControl:
+      //    this.SelectedItem = contentControl.Content;
+      //    break;
+      //  case FrameworkElement frameworkElement:
+      //    this.SelectedItem = frameworkElement.DataContext;
+      //    break;
+      //}
 
 
-      RaiseEvent(new RoutedEventArgs(Selector.SelectedEvent, this));
+      //RaiseEvent(new RoutedEventArgs(Selector.SelectedEvent, this));
     }
 
     private void OnCalendarDateItemSelected(object sender, RoutedEventArgs routedEventArgs)
     {
-      foreach (UIElement itemsHostChild in this.ItemsHost.GetDateItems())
-      {
-        if (!object.ReferenceEquals(itemsHostChild, routedEventArgs.OriginalSource)
-            && Selector.GetIsSelected(itemsHostChild))
-        {
-          Selector.SetIsSelected(itemsHostChild, false);
-          RaiseEvent(new RoutedEventArgs(Selector.UnselectedEvent, this));
-        }
-      }
+      //foreach (UIElement itemsHostChild in this.ItemsHost.GetDateItemContainers())
+      //{
+      //  if (!object.ReferenceEquals(itemsHostChild, routedEventArgs.OriginalSource)
+      //      && Selector.GetIsSelected(itemsHostChild))
+      //  {
+      //    Selector.SetIsSelected(itemsHostChild, false);
+      //    RaiseEvent(new RoutedEventArgs(Selector.UnselectedEvent, this));
+      //  }
+      //}
 
       RaiseEvent(new RoutedEventArgs(Selector.SelectedEvent, this));
     }
+    
+    public virtual UIElement GetContainerForDateItem() => new CalendarDateItem();
+    public virtual UIElement GetContainerForWeekHeaderItem() => new WeekHeaderItem();
+    public virtual UIElement GetContainerForDateColumnHeaderItem() => new CalendarDateColumnHeaderItem();
 
-    protected virtual FrameworkElement GetContainerForEventItemOverride() => new CalendarEventItem();
-    protected DependencyObject GetContainerForDateItem() => new CalendarDateItem();
-    protected DependencyObject GetContainerForDateColumnHeaderItem() => new CalendarDateColumnHeaderItem();
+    #region Overrides of ItemsControl
 
-    protected virtual bool IsEventItemItsOwnContainerOverride(object item) => item is CalendarEventItem;
+    /// <inheritdoc />
+    protected override DependencyObject GetContainerForItemOverride() => new CalendarEventItem();
 
-    protected virtual void PrepareContainerForEventItemOverride(DependencyObject element, object item)
+    /// <inheritdoc />
+    protected override bool IsItemItsOwnContainerOverride(object item) => item is CalendarEventItem;
+
+    #endregion
+
+    protected virtual bool IsDateItemItsOwnContainerOverride(object item) => item is CalendarDateItem;
+    protected virtual bool IsWeekHeaderItemItsOwnContainerOverride(object item) => item is WeekHeaderItem;
+
+    public virtual void PrepareContainerForWeekHeaderItemOverride(DependencyObject element, object item)
     {
       switch (element)
       {
         case HeaderedItemsControl headeredItemsControl:
-          headeredItemsControl.ItemContainerStyle = this.ItemContainerStyle;
-          headeredItemsControl.ItemTemplate = this.ItemTemplate;
-          headeredItemsControl.ItemTemplateSelector = this.ItemTemplateSelector;
           headeredItemsControl.Header = item;
           headeredItemsControl.DataContext = item;
           break;
         case ContentControl contentControl:
-          contentControl.Style = this.ItemContainerStyle;
-          contentControl.ContentTemplate = this.ItemTemplate;
-          contentControl.ContentTemplateSelector = this.ItemTemplateSelector;
           contentControl.Content = item;
           contentControl.DataContext = item;
           break;
         case Control control:
-          control.Style = this.ItemContainerStyle;
           control.DataContext = item;
           break;
       }
     }
 
-    protected virtual void PrepareContainerForCalendarDateItemOverride(DependencyObject element, object item)
+    public virtual void PrepareContainerForCalendarDateItemOverride(DependencyObject element, object item)
     {
       switch (element)
       {
         case HeaderedItemsControl headeredItemsControl:
-          headeredItemsControl.ItemContainerStyle = this.ItemContainerStyle;
-          headeredItemsControl.ItemTemplate = this.ItemTemplate;
-          headeredItemsControl.ItemTemplateSelector = this.ItemTemplateSelector;
+          headeredItemsControl.ItemContainerStyle = this.DateHeaderItemContainerStyle;
+          headeredItemsControl.ItemTemplate = this.DateHeaderItemTemplate;
+          headeredItemsControl.ItemTemplateSelector = this.DateHeaderItemTemplateSelector;
           headeredItemsControl.Style = this.DateHeaderItemContainerStyle;
           headeredItemsControl.HeaderTemplate = this.DateHeaderItemTemplate;
           headeredItemsControl.HeaderTemplateSelector = this.DateHeaderItemTemplateSelector;
@@ -795,7 +662,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
       }
     }
 
-    protected virtual void PrepareContainerForCalendarDateColumnHeaderItemOverride(
+    public virtual void PrepareContainerForCalendarDateColumnHeaderItemOverride(
       DependencyObject element,
       object item)
     {
@@ -829,203 +696,35 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
     /// <inheritdoc />
     protected override Size ArrangeOverride(Size arrangeBounds)
     {
-      base.ArrangeOverride(arrangeBounds);
       if (Calendar.IsItemsHostLayoutDirty)
       {
-        this.ItemsHost?.UpdateCalendarLayout();
+        //this.ItemsHost?.InvalidateArrange();
         Calendar.IsItemsHostLayoutDirty = false;
       }
+      base.ArrangeOverride(arrangeBounds);
 
       return arrangeBounds;
     }
 
     #endregion
 
-    ///// <inheritdoc />
-    //protected override void OnRender(DrawingContext drawingContext)
-    //{
-    //    base.OnRender(drawingContext);
-    //    if (!(this.ItemsHost is Panel panel))
-    //    {
-    //        return;
-    //    }
-
-    //    DrawGridLines(panel, drawingContext);
-    //}
-
-    //protected virtual void DrawGridLines(Panel panel, DrawingContext drawingContext)
-    //{
-    //    if (!(panel is Grid gridPanel))
-    //    {
-    //        return;
-    //    }
-
-    //    var pen = new Pen(this.GridColor, this.GridThickness);
-    //    var verticalLineStart = new Point(0, 0);
-    //    var horizontalLineStart = new Point(0, 0);
-    //    var verticalLineEnd = new Point(0, gridPanel.ActualHeight);
-    //    var horizontalLineEnd = new Point(gridPanel.ActualWidth, 0);
-
-    //    drawingContext.DrawLine(pen, horizontalLineStart, horizontalLineEnd);
-    //    drawingContext.DrawLine(pen, verticalLineStart, verticalLineEnd);
-
-    //    foreach (RowDefinition panelRowDefinition in gridPanel.RowDefinitions)
-    //    {
-    //        horizontalLineStart.Y = panelRowDefinition.Offset + panelRowDefinition.ActualHeight;
-    //        horizontalLineEnd.Y = panelRowDefinition.Offset + panelRowDefinition.ActualHeight;
-
-
-    //        drawingContext.DrawLine(pen, horizontalLineStart, horizontalLineEnd);
-    //    }
-
-    //    foreach (ColumnDefinition panelColumnDefinition in gridPanel.ColumnDefinitions)
-    //    {
-    //        verticalLineStart.X = panelColumnDefinition.Offset + panelColumnDefinition.ActualWidth;
-    //        verticalLineEnd.X = panelColumnDefinition.Offset + panelColumnDefinition.ActualWidth;
-    //        drawingContext.DrawLine(pen, verticalLineStart, verticalLineEnd);
-    //    }
-    //}
-
-    protected virtual void OnCanExecuteChanged(object sender, EventArgs e)
-    {
-    }
-
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-      //    this.ItemsHost = GetItemsHost();
-      if (this.ItemsHost != null)
+      if (this.TryFindVisualChildElement(out CalendarPanel hostPanel))
       {
-        InvalidateVisual();
+        ObserveItemsHost(hostPanel);
       }
     }
 
-    private void ObserveItemsHost()
+    private void ObserveItemsHost(CalendarPanel hostPanel)
     {
-      //if (this.ItemsHost is CalendarPanel oldCalendarPanel)
-      //{
-      //    oldCalendarPanel.AutogeneratingDate -= OnItemsHostIsAutogeneratingDate;
-      //    oldCalendarPanel.AutogeneratingDateColumnHeader -= OnItemsHostIsAutogeneratingDateColumnHeader;
-      //}
-
-      //if (this.ItemsHost is CalendarPanel newCalendarPanel)
-      //{
-      //    newCalendarPanel.AutogeneratingDate += OnItemsHostIsAutogeneratingDate;
-      //    newCalendarPanel.AutogeneratingDateColumnHeader += OnItemsHostIsAutogeneratingDateColumnHeader;
-      //}
-
-      this.ItemsHost.AutogeneratingDate += OnItemsHostIsAutogeneratingDate;
-      this.ItemsHost.AutogeneratingDateColumnHeader += OnItemsHostIsAutogeneratingDateColumnHeader;
+      hostPanel.AutogeneratingDate += OnItemsHostIsAutogeneratingDate;
+      hostPanel.AutogeneratingDateColumnHeader += OnItemsHostIsAutogeneratingDateColumnHeader;
     }
 
-    private void OnItemsHostIsAutogeneratingDateColumnHeader(object sender, DateColumnHeaderGeneratorArgs e)
-    {
-      OnAutogeneratingDateColumnHeader(e);
-      //switch (this.ItemsHost)
-      //{
-      //  case CalendarPanel _:
-      //    return;
-      //  case Grid _:
-      //    OnGeneratingDateColumnHeader(e);
-      //    break;
-      //}
-    }
+    private void OnItemsHostIsAutogeneratingDateColumnHeader(object sender, DateColumnHeaderGeneratorArgs e) => OnAutogeneratingDateColumnHeader(e);
 
-    private void OnItemsHostIsAutogeneratingDate(object sender, DateGeneratorArgs e)
-    {
-      OnAutogeneratingDate(e);
-      //switch (this.ItemsHost)
-      //{
-      //  case CalendarPanel _:
-      //    return;
-      //  case Grid _:
-      //    OnGeneratingDate(e);
-      //    break;
-      //}
-    }
-
-    private void CreateDateColumnHeaderItems()
-    {
-      var dateColumnHeaderItemContainers = new List<UIElement>();
-      List<int> dayOfWeekValues = Enum.GetValues(typeof(DayOfWeek)).Cast<int>().ToList();
-      List<int> daysOfWeekToWrap = dayOfWeekValues.TakeWhile(dayValue => dayValue < (int) this.FirstDayOfWeek).ToList();
-      dayOfWeekValues.RemoveRange(0, daysOfWeekToWrap.Count);
-      dayOfWeekValues.AddRange(daysOfWeekToWrap);
-      IEnumerable<string> daysOfWeek = dayOfWeekValues.Select(dayOfWeekValue => ((DayOfWeek) dayOfWeekValue).ToString());
-      foreach (string dayOfWeekName in daysOfWeek)
-      {
-        var dateContainer = GetContainerForDateColumnHeaderItem() as UIElement;
-        PrepareContainerForCalendarDateColumnHeaderItemOverride(dateContainer, dayOfWeekName);
-
-        dateColumnHeaderItemContainers.Add(dateContainer);
-      }
-
-      this.ItemsHost.AddDateColumnHeaderChildren(dateColumnHeaderItemContainers);
-    }
-
-    //private Size ArrangeDateItems(Size arrangeBounds)
-    //{
-    //    for (var index = 0; index < this.ItemContainerToItemMap.Count; index++)
-    //    {
-    //        DependencyObject itemContainer = this.ItemContainerToItemMap.Keys.ElementAt(index);
-    //        object item = this.ItemContainerToItemMap[itemContainer];
-    //        int columnIndex = index % 7;
-    //        int rowIndex = (int) Math.Floor(index / 7.0) + 1;
-    //        var dateGeneratorArgs = new DateGeneratorArgs(
-    //            itemContainer as UIElement,
-    //            this.ItemsHost,
-    //            item,
-    //            columnIndex % 7,
-    //            rowIndex);
-
-    //        OnAutogeneratingDate(dateGeneratorArgs);
-    //        OnGeneratingDate(dateGeneratorArgs);
-    //    }
-
-    //    return arrangeBounds;
-    //}
-
-    //private Size ArrangeDateColumnHeaderItems(Size arrangeBounds)
-    //{
-    //    for (var columnIndex = 0; columnIndex < 7; columnIndex++)
-    //    {
-    //        CalendarDateColumnHeaderItem dateContainer = this.DateColumnHeaderItems[columnIndex];
-    //        var dateColumnHeaderGeneratorArgs = new DateColumnHeaderGeneratorArgs(
-    //            dateContainer,
-    //            this.ItemsHost,
-    //            dateContainer.Header,
-    //            columnIndex,
-    //            0);
-
-    //        OnAutogeneratingDateColumnHeader(dateColumnHeaderGeneratorArgs);
-    //        OnGeneratingDateColumnHeader(dateColumnHeaderGeneratorArgs);
-    //    }
-
-    //    return arrangeBounds;
-    //}
-
-    //protected virtual void OnGeneratingDateColumnHeader(DateColumnHeaderGeneratorArgs dateColumnHeaderGeneratorArgs)
-    //{
-    //  if (dateColumnHeaderGeneratorArgs.IsCanceled)
-    //  {
-    //    return;
-    //  }
-
-    //  Grid.SetRow(dateColumnHeaderGeneratorArgs.ItemContainer, 0);
-    //  Grid.SetColumn(dateColumnHeaderGeneratorArgs.ItemContainer, dateColumnHeaderGeneratorArgs.ColumnIndex);
-    //  //this.ItemsHost.Children.Add(dateColumnHeaderGeneratorArgs.ItemContainer);
-    //}
-
-    //protected virtual void OnGeneratingDate(DateGeneratorArgs dateGeneratorArgs)
-    //{
-    //  if (dateGeneratorArgs.IsCanceled)
-    //  {
-    //    return;
-    //  }
-
-    //  Grid.SetRow(dateGeneratorArgs.ItemContainer, dateGeneratorArgs.RowIndex);
-    //  Grid.SetColumn(dateGeneratorArgs.ItemContainer, dateGeneratorArgs.ColumnIndex);
-    //  //this.ItemsHost.Children.Add(dateGeneratorArgs.ItemContainer);
-    //}
+    private void OnItemsHostIsAutogeneratingDate(object sender, DateGeneratorArgs e) => OnAutogeneratingDate(e);
 
     protected virtual void OnAutogeneratingDate(DateGeneratorArgs e) => this.AutogeneratingDate?.Invoke(this, e);
 
@@ -1059,59 +758,47 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
       remove => RemoveHandler(Calendar.PreviewUnselectedRoutedEvent, value);
     }
 
-    public IEnumerable ItemsSource
-    {
-      get => (IEnumerable) GetValue(Calendar.ItemsSourceProperty);
-      set => SetValue(Calendar.ItemsSourceProperty, value);
-    }
+    //public IEnumerable ItemsSource
+    //{
+    //  get => (IEnumerable) GetValue(Calendar.ItemsSourceProperty);
+    //  set => SetValue(Calendar.ItemsSourceProperty, value);
+    //}
 
-    public CollectionView Items
-    {
-      get => (CollectionView) GetValue(Calendar.ItemsProperty);
-      set => SetValue(Calendar.ItemsProperty, value);
-    }
+    //public CollectionView Items
+    //{
+    //  get => (CollectionView) GetValue(Calendar.ItemsProperty);
+    //  set => SetValue(Calendar.ItemsProperty, value);
+    //}
 
-    public CollectionView DateHeaderItems
-    {
-      get => (CollectionView) GetValue(Calendar.DateHeaderItemsProperty);
-      set => SetValue(Calendar.DateHeaderItemsProperty, value);
-    }
+    //public Style ItemContainerStyle
+    //{
+    //  get => (Style) GetValue(Calendar.ItemContainerStyleProperty);
+    //  set => SetValue(Calendar.ItemContainerStyleProperty, value);
+    //}
 
-    public Style ItemContainerStyle
-    {
-      get => (Style) GetValue(Calendar.ItemContainerStyleProperty);
-      set => SetValue(Calendar.ItemContainerStyleProperty, value);
-    }
+    //public DataTemplate ItemTemplate
+    //{
+    //  get => (DataTemplate) GetValue(Calendar.ItemTemplateProperty);
+    //  set => SetValue(Calendar.ItemTemplateProperty, value);
+    //}
 
-    public DataTemplate ItemTemplate
-    {
-      get => (DataTemplate) GetValue(Calendar.ItemTemplateProperty);
-      set => SetValue(Calendar.ItemTemplateProperty, value);
-    }
+    //public DataTemplateSelector ItemTemplateSelector
+    //{
+    //  get => (DataTemplateSelector) GetValue(Calendar.ItemTemplateSelectorProperty);
+    //  set => SetValue(Calendar.ItemTemplateSelectorProperty, value);
+    //}
 
-    public DataTemplateSelector ItemTemplateSelector
-    {
-      get => (DataTemplateSelector) GetValue(Calendar.ItemTemplateSelectorProperty);
-      set => SetValue(Calendar.ItemTemplateSelectorProperty, value);
-    }
+    //public object SelectedItem
+    //{
+    //  get => GetValue(Calendar.SelectedItemProperty);
+    //  set => SetValue(Calendar.SelectedItemProperty, value);
+    //}
 
-    public object SelectedItem
-    {
-      get => GetValue(Calendar.SelectedItemProperty);
-      set => SetValue(Calendar.SelectedItemProperty, value);
-    }
-
-    public int SelectedIndex
-    {
-      get => (int) GetValue(Calendar.SelectedIndexProperty);
-      set => SetValue(Calendar.SelectedIndexProperty, value);
-    }
-
-    public IEnumerable DateHeaderItemsSource
-    {
-      get => (IEnumerable) GetValue(Calendar.DateHeaderItemsSourceProperty);
-      set => SetValue(Calendar.DateHeaderItemsSourceProperty, value);
-    }
+    //public int SelectedIndex
+    //{
+    //  get => (int) GetValue(Calendar.SelectedIndexProperty);
+    //  set => SetValue(Calendar.SelectedIndexProperty, value);
+    //}
 
     public Brush GridColor
     {
@@ -1173,81 +860,9 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
     public static Dictionary<DateTime, UIElement> DateToDateItemContainerMap { get; }
     private static Dictionary<UIElement, DateTime> DateItemContainerToDateMap { get; }
 
-    private CalendarPanel ItemsHost { get; set; }
-
     private static bool IsItemsHostLayoutDirty { get; set; }
 
     private DayChangeWatcher DayChangeWatcher { get; }
-
-    private static Calendar Instance { get; set; }
-
-    //public static readonly DependencyProperty DateColumnHeaderItemTemplateProperty = DependencyProperty.Register(
-    //    "DateColumnHeaderItemTemplate",
-    //    typeof(DataTemplate),
-    //    typeof(Calendar),
-    //    new PropertyMetadata(default(DataTemplate), Calendar.OnDateColumnHeaderItemTemplateChanged));
-
-    //public static readonly DependencyProperty DateColumnHeaderDataTemplateSelectorProperty =
-    //    DependencyProperty.Register(
-    //        "DateColumnHeaderDataTemplateSelector",
-    //        typeof(DataTemplateSelector),
-    //        typeof(Calendar),
-    //        new PropertyMetadata(
-    //            default(DataTemplateSelector),
-    //            Calendar.OnDateColumnHeaderItemTemplateSelectorChanged));
-
-    /// <inheritdoc />
-    //protected override Size MeasureOverride(Size constraint)
-    //{
-    //    base.MeasureOverride(constraint);
-
-    //    CreateDateColumnHeaderItems();
-    //    this.DateColumnHeaderItems.ForEach(itemContainer => itemContainer.Measure(constraint));
-    //    return constraint;
-    //}
-
-    //private static void OnDateColumnHeaderItemTemplateChanged(
-    //    DependencyObject d,
-    //    DependencyPropertyChangedEventArgs e)
-    //{
-    //    var this_ = d as Calendar;
-    //    this_.DateColumnHeaderItems.ForEach(
-    //        itemContainer => itemContainer.ContentTemplate = e.NewValue as DataTemplate);
-    //}
-
-    //private Size CreateDateItems(Size constraint)
-    //{
-    //    //this.DateItems.Clear();
-    //    var requiredSize = new Size(0, 0);
-    //    foreach (object item in this.Items)
-    //    {
-    //        DependencyObject itemContainer = GetContainerForItemOverride();
-    //        PrepareContainerForItemOverride(itemContainer, item);
-    //        //{
-    //        //    DataContext = item,
-    //        //    Header = item,
-    //        //    HeaderTemplate = this.DateItemTemplate,
-    //        //    HeaderTemplateSelector = this.DateItemTemplateSelector,
-    //        //    Style = this.DateItemContainerStyle,
-    //        //    ItemContainerStyle = this.DateHeaderItemContainerStyle,
-    //        //    ItemTemplate = this.DateHeaderItemTemplate,
-    //        //    ItemTemplateSelector = this.CalendarEventItemTemplateSelector
-    //        //};
-    //        //this.DateItems.Add(itemContainer);
-
-    //        if (!this.ItemContainerToItemMap.ContainsKey(itemContainer))
-    //        {
-    //            this.ItemContainerToItemMap.Add(itemContainer, item);
-    //        }
-
-    //        (itemContainer as UIElement)?.Measure(constraint);
-    //        requiredSize.Height = Math.Max(
-    //            requiredSize.Height,
-    //            (itemContainer as UIElement)?.DesiredSize.Height ?? 0);
-    //        requiredSize.Width += (itemContainer as UIElement)?.DesiredSize.Width ?? 0;
-    //    }
-
-    //    return requiredSize;
-    //}
+    private ScrollViewer ScrollHost { get; set; }
   }
 }

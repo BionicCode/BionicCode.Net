@@ -2,11 +2,12 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:BionicCode.Net.Framework.Wpf.BionicCharts.Ui.Test"
+             xmlns:bionicCalendar="clr-namespace:BionicCode.Controls.Net.Framework.Wpf.BionicCalendar;assembly=BionicCode.Controls.Net.Framework.Wpf"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
 
   </Application.Resources>
-    <JumpList.JumpList>
+  <JumpList.JumpList>
       <JumpList ShowRecentCategory="True"
                 ShowFrequentCategory="True">
         <JumpTask Title="Notepad" 

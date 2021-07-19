@@ -159,11 +159,13 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
 
     private static Dictionary<IDialogViewModel, Window> ViewModelToDialogMap { get; }
     private static Dictionary<Window, DependencyObject> DialogToAttachingElementMap { get; }
+    private static Dictionary<IDialogViewModel, bool> IsClosedByWindowsChromeCloseButton { get; }
 
     static Dialog()
     {
       Dialog.ViewModelToDialogMap = new Dictionary<IDialogViewModel, Window>();
       Dialog.DialogToAttachingElementMap = new Dictionary<Window, DependencyObject>();
+      Dialog.IsClosedByWindowsChromeCloseButton = new Dictionary<IDialogViewModel, bool>();
     }
 
     /// <summary>
@@ -206,6 +208,7 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
       window.Closing += Dialog.PreventCloseDialogOnClosing;
       Dialog.ViewModelToDialogMap.Add(newDialogViewModel, window);
       Dialog.DialogToAttachingElementMap.Add(window, attachingElement);
+      Dialog.IsClosedByWindowsChromeCloseButton.Add(newDialogViewModel, true);
 
       if (Dialog.GetIsModal(attachingElement))
       {
@@ -253,7 +256,7 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
       }
     }
 
-    private static void CleanUpOnDialogClosed(object sender, EventArgs e)
+    private static async void CleanUpOnDialogClosed(object sender, EventArgs e)
     {
       var dialog = sender as Window;
       var dialogViewModel = dialog?.DataContext as IDialogViewModel;
@@ -262,6 +265,13 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
       dialog.Closed -= Dialog.CleanUpOnDialogClosed;
       dialog.Closing -= Dialog.PreventCloseDialogOnClosing;
       dialogViewModel.InteractionCompleted -= Dialog.CloseDialogOnInteractionCompleted;
+
+      if (Dialog.IsClosedByWindowsChromeCloseButton.TryGetValue(dialogViewModel, out bool isClosedByWindowChromeCloseButton) && isClosedByWindowChromeCloseButton)
+      {
+        await dialogViewModel.SendResponseAsyncCommand.ExecuteAsync(DialogResult.Aborted);
+      }
+
+      Dialog.IsClosedByWindowsChromeCloseButton.Remove(dialogViewModel);
     }
 
     private static void CloseDialogOnInteractionCompleted(object sender, EventArgs e)

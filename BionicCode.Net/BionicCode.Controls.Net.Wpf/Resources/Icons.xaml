@@ -1,0 +1,26 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:BionicCode.Controls.Net.Wpf.Resources">
+
+  <Style x:Key="IconStyle" TargetType="TextBlock">
+    <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+    <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Background}"/>
+    <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}"/>
+  </Style>
+
+  <Viewbox x:Key="ChevronLeftIcon">
+    <TextBlock Text="&#xE973;" 
+               Style="{StaticResource IconStyle}" />
+  </Viewbox>
+
+  <Viewbox x:Key="ChevronRightIcon">
+    <TextBlock Text="&#xE974;"
+               Style="{StaticResource IconStyle}" />
+  </Viewbox>
+
+  <Viewbox x:Key="GotoTodayIcon">
+    <TextBlock Text="&#xE8D1;"
+               Style="{StaticResource IconStyle}" />
+  </Viewbox>
+
+</ResourceDictionary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Threading;
 
 namespace BionicCode.Controls.Net.Wpf
@@ -15,7 +16,7 @@ namespace BionicCode.Controls.Net.Wpf
       "ClockFace",
       typeof(ClockFace),
       typeof(Clock),
-      new PropertyMetadata(default));
+      new PropertyMetadata(default(ClockFace), Clock.OnClockFaceChanged));
 
     public ClockFace ClockFace { get => (ClockFace) GetValue(Clock.ClockFaceProperty); set => SetValue(Clock.ClockFaceProperty, value); }
 
@@ -103,6 +104,7 @@ namespace BionicCode.Controls.Net.Wpf
     public bool IsDaylightSavingTime => this.TimeZone.IsDaylightSavingTime(this.CurrentDateTime);
 
     private DispatcherTimer Timer { get; }
+    private Binding  CurrentDateTimeBinding { get; }
 
     static Clock()
     {
@@ -113,6 +115,11 @@ namespace BionicCode.Controls.Net.Wpf
     public Clock()
     {
       this.Timer = new DispatcherTimer(this.Precision, this.DispatcherPriority, OnTimerElapsed, this.Dispatcher);
+      this.CurrentDateTimeBinding = new Binding()
+      {
+        Source = this, 
+        Path = new PropertyPath(nameof(this.CurrentDateTime))
+      };
     }
 
     #region OnCurrentDateTimeChanged dependency property changed handler
@@ -128,6 +135,22 @@ namespace BionicCode.Controls.Net.Wpf
     }
 
     #endregion OnCurrentDateTimeChanged dependency property changed handler
+
+    #region OnClockFaceChanged dependency property changed handler
+
+    private static void OnClockFaceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
+      (d as Clock).OnClockFaceChanged((ClockFace) e.OldValue, (ClockFace) e.NewValue);
+
+    protected virtual void OnClockFaceChanged(ClockFace oldValue, ClockFace newValue)
+    {
+      if (oldValue != null)
+      {
+        BindingOperations.ClearBinding(oldValue, ClockFace.SelectedTimeProperty);
+      }
+      newValue.SetBinding(Wpf.ClockFace.SelectedTimeProperty, this.CurrentDateTimeBinding);
+    }
+
+    #endregion OnClockFaceChanged dependency property changed handler
 
     private void OnTimerElapsed(object sender, EventArgs e) => this.CurrentDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, this.TimeZone);
   }

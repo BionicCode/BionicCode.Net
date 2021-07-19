@@ -14,10 +14,11 @@
     <PackageIcon>BionicCode_Logo.png</PackageIcon>
     <PackageTags>ViewModel BaseViewModel Base View Model Profiler Profiling Measure Measuring View Model ViewModel ExtensionMethods EventAggregator Aggregator Event MVVM NullObject NullObjectFactory Factory IFatory ValueChangedEventArgs AutoResetStream Stream PropertyValueChangedArgs FileExtension FileExtensions PropertyValueChanged</PackageTags>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <RepositoryUrl>https://github.com/BionicCode/BionicCode.Net.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Successor of legacy 'BionicUtilities.Net' package and library. 'BionicUtilities.Net' will no longer be maintained (except bug fixes).
+    <PackageReleaseNotes>- Improved ViewModel
+- Removed obsolete BaseViewModel
 
 ---------------------------------------------------------
 For bug reports or feature requests please visit the project home on GutHub (follow the "Project Site" link on the right) and then open an issue (open the "issue" tab, click "New Issue" and select the appropriate template) or send  a mail to BionicCode@outlook.com. Thank you very much.</PackageReleaseNotes>
@@ -32,7 +33,7 @@ For bug reports or feature requests please visit the project home on GutHub (fol
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
   </ItemGroup>
 
   <ItemGroup>

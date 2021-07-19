@@ -1,0 +1,76 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:BionicCode.Controls.Net.Wpf">
+  <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/SwipeFrame/Styles/FrameHeaderTitleTemplates.xaml" />
+                <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/SwipeFrame/Styles/Icons.xaml" />
+                <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/SwipeFrame/Styles/ButtonStyle.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <Style TargetType="{x:Type local:BionicSwipePageFrameHeader}">
+    <Setter Property="SnapsToDevicePixels"
+            Value="True" />
+    <Setter Property="IconHeight"
+            Value="32" />
+    <Setter Property="IconWidth"
+            Value="Auto" />
+    <Setter Property="Padding"
+            Value="0" />
+    <Setter Property="BorderThickness"
+            Value="0" />
+    <Setter Property="BorderBrush"
+            Value="Transparent" />
+    <Setter Property="Background"
+            Value="Transparent" />
+    <Setter Property="FontSize"
+            Value="18" />
+    <Setter Property="FontStretch"
+            Value="UltraExpanded" />
+    <Setter Property="FontWeight"
+            Value="UltraLight" />
+    <Setter Property="VerticalContentAlignment"
+            Value="Center" />
+    <Setter Property="HorizontalContentAlignment"
+            Value="Center" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:BionicSwipePageFrameHeader}">
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  Padding="{TemplateBinding Padding}">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <Button Grid.Column="0"
+                      Content="{StaticResource ChevronRightIcon}"
+                      Command="{x:Static local:BionicSwipePageFrame.LoadPreviousPageRoutedCommand}"
+                      Style="{StaticResource {x:Static local:BionicSwipePageFrameHeader.ButtonStyleKey}}"
+                      HorizontalAlignment="Left">
+                <Button.RenderTransform>
+                  <RotateTransform Angle="180"
+                                   CenterX="20"
+                                   CenterY="16" />
+                </Button.RenderTransform>
+              </Button>
+              <Grid x:Name="PART_PageHeaderTitleHostPanel"
+                    Grid.Column="1"
+                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                <ContentControl x:Name="PART_Title" />
+              </Grid>
+              <Button Grid.Column="2"
+                      Content="{StaticResource ChevronRightIcon}"
+                      Command="{x:Static local:BionicSwipePageFrame.LoadNextPageRoutedCommand}"
+                      Style="{StaticResource {x:Static local:BionicSwipePageFrameHeader.ButtonStyleKey}}" />
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+</ResourceDictionary>

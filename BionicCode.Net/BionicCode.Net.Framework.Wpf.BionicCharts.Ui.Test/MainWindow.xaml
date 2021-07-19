@@ -13,9 +13,9 @@
   <Window.DataContext>
     <local:CartesianChartViewModel />
   </Window.DataContext>
-  <StackPanel>
+  <DockPanel>
 <!--<Button Content="Test Command" Command="{Binding AsyncRelayTestCommand}"/>-->
-    <bionicCalendar:Calendar VerticalContentAlignment="Stretch" Background="Red" FirstDayOfWeek="Monday"/>
+    <bionicCalendar:Calendar VerticalContentAlignment="Stretch" FirstDayOfWeek="Monday"/>
 
     <!--<ListBox x:Name="ListBox" Height="800" ItemsSource="{Binding ChartPoints}" VirtualizingPanel.CacheLength="10" VirtualizingPanel.VirtualizationMode="Recycling" />-->
       <!--<TextBlock attachedBehaviors:TextControl.HighlightBackground="Chocolate" attachedBehaviors:TextControl.HighlightForeground="Cornsilk" attachedBehaviors:TextControl.IsHighlightingEnabled="True" attachedBehaviors:TextControl.Text="0123456789" >
@@ -67,5 +67,5 @@
         <bionicCharts:CartesianChartItem X="100" Y="20"><Ellipse Height="10" Width="10" StrokeThickness="2" Stroke="Black"/></bionicCharts:CartesianChartItem>
       </bionicCharts:CartesianChart.Items>--><!--
     </bionicCharts:CartesianChart>-->
-  </StackPanel>
+  </DockPanel>
 </Window>

@@ -23,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\BionicCode.Controls.Net.Framework.Wpf.xml</DocumentationFile>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -60,6 +62,9 @@
     <Compile Include="BionicCalendar\CalendarEventItem.cs" />
     <Compile Include="BionicCalendar\CalendarPanel.cs" />
     <Compile Include="BionicCalendar\CalendarRowItem.cs" />
+    <Compile Include="BionicCalendar\CalendarView.cs" />
+    <Compile Include="BionicCalendar\CalendarViewChangedEventArgs.cs" />
+    <Compile Include="BionicCalendar\CalendarViewChangedRoutedEventHandler.cs" />
     <Compile Include="BionicCalendar\DateColumnHeaderGeneratorArgs.cs" />
     <Compile Include="BionicCalendar\DateGeneratorArgs.cs" />
     <Compile Include="BionicCalendar\DayChangeWatcher.cs" />
@@ -69,8 +74,40 @@
     <Compile Include="BionicCalendar\ICalendarDate.cs" />
     <Compile Include="BionicCalendar\ICalendarEvent.cs" />
     <Compile Include="BionicCalendar\SpanningRequestedRoutedEventArgs.cs" />
+    <Compile Include="BionicCalendar\WeekHeaderItem.cs" />
+    <Compile Include="ScrollDirection.cs" />
     <Compile Include="BionicCharts\CartesianChart\VirtualizingCartesianCanvas.cs" />
+    <Compile Include="SwipeFrame\BionicSwipePage.cs" />
+    <Compile Include="SwipeFrame\BionicSwipePageFrame.cs" />
+    <Compile Include="SwipeFrame\BionicSwipePageFrameHeader.cs" />
+    <Compile Include="SwipeFrame\PageNavigationDirection.cs" />
+    <Compile Include="SwipeFrame\PageTitleDataTemplateSelector.cs" />
     <Compile Include="TimeTextBox.cs" />
+    <Compile Include="ValueChangedRoutedEventArgs.cs" />
+    <Page Include="SwipeFrame\Styles\ButtonStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SwipeFrame\Styles\FrameHeaderTitleTemplates.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SwipeFrame\Styles\Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\BionicSwipePageFrameStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\BionicSwipePageStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\FrameHeaderStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

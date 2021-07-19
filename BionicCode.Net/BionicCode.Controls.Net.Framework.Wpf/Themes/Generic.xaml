@@ -4,6 +4,12 @@
     xmlns:bionicCharts="clr-namespace:BionicCode.Controls.Net.Framework.Wpf.BionicCharts"
     xmlns:bionicCalendar="clr-namespace:BionicCode.Controls.Net.Framework.Wpf.BionicCalendar">
 
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/BionicCode.Controls.Net.Framework.Wpf;component/Themes/BionicSwipePageStyle.xaml" />
+    <ResourceDictionary Source="/BionicCode.Controls.Net.Framework.Wpf;component/Themes/FrameHeaderStyle.xaml" />
+    <ResourceDictionary Source="/BionicCode.Controls.Net.Framework.Wpf;component/Themes/BionicSwipePageFrameStyle.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
   <Style TargetType="{x:Type bionicCharts:CartesianChart}">
     <Style.Resources>
     </Style.Resources>
@@ -57,15 +63,22 @@
 
 
 
+  <Color x:Key="DarkColor">#FF252526</Color>
+  <Color x:Key="SelectedDateColor">DodgerBlue</Color>
+  <Color x:Key="TodayHighlightColor">OrangeRed</Color>
   <Color x:Key="EventItemBackgroundColor">#C99752</Color>
   <Color x:Key="EventItemGripColor">#BA7413</Color>
   <Color x:Key="EventItemHighlightBorderColor">#FF9400</Color>
   <Color x:Key="EventItemBorderColor">Transparent</Color>
   <Color x:Key="DateItemBackgroundColor">Transparent</Color>
   <Color x:Key="DateItemBorderColor">Transparent</Color>
-  <Color x:Key="DateColumnHeaderItemBackgroundColor">#9BC1C1C1</Color>
+  <Color x:Key="DateColumnHeaderItemBackgroundColor">#FF252526</Color>
   <Color x:Key="DateColumnHeaderItemBorderColor">#00464444</Color>
 
+  <SolidColorBrush x:Key="DarkBrush" Color="{StaticResource DarkColor}" />
+  <SolidColorBrush x:Key="SelectedDateBrush" Opacity="0.6" Color="{StaticResource SelectedDateColor}" />
+  <SolidColorBrush x:Key="TodayHighlightBrush"
+                   Color="{StaticResource TodayHighlightColor}" />
   <SolidColorBrush x:Key="DateItemBackgroundBrush" Color="{StaticResource DateItemBackgroundColor}" />
   <SolidColorBrush x:Key="DateItemBorderBrush" Color="{StaticResource DateItemBorderColor}" />
   <SolidColorBrush x:Key="EventItemBackgroundBrush" Color="{StaticResource EventItemBackgroundColor}" />
@@ -172,10 +185,10 @@
 
 
   <Style TargetType="bionicCalendar:CalendarDateItem">
-    <Setter Property="Background" Value="{StaticResource DateItemBackgroundBrush}" />
+    <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderThickness" Value="{StaticResource DateItemBorderThickness}" />
     <Setter Property="BorderBrush" Value="{StaticResource DateItemBorderBrush}" />
-    <Setter Property="bionicCalendar:Calendar.Day" Value="{Binding Day}" />
+    <!--<Setter Property="bionicCalendar:Calendar.Day" Value="{Binding Day}" />-->
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="VerticalContentAlignment" Value="Top" />
     <Setter Property="VerticalAlignment" Value="Stretch" />
@@ -192,15 +205,15 @@
               <Border x:Name="ClickableBackground"
                       Grid.Row="0" Grid.Column="0" IsHitTestVisible="True"
                       Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-              <Border x:Name="TodayMarker"
-                      Grid.Row="0" Grid.Column="0"
-                      Visibility="Collapsed"
-                      Background="Red" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
               <Border x:Name="SelectionBorder"
                     Grid.Row="0" Grid.Column="0"
                     Visibility="Collapsed"
-                    Background="Yellow" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" />
-              <ContentPresenter Grid.Row="0" Grid.Column="0"
+                    Background="{StaticResource SelectedDateBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" />
+              <Border x:Name="TodayMarker"
+                      Grid.Row="0" Grid.Column="0"
+                      Visibility="Collapsed"
+                      Background="{StaticResource TodayHighlightBrush}" HorizontalAlignment="Stretch" Height="32" VerticalAlignment="Top" />
+              <ContentPresenter Grid.Row="0" Grid.Column="0" Height="32"
                                 Margin="0,0,0,0"
                                 ContentSource="Header" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
 
@@ -227,24 +240,27 @@
                  VerticalAlignment="Center"
                  HorizontalAlignment="Stretch"
                  FontSize="10" 
+                 Foreground="{StaticResource DarkBrush}"
                  TextTrimming="CharacterEllipsis"  />
   </DataTemplate>
-  <DataTemplate x:Key="DefaultCalendarDateItemTemplate" DataType="{x:Type bionicCalendar:CalendarDate}">
-    <Grid Margin="4,0">
+
+  <DataTemplate x:Key="{x:Static bionicCalendar:CalendarPanel.DefaultCalendarDateItemTemplateKey}" DataType="{x:Type bionicCalendar:CalendarDate}">
+    <Grid Background="Transparent">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto" />
         <ColumnDefinition />
       </Grid.ColumnDefinitions>
       <TextBlock Text="{Binding Day.Day}"
-                 VerticalAlignment="Center"
+                 VerticalAlignment="Top"
                  FontSize="14"
+                 Margin="8,4,0,0"
                  FontStretch="UltraExpanded"
                  FontWeight="UltraLight" />
-      <TextBlock Grid.Column="1" Margin="8,0,0,0" 
+      <TextBlock Grid.Column="1" Margin="8,8,0,0" 
                  Text="{Binding Annotation}" 
                  FontSize="9" 
                  TextTrimming="CharacterEllipsis" 
-                 VerticalAlignment="Center" />
+                 VerticalAlignment="Top" />
     </Grid>
   </DataTemplate>
 
@@ -259,7 +275,7 @@
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}"
                   Background="{TemplateBinding Background}">
-            <TextBlock Margin="4,0" 
+            <TextBlock Margin="8,0,0,0" 
                        Text="{Binding}"
                        FontSize="14"
                        FontStretch="UltraExpanded"
@@ -271,22 +287,90 @@
     </Setter>
   </Style>
 
+  <Style TargetType="bionicCalendar:WeekHeaderItem">
+    <Setter Property="Foreground"
+            Value="#FF252526" />
+    <Setter Property="Background">
+      <Setter.Value>
+        <SolidColorBrush Color="DarkGray" Opacity="0.2"/>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="LayoutTransform">
+      <Setter.Value>
+        <RotateTransform Angle="-90"/>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="FontStretch" Value="ExtraExpanded" />
+    <Setter Property="FontWeight" Value="UltraLight" />
+    <Setter Property="Padding" Value="0,4" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="bionicCalendar:WeekHeaderItem">
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
   <Style TargetType="{x:Type bionicCalendar:Calendar}">
-    <Setter Property="Background" Value="Transparent" />
-    <Setter Property="ItemContainerStyle" Value="{StaticResource {x:Type bionicCalendar:CalendarEventItem}}" />
-    <Setter Property="DateHeaderItemContainerStyle" Value="{StaticResource {x:Type bionicCalendar:CalendarDateItem}}" />
-    <Setter Property="DateHeaderItemTemplate" Value="{StaticResource DefaultCalendarDateItemTemplate}" />
+    <Setter Property="Background"
+            Value="#FF343434" />
+    <Setter Property="Foreground" Value="AntiqueWhite" />
+    <!--<Setter Property="DateHeaderItemTemplate"
+            Value="{DynamicResource {ComponentResourceKey {x:Type bionicCalendar:CalendarPanel}, {x:Static bionicCalendar:CalendarPanel.DefaultCalendarDateItemTemplateName}}}" />-->
     <Setter Property="ItemTemplate" Value="{StaticResource DefaultCalendarEventItemTemplate}" />
     <Setter Property="DateColumnHeaderItemContainerStyle"
             Value="{StaticResource {x:Type bionicCalendar:CalendarDateColumnHeaderItem}}" />
     <Setter Property="UseLayoutRounding" Value="True" />
+    <Setter Property="ItemsPanel">
+      <Setter.Value>
+        <ItemsPanelTemplate>
+          <bionicCalendar:CalendarPanel GridColor="Black"
+                                        GridThickness="0.2"
+                                        UseLayoutRounding="True"
+                                        SnapsToDevicePixels="True"/>
+        </ItemsPanelTemplate>
+      </Setter.Value>
+    </Setter>
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type bionicCalendar:Calendar}">
           <Border Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}">
-            <bionicCalendar:CalendarPanel x:Name="PART_ItemsHost" Background="BlanchedAlmond" />
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+              <!--<Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>-->
+              <TextBlock Grid.Row="0" 
+                         Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CurrentMonthView.Name}" 
+                         HorizontalAlignment="Center"
+                         FontSize="24"
+                         FontStretch="UltraExpanded"
+                         FontWeight="UltraLight"
+                         Margin="0,8"/>
+              <Button Grid.Row="0"
+                      Content="Next Month"
+                                Command="{x:Static bionicCalendar:Calendar.SelectNextMonthViewRoutedCommand}"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"/>
+
+              <ScrollViewer x:Name="PART_ScrollHost" Grid.Row="1">
+                <ItemsPresenter />
+              </ScrollViewer>
+            </Grid>
           </Border>
         </ControlTemplate>
       </Setter.Value>

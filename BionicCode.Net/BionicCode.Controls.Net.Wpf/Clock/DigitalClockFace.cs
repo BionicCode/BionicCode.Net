@@ -48,6 +48,10 @@ namespace BionicCode.Controls.Net.Wpf
     {
       base.MeasureOverride(constraint);
       DrawClockFace(constraint);
+      if (!IsValidArrangeSize(constraint))
+      {
+        constraint = base.MeasureOverride(constraint);
+      }
       return constraint;
     }
 
@@ -71,6 +75,10 @@ namespace BionicCode.Controls.Net.Wpf
     /// <inheritdoc />
     protected override Size GetNaturalSize()
     {
+      if (!this.Digits.Any())
+      {
+        return new Size(0, 0);
+      }
       var child = this.Digits.First() as UIElement;
       if (!child.IsMeasureValid)
       {
@@ -136,6 +144,8 @@ namespace BionicCode.Controls.Net.Wpf
       var secondDigit1 = new SevenSegmentDisplayDigit(0);
       AddElementToClockFace(secondDigit1, digitPosition);
       this.Digits.Add(secondDigit1);
+
+      OnClockFaceLoaded();
     }
 
     #endregion

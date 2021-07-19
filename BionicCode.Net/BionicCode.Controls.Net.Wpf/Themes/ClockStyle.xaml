@@ -5,7 +5,7 @@
     <Style TargetType="wpf:Clock">
       <Setter Property="ClockFace">
         <Setter.Value>
-          <wpf:DigitalClockFace SelectedTime="{Binding RelativeSource={RelativeSource AncestorType=wpf:Clock}, Path=CurrentDateTime}" />
+          <wpf:DigitalClockFace />
         </Setter.Value>
       </Setter>
       <Setter Property="Template">

@@ -24,15 +24,17 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
     /// <summary>
     /// Generic property setter. Sets the value of any property of the extending view model by passing in a the corresponding property backing field. Automatically raises the <see cref="INotifyPropertyChanged.PropertyChanged"/> event for this property.
     /// </summary>
-    /// <remarks>If new value equals the old value the value of the property won't change and the <see cref="INotifyPropertyChanged.PropertyChanged"/> event won't be raised. Uses the <c>Equals</c> implementation to check for equality.</remarks>
+    /// <remarks>If equality checking is enabled by setting the <paramref name="isRejectEqualValuesEnabled"/> parameter to <c>true</c> and the new value equals the old value, then the <see cref="INotifyPropertyChanged.PropertyChanged"/> event won't be raised. If equality checking is enabled and no <see cref="IEqualityComparer{T}"/> was provided by setting the <paramref name="equalityComparer"/> parameter, the method will check for reference equality using <see cref="object.ReferenceEquals(object, object)"/>.</remarks>
     /// <typeparam name="TValue">The generic type parameter of the new property value.</typeparam>
     /// <param name="value">The new property value.</param>
     /// <param name="targetBackingField">The backing field of the target property for the new value. Passed in by reference using <c>ref</c> keyword.</param>
+    /// <param name="isRejectEqualValuesEnabled">Default: <c>true</c>. Enable equality check before setting the value.</param>
+    /// <param name="equalityComparer">A <see cref="IEqualityComparer{T}"/> to check for value equality. If this optional parameter is not provided <see cref="object.ReferenceEquals"/> will be used.</param>
     /// <param name="propertyName">The name of the property that changes. By default the property name is automatically set to the property that called this setter method.</param>
-    /// <returns><c>true</c> when the property has changed or <c>false</c> when the property value didn't change (e.g. on equality of old and new value).</returns>
-    protected virtual bool TrySetValue<TValue>(TValue value, ref TValue targetBackingField, [CallerMemberName] string propertyName = null)
+    /// <returns><c>true</c> when the property has changed or <c>false</c> when equality checking is enabled and the new property equals the old property value.</returns>    
+    protected virtual bool TrySetValue<TValue>(TValue value, ref TValue targetBackingField, bool isRejectEqualValuesEnabled = true, IEqualityComparer<TValue> equalityComparer = null, [CallerMemberName] string propertyName = null)
     {
-      if (value?.Equals(targetBackingField) ?? false)
+      if (isRejectEqualValuesEnabled && (equalityComparer?.Equals(value, targetBackingField) ?? ReferenceEquals(value, targetBackingField)))
       {
         return false;
       }
@@ -46,16 +48,18 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
     /// <summary>
     /// Generic property setter. Silently sets the value of any property of the extending view model by passing in a the corresponding property backing field. Suppresses a <see cref="INotifyPropertyChanged.PropertyChanged"/> event for this property.
     /// </summary>
-    /// <remarks>If new value equals the old value the value of the property won't change and the <see cref="INotifyPropertyChanged.PropertyChanged"/> event won't be raised. Uses the <c>Equals</c> implementation to check for equality.</remarks>
+    /// <remarks>If equality checking is enabled by setting the <paramref name="isRejectEqualValuesEnabled"/> parameter to <c>true</c> and the new value equals the old value, then the <see cref="INotifyPropertyChanged.PropertyChanged"/> event won't be raised. If equality checking is enabled and no <see cref="IEqualityComparer{T}"/> was provided by setting the <paramref name="equalityComparer"/> parameter, the method will check for reference equality using <see cref="object.ReferenceEquals(object, object)"/>.</remarks>
     /// <typeparam name="TValue">The generic type parameter of the new property value.</typeparam>
     /// <param name="value">The new property value.</param>
     /// <param name="targetBackingField">The backing field of the target property for the new value. Passed in by reference using <c>ref</c> keyword.</param>
+    /// <param name="isRejectEqualValuesEnabled">Default: <c>true</c>. Enable equality check before setting the value.</param>
+    /// <param name="equalityComparer">A <see cref="IEqualityComparer{T}"/> to check for value equality. If this optional parameter is not provided <see cref="object.ReferenceEquals"/> will be used.</param>
     /// <param name="propertyName">The name of the property that changes. By default the property name is automatically set to the property that called this setter method.</param>
     /// <returns><c>true</c> when the property has changed or <c>false</c> when the property value didn't change (e.g. on equality of old and new value).</returns>
-    protected virtual bool TrySetValueSilent<TValue>(TValue value, ref TValue targetBackingField, [CallerMemberName] string propertyName = null)
+    protected virtual bool TrySetValueSilent<TValue>(TValue value, ref TValue targetBackingField, bool isRejectEqualValuesEnabled = true, IEqualityComparer<TValue> equalityComparer = null, [CallerMemberName] string propertyName = null)
     {
       this.IsSilent = true;
-      bool isSuccessful = TrySetValue(value, ref targetBackingField, propertyName);
+      bool isSuccessful = TrySetValue(value, ref targetBackingField, isRejectEqualValuesEnabled, equalityComparer, propertyName);
       this.IsSilent = false;
       return isSuccessful;
     }
@@ -70,10 +74,12 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
     /// <param name="propertyName">The name of the property to set. Default name is the property that called this method.</param>
     /// <param name="isRejectInvalidValueEnabled">When <c>true</c> the invalid value is not stored to the backing field.<br/> Use this to ensure that the view model in a valid state.</param>
     /// <param name="isThrowExceptionOnValidationErrorEnabled">Enable throwing an <exception cref="ArgumentException"></exception> if validation failed. Use this when <c>ValidatesOnExceptions</c> on a <c>Binding</c> is set to <c>true</c></param>
+    /// <param name="isRejectEqualValuesEnabled">Default: <c>true</c>. Enable equality check before setting the value.</param>
+    /// <param name="equalityComparer">A <see cref="IEqualityComparer{T}"/> to check for value equality. If this optional parameter is not provided <see cref="object.ReferenceEquals"/> will be used.</param>
     /// <exception cref="ArgumentException">Thrown on validation failed</exception>
     /// <returns>Returns <c>true</c> if the new value doesn't equal the old value and the new value is valid. Returns <c>false</c> if the new value equals the old value or the validation has failed.</returns>
-    /// <remarks>This property setter supports invalid value rejection, which means values are only assigned to the backing field if they are valid which is when the <paramref name="validationDelegate"/> return <c>true</c>.<br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios, <br/> it is recommended to set <paramref name="isThrowExceptionOnValidationErrorEnabled"/> to <c>true</c> and set the validation mode of the binding to <c>Binding.ValidatesOnExceptions</c>.<br/>If not doing so, the binding target will clear the new value and show the last valid value instead.</remarks>
-    protected virtual bool TrySetValue<TValue>(TValue value, Func<TValue, (bool IsValid, IEnumerable<string> ErrorMessages)> validationDelegate, ref TValue targetBackingField, bool isRejectInvalidValueEnabled = false, bool isThrowExceptionOnValidationErrorEnabled = false, [CallerMemberName] string propertyName = null)
+    /// <remarks>This property setter supports invalid value rejection, which means values are only assigned to the backing field if they are valid which is when the <paramref name="validationDelegate"/> return <c>true</c>.<br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios, <br/> it is recommended to set <paramref name="isThrowExceptionOnValidationErrorEnabled"/> to <c>true</c> and set the validation mode of the binding to <c>Binding.ValidatesOnExceptions</c>.<br/>If not doing so, the binding target will clear the new value and show the last valid value instead. <br/>If equality checking is enabled by setting the <paramref name="isRejectEqualValuesEnabled"/> parameter to <c>true</c> and the new value equals the old value, then the <see cref="INotifyPropertyChanged.PropertyChanged"/> event won't be raised. If equality checking is enabled and no <see cref="IEqualityComparer{T}"/> was provided by setting the <paramref name="equalityComparer"/> parameter, the method will check for reference equality using <see cref="object.ReferenceEquals(object, object)"/>.</remarks>
+    protected virtual bool TrySetValue<TValue>(TValue value, Func<TValue, (bool IsValid, IEnumerable<string> ErrorMessages)> validationDelegate, ref TValue targetBackingField, bool isRejectInvalidValueEnabled = false, bool isThrowExceptionOnValidationErrorEnabled = false, bool isRejectEqualValuesEnabled = true, IEqualityComparer<TValue> equalityComparer = null, [CallerMemberName] string propertyName = null)
     {
       bool previousValidationHasFailed = propertyName != null && PropertyHasError(propertyName);
       bool isValueValid = IsValueValid(value, validationDelegate, propertyName);
@@ -88,11 +94,12 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
         return false;
       }
 
-      if (value?.Equals(targetBackingField) ?? false)
+      if (isRejectEqualValuesEnabled && (equalityComparer?.Equals(value, targetBackingField) ?? ReferenceEquals(value, targetBackingField)))
       {
         if (isValueValid && previousValidationHasFailed)
         {
           OnPropertyChanged(propertyName, value, value);
+          return true;
         }
         return false;
       }
@@ -104,7 +111,7 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
       {
         throw new ArgumentException(string.Empty);
       }
-      return true;
+      return isValueValid;
     }
 
     /// <summary>
@@ -115,12 +122,14 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
     /// <param name="validationDelegate">The callback that is used to validate the new value.</param>
     /// <param name="targetBackingField">The reference to the backing field.</param>
     /// <param name="propertyName">The name of the property to set. Default name is the property that called this method.</param>
+    /// <param name="isRejectEqualValuesEnabled">Default: <c>true</c>. Enable equality check before setting the value.</param>
+    /// <param name="equalityComparer">A <see cref="IEqualityComparer{T}"/> to check for value equality. If this optional parameter is not provided <see cref="object.ReferenceEquals"/> will be used.</param>
     /// <param name="isRejectInvalidValueEnabled">When <c>true</c> the invalid value is not stored to the backing field.<br/> Use this to ensure that the view model in a valid state.</param>
     /// <param name="isThrowExceptionOnValidationErrorEnabled">Enable throwing an <exception cref="ArgumentException"></exception> if validation failed. Use this when <c>ValidatesOnExceptions</c> on a <c>Binding</c> is set to <c>true</c></param>
     /// <exception cref="ArgumentException">Thrown on validation failed</exception>
     /// <returns>Returns <c>true</c> if the new value doesn't equal the old value and the new value is valid. Returns <c>false</c> if the new value equals the old value or the validation has failed.</returns>
-    /// <remarks>This property setter supports invalid value rejection, which means values are only assigned to the backing field if they are valid which is when the <paramref name="validationDelegate"/> return <c>true</c>.<br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios, <br/> it is recommended to set <paramref name="isThrowExceptionOnValidationErrorEnabled"/> to <c>true</c> and set the validation mode of the binding to <c>Binding.ValidatesOnExceptions</c>.<br/>If not doing so, the binding target will clear the new value and show the last valid value instead.</remarks>
-    protected virtual bool TrySetValueSilent<TValue>(TValue value, Func<TValue, (bool IsValid, IEnumerable<string> ErrorMessages)> validationDelegate, ref TValue targetBackingField, bool isRejectInvalidValueEnabled = false, bool isThrowExceptionOnValidationErrorEnabled = false, [CallerMemberName] string propertyName = null)
+    /// <remarks>This property setter supports invalid value rejection, which means values are only assigned to the backing field if they are valid which is when the <paramref name="validationDelegate"/> return <c>true</c>.<br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios, <br/> it is recommended to set <paramref name="isThrowExceptionOnValidationErrorEnabled"/> to <c>true</c> and set the validation mode of the binding to <c>Binding.ValidatesOnExceptions</c>.<br/>If not doing so, the binding target will clear the new value and show the last valid value instead. <br/>If equality checking is enabled by setting the <paramref name="isRejectEqualValuesEnabled"/> parameter to <c>true</c> and the new value equals the old value, then the <see cref="INotifyPropertyChanged.PropertyChanged"/> event won't be raised. If equality checking is enabled and no <see cref="IEqualityComparer{T}"/> was provided by setting the <paramref name="equalityComparer"/> parameter, the method will check for reference equality using <see cref="object.ReferenceEquals(object, object)"/>.</remarks>
+    protected virtual bool TrySetValueSilent<TValue>(TValue value, Func<TValue, (bool IsValid, IEnumerable<string> ErrorMessages)> validationDelegate, ref TValue targetBackingField, bool isRejectInvalidValueEnabled = false, bool isThrowExceptionOnValidationErrorEnabled = false, bool isRejectEqualValuesEnabled = true, IEqualityComparer<TValue> equalityComparer = null, [CallerMemberName] string propertyName = null)
     {
       this.IsSilent = true;
       bool isSuccessful = TrySetValue(
@@ -129,6 +138,8 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
         ref targetBackingField,
         isRejectInvalidValueEnabled,
         isThrowExceptionOnValidationErrorEnabled,
+        isRejectEqualValuesEnabled,
+        equalityComparer,
         propertyName);
       this.IsSilent = false;
       return isSuccessful;

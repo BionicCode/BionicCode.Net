@@ -10,11 +10,6 @@ using BionicCode.Utilities.Net.Framework.Wpf.Extensions;
 
 namespace BionicCode.Controls.Net.Framework.Wpf.BionicCharts
 {
-  internal enum ScrollDirection
-  {
-    Undefined = 0, Left, Top, Right, Bottom
-  }
-
   public class VirtualizingCartesianCanvas : VirtualizingPanel, IScrollInfo
   {
     #region XZoomFactor attached property

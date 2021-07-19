@@ -41,11 +41,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BionicCode.Utilities.Net.Fr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BionicCode.Utilities.Net.Uwp", "BionicCode.Utilities.Net.Uwp\BionicCode.Utilities.Net.Uwp.csproj", "{FB7EDF2E-1724-4507-A168-F053C2DF5143}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BionicCode.Net.Framework.Core.Ui.Test", "BionicCode.Net.Framework.Core.Ui.Test\BionicCode.Net.Framework.Core.Ui.Test.csproj", "{41C8EE6D-F3AC-471D-BBD6-CD50658558CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BionicCode.Net.Wpf.Ui.Test", "BionicCode.Net.Framework.Core.Ui.Test\BionicCode.Net.Wpf.Ui.Test.csproj", "{41C8EE6D-F3AC-471D-BBD6-CD50658558CF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BionicCode.Utilities.Net.Wpf", "BionicCode.Utilities.Net.Wpf\BionicCode.Utilities.Net.Wpf.csproj", "{AFAE1D3F-B27E-43B5-9242-72AD4C13CB08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BionicCode.Controls.Net.Wpf", "BionicCode.Controls.Net.Wpf\BionicCode.Controls.Net.Wpf.csproj", "{CBCC24C7-DC13-43C6-AFBC-9FB38C3008B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BionicCode.Controls.Net.Wpf", "BionicCode.Controls.Net.Wpf\BionicCode.Controls.Net.Wpf.csproj", "{CBCC24C7-DC13-43C6-AFBC-9FB38C3008B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

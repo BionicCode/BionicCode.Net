@@ -23,7 +23,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCalendar
         }
 
         public EventGeneratorArgs(UIElement itemContainer, Panel itemsHost, object item, int columnIndex, int rowIndex)
-            : base(itemContainer, itemsHost, item, columnIndex, rowIndex)
+            : base(itemContainer, itemsHost, item, columnIndex, rowIndex, 0)
         {
         }
 
