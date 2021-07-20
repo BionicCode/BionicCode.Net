@@ -35,7 +35,6 @@
 
 [![BionicCode.Utilities.Net.Uwp](https://img.shields.io/badge/.NET_UWP-BionicCode.Utilities.Net.Uwp-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Uwp/)[![BionicCode.Utilities.Net.Uwp.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Uwp.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Uwp/)
 
-=======
 
 ## [Class Reference](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/R_Project_Documentation.htm)
 [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
