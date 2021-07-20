@@ -67,8 +67,8 @@
 | Markup Extensions  | [`InvertExtension`](https://github.com/BionicCode/BionicCode.Net#invertExtension), [`EnumExtension`](https://github.com/BionicCode/BionicCode.Net#enumExtension), `PrimitiveTypeExtension`, `EqualsExtension`   | [.Net.Core.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [.Net.Framework.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)  |
  
 ---
-### `BaseViewModel`
-* Implements and encapsulates `INotifyPropertyChanged` and `INotifyDataErrorInfo`. 
+### `ViewModel`
+* Abstract base view model class that implements and encapsulates `INotifyPropertyChanged` and `INotifyDataErrorInfo`. 
 * Allows to control whether invalid data is set on a property or neglected until validation passes by setting the default parameter `isRejectInvalidValueEnabled` of `TrySetValue()` to `true` (neglects invalid values by default). 
 * Also allows to control whether to throw an exception on validation error or not (silent) by setting the default parameter `isThrowExceptionOnValidationErrorEnabled` of `TrySetValue()` to `true` (is silent by default).
 * Additionally exposes a `PropertyValueChanged` event which is raised in tandem with `INotifyPropertyChanged.PropertyChanged` but additionally carries old value and new value as event args.
