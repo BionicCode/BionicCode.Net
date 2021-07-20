@@ -277,6 +277,7 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
     private static void CloseDialogOnInteractionCompleted(object sender, EventArgs e)
     {
       var dialogViewModel = sender as IDialogViewModel;
+      Dialog.IsClosedByWindowsChromeCloseButton[dialogViewModel] = false;
       if (Dialog.ViewModelToDialogMap.TryGetValue(dialogViewModel, out Window dialog))
       {
         dialog.Closing -= Dialog.PreventCloseDialogOnClosing;
