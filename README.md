@@ -1,46 +1,42 @@
-# BionicCode.Net
-Collection of .NET libraries like utilities and controls that target .NET Standard, .NET Core, .NET Framework, .NET Core WPF, .NET Framework WPF andUWP
+# BionicCode.Net [![GitHub](https://img.shields.io/github/license/BionicCode/BionicCode.Net)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--) [![Release](https://img.shields.io/github/last-commit/BionicCode/BionicCode.Net)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--) 
+.NET libraries containing utilities and controls that target .NET Standard, .NET 5, .NET 5 WPF, .NET Core, .NET Framework, .NET Core WPF, .NET Framework WPF and UWP
+
+[![BC](https://img.shields.io/badge/.NET-5-informational)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
+[![BC](https://img.shields.io/badge/.NET-Core-informational)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
+[![BC](https://img.shields.io/badge/.NET-Standard-informational)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
+[![BC](https://img.shields.io/badge/.NET-Framework-informational)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
+
+[![BC](https://img.shields.io/badge/-WPF-informational?logo=windows)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
+[![BC](https://img.shields.io/badge/-UWP-informational?logo=windows)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
+[![BC](https://img.shields.io/badge/-Windows_Forms-informational?logo=windows)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
+[![BC](https://img.shields.io/badge/-Linux-informational?logo=linux)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
+[![BC](https://img.shields.io/badge/-macOS-informational?logo=apple)](https://github.com/BionicCode/BionicCode.Net#bioniccodenet--)
 
 
 
-## [NuGet package](///)
+## NuGet Packages Download
+[![BionicCode.Utilities.Net.Wpf](https://img.shields.io/badge/.NET_5_WPF-BionicCode.Utilities.Net.Wpf-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Wpf/)[![BionicCode.Utilities.Net.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Wpf.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Wpf/)
 
-## [Class Reference](https://rawcdn.githack.com/BionicCode/BionicUtilities.Net/d1765f5da61687fac04e0fd7fc3ca4142935ecf1/BionicUtilities.Net/Documentation/Help/index.html)
+[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/.NET_Core_3.0_WPF-BionicCode.Utilities.Net.Core.Wpf-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)[![BionicCode.Utilities.Net.Core.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Core.Wpf.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
+<!--
+[![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Core.Wpf.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
+-->
 
-## Contains 
-* [`BaseViewModel`](https://github.com/BionicCode/BionicLibraryNet#baseviewmodel)
-* [`AsyncRelayCommand<T>`](https://github.com/BionicCode/BionicLibraryNet#asyncrelaycomandt)
-* Extension Methods for WPF e.g.
-  * `TryFindVisualParentElement<TParent> : bool` 
-  * `TryFindVisualParentElementByName : bool` 
-  * `TryFindVisualChildElement<TChild> : bool`
-  * `TryFindVisualChildElementByName : bool`
-  * `FindVisualChildElements<TChildren> : IEnumerable<TChildren>`
-  * `ICollection.AddRange<T>`
-* EventArgs
-  * [`ValueChangedEventArgs<T>`](https://github.com/BionicCode/BionicUtilities.Net#valuechangedeventargst)
-* ValueConverters
-  * `BoolToStringConverter`
-  * `BooleanMultiValueConverter`
-  * `FilePathTruncateConverter`
-  * `InvertValueConverter`
-* Collections
-  * `ObservablePropertyChangedCollection<T>`
-* MarkupExtensions
-  * `PrimitiveTypeExtension`
-* [`Profiler`](https://github.com/BionicCode/BionicLibraryNet#Profiler)
-* [`AppSettingsConnector`](https://github.com/BionicCode/BionicLibraryNet#AppSettingsConnector) - A defaul API to the AppSettings that provides strongly typed reading and writing (e.g. `boo`, `int`, `double`, `string`) of key-value pair values
-* [`MruManager`](https://github.com/BionicCode/BionicUtilities.Net/blob/master/README.md#mru-most-recently-used-file-manager) - Most Recently Used (MRU) file manager. An API that maintains an MRU table stored in the Application Settings file. 
-* [`EventAggregator`](https://github.com/BionicCode/BionicUtilities.Net#eventaggregator) - Implememtation of the EventAggregator pattern that supports dynamic aggregation of different typed event sources
-* Easy to use [`Dialog` attached behavior](https://github.com/BionicCode/BionicUtilities.Net/blob/master/README.md#mvvm-dialog-attached-behavior) and infrastucture to allow MVVM friendly dialog handling from the view models in a fire-and-forget manner. To display dialogs implement `IDialogViewModel` classes and create a `DataTemplate` for each implementation. The `DataTemplate is the rendered in a native `Window`. Addition attached properties allow for styling of the dialog `Window` or to assign an optional `DataTemplateSelector`. The attached behavior will handle showing and closing of  the dialog.
-  
-### `BaseViewModel`
-* Implements and encapsulates `INotifyPropertyChanged` and `INotifyDataErrorInfo`. 
-* Allows to control whether invalid data is set on a property or neglected until validation passes by setting the default parameter `isRejectInvalidValueEnabled` of `TrySetValue()` to `true` (neglects invalid values by default). 
-* Also allows to control whether to throw an exception on validation error or not (silent) by setting the default parameter `isThrowExceptionOnValidationErrorEnabled` of `TrySetValue()` to `true` (is silent by default).
-* Additionally exposes a `PropertyValueChanged` event which is raised in tandem with `INotifyPropertyChanged.PropertyChanged` but additionally carries old value and new value as event args.
+[![BionicCode.Utilities.Net.Core](https://img.shields.io/badge/.NET_Core_3.0-BionicCode.Utilities.Net.Core-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core/)[![BionicCode.Utilities.Net.Core.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Core.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core/)
+<!--
+[![NuGet Downloads](https://img.shields.io/nuget/dt/BionicCode.Utilities.Net.Core.Wpf.svg)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Core.Wpf/)
+-->
 
-#### Example with validation
+[![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/.NET_Standard_2.0-BionicCode.Utilities.Net.Standard-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)[![BionicCode.Utilities.Net.Standard.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Standard.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Standard/)
+
+[![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/.NET_Framework_4.8_WPF-BionicCode.Utilities.Net.Framework.Wpf-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)[![BionicCode.Utilities.Net.Framework.Wpf.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Framework.Wpf.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework.Wpf/)
+
+[![BionicCode.Utilities.Net.Framework](https://img.shields.io/badge/.NET_Framework_4.8-BionicCode.Utilities.Net.Framework-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework/)[![BionicCode.Utilities.Net.Framework.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Framework.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Framework/)
+
+[![BionicCode.Utilities.Net.Uwp](https://img.shields.io/badge/.NET_UWP-BionicCode.Utilities.Net.Uwp-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Uwp/)[![BionicCode.Utilities.Net.Uwp.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Uwp.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Uwp/)
+
+## [Class Reference](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/R_Project_Documentation.htm)
+[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
 
 ```c#
 private string name;
