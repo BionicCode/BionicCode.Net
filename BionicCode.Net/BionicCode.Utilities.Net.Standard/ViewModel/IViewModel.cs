@@ -21,7 +21,7 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
   /// <summary>
   /// Encapsulates implementations of <see cref="INotifyPropertyChanged"/> and <see cref="INotifyDataErrorInfo"/> and adds <see cref="PropertyValueChanged"/> event which is raised in tandem with <see cref="INotifyPropertyChanged.PropertyChanged"/> except it provides addition data like old value and new value.
   /// </summary>
-  public interface IViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
+  public interface IViewModel : INotifyPropertyChanged, INotifyDataErrorInfo, IProgressReporter
   {
     /// <summary>
     /// Checks whether the specified property has errors or is valid.
