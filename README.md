@@ -35,6 +35,45 @@
 
 [![BionicCode.Utilities.Net.Uwp](https://img.shields.io/badge/.NET_UWP-BionicCode.Utilities.Net.Uwp-orange)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Uwp/)[![BionicCode.Utilities.Net.Uwp.NuGet](https://img.shields.io/nuget/v/BionicCode.Utilities.Net.Uwp.svg?logo=nuget)](https://www.nuget.org/packages/BionicCode.Utilities.Net.Uwp/)
 
+
+## [Class Reference](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/R_Project_Documentation.htm)
+[![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
+
+[![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Framework-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)
+
+[![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Standard-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)
+
+[![BionicCode.Utilities.Net.UWP](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Uwp-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Uwp.htm)
+
+
+
+## Table of Contents (selection)
+| class (example)  |description   |namespace   |
+|---|---|---|
+|  [`ViewModel`](https://github.com/BionicCode/BionicCode.Net#baseviewmodel)  | Configurable implementation of `IViewModel`, `INotifyPropertyChanged`, `INotifyDataErrorInfo` with property validation support via delegates or Lambda expressions   | [.Net.Standard](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)|  
+| [`AsyncRelayCommand<T>`](https://github.com/BionicCode/BionicCode.Net#asyncrelaycomandtcommandparam)   | Implementatiom of `ICommand` that supports asynchrnous command execution.   | [.Net.Core.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [.Net.Framework.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm) [.Net.Uwp](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Uwp.htm)| 
+| [Extension Methods for WPF](https://github.com/BionicCode/BionicCode.Net#Extension-Methods-WPF)   | E.g., `DependencyObject.TryFindVisualChildElement`, `DependencyObject.TryFindVisualChildElementByName`, `DependencyObject.TryFindVisualParentElement`, `DependencyObject.TryFindVisualParentElementByName`, `DependencyObject.EnumerateVisualChildElements`, `object.ToDictionary`  | [.Net.Core.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [.Net.Framework.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)| 
+| Extension Methods for .NET Standard |   |[.Net.Standard](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)   |
+| [ValueConverters](https://github.com/BionicCode/BionicCode.Net#ValueConverters)  | Default implementations of `IValueConverter` and `IMultiValueConverter` e.g., `BooleanMultiValueConverter`, `FilePathTruncateConverter`, [`BoolToStringConverter`](https://github.com/BionicCode/BionicCode.Net#BoolToStringConverter), [`InvertValueConverter`](https://github.com/BionicCode/BionicCode.Net#InvertValueConverter)   | [.Net.Core.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [.Net.Framework.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm) |
+|  Collections WPF  |  `ObservablePropertyChangedCollection<T>` | [.Net.Core.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [.Net.Framework.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm) |
+|  [`Profiler`](https://github.com/BionicCode/BionicCode.Net#Profiler) |   | [.Net.Standard](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)  |
+| [`AppSettingsConnector`](https://github.com/BionicCode/BionicCode.Net#AppSettingsConnector)  | A default API to the `AppSettings` that provides strongly typed reading and writing (e.g. `bool`, `int`, `double`, `string`) of key-value pair values.  | [.Net.Core.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [.Net.Framework.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm) |
+|[`MruManager`](https://github.com/BionicCode/BionicCode.Net#mru-most-recently-used-file-manager)   | Most Recently Used (MRU) file manager. An API that maintains an MRU table stored in the Application Settings file.  | [.Net.Core.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [.Net.Framework.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)  |
+|[`EventAggregator`](https://github.com/BionicCode/BionicCode.Net#eventaggregator)  |Implementation of the Event Aggregator pattern that supports dynamic aggregation of different typed event sources.   | [.Net.Standard](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)  |
+| [`AutoResetStream`](https://github.com/BionicCode/BionicCode.Net#autoresetstream)   |A `Stream` decorator that automatically resets the stream's position after read/write access.   | [.Net.Standard](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)  |
+|[`Dialog`](https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior)   | Easy to use attached behavior and infrastructure to allow MVVM friendly dialog handling from a view model class in a fire-and-forget manner. To display dialogs implement `IDialogViewModel` classes and create a `DataTemplate` for each implementation. The `DataTemplate` is the rendered in a native `Window`. Addition attached properties allow for styling of the dialog `Window` or to assign an optional `DataTemplateSelector`. The attached behavior will handle showing and closing of  the dialog.  | [.Net.Core.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [.Net.Framework.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm) |
+| Attached Behaviors for WPF  | [`Popup`](https://github.com/BionicCode/BionicCode.Net#popup) - e.g., allows to make the `Popup` sticky and moves it with the current placement target. </br> [`TextControl`](https://github.com/BionicCode/BionicCode.Net#textcontrol) - Allows to highlight text ranges in `TextBlock` and `RichTextBox` controls. </br> [`PasswordBox`](https://github.com/BionicCode/BionicCode.Net#passwordbox) - Enables to send the `PasswordBox.SecurePassword` value to the view model using a `ICommand`.   | [.Net.Core.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [.Net.Framework.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm) |
+|EventArgs   |[`ValueChangedEventArgs<T>`](https://github.com/BionicCode/BionicCode.Net#valuechangedeventargst), [`ValueEventArgs<T>`](https://github.com/BionicCode/BionicCode.Net#valueeventargst), `PropertyValueChangedArgs<T>`   | [.Net.Standard](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Standard.htm)  |
+| Markup Extensions  | [`InvertExtension`](https://github.com/BionicCode/BionicCode.Net#invertExtension), [`EnumExtension`](https://github.com/BionicCode/BionicCode.Net#enumExtension), `PrimitiveTypeExtension`, `EqualsExtension`   | [.Net.Core.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm) [.Net.Framework.Wpf](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)  |
+ 
+---
+### `ViewModel`
+* Abstract base view model class that implements and encapsulates `INotifyPropertyChanged` and `INotifyDataErrorInfo`. 
+* Allows to control whether invalid data is set on a property or neglected until validation passes by setting the default parameter `isRejectInvalidValueEnabled` of `TrySetValue()` to `true` (neglects invalid values by default). 
+* Also allows to control whether to throw an exception on validation error or not (silent) by setting the default parameter `isThrowExceptionOnValidationErrorEnabled` of `TrySetValue()` to `true` (is silent by default).
+* Additionally exposes a `PropertyValueChanged` event which is raised in tandem with `INotifyPropertyChanged.PropertyChanged` but additionally carries old value and new value as event args.
+
+
 ## [Class Reference](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/R_Project_Documentation.htm)
 [![BionicCode.Utilities.Net.Core.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Core-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Core.htm)
 
@@ -77,23 +116,123 @@ public string Name
 ```
 ----
 
-### `AsyncRelayComand<T>` 
+### `AsyncRelayComand<TCommandParam>` 
 Reusable generic command class that encapsulates `ICommand` and allows asynchronous execution.
-When used with a `Binding` the command will execute asynchronously when an awaitable execute handler is assigned to the command.
+When used with a `Binding`, the command will always execute asynchronously as long as an awaitable execute handler is assigned to the command.
 
 #### Example
 
+Declare async `ICommand`:
+
 ```c#
-// ICommand property
-public IAsyncRelayCommand<string> StringAsyncCommand => new AsyncRelayCommand<string>(ProcessStringAsync);
+// ICommand. The command delegate 'Task ProcessStringAsync(string)' returns a 'Task' object and is awaitable.
+public IAsyncRelayCommand<string> SomeAsyncCommand => new AsyncRelayCommand<string>(ProcessStringAsync);
+```
+Execute XAML:
+
+```XAML
+
+<!-- Executes asynchronously, because an awaitable delegate was registered with the IAsyncRelayCommand -->
+<Button Command="{Binding SomeAsyncCommand}" />
+
+```
+
+Execute C#:
+
+```C#
     
 // Execute asynchronously
-await StringAsyncCommand.ExecuteAsync("String value");
+await this.SomeAsyncCommand.ExecuteAsync("String value");
     
 // Execute synchronously
-StringAsyncCommand.Execute("String value");
+this.SomeAsyncCommand.Execute("String value");
     
 ```
+
+----
+### Extension Methods WPF
+
+```C#
+var listView = new ListView();
+if (listView.TryFindVisualChildElement(out ScrollViewer scrollViewer)
+{
+  scrollViewer.ScrollToVerticalOffset(12);
+}
+```
+```C#
+var myControl = new MyControl();
+if (myControl.TryFindVisualChildElementByName("PART_ContentHost", out ContentPresenter contentPresenter)
+{
+  var content = contentPresenter.Content;
+}
+```
+
+```C#
+var myControl = new MyControl();
+foreach (TextBox childTextBox in myControl.EnumerateVisualChildElements<TextBox>()
+{
+  childTextBox.Text = string.Empty;
+}
+```
+
+```C#
+var listView = new ListView();
+if (listView.TryFindVisualParentElement(out MyControl myControl)
+{
+  myControl.DoSomething();
+}
+```
+```C#
+var listView = new ListView();
+if (listView.TryFindVisualParentElementByName("MyControl", out MyControl myControl)
+{
+  myControl.DoSomething();
+}
+```
+
+
+```C#
+var myClass = new MyClass();
+Dictionary<string, object> myClassDictionary = myClass.ToDictionary();
+object value = myClass["PropertyName"];
+```
+---
+### ValueConverters
+
+
+#### `BoolToStringConverter`
+Implementation of `IValueConverter` that converts a `bool` to a custom string representation e.g., convert `true` to `"Enabled"`.
+
+```XAML
+<ToggleButton IsChecked="{Binding IsEnabled}">
+  <ToggleButton.Content>
+    <Binding Path="IsEnabled">
+      <Binding.Converter>
+        <BoolToStringConverter TrueValue="On" 
+                               FalseValue="{Binding DisabledText}" 
+                               NullValue="Undefined" />
+      </Binding.Converter>
+    </Binding>
+  </ToggleButton.Content>
+</ToggleButton>
+  
+  ```
+#### `InvertValueConverter`
+Implementation of `IValueConverter` that inverts a `bool`, `Visibility`, `double`, `decimal`, `float`, `int`.
+
+```XAML
+<ToggleButton>
+  <ToggleButton.IsChecked>
+    <Binding>
+      <Binding.Converter>
+        <InvertValueConverter />
+      </Binding.Converter>
+    </Binding>
+  </ToggleButton.IsChecked>
+</ToggleButton>
+  
+  ```
+----
 
 ### `Profiler`
 Static helper methods to measure performance e.g. the execution time of a code portion.
@@ -113,6 +252,68 @@ List<TimeSpan> elapsedTime = Profiler.LogTimes(() => ReadFromDatabase(), 1000);
 // Measure the execution time.
 TimeSpan elapsedTime = Profiler.LogTime(() => ReadFromDatabase());
 ```
+
+--------
+### `PasswordBox`
+Invokes a `ICommand` when `PasswordBox.PasswordChanged`event was raised. The password is send as `SecureString` to secure the value.
+
+#### Example
+
+```XAML
+
+<PasswordBox PasswordBox.Command="{Binding VerifyPasswordCommand}" />
+  
+  ```
+----
+### `TextControl`
+Attached behavior that supports dynamic text highlighting for controls derived from `TextBlock` or `RichTextBox`.
+
+#### Example
+
+```XAML
+
+<!-- Bind Text and HighlightRanges to a view model -->
+<TextBlock Text="{Binding Message}" 
+           TextControl.HighlighBackground="Orange" 
+           TextControl.HighlighForeground="White" 
+           TextControl.HighlightRanges="{Binding HighlightTextRanges}"
+           TextControl.IsHighlighEnabled="True" />
+           
+ 
+<!-- Alternatively define the HighlightRange items inline -->
+<TextBlock Text="{Binding Message}" 
+           TextControl.HighlighBackground="Orange" 
+           TextControl.HighlighForeground="White" 
+           TextControl.IsHighlighEnabled="True">
+  <attachedBehaviors:TextControl.HighlightRanges>
+    <attachedBehaviors:HighlightRange StartIndex="2" EndIndex="8"/>
+    <attachedBehaviors:HighlightRange StartIndex="12" EndIndex="15"/>
+  </attachedBehaviors:TextControl.HighlightRanges>
+</TextBlock>
+  
+<!-- 
+  Use a RichTextBox and bind it to a string by binding TextControl.Text instead of RichTextBox.Document.
+  The text will be automatically converted to a FlowDocument and assigned to RichTextBox.Document.
+-->
+<RichTextBox TextControlText="{Binding Message}" 
+             TextControl.HighlighBackground="Orange" 
+             TextControl.HighlighForeground="White" 
+             TextControl.IsHighlighEnabled="True" 
+             TextControl.HighlightRanges="{Binding HighlightTextRanges}" />
+  ```
+----
+### `Popup`
+Set of attached behaviors for the `System.Windows.Controls.Primitives.Popup` control.
+When `Popup.IsSticky` is set to `true`, the `Popup` is forced to stick to the current `Popup.PlacementTarget`. The `Popup` will follow the `Popup.PlacementTarget` whenever it changes it's screen coordinates.
+
+#### Example
+
+```XAML
+
+<Popup Popup.IsSticky="True" />
+  
+  ```
+----
 ### `ValueChangedEventArgs<T>`
 Generic `EventArgs` implementation that provides value change information like `OldValue` and `NewValue`.
 
@@ -122,11 +323,13 @@ Generic `EventArgs` implementation that provides value change information like `
 // Specify a named ValueTuple as event argument
 event EventHandler<ValueChangedEventArgs<(bool HasError, string Message)>> Completed;    
     
+// Publish event
 protected virtual void RaiseCompleted((bool HasError, string Message) oldValue, (bool HasError, string Message) newValue)
 {
   this.Completed?.Invoke(this, new ValueChangedEventArgs<(bool HasError, string Message)>(oldValue, newValue));
 }
 
+// Receive event
 private void OnCompleted(object sender, ValueChangedEventArgs<(bool HasError, string Message)> e)
 {
   (bool HasError, string Message) newValue = e.NewValue;
@@ -137,6 +340,31 @@ private void OnCompleted(object sender, ValueChangedEventArgs<(bool HasError, st
   this.TaskCompletionSource.TrySetResult(true);
 }
 ```
+
+----
+### `ValueEventArgs<T>`
+Generic `EventArgs` implementation that provides to carry a value.
+
+#### Example
+
+```c#
+// Specify a named ValueTuple as event argument
+event EventHandler<ValueEventArgs<int> Completed;    
+    
+// Publish event
+protected virtual void RaiseCompleted(int value)
+{
+  this.Completed?.Invoke(this, new ValueEventArgs<int>(value));
+}
+
+// Receive event
+private void OnCompleted(object sender, ValueEventArgs<int> e)
+{
+  int value = e.Value;  
+}
+```
+
+----
 ### `AppSettingsConnector` 
 A static default API to the AppSettings that provides strongly typed reading and writing (e.g. `boo`, `int`, `double`, `string`) of key-value pair values.
 
@@ -153,6 +381,7 @@ if (TryReadInt("mruCount", out int mruCount))
 }
 ```
 
+----
 ### MRU (Most Recently Used) file manager
 The `MruManager` maintains a collection of `MostRecentlyUsedFileItem` elrecentlyements that map to a recently used file. Once the max number of recently used files is reached and a new file is added, the `MruManager` automatically removes the least used file to free the MRU table.
 
@@ -190,12 +419,16 @@ MostRecentlyUsedFileItem lastUsedFile = mruManager.MostRecentlyUsedFile;
 ReadOnlyObservableCollection<MostRecentlyUsedFileItem> mruList = mruManager.MostRecentlyUsedFiles;
 ```
 
+----
 ### `EventAggregator`
-Dynamic implementation of the EventAggregator design pattern. Listen to events broadcasted by a specific type or by a specific event.
+Dynamic implementation of the EventAggregator design pattern. 
+Listen to broadcasted events by a specific source type, by a specific event name, by matching event handler signature or by matching `EventArgs` type.
+
+Allows to listen to an event without the need to reference the source instance.
 
 #### Example
 ##### Aggregate events
-Let the `EventAggregator` subscribe to events:
+Register event sources with an instance of `EventAggregator`:
 
 ```C#
 var aggregator = new EventAggregator();
@@ -212,32 +445,69 @@ aggregator.TryRegisterObservable(mainWindowViewModel,
     nameof(INotifyPropertyChanged.PropertyChanged), 
     nameof(MainWindowViewModel.ItemCreated)
   });
-aggregator.TryRegisterObservable(mainPageViewModel, new[] {nameof(INotifyPropertyChanged.PropertyChanged)});
-aggregator.TryRegisterObservable(settingsPageViewModel, new[] {nameof(INotifyPropertyChanged.PropertyChanged)});
+  
+aggregator.TryRegisterObservable(
+  mainPageViewModel, 
+  new[] {nameof(INotifyPropertyChanged.PropertyChanged)});
+  
+aggregator.TryRegisterObservable(
+  settingsPageViewModel, 
+  new[] {nameof(INotifyPropertyChanged.PropertyChanged)});
 ```
 
-##### Listen to all aggregated event sources by event name
-Subscribe to the `EventAggregator` and listen to specific events of all aggregated event sources:
+##### Listen to events by name, raised by any aggregated event source
+Subscribe to the `EventAggregator` and listen to **specific events** of **all event sources**:
 
 ```C#
 // Listen to everything that publishes the 'INotifyPropertyChanged.PropertyChanged' event
-aggregator.TryRegisterObserver<PropertyChangedEventHandler>(nameof(INotifyPropertyChanged.PropertyChanged), (s, args) => MessageBox.Show($"'PropertyChanged event'. Sender={sender.GetType().Name}; Value={args.PropertyName}"));
+aggregator.TryRegisterObserver<PropertyChangedEventHandler>(
+  nameof(INotifyPropertyChanged.PropertyChanged), 
+  ShowMessage_OnPropertyChanged);
 ```
 
-##### Listen to specific aggregated event sources by event name
-Subscribe to the `EventAggregator` and listen to specific events of specific aggregated event sources:
+##### Listen to events by name, raised by all event sources that match a specific type (e.g., class or interface)
+Subscribe to the `EventAggregator` and listen to **specific events** of **specific event sources** (by source type):
 
 ```C#
-// Only listen to the 'INotifyPropertyChanged.PropertyChanged' event of the 'mainWindowViewModel' instance
-aggregator.TryRegisterObserver<PropertyChangedEventHandler>(nameof(INotifyPropertyChanged.PropertyChanged), mainWindowViewModel.GetType(), (s, args) => MessageBox.Show($"'PropertyChanged event'. Sender={sender.GetType().Name}; Value={args.PropertyName}"));
+// Only listen to the 'INotifyPropertyChanged.PropertyChanged' event raised by any instance of type 'MainWindowViewModel' 
+aggregator.TryRegisterObserver<PropertyChangedEventHandler>(
+  nameof(INotifyPropertyChanged.PropertyChanged), 
+  mainWindowViewModel.GetType(), 
+  ShowMessage_OnPropertyChanged);
 
-// Only listen to the 'INotifyPropertyChanged.PropertyChanged' event of all instances that implemnt 'IPage'
-aggregator.TryRegisterObserver<PropertyChangedEventHandler>(nameof(INotifyPropertyChanged.PropertyChanged), typeof(IPage), (s, args) => MessageBox.Show($"'PropertyChanged event'. Sender={sender.GetType().Name}; Value={args.PropertyName}"));
+// Only listen to the 'INotifyPropertyChanged.PropertyChanged' event of all instances that implement 'IPage' interface
+aggregator.TryRegisterObserver<PropertyChangedEventHandler>(
+  nameof(INotifyPropertyChanged.PropertyChanged), 
+  typeof(IPage), 
+  ShowMessage_OnPropertyChanged);
+  
+```
+##### Listen to all events that match the signature of the event handler or that use a matching `EventArgs` type
+
+Subscribe to the `EventAggregator` and listen to all events that have an **event delegate with matching signature**:
+```C#
+
+// Subscribe by defining the event delegate explicitly
+aggregator.TryRegisterGlobalObserver(new PropertyChangedEventHandler(ShowMessage_OnPropertyChanged));
 ```
 
-##### Type declarations used in examples
+Subscribe to the `EventAggregator` and listen to all events that use a **matching `EventArgs` type**:
 
 ```C#
+// Subscribe by defining the EventArgs as generic type parameter
+aggregator.TryRegisterGlobalObserver<PropertyChangedEventArgs>(ShowMessage_OnPropertyChanged);
+```
+      
+##### Type declarations used in above examples
+
+```C#
+// Event callback
+private void ShowMessage_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+{
+  MessageBox.Show($"Handling 'PropertyChanged event'. Sender={sender.GetType().Name}; Value={e.PropertyName}");
+}
+
+// Event sources
 class MainPageViewModel : IPage, INotifyPropertyChanged
 {
   public string Title 
@@ -292,6 +562,8 @@ class MainWindowViewModel : INotifyPropertyChanged
   protected virtual void OnItemCreated() => this.ItemCreated?.Invoke(this, EventArgs.Empty);
 }
 ```
+
+----
 ### MVVM Dialog attached behavior
 Provides a clean way to show dialogs that are requested by view models. This apporach uses dialog view models that are templated by specific `DataTemplate` definitions, This templates are rendered as content of native dialog `Window` instances.
 
@@ -457,7 +729,7 @@ Application x:Class="BionicCode.BionicNuGetDeploy.Main.App"
         xmlns:dialog="clr-namespace:BionicUtilities.Net.Dialog;assembly=BionicUtilities.Net"
         mc:Ignorable="d"
         Title="MainWindow"
-        dialog:Dialog.DialogDataContext="{Binding DialogViewModel}">
+        Dialog.DialogDataContext="{Binding DialogViewModel}">
 </Window>      
 ```
 
@@ -648,7 +920,75 @@ Application x:Class="BionicCode.BionicNuGetDeploy.Main.App"
         xmlns:dialog="clr-namespace:BionicUtilities.Net.Dialog;assembly=BionicUtilities.Net"
         mc:Ignorable="d"
         Title="MainWindow"
-        dialog:Dialog.DialogDataContext="{Binding DialogViewModel}">
+        Dialog.DialogDataContext="{Binding DialogViewModel}"
+        Dialog.DialogDataContext="{Binding DialogViewModel}"
+        Dialog.IsModal="True"
+        Dialog.IsClosable="False">
 </Window>      
 ```
 
+----
+
+### InvertExtension
+`MarkupExtension`that inverts a value provided locally or by any `MarkupExtension` e.g., `Binding`.
+Setting the `Invert.ValueInverter` property (similar to `Binding.Converter`) allows to specify a custom inversion logic and conversion type support.
+
+#### Example
+
+```XAML   
+
+<!-- Use Binding value -->
+<TextBlock Text="{Invert {Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Text}}"/>
+
+<!-- Returns: -12 -->
+<TextBlock Text="{Invert Value=1.2}"/> 
+
+<!-- Provide a custom implementation of IValueInverter. Returns: 0.12 -->
+<TextBlock Text="{Invert -0.12, ValueInverter={StaticResource CustomValueInverter}"/> 
+
+<!-- Returns: Visibility.Collapsed -->
+<TextBlock Text="{Invert {x:Static Visibility.Visible}}"/>
+
+<!-- Returns: False -->
+<TextBlock Text="{Invert True}"/>
+
+```
+
+----
+### EnumExtension
+`MarkupExtension` to display return a collection of enumeration values of a specific `enum` type.
+
+#### Example 
+
+```XAML   
+
+<ComboBox ItemsSource="{Enum {x:Static MyEnum}}"/>
+
+<ComboBox ItemsSource="{Enum EnumType={x:Static MyEnum}}"/>
+
+```
+
+---
+
+### AutoResetStream
+A `Stream` decorator that resets the stream's position after read/write access. Resets to the optionally provided `SeekOrigin` assigned to `AutoResetStream.ResetOrigin`
+
+#### Example 
+
+```C#   
+using (var fileStream = new FileStream("C:\Temp", FileMode.CreateNew))
+{
+  bool leaveFileStreamOpen = true;
+  
+  using (var autoResetStream = new AutoResetStream(fileStream, leaveFileStreamOpen))
+  {
+    byte[] buffer = new byte[1024];
+    int bytesRead = await autoResetStream.ReadAsync(buffer, 0, buffer.Length); // bytesRead: 1024
+    int currentPosition = autoResetStream.Position; // currentPosition: 0
+  }
+  
+  currentPosition = fileStream.Position; // currentPosition: 0
+}
+
+```
+---
