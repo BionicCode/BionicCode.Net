@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0-windows;netcoreapp3.0</TargetFrameworks>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <PackageReleaseNotes>- Improved ViewModel (added IProgressReporter and refactored OnProertyChanged)
 ---------------------------------------------------------
