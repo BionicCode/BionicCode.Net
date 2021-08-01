@@ -14,12 +14,12 @@
     <Grid x:Name="gridSizes"/>
     <wpf:Calendar  DockPanel.Dock="Top" VerticalContentAlignment="Stretch"
                    FirstDayOfWeek="Monday" />
-
-    <!--<wpf:Clock DockPanel.Dock="Top">
+<!--<wpf:Clock DockPanel.Dock="Top">
       <wpf:Clock.ClockFace>
         <wpf:AnalogClockFace/>
       </wpf:Clock.ClockFace>
-    </wpf:Clock>
+    </wpf:Clock>-->
+    <!--
 
     <wpf:Clock DockPanel.Dock="Top" />-->
     <!--<wpf:DigitalClockFace SelectedTime="{Binding ElementName=Window, Path=CurrentDateTime}" Is24HModeEnabled="True" />-->

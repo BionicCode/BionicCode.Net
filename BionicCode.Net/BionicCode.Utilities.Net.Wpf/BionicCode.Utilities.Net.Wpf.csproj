@@ -3,9 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <PackageReleaseNotes>- Improved Dialog
-- Improved DialogViewModel. CanExecuteSendResponseCommand is now virtual.
--Generic interface IAsyncRelayCommand&lt;T&gt; now implements IAsyncRelayCommand
+    <PackageReleaseNotes>- Fixed bug in Dialog
 ---------------------------------------------------------
 For bug reports or feature requests please visit the project home on GutHub (follow the "Project Site" link on the right) and then open an issue (open the "issue" tab, click "New Issue" and select the appropriate template) or send  a mail to BionicCode@outlook.com. Thank you very much.</PackageReleaseNotes>
     <Authors>Brian Sampoh</Authors>
@@ -20,7 +18,7 @@ For bug reports or feature requests please visit the project home on GutHub (fol
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>2021</Copyright>
     <NeutralLanguage>en</NeutralLanguage>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>

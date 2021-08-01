@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using BionicCode.Utilities.Net.Standard.Generic;
 using JetBrains.Annotations;
 
 namespace BionicCode.Utilities.Net.Standard.ViewModel
@@ -41,7 +42,7 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
 
       TValue oldValue = targetBackingField;
       targetBackingField = value;
-      OnPropertyChanged(propertyName, oldValue, value);
+      OnPropertyChanged(oldValue, value, propertyName);
       return true;
     }
 
@@ -98,7 +99,7 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
       {
         if (isValueValid && previousValidationHasFailed)
         {
-          OnPropertyChanged(propertyName, value, value);
+          OnPropertyChanged(value, value, propertyName);
           return true;
         }
         return false;
@@ -106,7 +107,7 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
 
       TValue oldValue = targetBackingField;
       targetBackingField = value;
-      OnPropertyChanged(propertyName, oldValue, value);
+      OnPropertyChanged(oldValue, value, propertyName);
       if (!isValueValid && isThrowExceptionOnValidationErrorEnabled)
       {
         throw new ArgumentException(string.Empty);
@@ -189,10 +190,18 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
     /// Also raises the <see cref="INotifyPropertyChanged.PropertyChanged"/> event to support binding.
     /// </summary>
     /// <param name="propertyName"> The property name. </param>
+    [NotifyPropertyChangedInvocator]
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => OnPropertyChanged(propertyName, null, null);
+
+    /// <summary>
+    /// Method called to fire a <see cref="PropertyChanged"/> event.
+    /// Also raises the <see cref="INotifyPropertyChanged.PropertyChanged"/> event to support binding.
+    /// </summary>
+    /// <param name="propertyName"> The property name. </param>
     /// <param name="oldValue">The value before the property change.</param>
     /// <param name="newValue">The value after the property change.</param>
     [NotifyPropertyChangedInvocator]
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null, object oldValue = null, object newValue = null)
+    protected virtual void OnPropertyChanged(object oldValue = null, object newValue = null, [CallerMemberName] string propertyName = null)
     {
       if (this.IsSilent)
       {
@@ -205,7 +214,6 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
       this.PropertyValueChanged?.Invoke(this, new PropertyValueChangedArgs<object>(propertyName, oldValue, newValue));
     }
 
-      #region Implementation of IViewModel
 
     #region Implementation of INotifyDataErrorInfo
 
@@ -228,13 +236,63 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
       /// <inheritdoc />
       public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
-      #endregion
+    #endregion
+
+    #region Implementation of IProgressReporter
 
 
-      /// <inheritdoc />
-      public event PropertyValueChangedEventHandler<object> PropertyValueChanged;
+    protected virtual void OnProgressChanged(double oldValue, double newValue) => OnProgressChanged(oldValue, newValue, string.Empty);
 
-      #endregion
+    protected virtual void OnProgressChanged(double oldValue, double newValue, string progressText)
+    {
+      this.IsReportingProgress = this.IsIndeterminate || (this.ProgressValue > 0 && this.ProgressValue < 100);
+      this.ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(newValue, oldValue, progressText));
+    }
+
+    private bool isReportingProgress;
+    public bool IsReportingProgress
+    {
+      get => this.isReportingProgress;
+      set => TrySetValue(value, ref this.isReportingProgress);
+    }
+
+    private bool isIndeterminate;
+    public bool IsIndeterminate
+    {
+      get => this.isIndeterminate;
+      set
+      {
+        TrySetValue(value, ref this.isIndeterminate);
+        OnProgressChanged(-1, -1);
+      }
+    }
+
+    private string progressText;
+    public string ProgressText
+    {
+      get => this.progressText;
+      set => TrySetValue(value, ref this.progressText);
+    }
+
+    private double progressValue;
+    public double ProgressValue
+    {
+      get => this.progressValue;
+      set
+      {
+        double oldValue = this.ProgressValue;
+        TrySetValue(value, ref this.progressValue);
+        OnProgressChanged(oldValue, this.ProgressValue);
+      }
+    }
+
+    public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
+    #endregion
+
+
+    /// <inheritdoc />
+    public event PropertyValueChangedEventHandler<object> PropertyValueChanged;
+
 
       private Dictionary<string, IEnumerable<string>> Errors { get; set; }
       private bool IsSilent { get; set; }
