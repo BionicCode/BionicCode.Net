@@ -191,7 +191,7 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
     /// </summary>
     /// <param name="propertyName"> The property name. </param>
     [NotifyPropertyChangedInvocator]
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => OnPropertyChanged(propertyName, null, null);
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => OnPropertyChanged(default, default, propertyName);
 
     /// <summary>
     /// Method called to fire a <see cref="PropertyChanged"/> event.
@@ -201,7 +201,7 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
     /// <param name="oldValue">The value before the property change.</param>
     /// <param name="newValue">The value after the property change.</param>
     [NotifyPropertyChangedInvocator]
-    protected virtual void OnPropertyChanged(object oldValue = null, object newValue = null, [CallerMemberName] string propertyName = null)
+    protected virtual void OnPropertyChanged(object oldValue, object newValue, [CallerMemberName] string propertyName = null)
     {
       if (this.IsSilent)
       {
