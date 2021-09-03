@@ -16,13 +16,14 @@ namespace BionicCode.Utilities.UnitTest.Net.Standard
 
     public ViewModelTest()
     {
-      this.ViewModelImpl = new ViewModelImpl();
+      this.ValidationErrorMessage = "Value must be all uppercase, no spaces allowed.";
+      this.ViewModelImpl = new ViewModelImpl(this.PropertyValidationDelegate, this.ValidationErrorMessage);
       this.SenderType = this.ViewModelImpl.GetType();
       this.ViewModelImpl.PropertyValueChanged += OnPropertyValueChanged;
       this.ViewModelImpl.PropertyChanged += OnPropertyChanged;
 
-      this.InvalidTextValue = "testText";
-      this.ValidTextValue = "TESTTEXT";
+      this.InvalidTextValue = "invalid test text";
+      this.ValidTextValue = "VALIDTESTTEXT";
       this.PropertyChangedEventInvocationCount = 0;
       this.PropertyValueChangedEventInvocationCount = 0;
     }
@@ -32,6 +33,9 @@ namespace BionicCode.Utilities.UnitTest.Net.Standard
       this.ViewModelImpl.PropertyValueChanged -= OnPropertyValueChanged;
       this.ViewModelImpl.PropertyChanged -= OnPropertyChanged;
     }
+
+    private Func<string, (bool IsValid, IEnumerable<string> ErrorMessages)> PropertyValidationDelegate =>
+      text => text.All(char.IsUpper) ? (true, Array.Empty<string>()) : (false, new[] { this.ValidationErrorMessage });
 
     [Fact]
     public void ReceiveOneDefaultPropertyChangedNotificationWithPropertyNameNonValidatingTextProperty()
@@ -306,7 +310,7 @@ namespace BionicCode.Utilities.UnitTest.Net.Standard
       IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors(nameof(this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue));
 
       string firtsErrorMessage = errors.First();
-      firtsErrorMessage.Should().Be(ViewModelImpl.ValidationErrorMessage);
+      firtsErrorMessage.Should().Be(this.ValidationErrorMessage);
     }
 
     private void OnPropertyValueChanged(object sender, PropertyValueChangedArgs<object> e)
@@ -332,5 +336,6 @@ namespace BionicCode.Utilities.UnitTest.Net.Standard
     private ViewModelImpl ViewModelImpl { get; }
     private TestEventSource2 EventSource2 { get; }
     private Type SenderType { get; set; }
+    private string ValidationErrorMessage { get; }
   }
 }
