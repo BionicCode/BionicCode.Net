@@ -1,129 +1,119 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using Xunit;
 using BionicCode.Utilities.Net.Standard.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using FluentAssertions;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Threading;
+using BionicCode.Utilities.UnitTest.Net.Standard.Resources;
 
 namespace BionicCode.Utilities.UnitTest.Net.Standard
 {
-  [TestClass]
-  public class AutoResetStreamTest
+  
+  public class AutoResetStreamTest : IDisposable
   {
-    public AutoResetStream AutoResetStream { get; set; }
-    public string TestText { get; set; }
-    public int TestTextLength { get; set; }
+    private AutoResetStream AutoResetStream { get; }
+    private string TestText { get; }
+    private int TestTextLength { get; }
 
-    [TestInitialize]
-    public void Initialize()
+    
+    public AutoResetStreamTest()
     {
       this.AutoResetStream = new AutoResetStream();
       this.TestText = "Test text";
       this.TestTextLength = this.TestText.Length;
     }
 
+    public void Dispose() => this.AutoResetStream.Dispose();
+
     private void FillStream()
     {
-      var f = new FileStream("C:/Temp", FileMode.CreateNew);
       var memStream = new MemoryStream();
-      using (var streamWriter = new StreamWriter(memStream, Encoding.Default, 1024, true))
-      {
-        streamWriter.Write(this.TestText);
-      }
+      using var streamWriter = new StreamWriter(memStream, Encoding.Default, 1024, true);
+      streamWriter.Write(this.TestText);
+      streamWriter.Flush();
 
       this.AutoResetStream.BaseStream = memStream;
     }
 
-    [TestMethod]
+    [Fact]
     public async Task ResetStreamPositionAfterReadAsync()
     {
       FillStream();
-      using (this.AutoResetStream)
-      {
-        byte[] buffer = new byte[1024];
-        int bytesRead = await this.AutoResetStream.ReadAsync(buffer, 0, buffer.Length);
-        Assert.AreEqual(0, this.AutoResetStream.Position);
-        Assert.AreEqual(this.TestTextLength, bytesRead);
-      }
+
+      byte[] buffer = new byte[1024];
+      int bytesRead = await this.AutoResetStream.ReadAsync(buffer, 0, buffer.Length);
+
+      this.AutoResetStream.Position.Should().Be(0);
+      bytesRead.Should().Be(this.TestTextLength);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task ResetStreamPositionAfterWriteAsync()
     {
-      using (this.AutoResetStream)
-      {
-        byte[] buffer = Encoding.UTF8.GetBytes(this.TestText);
-        await this.AutoResetStream.WriteAsync(buffer, 0, buffer.Length);
-        Assert.AreEqual(0, this.AutoResetStream.Position);
-        Assert.AreEqual(this.TestTextLength, this.AutoResetStream.Length);
-      }
+      byte[] buffer = Encoding.UTF8.GetBytes(this.TestText);
+      await this.AutoResetStream.WriteAsync(buffer, 0, buffer.Length);
+
+      this.AutoResetStream.Position.Should().Be(0);
+      this.AutoResetStream.Length.Should().Be(this.TestTextLength);
     }
 
-    [TestMethod]
+    [Fact]
     public void ResetStreamPositionAfterRead()
     {
       FillStream();
-      using (this.AutoResetStream)
-      {
-        byte[] buffer = new byte[1024];
-        int bytesRead = this.AutoResetStream.Read(buffer, 0, buffer.Length);
-        Assert.AreEqual(0, this.AutoResetStream.Position);
-        Assert.AreEqual(this.TestTextLength, bytesRead);
-      }
+      byte[] buffer = new byte[1024];
+      int bytesRead = this.AutoResetStream.Read(buffer, 0, buffer.Length);
+
+      this.AutoResetStream.Position.Should().Be(0);
+      bytesRead.Should().Be(this.TestTextLength);
     }
 
-    [TestMethod]
+    [Fact]
     public void ResetStreamPositionAfterWrite()
     {
-      FillStream();
-      using (this.AutoResetStream)
-      {
-        byte[] buffer = Encoding.UTF8.GetBytes(this.TestText);
-        this.AutoResetStream.Write(buffer, 0, buffer.Length);
-        Assert.AreEqual(0, this.AutoResetStream.Position);
-        Assert.AreEqual(this.TestTextLength, this.AutoResetStream.Length);
-      }
+      byte[] buffer = Encoding.UTF8.GetBytes(this.TestText);
+      this.AutoResetStream.Write(buffer, 0, buffer.Length);
+
+      this.AutoResetStream.Position.Should().Be(0);
+      this.AutoResetStream.Length.Should().Be(this.TestTextLength);
     }
 
-    [TestMethod]
+    [Fact]
     public void ResetStreamPositionAfterReadByte()
     {
       FillStream();
-      using (this.AutoResetStream)
-      {
-        byte[] buffer = Encoding.UTF8.GetBytes(this.TestText);
-        int byteRead = this.AutoResetStream.ReadByte();
-        Assert.AreEqual(0, this.AutoResetStream.Position);
-        Assert.AreEqual(buffer.First(), byteRead);
-      }
+      byte[] buffer = Encoding.UTF8.GetBytes(this.TestText);
+      byte firstByteInBuffer = buffer.First();
+
+      int byteRead = this.AutoResetStream.ReadByte();
+
+      this.AutoResetStream.Position.Should().Be(0);
+      byteRead.Should().Be(firstByteInBuffer);
     }
 
-    [TestMethod]
+    [Fact]
     public void ResetStreamPositionAfterWriteByte()
     {
-      using (this.AutoResetStream)
-      {
-        byte[] buffer = Encoding.UTF8.GetBytes(this.TestText);
-        this.AutoResetStream.WriteByte(buffer.First());
-        Assert.AreEqual(0, this.AutoResetStream.Position);
-        Assert.AreEqual(1, this.AutoResetStream.Length);
-      }
+      byte[] buffer = Encoding.UTF8.GetBytes(this.TestText);
+      this.AutoResetStream.WriteByte(buffer.First());
+
+      this.AutoResetStream.Position.Should().Be(0);
+      this.AutoResetStream.Length.Should().Be(1);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task ResetStreamPositionAfterCopyAsync()
     {
       FillStream();
-      using (this.AutoResetStream)
+      using (var destinationStream = new MemoryStream())
       {
-        using (var destinationStream = new MemoryStream())
-        {
-          await this.AutoResetStream.CopyToAsync(destinationStream, this.TestTextLength, CancellationToken.None);
-          Assert.AreEqual(0, this.AutoResetStream.Position);
-          Assert.AreEqual(this.TestTextLength, destinationStream.Length);
-        }
+        await this.AutoResetStream.CopyToAsync(destinationStream, this.TestTextLength, CancellationToken.None);
+
+        this.AutoResetStream.Position.Should().Be(0);
+        destinationStream.Length.Should().Be(this.TestTextLength);
       }
     }
   }

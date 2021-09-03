@@ -9,4 +9,10 @@
     <ProjectReference Include="..\BionicCode.Utilities.Net.Wpf\BionicCode.Utilities.Net.Wpf.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="BionicCharts\CartesianChart\CartesianChart.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>

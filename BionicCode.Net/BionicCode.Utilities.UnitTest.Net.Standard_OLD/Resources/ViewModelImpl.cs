@@ -60,7 +60,7 @@ namespace BionicCode.Utilities.UnitTest.Net.Standard.Resources
     public string ValidatingTextPropertyRejectingInvalidValue
     {
       get => this.validatingTextPropertyRejectingInvalidValue;
-      set => TrySetValue(value, ValidateProperty(), ref this.validatingTextPropertyRejectingInvalidValue, isRejectInvalidValueEnabled: true, isRejectEqualValuesEnabled: true);
+      set => TrySetValue(value, ValidateProperty(), ref this.validatingTextPropertyRejectingInvalidValue, true);
     }
 
     private string validatingTextPropertyThrowingExceptionOnNonUpperCaseValue;
