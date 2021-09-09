@@ -9,14 +9,17 @@ namespace BionicCode.Utilities.UnitTest.Net.Standard.Resources
 {
   public class ViewModelImpl : ViewModel
   {
-    public ViewModelImpl(Func<string, (bool IsValid, IEnumerable<string> ErrorMessages)> propertyValidationDelegate, string validationErrorMessage)
+    public ViewModelImpl()
     {
-      this.ValidationErrorMessage = validationErrorMessage;
-      this.PropertyValidationDelegate = propertyValidationDelegate;
+      this.ValidationErrorMessage = "Value must be all uppercase";
     }
 
-    private Func<string, (bool IsValid, IEnumerable<string> ErrorMessages)> PropertyValidationDelegate { get; }
-    private string ValidationErrorMessage { get; }
+    private Func<string, (bool IsValid, IEnumerable<string> ErrorMessages)> ValidateProperty()
+    {
+      return text => text.All(char.IsUpper) ? (true, Array.Empty<string>()) : (false, new[] { this.ValidationErrorMessage });
+    }
+
+    public string ValidationErrorMessage { get; }
 
     private string nonValidatingTextProperty;
     public string NonValidatingTextProperty
@@ -36,42 +39,42 @@ namespace BionicCode.Utilities.UnitTest.Net.Standard.Resources
     public string ValidatingTextPropertyChangedNullArgAndRejectInvalidValue
     {
       get => this.validatingTextPropertyChangedNullArgAndRejectInvalidValue;
-      set => TrySetValue(value, this.PropertyValidationDelegate, ref this.validatingTextPropertyChangedNullArgAndRejectInvalidValue,  propertyName:null, isRejectInvalidValueEnabled:true);
+      set => TrySetValue(value, ValidateProperty(), ref this.validatingTextPropertyChangedNullArgAndRejectInvalidValue,  propertyName:null, isRejectInvalidValueEnabled:true);
     }
 
     private string validatingTextPropertyExpectingUpperCaseValue;
     public string ValidatingTextPropertyExpectingUpperCaseValue
     {
       get => this.validatingTextPropertyExpectingUpperCaseValue;
-      set => base.TrySetValue(value, this.PropertyValidationDelegate, ref this.validatingTextPropertyExpectingUpperCaseValue);
+      set => base.TrySetValue(value, ValidateProperty(), ref this.validatingTextPropertyExpectingUpperCaseValue);
     }
 
     private string silentValidatingTextPropertyExpectingUpperCaseValue;
     public string SilentValidatingTextPropertyExpectingUpperCaseValue
     {
       get => this.silentValidatingTextPropertyExpectingUpperCaseValue;
-      set => base.TrySetValueSilent(value, this.PropertyValidationDelegate, ref this.silentValidatingTextPropertyExpectingUpperCaseValue);
+      set => base.TrySetValueSilent(value, ValidateProperty(), ref this.silentValidatingTextPropertyExpectingUpperCaseValue);
     }
 
     private string validatingTextPropertyRejectingInvalidValue;
     public string ValidatingTextPropertyRejectingInvalidValue
     {
       get => this.validatingTextPropertyRejectingInvalidValue;
-      set => TrySetValue(value, this.PropertyValidationDelegate, ref this.validatingTextPropertyRejectingInvalidValue, isRejectInvalidValueEnabled: true, isRejectEqualValuesEnabled: true);
+      set => TrySetValue(value, ValidateProperty(), ref this.validatingTextPropertyRejectingInvalidValue, true);
     }
 
     private string validatingTextPropertyThrowingExceptionOnNonUpperCaseValue;
     public string ValidatingTextPropertyThrowingExceptionOnNonUpperCaseValue
     {
       get => this.validatingTextPropertyThrowingExceptionOnNonUpperCaseValue;
-      set => TrySetValue(value, this.PropertyValidationDelegate, ref this.validatingTextPropertyThrowingExceptionOnNonUpperCaseValue, isThrowExceptionOnValidationErrorEnabled:true);
+      set => TrySetValue(value, ValidateProperty(), ref this.validatingTextPropertyThrowingExceptionOnNonUpperCaseValue, isThrowExceptionOnValidationErrorEnabled:true);
     }
 
     private string validatingTextPropertyThrowingExceptionAndRejectValueOnNonUpperCaseValue;
     public string ValidatingTextPropertyThrowingExceptionAndRejectValueOnNonUpperCaseValue
     {
       get => this.validatingTextPropertyThrowingExceptionAndRejectValueOnNonUpperCaseValue;
-      set => TrySetValue(value, this.PropertyValidationDelegate, ref this.validatingTextPropertyThrowingExceptionAndRejectValueOnNonUpperCaseValue, isThrowExceptionOnValidationErrorEnabled:true, isRejectInvalidValueEnabled:true);
+      set => TrySetValue(value, ValidateProperty(), ref this.validatingTextPropertyThrowingExceptionAndRejectValueOnNonUpperCaseValue, isThrowExceptionOnValidationErrorEnabled:true, isRejectInvalidValueEnabled:true);
     }
   }
 }

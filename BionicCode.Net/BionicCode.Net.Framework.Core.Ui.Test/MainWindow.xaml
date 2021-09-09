@@ -3,18 +3,36 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:wpf="clr-namespace:BionicCode.Controls.Net.Wpf;assembly=BionicCode.Controls.Net.Wpf"
+        xmlns:wpf="clr-namespace:BionicCode.Controls.Net.Wpf;assembly=BionicCode.Controls.Net.Wpf" 
+        xmlns:bionicCharts="clr-namespace:BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart;assembly=BionicCode.Controls.Net.Wpf" 
+        xmlns:local="clr-namespace:BionicCode.Net.Wpf.Ui.Test"
         mc:Ignorable="d"
         Title="MainWindow" Height="628" Width="800" Name="Window"
         Background="#FF252526">
+  <Window.DataContext>
+    <local:CartesianChartViewModel />
+  </Window.DataContext>
   <Window.Resources>
   </Window.Resources>
   <Grid Margin="0,0,0,0"
              Background="Transparent">
-    <Grid x:Name="gridSizes"/>
-    <wpf:Calendar  DockPanel.Dock="Top" VerticalContentAlignment="Stretch"
-                   FirstDayOfWeek="Monday" />
-<!--<wpf:Clock DockPanel.Dock="Top">
+    <!--<wpf:Calendar  DockPanel.Dock="Top" VerticalContentAlignment="Stretch"
+                   FirstDayOfWeek="Monday" />-->
+
+
+    <bionicCharts:CartesianChart x:Name="CartesianChart"
+                                ItemsSource="{Binding ChartPoints}" Height="700" Width="700" VirtualizingPanel.CacheLengthUnit="Page" VirtualizingPanel.CacheLength="5,5"  bionicCharts:VirtualizingCartesianCanvas.XZoomFactor="3" bionicCharts:VirtualizingCartesianCanvas.YZoomFactor="1"   Background="CadetBlue">
+
+      <!--<bionicCharts:CartesianChart.Items>
+        <bionicCharts:CartesianChartItem X="100" Y="20">
+          <Ellipse Height="10" Width="10" StrokeThickness="2" Stroke="Black"/>
+        </bionicCharts:CartesianChartItem>
+      </bionicCharts:CartesianChart.Items>-->
+
+    </bionicCharts:CartesianChart>
+
+
+    <!--<wpf:Clock DockPanel.Dock="Top">
       <wpf:Clock.ClockFace>
         <wpf:AnalogClockFace/>
       </wpf:Clock.ClockFace>

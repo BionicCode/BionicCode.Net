@@ -1,0 +1,287 @@
+﻿//using System;
+//using System.ComponentModel;
+//using System.Data;
+//using System.Linq;
+//using System.Windows;
+//using System.Windows.Controls;
+//using System.Windows.Controls.Primitives;
+//using System.Windows.Input;
+//using System.Windows.Media;
+//using BionicCode.Utilities.Net.Wpf.Extensions;
+
+//namespace BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart
+//{
+//  public class VirtualizingCartesianPlotCanvas : VirtualizingPanel, IScrollInfo
+//  {
+//    #region Dependency properties
+
+//    #endregion Dependency properties
+
+//    public VirtualizingCartesianPlotCanvas()
+//    {
+//    }
+
+//    #region Overrides of VirtualizingPanel
+
+//    /// <inheritdoc />
+//    protected override void OnItemsChanged(object sender, ItemsChangedEventArgs args)
+//    {
+//      base.OnItemsChanged(sender, args);
+//    }
+
+//    #endregion Overrides of VirtualizingPanel
+
+//    #region Overrides of FrameworkElement
+
+//    /// <inheritdoc />
+//    protected override Size ArrangeOverride(Size finalSize)
+//    {
+//      double maxXChartPointValueForNonCartesianChartItems = double.NaN;
+//      double maxXPointValueForNonCartesianChartItems = double.NaN;
+//      double maxYChartPointValueForNonCartesianChartItems = double.NaN;
+//      double maxYPointValueForNonCartesianChartItems = double.NaN;
+
+//      foreach (UIElement internalChild in this.InternalChildren)
+//      {
+//        var x = 0.0;
+//        var y = 0.0;
+//        double totalAvailableHeight = GetMaxAvailableHeight(internalChild, finalSize);
+//        double totalAvailableWidth = finalSize.Width <= this.ViewportWidth ? finalSize.Width * Wpf.VirtualizingCartesianPlotCanvas.GetXZoomFactor(this) - internalChild.DesiredSize.Width : finalSize.Width - internalChild.DesiredSize.Width;
+
+//        // Best performance: container is a CartesianChartItem.
+//        if (internalChild is CartesianChartItem chartPointItem)
+//        {
+//          x = double.IsNaN(chartPointItem.X)
+//            ? 0.0
+//            : chartPointItem.X * totalAvailableWidth / Math.Max(finalSize.Width, chartPointItem.MaxX);
+//          y = double.IsNaN(chartPointItem.Y)
+//            ? 0.0
+//            : totalAvailableHeight - chartPointItem.Y * totalAvailableHeight * (finalSize.Height <= this.ViewportHeight ? Wpf.VirtualizingCartesianPlotCanvas.GetYZoomFactor(this) : 1.0) / (chartPointItem.MaxY.Equals(0) ? 1.0 : chartPointItem.MaxY);
+//        }
+//        else if (internalChild is FrameworkElement frameworkElement)
+//        {
+//          if (frameworkElement.DataContext is Point point)
+//          {
+//            if (double.IsNaN(maxXPointValueForNonCartesianChartItems))
+//            {
+//              maxXPointValueForNonCartesianChartItems = this.InternalChildren.OfType<FrameworkElement>()
+//                .Select(element => element.DataContext).OfType<Point>().Max(p => p.X);
+//            }
+//            if (double.IsNaN(maxYPointValueForNonCartesianChartItems))
+//            {
+//              maxYPointValueForNonCartesianChartItems = this.InternalChildren.OfType<FrameworkElement>()
+//                .Select(element => element.DataContext).OfType<Point>().Max(p => p.Y);
+//            }
+//            x = double.IsNaN(point.X)
+//              ? 0.0
+//              : point.X * totalAvailableWidth / maxXPointValueForNonCartesianChartItems;
+//            y = double.IsNaN(point.Y)
+//              ? 0.0
+//              : totalAvailableHeight - point.Y * totalAvailableHeight * (finalSize.Height <= this.ViewportHeight ? Wpf.VirtualizingCartesianPlotCanvas.GetYZoomFactor(this) : 1.0) / (maxYPointValueForNonCartesianChartItems.Equals(0) ? 1.0 : maxYPointValueForNonCartesianChartItems);
+//          }
+//          else if (frameworkElement.DataContext is ICartesianChartPoint chartPoint)
+//          {
+//            if (double.IsNaN(maxXChartPointValueForNonCartesianChartItems))
+//            {
+//              maxXChartPointValueForNonCartesianChartItems = this.InternalChildren.OfType<FrameworkElement>()
+//                .Select(element => element.DataContext).OfType<Point>().Max(p => p.X);
+//            }
+//            if (double.IsNaN(maxYChartPointValueForNonCartesianChartItems))
+//            {
+//              maxYChartPointValueForNonCartesianChartItems = this.InternalChildren.OfType<FrameworkElement>()
+//                .Select(element => element.DataContext).OfType<Point>().Max(p => p.Y);
+//            }
+//            x = double.IsNaN(chartPoint.X)
+//              ? 0.0
+//              : chartPoint.X * totalAvailableWidth / maxXChartPointValueForNonCartesianChartItems;
+//            y = double.IsNaN(chartPoint.Y)
+//              ? 0.0
+//              : totalAvailableHeight - chartPoint.Y * totalAvailableHeight * (finalSize.Height <= this.ViewportHeight ? Wpf.VirtualizingCartesianPlotCanvas.GetYZoomFactor(this) : 1.0) / (maxYChartPointValueForNonCartesianChartItems.Equals(0) ? 1.0 : maxYChartPointValueForNonCartesianChartItems); 
+//          }
+//        }
+//        else
+//        {
+//          ArrangeCanvasChild(finalSize, internalChild);
+//          continue;
+//        }
+
+//        internalChild.Arrange(
+//          new Rect(new Point(x - this.HorizontalOffset, y - this.VerticalOffset), internalChild.DesiredSize));
+//      }
+
+//      return finalSize;
+//    }
+
+//    /// <inheritdoc />
+//    protected override Size MeasureOverride(Size constraint)
+//    {
+//      double desiredWidth = Math.Max(constraint.Width * Wpf.VirtualizingCartesianPlotCanvas.GetXZoomFactor(this), this.InternalChildren.OfType<CartesianChartItem>().FirstOrDefault()?.MaxX * Wpf.VirtualizingCartesianPlotCanvas.GetXZoomFactor(this) ?? 0);
+//      double desiredHeight = constraint.Height * Wpf.VirtualizingCartesianPlotCanvas.GetYZoomFactor(this);
+//      var desiredSize = new Size(desiredWidth, desiredHeight);
+
+//      this.ViewportWidth = constraint.Width;
+//      this.ViewportHeight = constraint.Height;
+//      this.ExtentWidth = desiredSize.Width;
+//      this.ExtentHeight = desiredSize.Height;
+
+//      if (this.ItemContainerGenerator == null)
+//      {
+//        return desiredSize;
+//      }
+
+//      RealizeInitialItems();
+//      this.ScrollOwner.InvalidateScrollInfo();
+//      return desiredSize;
+//    }
+
+
+//    #endregion Overrides of FrameworkElement
+
+//    private double GetMaxAvailableHeight(UIElement internalChild, Size finalSize)
+//    {
+//      if (!(internalChild is CartesianChartItem cartesianChartItem))
+//      {
+//        return finalSize.Height;
+//      }
+
+//      double fullPlottableHeight = finalSize.Height - internalChild.DesiredSize.Height;
+//      return double.IsNaN(cartesianChartItem.MaxY)
+//        ? fullPlottableHeight
+//        : cartesianChartItem.MaxY > 0 && cartesianChartItem.MinY >= 0
+//          ? fullPlottableHeight
+//          : cartesianChartItem.MaxY <= 0 && cartesianChartItem.MinY < 0
+//            ? fullPlottableHeight * -1
+//            : fullPlottableHeight / 2;
+//      //: cartesianChartItem.MaxY > 0 && cartesianChartItem.MinY < 0
+//      //? fullPlottableHeight / (cartesianChartItem.MaxY / Math.Abs(cartesianChartItem.MinY) * 2)
+//      //: fullPlottableHeight;
+//    }
+
+//    #region Implementation of IScrollInfo
+
+//    ///// <inheritdoc />
+//    //public void LineUp()
+//    //{
+//    //  throw new NotImplementedException();
+//    //}
+
+//    ///// <inheritdoc />
+//    //public void LineDown()
+//    //{
+//    //  throw new NotImplementedException();
+//    //}
+
+//    ///// <inheritdoc />
+//    //public void LineLeft()
+//    //{
+//    //  throw new NotImplementedException();
+//    //}
+
+//    ///// <inheritdoc />
+//    //public void LineRight()
+//    //{
+//    //  throw new NotImplementedException();
+//    //}
+
+//    ///// <inheritdoc />
+//    //public void PageUp()
+//    //{
+//    //  throw new NotImplementedException();
+//    //}
+
+//    ///// <inheritdoc />
+//    //public void PageDown()
+//    //{
+//    //  throw new NotImplementedException();
+//    //}
+
+//    ///// <inheritdoc />
+//    //public void PageLeft()
+//    //{
+//    //  throw new NotImplementedException();
+//    //}
+
+//    ///// <inheritdoc />
+//    //public void PageRight()
+//    //{
+//    //  throw new NotImplementedException();
+//    //}
+
+//    ///// <inheritdoc />
+//    //public void MouseWheelUp()
+//    //{
+//    //  throw new NotImplementedException();
+//    //}
+
+//    ///// <inheritdoc />
+//    //public void MouseWheelDown()
+//    //{
+//    //  throw new NotImplementedException();
+//    //}
+
+//    ///// <inheritdoc />
+//    //public void MouseWheelLeft()
+//    //{
+//    //  throw new NotImplementedException();
+//    //}
+
+//    ///// <inheritdoc />
+//    //public void MouseWheelRight()
+//    //{
+//    //  throw new NotImplementedException();
+//    //}
+
+//    ///// <inheritdoc />
+//    //public void SetHorizontalOffset(double offset)
+//    //{
+//    //  this.IsScrolling = true;
+//    //  var itemCount = (int) Math.Ceiling(offset);
+//    //  int itemCountToRemove =  itemCount - (int) this.HorizontalOffset;
+//    //  int generatedCount = 0;
+//    //  var itemWidth = 0.0;
+//    //  var startIndex = this.InternalChildren.Count + (int)this.HorizontalOffset;
+//    //  //using (this.ItemContainerGenerator.StartAt(
+//    //  //  this.ItemContainerGenerator.GeneratorPositionFromIndex(startIndex),
+//    //  //  GeneratorDirection.Forward,
+//    //  //  true))
+//    //  //{
+//    //  //  while (generatedCount < itemCountToRemove && startIndex + generatedCount <= this.ExtentWidth)
+//    //  //  {
+//    //  //    var itemContainer = this.ItemContainerGenerator.GenerateNext(out bool isFresh) as UIElement;
+//    //  //    if (itemContainer == null || isFresh)
+//    //  //    {
+//    //  //      generatedCount++;
+//    //  //      continue;
+//    //  //    }
+//    //  //    this.ItemContainerGenerator.PrepareItemContainer(itemContainer);
+//    //  //    AddInternalChild(itemContainer);
+//    //  //    RemoveInternalChildRange(0, 1);
+//    //  //    itemContainer?.Measure(new Size(this.ViewportWidth, this.ViewportHeight));
+//    //  //    itemWidth += itemContainer.DesiredSize.Width;
+//    //  //    this.AverageItemContainerSize = new Size(itemWidth / this.InternalChildren.Count, this.ViewportHeight);
+//    //  //    generatedCount++;
+//    //    //}
+
+//    //  //}
+//    //  this.HorizontalOffset = offset;
+//    //  //this.ScrollOwner.InvalidateScrollInfo();
+//    //  InvalidateArrange();
+//    //  // ArrangeOverride(new Size(this.ExtentWidth, this.ExtentHeight));
+//    //  this.IsScrolling = false;
+//    //}
+
+//    ///// <inheritdoc />
+//    //public void SetVerticalOffset(double offset)
+//    //{
+//    //  this.VerticalOffset = offset;
+//    //  InvalidateArrange();
+//    //}
+
+//    ///// <inheritdoc />
+//    //public new Rect MakeVisible(Visual visual, Rect rectangle) => throw new NotImplementedException();
+
+  
+
+//    #endregion Implementation of IScrollInfo
+//  }
+//}
