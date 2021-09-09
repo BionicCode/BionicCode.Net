@@ -14,14 +14,14 @@
     <PackageIcon>BionicCode_Logo.png</PackageIcon>
     <PackageTags>ViewModel BaseViewModel Base View Model Profiler Profiling Measure Measuring View Model ViewModel ExtensionMethods EventAggregator Aggregator Event MVVM NullObject NullObjectFactory Factory IFatory ValueChangedEventArgs AutoResetStream Stream PropertyValueChangedArgs FileExtension FileExtensions PropertyValueChanged</PackageTags>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>1.1.1</Version>
+    <Version>1.2.0</Version>
     <RepositoryUrl>https://github.com/BionicCode/BionicCode.Net.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>- Fixed refactoring bug in ViewModel 
-- Improved ViewModel (added IProgressReporter and refactored OnProertyChanged)
+    <PackageReleaseNotes>- improved IProgressReporter and added virtual override HandleProgress to ViewModel
 
 ---------------------------------------------------------
 For bug reports or feature requests please visit the project home on GutHub (follow the "Project Site" link on the right) and then open an issue (open the "issue" tab, click "New Issue" and select the appropriate template) or send  a mail to BionicCode@outlook.com. Thank you very much.</PackageReleaseNotes>
+    <PackageIconUrl />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -37,11 +37,7 @@ For bug reports or feature requests please visit the project home on GutHub (fol
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\BionicCode.Utilities.UnitTest.Net.Standard\logo.ico">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="..\..\..\..\BionicCode_Logo.png">
+    <None Include="..\BionicCode_Logo.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>

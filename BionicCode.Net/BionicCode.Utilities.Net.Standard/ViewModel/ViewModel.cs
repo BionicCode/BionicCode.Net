@@ -236,16 +236,32 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
 
     #region Implementation of IProgressReporter
 
-
+    /// <summary>
+    /// When overridden, handles the <see cref="IProgress{ProgressData}.Report(ProgressData)"/> that is invoked by the <see cref="IProgress{ProgressData}"/> instance returned from <see cref="CreateProgressReporterFromCurrentThread"/>. Can be used as progress delegate for any <see cref="IProgress{ProgressData}"/>.
+    /// </summary>
+    /// <param name="progress">The progress argument.</param>
     protected virtual void OnProgress(ProgressData progress)
     {
 
     }
 
+    /// <inheritdoc/>
     public IProgress<ProgressData> CreateProgressReporterFromCurrentThread() => new Progress<ProgressData>(OnProgress);
 
+    /// <summary>
+    /// 
+    /// Raises the <see cref="IProgressReporter.ProgressChanged"/> event.
+    /// </summary>
+    /// <param name="oldValue">The old progress value.</param>
+    /// <param name="newValue">The new progress value.</param>
     protected virtual void OnProgressChanged(double oldValue, double newValue) => OnProgressChanged(oldValue, newValue, string.Empty);
 
+    /// <summary>
+    /// Raises the <see cref="IProgressReporter.ProgressChanged"/> event.
+    /// </summary>
+    /// <param name="oldValue">The old progress value.</param>
+    /// <param name="newValue">The new progress value.</param>
+    /// <param name="progressText">The progress message.</param>
     protected virtual void OnProgressChanged(double oldValue, double newValue, string progressText)
     {
       this.IsReportingProgress = this.IsIndeterminate || (this.ProgressValue > 0 && this.ProgressValue < 100);
@@ -253,6 +269,7 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
     }
 
     private bool isReportingProgress;
+    /// <inheritdoc/>
     public bool IsReportingProgress
     {
       get => this.isReportingProgress;
@@ -260,6 +277,7 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
     }
 
     private bool isIndeterminate;
+    /// <inheritdoc/>
     public bool IsIndeterminate
     {
       get => this.isIndeterminate;
@@ -272,6 +290,7 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
     }
 
     private string progressText;
+    /// <inheritdoc/>
     public string ProgressText
     {
       get => this.progressText;
@@ -285,6 +304,7 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
     }
 
     private double progressValue;
+    /// <inheritdoc/>
     public double ProgressValue
     {
       get => this.progressValue;
@@ -298,6 +318,7 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
       }
     }
 
+    /// <inheritdoc/>
     public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
     #endregion
 
