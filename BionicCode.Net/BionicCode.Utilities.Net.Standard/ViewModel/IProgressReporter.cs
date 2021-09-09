@@ -15,6 +15,7 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
   /// </summary>
   public interface IProgressReporter : INotifyPropertyChanged
   {
+    IProgress<ProgressData> CreateProgressReporterFromCurrentThread();
     bool IsReportingProgress { get; }
     bool IsIndeterminate { get; set; }
     string ProgressText { get; set; }

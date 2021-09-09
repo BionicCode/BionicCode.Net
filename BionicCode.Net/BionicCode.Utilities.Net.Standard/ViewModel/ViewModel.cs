@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using BionicCode.Utilities.Net.Standard.Generic;
 using JetBrains.Annotations;
 
@@ -236,6 +237,13 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
     #region Implementation of IProgressReporter
 
 
+    protected virtual void OnProgress(ProgressData progress)
+    {
+
+    }
+
+    public IProgress<ProgressData> CreateProgressReporterFromCurrentThread() => new Progress<ProgressData>(OnProgress);
+
     protected virtual void OnProgressChanged(double oldValue, double newValue) => OnProgressChanged(oldValue, newValue, string.Empty);
 
     protected virtual void OnProgressChanged(double oldValue, double newValue, string progressText)
@@ -257,8 +265,9 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
       get => this.isIndeterminate;
       set
       {
+        double oldValue = this.ProgressValue;
         TrySetValue(value, ref this.isIndeterminate);
-        OnProgressChanged(-1, -1);
+        OnProgressChanged(oldValue, value ? -1 : this.ProgressValue);
       }
     }
 
@@ -266,7 +275,13 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
     public string ProgressText
     {
       get => this.progressText;
-      set => TrySetValue(value, ref this.progressText);
+      set
+      {
+        if (TrySetValue(value, ref this.progressText))
+        {
+          OnProgressChanged(this.ProgressValue, this.ProgressValue, this.ProgressText);
+        }
+      }
     }
 
     private double progressValue;
@@ -276,8 +291,10 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
       set
       {
         double oldValue = this.ProgressValue;
-        TrySetValue(value, ref this.progressValue);
-        OnProgressChanged(oldValue, this.ProgressValue);
+        if (TrySetValue(value, ref this.progressValue))
+        {
+          OnProgressChanged(oldValue, this.ProgressValue, this.ProgressText);
+        }
       }
     }
 

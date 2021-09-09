@@ -18,15 +18,17 @@
              Background="Transparent">
     <!--<wpf:Calendar  DockPanel.Dock="Top" VerticalContentAlignment="Stretch"
                    FirstDayOfWeek="Monday" />-->
-    
-    
+
+
     <bionicCharts:CartesianChart x:Name="CartesianChart"
                                 ItemsSource="{Binding ChartPoints}" Height="700" Width="700" VirtualizingPanel.CacheLengthUnit="Page" VirtualizingPanel.CacheLength="5,5"  bionicCharts:VirtualizingCartesianCanvas.XZoomFactor="3" bionicCharts:VirtualizingCartesianCanvas.YZoomFactor="1"   Background="CadetBlue">
-      
-    <bionicCharts:CartesianChart.Items>
-        <bionicCharts:CartesianChartItem X="100" Y="20"><Ellipse Height="10" Width="10" StrokeThickness="2" Stroke="Black"/></bionicCharts:CartesianChartItem>
-      </bionicCharts:CartesianChart.Items>
-    
+
+      <!--<bionicCharts:CartesianChart.Items>
+        <bionicCharts:CartesianChartItem X="100" Y="20">
+          <Ellipse Height="10" Width="10" StrokeThickness="2" Stroke="Black"/>
+        </bionicCharts:CartesianChartItem>
+      </bionicCharts:CartesianChart.Items>-->
+
     </bionicCharts:CartesianChart>
 
 
