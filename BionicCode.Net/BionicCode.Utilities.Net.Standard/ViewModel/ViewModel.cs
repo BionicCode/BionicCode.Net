@@ -240,10 +240,28 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
     /// When overridden, handles the <see cref="IProgress{ProgressData}.Report(ProgressData)"/> that is invoked by the <see cref="IProgress{ProgressData}"/> instance returned from <see cref="CreateProgressReporterFromCurrentThread"/>. Can be used as progress delegate for any <see cref="IProgress{ProgressData}"/>.
     /// </summary>
     /// <param name="progress">The progress argument.</param>
+    /// <remarks>The default implementation provides the followwing logic: a value of <see cref="double.NegativeInfinity"/> or <see cref="ViewModel.DisableIndterminateMode"/> will automatically set the <see cref="ViewModel.IsIndeterminate"/> property to <c>false</c>. A value of <see cref="double.PositiveInfinity"/> or <see cref="ViewModel.EnableIndterminateMode"/> will automatically set the <see cref="ViewModel.IsIndeterminate"/> property to <c>true</c>.
+    /// </remarks>
     protected virtual void OnProgress(ProgressData progress)
     {
-
+      this.ProgressText = progress.Message;
+      this.IsIndeterminate = progress.Progress == ViewModel.EnableIndterminateMode 
+        ? true 
+        : progress.Progress == ViewModel.DisableIndterminateMode 
+          ? false 
+          : this.IsIndeterminate;
+      this.ProgressValue = progress.Progress;
     }
+
+    /// <summary>
+    /// Constant representing value of <see cref="double.PositiveInfinity"/>. When assigned to <see cref="ProgressData.Progress"/> and when calling the default implementation of <see cref="OnProgress(ProgressData)"/> the value will automatically set <see cref="ViewModel.IsIndeterminate"/> to <c>true</c>.
+    /// </summary>
+    public const double EnableIndterminateMode = double.PositiveInfinity;
+
+    /// <summary>
+    /// Constant representing value of <see cref="double.NegativeInfinity"/>. When assigned to <see cref="ProgressData.Progress"/> and when calling the default implementation of <see cref="OnProgress(ProgressData)"/> the value will automatically set <see cref="ViewModel.IsIndeterminate"/> to <c>false</c>.
+    /// </summary>
+    public const double DisableIndterminateMode = double.NegativeInfinity;
 
     /// <inheritdoc/>
     public IProgress<ProgressData> CreateProgressReporterFromCurrentThread() => new Progress<ProgressData>(OnProgress);
@@ -310,7 +328,7 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
       get => this.progressValue;
       set
       {
-        double oldValue = this.ProgressValue;
+        double oldValue = this.ProgressValue; 
         if (TrySetValue(value, ref this.progressValue))
         {
           OnProgressChanged(oldValue, this.ProgressValue, this.ProgressText);

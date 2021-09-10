@@ -3,8 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net5.0-windows;netcoreapp3.0</TargetFrameworks>
     <UseWPF>true</UseWPF>
-    <PackageReleaseNotes>- improved IProgressReporter and added virtual override HandleProgress to ViewModel
-
+    <PackageReleaseNotes>- added InteractionCompleting event to IDialogViewModel and DialogViewModel to allow cancelling the close dialog process (to keep the dialog open)
 ---------------------------------------------------------
 For bug reports or feature requests please visit the project home on GutHub (follow the "Project Site" link on the right) and then open an issue (open the "issue" tab, click "New Issue" and select the appropriate template) or send  a mail to BionicCode@outlook.com. Thank you very much.</PackageReleaseNotes>
     <Authors>Brian Sampoh</Authors>
@@ -19,7 +18,7 @@ For bug reports or feature requests please visit the project home on GutHub (fol
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>2021</Copyright>
     <NeutralLanguage>en</NeutralLanguage>
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
     <PackageId>BionicCode.Utilities.Net.Wpf</PackageId>
     <Product>BionicCode.Utilities.Net.Wpf (.NET 5, .NET Core 3.0)</Product>
   </PropertyGroup>
