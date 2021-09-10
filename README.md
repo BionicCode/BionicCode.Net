@@ -41,7 +41,7 @@
 
 [![BionicCode.Utilities.Net.Framework.Wpf](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Framework-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Framework.htm)
 
-[![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Standard-orange)](https://www.sampoh.de/media/github/docs/bioniccode.net/bioniccode.utilities.net.standard/html/R_Project_Documentation.htm)
+[![BionicCode.Utilities.Net.Standard](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Standard-orange)](https://www.sampoh.de/github/docs/bioniccode.net/bioniccode.utilities.net.standard/html/R_Project_Documentation.htm)
 
 [![BionicCode.Utilities.Net.UWP](https://img.shields.io/badge/Namespace-BionicCode.Utilities.Net.Uwp-orange)](https://rawcdn.githack.com/BionicCode/BionicCode.Net/0dcf23826e90a9b54757fa705d77f263056f5fc6/Documentation/html/G_BionicCode_Utilities_Net_Uwp.htm)
 
