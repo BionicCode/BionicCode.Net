@@ -4,6 +4,7 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using BionicCode.Utilities.Net.Standard.ViewModel;
@@ -60,8 +61,8 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
     protected virtual async Task ExecuteSendResponseCommandAsync(DialogResult result)
     {
       this.DialogResult = result;
-      OnInteractionCompleted();
       await this.ResponseCallbackAsync.Invoke(this);
+      OnInteractionCompleted();
     }
 
     protected virtual bool CanExecuteSendResponseCommand(DialogResult commandParameter) => true;
@@ -102,16 +103,33 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
     }
 
     /// <inheritdoc />
+    public event EventHandler<CancelEventArgs> InteractionCompleting;
+
+    /// <inheritdoc />
     public event EventHandler InteractionCompleted;
 
     #endregion
+
+    /// <summary>
+    /// Event invocator of the <see cref="InteractionCompleting"/> event. Raised before <see cref="InteractionCompleted"/> event. When overriding the member, setting the property <see cref="CancelEventArgs.Cancel"/> of the <paramref name="cancelEventArgs"/> parameter to <c>true</c> will cancel the dialog close process. 
+    /// </summary>
+    /// <param name="cancelEventArgs">When setting the property <see cref="CancelEventArgs.Cancel"/> of the event's <see cref="CancelEventArgs"/> to <c>true</c> will cancel the dialog close process.</param>
+    /// <remarks>When the dialog close process was cancelled e.g., by overriding the <see cref="OnInteractionCompleting(CancelEventArgs)"/> method and by setting the <paramref name="cancelEventArgs"/> to <c>true</c>, a new close process can be triggered either by invoking the <see cref="OnInteractionCompleted"/> method or by invoking the <see cref="SendResponseAsyncCommand"/>.</remarks>
+    protected virtual void OnInteractionCompleting(CancelEventArgs cancelEventArgs) 
+      => this.InteractionCompleting?.Invoke(this, cancelEventArgs);
 
     /// <summary>
     /// Event invocator of the <see cref="InteractionCompleted"/> event. Raising this event will request the dialog to be closed.
     /// </summary>
     protected virtual void OnInteractionCompleted()
     {
-      this.InteractionCompleted?.Invoke(this, EventArgs.Empty);
+      var cancelEventArgs = new CancelEventArgs();
+      OnInteractionCompleting(cancelEventArgs);
+
+      if (!cancelEventArgs.Cancel)
+      {
+        this.InteractionCompleted?.Invoke(this, EventArgs.Empty); 
+      }
     }
   }
 }

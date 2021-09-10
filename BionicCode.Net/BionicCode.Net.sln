@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "Documentation", "Documentation\Documentation.shfbproj", "{04BA65BF-B9D4-418D-8787-6A917221516D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BionicCode.Utilities.Net.Standard", "BionicCode.Utilities.Net.Standard\BionicCode.Utilities.Net.Standard.csproj", "{D147481E-42DB-4069-A8EB-88D5872D9FF1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BionicCode.Utilities.Net.Core.Wpf", "BionicCode.Utilities.Net.Core.Wpf\BionicCode.Utilities.Net.Core.Wpf.csproj", "{34BB1868-0F08-43CE-A225-3EE31268A900}"
@@ -47,7 +45,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BionicCode.Utilities.Net.Wp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BionicCode.Controls.Net.Wpf", "BionicCode.Controls.Net.Wpf\BionicCode.Controls.Net.Wpf.csproj", "{CBCC24C7-DC13-43C6-AFBC-9FB38C3008B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BionicCode.Utilities.UnitTest.Net.Standard", "BionicCode.Utilities.UnitTest.Net.Standard\BionicCode.Utilities.UnitTest.Net.Standard.csproj", "{1BDAAFF4-104A-41AD-9631-7E585995E96C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BionicCode.Utilities.UnitTest.Net.Standard", "BionicCode.Utilities.UnitTest.Net.Standard\BionicCode.Utilities.UnitTest.Net.Standard.csproj", "{1BDAAFF4-104A-41AD-9631-7E585995E96C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,25 +61,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Debug|ARM.Build.0 = Debug|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Debug|x64.Build.0 = Debug|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Debug|x86.Build.0 = Debug|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Release|ARM.ActiveCfg = Release|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Release|ARM.Build.0 = Release|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Release|ARM64.Build.0 = Release|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Release|x64.ActiveCfg = Release|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Release|x64.Build.0 = Release|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Release|x86.ActiveCfg = Release|Any CPU
-		{04BA65BF-B9D4-418D-8787-6A917221516D}.Release|x86.Build.0 = Release|Any CPU
 		{D147481E-42DB-4069-A8EB-88D5872D9FF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D147481E-42DB-4069-A8EB-88D5872D9FF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D147481E-42DB-4069-A8EB-88D5872D9FF1}.Debug|ARM.ActiveCfg = Debug|Any CPU
