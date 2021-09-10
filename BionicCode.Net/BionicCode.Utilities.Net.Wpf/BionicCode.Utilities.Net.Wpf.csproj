@@ -3,24 +3,22 @@
   <PropertyGroup>
     <TargetFrameworks>net5.0-windows;netcoreapp3.0</TargetFrameworks>
     <UseWPF>true</UseWPF>
-    <PackageReleaseNotes>_ Convert to multi target framework .NET 5 and .NET Core 3.0
-- Fixed refactoring bug in ViewModel 
-- Improved ViewModel (added IProgressReporter and refactored OnProertyChanged)
+    <PackageReleaseNotes>- added InteractionCompleting event to IDialogViewModel and DialogViewModel to allow cancelling the close dialog process (to keep the dialog open)
 ---------------------------------------------------------
 For bug reports or feature requests please visit the project home on GutHub (follow the "Project Site" link on the right) and then open an issue (open the "issue" tab, click "New Issue" and select the appropriate template) or send  a mail to BionicCode@outlook.com. Thank you very much.</PackageReleaseNotes>
     <Authors>Brian Sampoh</Authors>
     <Company>BionicCode</Company>
-    <Description>Reusable utility and class library for .NET 5 WPF - Featuring: ViewModel (abstract base class), Profiling, Extension Methods, ValueChangedEventArgs, EventAggregator, AutoResetStream and more.</Description>
+    <Description>.NET 5/.NET Core 3 - Reusable utility and class library for WPF .NET 5/.NET Core 3.0 - Featuring: ViewModel (abstract base class), Profiling, Extension Methods, ValueChangedEventArgs, EventAggregator, AutoResetStream and more.</Description>
     <RepositoryUrl>https://github.com/BionicCode/BionicCode.Net.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageIcon>BionicCode_Logo.png</PackageIcon>
     <PackageIconUrl />
-    <PackageTags>.NET 5 ViewModel BaseViewModel Base View Model AsyncRelayCommand Async RelayCommand WPF VisualTreeHelper Profiler Profiling Measure Measuring View Model ViewModel ExtensionMethods ObservablePropertyChangedCollection Collection ApplicationSettings Settings AppSettings MRU MostRecentlyUsedFile LastUsedFile RecentlyUsedFile EventAggregator Aggregator Event MVVMDialog MVVM Dialog DialogService EnumExtension InvertExtension MarkupExtension</PackageTags>
+    <PackageTags>.NET 5 .NET CoreViewModel BaseViewModel Base View Model AsyncRelayCommand Async RelayCommand WPF VisualTreeHelper Profiler Profiling Measure Measuring View Model ViewModel ExtensionMethods ObservablePropertyChangedCollection Collection ApplicationSettings Settings AppSettings MRU MostRecentlyUsedFile LastUsedFile RecentlyUsedFile EventAggregator Aggregator Event MVVMDialog MVVM Dialog DialogService EnumExtension InvertExtension MarkupExtension</PackageTags>
     <PackageProjectUrl>https://github.com/BionicCode/BionicCode.Net</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>2021</Copyright>
     <NeutralLanguage>en</NeutralLanguage>
-    <Version>1.1.0</Version>
+    <Version>1.2.1</Version>
     <PackageId>BionicCode.Utilities.Net.Wpf</PackageId>
     <Product>BionicCode.Utilities.Net.Wpf (.NET 5, .NET Core 3.0)</Product>
   </PropertyGroup>
@@ -37,6 +35,10 @@ For bug reports or feature requests please visit the project home on GutHub (fol
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="docfx.console" Version="2.58.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>
 

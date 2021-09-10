@@ -4,6 +4,7 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using BionicCode.Utilities.Net.Standard.ViewModel;
@@ -49,5 +50,9 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
     /// </summary>
     /// <remarks>When extending the abstract class <see cref="DialogViewModel"/> (instead of the <see cref="IDialogViewModel"/> interface) together with the attached property <see cref="Dialog.DialogDataContextProperty"/> raising this event will notify the <see cref="Dialog"/> attached behavior class to close the Window.</remarks>
     event EventHandler InteractionCompleted;
+
+    /// Event is raised before <see cref="InteractionCompleted"/> event. Setting the property <see cref="CancelEventArgs.Cancel"/> of the <see cref="CancelEventArgs"/> event argument to <c>true</c> will cancel the dialog close process. 
+    /// </summary>
+    event EventHandler<CancelEventArgs> InteractionCompleting;
   }
 }
