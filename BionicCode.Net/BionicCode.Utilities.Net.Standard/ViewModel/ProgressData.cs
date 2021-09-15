@@ -9,10 +9,10 @@ namespace BionicCode.Utilities.Net.Standard.ViewModel
     /// </summary>
     /// <param name="message">A progress message.</param>
     /// <param name="progress">The progress value.</param>
-    public ProgressData(string message, int progress)
+    public ProgressData(string message, double progress)
     {
-      Message = message;
-      Progress = progress;
+      this.Message = message;
+      this.Progress = progress;
     }
 
     /// <summary>
