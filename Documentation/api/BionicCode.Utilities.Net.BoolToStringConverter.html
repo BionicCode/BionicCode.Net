@@ -1,0 +1,616 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class BoolToStringConverter
+   | BionicCode.NET API Reference </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class BoolToStringConverter
+   | BionicCode.NET API Reference ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../../images/logo.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../../images/BionicCode_Logo.png" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="BionicCode.Utilities.Net.BoolToStringConverter">
+  
+  
+  <h1 id="BionicCode_Utilities_Net_BoolToStringConverter" data-uid="BionicCode.Utilities.Net.BoolToStringConverter" class="text-break">Class BoolToStringConverter
+  </h1>
+  <div class="markdown level0 summary"><p>Implementation of <span class="xref">System.Windows.Data.IValueConverter</span> that converts a <span class="xref">System.Boolean</span> to a custom string representation e.g., convert <code>true</code> to <code>&quot;Enabled&quot;</code>.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">System.Windows.Threading.DispatcherObject</span></div>
+    <div class="level2"><span class="xref">System.Windows.DependencyObject</span></div>
+    <div class="level3"><span class="xref">BoolToStringConverter</span></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><span class="xref">System.Windows.Data.IValueConverter</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Windows.DependencyObject.ClearValue(System.Windows.DependencyProperty)</span>
+    </div>
+    <div>
+      <span class="xref">System.Windows.DependencyObject.ClearValue(System.Windows.DependencyPropertyKey)</span>
+    </div>
+    <div>
+      <span class="xref">System.Windows.DependencyObject.CoerceValue(System.Windows.DependencyProperty)</span>
+    </div>
+    <div>
+      <span class="xref">System.Windows.DependencyObject.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Windows.DependencyObject.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Windows.DependencyObject.GetLocalValueEnumerator()</span>
+    </div>
+    <div>
+      <span class="xref">System.Windows.DependencyObject.GetValue(System.Windows.DependencyProperty)</span>
+    </div>
+    <div>
+      <span class="xref">System.Windows.DependencyObject.InvalidateProperty(System.Windows.DependencyProperty)</span>
+    </div>
+    <div>
+      <span class="xref">System.Windows.DependencyObject.OnPropertyChanged(System.Windows.DependencyPropertyChangedEventArgs)</span>
+    </div>
+    <div>
+      <span class="xref">System.Windows.DependencyObject.ReadLocalValue(System.Windows.DependencyProperty)</span>
+    </div>
+    <div>
+      <span class="xref">System.Windows.DependencyObject.SetCurrentValue(System.Windows.DependencyProperty, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Windows.DependencyObject.SetValue(System.Windows.DependencyProperty, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Windows.DependencyObject.SetValue(System.Windows.DependencyPropertyKey, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Windows.DependencyObject.ShouldSerializeProperty(System.Windows.DependencyProperty)</span>
+    </div>
+    <div>
+      <span class="xref">System.Windows.DependencyObject.DependencyObjectType</span>
+    </div>
+    <div>
+      <span class="xref">System.Windows.DependencyObject.IsSealed</span>
+    </div>
+    <div>
+      <span class="xref">System.Windows.Threading.DispatcherObject.Dispatcher</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="BionicCode.Utilities.Net.html">BionicCode.Utilities.Net</a></h6>
+  <h6><strong>Assembly</strong>: BionicCode.Utilities.Net.Wpf.dll</h6>
+  <h5 id="BionicCode_Utilities_Net_BoolToStringConverter_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[ValueConversion(typeof(bool), typeof(string))]
+public class BoolToStringConverter : DependencyObject, IValueConverter</code></pre>
+  </div>
+  <h5 id="BionicCode_Utilities_Net_BoolToStringConverter_examples"><strong>Examples</strong></h5>
+  <pre><code>&lt;ToggleButton IsChecked=&quot;{Binding IsEnabled}&quot;>
+  &lt;ToggleButton.Content>
+    &lt;Binding Path=&quot;IsEnabled&quot;>
+      &lt;Binding.Converter>
+        &lt;BoolToStringConverter TrueValue=&quot;On&quot; FalseValue=&quot;{Binding DisabledText}&quot; NullValue=&quot;Undefined&quot; />
+      &lt;/Binding.Converter>
+    &lt;/Binding>
+  &lt;/ToggleButton.Content>
+&lt;/ToggleButton></code></pre>
+
+  <h3 id="fields">Fields
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_BoolToStringConverter_FalseValueProperty.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.BoolToStringConverter.FalseValueProperty%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Converter/BoolToStringConverter.cs/#L49">View Source</a>
+  </span>
+  <h4 id="BionicCode_Utilities_Net_BoolToStringConverter_FalseValueProperty" data-uid="BionicCode.Utilities.Net.BoolToStringConverter.FalseValueProperty">FalseValueProperty</h4>
+  <div class="markdown level1 summary"><p>The <span class="xref">System.Windows.DependencyProperty</span> of the <a class="xref" href="BionicCode.Utilities.Net.BoolToStringConverter.html#BionicCode_Utilities_Net_BoolToStringConverter_FalseValue">FalseValue</a> property.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly DependencyProperty FalseValueProperty</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Windows.DependencyProperty</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_BoolToStringConverter_NullValueProperty.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.BoolToStringConverter.NullValueProperty%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Converter/BoolToStringConverter.cs/#L68">View Source</a>
+  </span>
+  <h4 id="BionicCode_Utilities_Net_BoolToStringConverter_NullValueProperty" data-uid="BionicCode.Utilities.Net.BoolToStringConverter.NullValueProperty">NullValueProperty</h4>
+  <div class="markdown level1 summary"><p>The <span class="xref">System.Windows.DependencyProperty</span> of the <a class="xref" href="BionicCode.Utilities.Net.BoolToStringConverter.html#BionicCode_Utilities_Net_BoolToStringConverter_NullValue">NullValue</a> property.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly DependencyProperty NullValueProperty</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Windows.DependencyProperty</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_BoolToStringConverter_TrueValueProperty.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.BoolToStringConverter.TrueValueProperty%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Converter/BoolToStringConverter.cs/#L30">View Source</a>
+  </span>
+  <h4 id="BionicCode_Utilities_Net_BoolToStringConverter_TrueValueProperty" data-uid="BionicCode.Utilities.Net.BoolToStringConverter.TrueValueProperty">TrueValueProperty</h4>
+  <div class="markdown level1 summary"><p>The <span class="xref">System.Windows.DependencyProperty</span> of the <a class="xref" href="BionicCode.Utilities.Net.BoolToStringConverter.html#BionicCode_Utilities_Net_BoolToStringConverter_TrueValue">TrueValue</a> property.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly DependencyProperty TrueValueProperty</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Windows.DependencyProperty</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_BoolToStringConverter_FalseValue.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.BoolToStringConverter.FalseValue%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Converter/BoolToStringConverter.cs/#L59">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_BoolToStringConverter_FalseValue_" data-uid="BionicCode.Utilities.Net.BoolToStringConverter.FalseValue*"></a>
+  <h4 id="BionicCode_Utilities_Net_BoolToStringConverter_FalseValue" data-uid="BionicCode.Utilities.Net.BoolToStringConverter.FalseValue">FalseValue</h4>
+  <div class="markdown level1 summary"><p>The value to show in case the converter input evaluates to <code>false</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string FalseValue { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><p>A string representation of <span class="xref">System.Boolean</span> that evaluates to <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_BoolToStringConverter_NullValue.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.BoolToStringConverter.NullValue%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Converter/BoolToStringConverter.cs/#L78">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_BoolToStringConverter_NullValue_" data-uid="BionicCode.Utilities.Net.BoolToStringConverter.NullValue*"></a>
+  <h4 id="BionicCode_Utilities_Net_BoolToStringConverter_NullValue" data-uid="BionicCode.Utilities.Net.BoolToStringConverter.NullValue">NullValue</h4>
+  <div class="markdown level1 summary"><p>The value to show in case the converter input evaluates to <code>true</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string NullValue { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><p>A string representation of <span class="xref">System.Nullable</span> that evaluates to <code>null</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_BoolToStringConverter_TrueValue.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.BoolToStringConverter.TrueValue%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Converter/BoolToStringConverter.cs/#L40">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_BoolToStringConverter_TrueValue_" data-uid="BionicCode.Utilities.Net.BoolToStringConverter.TrueValue*"></a>
+  <h4 id="BionicCode_Utilities_Net_BoolToStringConverter_TrueValue" data-uid="BionicCode.Utilities.Net.BoolToStringConverter.TrueValue">TrueValue</h4>
+  <div class="markdown level1 summary"><p>The value to show in case the converter input evaluates to <code>true</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string TrueValue { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><p>A string representation of <span class="xref">System.Boolean</span> that evaluates to <code>true</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_BoolToStringConverter_Convert_System_Object_System_Type_System_Object_System_Globalization_CultureInfo_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.BoolToStringConverter.Convert(System.Object%2CSystem.Type%2CSystem.Object%2CSystem.Globalization.CultureInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Converter/BoolToStringConverter.cs/#L87">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_BoolToStringConverter_Convert_" data-uid="BionicCode.Utilities.Net.BoolToStringConverter.Convert*"></a>
+  <h4 id="BionicCode_Utilities_Net_BoolToStringConverter_Convert_System_Object_System_Type_System_Object_System_Globalization_CultureInfo_" data-uid="BionicCode.Utilities.Net.BoolToStringConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">Convert(Object, Type, Object, CultureInfo)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public object Convert(object value, Type targetType, object parameter, CultureInfo culture)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">value</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">targetType</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">parameter</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Globalization.CultureInfo</span></td>
+        <td><span class="parametername">culture</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_BoolToStringConverter_ConvertBack_System_Object_System_Type_System_Object_System_Globalization_CultureInfo_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.BoolToStringConverter.ConvertBack(System.Object%2CSystem.Type%2CSystem.Object%2CSystem.Globalization.CultureInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Converter/BoolToStringConverter.cs/#L104">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_BoolToStringConverter_ConvertBack_" data-uid="BionicCode.Utilities.Net.BoolToStringConverter.ConvertBack*"></a>
+  <h4 id="BionicCode_Utilities_Net_BoolToStringConverter_ConvertBack_System_Object_System_Type_System_Object_System_Globalization_CultureInfo_" data-uid="BionicCode.Utilities.Net.BoolToStringConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">ConvertBack(Object, Type, Object, CultureInfo)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">value</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">targetType</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">parameter</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Globalization.CultureInfo</span></td>
+        <td><span class="parametername">culture</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <span class="xref">System.Windows.Data.IValueConverter</span>
+  </div>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.HelperExtensions.html#BionicCode_Utilities_Net_HelperExtensions_TryFindVisualParentElement__1_System_Windows_DependencyObject___0__">HelperExtensions.TryFindVisualParentElement&lt;TParent&gt;(DependencyObject, out TParent)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.HelperExtensions.html#BionicCode_Utilities_Net_HelperExtensions_TryFindVisualParentElementByName__1_System_Windows_DependencyObject_System_String___0__">HelperExtensions.TryFindVisualParentElementByName&lt;TChild&gt;(DependencyObject, String, out TChild)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.HelperExtensions.html#BionicCode_Utilities_Net_HelperExtensions_TryFindVisualChildElement__1_System_Windows_DependencyObject___0__">HelperExtensions.TryFindVisualChildElement&lt;TChild&gt;(DependencyObject, out TChild)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.HelperExtensions.html#BionicCode_Utilities_Net_HelperExtensions_TryFindVisualChildElementByName__1_System_Windows_DependencyObject_System_String___0__">HelperExtensions.TryFindVisualChildElementByName&lt;TChild&gt;(DependencyObject, String, out TChild)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.HelperExtensions.html#BionicCode_Utilities_Net_HelperExtensions_FindVisualChildElements__1_System_Windows_DependencyObject_">HelperExtensions.FindVisualChildElements&lt;TChildren&gt;(DependencyObject)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.HelperExtensions.html#BionicCode_Utilities_Net_HelperExtensions_EnumerateVisualChildElements__1_System_Windows_DependencyObject_">HelperExtensions.EnumerateVisualChildElements&lt;TChildren&gt;(DependencyObject)</a>
+  </div>
+  <div>
+      <span class="xref">BionicCode.Utilities.Net.HelperExtensionsCommon.ToDictionary(System.Object)</span>
+  </div>
+  <div>
+      <span class="xref">BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElement&lt;TParent&gt;(System.Windows.DependencyObject, TParent)</span>
+  </div>
+  <div>
+      <span class="xref">BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName&lt;TChild&gt;(System.Windows.DependencyObject, System.String, TChild)</span>
+  </div>
+  <div>
+      <span class="xref">BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualChildElement&lt;TChild&gt;(System.Windows.DependencyObject, TChild)</span>
+  </div>
+  <div>
+      <span class="xref">BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName&lt;TChild&gt;(System.Windows.DependencyObject, System.String, TChild)</span>
+  </div>
+  <div>
+      <span class="xref">BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.FindVisualChildElements&lt;TChildren&gt;(System.Windows.DependencyObject)</span>
+  </div>
+  <div>
+      <span class="xref">BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.EnumerateVisualChildElements&lt;TChildren&gt;(System.Windows.DependencyObject)</span>
+  </div>
+  <div>
+      <span class="xref">BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.ToDictionary(System.Object)</span>
+  </div>
+  <div>
+      <span class="xref">BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.TryFindVisualParentElement&lt;TParent&gt;(System.Windows.DependencyObject, TParent)</span>
+  </div>
+  <div>
+      <span class="xref">BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.TryFindVisualParentElementByName&lt;TChild&gt;(System.Windows.DependencyObject, System.String, TChild)</span>
+  </div>
+  <div>
+      <span class="xref">BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.TryFindVisualChildElement&lt;TChild&gt;(System.Windows.DependencyObject, TChild)</span>
+  </div>
+  <div>
+      <span class="xref">BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.TryFindVisualChildElementByName&lt;TChild&gt;(System.Windows.DependencyObject, System.String, TChild)</span>
+  </div>
+  <div>
+      <span class="xref">BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.FindVisualChildElements&lt;TChildren&gt;(System.Windows.DependencyObject)</span>
+  </div>
+  <div>
+      <span class="xref">BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.EnumerateVisualChildElements&lt;TChildren&gt;(System.Windows.DependencyObject)</span>
+  </div>
+  <div>
+      <span class="xref">BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.ToDictionary(System.Object)</span>
+  </div>
+  <div>
+      <span class="xref">BionicCode.Utilities.Net.Uwp.Extensions.HelperExtensions.ToDictionary(System.Object)</span>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_BoolToStringConverter.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.BoolToStringConverter%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Converter/BoolToStringConverter.cs/#L24" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

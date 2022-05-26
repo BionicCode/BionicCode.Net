@@ -4,10 +4,12 @@
       "src": [
         {
           "files": [
-            "**/**.csproj"
+            "BionicCode.Utilities.Net/**.csproj",
+            "BionicCode.Utilities.Net.Wpf/**.csproj"
+            //"**/**.csproj"
           ],
           "exclude": [
-            "**/BionicCode.Utilities.UnitTest**.csproj"
+            //"**/BionicCode.Utilities.UnitTest**.csproj"
           ],
           "src": ".."
         }
@@ -48,15 +50,14 @@
     "overwrite": [
       {
         "files": [
-          "apidoc/**.md",
-          "_site/**"
+          "apidoc/**.md"
         ],
         "exclude": [
           "obj/**"
         ]
       }
     ],
-    "dest": "_site",
+    "dest": "../../Documentation",
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [
@@ -68,7 +69,7 @@
       "_appFaviconPath": "../images/logo.ico",
       "_gitContribute": {
         "repo": "https://github.com/BionicCode/BionicCode.Net",
-        "branch": "dev",
+        "branch": "develop",
         "apiSpecFolder": "docs-ref-overwrite"
       },
       "_enableSearch": "true"

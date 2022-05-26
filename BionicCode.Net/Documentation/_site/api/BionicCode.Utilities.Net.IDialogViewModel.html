@@ -1,0 +1,460 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Interface IDialogViewModel
+   | BionicCode.NET API Reference </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Interface IDialogViewModel
+   | BionicCode.NET API Reference ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../../images/logo.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../../images/BionicCode_Logo.png" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="BionicCode.Utilities.Net.IDialogViewModel">
+  
+  
+  <h1 id="BionicCode_Utilities_Net_IDialogViewModel" data-uid="BionicCode.Utilities.Net.IDialogViewModel" class="text-break">Interface IDialogViewModel
+  </h1>
+  <div class="markdown level0 summary"><p>The DataContext and binding source for the dialog Window. Implement this interface or the derived abstract <a class="xref" href="BionicCode.Utilities.Net.DialogViewModel.html">DialogViewModel</a> to transport data from the view to the view model via binding. The <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html">IDialogViewModel</a> will be the content of the dialog window. This means the corresponding DataTemplate can define e.g. an input form that can bind to the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html">IDialogViewModel</a>. Register a callback with the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html#BionicCode_Utilities_Net_IDialogViewModel_ResponseCallbackAsync">ResponseCallbackAsync</a> property to process the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html#BionicCode_Utilities_Net_IDialogViewModel_DialogResult">DialogResult</a> and the data of the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html">IDialogViewModel</a>.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="BionicCode.Utilities.Net.IProgressReporter.html#BionicCode_Utilities_Net_IProgressReporter_CreateProgressReporterFromUiThread">IProgressReporter.CreateProgressReporterFromUiThread()</a>
+    </div>
+    <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Common.IViewModelCommon.html#BionicCode_Utilities_Net_Common_IViewModelCommon_PropertyHasError_System_String_">IViewModelCommon.PropertyHasError(String)</a>
+    </div>
+    <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Common.IViewModelCommon.html#BionicCode_Utilities_Net_Common_IViewModelCommon_GetPropertyErrors_System_String_">IViewModelCommon.GetPropertyErrors(String)</a>
+    </div>
+    <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Common.IViewModelCommon.html#BionicCode_Utilities_Net_Common_IViewModelCommon_PropertyValueChanged">IViewModelCommon.PropertyValueChanged</a>
+    </div>
+    <div>
+      <span class="xref">System.ComponentModel.INotifyDataErrorInfo.GetErrors(System.String)</span>
+    </div>
+    <div>
+      <span class="xref">System.ComponentModel.INotifyDataErrorInfo.HasErrors</span>
+    </div>
+    <div>
+      <span class="xref">System.ComponentModel.INotifyDataErrorInfo.ErrorsChanged</span>
+    </div>
+    <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Common.IProgressReporterCommon.html#BionicCode_Utilities_Net_Common_IProgressReporterCommon_CreateProgressReporterFromCurrentThread">IProgressReporterCommon.CreateProgressReporterFromCurrentThread()</a>
+    </div>
+    <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Common.IProgressReporterCommon.html#BionicCode_Utilities_Net_Common_IProgressReporterCommon_IsReportingProgress">IProgressReporterCommon.IsReportingProgress</a>
+    </div>
+    <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Common.IProgressReporterCommon.html#BionicCode_Utilities_Net_Common_IProgressReporterCommon_IsIndeterminate">IProgressReporterCommon.IsIndeterminate</a>
+    </div>
+    <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Common.IProgressReporterCommon.html#BionicCode_Utilities_Net_Common_IProgressReporterCommon_ProgressText">IProgressReporterCommon.ProgressText</a>
+    </div>
+    <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Common.IProgressReporterCommon.html#BionicCode_Utilities_Net_Common_IProgressReporterCommon_ProgressValue">IProgressReporterCommon.ProgressValue</a>
+    </div>
+    <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Common.IProgressReporterCommon.html#BionicCode_Utilities_Net_Common_IProgressReporterCommon_ProgressChanged">IProgressReporterCommon.ProgressChanged</a>
+    </div>
+    <div>
+      <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="BionicCode.Utilities.Net.html">BionicCode.Utilities.Net</a></h6>
+  <h6><strong>Assembly</strong>: BionicCode.Utilities.Net.Wpf.dll</h6>
+  <h5 id="BionicCode_Utilities_Net_IDialogViewModel_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IDialogViewModel : IViewModel, IProgressReporter, IViewModelCommon, INotifyDataErrorInfo, IProgressReporterCommon, INotifyPropertyChanged</code></pre>
+  </div>
+  <h5 id="BionicCode_Utilities_Net_IDialogViewModel_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>It is recommended to extend the abstract class <a class="xref" href="BionicCode.Utilities.Net.DialogViewModel.html">DialogViewModel</a> instead as this class already implemented the dialog data handling logic. Also use the <a class="xref" href="BionicCode.Utilities.Net.Dialog.html">Dialog</a> attached behavior as it handles the view logic. Just bind <a class="xref" href="BionicCode.Utilities.Net.Dialog.html#BionicCode_Utilities_Net_Dialog_DialogDataContextProperty">DialogDataContextProperty</a> to an instance of <a class="xref" href="BionicCode.Utilities.Net.DialogViewModel.html">DialogViewModel</a> (or <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html">IDialogViewModel</a>) and define a DataTemplate for each implementation of <a class="xref" href="BionicCode.Utilities.Net.DialogViewModel.html">DialogViewModel</a>.</p>
+</div>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IDialogViewModel_DialogResult.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IDialogViewModel.DialogResult%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Dialog/IDialogViewModel.cs/#L34">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IDialogViewModel_DialogResult_" data-uid="BionicCode.Utilities.Net.IDialogViewModel.DialogResult*"></a>
+  <h4 id="BionicCode_Utilities_Net_IDialogViewModel_DialogResult" data-uid="BionicCode.Utilities.Net.IDialogViewModel.DialogResult">DialogResult</h4>
+  <div class="markdown level1 summary"><p>The <a class="xref" href="BionicCode.Utilities.Net.DialogResult.html">DialogResult</a> of the user interaction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">DialogResult DialogResult { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.DialogResult.html">DialogResult</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IDialogViewModel_Message.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IDialogViewModel.Message%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Dialog/IDialogViewModel.cs/#L30">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IDialogViewModel_Message_" data-uid="BionicCode.Utilities.Net.IDialogViewModel.Message*"></a>
+  <h4 id="BionicCode_Utilities_Net_IDialogViewModel_Message" data-uid="BionicCode.Utilities.Net.IDialogViewModel.Message">Message</h4>
+  <div class="markdown level1 summary"><p>The message for the dialog to show to the user.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string Message { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IDialogViewModel_ResponseCallbackAsync.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IDialogViewModel.ResponseCallbackAsync%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Dialog/IDialogViewModel.cs/#L39">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IDialogViewModel_ResponseCallbackAsync_" data-uid="BionicCode.Utilities.Net.IDialogViewModel.ResponseCallbackAsync*"></a>
+  <h4 id="BionicCode_Utilities_Net_IDialogViewModel_ResponseCallbackAsync" data-uid="BionicCode.Utilities.Net.IDialogViewModel.ResponseCallbackAsync">ResponseCallbackAsync</h4>
+  <div class="markdown level1 summary"><p>The asynchronous callback that is invoked during the dialog interaction. Use this callback as continuation of the interrupted flow, after the required data was collected by the dialog.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Func&lt;IDialogViewModel, Task&gt; ResponseCallbackAsync { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Func</span>&lt;<a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html">IDialogViewModel</a>, <span class="xref">System.Threading.Tasks.Task</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_IDialogViewModel_ResponseCallbackAsync_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>When using the abstract class <a class="xref" href="BionicCode.Utilities.Net.DialogViewModel.html">DialogViewModel</a> this delegate is invoked when invoking the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html#BionicCode_Utilities_Net_IDialogViewModel_SendResponseAsyncCommand">SendResponseAsyncCommand</a>. The parameter of this callback is the original <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html">IDialogViewModel</a>. The callback can access the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html#BionicCode_Utilities_Net_IDialogViewModel_DialogResult">DialogResult</a> property to get the interaction result. The <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html#BionicCode_Utilities_Net_IDialogViewModel_ResponseCallbackAsync">ResponseCallbackAsync</a> makes the dialog interaction fire-and-forget as the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModelProviderSource.html">IDialogViewModelProviderSource</a> doesn't need to wait for the  dialog to close and doesn't have to store a reference to the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html">IDialogViewModel</a>.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IDialogViewModel_SendResponseAsyncCommand.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IDialogViewModel.SendResponseAsyncCommand%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Dialog/IDialogViewModel.cs/#L44">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IDialogViewModel_SendResponseAsyncCommand_" data-uid="BionicCode.Utilities.Net.IDialogViewModel.SendResponseAsyncCommand*"></a>
+  <h4 id="BionicCode_Utilities_Net_IDialogViewModel_SendResponseAsyncCommand" data-uid="BionicCode.Utilities.Net.IDialogViewModel.SendResponseAsyncCommand">SendResponseAsyncCommand</h4>
+  <div class="markdown level1 summary"><p>ICommand that can be bound to the buttons of the dialog. The command parameter is a <a class="xref" href="BionicCode.Utilities.Net.DialogResult.html">DialogResult</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IAsyncRelayCommand&lt;DialogResult&gt; SendResponseAsyncCommand { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.IAsyncRelayCommand-1.html">IAsyncRelayCommand</a>&lt;<a class="xref" href="BionicCode.Utilities.Net.DialogResult.html">DialogResult</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_IDialogViewModel_SendResponseAsyncCommand_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>When using the abstract class <a class="xref" href="BionicCode.Utilities.Net.DialogViewModel.html">DialogViewModel</a> the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html#BionicCode_Utilities_Net_IDialogViewModel_SendResponseAsyncCommand">SendResponseAsyncCommand</a> sets the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html#BionicCode_Utilities_Net_IDialogViewModel_DialogResult">DialogResult</a> property and invokes the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html#BionicCode_Utilities_Net_IDialogViewModel_ResponseCallbackAsync">ResponseCallbackAsync</a> continuation callback. The parameter of this callback is the original <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html">IDialogViewModel</a>. The callback can access the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html#BionicCode_Utilities_Net_IDialogViewModel_DialogResult">DialogResult</a> property to get the interaction result. The <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html#BionicCode_Utilities_Net_IDialogViewModel_ResponseCallbackAsync">ResponseCallbackAsync</a> makes the dialog interaction fire-and-forget as the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModelProviderSource.html">IDialogViewModelProviderSource</a> doesn't need to wait for the  dialog to close and doesn't have to store a reference to the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html">IDialogViewModel</a>.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IDialogViewModel_Title.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IDialogViewModel.Title%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Dialog/IDialogViewModel.cs/#L26">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IDialogViewModel_Title_" data-uid="BionicCode.Utilities.Net.IDialogViewModel.Title*"></a>
+  <h4 id="BionicCode_Utilities_Net_IDialogViewModel_Title" data-uid="BionicCode.Utilities.Net.IDialogViewModel.Title">Title</h4>
+  <div class="markdown level1 summary"><p>The title of the dialog <code>Window</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">string Title { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IDialogViewModel_TitleBarIcon.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IDialogViewModel.TitleBarIcon%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Dialog/IDialogViewModel.cs/#L48">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IDialogViewModel_TitleBarIcon_" data-uid="BionicCode.Utilities.Net.IDialogViewModel.TitleBarIcon*"></a>
+  <h4 id="BionicCode_Utilities_Net_IDialogViewModel_TitleBarIcon" data-uid="BionicCode.Utilities.Net.IDialogViewModel.TitleBarIcon">TitleBarIcon</h4>
+  <div class="markdown level1 summary"><p>The icon to display in the title bar of the Window</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ImageSource TitleBarIcon { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Windows.Media.ImageSource</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="events">Events
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IDialogViewModel_InteractionCompleted.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IDialogViewModel.InteractionCompleted%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Dialog/IDialogViewModel.cs/#L53">View Source</a>
+  </span>
+  <h4 id="BionicCode_Utilities_Net_IDialogViewModel_InteractionCompleted" data-uid="BionicCode.Utilities.Net.IDialogViewModel.InteractionCompleted">InteractionCompleted</h4>
+  <div class="markdown level1 summary"><p>Event to signal that the interaction with the dialog is completed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event EventHandler InteractionCompleted</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.EventHandler</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_IDialogViewModel_InteractionCompleted_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>When extending the abstract class <a class="xref" href="BionicCode.Utilities.Net.DialogViewModel.html">DialogViewModel</a> (instead of the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html">IDialogViewModel</a> interface) together with the attached property <a class="xref" href="BionicCode.Utilities.Net.Dialog.html#BionicCode_Utilities_Net_Dialog_DialogDataContextProperty">DialogDataContextProperty</a> raising this event will notify the <a class="xref" href="BionicCode.Utilities.Net.Dialog.html">Dialog</a> attached behavior class to close the Window.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IDialogViewModel_InteractionCompleting.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IDialogViewModel.InteractionCompleting%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Dialog/IDialogViewModel.cs/#L57">View Source</a>
+  </span>
+  <h4 id="BionicCode_Utilities_Net_IDialogViewModel_InteractionCompleting" data-uid="BionicCode.Utilities.Net.IDialogViewModel.InteractionCompleting">InteractionCompleting</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event EventHandler&lt;CancelEventArgs&gt; InteractionCompleting</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;<span class="xref">System.ComponentModel.CancelEventArgs</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.HelperExtensionsCommon.html#BionicCode_Utilities_Net_HelperExtensionsCommon_ToDictionary_System_Object_">HelperExtensionsCommon.ToDictionary(Object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.html#BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_ToDictionary_System_Object_">HelperExtensions.ToDictionary(Object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.html#BionicCode_Utilities_Net_Framework_Wpf_Extensions_HelperExtensions_ToDictionary_System_Object_">HelperExtensions.ToDictionary(Object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Uwp.Extensions.HelperExtensions.html#BionicCode_Utilities_Net_Uwp_Extensions_HelperExtensions_ToDictionary_System_Object_">HelperExtensions.ToDictionary(Object)</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><span><a href="https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior">See advanced example</a></span></div>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IDialogViewModel.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IDialogViewModel%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Dialog/IDialogViewModel.cs/#L21" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

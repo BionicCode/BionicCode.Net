@@ -1,0 +1,4213 @@
+{
+  "homepages": [],
+  "source_base_path": "E:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/BionicCode.Net/Documentation",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.AnalogClockFace.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.AnalogClockFace.html",
+          "hash": "4IaQ52JJeFOFPZxdhgP4kk2u25AE6d0UXUvMQUdrN5Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.AnalogTimePicker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.AnalogTimePicker.html",
+          "hash": "Sfqeo8/nJF6dtSFIcfAiouydarwH/7JrFCcVd0tG6is="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.ClosableTabControl.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.ClosableTabControl.html",
+          "hash": "KLSoU4W+qi/mJdZ+8mxCf4KyelDExsahKhT0rn3k4k0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.DefaultMatchFormatter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.DefaultMatchFormatter.html",
+          "hash": "ASli6CuO6xYbScHt6shD7wtBNVY0zi9Q4hMW06xfsTU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.DelimiterPair.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.DelimiterPair.html",
+          "hash": "EJQ7cHy3ngcoyegOt71caxpF59+17lmoxZ6TPpA2HHs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.HighlightArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.HighlightArgs.html",
+          "hash": "w7mnotfRv3OXuMIg7WI4n6bkyaqy+z503Ne4rL3IZTA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.HighlightRichTextBox.html",
+          "hash": "oeMg5ifzN4h5yFAZu3Gq4TdHSS3OJy1EaloG5VV4S/E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.IMatchFormatter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.IMatchFormatter.html",
+          "hash": "GxjAXLqPenHwtvqkPU44s1cd2oz7SyFTkC8z/dceLd0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.ItemsUpdatingScrollMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.ItemsUpdatingScrollMode.html",
+          "hash": "yH9JNVqj+9adQZdKuzowhZ9Dfk8Ikc84WDLVuP82zuw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.MatchFoundEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.MatchFoundEventArgs.html",
+          "hash": "V2mrag/nulAoeR0EH+duN/U+tp7ryrwgZFMwbxdNl5Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.MatchInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.MatchInfo.html",
+          "hash": "FULDQpGVw0LugqHWOvcZBRgMnAYRl+j2qtdRJZxDkMs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.Meridiem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.Meridiem.html",
+          "hash": "NsWTlHQvb1CUHdn2WjxLq9QFZxvBLvFC2zLSPp49fz4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.NormalizingNumericTextBox.html",
+          "hash": "VFfFMeWzyE+MKvqe/jNMccBHhtxQJY5A36E3d18NZWg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.ScrollModeListBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.ScrollModeListBox.html",
+          "hash": "ihrT9vtN4HfryGOtDExVlzHgyUueASaVpQHhG/tKFIU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.TimePicker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.TimePicker.html",
+          "hash": "RAffvg3hXWeTMnNDxog0UKYJuA/igREfWXWdlmmsRl8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.TimeTextBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.TimeTextBox.html",
+          "hash": "CFW+bKQngvF6PkYKw1enSBhRbPrdgOpCChBaua72pS8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.Unit.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.Unit.html",
+          "hash": "E3LraLsHTuFmIQwvQToqMaYM5wk5LXXPtYMLVxnQCi4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Core.Wpf.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Core.Wpf.html",
+          "hash": "HZYiRR9wGf/8jXe5B9RFzRg7smksW+kgbLYcS8uk4xw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.Calendar.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.Calendar.html",
+          "hash": "gDMEQfO9xoQy4uZZ2QEX3PaHktz0EjGM6r7gt4BydLA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarDate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarDate.html",
+          "hash": "sx1+1w+AyT4v4R5qK8TIQOxAe7Jt4ZZGqqjXMj9yGaU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarDateColumnHeaderItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarDateColumnHeaderItem.html",
+          "hash": "wSgwvfN27NJujLGQYSLqi7Kq7bCS0jsidQD/cM6Na/U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarDateItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarDateItem.html",
+          "hash": "6aQGkRXvT7648/tVT+UIpOXJTac0wZbHiXtiD2QAmsg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarEvent.html",
+          "hash": "FsmB+oznrewQCr4il58BO5k5V98Tcf6pTlQX48ajujY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarEventItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarEventItem.html",
+          "hash": "ppzoO6hwyXIypkNTkKRgrj0xTtG6fF2dGbiq/EPAvnU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarMonthView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarMonthView.html",
+          "hash": "peubkvHx2vI2cgvGkDmN5/ZT1XTBMJyWdvronZQgsak="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarPanel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarPanel.html",
+          "hash": "lfj2MOtMvgDTM5CeaZucHLklQBLOJ7eVZ00PfbQIznE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarRowItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarRowItem.html",
+          "hash": "ScNzdogD77QvDlWZ6NODbkQoU22Sd2InRF9YGc5exRY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarView.html",
+          "hash": "CHIxByVj0ekLQolJcb4ejS6dCdMElCrjNK2p/d6WhPQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarViewChangedEventArgs-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarViewChangedEventArgs-1.html",
+          "hash": "ps/TN9hr8jE9qxT+AK/+VFzWMK4sqtJ3vpyPiIq6SNo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarViewChangedRoutedEventHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarViewChangedRoutedEventHandler-1.html",
+          "hash": "f3RHlTmwR0GjNUJ3Ja6u0vYzgnUt21S20KpTve6rGrw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarWeekView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.CalendarWeekView.html",
+          "hash": "9Uf0CVsfw4GftnE91vm/g0oNUBuQDG+W1T5t8rC6Ox0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.DateColumnHeaderGeneratorArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.DateColumnHeaderGeneratorArgs.html",
+          "hash": "BSuME/Vkdv/z9kaakN5nwxnpP/3wrXspBeJSBbACHdk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.DateGeneratorArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.DateGeneratorArgs.html",
+          "hash": "mEMrnBjHrHYZx/MZOhSMAPfmRgECac+I6QLSFAUw3D8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.EventGeneratorArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.EventGeneratorArgs.html",
+          "hash": "2ezWVvrX3tlgkMs9JwdVQM3+uIzVc1iKXaGEa9AQq4Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.EventItemDragDropArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.EventItemDragDropArgs.html",
+          "hash": "gfOd5Y0ss87M7jlA/SP8h2EngGOG5wJmUVxXsi7xUYU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.EventItemDroppedRoutedEventHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.EventItemDroppedRoutedEventHandler.html",
+          "hash": "hrTEfUb0G6mi80FmmQZaak9jkNxdnEHGIgp31Desg/o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.EventResizeAdorner.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.EventResizeAdorner.html",
+          "hash": "TpxW8zeG3aOT3kvZKTJNjcfsmLHF7o8Xb34OmDDrF1k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.ICalendarDate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.ICalendarDate.html",
+          "hash": "sgR0689pZ3xNo8a6orvVPUOcqNkcmMYD3KFMuyAdiTo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.ICalendarEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.ICalendarEvent.html",
+          "hash": "gJEgn1e6DYGrzzc75l1K5XWOxhq69nvDxe9/0XQJClA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.SpanningRequestedRoutedEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.SpanningRequestedRoutedEventArgs.html",
+          "hash": "ajWkTQ5Q5WWLW/h9Q89ZN0zPSuXcFq7tATHdczXnHE8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.WeekHeaderItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.WeekHeaderItem.html",
+          "hash": "HMCkt/cXWYKzb9tmrAJXLJfP1nq4fSXbv3T7w8qv7ks="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCalendar.html",
+          "hash": "Wmcz8vfZ0GZFMmAzHEjCESBqmex4lgiVehubnC3/fvY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCharts.CartesianChart.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCharts.CartesianChart.html",
+          "hash": "FDGwU6WTd9PiwzB8YVbWCtHE1bzrhQY8xs6IOAPIgXg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCharts.CartesianChartItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCharts.CartesianChartItem.html",
+          "hash": "60dAl7or5c4qzqL09jKaVNVIQscEgLO9Tgg/UX9jpko="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCharts.CartesianChartPoint.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCharts.CartesianChartPoint.html",
+          "hash": "KIPtVc6d1Frg5VAz/Sk0bIV7lSJwhKKBBOu69uBRC0Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCharts.ChartExtensionMethods.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCharts.ChartExtensionMethods.html",
+          "hash": "dFHbItKB5IgMGKCjZqT++htS5KzZJrtnfn1UGiV7kIc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCharts.ICartesianChartPoint.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCharts.ICartesianChartPoint.html",
+          "hash": "YzzcoaBgDmQHLa6ZmL1anZb+Pomxt5nycsCaV4zwCwI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCharts.VirtualizingCartesianCanvas.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCharts.VirtualizingCartesianCanvas.html",
+          "hash": "hxG8xtPgPkewPmApt2GiFvT46n5GNJ8FT5WL1blkvFM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCharts.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicCharts.html",
+          "hash": "0tWqez0MYns3WvQ+o+CGmgFNnS0KIKPxfMRdQZiM00g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicSwipePage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicSwipePage.html",
+          "hash": "8XkNUv11xUZHDReKusNoPl44WfgEMjBqKuv7qQrOnEU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicSwipePageFrame.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicSwipePageFrame.html",
+          "hash": "My+T6zBtxurRCIPjRFxdlcTjgvVwnjgmeRPRrr3Iy/c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicSwipePageFrameHeader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.BionicSwipePageFrameHeader.html",
+          "hash": "AUFqaE/2TtYzVBXnrcNGZ6WRNv6cpYusfYTSwQoIkaI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.PageNavigationDirection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.PageNavigationDirection.html",
+          "hash": "4HGOPkRI5rU7uY/zARMWkk/esVIT15wU5jTezVzlV2U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.TimeTextBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.TimeTextBox.html",
+          "hash": "+iYQOAaMQjmRO58N+dutSy8h4Fsdp68j7BG2x5zrvCw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.ValueChangedRoutedEventArgs-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.ValueChangedRoutedEventArgs-1.html",
+          "hash": "6lfezROAjUCP9ICRpx1K70tI3zNNtI0BsdDp8ILTa9I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.ValueChangedRoutedEventHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.ValueChangedRoutedEventHandler-1.html",
+          "hash": "7LBwwk4Cvp+PlY1/t+O6hGqrIgiIShXmHSBpdJzIu0Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Framework.Wpf.html",
+          "hash": "sPk2lUptjgACHvena7ekOju+stD3DDsyLr3qNeE74Is="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.AnalogClockFace.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.AnalogClockFace.html",
+          "hash": "P4QQ7WeE90zWmFPEAh91wSmp6Q+7yPtDwCdJwBn989g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.AnalogTimePicker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.AnalogTimePicker.html",
+          "hash": "EjliQ+ge2ugsoe223V3dNDNaHYqRDohYyX0Qucty/bs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart.html",
+          "hash": "1abMfzrI1lMPqyxm7wgm0QEFOv7NF8ptsIscV3kUaTg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChartItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChartItem.html",
+          "hash": "i2yjBUFuUp/v2HqRE1QDul1YHv/Ym8VPo+1TpPJUnLY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChartPoint.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChartPoint.html",
+          "hash": "K67FUeD6bNmvqwqU2ae55XI9taws26MKBZvSrWknj5k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChartViewId.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChartViewId.html",
+          "hash": "kiaovoG3S/NO1ixxUgy0xl6sjqAqs/OtAyuqSHeL0ZI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.CartesianPointInfoGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.CartesianPointInfoGenerator.html",
+          "hash": "LDCAxK5VZwcUKhFde9hB8haKumHT9DZxKdzF9A+fSFk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.CartesianSeriesInfo-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.CartesianSeriesInfo-1.html",
+          "hash": "i6KlKBapKMRwY34e/2pYZ9NRaCUd/rbFGL5NoQpdCBE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.Chart.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.Chart.html",
+          "hash": "kh6FbY422ontqAA99bY90ZYsYfUu/MSd9grPrV373/c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ChartExtensionMethods.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ChartExtensionMethods.html",
+          "hash": "1K1tRY7bw7L3BfQyF1haa3J4Y8ycsKUmji0sIItFbxI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ChartPanel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ChartPanel.html",
+          "hash": "dvuNiAmY1ThaJyHjnuaF4FC9CI3Y9ZBX6fduedjdugE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ChartPanelPresenter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ChartPanelPresenter.html",
+          "hash": "2P3/d710SiNJ9LJXOuMLiB0e0D8tM1t1R6sN3JUPa+w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.DisplayMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.DisplayMode.html",
+          "hash": "7wBlWJ6rryBUQP8VCTzlvgtM1WpZTeup0VhIT6aK8ZE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ICartesianChartPoint.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ICartesianChartPoint.html",
+          "hash": "nTxFn8HxzXyLYHQ1qLZ/6xSCdB5FawxhU8KW2b6XDHA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ICartesianDataConverter-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ICartesianDataConverter-1.html",
+          "hash": "luv1FbGRDAju7xJFovFPahpJ+wwehdu+y//Q7QBnyUc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ICartesianDataConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ICartesianDataConverter.html",
+          "hash": "MzXdWWHjyEblljbx3e1kOiIlOkerm7jY7ytf42FyZQs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ICartesianSeriesInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ICartesianSeriesInfo.html",
+          "hash": "bFh9GRgJbO9tR1hUgUK/TH0jg9LCbITiQjJnWEQdfxM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.IChartPointInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.IChartPointInfo.html",
+          "hash": "TNuXYHfADXW8/WNx8x6JxgoP853l6ifHOrPktX04gOs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.IDataConverter-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.IDataConverter-2.html",
+          "hash": "AfqA5LP1jXKmpAo41u9Q3rbQXGRKRlR1+P+cxF3Rq1U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.IDataConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.IDataConverter.html",
+          "hash": "E7QNUUk7kvK/umX1ij/ZzihMAVIK0K/4MKNVoz8zVzc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.IObservableCartesianSeries.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.IObservableCartesianSeries.html",
+          "hash": "uljNmLbeZVZA3pBTCF4hDWJyBwyQoor+eyWI3XoRP78="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.IObservableSeriesCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.IObservableSeriesCollection.html",
+          "hash": "SwYYOBtZre7Bk50irC/8To+riq0bJyIbVC0yYONX2To="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ISeriesInfo-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ISeriesInfo-2.html",
+          "hash": "rAbzDuu6fn2Ww1Q3XIW7n3UGMlqL33iEVmZyUmVy/iE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ISeriesInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ISeriesInfo.html",
+          "hash": "BlzjDgVfz4+ES5cDbmub6EWbvlYv68AtK6eyOwjjVco="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ObservableCartesianSeries-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ObservableCartesianSeries-1.html",
+          "hash": "MMqVGg6qB5OGgpfQ9xIez9B0B32HNhpaCBbkaeHNfrk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ObservableCartesianSeriesCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ObservableCartesianSeriesCollection.html",
+          "hash": "TSFQA33ngxWs//CCI8Kg5r8NZawZWkKMmRViLrV+O/Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.PointInfoGenerator-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.PointInfoGenerator-1.html",
+          "hash": "eNjxc/XbOBCrbNbvx0Qp/Jiw0FlKWUtQgdJI90F2ty0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.PointInfoGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.PointInfoGenerator.html",
+          "hash": "WByHvOWSw7GUgyG72frNG6tIu04wENy4ujoryxTdcvU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ResourceLocator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ResourceLocator.html",
+          "hash": "FxwN7kz3D8ogS8clRruKzIKTfZ8ADtoNtT0HvoVYT+c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.SeriesSelector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.SeriesSelector.html",
+          "hash": "1TvmE0ZP4Ij7l4oGIFA1G9yf6W835SkrOptSB+bnYIk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ZoomFactor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ZoomFactor.html",
+          "hash": "wKf0WTwUrea6l5dC34W5Z/1cOo8ETCcGQgnON6caHGI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ZoomFactorConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ZoomFactorConverter.html",
+          "hash": "ocy/djiKAR2TLKwiG2wIW3uAea0VQJoXTI2sx0bAhwk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ZoomFactorUnit.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.ZoomFactorUnit.html",
+          "hash": "pT4jbYHAt8zVNha+1aCLv/kSZJ9+Nsp2JXV9W5Pb2gI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicCharts.html",
+          "hash": "Tlq/k+RUWlwM0jYakPSHw6+0o73TGlcyT1UrCKRrkVg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicSwipePage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicSwipePage.html",
+          "hash": "4azDN8SI8BjZ8rjoyNwY4vg7MTmNBvzNorcj1KME/1w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicSwipePageFrame.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicSwipePageFrame.html",
+          "hash": "exEH6a5f7b/slYj4XN6r9tgP6n0mBTIhetynbjevzkY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.BionicSwipePageFrameHeader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.BionicSwipePageFrameHeader.html",
+          "hash": "WjYTQBvUWkFhenS/HG4aMGe5VzuTT2QBPuBFiATobDM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.Calendar.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.Calendar.html",
+          "hash": "2BmK52CEgtrvUD+MAgMoApwZjcMQBbBN3ZMvQ6wwxL8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarDate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarDate.html",
+          "hash": "kJAhFEVPXavgdo7vvQhc4YQJfJRoSQ6mk5fB6FGz+7E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarDateColumnHeaderItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarDateColumnHeaderItem.html",
+          "hash": "D3sJc3imluk8EuSjvCAqAA6AXcsvfHq4sdXqCsZMjdo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarDateItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarDateItem.html",
+          "hash": "N3EZYajbk++XASlDII7DA7QBuIs9Df0+kyJ7ogqvXBo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarEvent.html",
+          "hash": "dbMarWRZxVVMQ/b5mm1GqeKcS8twVggQtmNIc9O0reM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarEventItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarEventItem.html",
+          "hash": "g95ALEuwYhWRNJxjzbs1yB8z4oLZOUP81f5L96OTdsY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarMonthView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarMonthView.html",
+          "hash": "78qRqUj0OPK+syeA2LfwLohsmY0jPPsV8B9KEb8gzsI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarPanel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarPanel.html",
+          "hash": "JrBF3cvkih0ksgzdyZsgKbEliAHpG5SHKKqDAhq/hLI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarRowItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarRowItem.html",
+          "hash": "7B9f3ak58h6lJcR0iEeIqucGQfsOPNX16pbzqBxGR9Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarView.html",
+          "hash": "GK++UIL4gviVTCDoqM/tkox29sgdvOz7LwKOoTidujY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarViewChangedRoutedEventArgs-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarViewChangedRoutedEventArgs-1.html",
+          "hash": "/Iw0H2oeHi9c0lLKgLWdm8XXwwhd1LPBIW9ucZq0/TQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarViewChangedRoutedEventHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarViewChangedRoutedEventHandler-1.html",
+          "hash": "1CouTUQ/GB7xoAdc7DIe0ZUF0fDWLB3M7DLjGG9Hn50="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarWeekView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.CalendarWeekView.html",
+          "hash": "GpfKHDhNZ1Ai3Kt9ecHYRlosLj6kn7T52u7Gd/bmpZ4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.Clock.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.Clock.html",
+          "hash": "BUbUAqUrrh/+W8dEA5GmYr1n5UXMN6xiqmKPRcadBEk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.ClockFace.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.ClockFace.html",
+          "hash": "DdhJAhg3cZSXmL+4fGwJ+95wFHVTfveukMcF7bMRb68="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.ClosableTabControl.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.ClosableTabControl.html",
+          "hash": "cvigXJyyGBpZanRztzoRq5J6XJcvY1GuWRwt2R3TPYs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.CustomControl1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.CustomControl1.html",
+          "hash": "BOSV4qb62bE4i0djeaD7D6grjaz/9aXjoCa7Q1IPdXE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.DateColumnHeaderGeneratorArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.DateColumnHeaderGeneratorArgs.html",
+          "hash": "drF81gKx2JVXRBfxdA49k9Uw9//O7I6dOAynCs+fY10="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.DateGeneratorArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.DateGeneratorArgs.html",
+          "hash": "7EwreqriGdizsyY3tWmWtVXEth1OliZkY3J0P4OJ1bg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.DefaultMatchFormatter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.DefaultMatchFormatter.html",
+          "hash": "axjI5ko3/n8Lmglf1VFCMbHLxw/A/6Mo7VlUU7Fov68="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.DelimiterPair.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.DelimiterPair.html",
+          "hash": "rzcNl9Hk8kqNRoy7f8Uvhb4PtNO8xyAJfRO+G51UWHk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.DigitSegment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.DigitSegment.html",
+          "hash": "3EweR70MXMzgxeSf8miLfV8opgCCVyt203G+G4cUPHs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.DigitalClockFace.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.DigitalClockFace.html",
+          "hash": "l1ukoGLKoDeClA9mVcV3xKjTEDuT8C2r3fqaxUqI5R0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.DisplayDigit.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.DisplayDigit.html",
+          "hash": "BTTy2OULNdddO/31xd5AxkTjjhOS5bgmwH5DsNrq9BI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.EventGeneratorArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.EventGeneratorArgs.html",
+          "hash": "TE/jvIk+MsXra680W1QSEno+lPbaBj+MiN0APLhr9IE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.EventItemDragDropArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.EventItemDragDropArgs.html",
+          "hash": "flGMeZq8w26wrPS8ZvukMS4F4XyKUKx5pw3as4/J3IY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.EventItemDroppedRoutedEventHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.EventItemDroppedRoutedEventHandler.html",
+          "hash": "eJC+M3vZSm/pINyOq1Iz7JIGdAHC+dPK6gUXRhcjHPU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.EventResizeAdorner.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.EventResizeAdorner.html",
+          "hash": "vHwgSeKYBv8Ag7fPXfQ+3XjSYaBwv0khyhC4uEQNrzE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.HighlightArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.HighlightArgs.html",
+          "hash": "ic0IYWwAFJupU67FfgnBLh0AfOhEzya9v0Gxb2mH/nE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.HighlightRichTextBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.HighlightRichTextBox.html",
+          "hash": "l0CJtPj7wXAIDz9mmJMRDNVmlfiRVKeNkq1SLrS8dEY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.HorizontalDigitSegment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.HorizontalDigitSegment.html",
+          "hash": "8CsSYSnPXfCJoJIfF7xQCw4UgBpaV6lKPfho6ZsvKbs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.ICalendarDate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.ICalendarDate.html",
+          "hash": "NxA3mMg0W5Fc9FQ38v1vj4LEPW7DRc5BZYFr+vuaoRc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.ICalendarEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.ICalendarEvent.html",
+          "hash": "2vpjH34RpKWGqyY6IPvEWYJQaN3LDVVoyIpweWGteRA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.IMatchFormatter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.IMatchFormatter.html",
+          "hash": "NrfKOvkcjJOq7UnjVeXsKM40AteZZCgUAf9UHck65qo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.ISevenSegmentDigit.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.ISevenSegmentDigit.html",
+          "hash": "tJiehgQZimUwXZSvK5bk8noGUxLY+dMtrNH6WLFgHWg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.ISevenSegmentDisplay.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.ISevenSegmentDisplay.html",
+          "hash": "wVSxF5xrDmSdJqPWgH/TEvzCWvc8281WjXCMXmXXhxA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.ItemsUpdatingScrollMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.ItemsUpdatingScrollMode.html",
+          "hash": "OPpiN8XzPBrqtcOyHLfCJ+QrNK5xu4qT65aMJoM55Wc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.MatchFoundEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.MatchFoundEventArgs.html",
+          "hash": "5UUyl0xNZl3YF9Fpc2xJUHDMKSZx47Z9yB/Iv+EUDic="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.MatchInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.MatchInfo.html",
+          "hash": "6tYPC5Y5XZ8kj0k7m78YF1GAXvaSnKQhqVt4B0N3M3k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.Meridiem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.Meridiem.html",
+          "hash": "ZaX6fhiocQGzQAtCPDyK6Q8dnLaMXa2awsb9IyI2lbY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.NormalizingNumericTextBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.NormalizingNumericTextBox.html",
+          "hash": "FOcUQDYxNtUWNsF4obLcoHJSm4ONoBSBGbKm3YduQ7E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.PageNavigationDirection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.PageNavigationDirection.html",
+          "hash": "Al32B1b8lY/cBshRz5RNrjszP7XqkyTZkeU81/IelJc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.ScrollModeListBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.ScrollModeListBox.html",
+          "hash": "J1mdLsvLfNV/1QhkxTm7ZlD4UnihR0OfzzTXzuVBLQo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.SeparatorDigitSegment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.SeparatorDigitSegment.html",
+          "hash": "YDLlabie931KFoQHPVQ2MwEB9GUTxl/jfAvuQGWx4Do="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.SeparatorDisplayDigit.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.SeparatorDisplayDigit.html",
+          "hash": "jMCsohJJaUv379nvwmYD7yH4qEIvup9MvelAbYHNHjc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.SevenSegmentDisplayDigit.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.SevenSegmentDisplayDigit.html",
+          "hash": "JnmlsTHkaXUcCH9C6U71MKvYss4WrrXHbVDlfAIbTCg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.SpanningRequestedRoutedEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.SpanningRequestedRoutedEventArgs.html",
+          "hash": "DQRaSFeqtabuNWiofZug5rd3vcB88kksYwMnbY7X43Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.TimePicker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.TimePicker.html",
+          "hash": "Y3XT2Bph8D7Ii1RTpTuOcxf+XfHIAVsyRPTEfNfIH4s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.TimeTextBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.TimeTextBox.html",
+          "hash": "v3im6GHweo62A2jpwqpxQR+uz+AKalj2QqmD4ywXk58="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.Unit.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.Unit.html",
+          "hash": "HzXNYO3SrvAIFVR8mbYM1E0HBCb2q0JtXBpdV551v3k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.ValueChangedRoutedEventArgs-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.ValueChangedRoutedEventArgs-1.html",
+          "hash": "8/3+pB9vZsJcuE2RR/tDFvNGjyXySu4S8ki8RN89bzU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.ValueChangedRoutedEventHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.ValueChangedRoutedEventHandler-1.html",
+          "hash": "Wgecl2Rq9O+D4DqeHl/hq7+A+mScCO/3ETxc1XYWCVk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.VerticalDigitSegment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.VerticalDigitSegment.html",
+          "hash": "cMEMoFbNbrLx/pTJ2RQsH5t40iQvAyJbfSE+51YiBik="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.WeekHeaderItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.WeekHeaderItem.html",
+          "hash": "9fNIgqP/TZZVbnuzpMIBTFRN+3UZTw/4b6+61u38Esg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Controls.Net.Wpf.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Controls.Net.Wpf.html",
+          "hash": "pVaJo/1xJ0f2dK/FtvXaLwDNOTjNFAX8KqSqx3ATtuY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Net.Framework.Wpf.BionicCharts.Ui.Test.App.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Net.Framework.Wpf.BionicCharts.Ui.Test.App.html",
+          "hash": "86gOMcKRGVtXVSSsyAIID6C52ie23VfYKboLMEEVpXg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Net.Framework.Wpf.BionicCharts.Ui.Test.MainWindow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Net.Framework.Wpf.BionicCharts.Ui.Test.MainWindow.html",
+          "hash": "/tjAWdQPNzeLQQSp0OQ0aIY4LKXcmm1rSrjfmCR5rms="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Net.Framework.Wpf.BionicCharts.Ui.Test.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Net.Framework.Wpf.BionicCharts.Ui.Test.html",
+          "hash": "l0Gaf5OxLUq6exA6Ccjzgy0Bv1vD1q6Oyrqa5Kf8YN0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Net.Standard.Ui.Test.App.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Net.Standard.Ui.Test.App.html",
+          "hash": "pFaKRxvVLeiwzNQugeSAMAevnDQZ8nzGPaZQTe8quFo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Net.Standard.Ui.Test.MainWindow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Net.Standard.Ui.Test.MainWindow.html",
+          "hash": "P7PBiIS4xm73/wdDEhKHrkZOazv8LpzDSMk7+GWQESQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Net.Standard.Ui.Test.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Net.Standard.Ui.Test.html",
+          "hash": "Pp0Bu7+sGq3ADuA3b50/4oy5ooYMmhC1BGS1o+sChgI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Net.Wpf.Ui.Test.App.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Net.Wpf.Ui.Test.App.html",
+          "hash": "hiH0SnJEd7vL3OR9D/3a6cjnb2/2HtORi1JDNqz45pU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Net.Wpf.Ui.Test.MainWindow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Net.Wpf.Ui.Test.MainWindow.html",
+          "hash": "9vB3tW/yxCOoZqEFG7P3rPZXDnfO0h11Sswy4woTe/Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Net.Wpf.Ui.Test.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Net.Wpf.Ui.Test.html",
+          "hash": "/3u5USN6daVjq2dl+JAKzfsOHG/uLEO3VlX85LQ2CDk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.AppSettingsConnector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.AppSettingsConnector.html",
+          "hash": "F91eJ7rBSLao7wWVqcZe6HtrI1wBHZM6bux7hg860QU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommand-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html",
+          "hash": "g0N4sF6j2ZBLSvwhp2+GgPBHGMj3r6UmNMJ3KAaco3A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommand.html",
+          "hash": "bNZVOVHeVkwOLta2sCk+ScTVACUB9e5mHHuj9h/tGIs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.AutoResetStream.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.AutoResetStream.html",
+          "hash": "fFp0vpb65+FOV0NfuIRhgTnxrXxHGeAH+mKYz0ENbtw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.BoolToStringConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.BoolToStringConverter.html",
+          "hash": "Q/MV0XtEVGW0T39SoqPu+D2a/A6MqiaOZ2HA4GuF2lw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.BooleanMultiValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.BooleanMultiValueConverter.html",
+          "hash": "He9Ayhxgn7B4f3FXsd98+GVENL4PfKOdptMy3S44igg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Common.IProgressReporterCommon.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Common.IProgressReporterCommon.html",
+          "hash": "3RcfV32oL4zCer6J3MRSuFNvIoO4wtswxg19CgZuLxk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Common.IViewModelCommon.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Common.IViewModelCommon.html",
+          "hash": "Q6ObLJtVpSKvY+FpeJjVB91JmGWYM/Wck3+flS34yWw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Common.ViewModelCommon.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Common.ViewModelCommon.html",
+          "hash": "UFTVFlNETFemXFaOsrPDkCdMAOjF57f0WdDXA6akAis="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Common.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Common.html",
+          "hash": "Ys0Q4aJUjTvpYmSiXLUgdfwEBnB/VWz1jerq/h5gKng="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.IO.FilePathFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.IO.FilePathFilter.html",
+          "hash": "9Qh0DnrAtUR7UWvKBdVCrY0mQpF1l2LuF/hYT4rPbcY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.IO.IFilePathFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.IO.IFilePathFilter.html",
+          "hash": "v2nWGXRqgmu4B+1rvBr4Bf82dhEyOusmuZuF1Sc8EZs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.IO.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.IO.html",
+          "hash": "krvW8CfBR0al5crImIRlTuYw/4aUl5rgBeJSdpt/BoU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.AsyncRelayCommand.html",
+          "hash": "LiOEx5ccSPD5dpkTCKHCwFQ8HRX0UEBtatwRIoTTeOc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRange.html",
+          "hash": "GPAXZOLimO+stchZZytfha134l6A1SVry34KsS1odqM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRangeCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.HighlightRangeCollection.html",
+          "hash": "UgBSZBhwOVPF5mbP/lLL4O9miWPUCs8sXpw8YqJmCxo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.PasswordBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.PasswordBox.html",
+          "hash": "zUbLkFfHfhpmu+H6Vm6wQ+GrWgBVUqavHX7wHkkpGo4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.Popup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.Popup.html",
+          "hash": "Xek2PU5LEIPGfMC/g+t/ViRSMd1Wv6A9IFOXjLzPtyw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.Selector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.Selector.html",
+          "hash": "kE6Gvqc30QTAsu1nxoQpt3bc7mHF8DwgQ9Pjw30thWk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.TextControl.html",
+          "hash": "CeS2LQDsOvzqwZuIzM0xibLC/5maeEPzJvnvFWrceTw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.AttachedBehaviors.html",
+          "hash": "EC8T4A5cEwbOEYeqEpD0V6a392xJ7huZyCSWd4LRhbo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Collections.Generic.ObservablePropertyChangedCollection-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Collections.Generic.ObservablePropertyChangedCollection-1.html",
+          "hash": "nQ6HP8ze16BaasbHntQCZypg5DthO9OKfaPv2b1ViiE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Collections.Generic.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Collections.Generic.html",
+          "hash": "R1koM4ur7y18jDthItedtdGpEbBOfqsufX3K8jIRs8I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.BoolToStringConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.BoolToStringConverter.html",
+          "hash": "/oiKmlexcVzLVQUT/QvU52YdZv69NQ8gMDEGuXsRI7U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.BooleanMultiValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.BooleanMultiValueConverter.html",
+          "hash": "UsFLHEmbcKb6j/cZkUB5Wd691+8z5So+/LLYW8ES4KA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.DividerValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.DividerValueConverter.html",
+          "hash": "sGo4e2Q/8qPpxQ4ZS/TLnGiL4aNxpIqKTrrbtrW10to="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.FilePathTruncateConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.FilePathTruncateConverter.html",
+          "hash": "RpGRsZliswGxjYjpkpSdgUee76LcKRwrNce3EwDszs4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.InvertBooleanConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.InvertBooleanConverter.html",
+          "hash": "xsawJ7YSmEnCayC1JunLlonnp7EOo+ZYS0u9SJbxiho="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.InvertValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.InvertValueConverter.html",
+          "hash": "BO16lGKurRUWoVm1d7DrleewO/UV5mXoZ9JFMNVsH44="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.IsGreaterThanValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.IsGreaterThanValueConverter.html",
+          "hash": "HjEyvLwl2FsJvf3aI8WgvxfxT/cm8Kl8gNJxcoQopJU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.PercentageToPixelConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.PercentageToPixelConverter.html",
+          "hash": "fiz8F5qLOmZsQ+aWlS76clKr4wQ1O2n+pszCTtCyvCY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.PercentageToThicknessConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.PercentageToThicknessConverter.html",
+          "hash": "muguLaVbOmsF63ceAq7eEFYzX6aiqJmR7yETjA2LbfI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Converter.html",
+          "hash": "hJRBEcOOfjlufsdKOnzDWTnw1UYr3crFBVvLTDJ7Edo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.DefaultValueInverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.DefaultValueInverter.html",
+          "hash": "GdN3b5hetWJKS6b0pTsSANpa7V4ro98fjv+Cq1Rlk80="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Dialog.Dialog.html",
+          "hash": "v58mFnvaFL99VXuncXoRDCps4+qdxNo5gVs7//xPweU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogResult.html",
+          "hash": "gMh3ETvbICXEsKJiAPXnhP3MV6k2fOGCQR+q6mmSsoc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Dialog.DialogViewModel.html",
+          "hash": "3eHL8KXDAw/AlNF6S5ly2Chqvt/cPE2ACdpMbFKUAbs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModel.html",
+          "hash": "Kt+J+b16D6PvB8OLtAfck4WG8FTIEOAQ+7i4GYKPGyc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProvider.html",
+          "hash": "pZEsIlkOOJJg9RSst4yZHfoXcX7s8fYu/N1DgQrfPbQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProviderSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Dialog.IDialogViewModelProviderSource.html",
+          "hash": "2cUn1HUkpQo1vdHV8LMXG+pPVRRVdtovo18iijbe8XY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Dialog.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Dialog.html",
+          "hash": "3xQdFzCTaYU3fyfOocd2nd/78WeW8cYTIOZcbojehK8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.html",
+          "hash": "NaUtPPvqKXVTfhJi2w0217W4+r1AI8uqJiH5f1jsS68="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Extensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Extensions.html",
+          "hash": "SkmK4nF51PB3m/Xyohqozd1A35OLehCFO8kmcbnglTU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Generic.AsyncRelayCommand-1.html",
+          "hash": "hWYyxOc/qWa5Tl1LscGa5Ko1u1ji1TGvEl+QMRaehNA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Generic.IAsyncRelayCommand-1.html",
+          "hash": "i8aM22qjLZO/GmVIlKljCnsAi5NoBHVaUP7XlvzdVvk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Generic.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Generic.html",
+          "hash": "Vu7jNTVpwXCMlpVOB1Yczry7ju9VNt5Tyik05ZFcDcA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.IAsyncRelayCommand.html",
+          "hash": "FX/QI8kpStcHA3SOkEeZ6oPY6zY5B7EbiRZ3X2j/g8o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Markup.EnumExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Markup.EnumExtension.html",
+          "hash": "BXITur/n8L0JsU61Tt7cBH78JaPloQdyiVgUFKlPBA4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Markup.EqualsExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Markup.EqualsExtension.html",
+          "hash": "qXLvwdeC+pzxZ11LSL1vfIGEamsyWNCMp5h/PiMuBUE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Markup.InversionMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Markup.InversionMode.html",
+          "hash": "CXIxx5AO68CtKxVxQ41dpIG6u3aYoYvxchZ6DDlP59M="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Markup.InvertExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Markup.InvertExtension.html",
+          "hash": "ndCRq9WIrAlLlKUm8mZ7wKJJ5BrySA/W/FCi7Hjsk+E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Markup.PrimitiveExtension.html",
+          "hash": "NJjQ95zT+A5SkTcomvZQImzbEz5UrxvYPQlDxCTDoMU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Markup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Markup.html",
+          "hash": "Wk5DlF2cAXTP6K9DJzzMRYtPAT6u3Ujg1YlFDQ8gw7U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Settings.AppSettingsConnector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Settings.AppSettingsConnector.html",
+          "hash": "yRpESO15PWGzFVBGQLo4Lj/XrUYLu3zoT7wKgNbtRV4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Settings.IMruManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Settings.IMruManager.html",
+          "hash": "OyPTyIL7CbYs0j9jJPau88jUtWkKKdJKMRoGOzTJKU8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Settings.MostRecentlyUsedFileItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Settings.MostRecentlyUsedFileItem.html",
+          "hash": "xD0tQ3wwXkfAYthMltbdT1O4KfS1g8tNGBLk3EXukc0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Settings.MruManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Settings.MruManager.html",
+          "hash": "ICktAJMh47AnjqZKVFjfOZHrqCX9msthaeR1OCsCBGM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Settings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.Settings.html",
+          "hash": "KAlha9kCru6uXJb/f2pWHKQyi+1NrQTGgJhzBKvSLco="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Core.Wpf.html",
+          "hash": "iA4k1Wt2b3VRNLLKVRrixD94VEdeKgNOnuDXZjSj8QU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.DefaultValueInverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.DefaultValueInverter.html",
+          "hash": "qWgDh2MvvDhztAGk2wpIvj7l8WYk6QZjz2Zh3Ryl++0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Dialog.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Dialog.html",
+          "hash": "XWqalgLVOagBchfbNxh58XhBhVyw26wb+X+yoG45kbY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.DialogResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.DialogResult.html",
+          "hash": "0BzFrJKuv3/uXxmc9CHlLp5UyuNNpuCmVTXucQUi2fg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.DialogViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.DialogViewModel.html",
+          "hash": "45mufog8m+9E0JWgIXf9LHlK3IEgY9VJNyPcq8sCchU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.DividerValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.DividerValueConverter.html",
+          "hash": "RFfiGihjLWrKpNhJQ5GLS8Sy69H0hdSGjsXBbksj+Cw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.EnumExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.EnumExtension.html",
+          "hash": "wLUgjpAAwkzes4qz3z8wE9GhejUSoMM17EYLfdaQYWo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.EqualsExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.EqualsExtension.html",
+          "hash": "ip0sac23ti/ULTU8g9LibEyG861tZTfqRAKnzOgwhNE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.EventAggregator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.EventAggregator.html",
+          "hash": "bufoHcT3/zie3CnYq9A52wxhWYve67JHHn5PpKIvoj8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Factory-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Factory-1.html",
+          "hash": "4+nd/SB4M4gPakyVyJQlBAa2hWeBRhSt7MAi1X6kj4U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.FactoryMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.FactoryMode.html",
+          "hash": "nQXDc9gYoUYpQGrs67PLLErPEBESk02SrSjnNMScmfk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.FileExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.FileExtensions.html",
+          "hash": "ZCo0yhTkbIFAop6lt9f0VotE+0WBXitpg8UeJ+ahRS8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.FilePathTruncateConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.FilePathTruncateConverter.html",
+          "hash": "vc/PJp3tBcZqk+SGWSB2AxJAZYLK4yBuVsoGs0BTLIo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.IO.FilePathFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.IO.FilePathFilter.html",
+          "hash": "5pN3rA5uLO6uIkusnPemS6t31+KDaYaf12UQ2t4yWvw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.IO.IFilePathFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.IO.IFilePathFilter.html",
+          "hash": "Il8vYy4eI4jv4mPv3mob1SkxugiKMJ7o/VtO+8ZLrAo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.IO.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.IO.html",
+          "hash": "blxVq8eYeFyuM0pvQ7VA52tTpeeVmvfU/KJLDfg3a4E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.AsyncRelayCommand.html",
+          "hash": "90iI/I0JhqU50d8hLggUs4HaUVGji0n6XDFrj9K2sak="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.AttachedBehaviors.HighlightRange.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.AttachedBehaviors.HighlightRange.html",
+          "hash": "bNQaAvXfDLX8CPmLbRQVct1DaP+v2dWKtms1+8SwhYo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.AttachedBehaviors.HighlightRangeCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.AttachedBehaviors.HighlightRangeCollection.html",
+          "hash": "ovRflynGp0y3GkAXTWDaaLijXo3ytdyjrQJOrnqR4i0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.AttachedBehaviors.PasswordBox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.AttachedBehaviors.PasswordBox.html",
+          "hash": "NQraDR6/FlC07GXFZahh+/Bd8hDVJn8cQJppBVZIGew="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.AttachedBehaviors.Popup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.AttachedBehaviors.Popup.html",
+          "hash": "ayunPOXkyREEpNIZTsDlpooIP9+yYrQeQ/CrvzbjUCQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.AttachedBehaviors.TextControl.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.AttachedBehaviors.TextControl.html",
+          "hash": "JRLsuvq1yXWsFe+xQcqSCiIt18BzJhHvkaeUYfq00o0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.AttachedBehaviors.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.AttachedBehaviors.html",
+          "hash": "2TTxFZMdCja179/RFTmrwQdYRNHbIQJGmKxy3F4OD1U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Collections.Generic.ObservablePropertyChangedCollection-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Collections.Generic.ObservablePropertyChangedCollection-1.html",
+          "hash": "mGObdgt0rBYy15zDwKYV6fs77qcLTa3IE4XGHSVpCp8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Collections.Generic.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Collections.Generic.html",
+          "hash": "B7dwbMIOiHyKy1IG0a203EcQOFZJ8UDdzuzgYZipjRY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Converter.BoolToStringConverter.html",
+          "hash": "gsqP4WHPTJ06hnloLPeJ+df5yKCkt3AqY2FT+gh1FXA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Converter.BooleanMultiValueConverter.html",
+          "hash": "1EAWM67G9QLxWR+Bv6Y8DHVd1cTc86oPOSmpKJ/pfnA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Converter.DividerValueConverter.html",
+          "hash": "iysfKpal8KOmlNf9O4qYugT3TCAnotgyx7htHPWWsFY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Converter.FilePathTruncateConverter.html",
+          "hash": "8eD7YbOyEYGdCzF6nwjNgH86grm87l/ElgVWFfGwufc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertBooleanConverter.html",
+          "hash": "nqhdHAFyNikcZBXBtO80roM2lsaq5pGH85aR/HggM9s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Converter.InvertValueConverter.html",
+          "hash": "Cyx8binWwi7e7jOzZA7rhCeHx7FOP6TwUNNAG5w/uG4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Converter.IsGreaterThanValueConverter.html",
+          "hash": "wAxCnxBOCKpafUFN7Y0Ate3n9gY+ZEPbBgrMu90b5Ic="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Converter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Converter.html",
+          "hash": "Xis1CQdKVb7uGbxhKVz0jCQNm7yiwVQImwZ0PhicUUg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.DefaultValueInverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.DefaultValueInverter.html",
+          "hash": "8SoXNjQr/NX9uRDWqqFxJsmace7DYp7PFLa/wevxOE8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Dialog.Dialog.html",
+          "hash": "+5/ggDUwFIjdFPsmc2qf4Ts4V5LdXn0lf52BoteaxpQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogResult.html",
+          "hash": "nPzFX5yATI7cWW4imYh1pAWHqJLfHXoTTN/Qq7v0Dks="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Dialog.DialogViewModel.html",
+          "hash": "toaIovyV0+JjrWkSl/Bj86uG4Xi0kV/cB1wX5qb8YhI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModel.html",
+          "hash": "AbXGFvOkNL3oBMY+fEwoJZkjBI3ho+96cC4sYRzoI78="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModelProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModelProvider.html",
+          "hash": "1egzP90Jxz+BsTbFBagrjMns80sHxgGE0ec52aIJ2Gg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModelProviderSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Dialog.IDialogViewModelProviderSource.html",
+          "hash": "u5TqModMWqBvrS7ONgBKvKTLD4140uI6fOa98bHf1/s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Dialog.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Dialog.html",
+          "hash": "sCJ8RAD1t6a3Ryc+kh/J7ZaKzUMFyIjWCAFIQQqGTw0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.html",
+          "hash": "lL3+G+4aE/5K/rtTE3jUV9AhAyPKu8xsIhH3RTw+dlQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Extensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Extensions.html",
+          "hash": "O6w7wRvzEOIeIjgaIyFrlk/047AhyNzbGGCqdnA7QLA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Generic.AsyncRelayCommand-1.html",
+          "hash": "a1ehcH2+dbtMy/x2oPiWNl5W10/uH7wokhfrUhXnN1A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Generic.IAsyncRelayCommand-1.html",
+          "hash": "ngfdfwP5PmeQ7jhHQyKXiGYtTkNb0nYmWpw8a2Kk2qY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Generic.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Generic.html",
+          "hash": "Cc30bkZUfCYu7dQcumcw4H9ov/M0virIdE9gjEWGUwc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.IAsyncRelayCommand.html",
+          "hash": "rPzxp+vzJWmm3V/rSOnggjrBuOgYUnHEb5+nXr2oBfU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Markup.EnumExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Markup.EnumExtension.html",
+          "hash": "AcwJxjHZY8biqFBnXmtmVQkEQnLhewm069Wv/3/tSkM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Markup.EqualsExtension.html",
+          "hash": "t99OD8MmKEcBSqy2WNNN5xDxJx2Kb8T8lS+3Hik/x7M="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Markup.InversionMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Markup.InversionMode.html",
+          "hash": "IHIFlrCE1ygoyeS7Npu5MUQ90YUm+XoO9nPlXDL2X7w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Markup.InvertExtension.html",
+          "hash": "GIH5QjOHtw85ADv5UDZxmeE6umB0gB6kLh2HrRQLgUI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Markup.PrimitiveExtension.html",
+          "hash": "O+6kWAIfl25k0hG2IAceVpqT+JNDyyDpgCPpLgSlZDs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Markup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Markup.html",
+          "hash": "LsNojVmAP2lDT5KUZG3fTkJLvlFn6wyKAtoD93l+qe0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Settings.AppSettingsConnector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Settings.AppSettingsConnector.html",
+          "hash": "MIFae5UISZ2+XB8e624zUXNPv0079kFJ8c5DZcsjuT4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Settings.IMruManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Settings.IMruManager.html",
+          "hash": "ZiGqdaddKZ48PMebs/0zBXi7VoIRLbWixkGO9Nunctc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Settings.MostRecentlyUsedFileItem.html",
+          "hash": "RDA2FsfvUpIhcgCLfjdzV81cDSopo/nSnqJSrSwD800="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Settings.MruManager.html",
+          "hash": "MaDpA1WB/i/tE+4/bcOQ2cE+MDGOpCmwWMAhxCiLuB0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Settings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.Settings.html",
+          "hash": "B14VU2BisISwqVqK7j2oYqsu3uy0kNJ/CG+0HekzJw4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Framework.Wpf.html",
+          "hash": "A9PTPfIUkxaLtTK/1txFYfTmQj98A53rLUz8HVbVhwE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.HelperExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.HelperExtensions.html",
+          "hash": "UwY27dpm20Ifpm/dx6q6OcoGYfOxxBPtMEMgQh3wDfA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.HelperExtensionsCommon.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.HelperExtensionsCommon.html",
+          "hash": "Oy71qBhZP9AOtLapZ5aUrKCN8+o0hkUGg0yRPoaKRzU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.HighlightRange.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.HighlightRange.html",
+          "hash": "RaLbWoAz/ZVp7egHnk/oGDvt6jropZX3213INSwq2/o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.HighlightRangeCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.HighlightRangeCollection.html",
+          "hash": "u/rg9kXISyoVY3PLyrk2YvxNLN5YJOdFGdLDOsIyW/g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommand-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommand-1.html",
+          "hash": "MCY7IIkyjozpYUzNg0sXZgiKecBWS3iQ9jqjx1ioDXQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommand.html",
+          "hash": "SyCsueYwRGx5r1K/DJ4sCNyr+ULk8wcRYppDIePUSsU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IDialogViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IDialogViewModel.html",
+          "hash": "Fja1ncXK4cv0wORsj8yJUTJ4J3GoGY5LZfgOHuA1okk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IDialogViewModelProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IDialogViewModelProvider.html",
+          "hash": "NdBjFagnJZPWDMJb1uMUHYezsYX2J5fA076IlWSQnOk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IDialogViewModelProviderSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IDialogViewModelProviderSource.html",
+          "hash": "koBSdO46r6kAaCxfs/sMwfMqBFcTDXQP+pqp4Mv8ViE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IEventAggregator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IEventAggregator.html",
+          "hash": "EXVNDxiXUp3Y8y7npt46knmgPs6jAXeXGTlYA0Ak2qY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IFactory-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IFactory-1.html",
+          "hash": "VOAkQB8FESQFbaYhXSQ9rQRanCfnfpWAfT2HJXe2toU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IMruManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IMruManager.html",
+          "hash": "wM5BUt/waQyqJu/8zCe0F6jy9hoQPaZ1PgTFitTyhl8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.INullObject.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.INullObject.html",
+          "hash": "wH0RtYbJZFNB0Ks6bmUTwN2ioonruFdshQIbfnlTn9A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IProgressReporter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IProgressReporter.html",
+          "hash": "CMRzO8SDuuGxF2wQzOkKSGSBzr51q7nnhUe6/oLwCiI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IValueInverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IValueInverter.html",
+          "hash": "f/uKFzzFVNYs6ZXTx+kfUMiu7csY8VTMYNme07mmPl8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IViewModel.html",
+          "hash": "AU90UITU1pSsYsHGzvgp7Guc7y+8of2869k7A5GpQhc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.InversionMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.InversionMode.html",
+          "hash": "HE13tHqYpBnu+qJOj6OwuRwxgwRrNfmIybigIVINvyU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.InvertBooleanConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.InvertBooleanConverter.html",
+          "hash": "V7cry3mRNnacaeoKRz1gH2HaDEc1o9PGY8HdI4598ZY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.InvertExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.InvertExtension.html",
+          "hash": "Xg2nzbw64yC3LRUcXSWg6igmbqD/Qg5WhfQTZjQnZz0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.InvertValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.InvertValueConverter.html",
+          "hash": "5WHOCe3xWI/9NYp3BPv7ed5fHhyayaptA5hX+C1qUBs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IsGreaterThanValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IsGreaterThanValueConverter.html",
+          "hash": "8qKTKtpsn0L56x/A+hKH+0f0RDhnTDbf58mtkPaZGq0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.MostRecentlyUsedFileItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.MostRecentlyUsedFileItem.html",
+          "hash": "pG0awKqUJ4c6Llzs/ZmUBhHPEip+EY6oXgXl+MG9iyQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.MruManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.MruManager.html",
+          "hash": "JhAEfxTqFZm9tDwxkCPNxq3Deh5Sl+ANebYI5BKu6SA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.NullObjectFactory-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.NullObjectFactory-1.html",
+          "hash": "HDavezwMgWG21P6dEdJ3Nm9dPHEyzciOUYMckdmaxlM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ObservablePropertyChangedCollection-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ObservablePropertyChangedCollection-1.html",
+          "hash": "/n7opB4j/z+YuwsR/zb7EIFKGcAbnu0bpaffwQUFIpA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PasswordBoxService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PasswordBoxService.html",
+          "hash": "iB5Veiqqc96UoOvy8EG+HJqEp+gbitBCZuyNSux+fMU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PercentageToPixelConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PercentageToPixelConverter.html",
+          "hash": "TErVyp7DchGvqR8p/JYn8VFwj+74A6AwDmmfvZZ5oOY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PercentageToThicknessConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PercentageToThicknessConverter.html",
+          "hash": "+3Nw+a6apo4WKRvUTax00MSk9vv5E86bePzP5Q7IUQc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PopupService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PopupService.html",
+          "hash": "BQLZN+melveUVD7YDuWp+qUF6Ov61xa88uvf2rohV5Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PrimitiveExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PrimitiveExtension.html",
+          "hash": "wHxvnaAGjcgsnkq+neVhUACWvcdNRTi3jauOt9McK/M="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Profiler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Profiler.html",
+          "hash": "Mlt/dVvL3zAAGcao4D02Vp2NA6ChLfbcTrYnK4SU664="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProgressChangedEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProgressChangedEventArgs.html",
+          "hash": "f7qdk8aNSnNh2FCXxGPSLZB8DRlEab+fio8rOGbd5VY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProgressData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProgressData.html",
+          "hash": "m8QI54IDyTNivUhoR+xPLQ3iLoO+BF2IOchEpmcgeEU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PropertyValueChangedArgs-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PropertyValueChangedArgs-1.html",
+          "hash": "qE+P2vh16lsWf2OigdOpozxYtKEnBfhisXT8iPG3zVE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PropertyValueChangedEventHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PropertyValueChangedEventHandler-1.html",
+          "hash": "7WTN7OoNR5eTHZVgGorZFCw+XjLAB5Tr7Eno/l7OfBI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.SelectorService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.SelectorService.html",
+          "hash": "VMZaBaRPV+SistbVTBpxk9PolmhG9GgpZnlQDtD49Pg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.TextControl.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.TextControl.html",
+          "hash": "REbfXO8iSR9lvEtvOPbB7ippF1gAG4URS8JdWH1o31M="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.AsyncRelayCommand.html",
+          "hash": "mPr+FH3lMphOhLxLxT/y2aU8Q+L4aPc3ATd0FZ7IBG4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.AttachedBehaviors.HighlightRange.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.AttachedBehaviors.HighlightRange.html",
+          "hash": "S+n4HBdHJBVcFRnFSAH1SSQ+e4LQt2JDSvFzZDNFKgw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.AttachedBehaviors.HighlightRangeCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.AttachedBehaviors.HighlightRangeCollection.html",
+          "hash": "NgkRjzdfSD97/V9mYGbE6B8bK3ogvRNjJK4Fx8fYlKs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.AttachedBehaviors.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.AttachedBehaviors.html",
+          "hash": "JuR5+wYgL/wSc3LE4iLNLv//aSR/p0NWyzXkTJOHH0A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.Collections.Generic.ObservablePropertyChangedCollection-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.Collections.Generic.ObservablePropertyChangedCollection-1.html",
+          "hash": "xQeC43s0ue5/QgPXMMwXOAEurRquCOCLrsxYI7wbp34="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.Collections.Generic.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.Collections.Generic.html",
+          "hash": "0em3n7TfjdKnGSNh0pG/6fFOxnLoJMrXM6XM6rKgm70="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.Converter.BoolToStringConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.Converter.BoolToStringConverter.html",
+          "hash": "VZA5yxem4BrVV7QcdYR4Zsu2caMxdLNfx5+WY5WqcDE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.Converter.DividerValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.Converter.DividerValueConverter.html",
+          "hash": "+q5tcI0Y/EvK0YGYQCazaUkn8Ou9+iW3y0u45v129zw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.Converter.FilePathTruncateConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.Converter.FilePathTruncateConverter.html",
+          "hash": "S+DUnoIsQoPeGCb4wVMWI/UXMxHjsVwy3fDLcU0thz8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.Converter.InvertValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.Converter.InvertValueConverter.html",
+          "hash": "uFSu3ty6LHFsrUMv1V7fi9FTNQh4Z1465ae7dZR+t0E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.Converter.IsGreaterThanValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.Converter.IsGreaterThanValueConverter.html",
+          "hash": "ZKsitn4g9Q6tcVI5OdbHBEiLME/lkvNert2NZ4CIXP8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.Converter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.Converter.html",
+          "hash": "Ne9UUtnF1ErRsrRWC8xkbHkk2qo1KYAGl0OszbGaBNk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.Extensions.HelperExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.Extensions.HelperExtensions.html",
+          "hash": "OSby5V8On+egfkDo0y5ZD8CLA9NnBr53GdE0V7obMk8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.Extensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.Extensions.html",
+          "hash": "H1BpCVs4rdgzAaVbXjB06H9FVOdppc5zWIQqScS0xBg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.Generic.AsyncRelayCommand-1.html",
+          "hash": "MsEdDac6mGf1MnDJ1sN/CBSxLSMJDjZkkAY4JBXuBdk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.Generic.IAsyncRelayCommand-1.html",
+          "hash": "diCYtCcL6vcaNLp+hcwl6XohCt/zleG6HWX4tKIXYpQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.Generic.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.Generic.html",
+          "hash": "fuNbOyWaC2CHe2sYpTMfwpLfx2SDgwO0I7bOsVq4z8I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.IAsyncRelayCommand.html",
+          "hash": "+QrRsTQc1k64vMgMuj1mmbBVoV0v+wg3oSDg9fHinuI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Uwp.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Uwp.html",
+          "hash": "B3yIbFjRTYJpaEzXxJSgzuDijNXFfFoyrzz8rFuXoJQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ValueChangedEventArgs-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ValueChangedEventArgs-1.html",
+          "hash": "M71BlOBDISmlS1KUNYTOXqlleWByqs63EfiW+gP6eO4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ValueEventArgs-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ValueEventArgs-1.html",
+          "hash": "qTtrTMuguX+g2ndkCDwE/2rAZ9XM7PvxA6SBB7zDwAQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ViewModel.SetBackingFieldDelegate-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ViewModel.SetBackingFieldDelegate-1.html",
+          "hash": "4mJ3zyJ8WTj5lVFHLxOYte1a3uyI6GvDHo63rt5C/fM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ViewModel.html",
+          "hash": "px362QiXHGx/glGefaBnETYG9SxMAfhm/F/4M9RSeqM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.WrongEventHandlerSignatureException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.WrongEventHandlerSignatureException.html",
+          "hash": "SOfd7exJVdzaHe3OWa2lO1ST0YxCJmEM1Wh7UAwygz0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.html",
+          "hash": "nBdPk0AcQKElVF/uTmv3weJnqoC1ZuKaeM6iXI16S/E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "xInYtO61+Y+nn/fQ4yk8BQ4ujmPzz13BS3uCwHpY+cg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "KHsvcvItXEVJrIXVO/cMs5Elg1nLugtRmiGHaTSbD0k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/README.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/README.html",
+          "hash": "ZhxGQUQyMrbiNJW2mLhIqGwtOLKxLDu6vhiEIzziz0g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/intro.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/intro.html",
+          "hash": "IjcIV89iLixQjh3RiFw77MLmWfQ4f9ucrT97qqbMCCI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "articles/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "articles/toc.html",
+          "hash": "P4FI3V5HCaWzsPSICqiPbMv5ZuP73/XRQ5JInv6mynw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/BionicCode_Logo.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/BionicCode_Logo.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/logo.ico",
+      "output": {
+        "resource": {
+          "relative_path": "images/logo.ico"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "C+rHi5PG7ojEDHoWej09vNSPT6HtoGF93tb3OgGQGBg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "WSuRrYiGwKKMbtdG9z8W9fXmLoCyTnGg9AxbPKLXm2Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Disable incremental build by force rebuild option.",
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0,
+        "full_build_reason_code": "ForceRebuild"
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 4,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 337,
+          "skipped_file_count": 0
+        },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: it's disabled.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
