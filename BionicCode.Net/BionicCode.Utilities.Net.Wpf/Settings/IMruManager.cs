@@ -1,15 +1,13 @@
-﻿#region Info
-// //  
-// BionicCode.BionicNuGetDeploy.Main
-#endregion
-
-using System;
-using System.Collections.ObjectModel;
-using BionicCode.Utilities.Net.Standard.Generic;
-using BionicCode.Utilities.Net.Standard.ViewModel;
-
-namespace BionicCode.Utilities.Net.Wpf.Settings
+﻿namespace BionicCode.Utilities.Net
 {
+  #region Info
+  // //  
+  // BionicCode.BionicNuGetDeploy.Main
+  #endregion
+
+  using System;
+  using System.Collections.ObjectModel;
+
   /// <summary>
   /// Interface that describes an API that manages a MRU (Most Recently Used files) table which is stored in the AppSettings file.
   /// </summary>

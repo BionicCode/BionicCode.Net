@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net472;net48;net5.0;net6.0</TargetFrameworks>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
+    <RootNamespace>BionicCode.Utilities.Net</RootNamespace>
+    <AssemblyName>BionicCode.Utilities.Net</AssemblyName>
+    <Authors>Brian Sampoh</Authors>
+    <Company>BionicCode</Company>
+    <Description>.NET Standard 2.0 - Reusable utility and class library for .NET Standard 2.0 - Featuring: ViewModel (abstract base class), Profiling, Extension Methods, ValueChangedEventArgs, EventAggregator and more.</Description>
+    <Copyright>2020</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/BionicCode/BionicCode.Net</PackageProjectUrl>
+    <PackageIcon>BionicCode_Logo.png</PackageIcon>
+    <PackageTags>ViewModel BaseViewModel Base View Model Profiler Profiling Measure Measuring View Model ViewModel ExtensionMethods EventAggregator Aggregator Event MVVM NullObject NullObjectFactory Factory IFatory ValueChangedEventArgs AutoResetStream Stream PropertyValueChangedArgs FileExtension FileExtensions PropertyValueChanged</PackageTags>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Version>1.2.2</Version>
+    <RepositoryUrl>https://github.com/BionicCode/BionicCode.Net.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>- added default implementation of ViewModel.OnProgress (which is used to retrieve the IProgress&lt;ProgressData&gt; instance by calling ViewModel.CreateProgressReporterFromCurrentThread()
+
+---------------------------------------------------------
+For bug reports or feature requests please visit the project home on GutHub (follow the "Project Site" link on the right) and then open an issue (open the "issue" tab, click "New Issue" and select the appropriate template) or send  a mail to BionicCode@outlook.com. Thank you very much.</PackageReleaseNotes>
+    <PackageIconUrl />
+  </PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-windows' OR '$(TargetFramework)' == 'net5.0-windows'">
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<BuildDocFx Condition="$(TargetFramework) != 'net6.0-windows'">false</BuildDocFx>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\-Programming-\C#\GitOpenSourceRepository\BionicCode.Net\BionicCode.Net\BionicCode.Utilities.Net\BionicCode.Utilities.Net.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>D:\-Programming-\C#\GitOpenSourceRepository\BionicCode.Net\BionicCode.Net\BionicCode.Utilities.Net\BionicCode.Utilities.Net.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <ProjectReference Include="..\BionicCode.Utilities.Net.Common\BionicCode.Utilities.Net.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\BionicCode_Logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+</Project>

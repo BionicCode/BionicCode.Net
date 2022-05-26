@@ -5,7 +5,7 @@
 
 #endregion
 
-namespace BionicCode.Utilities.Net.Wpf.Markup
+namespace BionicCode.Utilities.Net
 {
   /// <summary>
   /// Enumeration to set the inversion direction of the <see cref="InvertExtension"/>.

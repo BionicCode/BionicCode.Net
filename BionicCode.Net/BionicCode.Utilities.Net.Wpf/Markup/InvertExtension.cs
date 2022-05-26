@@ -1,11 +1,12 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Data;
-using System.Windows.Markup;
-using BionicCode.Utilities.Net.Standard;
-
-namespace BionicCode.Utilities.Net.Wpf.Markup
+﻿
+namespace BionicCode.Utilities.Net
 {
+  using System;
+  using System.Windows;
+  using BionicCode.Utilities.Net;
+#if NET || NET461_OR_GREATER
+  using System.Windows.Data;
+  using System.Windows.Markup;
   /// <summary>
   /// XAML extension to invert the <see cref="Value"/> property using the current <see cref="IValueInverter"/>. Supports every <see cref="MarkupExtension"/> e.g., <see cref="BindingBase"/>.
   /// </summary>
@@ -132,4 +133,5 @@ namespace BionicCode.Utilities.Net.Wpf.Markup
         ? invertedValue
         : resolvedValue;
   }
+#endif
 }

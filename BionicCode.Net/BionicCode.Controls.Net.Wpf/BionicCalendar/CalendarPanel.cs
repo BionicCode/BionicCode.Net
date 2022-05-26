@@ -1,38 +1,39 @@
-﻿#region Info
-
-// 2020/11/06  20:13
-// Activitytracker
-
-#endregion
-
-#region Usings
-
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Globalization;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media;
-using BionicCode.Utilities.Net.Wpf.Extensions;
-using ColumnDefinition = System.Windows.Controls.ColumnDefinition;
-using Grid = System.Windows.Controls.Grid;
-using Panel = System.Windows.Controls.Panel;
-using RowDefinition = System.Windows.Controls.RowDefinition;
-using ScrollViewer = System.Windows.Controls.ScrollViewer;
-
-#endregion
-
+﻿
 namespace BionicCode.Controls.Net.Wpf
 {
+  #region Info
+
+  // 2020/11/06  20:13
+  // Activitytracker
+
+  #endregion
+
+  #region Usings
+
+  using System;
+  using System.Collections.Generic;
+  using System.Collections.ObjectModel;
+  using System.Collections.Specialized;
+  using System.Globalization;
+  using System.Linq;
+  using System.Windows;
+  using System.Windows.Controls;
+  using System.Windows.Controls.Primitives;
+  using System.Windows.Media;
+  using ColumnDefinition = System.Windows.Controls.ColumnDefinition;
+  using Grid = System.Windows.Controls.Grid;
+  using Panel = System.Windows.Controls.Panel;
+  using RowDefinition = System.Windows.Controls.RowDefinition;
+  using ScrollViewer = System.Windows.Controls.ScrollViewer;
+  using BionicCode.Utilities.Net.Wpf.Extensions;
+
+  #endregion
+
   public class CalendarPanel : VirtualizingPanel, IScrollInfo
   {
     public static string DefaultCalendarDateItemTemplateKeyId => nameof(CalendarPanel.DefaultCalendarDateItemTemplateKey);
 
-    public static ComponentResourceKey DefaultCalendarDateItemTemplateKey { get; } = new()
+    public static ComponentResourceKey DefaultCalendarDateItemTemplateKey { get; } = new ComponentResourceKey()
     {
       TypeInTargetAssembly = typeof(CalendarPanel), 
       ResourceId = CalendarPanel.DefaultCalendarDateItemTemplateKeyId
@@ -301,10 +302,17 @@ namespace BionicCode.Controls.Net.Wpf
 
     protected virtual void DrawGridLines(Panel panel, DrawingContext drawingContext)
     {
+#if NET5_0_OR_GREATER      
       if (panel is not Grid gridPanel)
       {
         return;
       }
+#else    
+      if (!(panel is Grid gridPanel))
+      {
+        return;
+      }
+#endif
 
       var pen = new Pen(this.GridColor, this.GridThickness);
       double horizontalStartOffset = this.IsShowingCalendarWeek ? gridPanel.ColumnDefinitions[0].ActualWidth / 2 : 0;
@@ -509,7 +517,7 @@ namespace BionicCode.Controls.Net.Wpf
     // TODO::Last stop
     //public UIElement GetDateItemContainerOfEventItem(FrameworkElement eventItemContainer)
 
-    #region Overrides of FrameworkElement
+#region Overrides of FrameworkElement
 
     /// <inheritdoc />
     protected override void OnInitialized(EventArgs e)
@@ -518,7 +526,7 @@ namespace BionicCode.Controls.Net.Wpf
       Initialize(null);
     }
 
-    #endregion
+#endregion
 
     public void Initialize(Calendar owner)
     {
@@ -538,7 +546,7 @@ namespace BionicCode.Controls.Net.Wpf
       CreateRootGrid();
     }
 
-    #region Overrides of Grid
+#region Overrides of Grid
 
     /// <inheritdoc />
     protected override Size MeasureOverride(Size constraint)
@@ -666,7 +674,7 @@ namespace BionicCode.Controls.Net.Wpf
       return constraint;
     }
 
-    #endregion
+#endregion
 
     /// <inheritdoc />
     protected override Size ArrangeOverride(Size arrangeSize)
@@ -1144,7 +1152,7 @@ namespace BionicCode.Controls.Net.Wpf
     private int WeekRealizationOffset { get; set; }
     private CalendarMonthView NextCalendarView { get; set; }
 
-    #region OnIsShowingCalendarWeekChanged dependency property changed handler
+#region OnIsShowingCalendarWeekChanged dependency property changed handler
 
     private static void OnIsShowingCalendarWeekChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
       (d as CalendarPanel).OnIsShowingCalendarWeekChanged((bool) e.OldValue, (bool) e.NewValue);
@@ -1156,7 +1164,7 @@ namespace BionicCode.Controls.Net.Wpf
       InvalidateVisual();
     }
 
-    #endregion OnIsShowingCalendarWeekChanged dependency property changed handler
+#endregion OnIsShowingCalendarWeekChanged dependency property changed handler
 
 
     protected virtual void OnAutoGeneratingEvent(EventGeneratorArgs e) => this.AutoGeneratingEvent?.Invoke(this, e);
@@ -1217,7 +1225,7 @@ namespace BionicCode.Controls.Net.Wpf
     private int ContentRowOffset { get; set; }
     private int ContentColumnOffset { get; set; }
 
-    #region Implementation of IScrollInfo
+#region Implementation of IScrollInfo
 
     /// <inheritdoc />
     public void LineUp() => SetVerticalOffset(this.VerticalOffset - 1);
@@ -1388,6 +1396,6 @@ namespace BionicCode.Controls.Net.Wpf
     private double verticalOffset;
     private ScrollViewer scrollOwner;
 
-    #endregion
+#endregion
   }
 }

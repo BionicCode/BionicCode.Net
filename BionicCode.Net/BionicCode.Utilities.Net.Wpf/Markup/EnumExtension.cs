@@ -1,8 +1,9 @@
-﻿using System;
-using System.Windows.Markup;
-
-namespace BionicCode.Utilities.Net.Wpf.Markup
+﻿
+namespace BionicCode.Utilities.Net
 {
+  using System;
+#if NET || NET461_OR_GREATER
+  using System.Windows.Markup;
   /// <summary>
   /// XAML extension to return the values of an enumeration.
   /// </summary>
@@ -43,9 +44,10 @@ namespace BionicCode.Utilities.Net.Wpf.Markup
       {
         throw new ArgumentException("The property 'EnumType' of markup extension 'EnumExtension' must be set.");
       }
-      return Enum.GetValues(this.EnumType);
+      return Enum.GetNames(this.EnumType);
     }
 
     #endregion
   }
+#endif
 }

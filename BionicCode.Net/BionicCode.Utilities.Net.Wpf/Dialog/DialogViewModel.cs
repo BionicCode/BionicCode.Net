@@ -3,15 +3,16 @@
 // BionicCode.BionicNuGetDeploy.Main
 #endregion
 
+namespace BionicCode.Utilities.Net
+{
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Windows.Media;
-using BionicCode.Utilities.Net.Standard.ViewModel;
-using BionicCode.Utilities.Net.Wpf.Generic;
+using BionicCode.Utilities.Net;
+using BionicCode.Utilities.Net.Common;
 
-namespace BionicCode.Utilities.Net.Wpf.Dialog
-{
+#if NET || NET472_OR_GREATER
+using System.Windows.Media;
   /// <summary>
   /// Implementation of <see cref="IDialogViewModel"/>. This abstract class implements the dialog data handling logic and is therefore preferred over a custom implementation of <see cref="IDialogViewModel"/>.
   /// </summary>
@@ -56,7 +57,7 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
     /// <summary>
     /// Asynchronously called when the SendResponseAsyncCommand is executed.
     /// </summary>
-    /// <param name="result">A <see cref="Wpf.Dialog.DialogResult"/> value that was received by the ICommand.</param>
+    /// <param name="result">A <see cref="BionicCode.Utilities.Net.DialogResult"/> value that was received by the ICommand.</param>
     /// <returns>A <c>Task</c> instance to make this method awaitable.</returns>
     protected virtual async Task ExecuteSendResponseCommandAsync(DialogResult result)
     {
@@ -67,7 +68,7 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
 
     protected virtual bool CanExecuteSendResponseCommand(DialogResult commandParameter) => true;
 
-    #region Implementation of IDialogViewModel
+  #region Implementation of IDialogViewModel
 
     private string title;
     /// <inheritdoc />
@@ -108,7 +109,7 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
     /// <inheritdoc />
     public event EventHandler InteractionCompleted;
 
-    #endregion
+  #endregion
 
     /// <summary>
     /// Event invocator of the <see cref="InteractionCompleting"/> event. Raised before <see cref="InteractionCompleted"/> event. When overriding the member, setting the property <see cref="CancelEventArgs.Cancel"/> of the <paramref name="cancelEventArgs"/> parameter to <c>true</c> will cancel the dialog close process. 
@@ -132,4 +133,5 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
       }
     }
   }
+#endif
 }

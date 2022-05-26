@@ -52,12 +52,6 @@
     <Compile Include="ViewModelTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BionicCode.Utilities.Net.Standard\BionicCode.Utilities.Net.Standard.csproj">
-      <Project>{d147481e-42db-4069-a8eb-88d5872d9ff1}</Project>
-      <Name>BionicCode.Utilities.Net.Standard</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="logo.ico" />
   </ItemGroup>
   <ItemGroup>

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using BionicCode.Utilities.Net.Standard.Generic;
-using BionicCode.Utilities.Net.Standard.ViewModel;
-
-namespace BionicCode.Utilities.Net.Wpf.Settings
+﻿namespace BionicCode.Utilities.Net
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Collections.ObjectModel;
+  using System.IO;
+  using System.Linq;
+
   /// <summary>
   /// API that manages a MRU (Most Recently Used files) table which is stored in the AppSettings file.
   /// </summary>
@@ -130,7 +128,7 @@ namespace BionicCode.Utilities.Net.Wpf.Settings
     /// </summary>
     /// <param name="count">The max count value for <see cref="MaxMostRecentlyUsedCount"/> to validate.</param>
     /// <returns></returns>
-    protected virtual (bool IsValid, IEnumerable<string> ErrorMessages) IsMruCountValid(int count)
+    protected virtual (bool IsValid, IEnumerable<object> ErrorMessages) IsMruCountValid(int count)
     {
       bool isValid = count > 0 && count < 100;
       (bool IsValid, IEnumerable<string> ErrorMessages) result = (isValid,

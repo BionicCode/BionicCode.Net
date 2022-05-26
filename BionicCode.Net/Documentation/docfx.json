@@ -1,0 +1,83 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "**/**.csproj"
+          ],
+          "exclude": [
+            "**/BionicCode.Utilities.UnitTest**.csproj"
+          ],
+          "src": ".."
+        }
+      ],
+      "dest": "api",
+      //"properties": {
+      //  "TargetFramework": "net6.0"
+      //},
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "**/*.yml",
+          "api/**.yml",
+          "api/index.md"
+        ]
+      },
+      {
+        "files": [
+          "articles/**.md",
+          "articles/**/toc.yml",
+          "toc.yml",
+          "*.md"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "images/**"
+        ]
+      }
+    ],
+    "overwrite": [
+      {
+        "files": [
+          "apidoc/**.md",
+          "_site/**"
+        ],
+        "exclude": [
+          "obj/**"
+        ]
+      }
+    ],
+    "dest": "_site",
+    "globalMetadataFiles": [],
+    "fileMetadataFiles": [],
+    "template": [
+      "default"
+    ],
+    "globalMetadata": {
+      "_appTitle": "BionicCode.NET API Reference",
+      "_appLogoPath": "../images/BionicCode_Logo.png",
+      "_appFaviconPath": "../images/logo.ico",
+      "_gitContribute": {
+        "repo": "https://github.com/BionicCode/BionicCode.Net",
+        "branch": "dev",
+        "apiSpecFolder": "docs-ref-overwrite"
+      },
+      "_enableSearch": "true"
+    },
+    "postProcessors": [],
+    "markdownEngineName": "markdig",
+    "noLangKeyword": false,
+    "keepFileLink": false,
+    "cleanupCacheHistory": true,
+    "disableGitFeatures": false
+  }
+}

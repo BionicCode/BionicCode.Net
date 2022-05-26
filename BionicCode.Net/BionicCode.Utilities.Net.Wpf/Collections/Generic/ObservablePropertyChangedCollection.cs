@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-
-namespace BionicCode.Utilities.Net.Wpf.Collections.Generic
+﻿namespace BionicCode.Utilities.Net
 {
+  using System;
+  using System.Collections.ObjectModel;
+  using System.Collections.Specialized;
+  using System.ComponentModel;
+  using System.Diagnostics;
+  using System.Linq;
+
   /// <summary>
   /// Raises <see cref="ObservableCollection{T}.CollectionChanged"></see> event when the property of an item raised <see cref="INotifyPropertyChanged.PropertyChanged"/>. The <see cref="NotifyCollectionChangedAction"/> for this particular notification is <see cref="NotifyCollectionChangedAction.Reset"/> with a reference to the notifying item and the item's index. .
   /// </summary>
@@ -72,18 +72,37 @@ namespace BionicCode.Utilities.Net.Wpf.Collections.Generic
       base.SetItem(index, item);
     }
 
-    private void StartListenToItemPropertyChanged(INotifyPropertyChanged propertyChangedItem) => PropertyChangedEventManager.AddHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
+    private void StartListenToItemPropertyChanged(INotifyPropertyChanged propertyChangedItem)
+    {
 
-    private void StopListenToItemPropertyChanged(INotifyPropertyChanged propertyChangedItem) => PropertyChangedEventManager.RemoveHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
+#if NET461_OR_GREATER
+      PropertyChangedEventManager.AddHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
+#else
+      propertyChangedItem.PropertyChanged += OnItemPropertyChanged;
+#endif
+    }
 
-    #endregion Overrides of ObservableCollection<TItem>
+    private void StopListenToItemPropertyChanged(INotifyPropertyChanged propertyChangedItem)
+    {
+#if NET461_OR_GREATER
+      PropertyChangedEventManager.RemoveHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
+#else
+      propertyChangedItem.PropertyChanged -= OnItemPropertyChanged;
+#endif
+    }
+
+#endregion Overrides of ObservableCollection<TItem>
 
     private PropertyChangedEventHandler childPropertyChanged;
 
-    #region Overrides of ObservableCollection<TItem>
+#region Overrides of ObservableCollection<TItem>
 
     /// <inheritdoc />
+#if NET    
+    protected override event PropertyChangedEventHandler? PropertyChanged
+#else
     protected override event PropertyChangedEventHandler PropertyChanged
+#endif
     {
       add
       {
@@ -97,7 +116,7 @@ namespace BionicCode.Utilities.Net.Wpf.Collections.Generic
       }
     }
 
-    #endregion
+#endregion
 
     private void OnItemPropertyChanged(object item, PropertyChangedEventArgs e)
     {

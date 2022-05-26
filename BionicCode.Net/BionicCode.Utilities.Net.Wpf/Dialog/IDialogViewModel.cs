@@ -3,15 +3,16 @@
 // BionicCode.BionicNuGetDeploy.Main
 #endregion
 
+namespace BionicCode.Utilities.Net
+{
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Windows.Media;
-using BionicCode.Utilities.Net.Standard.ViewModel;
-using BionicCode.Utilities.Net.Wpf.Generic;
+using BionicCode.Utilities.Net;
+using BionicCode.Utilities.Net;
 
-namespace BionicCode.Utilities.Net.Wpf.Dialog
-{
+#if NET || NET461_OR_GREATER
+using System.Windows.Media;
   /// <summary>
   /// The DataContext and binding source for the dialog Window. Implement this interface or the derived abstract <see cref="DialogViewModel"/> to transport data from the view to the view model via binding. The <see cref="IDialogViewModel"/> will be the content of the dialog window. This means the corresponding DataTemplate can define e.g. an input form that can bind to the <see cref="IDialogViewModel"/>. Register a callback with the <see cref="ResponseCallbackAsync"/> property to process the <see cref="DialogResult"/> and the data of the <see cref="IDialogViewModel"/>.
   /// </summary>
@@ -28,7 +29,7 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
     /// </summary>
     string Message { get; set; }
     /// <summary>
-    /// The <see cref="Wpf.Dialog.DialogResult"/> of the user interaction.
+    /// The <see cref="BionicCode.Utilities.Net.DialogResult"/> of the user interaction.
     /// </summary>
     DialogResult DialogResult { get; set; }
     /// <summary>
@@ -37,7 +38,7 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
     /// <remarks>When using the abstract class <see cref="DialogViewModel"/> this delegate is invoked when invoking the <see cref="SendResponseAsyncCommand"/>. The parameter of this callback is the original <see cref="IDialogViewModel"/>. The callback can access the <see cref="DialogResult"/> property to get the interaction result. The <see cref="ResponseCallbackAsync"/> makes the dialog interaction fire-and-forget as the <see cref="IDialogViewModelProviderSource"/> doesn't need to wait for the  dialog to close and doesn't have to store a reference to the <see cref="IDialogViewModel"/>.</remarks>
     Func<IDialogViewModel, Task> ResponseCallbackAsync { get; set; }
     /// <summary>
-    /// ICommand that can be bound to the buttons of the dialog. The command parameter is a <see cref="Wpf.Dialog.DialogResult"/>.
+    /// ICommand that can be bound to the buttons of the dialog. The command parameter is a <see cref="BionicCode.Utilities.Net.DialogResult"/>.
     /// </summary>
     /// <remarks>When using the abstract class <see cref="DialogViewModel"/> the <see cref="SendResponseAsyncCommand"/> sets the <see cref="DialogResult"/> property and invokes the <see cref="ResponseCallbackAsync"/> continuation callback. The parameter of this callback is the original <see cref="IDialogViewModel"/>. The callback can access the <see cref="DialogResult"/> property to get the interaction result. The <see cref="ResponseCallbackAsync"/> makes the dialog interaction fire-and-forget as the <see cref="IDialogViewModelProviderSource"/> doesn't need to wait for the  dialog to close and doesn't have to store a reference to the <see cref="IDialogViewModel"/>.</remarks>
     IAsyncRelayCommand<DialogResult> SendResponseAsyncCommand { get; }
@@ -55,4 +56,5 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
     /// </summary>
     event EventHandler<CancelEventArgs> InteractionCompleting;
   }
+#endif
 }

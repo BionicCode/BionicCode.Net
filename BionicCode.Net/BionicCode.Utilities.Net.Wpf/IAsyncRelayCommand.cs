@@ -1,14 +1,22 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
-
-namespace BionicCode.Utilities.Net.Wpf
+﻿namespace BionicCode.Utilities.Net
 {
+  using System.Threading;
+  using System.Threading.Tasks;
+  using System.Windows.Input;
+
   /// <summary>
   /// Extends <see cref="ICommand"/> to allow asynchronous command execution.
   /// </summary>
   public interface IAsyncRelayCommand : ICommand
   {
+#if NET461_OR_GREATER
+    /// <summary>
+    /// Enable or disable the global <see cref="CommandManager.RequerySuggested"/> event.
+    /// <para><c>true</c> to enable <see cref="CommandManager.RequerySuggested"/> support or <c>false</c> to disable it. The default is <c>true</c>.</para>
+    /// </summary>
+    bool IsCommandManagerRequerySuggestedEnabled { get; set; }
+#endif
+
     /// <summary>
     /// Checks if the <see cref="ICommand"/> can execute.
     /// </summary>

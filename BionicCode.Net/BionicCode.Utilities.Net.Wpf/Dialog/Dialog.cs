@@ -3,16 +3,17 @@
 // BionicCode.BionicNuGetDeploy.Main
 #endregion
 
+namespace BionicCode.Utilities.Net
+{
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
+
+#if NET || NET461_OR_GREATER
+using BionicCode.Utilities.Net;
 using System.Windows.Controls;
 using System.Windows.Data;
-using BionicCode.Utilities.Net.Wpf.Extensions;
-
-namespace BionicCode.Utilities.Net.Wpf.Dialog
-{
   /// <summary>
   /// Attached behavior. Displays a <see cref="Window"/> based on an implementation of <see cref="IDialogViewModel"/> assigned to the attached property <see cref="DialogDataContextProperty"/> and a custom <see cref="DataTemplate"/>.
   /// </summary>
@@ -38,7 +39,7 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
   /// <seealso href="https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior">See advanced example</seealso>
   public class Dialog : DependencyObject
   {
-    #region DialogDataContext attached property
+#region DialogDataContext attached property
 
     /// <summary>
     /// Attached property designed to bind to a view model property of type <see cref="IDialogViewModel"/>. A change of this property will trigger the <see cref="Dialog"/> to show a <see cref="Window"/> with the <see cref="FrameworkElement.DataContext"/> set to the <see cref="IDialogViewModel"/> instance of this property.
@@ -60,9 +61,9 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
     /// <returns>The current associated <see cref="IDialogViewModel"/>.</returns>
     public static IDialogViewModel GetDialogDataContext(DependencyObject attachingElement) => (IDialogViewModel)attachingElement.GetValue(Dialog.DialogDataContextProperty);
 
-    #endregion
+#endregion
 
-    #region DataTemplateSelector attached property
+#region DataTemplateSelector attached property
 
     /// <summary>
     /// Attached property to set a <see cref="DataTemplateSelector"/> to use for the displayed dialog <see cref="Window"/> to display the content.
@@ -84,9 +85,9 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
     /// <returns>The <see cref="DataTemplateSelector"/> registered with the <paramref name="attachingElement"/>.</returns>
     public static DataTemplateSelector GetDataTemplateSelector(DependencyObject attachingElement) => (DataTemplateSelector)attachingElement.GetValue(Dialog.DataTemplateSelectorProperty);
 
-    #endregion
+#endregion
 
-    #region Style attached property
+#region Style attached property
     /// <summary>
     /// The attached Style property which holds the <see cref="Style"/> which should apply to the dialog. <see cref="Style.TargetType"/> must be <see cref="Window"/>.
     /// </summary>
@@ -107,9 +108,9 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
     /// <returns>The dialog's <see cref="Style"/> registered with the <paramref name="attachingElement"/>.</returns>
     public static Style GetStyle(DependencyObject attachingElement) => (Style)attachingElement.GetValue(Dialog.StyleProperty);
 
-    #endregion
+#endregion
 
-    #region IsClosable attached property
+#region IsClosable attached property
 
     /// <summary>
     /// Attached property that controls if the user is allowed to explicitly close the <see cref="Window"/>.
@@ -131,9 +132,9 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
     /// <returns><c>true</c> to allow the user to close the <see cref="Window"/>, otherwise <c>false</c>.</returns>
     public static bool GetIsClosable(DependencyObject attachingElement) => (bool) attachingElement.GetValue(Dialog.IsClosableProperty);
 
-    #endregion
+#endregion
 
-    #region IsModal attached property
+#region IsModal attached property
 
     /// <summary>
     /// Attached property that controls if the <see cref="Window"/> is shown modal.
@@ -155,7 +156,7 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
     /// <returns><c>true</c> to show the <see cref="Window"/> modal, otherwise <c>false</c>.</returns>
     public static bool GetIsModal(DependencyObject attachingElement) => (bool) attachingElement.GetValue(Dialog.IsModalProperty);
 
-    #endregion
+#endregion
 
     private static Dictionary<IDialogViewModel, Window> ViewModelToDialogMap { get; }
     private static Dictionary<Window, DependencyObject> DialogToAttachingElementMap { get; }
@@ -285,4 +286,5 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
       }
     }
   }
+#endif
 }

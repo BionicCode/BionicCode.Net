@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:wpf="clr-namespace:BionicCode.Controls.Net.Wpf;assembly=BionicCode.Controls.Net.Wpf" 
-        xmlns:bionicCharts="clr-namespace:BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart;assembly=BionicCode.Controls.Net.Wpf" 
+        xmlns:bionicCharts="clr-namespace:BionicCode.Controls.Net.Wpf.BionicCharts;assembly=BionicCode.Controls.Net.Wpf" 
         xmlns:local="clr-namespace:BionicCode.Net.Wpf.Ui.Test"
         mc:Ignorable="d"
         Title="MainWindow" Height="628" Width="800" Name="Window"
@@ -20,9 +20,14 @@
                    FirstDayOfWeek="Monday" />-->
 
 
+    <!--<bionicCharts:CartesianChart x:Name="CartesianChart" VirtualizingPanel.VirtualizationMode="Recycling"
+                                ItemsSource="{Binding ChartPoints}" Height="700" Width="700" VirtualizingPanel.CacheLengthUnit="Page" VirtualizingPanel.CacheLength="1,1"  bionicCharts:VirtualizingCartesianCanvas.XZoomFactor="3" bionicCharts:VirtualizingCartesianCanvas.YZoomFactor="1"   Background="CadetBlue">-->
     <bionicCharts:CartesianChart x:Name="CartesianChart"
-                                ItemsSource="{Binding ChartPoints}" Height="700" Width="700" VirtualizingPanel.CacheLengthUnit="Page" VirtualizingPanel.CacheLength="5,5"  bionicCharts:VirtualizingCartesianCanvas.XZoomFactor="3" bionicCharts:VirtualizingCartesianCanvas.YZoomFactor="1"   Background="CadetBlue">
-
+                                 ItemsSource="{Binding ChartPoints}"
+                                 Height="700"
+                                 Width="700"
+                                 Background="CadetBlue"
+                                 >
       <!--<bionicCharts:CartesianChart.Items>
         <bionicCharts:CartesianChartItem X="100" Y="20">
           <Ellipse Height="10" Width="10" StrokeThickness="2" Stroke="Black"/>

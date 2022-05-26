@@ -1,8 +1,9 @@
-﻿using System;
-using BionicCode.Utilities.Net.Standard.Generic;
-
-namespace BionicCode.Utilities.Net.Wpf.Dialog
+﻿
+namespace BionicCode.Utilities.Net
 {
+  using System;
+
+#if NET || NET472_OR_GREATER
   /// <summary>
   /// Interface that supports notification of observers to request display of a dialog.
   /// The event args is the view model of <see cref="IDialogViewModel"/> which serves as the DataContext and binding source of the dialog.
@@ -15,4 +16,5 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
     /// </summary>
     event EventHandler<ValueEventArgs<IDialogViewModel>> DialogRequested;
   }
+#endif
 }

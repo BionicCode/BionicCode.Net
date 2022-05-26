@@ -1,13 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0-windows</TargetFrameworks>
+    <TargetFrameworks>net5.0-windows;net6.0-windows</TargetFrameworks>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BionicCode.Utilities.Net.Wpf\BionicCode.Utilities.Net.Wpf.csproj" />
+    <ProjectReference Include="..\BionicCode.Utilities.Net.Wpf\BionicCode.Utilities.Net.csproj" />
   </ItemGroup>
+  
+
+  <!--<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <DefineConstants>NETSTANDARD</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
+    <DefineConstants>NET4</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net5.0-windows'">
+    <DefineConstants>NET5</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
+    <DefineConstants>NET6</DefineConstants>
+  </PropertyGroup>-->
 
   <ItemGroup>
     <Compile Update="BionicCharts\CartesianChart\CartesianChart.cs">

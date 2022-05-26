@@ -1,49 +1,91 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net5.0-windows;netcoreapp3.0</TargetFrameworks>
-    <UseWPF>true</UseWPF>
-    <PackageReleaseNotes>- added default implementation of ViewModel.OnProgress (which is used to retrieve the IProgress&lt;ProgressData&gt; instance by calling ViewModel.CreateProgressReporterFromCurrentThread()
----------------------------------------------------------
-For bug reports or feature requests please visit the project home on GutHub (follow the "Project Site" link on the right) and then open an issue (open the "issue" tab, click "New Issue" and select the appropriate template) or send  a mail to BionicCode@outlook.com. Thank you very much.</PackageReleaseNotes>
-    <Authors>Brian Sampoh</Authors>
-    <Company>BionicCode</Company>
-    <Description>.NET 5/.NET Core 3 - Reusable utility and class library for WPF .NET 5/.NET Core 3.0 - Featuring: ViewModel (abstract base class), Profiling, Extension Methods, ValueChangedEventArgs, EventAggregator, AutoResetStream and more.</Description>
-    <RepositoryUrl>https://github.com/BionicCode/BionicCode.Net.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageIcon>BionicCode_Logo.png</PackageIcon>
-    <PackageIconUrl />
-    <PackageTags>.NET 5 .NET CoreViewModel BaseViewModel Base View Model AsyncRelayCommand Async RelayCommand WPF VisualTreeHelper Profiler Profiling Measure Measuring View Model ViewModel ExtensionMethods ObservablePropertyChangedCollection Collection ApplicationSettings Settings AppSettings MRU MostRecentlyUsedFile LastUsedFile RecentlyUsedFile EventAggregator Aggregator Event MVVMDialog MVVM Dialog DialogService EnumExtension InvertExtension MarkupExtension</PackageTags>
-    <PackageProjectUrl>https://github.com/BionicCode/BionicCode.Net</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>2021</Copyright>
-    <NeutralLanguage>en</NeutralLanguage>
-    <Version>1.3.1</Version>
-    <PackageId>BionicCode.Utilities.Net.Wpf</PackageId>
-    <Product>BionicCode.Utilities.Net.Wpf (.NET 5, .NET Core 3.0)</Product>
+	<PropertyGroup>
+		<TargetFrameworks>net6.0-windows;net5.0-windows;netstandard2.0;netstandard2.1;net472;net48</TargetFrameworks>
+		<UseWPF>true</UseWPF>
+		<PackageReleaseNotes>
+			- added default implementation of ViewModel.OnProgress (which is used to retrieve the IProgress&lt;ProgressData&gt; instance by calling ViewModel.CreateProgressReporterFromCurrentThread()
+			---------------------------------------------------------
+			For bug reports or feature requests please visit the project home on GutHub (follow the "Project Site" link on the right) and then open an issue (open the "issue" tab, click "New Issue" and select the appropriate template) or send  a mail to BionicCode@outlook.com. Thank you very much.
+		</PackageReleaseNotes>
+		<Authors>Brian Sampoh</Authors>
+		<Company>BionicCode</Company>
+		<Description>.NET 5/.NET Core 3 - Reusable utility and class library for WPF .NET 5/.NET Core 3.0 - Featuring: ViewModel (abstract base class), Profiling, Extension Methods, ValueChangedEventArgs, EventAggregator, AutoResetStream and more.</Description>
+		<RepositoryUrl>https://github.com/BionicCode/BionicCode.Net.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageIcon>BionicCode_Logo.png</PackageIcon>
+		<PackageIconUrl />
+		<PackageTags>.NET 5 .NET CoreViewModel BaseViewModel Base View Model AsyncRelayCommand Async RelayCommand WPF VisualTreeHelper Profiler Profiling Measure Measuring View Model ViewModel ExtensionMethods ObservablePropertyChangedCollection Collection ApplicationSettings Settings AppSettings MRU MostRecentlyUsedFile LastUsedFile RecentlyUsedFile EventAggregator Aggregator Event MVVMDialog MVVM Dialog DialogService EnumExtension InvertExtension MarkupExtension</PackageTags>
+		<PackageProjectUrl>https://github.com/BionicCode/BionicCode.Net</PackageProjectUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Copyright>2021</Copyright>
+		<NeutralLanguage>en</NeutralLanguage>
+		<Version>1.3.1</Version>
+		<PackageId>BionicCode.Utilities.Net</PackageId>
+		<Product>BionicCode.Utilities.Net (.NET 5, .NET Core 3.0)</Product>
+		<AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<BuildDocFx Condition="$(TargetFramework) != 'net6.0-windows'">false</BuildDocFx>
+	</PropertyGroup>
+	
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-windows' OR '$(TargetFramework)' == 'net5.0-windows'">
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<BuildDocFx Condition="$(TargetFramework) != 'net6.0-windows'">false</BuildDocFx>
+	</PropertyGroup>
+	
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+	
+	<ItemGroup>
+	  <Compile Remove="Extensions\HelperExtensions.Net.cs" />
+	</ItemGroup>
+
+
+	<!--<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <DefineConstants>NETSTANDARD</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
+    <DefineConstants>NET4</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net5.0-windows'">
+    <DefineConstants>NET5</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\..\..\..\BionicCode_Logo.png" Link="BionicCode_Logo.png">
-      <PackagePath></PackagePath>
-      <Pack>True</Pack>
-    </None>
-    <None Include="..\..\..\..\BionicCode_Logo.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
+    <DefineConstants>NET6</DefineConstants>
+  </PropertyGroup>-->
+	<!--<ItemGroup>
+		<None Remove="Docfx-*.log" />
+	</ItemGroup>-->
+	<ItemGroup>
+		<None Include="..\..\..\..\BionicCode_Logo.png" Link="BionicCode_Logo.png">
+			<PackagePath></PackagePath>
+			<Pack>True</Pack>
+		</None>
+		<None Include="..\..\..\..\BionicCode_Logo.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="docfx.console" Version="2.58.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="docfx.console" Version="2.59.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BionicCode.Utilities.Net.Standard\BionicCode.Utilities.Net.Standard.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\BionicCode.Utilities.Net.Common\BionicCode.Utilities.Net.Common.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BionicCode.Utilities.Net.Standard.ViewModel;
+using BionicCode.Utilities.Net.Wpf.ViewModel;
 
 namespace BionicCode.Utilities.UnitTest.Net.Standard.Resources
 {

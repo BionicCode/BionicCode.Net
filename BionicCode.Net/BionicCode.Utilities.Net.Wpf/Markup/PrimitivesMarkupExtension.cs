@@ -1,8 +1,8 @@
-﻿using System;
-using System.Windows.Markup;
-
-namespace BionicCode.Utilities.Net.Wpf.Markup
+﻿namespace BionicCode.Utilities.Net
 {
+  using System;
+#if NET || NET461_OR_GREATER
+  using System.Windows.Markup;
   /// <summary>
   /// XAML markup extension that allows to define primitive type values like <see cref="bool"/> or <see cref="int"/>.
   /// </summary>
@@ -77,7 +77,6 @@ namespace BionicCode.Utilities.Net.Wpf.Markup
       this.primitiveValue = int32Value;
     }
 
-
     #endregion
 
     #region Overrides of MarkupExtension
@@ -87,4 +86,5 @@ namespace BionicCode.Utilities.Net.Wpf.Markup
 
     #endregion
   }
+#endif
 }

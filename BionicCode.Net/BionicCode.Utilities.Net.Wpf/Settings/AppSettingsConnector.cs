@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Specialized;
-using System.Configuration;
-
-namespace BionicCode.Utilities.Net.Wpf.Settings
+﻿namespace BionicCode.Utilities.Net
 {
+  using System;
+  using System.Collections.Specialized;
+  using System.Configuration;
+
+
   /// <summary>
   /// Exposes a basic static API to access the AppSettings file in order to manage application settings. 
   /// </summary>
@@ -81,7 +82,6 @@ namespace BionicCode.Utilities.Net.Wpf.Settings
       AppSettingsConnector.AddUpdateAppSettings(key, value);
     }
 
-
     /// <summary>
     /// Writes a <see cref="int"/> value to the settings file which is stored using the specified lookup <paramref name="key"/>. If the <paramref name="key"/> already exists, the existing value will be overwritten.
     /// </summary>
@@ -91,7 +91,6 @@ namespace BionicCode.Utilities.Net.Wpf.Settings
     {
       AppSettingsConnector.AddUpdateAppSettings(key, value);
     }
-
 
     /// <summary>
     /// Writes a <see cref="double"/> value to the settings file which is stored using the specified lookup <paramref name="key"/>. If the <paramref name="key"/> already exists, the existing value will be overwritten.
@@ -103,7 +102,6 @@ namespace BionicCode.Utilities.Net.Wpf.Settings
       AppSettingsConnector.AddUpdateAppSettings(key, value);
     }
 
-
     /// <summary>
     /// Writes a <see cref="bool"/> value to the settings file which is stored using the specified lookup <paramref name="key"/>. If the <paramref name="key"/> already exists, the existing value will be overwritten.
     /// </summary>
@@ -113,7 +111,6 @@ namespace BionicCode.Utilities.Net.Wpf.Settings
     {
       AppSettingsConnector.AddUpdateAppSettings(key, value);
     }
-
 
     private static void AddUpdateAppSettings<TValue>(string key, TValue value)
     {

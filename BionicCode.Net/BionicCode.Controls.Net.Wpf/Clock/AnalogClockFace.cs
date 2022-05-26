@@ -1020,7 +1020,7 @@ namespace BionicCode.Controls.Net.Wpf
     {
       object formattedLabelValue = this.IntervalLabelFormatter?.Invoke(labelValue) ?? labelValue;
       if (this.FifteenMinuteIntervalLabel != null
-          && CloneElement(this.FifteenMinuteIntervalLabel) is FrameworkElement label && label.TryAssignValueToUnknownElement(formattedLabelValue))
+          && CloneElement(this.FifteenMinuteIntervalLabel) is FrameworkElement label && label.TryAssignValue(formattedLabelValue))
       {
         return label;
       }
@@ -1032,7 +1032,7 @@ namespace BionicCode.Controls.Net.Wpf
     {
       object formattedLabelValue = this.IntervalLabelFormatter?.Invoke(labelValue) ?? labelValue;
       if (this.FiveMinuteIntervalLabel != null
-          && CloneElement(this.FiveMinuteIntervalLabel) is FrameworkElement label && label.TryAssignValueToUnknownElement(formattedLabelValue))
+          && CloneElement(this.FiveMinuteIntervalLabel) is FrameworkElement label && label.TryAssignValue(formattedLabelValue))
       {
         return label;
       }
@@ -1044,7 +1044,7 @@ namespace BionicCode.Controls.Net.Wpf
     {
       object formattedLabelValue = this.IntervalLabelFormatter?.Invoke(labelValue) ?? labelValue;
       if (this.MinuteIntervalLabel != null 
-          && CloneElement(this.MinuteIntervalLabel) is FrameworkElement label && label.TryAssignValueToUnknownElement(formattedLabelValue))
+          && CloneElement(this.MinuteIntervalLabel) is FrameworkElement label && label.TryAssignValue(formattedLabelValue))
       {
         return label;
       }

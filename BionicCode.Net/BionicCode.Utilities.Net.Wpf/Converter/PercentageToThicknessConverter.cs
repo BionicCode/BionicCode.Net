@@ -1,22 +1,23 @@
-﻿#region Info
-
-// 2021/01/13  12:51
-// Clock
-
-#endregion
-
-using System;
-using System.Globalization;
-using System.Windows;
-using System.Windows.Data;
-
-namespace BionicCode.Utilities.Net.Wpf.Converter
+﻿namespace BionicCode.Utilities.Net
 {
+  #region Info
+
+  // 2021/01/13  12:51
+  // Clock
+
+  #endregion
+
+  using System;
+  using System.Globalization;
+  using System.Windows;
+
+#if NET || NET461_OR_GREATER
+using System.Windows.Data;
   public class PercentageToThicknessConverter : IValueConverter
   {
     public Thickness ThicknessPercentage { get; set; }
 
-    #region Implementation of IValueConverter
+  #region Implementation of IValueConverter
 
     /// <inheritdoc />
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -36,6 +37,7 @@ namespace BionicCode.Utilities.Net.Wpf.Converter
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
       throw new NotSupportedException();
 
-    #endregion
+  #endregion
   }
+#endif
 }

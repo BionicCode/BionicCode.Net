@@ -1,9 +1,11 @@
-﻿using System;
+﻿
+namespace BionicCode.Utilities.Net
+{
+  using System;
+#if NET || NET461_OR_GREATER
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace BionicCode.Utilities.Net.Wpf.Markup
-{
   /// <summary>
   /// XAML Equality comparer.
   /// </summary>
@@ -39,4 +41,5 @@ namespace BionicCode.Utilities.Net.Wpf.Markup
         return this.valueY == null ? this.valueX?.GetType().Equals(this.typeToEqual) ?? false : this.valueX?.Equals(this.valueY) ?? false;
       }
     }
+#endif
 }

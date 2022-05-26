@@ -1,13 +1,13 @@
-﻿using System;
-using System.Globalization;
-using System.Windows.Data;
-
-namespace BionicCode.Utilities.Net.Wpf.Converter
+﻿namespace BionicCode.Utilities.Net
 {
+#if NET || NET461_OR_GREATER
+  using System;
+  using System.Globalization;
+using System.Windows.Data;
   [ValueConversion(typeof(double), typeof(double))]
   public class DividerValueConverter : IValueConverter
   {
-    #region Implementation of IValueConverter
+  #region Implementation of IValueConverter
 
     
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -65,6 +65,7 @@ namespace BionicCode.Utilities.Net.Wpf.Converter
       return multiplier * multiplicant;
     }
 
-    #endregion
+  #endregion
   }
+#endif
 }

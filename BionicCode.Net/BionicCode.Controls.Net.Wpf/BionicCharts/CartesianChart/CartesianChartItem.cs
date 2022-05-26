@@ -1,13 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-
-namespace BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart
+﻿namespace BionicCode.Controls.Net.Wpf.BionicCharts
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Text;
+  using System.Threading.Tasks;
+  using System.Windows;
+
+  /* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
+  Before:
+  using System.Windows.Controls;
+  After:
+  using System.Windows.Controls;
+    */
+  using System.Windows.Controls;
+
   /// <summary>
   /// The item container for the <see cref="CartesianChart"/>. 
   /// </summary>
@@ -25,7 +32,7 @@ namespace BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart
     /// <summary>
     /// Returns whether the item is selected or not.
     /// </summary>
-    public bool IsSelected { get => (bool) GetValue(CartesianChartItem.IsSelectedProperty); set => SetValue(CartesianChartItem.IsSelectedProperty, value); }
+    public bool IsSelected { get => (bool)GetValue(IsSelectedProperty); set => SetValue(IsSelectedProperty, value); }
 
     public static readonly DependencyProperty XProperty = DependencyProperty.Register(
       "X",
@@ -36,7 +43,7 @@ namespace BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart
     /// <summary>
     /// The x value of the cartesian coordinate.
     /// </summary>
-    public double X { get => (double) GetValue(CartesianChartItem.XProperty); set => SetValue(CartesianChartItem.XProperty, value); }
+    public double X { get => (double)GetValue(XProperty); set => SetValue(XProperty, value); }
 
     public static readonly DependencyProperty YProperty = DependencyProperty.Register(
       "Y",
@@ -47,7 +54,7 @@ namespace BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart
     /// <summary>
     /// The y value of the cartesian coordinate.
     /// </summary>
-    public double Y { get => (double) GetValue(CartesianChartItem.YProperty); set => SetValue(CartesianChartItem.YProperty, value); }
+    public double Y { get => (double)GetValue(YProperty); set => SetValue(YProperty, value); }
 
     public static readonly DependencyProperty MaxXProperty = DependencyProperty.Register(
       "MaxX",
@@ -58,7 +65,7 @@ namespace BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart
     /// <summary>
     /// The maximum x value of a cartesian coordinate related to a series of points.
     /// </summary>
-    public double MaxX { get => (double) GetValue(CartesianChartItem.MaxXProperty); set => SetValue(CartesianChartItem.MaxXProperty, value); }
+    public double MaxX { get => (double)GetValue(MaxXProperty); set => SetValue(MaxXProperty, value); }
 
     public static readonly DependencyProperty MaxYProperty = DependencyProperty.Register(
       "MaxY",
@@ -70,7 +77,7 @@ namespace BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart
     /// <summary>
     /// The maximum y value of a cartesian coordinate related to a series of points.
     /// </summary>
-    public double MaxY { get => (double) GetValue(CartesianChartItem.MaxYProperty); set => SetValue(CartesianChartItem.MaxYProperty, value); }
+    public double MaxY { get => (double)GetValue(MaxYProperty); set => SetValue(MaxYProperty, value); }
 
     public static readonly DependencyProperty MinXProperty = DependencyProperty.Register(
       "MinX",
@@ -82,7 +89,7 @@ namespace BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart
     /// <summary>
     /// The minimum x value of a cartesian coordinate related to a series of points.
     /// </summary>
-    public double MinX { get => (double) GetValue(CartesianChartItem.MinXProperty); set => SetValue(CartesianChartItem.MinXProperty, value); }
+    public double MinX { get => (double)GetValue(MinXProperty); set => SetValue(MinXProperty, value); }
 
     public static readonly DependencyProperty MinYProperty = DependencyProperty.Register(
       "MinY",
@@ -94,13 +101,13 @@ namespace BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart
     /// <summary>
     /// The minimum y value of a cartesian coordinate related to a series of points.
     /// </summary>
-    public double MinY { get => (double) GetValue(CartesianChartItem.MinYProperty); set => SetValue(CartesianChartItem.MinYProperty, value); }
+    public double MinY { get => (double)GetValue(MinYProperty); set => SetValue(MinYProperty, value); }
 
     #endregion Dependency properties
 
     static CartesianChartItem()
     {
-      FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(CartesianChartItem), new FrameworkPropertyMetadata(typeof(CartesianChartItem)));
+      DefaultStyleKeyProperty.OverrideMetadata(typeof(CartesianChartItem), new FrameworkPropertyMetadata(typeof(CartesianChartItem)));
     }
 
     /// <inheritdoc />

@@ -14,7 +14,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
-using BionicCode.Utilities.Net.Wpf.Extensions;
 
 namespace BionicCode.Controls.Net.Wpf
 {
@@ -202,16 +201,7 @@ namespace BionicCode.Controls.Net.Wpf
       this.AnalogClockFace.SelectedSecond = (steps + this.AnalogClockFace.SelectedSecond + change) % steps;
     }
 
-    private void OnOverflowPickerScrollChanged(object sender, ScrollChangedEventArgs e)
-    {
-      GenerateSelectableDays(e.VerticalChange);
-    }
-
-    private void GenerateSelectableDays(double verticalChange)
-    {
-      ;
-    }
-
+  
     #endregion
 
     private static void OnSelectedTimeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

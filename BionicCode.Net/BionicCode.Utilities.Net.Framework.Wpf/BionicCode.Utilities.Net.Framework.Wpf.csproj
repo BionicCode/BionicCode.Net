@@ -91,10 +91,6 @@
       <Project>{4c616501-0a08-48e4-864d-1fb631f4ae23}</Project>
       <Name>BionicCode.Utilities.Net.Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\BionicCode.Utilities.Net.Standard\BionicCode.Utilities.Net.Standard.csproj">
-      <Project>{d147481e-42db-4069-a8eb-88d5872d9ff1}</Project>
-      <Name>BionicCode.Utilities.Net.Standard</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
