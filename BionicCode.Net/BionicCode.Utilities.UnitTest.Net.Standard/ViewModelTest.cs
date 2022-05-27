@@ -1,16 +1,16 @@
-﻿using BionicCode.Utilities.UnitTest.Net.Standard.Resources;
-using System;
-using System.Linq;
-using Xunit;
-using FluentAssertions;
-using System.ComponentModel;
-using BionicCode.Utilities.Net.Standard.ViewModel;
-using System.Collections.Generic;
-using System.Collections;
-
-namespace BionicCode.Utilities.UnitTest.Net.Standard
+﻿namespace BionicCode.Utilities.UnitTest.Net.Standard
 {
-  
+  using BionicCode.Utilities.UnitTest.Net.Standard.Resources;
+  using System;
+  using System.Linq;
+  using Xunit;
+  using FluentAssertions;
+  using System.ComponentModel;
+  using BionicCode.Utilities.Net;
+  using System.Collections.Generic;
+  using System.Collections;
+
+
   public class ViewModelTest : IDisposable
   {
 
@@ -26,7 +26,17 @@ namespace BionicCode.Utilities.UnitTest.Net.Standard
       this.ValidTextValue = "VALIDTESTTEXT";
       this.PropertyChangedEventInvocationCount = 0;
       this.PropertyValueChangedEventInvocationCount = 0;
+      var func = new Func<object, bool>(o => true);
+      Tester(func);
     }
+
+    public void Tester(Predicate<object> del)
+    { 
+      Tester(new Func<object, bool>(o => del(o)));
+    }
+
+    public void Tester(Func<object, bool> del)
+    { }
 
     public void Dispose()
     {

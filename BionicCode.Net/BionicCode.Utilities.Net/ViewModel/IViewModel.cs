@@ -1,4 +1,4 @@
-namespace BionicCode.Utilities.Net.ViewModel
+namespace BionicCode.Utilities.Net
 {
   #region Info
   // //  

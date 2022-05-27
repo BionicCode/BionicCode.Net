@@ -1,21 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BionicCode.Utilities.Net.Wpf.ViewModel;
-
-namespace BionicCode.Utilities.UnitTest.Net.Standard.Resources
+﻿namespace BionicCode.Utilities.UnitTest.Net.Standard.Resources
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Text;
+  using System.Threading.Tasks;
+  using BionicCode.Utilities.Net;
+  using BionicCode.Utilities.Net.ViewModel;
+
   public class ViewModelImpl : ViewModel
   {
-    public ViewModelImpl(Func<string, (bool IsValid, IEnumerable<string> ErrorMessages)> propertyValidationDelegate, string validationErrorMessage)
+    public ViewModelImpl(Func<string, (bool IsValid, IEnumerable<object> ErrorMessages)> propertyValidationDelegate, string validationErrorMessage)
     {
       this.ValidationErrorMessage = validationErrorMessage;
       this.PropertyValidationDelegate = propertyValidationDelegate;
     }
 
-    private Func<string, (bool IsValid, IEnumerable<string> ErrorMessages)> PropertyValidationDelegate { get; }
+    private Func<string, (bool IsValid, IEnumerable<object> ErrorMessages)> PropertyValidationDelegate { get; }
     private string ValidationErrorMessage { get; }
 
     private string nonValidatingTextProperty;
