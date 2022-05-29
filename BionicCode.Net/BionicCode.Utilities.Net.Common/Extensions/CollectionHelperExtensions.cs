@@ -12,6 +12,17 @@
   /// </summary>
   public static partial class HelperExtensionsCommon
   {
+    #region Collection
+
+    /// <summary>
+    /// Determines whether a sequence is empty.
+    /// </summary>
+    /// <typeparam name="TItem"></typeparam>
+    /// <param name="source"></param>
+    /// <returns></returns>
+    public static bool IsEmpty<TItem>(this IEnumerable<TItem> source)
+      => !source.Any();
+
     /// <summary>
     /// Returns a range of elements.
     /// </summary>
@@ -20,7 +31,7 @@
     /// <param name="startIndex">The inclusive starting index of the range.</param>
     /// <param name="count">The number of elements to take.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> that contains the requested range of the original <paramref name="source"/>.</returns>
-    public static IEnumerable<TItem> Range<TItem>(this IEnumerable<TItem> source, int startIndex, int count)
+    public static IEnumerable<TItem> TakeRange<TItem>(this IEnumerable<TItem> source, int startIndex, int count)
       => source.Skip(startIndex).Take(count);
 
     /// <summary>
@@ -29,7 +40,6 @@
     /// <typeparam name="TItem">The type of the item.</typeparam>
     /// <param name="thisCollection">The <see cref="ICollection{T}"/> to modify.</param>
     /// <param name="range">The items to add.</param>
-    #region Collection
     public static IEnumerable<TItem> AddRange<TItem>(this ICollection<TItem> thisCollection, IEnumerable<TItem> range)
     {
       if (thisCollection.IsReadOnly)

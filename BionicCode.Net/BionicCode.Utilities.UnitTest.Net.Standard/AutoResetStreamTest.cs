@@ -1,17 +1,15 @@
-﻿using System;
-using Xunit;
-using BionicCode.Utilities.Net.Standard.IO;
-using FluentAssertions;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Threading;
-using BionicCode.Utilities.UnitTest.Net.Standard.Resources;
-
-namespace BionicCode.Utilities.UnitTest.Net.Standard
+﻿namespace BionicCode.Utilities.UnitTest.Net.Standard
 {
-  
+  using System;
+  using Xunit;
+  using FluentAssertions;
+  using System.IO;
+  using System.Text;
+  using System.Threading.Tasks;
+  using System.Linq;
+  using System.Threading;
+  using BionicCode.Utilities.Net;
+
   public class AutoResetStreamTest : IDisposable
   {
     private AutoResetStream AutoResetStream { get; }

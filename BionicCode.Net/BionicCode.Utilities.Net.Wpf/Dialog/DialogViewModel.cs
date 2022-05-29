@@ -8,10 +8,8 @@ namespace BionicCode.Utilities.Net
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using BionicCode.Utilities.Net;
-using BionicCode.Utilities.Net.Common;
 
-#if NET || NET472_OR_GREATER
+#if !NETSTANDARD
 using System.Windows.Media;
   /// <summary>
   /// Implementation of <see cref="IDialogViewModel"/>. This abstract class implements the dialog data handling logic and is therefore preferred over a custom implementation of <see cref="IDialogViewModel"/>.

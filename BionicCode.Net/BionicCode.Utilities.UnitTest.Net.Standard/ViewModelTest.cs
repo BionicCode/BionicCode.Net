@@ -9,15 +9,14 @@
   using BionicCode.Utilities.Net;
   using System.Collections.Generic;
   using System.Collections;
-
+  using FluentAssertions.Events;
 
   public class ViewModelTest : IDisposable
   {
 
     public ViewModelTest()
     {
-      this.ValidationErrorMessage = "Value must be all uppercase, no spaces allowed.";
-      this.ViewModelImpl = new ViewModelImpl(this.PropertyValidationDelegate, this.ValidationErrorMessage);
+      this.ViewModelImpl = new ViewModelImpl(this.PropertyValidationDelegateSingleError, this.PropertyValidationDelegate_Old);
       this.SenderType = this.ViewModelImpl.GetType();
       this.ViewModelImpl.PropertyValueChanged += OnPropertyValueChanged;
       this.ViewModelImpl.PropertyChanged += OnPropertyChanged;
@@ -26,17 +25,10 @@
       this.ValidTextValue = "VALIDTESTTEXT";
       this.PropertyChangedEventInvocationCount = 0;
       this.PropertyValueChangedEventInvocationCount = 0;
-      var func = new Func<object, bool>(o => true);
-      Tester(func);
-    }
 
-    public void Tester(Predicate<object> del)
-    { 
-      Tester(new Func<object, bool>(o => del(o)));
+      this.UppercaseValidationErrorMessage = "Value must be all uppercase, no spaces allowed.";
+      this.StartsWithValidationErrorMessage = $"Value must start with {this.ValidTextValue.First()}.";
     }
-
-    public void Tester(Func<object, bool> del)
-    { }
 
     public void Dispose()
     {
@@ -44,13 +36,10 @@
       this.ViewModelImpl.PropertyChanged -= OnPropertyChanged;
     }
 
-    private Func<string, (bool IsValid, IEnumerable<string> ErrorMessages)> PropertyValidationDelegate =>
-      text => text.All(char.IsUpper) ? (true, Array.Empty<string>()) : (false, new[] { this.ValidationErrorMessage });
-
     [Fact]
     public void ReceiveOneDefaultPropertyChangedNotificationWithPropertyNameNonValidatingTextProperty()
     {
-      this.ViewModelImpl.NonValidatingTextProperty = this.ValidTextValue;
+      this.ViewModelImpl.NonValidatingProperty = this.ValidTextValue;
 
       this.PropertyChangedEventInvocationCount.Should().Be(1);
     }
@@ -59,11 +48,11 @@
     public void SetPropertyToNullAndReceiveOneDefaultPropertyChangedNotificationWithPropertyNameNonValidatingTextProperty()
     {
       // Initialize test
-      this.ViewModelImpl.NonValidatingTextProperty = string.Empty;
+      this.ViewModelImpl.NonValidatingProperty = string.Empty;
       this.PropertyChangedEventInvocationCount = 0;
 
       // Execute test
-      this.ViewModelImpl.NonValidatingTextProperty = null;
+      this.ViewModelImpl.NonValidatingProperty = null;
 
       this.PropertyChangedEventInvocationCount.Should().Be(1);
     }
@@ -71,15 +60,25 @@
     [Fact]
     public void SilentSetValidatingPropertyWithNoPropertyChangedNotification()
     {
-      this.ViewModelImpl.SilentValidatingTextPropertyExpectingUpperCaseValue = this.ValidTextValue;
+      using IMonitor<ViewModelImpl> eventMonitor = this.ViewModelImpl.Monitor();
+      this.ViewModelImpl.SilentValidatingProperty = this.ValidTextValue;
 
-      this.PropertyChangedEventInvocationCount.Should().Be(0);
+      eventMonitor.Should().NotRaisePropertyChangeFor(viewModel => viewModel.SilentValidatingProperty);
+    }
+
+    [Fact]
+    public void SilentSetValidatingPropertyWithNoPropertyChangedNotificationUsingStringMessageDelegate()
+    {
+      using IMonitor<ViewModelImpl> eventMonitor = this.ViewModelImpl.Monitor();
+      this.ViewModelImpl.SilentValidatingProperty_Old = this.ValidTextValue;
+
+      eventMonitor.Should().NotRaisePropertyChangeFor(viewModel => viewModel.SilentValidatingProperty_Old);
     }
 
     [Fact]
     public void SilentSetNonValidatingPropertyWithNoPropertyChangedNotification()
     {
-      this.ViewModelImpl.SilentNonValidatingTextProperty = this.ValidTextValue;
+      this.ViewModelImpl.SilentNonValidatingProperty = this.ValidTextValue;
 
       this.PropertyChangedEventInvocationCount.Should().Be(0);
     }
@@ -87,7 +86,7 @@
     [Fact]
     public void ReceiveOnePropertyValueChangedNotificationWithPropertyNameNonValidatingTextProperty()
     {
-      this.ViewModelImpl.NonValidatingTextProperty = this.ValidTextValue;
+      this.ViewModelImpl.NonValidatingProperty = this.ValidTextValue;
 
       this.PropertyValueChangedEventInvocationCount.Should().Be(1);
     }
@@ -95,7 +94,7 @@
     [Fact]
     public void ReceiveOnePropertyValueChangedNotificationWithPropertyNameNonValidatingTextPropertyWhereOldValueIsNullAndNewValueIsValidText()
     {
-      this.ViewModelImpl.NonValidatingTextProperty = this.ValidTextValue;
+      this.ViewModelImpl.NonValidatingProperty = this.ValidTextValue;
 
       this.PropertyValueChangedEventInvocationCount.Should().Be(1);
     }
@@ -103,37 +102,54 @@
     [Fact]
     public void ReceiveNoPropertyChangedAfterFirstSetPropertySucceedsAndSecondValueIsEqualToPreviousValue()
     {
-      this.ViewModelImpl.NonValidatingTextProperty
+      this.ViewModelImpl.NonValidatingProperty
         = this.ValidTextValue;
-      this.ViewModelImpl.NonValidatingTextProperty
+      this.ViewModelImpl.NonValidatingProperty
         = this.ValidTextValue;
 
       this.PropertyChangedEventInvocationCount.Should().Be(1);
-      this.ViewModelImpl.NonValidatingTextProperty.Should().Be(this.ValidTextValue, "new value equals old value.");
+      this.ViewModelImpl.NonValidatingProperty.Should().Be(this.ValidTextValue, "new value equals old value.");
     }
 
     [Fact]
     public void ReceiveOnePropertyChangedAfterSecondSetPropertyFailsValidationAndValueIsRejectedAndPropertyResettedToPreviousValue()
     {
-      this.ViewModelImpl.ValidatingTextPropertyRejectingInvalidValue
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValue
         = this.ValidTextValue;
 
       // Should not trigger PropertyChanged
-      this.ViewModelImpl.ValidatingTextPropertyRejectingInvalidValue
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValue
         = this.InvalidTextValue;
 
-      this.ViewModelImpl.ValidatingTextPropertyRejectingInvalidValue
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValue
         = this.ValidTextValue;
 
       this.PropertyChangedEventInvocationCount.Should().Be(1, "second assignment was rejected due to failing validation and third assignment has new value equals old value");
-      this.ViewModelImpl.ValidatingTextPropertyRejectingInvalidValue.Should().Be(this.ValidTextValue);
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValue.Should().Be(this.ValidTextValue);
+    }
+
+    [Fact]
+    public void ReceiveOnePropertyChangedAfterSecondSetPropertyFailsValidationAndValueIsRejectedAndPropertyResettedToPreviousValueUsingStringMessageDelegate()
+    {
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValue_Old
+        = this.ValidTextValue;
+
+      // Should not trigger PropertyChanged
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValue_Old
+        = this.InvalidTextValue;
+
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValue_Old
+        = this.ValidTextValue;
+
+      this.PropertyChangedEventInvocationCount.Should().Be(1, "second assignment was rejected due to failing validation and third assignment has new value equals old value");
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValue_Old.Should().Be(this.ValidTextValue);
     }
 
     [Fact]
     public void ReceiveTwoPropertyValueChangedNotificationWithPropertyNameNonValidatingTextPropertyWhereOldValueIsInvalidTextAndNewValueIsValidText()
     {
-      this.ViewModelImpl.NonValidatingTextProperty = this.InvalidTextValue;
-      this.ViewModelImpl.NonValidatingTextProperty = this.ValidTextValue;
+      this.ViewModelImpl.NonValidatingProperty = this.InvalidTextValue;
+      this.ViewModelImpl.NonValidatingProperty = this.ValidTextValue;
 
       this.PropertyValueChangedEventInvocationCount.Should().Be(2);
       (this.CurrentPropertyValueChangedArgs.OldValue as string).Should().Be(this.InvalidTextValue, "it's the old value");
@@ -143,92 +159,162 @@
     [Fact]
     public void SetPropertyWithoutValidation()
     {
-      this.ViewModelImpl.NonValidatingTextProperty
+      this.ViewModelImpl.NonValidatingProperty
         = this.ValidTextValue;
-      this.ViewModelImpl.NonValidatingTextProperty.Should().Be(this.ValidTextValue);
+      this.ViewModelImpl.NonValidatingProperty.Should().Be(this.ValidTextValue);
     }
 
     [Fact]
     public void SetPropertyWithoutValidationToNull()
     {
-      this.ViewModelImpl.NonValidatingTextProperty
+      this.ViewModelImpl.NonValidatingProperty
         = null;
-      this.ViewModelImpl.NonValidatingTextProperty.Should().BeNull();
+      this.ViewModelImpl.NonValidatingProperty.Should().BeNull();
     }
 
     [Fact]
     public void SetPropertySuccessfulValidation()
     {
-      this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue
+      this.ViewModelImpl.ValidatingProperty
         = this.ValidTextValue;
-      this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue.Should().Be(this.ValidTextValue);
+      this.ViewModelImpl.ValidatingProperty.Should().Be(this.ValidTextValue);
+    }
+
+    [Fact]
+    public void SetPropertySuccessfulValidationUsingStringMessageDelegate()
+    {
+      this.ViewModelImpl.ValidatingProperty_Old
+        = this.ValidTextValue;
+      this.ViewModelImpl.ValidatingProperty_Old.Should().Be(this.ValidTextValue);
     }
 
     [Fact]
     public void SetPropertySilentlySuccessfulValidation()
     {
-      this.ViewModelImpl.SilentValidatingTextPropertyExpectingUpperCaseValue
+      this.ViewModelImpl.SilentValidatingProperty
         = this.ValidTextValue;
 
-      this.PropertyChangedEventInvocationCount.Should().Be(0);
-      this.ViewModelImpl.SilentValidatingTextPropertyExpectingUpperCaseValue.Should().Be(this.ValidTextValue);
+      this.ViewModelImpl.SilentValidatingProperty.Should().Be(this.ValidTextValue);
+    }
+
+    [Fact]
+    public void SetPropertySilentlySuccessfulValidationUsingStringMessageDelegate()
+    {
+      this.ViewModelImpl.SilentValidatingProperty_Old
+        = this.ValidTextValue;
+
+      this.ViewModelImpl.SilentValidatingProperty_Old.Should().Be(this.ValidTextValue);
     }
 
     [Fact]
     public void SetPropertySilentlyNoValidation()
     {
-      this.ViewModelImpl.SilentNonValidatingTextProperty
+      using IMonitor<ViewModelImpl> eventMonitor = this.ViewModelImpl.Monitor();
+
+      this.ViewModelImpl.SilentNonValidatingProperty
         = this.ValidTextValue;
 
-      this.PropertyChangedEventInvocationCount.Should().Be(0);
-      this.ViewModelImpl.SilentNonValidatingTextProperty.Should().Be(this.ValidTextValue);
+      eventMonitor.Should().NotRaisePropertyChangeFor(viewModel => viewModel.SilentNonValidatingProperty);
+      this.ViewModelImpl.SilentNonValidatingProperty.Should().Be(this.ValidTextValue);
     }
 
     [Fact]
     public void SetPropertySuccessfulValidationUsingNullAsPropertyName()
     {
-      this.ViewModelImpl.ValidatingTextPropertyChangedNullArgAndRejectInvalidValue
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValueAndPropertyNameIsNull
         = this.ValidTextValue;
 
-      this.ViewModelImpl.ValidatingTextPropertyChangedNullArgAndRejectInvalidValue.Should().Be(this.ValidTextValue);
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValueAndPropertyNameIsNull
+        .Should().Be(this.ValidTextValue);
+    }
+
+    [Fact]
+    public void SetPropertySuccessfulValidationUsingNullAsPropertyNameUsingStringMessageDelegatei()
+    {
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValueAndPropertyNameIsNull_Old
+        = this.ValidTextValue;
+
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValueAndPropertyNameIsNull_Old
+        .Should().Be(this.ValidTextValue);
     }
 
     [Fact]
     public void SetPropertyFailsValidationAndValueIsAccepted()
     {
-      this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue
+      this.ViewModelImpl.ValidatingProperty
         = this.InvalidTextValue;
 
-      this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue.Should().Be(this.InvalidTextValue);
+      this.ViewModelImpl.ValidatingProperty.Should().Be(this.InvalidTextValue);
+    }
+
+    [Fact]
+    public void SetPropertyFailsValidationAndValueIsAcceptedUsingStringMessageDelegate()
+    {
+      this.ViewModelImpl.ValidatingProperty_Old
+        = this.InvalidTextValue;
+
+      this.ViewModelImpl.ValidatingProperty_Old.Should().Be(this.InvalidTextValue);
     }
 
     [Fact]
     public void SetPropertyFailsValidationAndValueIsRejected()
     {
-      this.ViewModelImpl.ValidatingTextPropertyRejectingInvalidValue
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValue
         = this.InvalidTextValue;
 
-      this.ViewModelImpl.ValidatingTextPropertyRejectingInvalidValue.Should().NotBe(this.InvalidTextValue);
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValue.Should().NotBe(this.InvalidTextValue);
+    }
+
+    [Fact]
+    public void SetPropertyFailsValidationAndValueIsRejectedUsingStringMessageDelegate()
+    {
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValue_Old
+        = this.InvalidTextValue;
+
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValue_Old.Should().NotBe(this.InvalidTextValue);
     }
 
     [Fact]
     public void SetPropertyFailsValidationAndValidationExceptionIsThrown()
     {
-      this.ViewModelImpl.Invoking(viewModel => viewModel.ValidatingTextPropertyThrowingExceptionOnNonUpperCaseValue = this.InvalidTextValue).Should().ThrowExactly<ArgumentException>();
-      this.ViewModelImpl.ValidatingTextPropertyThrowingExceptionOnNonUpperCaseValue.Should().Be(this.InvalidTextValue);
+      this.ViewModelImpl.Invoking(viewModel => viewModel.ValidatingPropertyThrowExceptionOnInvalidValue = this.InvalidTextValue).Should().ThrowExactly<ArgumentException>();
+      this.ViewModelImpl.ValidatingPropertyThrowExceptionOnInvalidValue.Should().Be(this.InvalidTextValue);
+    }
+
+    [Fact]
+    public void SetPropertyFailsValidationAndValidationExceptionIsThrownUsingStringMessageDelegate()
+    {
+      this.ViewModelImpl.Invoking(viewModel => viewModel.ValidatingPropertyThrowingExceptionOnInvalidValue_Old = this.InvalidTextValue).Should().ThrowExactly<ArgumentException>();
+      this.ViewModelImpl.ValidatingPropertyThrowingExceptionOnInvalidValue_Old.Should().Be(this.InvalidTextValue);
     }
 
     [Fact]
     public void SetPropertyFailsValidationAndValidationExceptionIsThrownAndValueRejected()
     {
-      this.ViewModelImpl.Invoking(viewModel => viewModel.ValidatingTextPropertyThrowingExceptionAndRejectValueOnNonUpperCaseValue = this.InvalidTextValue).Should().ThrowExactly<ArgumentException>();
-      this.ViewModelImpl.ValidatingTextPropertyThrowingExceptionAndRejectValueOnNonUpperCaseValue.Should().NotBe(this.InvalidTextValue);
+      this.ViewModelImpl.Invoking(viewModel => viewModel.ValidatingPropertyThrowExceptionAndRejectValueOnInvalidValue = this.InvalidTextValue).Should().ThrowExactly<ArgumentException>();
+      this.ViewModelImpl.ValidatingPropertyThrowExceptionAndRejectValueOnInvalidValue.Should().NotBe(this.InvalidTextValue);
+    }
+
+    [Fact]
+    public void SetPropertyFailsValidationAndValidationExceptionIsThrownAndValueRejectedUsingStringMessageDelegate()
+    {
+      this.ViewModelImpl.Invoking(viewModel => viewModel.ValidatingPropertyThrowExceptionAndRejectValueOnInvalidValue_Old = this.InvalidTextValue).Should().ThrowExactly<ArgumentException>();
+      this.ViewModelImpl.ValidatingPropertyThrowExceptionAndRejectValueOnInvalidValue_Old.Should().NotBe(this.InvalidTextValue);
     }
 
     [Fact]
     public void SetPropertyFailsValidationAndViewModelHasError()
     {
-      this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue
+      this.ViewModelImpl.ValidatingProperty
+        = this.InvalidTextValue;
+
+      this.ViewModelImpl.HasErrors.Should().BeTrue();
+    }
+
+    [Fact]
+    public void SetPropertyFailsValidationAndViewModelHasErrorUsingStringMessageDelegate()
+    {
+      this.ViewModelImpl.ValidatingProperty_Old
         = this.InvalidTextValue;
 
       this.ViewModelImpl.HasErrors.Should().BeTrue();
@@ -237,10 +323,21 @@
     [Fact]
     public void SetPropertyAfterPreviousValidationClearsViewModelHasError()
     {
-      this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue
+      this.ViewModelImpl.ValidatingProperty
         = this.InvalidTextValue;
-      this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue
-        = ValidTextValue;
+      this.ViewModelImpl.ValidatingProperty
+        = this.ValidTextValue;
+
+      this.ViewModelImpl.HasErrors.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SetPropertyAfterPreviousValidationClearsViewModelHasErrorUsingStringMessageDelegate()
+    {
+      this.ViewModelImpl.ValidatingProperty_Old
+        = this.InvalidTextValue;
+      this.ViewModelImpl.ValidatingProperty_Old
+        = this.ValidTextValue;
 
       this.ViewModelImpl.HasErrors.Should().BeFalse();
     }
@@ -248,10 +345,23 @@
     [Fact]
     public void SetPropertyAfterPreviousValidationClearsErrorMessages()
     {
-      this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue
+      this.ViewModelImpl.ValidatingProperty
         = this.InvalidTextValue;
-      this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue
-        = ValidTextValue;
+      this.ViewModelImpl.ValidatingProperty
+        = this.ValidTextValue;
+
+      IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors();
+
+      errors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void SetPropertyAfterPreviousValidationClearsErrorMessagesUsingStringMessageDelegate()
+    {
+      this.ViewModelImpl.ValidatingProperty_Old
+        = this.InvalidTextValue;
+      this.ViewModelImpl.ValidatingProperty_Old
+        = this.ValidTextValue;
 
       IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors();
 
@@ -261,19 +371,39 @@
     [Fact]
     public void SetPropertyFailsValidationAndViewModelPropertyHasError()
     {
-      this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue
+      this.ViewModelImpl.ValidatingProperty
         = this.InvalidTextValue;
 
-      this.ViewModelImpl.PropertyHasError(nameof(this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue)).Should().BeTrue();
+      this.ViewModelImpl.PropertyHasError(nameof(this.ViewModelImpl.ValidatingProperty)).Should().BeTrue();
+    }
+
+    [Fact]
+    public void SetPropertyFailsValidationAndViewModelPropertyHasErrorUsingStringMessageDelegate()
+    {
+      this.ViewModelImpl.ValidatingProperty_Old
+        = this.InvalidTextValue;
+
+      this.ViewModelImpl.PropertyHasError(nameof(this.ViewModelImpl.ValidatingProperty_Old)).Should().BeTrue();
     }
 
     [Fact]
     public void SinglePropertyValidationFailsAndGetPropertyErrorsByNameReturnsSingleErrorMessage()
     {
-      this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue
+      this.ViewModelImpl.ValidatingProperty
         = this.InvalidTextValue;
       
-      IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors(nameof(this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue));
+      IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors(nameof(this.ViewModelImpl.ValidatingProperty));
+
+      errors.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public void SinglePropertyValidationFailsAndGetPropertyErrorsByNameReturnsSingleErrorMessageUsingStringMessageDelegate()
+    {
+      this.ViewModelImpl.ValidatingProperty_Old
+        = this.InvalidTextValue;
+
+      IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors(nameof(this.ViewModelImpl.ValidatingProperty_Old));
 
       errors.Should().HaveCount(1);
     }
@@ -281,19 +411,30 @@
     [Fact]
     public void SinglePropertyValidationFailsAndGetErrorsByNameReturnsSingleErrorMessage()
     {
-      this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue
+      this.ViewModelImpl.ValidatingProperty
         = this.InvalidTextValue;
 
-      IEnumerable errors = this.ViewModelImpl.GetErrors(nameof(this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue));
+      IEnumerable errors = this.ViewModelImpl.GetErrors(nameof(this.ViewModelImpl.ValidatingProperty));
 
       errors.Cast<string>().Should().HaveCount(1);
     }
 
     [Fact]
-    public void TwoPropertyValidationFailsAndGetPropertyErrorsReturnsTwoErrors()
+    public void SinglePropertyValidationFailsAndGetErrorsByNameReturnsSingleErrorMessageUsingStringMessageDelegate()
     {
-      this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue = this.InvalidTextValue;
-      this.ViewModelImpl.ValidatingTextPropertyRejectingInvalidValue = this.InvalidTextValue;
+      this.ViewModelImpl.ValidatingProperty_Old
+        = this.InvalidTextValue;
+
+      IEnumerable errors = this.ViewModelImpl.GetErrors(nameof(this.ViewModelImpl.ValidatingProperty_Old));
+
+      errors.Cast<string>().Should().HaveCount(1);
+    }
+
+    [Fact]
+    public void TwoPropertyValidationFailsAndGetPropertyErrorsForAllPropertiesReturnsTwoErrors()
+    {
+      this.ViewModelImpl.ValidatingProperty = this.InvalidTextValue;
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValue = this.InvalidTextValue;
       
       IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors();
 
@@ -301,11 +442,55 @@
     }
 
     [Fact]
+    public void TwoPropertyValidationFailsAndGetPropertyErrorsForAllPropertiesReturnsTwoErrorsUsingStringMessageDelegate()
+    {
+      this.ViewModelImpl.ValidatingProperty_Old = this.InvalidTextValue;
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValue_Old = this.InvalidTextValue;
+
+      IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors();
+
+      errors.Should().HaveCount(2);
+    }
+
+    [Fact]
+    public void PropertyValidationFailsAndGetPropertyErrorsMethodForPropertyReturnsTwoErrors()
+    {
+      this.ViewModelImpl.PropertyValidationDelegate = this.PropertyValidationDelegateTwoErrors;
+      this.ViewModelImpl.ValidatingProperty = this.InvalidTextValue;
+
+      IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors(nameof(this.ViewModelImpl.ValidatingProperty));
+
+      errors.Should().HaveCount(2);
+    }
+
+    [Fact]
+    public void PropertyValidationFailsAndGetPropertyErrorsMethodForPropertyReturnsTwoErrorsUsingStringMessageDelegate()
+    {
+      this.ViewModelImpl.PropertyValidationDelegate_Old = this.PropertyValidationDelegateTwoErrors_Old;
+      this.ViewModelImpl.ValidatingProperty_Old = this.InvalidTextValue;
+
+      IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors(nameof(this.ViewModelImpl.ValidatingProperty_Old));
+
+      errors.Should().HaveCount(2);
+    }
+
+    [Fact]
     public void TwoPropertyValidationFailsAndGetErrorsReturnsTwoErrors()
     {
-      this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue = this.InvalidTextValue;
-      this.ViewModelImpl.ValidatingTextPropertyRejectingInvalidValue = this.InvalidTextValue;
+      this.ViewModelImpl.ValidatingProperty = this.InvalidTextValue;
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValue = this.InvalidTextValue;
       
+      IEnumerable errors = this.ViewModelImpl.GetErrors();
+
+      errors.Cast<string>().Should().HaveCount(2);
+    }
+
+    [Fact]
+    public void TwoPropertyValidationFailsAndGetErrorsReturnsTwoErrorsUsingStringMessageDelegate()
+    {
+      this.ViewModelImpl.ValidatingProperty_Old = this.InvalidTextValue;
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValue_Old = this.InvalidTextValue;
+
       IEnumerable errors = this.ViewModelImpl.GetErrors();
 
       errors.Cast<string>().Should().HaveCount(2);
@@ -314,13 +499,25 @@
     [Fact]
     public void SinglePropertyValidationFailsAndGetSingleErrorMessageThatMatchesPredicate()
     {
-      this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue
+      this.ViewModelImpl.ValidatingProperty
         = this.InvalidTextValue;
       
-      IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors(nameof(this.ViewModelImpl.ValidatingTextPropertyExpectingUpperCaseValue));
+      IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors(nameof(this.ViewModelImpl.ValidatingProperty));
 
       string firtsErrorMessage = errors.First();
-      firtsErrorMessage.Should().Be(this.ValidationErrorMessage);
+      firtsErrorMessage.Should().Be(this.UppercaseValidationErrorMessage);
+    }
+
+    [Fact]
+    public void SinglePropertyValidationFailsAndGetSingleErrorMessageThatMatchesPredicateUsingStringMessageDelegate()
+    {
+      this.ViewModelImpl.ValidatingProperty_Old
+        = this.InvalidTextValue;
+
+      IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors(nameof(this.ViewModelImpl.ValidatingProperty_Old));
+
+      string firtsErrorMessage = errors.First();
+      firtsErrorMessage.Should().Be(this.UppercaseValidationErrorMessage);
     }
 
     private void OnPropertyValueChanged(object sender, PropertyValueChangedArgs<object> e)
@@ -346,6 +543,51 @@
     private ViewModelImpl ViewModelImpl { get; }
     private TestEventSource2 EventSource2 { get; }
     private Type SenderType { get; set; }
-    private string ValidationErrorMessage { get; }
+    private string UppercaseValidationErrorMessage { get; }
+    public string StartsWithValidationErrorMessage { get; }
+
+    private Func<string, (bool IsValid, IEnumerable<object> ErrorMessages)> PropertyValidationDelegateSingleError =>
+      text => text.All(char.IsUpper) 
+      ? (true, Enumerable.Empty<object>()) 
+      : (false, new[] { this.UppercaseValidationErrorMessage });
+
+    private Func<string, (bool IsValid, IEnumerable<object> ErrorMessages)> PropertyValidationDelegateTwoErrors =>
+      text =>
+      {
+        var errorMessages = new List<string>();
+        if (!text.All(char.IsUpper))
+        {
+          errorMessages.Add(this.UppercaseValidationErrorMessage);
+        }
+
+        if (!text.StartsWith(this.ValidTextValue.First()))
+        {
+          errorMessages.Add(this.StartsWithValidationErrorMessage);
+        }
+
+        return (errorMessages.IsEmpty(), errorMessages);
+      };
+
+    private Func<string, (bool IsValid, IEnumerable<string> ErrorMessages)> PropertyValidationDelegate_Old =>
+      text => text.All(char.IsUpper) 
+      ? (true, Enumerable.Empty<string>()) 
+      : (false, new[] { this.UppercaseValidationErrorMessage });
+
+    private Func<string, (bool IsValid, IEnumerable<string> ErrorMessages)> PropertyValidationDelegateTwoErrors_Old =>
+      text =>
+      {
+        var errorMessages = new List<string>();
+        if (!text.All(char.IsUpper))
+        {
+          errorMessages.Add(this.UppercaseValidationErrorMessage);
+        }
+
+        if (!text.StartsWith(this.ValidTextValue.First()))
+        {
+          errorMessages.Add(this.StartsWithValidationErrorMessage);
+        }
+
+        return (errorMessages.IsEmpty(), errorMessages);
+      };
   }
 }

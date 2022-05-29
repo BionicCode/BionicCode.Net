@@ -14,7 +14,7 @@
     <PackageIcon>BionicCode_Logo.png</PackageIcon>
     <PackageTags>ViewModel BaseViewModel Base View Model Profiler Profiling Measure Measuring View Model ViewModel ExtensionMethods EventAggregator Aggregator Event MVVM NullObject NullObjectFactory Factory IFatory ValueChangedEventArgs AutoResetStream Stream PropertyValueChangedArgs FileExtension FileExtensions PropertyValueChanged</PackageTags>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>1.2.2</Version>
+    <Version>2.0.0</Version>
     <RepositoryUrl>https://github.com/BionicCode/BionicCode.Net.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes>- added default implementation of ViewModel.OnProgress (which is used to retrieve the IProgress&lt;ProgressData&gt; instance by calling ViewModel.CreateProgressReporterFromCurrentThread()
@@ -52,7 +52,7 @@ For bug reports or feature requests please visit the project home on GutHub (fol
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\BionicCode_Logo.png">
+    <None Include="..\..\..\..\BionicCode_Logo.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
