@@ -186,7 +186,6 @@ Returns an <span class="xref">System.Collections.Generic.IEnumerable&lt;T&gt;</s
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TChildren&gt; EnumerateVisualChildElements&lt;TChildren&gt;(this DependencyObject parent)
-
     where TChildren : DependencyObject</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
@@ -256,7 +255,6 @@ Returns an <span class="xref">System.Collections.Generic.IEnumerable&lt;T&gt;</s
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[Obsolete(&quot;Use 'EnumerateVisualChildElements()' instead&quot;)]
 public static IEnumerable&lt;TChildren&gt; FindVisualChildElements&lt;TChildren&gt;(this DependencyObject parent)
-
     where TChildren : DependencyObject</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
@@ -621,7 +619,6 @@ public static IEnumerable&lt;TChildren&gt; FindVisualChildElements&lt;TChildren&
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public static bool TryFindVisualChildElement&lt;TChild&gt;(this DependencyObject parent, out TChild resultElement)
-
     where TChild : DependencyObject</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
@@ -692,7 +689,6 @@ public static IEnumerable&lt;TChildren&gt; FindVisualChildElements&lt;TChildren&
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public static bool TryFindVisualChildElementByName&lt;TChild&gt;(this DependencyObject parent, string childElementName, out TChild resultElement)
-
     where TChild : FrameworkElement</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
@@ -770,7 +766,6 @@ public static IEnumerable&lt;TChildren&gt; FindVisualChildElements&lt;TChildren&
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public static bool TryFindVisualParentElement&lt;TParent&gt;(this DependencyObject child, out TParent resultElement)
-
     where TParent : DependencyObject</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
@@ -841,7 +836,6 @@ public static IEnumerable&lt;TChildren&gt; FindVisualChildElements&lt;TChildren&
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public static bool TryFindVisualParentElementByName&lt;TChild&gt;(this DependencyObject child, string elementName, out TChild resultElement)
-
     where TChild : FrameworkElement</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>

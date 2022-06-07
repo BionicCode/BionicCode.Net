@@ -1,6 +1,6 @@
-﻿namespace BionicCode.Utilities.UnitTest.Net.Standard
+﻿namespace BionicCode.Utilities.UnitTest.Net
 {
-  using BionicCode.Utilities.UnitTest.Net.Standard.Resources;
+  using BionicCode.Utilities.UnitTest.Net.Resources;
   using System;
   using System.Linq;
   using Xunit;
@@ -14,7 +14,6 @@
 
   public class ViewModelTestAsync : IDisposable
   {
-
     public ViewModelTestAsync()
     {
       this.ViewModelImpl = new ViewModelImpl(this.PropertyValidationDelegateSingleErrorAsync);
@@ -40,9 +39,9 @@
     [Fact]
     public void SilentSetValidatingPropertyWithNoPropertyChangedNotification()
     {
+      using IMonitor<ViewModelImpl> eventMonitor = this.ViewModelImpl.Monitor();
       this.ViewModelImpl.SilentValidatingPropertyAsync = this.ValidTextValue;
-
-      this.PropertyChangedEventInvocationCount.Should().Be(0);
+      eventMonitor.Should().NotRaisePropertyChangeFor(viewModel => viewModel.SilentValidatingPropertyAsync, "property was set silently.");
     }
 
     [Fact]
@@ -76,7 +75,6 @@
       this.ViewModelImpl.SilentValidatingPropertyAsync
         = this.ValidTextValue;
 
-      this.PropertyChangedEventInvocationCount.Should().Be(0);
       this.ViewModelImpl.SilentValidatingPropertyAsync.Should().Be(this.ValidTextValue);
     }
 
@@ -109,32 +107,35 @@
     }
 
     [Fact]
-    public void SetPropertyAsyncFailsValidationAndValidationExceptionIsNotThrownBecauseCallIsNotAwaited()
+    public void SetPropertyAsyncFailsValidationAndRejectedValueDoesNotRaisePropertyChangedEvent()
     {
       using IMonitor<ViewModelImpl> eventMonitor = this.ViewModelImpl.Monitor();
-      this.ViewModelImpl.Invoking(viewModel => viewModel.ValidatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync = this.InvalidTextValue)
-        .Should().NotThrow<ArgumentException>();
-      eventMonitor.Should().RaisePropertyChangeFor(viewModel => viewModel.ValidatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync);
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValueAsync
+        = this.InvalidTextValue;
+      eventMonitor.Should().NotRaisePropertyChangeFor(viewModel => viewModel.ValidatingPropertyRejectInvalidValueAsync, "beacuse property was set silently");
     }
 
     [Fact]
-    public void SetPropertyAsyncFailsValidationAndValidationExceptionIsThrownBecauseCallExecutedSynchronously()
+    public void SetPropertyAsyncFailsValidationAndValidationExceptionIsNotThrownBecauseCallIsNotAwaited()
     {
-      using var eventMonitor = this.ViewModelImpl.Monitor();
+      this.ViewModelImpl.Invoking(viewModel => viewModel.ValidatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync = this.InvalidTextValue)
+        .Should().NotThrow<ArgumentException>();
+    }
+
+    [Fact]
+    public void SetPropertyAsyncFailsValidationAndValidationExceptionIsThrownBecauseCallIsExecutedSynchronously()
+    {
       this.ViewModelImpl
         .Invoking(viewModel => viewModel.ValidatingPropertyThrowExceptionOnInvalidValuePropagatedBySynchronousExecutionAsync = this.InvalidTextValue)
         .Should().Throw<ArgumentException>();
-      eventMonitor.Should().RaisePropertyChangeFor(viewModel => viewModel.ValidatingPropertyThrowExceptionOnInvalidValuePropagatedBySynchronousExecutionAsync);
     }
 
     [Fact]
     public void SetPropertyAsyncFailsValidationAndValidationExceptionIsThrownBecauseCallExecutedAndAwaitedExplicitly()
     {
-      using var eventMonitor = this.ViewModelImpl.Monitor();
       this.ViewModelImpl.Awaiting(viewModel 
           => viewModel.SetPropertyThrowExceptionOnInvalidValueUsingTrySetValueAsyncExplicitly(this.InvalidTextValue, nameof(viewModel.ValidatingPropertyThrowExceptionOnInvalidValue)))
         .Should().ThrowAsync<ArgumentException>();
-      eventMonitor.Should().RaisePropertyChangeFor(viewModel => viewModel.ValidatingPropertyThrowExceptionOnInvalidValue);
     }
 
     [Fact]

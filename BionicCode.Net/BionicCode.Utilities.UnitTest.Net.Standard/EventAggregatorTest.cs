@@ -1,10 +1,10 @@
-﻿namespace BionicCode.Utilities.UnitTest.Net.Standard
+﻿namespace BionicCode.Utilities.UnitTest.Net
 {
   using System;
   using BionicCode.Utilities.Net;
   using Xunit;
   using FluentAssertions;
-  using BionicCode.Utilities.UnitTest.Net.Standard.Resources;
+  using BionicCode.Utilities.UnitTest.Net.Resources;
 
 
 

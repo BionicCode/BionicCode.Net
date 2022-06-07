@@ -83,31 +83,84 @@
   
   <h1 id="BionicCode_Utilities_Net_IAsyncRelayCommand_1" data-uid="BionicCode.Utilities.Net.IAsyncRelayCommand`1" class="text-break">Interface IAsyncRelayCommand&lt;TParam&gt;
   </h1>
-  <div class="markdown level0 summary"><p>Extends <span class="xref">System.Windows.Input.ICommand</span> to allow asynchronous command execution, where the accepted parameter of the <a class="xref" href="BionicCode.Utilities.Net.IAsyncRelayCommand-1.html#BionicCode_Utilities_Net_IAsyncRelayCommand_1_ExecuteAsync__0_">ExecuteAsync(TParam)</a> and <a class="xref" href="BionicCode.Utilities.Net.IAsyncRelayCommand-1.html#BionicCode_Utilities_Net_IAsyncRelayCommand_1_CanExecute__0_">CanExecute(TParam)</a> is strongly typed to eliminate type casting inside the registered callbacks.</p>
-</div>
+  <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
     <div>
-      <a class="xref" href="BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_CanExecute">IAsyncRelayCommand.CanExecute()</a>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon&lt;TParam&gt;.CanExecute(TParam)</span>
     </div>
     <div>
-      <a class="xref" href="BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_ExecuteAsync">IAsyncRelayCommand.ExecuteAsync()</a>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon&lt;TParam&gt;.ExecuteAsync(TParam)</span>
     </div>
     <div>
-      <a class="xref" href="BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_ExecuteAsync_System_Threading_CancellationToken_">IAsyncRelayCommand.ExecuteAsync(CancellationToken)</a>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon&lt;TParam&gt;.ExecuteAsync(TParam, System.Threading.CancellationToken)</span>
     </div>
     <div>
-      <a class="xref" href="BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_ExecuteAsync_System_Object_">IAsyncRelayCommand.ExecuteAsync(Object)</a>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon&lt;TParam&gt;.ExecuteAsync(TParam, System.TimeSpan)</span>
     </div>
     <div>
-      <a class="xref" href="BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_ExecuteAsync_System_Object_System_Threading_CancellationToken_">IAsyncRelayCommand.ExecuteAsync(Object, CancellationToken)</a>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon&lt;TParam&gt;.ExecuteAsync(TParam, System.TimeSpan, System.Threading.CancellationToken)</span>
     </div>
     <div>
-      <a class="xref" href="BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_InvalidateCommand">IAsyncRelayCommand.InvalidateCommand()</a>
+      <a class="xref" href="BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_IsCommandManagerRequerySuggestedEnabled">IAsyncRelayCommand.IsCommandManagerRequerySuggestedEnabled</a>
     </div>
     <div>
-      <a class="xref" href="BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_IsExecuting">IAsyncRelayCommand.IsExecuting</a>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.CanBeCanceled</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.IsCancelled</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.CurrentCancellationToken</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.CancelAll()</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.CancelAll(System.Boolean)</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.CancelExecuting()</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.CancelExecuting(System.Boolean)</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.CancelPending()</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.CancelPending(System.Boolean)</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.CanExecute()</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.ExecuteAsync()</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.ExecuteAsync(System.Threading.CancellationToken)</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.ExecuteAsync(System.TimeSpan)</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.ExecuteAsync(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.ExecuteAsync(System.Object, System.Threading.CancellationToken)</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.ExecuteAsync(System.Object, System.TimeSpan)</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.ExecuteAsync(System.Object, System.TimeSpan, System.Threading.CancellationToken)</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.InvalidateCommand()</span>
+    </div>
+    <div>
+      <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.IsExecuting</span>
     </div>
     <div>
       <span class="xref">System.Windows.Input.ICommand.CanExecute(System.Object)</span>
@@ -118,12 +171,15 @@
     <div>
       <span class="xref">System.Windows.Input.ICommand.CanExecuteChanged</span>
     </div>
+    <div>
+      <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span>
+    </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="BionicCode.Utilities.Net.html">BionicCode.Utilities.Net</a></h6>
   <h6><strong>Assembly</strong>: BionicCode.Utilities.Net.Wpf.dll</h6>
   <h5 id="BionicCode_Utilities_Net_IAsyncRelayCommand_1_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public interface IAsyncRelayCommand&lt;in TParam&gt; : IAsyncRelayCommand, ICommand</code></pre>
+    <pre><code class="lang-csharp hljs">public interface IAsyncRelayCommand&lt;TParam&gt; : IAsyncRelayCommandCommon&lt;TParam&gt;, IAsyncRelayCommand, IAsyncRelayCommandCommon, ICommand, INotifyPropertyChanged</code></pre>
   </div>
   <h5 class="typeParameters">Type Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -136,182 +192,10 @@
     <tbody>
       <tr>
         <td><span class="parametername">TParam</span></td>
-        <td><p>The expected type of the commandParameter.</p>
-</td>
+        <td></td>
       </tr>
     </tbody>
   </table>
-  <h3 id="methods">Methods
-  </h3>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IAsyncRelayCommand_1_CanExecute__0_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IAsyncRelayCommand%601.CanExecute(%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Generic/IAsyncRelayCommand.cs/#L23">View Source</a>
-  </span>
-  <a id="BionicCode_Utilities_Net_IAsyncRelayCommand_1_CanExecute_" data-uid="BionicCode.Utilities.Net.IAsyncRelayCommand`1.CanExecute*"></a>
-  <h4 id="BionicCode_Utilities_Net_IAsyncRelayCommand_1_CanExecute__0_" data-uid="BionicCode.Utilities.Net.IAsyncRelayCommand`1.CanExecute(`0)">CanExecute(TParam)</h4>
-  <div class="markdown level1 summary"><p>Checks if the <span class="xref">System.Windows.Input.ICommand</span> can execute.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">bool CanExecute(TParam parameter)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">TParam</span></td>
-        <td><span class="parametername">parameter</span></td>
-        <td><p>The command parameter.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td><p><code>true</code> when the <span class="xref">System.Windows.Input.ICommand</span> can execute, otherwise <code>false</code>.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IAsyncRelayCommand_1_ExecuteAsync__0_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IAsyncRelayCommand%601.ExecuteAsync(%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Generic/IAsyncRelayCommand.cs/#L31">View Source</a>
-  </span>
-  <a id="BionicCode_Utilities_Net_IAsyncRelayCommand_1_ExecuteAsync_" data-uid="BionicCode.Utilities.Net.IAsyncRelayCommand`1.ExecuteAsync*"></a>
-  <h4 id="BionicCode_Utilities_Net_IAsyncRelayCommand_1_ExecuteAsync__0_" data-uid="BionicCode.Utilities.Net.IAsyncRelayCommand`1.ExecuteAsync(`0)">ExecuteAsync(TParam)</h4>
-  <div class="markdown level1 summary"><p>Asynchronously executes the AsyncRelayCommand on the current command target.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task ExecuteAsync(TParam parameter)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">TParam</span></td>
-        <td><span class="parametername">parameter</span></td>
-        <td><p>The command parameter.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Threading.Tasks.Task</span></td>
-        <td><p>An awaitable <span class="xref">System.Threading.Tasks.Task</span> instance.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IAsyncRelayCommand_1_ExecuteAsync__0_System_Threading_CancellationToken_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IAsyncRelayCommand%601.ExecuteAsync(%600%2CSystem.Threading.CancellationToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Generic/IAsyncRelayCommand.cs/#L40">View Source</a>
-  </span>
-  <a id="BionicCode_Utilities_Net_IAsyncRelayCommand_1_ExecuteAsync_" data-uid="BionicCode.Utilities.Net.IAsyncRelayCommand`1.ExecuteAsync*"></a>
-  <h4 id="BionicCode_Utilities_Net_IAsyncRelayCommand_1_ExecuteAsync__0_System_Threading_CancellationToken_" data-uid="BionicCode.Utilities.Net.IAsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)">ExecuteAsync(TParam, CancellationToken)</h4>
-  <div class="markdown level1 summary"><p>Asynchronously executes the AsyncRelayCommand on the current command target.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task ExecuteAsync(TParam parameter, CancellationToken cancellationToken)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">TParam</span></td>
-        <td><span class="parametername">parameter</span></td>
-        <td><p>The command parameter.</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.Threading.CancellationToken</span></td>
-        <td><span class="parametername">cancellationToken</span></td>
-        <td><p>A <span class="xref">System.Threading.CancellationToken</span> to cancel the execution.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Threading.Tasks.Task</span></td>
-        <td><p>An awaitable <span class="xref">System.Threading.Tasks.Task</span> instance.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <span class="xref">BionicCode.Utilities.Net.HelperExtensionsCommon.ToDictionary(System.Object)</span>
-  </div>
-  <div>
-      <span class="xref">BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.ToDictionary(System.Object)</span>
-  </div>
-  <div>
-      <span class="xref">BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.ToDictionary(System.Object)</span>
-  </div>
-  <div>
-      <span class="xref">BionicCode.Utilities.Net.Uwp.Extensions.HelperExtensions.ToDictionary(System.Object)</span>
-  </div>
 </article>
           </div>
           
@@ -323,7 +207,7 @@
                     <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IAsyncRelayCommand_1.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IAsyncRelayCommand%601%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Generic/IAsyncRelayCommand.cs/#L16" class="contribution-link">View Source</a>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Generic/IAsyncRelayCommand.cs/#L11" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

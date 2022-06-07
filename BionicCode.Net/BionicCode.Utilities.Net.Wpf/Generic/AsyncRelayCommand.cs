@@ -64,6 +64,7 @@ new public event EventHandler CanExecuteChanged
         if (this.IsCommandManagerRequerySuggestedEnabled)
         {
           CommandManager.RequerySuggested += value;
+          CommandManager.RequerySuggested += Oncm;
         }
 #endif
         this.canExecuteChangedDelegate += value;
@@ -76,6 +77,8 @@ new public event EventHandler CanExecuteChanged
         this.canExecuteChangedDelegate -= value;
       }
     }
+
+    private void Oncm(object? sender, EventArgs e) => throw new NotImplementedException();
 
     #region Constructors
 
@@ -165,5 +168,10 @@ new public event EventHandler CanExecuteChanged
     }
 
     #endregion Constructors
+    ///// <summary>
+    ///// Raises the <see cref="ICommand.CanExecuteChanged"/> event.
+    ///// </summary>
+    //protected override void OnCanExecuteChanged()
+    //  => this.canExecuteChangedDelegate?.Invoke(this, EventArgs.Empty);
   }
 }

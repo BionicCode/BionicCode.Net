@@ -1,4 +1,4 @@
-﻿namespace BionicCode.Utilities.UnitTest.Net.Standard.Resources
+﻿namespace BionicCode.Utilities.UnitTest.Net.Resources
 {
   using System;
   using System.Collections.Generic;

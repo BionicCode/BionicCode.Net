@@ -4,6 +4,7 @@
   using System.Collections.Generic;
   using System.Diagnostics;
   using System.Linq;
+  using System.Threading.Tasks;
 
   /// <summary>
   /// Helper methods to measure code execution time.
@@ -21,7 +22,7 @@
     /// </summary>
     /// <param name="action">The code to measure execution time.</param>
     /// <returns>The execution time as a <see cref="TimeSpan"/>.</returns>
-    /// <remarks>Specify a <see cref="LogPrinter"/> <see cref="Action"/> to customize the output target and formatting.</remarks>
+    /// <remarks>Specify a delegate for the <see cref="LogPrinter"/> property to customize the output target and formatting.</remarks>
     public static TimeSpan LogTime(Action action)
     {
       var stopwatch = new Stopwatch();
@@ -34,19 +35,43 @@
         Profiler.LogPrinter = (elapsedTime) =>
           Console.WriteLine($"Elapsed time: {elapsedTime.TotalMilliseconds} [ms]");
       }
+
       Profiler.LogPrinter?.Invoke(stopwatchElapsed);
 
       return stopwatchElapsed;
     }
 
+    /// <summary>
+    /// Measures the execution time of an asynchronous method.
+    /// </summary>
+    /// <param name="asyncAction">A delegate that executes the asynchronous code to measure execution time.</param>
+    /// <returns>A <see cref="Task"/> that holds the execution time as a <see cref="TimeSpan"/>.</returns>
+    /// <remarks>Specify a delegate for the <see cref="LogPrinter"/> property to customize the output target and formatting.</remarks>
+    public static async Task<TimeSpan> LogTimeAsync(Func<Task> asyncAction)
+    {
+      var stopwatch = new Stopwatch();
+      stopwatch.Start();
+      await asyncAction.Invoke();
+      stopwatch.Stop();
+      TimeSpan stopwatchElapsed = stopwatch.Elapsed;
+      if (Profiler.LogPrinter == null)
+      {
+        Profiler.LogPrinter = (elapsedTime) =>
+          Console.WriteLine($"Elapsed time: {elapsedTime.TotalMilliseconds} [ms]");
+      }
+
+      Profiler.LogPrinter?.Invoke(stopwatchElapsed);
+
+      return stopwatchElapsed;
+    }
 
     /// <summary>
     /// Measures the execution time of a method.
     /// </summary>
     /// <param name="action">The code to measure execution time.</param>
     /// <param name="runCount">Number of iterations the <paramref name="action"/> should be executed.</param>
-    /// <returns>A list of execution times for all <paramref name="runCount"/> number of iterations <see cref="TimeSpan"/>.</returns>
-    /// <remarks>Specify a <see cref="LogPrinter"/> <see cref="Action"/> to customize the output target and formatting.</remarks>
+    /// <returns>A list of execution times for each iteration as <see cref="TimeSpan"/>.</returns>
+    /// <remarks>Specify a delegate for the <see cref="LogPrinter"/> property to customize the output target and formatting.</remarks>
     public static List<TimeSpan> LogTimes(Action action, int runCount)
     {
       if (Profiler.LogPrinter == null)
@@ -54,6 +79,7 @@
         Profiler.LogPrinter = (elapsedTime) =>
           Console.WriteLine($"Iteration #{runCount}: Elapsed time: {elapsedTime.TotalMilliseconds} [ms]");
       }
+
       var stopwatch = new Stopwatch();
       var measuredTimes = new List<TimeSpan>();
 
@@ -73,10 +99,41 @@
     /// <summary>
     /// Measures the execution time of a method.
     /// </summary>
+    /// <param name="asyncAction">A delegate that executes the asynchronous code to measure execution time.</param>
+    /// <param name="runCount">Number of iterations the <paramref name="asyncAction"/> should be executed.</param>
+    /// <returns>A <see cref="Task"/> holding a list of execution times for each iteration as <see cref="TimeSpan"/>.</returns>
+    /// <remarks>Specify a delegate for the <see cref="LogPrinter"/> property to customize the output target and formatting.</remarks>
+    public static async Task<List<TimeSpan>> LogTimesAsync(Func<Task> asyncAction, int runCount)
+    {
+      if (Profiler.LogPrinter == null)
+      {
+        Profiler.LogPrinter = (elapsedTime) =>
+          Console.WriteLine($"Iteration #{runCount}: Elapsed time: {elapsedTime.TotalMilliseconds} [ms]");
+      }
+
+      var stopwatch = new Stopwatch();
+      var measuredTimes = new List<TimeSpan>();
+
+      for (; runCount > 0; runCount--)
+      {
+        stopwatch.Start();
+        await asyncAction.Invoke();
+        stopwatch.Stop();
+        TimeSpan stopwatchElapsed = stopwatch.Elapsed;
+        measuredTimes.Add(stopwatchElapsed);
+        Profiler.LogPrinter.Invoke(stopwatchElapsed);
+      }
+
+      return measuredTimes;
+    }
+
+    /// <summary>
+    /// Measures the execution time of a method.
+    /// </summary>
     /// <param name="action">The code to measure execution time.</param>
     /// <param name="runCount">Number of iterations the <paramref name="action"/> should be executed.</param>
     /// <returns>The average execution time of all <paramref name="runCount"/> number of iterations as <see cref="TimeSpan"/>.</returns>
-    /// <remarks>Specify a <see cref="LogPrinter"/> <see cref="Action"/> to customize the output target and formatting.</remarks>
+    /// <remarks>Specify a delegate for the <see cref="LogPrinter"/> property to customize the output target and formatting.</remarks>
     public static TimeSpan LogAverageTime(Action action, int runCount)
     {
       var stopwatch = new Stopwatch();
@@ -97,6 +154,39 @@
         Profiler.LogPrinter = (elapsedTime) =>
           Console.WriteLine($"Iterations={runCount}; Average elapsed time: {elapsedTime.TotalMilliseconds} [ms]");
       }
+
+      Profiler.LogPrinter.Invoke(logAverageTime);
+      return logAverageTime;
+    }
+
+    /// <summary>
+    /// Measures the execution time of a method.
+    /// </summary>
+    /// <param name="asyncAction">A delegate that executes the asynchronous code to measure execution time.</param>
+    /// <param name="runCount">Number of iterations the <paramref name="asyncAction"/> should be executed.</param>
+    /// <returns>A <see cref="Task"/> holding the average execution time of all <paramref name="runCount"/> number of iterations as <see cref="TimeSpan"/>.</returns>
+    /// <remarks>Specify a delegate for the <see cref="LogPrinter"/> property to customize the output target and formatting.</remarks>
+    public static async Task<TimeSpan> LogAverageTimeAsync(Func<Task> asyncAction, int runCount)
+    {
+      var stopwatch = new Stopwatch();
+      var measuredTimes = new List<TimeSpan>();
+
+      for (; runCount > 0; runCount--)
+      {
+        stopwatch.Start();
+        await asyncAction.Invoke();
+        stopwatch.Stop();
+        TimeSpan stopwatchElapsed = stopwatch.Elapsed;
+        measuredTimes.Add(stopwatchElapsed);
+      }
+
+      var logAverageTime = new TimeSpan((long)measuredTimes.Average((time) => time.Ticks));
+      if (Profiler.LogPrinter == null)
+      {
+        Profiler.LogPrinter = (elapsedTime) =>
+          Console.WriteLine($"Iterations={runCount}; Average elapsed time: {elapsedTime.TotalMilliseconds} [ms]");
+      }
+
       Profiler.LogPrinter.Invoke(logAverageTime);
       return logAverageTime;
     }

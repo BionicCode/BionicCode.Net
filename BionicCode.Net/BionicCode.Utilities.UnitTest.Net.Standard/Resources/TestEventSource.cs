@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace BionicCode.Utilities.UnitTest.Net.Standard.Resources
+﻿namespace BionicCode.Utilities.UnitTest.Net.Resources
 {
+  using System;
+
   public delegate void TestEventHandler(object sender, TestEventArgs e);
 
   public class TestEventArgs : EventArgs

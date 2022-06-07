@@ -12,10 +12,36 @@
   public interface IAsyncRelayCommandCommon : ICommand, INotifyPropertyChanged
   {
     /// <summary>
-    /// Returns whetther the command can be cancelled.
+    /// A flag to signal if the asynchronous operation has completed.
+    /// </summary>
+    bool IsExecuting { get; }
+    /// <summary>
+    /// Returns whether the command can be cancelled.
     /// </summary>
     /// <value><c>true</c> if cancellation is allowed. Otherwise <c>false</c>.</value>
     bool CanBeCanceled { get; }
+    /// <summary>
+    /// Returns whether the command's executing operation was cancelled.
+    /// </summary>
+    /// <value><c>true</c> if the last command execution was cancelled. Otherwise <c>false</c>.</value>
+    bool IsCancelled { get; }
+    /// <summary>
+    /// Returns whether the command's pending operations were cancelled.
+    /// </summary>
+    /// <value><c>true</c> if the last command execution was cancelled. Otherwise <c>false</c>.</value>
+    bool IsPendingCancelled { get; }
+
+    /// <summary>
+    /// Return whether the command has pending executions.
+    /// </summary>
+    /// <remarks>Only one command is executed at time. Sucessive command invocations are enqueued and run after the currently executing delegate has completed
+    /// <br/> or was cancelled.</remarks>
+    bool HasPending { get; }
+
+    /// <summary>
+    /// Returns the number of pending command delegate executions.
+    /// </summary>
+    int PendingCount { get; }
 
     /// <summary>
     /// The currently used <see cref="CancellationToken"/>.
@@ -80,7 +106,9 @@
     ///   Executes the AsyncRelayCommand on the current command target asynchronously.
     /// </summary>
     /// <param name="cancellationToken">An instance of <seealso cref="CancellationToken"/> to cancel the executing command delegate.</param>
-    /// <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.  
+    /// <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.
+    /// <para>Only one command is executed at time. Sucessive command invocations are enqueued and run after the currently executing delegate has completed
+    /// <br/> or was cancelled. Query <see cref="HasPending"/> to know if the command has pending delegate executions and <see cref="PendingCount"/> to knwo the number of pending delegate executions.</para>
     /// </remarks>
     /// <exception cref="OperationCanceledException">If executing command delegate was cancelled.</exception>
     Task ExecuteAsync(CancellationToken cancellationToken);
@@ -92,6 +120,8 @@
     /// <br/>A value of <see cref="Timeout.InfiniteTimeSpan"/> (or a <see cref="TimeSpan"/> that represents -1) will specifiy an infinite time out. 
     /// <br/>A value of <see cref="TimeSpan.Zero"/> will cancel the operation immediately.</param>
     /// <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.  
+    /// <para>Only one command is executed at time. Sucessive command invocations are enqueued and run after the currently executing delegate has completed
+    /// <br/> or was cancelled. Query <see cref="HasPending"/> to know if the command has pending delegate executions and <see cref="PendingCount"/> to knwo the number of pending delegate executions.</para>
     /// </remarks>
     /// <exception cref="OperationCanceledException">If the executing command delegate was cancelled.</exception>
     Task ExecuteAsync(TimeSpan timeout);
@@ -99,55 +129,7 @@
     /// <summary>
     ///   Executes the AsyncRelayCommand on the current command target asynchronously.
     /// </summary>
-    /// <param name="parameter">
-    ///   Data used by the command. If the command does not require data to be passed,
-    ///   this object can be set to null.
-    /// </param>
-    /// <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.  
-    /// </remarks>
-    /// <exception cref="OperationCanceledException">If the executing command delegate was cancelled.</exception>
-    Task ExecuteAsync(object parameter);
-
-    /// <summary>
-    ///   Executes the AsyncRelayCommand on the current command target asynchronously.
-    /// </summary>
-    /// <param name="parameter">
-    ///   Data used by the command. If the command does not require data to be passed,
-    ///   this object can be set to null.
-    /// </param>
-    /// <param name="cancellationToken">An instance of <seealso cref="CancellationToken"/> to cancel the executing command delegate.</param>
-    /// <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.  
-    /// </remarks>
-    /// <exception cref="OperationCanceledException">If the executing command delegate was cancelled.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="timeout>"/>.TotalMilliseconds is less than -1 or greater than <see cref="int.MaxValue"/> (or <see cref="uint.MaxValue"/> - 1 on some versions of .NET). 
-    /// <br/>Note that this upper bound is more restrictive than <see cref="TimeSpan.MaxValue"/>.</exception>
-    Task ExecuteAsync(object parameter, CancellationToken cancellationToken);
-
-    /// <summary>
-    ///   Executes the AsyncRelayCommand on the current command target asynchronously.
-    /// </summary>
-    /// <param name="parameter">
-    ///   Data used by the command. If the command does not require data to be passed,
-    ///   this object can be set to null.
-    /// </param>
     /// <param name="timeout">A <seealso cref="TimeSpan"/> to specify the timeout of the operation. 
-    /// <br/>A value of <see cref="Timeout.InfiniteTimeSpan"/> (or a <see cref="TimeSpan"/> that represents -1) will specifiy an infinite time out. 
-    /// <br/>A value of <see cref="TimeSpan.Zero"/> will cancel the operation immediately.</param>
-    /// <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.  
-    /// </remarks>
-    /// <exception cref="OperationCanceledException">If the executing command delegate was cancelled.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="timeout>"/>.<see cref="TimeSpan.TotalMilliseconds"/> is less than -1 or greater than <see cref="int.MaxValue"/> (or <see cref="uint.MaxValue"/> - 1 on some versions of .NET). 
-    /// <br/>Note that this upper bound is more restrictive than <see cref="TimeSpan.MaxValue"/>.</exception>
-    Task ExecuteAsync(object parameter, TimeSpan timeout);
-
-    /// <summary>
-    ///   Executes the AsyncRelayCommand on the current command target asynchronously.
-    /// </summary>
-    /// <param name="parameter">
-    ///   Data used by the command. If the command does not require data to be passed,
-    ///   this object can be set to null.
-    /// </param>
-    /// <param name="cancellationToken">A <seealso cref="TimeSpan"/> to specify the timeout of the operation. 
     /// <br/>A value of <see cref="Timeout.InfiniteTimeSpan"/> (or a <see cref="TimeSpan"/> that represents -1) will specifiy an infinite time out. 
     /// <br/>A value of <see cref="TimeSpan.Zero"/> will cancel the operation immediately.</param>
     /// <param name="cancellationToken">An instance of <seealso cref="CancellationToken"/> to cancel the executing command delegate.</param>
@@ -155,16 +137,11 @@
     /// </remarks>
     /// <exception cref="OperationCanceledException">If the executing command delegate was cancelled.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="timeout>"/>.TotalMilliseconds is less than -1 or greater than <see cref="int.MaxValue"/> (or <see cref="uint.MaxValue"/> - 1 on some versions of .NET). Note that this upper bound is more restrictive than <see cref="TimeSpan.MaxValue"/>.</exception>
-    Task ExecuteAsync(object parameter, TimeSpan timeout, CancellationToken cancellationToken);
+    Task ExecuteAsync(TimeSpan timeout, CancellationToken cancellationToken);
 
     /// <summary>
     /// Raises the <seealso cref="ICommand.CanExecuteChanged"/> event of this particular command only.
     /// </summary>
     void InvalidateCommand();
-
-    /// <summary>
-    /// A flag to signal if the asynchronous operation has completed.
-    /// </summary>
-    bool IsExecuting { get; }
   }
 }

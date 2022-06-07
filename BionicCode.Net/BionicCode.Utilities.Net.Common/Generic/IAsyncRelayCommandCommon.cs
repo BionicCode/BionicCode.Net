@@ -70,7 +70,7 @@
     ///   Data used by the command. If the command does not require data to be passed,
     ///   this object can be set to null.
     /// </param>
-    /// <param name="cancellationToken">A <seealso cref="TimeSpan"/> to specify the timeout of the operation. 
+    /// <param name="timeout">A <seealso cref="TimeSpan"/> to specify the timeout of the operation. 
     /// <br/>A value of <see cref="Timeout.InfiniteTimeSpan"/> (or a <see cref="TimeSpan"/> that represents -1) will specifiy an infinite time out. 
     /// <br/>A value of <see cref="TimeSpan.Zero"/> will cancel the operation immediately.</param>
     /// <param name="cancellationToken">An instance of <seealso cref="CancellationToken"/> to cancel the executing command delegate.</param>

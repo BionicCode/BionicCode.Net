@@ -21,19 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html",
-          "hash": "AxV/JcOkqheKz9w1V+D2erkFrPk6lfuL4yoUHaOpUr4="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommand.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommand.html",
-          "hash": "i3MPotv2I8V7Tc8xLxy1U703qow6bmZH1eu70eFtN/8="
+          "hash": "WoJUuTX6iHySiAsnHuMnQ3KJEAIO+QWNT+zxaY8rBvc="
         }
       },
       "is_incremental": true,
@@ -45,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.BoolToStringConverter.html",
-          "hash": "dzAVK71IHihHMbbcDZBQnX6TpiKxCG8R+6coujInAKY="
+          "hash": "t62d/w7IQuZmtcgAvSxEN0MeQR71KJdzJFZnWcimJu0="
         }
       },
       "is_incremental": true,
@@ -57,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.BooleanMultiValueConverter.html",
-          "hash": "foeRQYPPsUFs7JNiYtZzquMhAMAxtEl2aTucHlin2MM="
+          "hash": "xPm8XnvH5p456KRVQ+7UQEnKdHdLybAjiYc58+D2dwc="
         }
       },
       "is_incremental": true,
@@ -69,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.DefaultValueInverter.html",
-          "hash": "iy7T9mr8IsTwoKx7TUhXENM5CcxiK24t7TEDYFDbfVQ="
+          "hash": "PjgvfXTkDeJ9BOsCa0cotu7VTx5Wsr2gCFBcZmlUna4="
         }
       },
       "is_incremental": true,
@@ -81,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.Dialog.html",
-          "hash": "Lk6WGPlQ1Xb8IoWGTIm3vJZOG1ydMz+CPqIJzjNmlm4="
+          "hash": "MFu3zLgN55tTol7Oin6sPcxN1tJ+ZatoA3f8T9rEQJk="
         }
       },
       "is_incremental": true,
@@ -93,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.DialogResult.html",
-          "hash": "QAa1lfHhbfqa0ZvWgdeymTE0a+GxmdG3YIZGcKdohOE="
+          "hash": "N0ldspBe2GuyFzoCVGjPiix6K9RrbGqgdak88VPEX2w="
         }
       },
       "is_incremental": true,
@@ -105,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.DialogViewModel.html",
-          "hash": "fpjZfaKrUPJrD/YQt9h5eGWyZkRN0BgXHpWohNiVTuc="
+          "hash": "NQ8OjQt4ddRuXMKXYG7AnPL5+XRBo6RxoSwYFIpt3Vg="
         }
       },
       "is_incremental": true,
@@ -117,7 +105,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.DividerValueConverter.html",
-          "hash": "yecewPa6g2muFjvKImW7R/647XXDQjkkgZVTpv2joLs="
+          "hash": "wPwCaaa8lJu9phTTxU/OXfELDXQowizOeT33BqqiTV0="
         }
       },
       "is_incremental": true,
@@ -129,7 +117,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.EnumExtension.html",
-          "hash": "a+WDNRfkiIRT02UKX6wxgjixi6qqWd+PDLKHkLKeGZk="
+          "hash": "IisCEe9zVo2A44XYk6MIDtC+z6x0I7rpAWFbZnP4lzM="
         }
       },
       "is_incremental": true,
@@ -141,7 +129,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.EqualsExtension.html",
-          "hash": "7OubOi0oTZ23a8pQ1xrnOYEGF88za0b4M3Zarx8G6DM="
+          "hash": "9d+I2R6JwQjphzELBKLwLXykSy2kVfGO9DIvjy5U4d8="
         }
       },
       "is_incremental": true,
@@ -153,7 +141,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.FilePathTruncateConverter.html",
-          "hash": "LXIv3t6AiMsqXtjVvc8lJztHHycwVM7V4NmBDVCbvoI="
+          "hash": "HuH7vOfnubZj+qWBtTNWIrAg1rkd5I2zb7lYa5dvsos="
         }
       },
       "is_incremental": true,
@@ -165,7 +153,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.HelperExtensions.html",
-          "hash": "ICo3UGqQiWNB13v9ffvjrKn4Fz/swyvQgC5INMKCDdc="
+          "hash": "9FfuKtZ9pBftMBdKPdEXZGhxqwi3zuXw3AgHYtEXxbc="
         }
       },
       "is_incremental": true,
@@ -177,7 +165,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.HighlightRange.html",
-          "hash": "A2U9Gn4wcqjWvXzK/2OrxxW3uMFl1VXhXsIu2w69wdA="
+          "hash": "ML19qPF33SFB+YOCaRs4losUgfjVnbzDHYPSNREyhKg="
         }
       },
       "is_incremental": true,
@@ -189,7 +177,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.HighlightRangeCollection.html",
-          "hash": "bt3Yicv8cUIo9nWuZkI7wtaPu5zkcR16gSw4PtnORBQ="
+          "hash": "ntKJbDuObAoteU00FImlYorW0c2uxYbVox1N6jFWX2M="
         }
       },
       "is_incremental": true,
@@ -201,7 +189,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommand-1.html",
-          "hash": "AUclK3vC+gAKOEl6K+dV/wdykdf7z1VkmK3I1lIJ3sg="
+          "hash": "T6b31x5hH9+TdC1K4oKd1WSNYki+WXdvjsCFLMjVTdg="
         }
       },
       "is_incremental": true,
@@ -213,7 +201,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommand.html",
-          "hash": "D4VusBUAuSkSGXZ1K92ibeO63BDVBpHU8J60T5d7H+E="
+          "hash": "1AkIibv1yqCmB/2/2/YUwdPG35ztlDZTbNuBQTOUULU="
         }
       },
       "is_incremental": true,
@@ -225,7 +213,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IDialogViewModel.html",
-          "hash": "GkZRzZMKn+NOCfkUczz80g0DP1jW2ZqmnOv2jJOcO94="
+          "hash": "9uqz2lbawd/F2Y7lLdSD7IbAnpjcJwAa5jH+hmBUSkA="
         }
       },
       "is_incremental": true,
@@ -237,7 +225,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IDialogViewModelProvider.html",
-          "hash": "ntZUvLg7cK8kUD8ETp6aYcnafBF5HJ8WBUSGz0ewQzE="
+          "hash": "5GeEqLj+GmoaRTsY+nZxKMHe9jIrtbt/Q/HPjxKPY0I="
         }
       },
       "is_incremental": true,
@@ -249,7 +237,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IDialogViewModelProviderSource.html",
-          "hash": "+SWTOZA5ekuHago4ZHvx2cdnypkk6HOT5ZzN/pikb2I="
+          "hash": "cot4kZlUPirZh6tufZ25LrMAxohVNRrZYfUGnBeSOJU="
         }
       },
       "is_incremental": true,
@@ -261,7 +249,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IMruManager.html",
-          "hash": "Hu1HkbTSP04Sz8q1/RC3mKVPeY2dvcxmn4W3AU2YOgE="
+          "hash": "bnLWvPthitfxvcMofzlSAtyZs6jkxZY9ppiHJfrnpIg="
         }
       },
       "is_incremental": true,
@@ -273,7 +261,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IProgressReporter.html",
-          "hash": "zJvRBKTrUmY7Ct+9xLt5fShhZFrgqlxMFD8OUMeLxRU="
+          "hash": "RLBnNBJV0rMvZs+QIOMxWQSJ1LTkxlbHTZa/T0iXNWg="
         }
       },
       "is_incremental": true,
@@ -285,7 +273,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IViewModel.html",
-          "hash": "UmXjh2mJGH5gc67Yyoza9bBPxzak2qEvgCF7NyMQvZ4="
+          "hash": "yB68Ojvt8hnTUCTf59QfCdxILAAy1RzNFVHR5I51BI8="
         }
       },
       "is_incremental": true,
@@ -297,7 +285,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.InversionMode.html",
-          "hash": "FGPQpmBntf6hEs5zL+yyaFWvLBuROX+cNv4P1gUnX9s="
+          "hash": "lU9qbDtvI1YmD3OJqyK0zvRFCQmXD5F98UViPCKK9No="
         }
       },
       "is_incremental": true,
@@ -309,7 +297,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.InvertBooleanConverter.html",
-          "hash": "8ZzQ1F9zntXaPrIt4YdAqylTgs65Yx7ViU3vLaaaMHA="
+          "hash": "LcBriE8MTnnqhTDdJBWCTEJDWyLIZApuk8rVMfv38rU="
         }
       },
       "is_incremental": true,
@@ -321,7 +309,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.InvertExtension.html",
-          "hash": "SH3CHJbwCkgekARMLrvbXNzjPoAOAZLrh8aHM4fY+V4="
+          "hash": "ZArAvNGxGbWS7rNXa3hpws+xziwl3EzgQ+KPCEAFKaE="
         }
       },
       "is_incremental": true,
@@ -333,7 +321,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.InvertValueConverter.html",
-          "hash": "exTPG5Gj1uSeYX1BkTGUS/yTN5p8Qo/DyOft4Vwgprg="
+          "hash": "W63gyc2vMEgamIzkuypc4F18mu+C0BA9zUvrPNFcLAQ="
         }
       },
       "is_incremental": true,
@@ -345,7 +333,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IsGreaterThanValueConverter.html",
-          "hash": "QH4gVI2TfYa08T4yy0ft9zPTfHWE9zrsB/2AkJMLVFY="
+          "hash": "WPADIX26YFCvFqfrkt8HU1Qz6FvNGg6OrJ5MaAWssF0="
         }
       },
       "is_incremental": true,
@@ -357,7 +345,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.MostRecentlyUsedFileItem.html",
-          "hash": "umi8UVzsgBHDJw9myXirXikX9yJ3nMxoViPRlxzFONQ="
+          "hash": "RPpCWtAtI+T32AOzVynkoswYjqphPYNeE+VN61YHr6I="
         }
       },
       "is_incremental": true,
@@ -369,7 +357,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.MruManager.html",
-          "hash": "5/ogx/j4kGaAZ2E6RB7LkUIuHsiaLCffHgE5mGw0HN4="
+          "hash": "rHr7LvXjC6J0T1WhrEFkNTV0dR3Wp3WRH9zj1eiJzBM="
         }
       },
       "is_incremental": true,
@@ -381,7 +369,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ObservablePropertyChangedCollection-1.html",
-          "hash": "2BZfSVPHxPYLMIrq9aMRUwL/6JwiKkxbgA7gpkGs9FA="
+          "hash": "J22I9/psY/2f7/E/s0luCwh+MMk0SznkiIVREYXQbDE="
         }
       },
       "is_incremental": true,
@@ -393,7 +381,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PasswordBoxService.html",
-          "hash": "Vs9bbwlRlNy5y9uXQ/OQMceL9mmt/K8FQifbBf1DoH8="
+          "hash": "IU/86Pwi0PUHlqazB5rXkcO7ANQN7S9ynRQBAcM6g7Q="
         }
       },
       "is_incremental": true,
@@ -405,7 +393,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PercentageToPixelConverter.html",
-          "hash": "AGtF9AcayUu/yme+1hEcDnn/wefXPM8gcWc5lS3vybQ="
+          "hash": "9tZe8nzQaWyOMD1rKptdSvpf2ekcVr3y5qFcDtAE+j8="
         }
       },
       "is_incremental": true,
@@ -417,7 +405,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PercentageToThicknessConverter.html",
-          "hash": "Cd1Tnk7sviA3rHoR/rrb/GvRJik2jwkdUvYrf3PX/VI="
+          "hash": "mzjoJgOa9jlBdU7icDs3MDIcm0DjNNdNv4IJ88ZBn9s="
         }
       },
       "is_incremental": true,
@@ -429,7 +417,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PopupService.html",
-          "hash": "k/BCOtV8QNnYbNMCyVzzev6BLaW989bXfnsRdJvgMds="
+          "hash": "RBFPL5B9YMTNOVOeMbfeTy7nPITvOilvO6Cp8eZA9Vw="
         }
       },
       "is_incremental": true,
@@ -441,7 +429,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PrimitiveExtension.html",
-          "hash": "nYvUGbgV3rDpcasO3VzpI+5NgPk5G/Kl2K2Z9Olet+k="
+          "hash": "2BRaRxVqS28XR+NUXQT6jo0Pd+Jne2O4QTtW10afXAM="
         }
       },
       "is_incremental": true,
@@ -453,7 +441,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.SelectorService.html",
-          "hash": "3LqFABZ0cTj+QG+38+MyzKiIS2AMHPq+izXR2VD5mw8="
+          "hash": "ehdTEUjrkUfYQMBujjrGh9OrGHo8+1HIF+/zvR4x0EE="
         }
       },
       "is_incremental": true,
@@ -465,19 +453,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.TextControl.html",
-          "hash": "0FGLeK9sF5pYFPUEKu7Ta8PsY/KjkJy5+H4ZH0Gu0LU="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/BionicCode.Utilities.Net.ViewModel.SetBackingFieldDelegate-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/BionicCode.Utilities.Net.ViewModel.SetBackingFieldDelegate-1.html",
-          "hash": "ZUwtVyFyXmMTXIf53Q/F3x1hBvsaSJ/bYB98wnDKDBQ="
+          "hash": "8l3XVd7vExXxt+GF1y4kkXnITCdzqLNoOrtbSnjEqQA="
         }
       },
       "is_incremental": true,
@@ -489,7 +465,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ViewModel.html",
-          "hash": "YuAlnHMQZHvnMVP/Mz69DvXqYzfRHJNo1mYIrn2yit8="
+          "hash": "aJHZK2uRnoXDi+k/QLxP6OjgymT1OKFtiB6JxSJgpwo="
         }
       },
       "is_incremental": true,
@@ -501,7 +477,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.html",
-          "hash": "zJUZf6t310iyFQDnn1/arH/GDG22QgvYGfx1GRlW4Ow="
+          "hash": "7rHsInyRmMc07P7K4dDrYoLriDotMJGJJKVTjTck6U4="
         }
       },
       "is_incremental": true,
@@ -525,7 +501,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "Um7U9fzvQvh/wgnrdpS/TEDnB9K+w6EWVIUddzPCI/g="
+          "hash": "iPTU4pajF3oUHqkCUYF3XpT7G/nssaOn0QBHbx2MHn0="
         }
       },
       "is_incremental": false,
@@ -632,8 +608,8 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": true,
           "incrementalPhase": "build",
-          "total_file_count": 42,
-          "skipped_file_count": 42
+          "total_file_count": 40,
+          "skipped_file_count": 40
         },
         "ResourceDocumentProcessor": {
           "can_incremental": false,

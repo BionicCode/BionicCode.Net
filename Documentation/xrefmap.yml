@@ -129,88 +129,6 @@ references:
   isSpec: "True"
   fullName: BionicCode.Utilities.Net.AppSettingsConnector.WriteString
   nameWithType: AppSettingsConnector.WriteString
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand
-  name: AsyncRelayCommand
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand.html
-  commentId: T:BionicCode.Utilities.Net.AsyncRelayCommand
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand
-  nameWithType: AsyncRelayCommand
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand.#ctor(System.Action)
-  name: AsyncRelayCommand(Action)
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand.html#BionicCode_Utilities_Net_AsyncRelayCommand__ctor_System_Action_
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand.#ctor(System.Action)
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand.AsyncRelayCommand(System.Action)
-  nameWithType: AsyncRelayCommand.AsyncRelayCommand(Action)
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand.#ctor(System.Action,System.Func{System.Boolean})
-  name: AsyncRelayCommand(Action, Func<Boolean>)
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand.html#BionicCode_Utilities_Net_AsyncRelayCommand__ctor_System_Action_System_Func_System_Boolean__
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand.#ctor(System.Action,System.Func{System.Boolean})
-  name.vb: AsyncRelayCommand(Action, Func(Of Boolean))
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand.AsyncRelayCommand(System.Action, System.Func<System.Boolean>)
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand.AsyncRelayCommand(System.Action, System.Func(Of System.Boolean))
-  nameWithType: AsyncRelayCommand.AsyncRelayCommand(Action, Func<Boolean>)
-  nameWithType.vb: AsyncRelayCommand.AsyncRelayCommand(Action, Func(Of Boolean))
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand.#ctor(System.Action{System.Object})
-  name: AsyncRelayCommand(Action<Object>)
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand.html#BionicCode_Utilities_Net_AsyncRelayCommand__ctor_System_Action_System_Object__
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand.#ctor(System.Action{System.Object})
-  name.vb: AsyncRelayCommand(Action(Of Object))
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand.AsyncRelayCommand(System.Action<System.Object>)
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand.AsyncRelayCommand(System.Action(Of System.Object))
-  nameWithType: AsyncRelayCommand.AsyncRelayCommand(Action<Object>)
-  nameWithType.vb: AsyncRelayCommand.AsyncRelayCommand(Action(Of Object))
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})
-  name: AsyncRelayCommand(Action<Object>, Predicate<Object>)
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand.html#BionicCode_Utilities_Net_AsyncRelayCommand__ctor_System_Action_System_Object__System_Predicate_System_Object__
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})
-  name.vb: AsyncRelayCommand(Action(Of Object), Predicate(Of Object))
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand.AsyncRelayCommand(System.Action<System.Object>, System.Predicate<System.Object>)
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand.AsyncRelayCommand(System.Action(Of System.Object), System.Predicate(Of System.Object))
-  nameWithType: AsyncRelayCommand.AsyncRelayCommand(Action<Object>, Predicate<Object>)
-  nameWithType.vb: AsyncRelayCommand.AsyncRelayCommand(Action(Of Object), Predicate(Of Object))
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task})
-  name: AsyncRelayCommand(Func<Object, Task>)
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand.html#BionicCode_Utilities_Net_AsyncRelayCommand__ctor_System_Func_System_Object_System_Threading_Tasks_Task__
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task})
-  name.vb: AsyncRelayCommand(Func(Of Object, Task))
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand.AsyncRelayCommand(System.Func<System.Object, System.Threading.Tasks.Task>)
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand.AsyncRelayCommand(System.Func(Of System.Object, System.Threading.Tasks.Task))
-  nameWithType: AsyncRelayCommand.AsyncRelayCommand(Func<Object, Task>)
-  nameWithType.vb: AsyncRelayCommand.AsyncRelayCommand(Func(Of Object, Task))
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task},System.Predicate{System.Object})
-  name: AsyncRelayCommand(Func<Object, Task>, Predicate<Object>)
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand.html#BionicCode_Utilities_Net_AsyncRelayCommand__ctor_System_Func_System_Object_System_Threading_Tasks_Task__System_Predicate_System_Object__
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand.#ctor(System.Func{System.Object,System.Threading.Tasks.Task},System.Predicate{System.Object})
-  name.vb: AsyncRelayCommand(Func(Of Object, Task), Predicate(Of Object))
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand.AsyncRelayCommand(System.Func<System.Object, System.Threading.Tasks.Task>, System.Predicate<System.Object>)
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand.AsyncRelayCommand(System.Func(Of System.Object, System.Threading.Tasks.Task), System.Predicate(Of System.Object))
-  nameWithType: AsyncRelayCommand.AsyncRelayCommand(Func<Object, Task>, Predicate<Object>)
-  nameWithType.vb: AsyncRelayCommand.AsyncRelayCommand(Func(Of Object, Task), Predicate(Of Object))
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task})
-  name: AsyncRelayCommand(Func<Task>)
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand.html#BionicCode_Utilities_Net_AsyncRelayCommand__ctor_System_Func_System_Threading_Tasks_Task__
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task})
-  name.vb: AsyncRelayCommand(Func(Of Task))
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand.AsyncRelayCommand(System.Func<System.Threading.Tasks.Task>)
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand.AsyncRelayCommand(System.Func(Of System.Threading.Tasks.Task))
-  nameWithType: AsyncRelayCommand.AsyncRelayCommand(Func<Task>)
-  nameWithType.vb: AsyncRelayCommand.AsyncRelayCommand(Func(Of Task))
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})
-  name: AsyncRelayCommand(Func<Task>, Func<Boolean>)
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand.html#BionicCode_Utilities_Net_AsyncRelayCommand__ctor_System_Func_System_Threading_Tasks_Task__System_Func_System_Boolean__
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})
-  name.vb: AsyncRelayCommand(Func(Of Task), Func(Of Boolean))
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand.AsyncRelayCommand(System.Func<System.Threading.Tasks.Task>, System.Func<System.Boolean>)
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand.AsyncRelayCommand(System.Func(Of System.Threading.Tasks.Task), System.Func(Of System.Boolean))
-  nameWithType: AsyncRelayCommand.AsyncRelayCommand(Func<Task>, Func<Boolean>)
-  nameWithType.vb: AsyncRelayCommand.AsyncRelayCommand(Func(Of Task), Func(Of Boolean))
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand.#ctor*
-  name: AsyncRelayCommand
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand.html#BionicCode_Utilities_Net_AsyncRelayCommand__ctor_
-  commentId: Overload:BionicCode.Utilities.Net.AsyncRelayCommand.#ctor
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand.AsyncRelayCommand
-  nameWithType: AsyncRelayCommand.AsyncRelayCommand
 - uid: BionicCode.Utilities.Net.AsyncRelayCommand`1
   name: AsyncRelayCommand<TParam>
   href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html
@@ -220,6 +138,14 @@ references:
   fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam)
   nameWithType: AsyncRelayCommand<TParam>
   nameWithType.vb: AsyncRelayCommand(Of TParam)
+- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor
+  name: AsyncRelayCommand()
+  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1__ctor
+  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor
+  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.AsyncRelayCommand()
+  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).AsyncRelayCommand()
+  nameWithType: AsyncRelayCommand<TParam>.AsyncRelayCommand()
+  nameWithType.vb: AsyncRelayCommand(Of TParam).AsyncRelayCommand()
 - uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Action)
   name: AsyncRelayCommand(Action)
   href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1__ctor_System_Action_
@@ -237,6 +163,24 @@ references:
   fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).AsyncRelayCommand(System.Action, System.Func(Of System.Boolean))
   nameWithType: AsyncRelayCommand<TParam>.AsyncRelayCommand(Action, Func<Boolean>)
   nameWithType.vb: AsyncRelayCommand(Of TParam).AsyncRelayCommand(Action, Func(Of Boolean))
+- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Action{`0,System.Threading.CancellationToken})
+  name: AsyncRelayCommand(Action<TParam, CancellationToken>)
+  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1__ctor_System_Action__0_System_Threading_CancellationToken__
+  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Action{`0,System.Threading.CancellationToken})
+  name.vb: AsyncRelayCommand(Action(Of TParam, CancellationToken))
+  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.AsyncRelayCommand(System.Action<TParam, System.Threading.CancellationToken>)
+  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).AsyncRelayCommand(System.Action(Of TParam, System.Threading.CancellationToken))
+  nameWithType: AsyncRelayCommand<TParam>.AsyncRelayCommand(Action<TParam, CancellationToken>)
+  nameWithType.vb: AsyncRelayCommand(Of TParam).AsyncRelayCommand(Action(Of TParam, CancellationToken))
+- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Action{`0,System.Threading.CancellationToken},System.Predicate{`0})
+  name: AsyncRelayCommand(Action<TParam, CancellationToken>, Predicate<TParam>)
+  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1__ctor_System_Action__0_System_Threading_CancellationToken__System_Predicate__0__
+  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Action{`0,System.Threading.CancellationToken},System.Predicate{`0})
+  name.vb: AsyncRelayCommand(Action(Of TParam, CancellationToken), Predicate(Of TParam))
+  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.AsyncRelayCommand(System.Action<TParam, System.Threading.CancellationToken>, System.Predicate<TParam>)
+  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).AsyncRelayCommand(System.Action(Of TParam, System.Threading.CancellationToken), System.Predicate(Of TParam))
+  nameWithType: AsyncRelayCommand<TParam>.AsyncRelayCommand(Action<TParam, CancellationToken>, Predicate<TParam>)
+  nameWithType.vb: AsyncRelayCommand(Of TParam).AsyncRelayCommand(Action(Of TParam, CancellationToken), Predicate(Of TParam))
 - uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Action{`0})
   name: AsyncRelayCommand(Action<TParam>)
   href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1__ctor_System_Action__0__
@@ -255,6 +199,42 @@ references:
   fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).AsyncRelayCommand(System.Action(Of TParam), System.Predicate(Of TParam))
   nameWithType: AsyncRelayCommand<TParam>.AsyncRelayCommand(Action<TParam>, Predicate<TParam>)
   nameWithType.vb: AsyncRelayCommand(Of TParam).AsyncRelayCommand(Action(Of TParam), Predicate(Of TParam))
+- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Action{System.Threading.CancellationToken})
+  name: AsyncRelayCommand(Action<CancellationToken>)
+  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1__ctor_System_Action_System_Threading_CancellationToken__
+  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Action{System.Threading.CancellationToken})
+  name.vb: AsyncRelayCommand(Action(Of CancellationToken))
+  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.AsyncRelayCommand(System.Action<System.Threading.CancellationToken>)
+  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).AsyncRelayCommand(System.Action(Of System.Threading.CancellationToken))
+  nameWithType: AsyncRelayCommand<TParam>.AsyncRelayCommand(Action<CancellationToken>)
+  nameWithType.vb: AsyncRelayCommand(Of TParam).AsyncRelayCommand(Action(Of CancellationToken))
+- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Action{System.Threading.CancellationToken},System.Func{System.Boolean})
+  name: AsyncRelayCommand(Action<CancellationToken>, Func<Boolean>)
+  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1__ctor_System_Action_System_Threading_CancellationToken__System_Func_System_Boolean__
+  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Action{System.Threading.CancellationToken},System.Func{System.Boolean})
+  name.vb: AsyncRelayCommand(Action(Of CancellationToken), Func(Of Boolean))
+  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.AsyncRelayCommand(System.Action<System.Threading.CancellationToken>, System.Func<System.Boolean>)
+  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).AsyncRelayCommand(System.Action(Of System.Threading.CancellationToken), System.Func(Of System.Boolean))
+  nameWithType: AsyncRelayCommand<TParam>.AsyncRelayCommand(Action<CancellationToken>, Func<Boolean>)
+  nameWithType.vb: AsyncRelayCommand(Of TParam).AsyncRelayCommand(Action(Of CancellationToken), Func(Of Boolean))
+- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.CancellationToken,System.Threading.Tasks.Task})
+  name: AsyncRelayCommand(Func<TParam, CancellationToken, Task>)
+  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1__ctor_System_Func__0_System_Threading_CancellationToken_System_Threading_Tasks_Task__
+  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.CancellationToken,System.Threading.Tasks.Task})
+  name.vb: AsyncRelayCommand(Func(Of TParam, CancellationToken, Task))
+  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.AsyncRelayCommand(System.Func<TParam, System.Threading.CancellationToken, System.Threading.Tasks.Task>)
+  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).AsyncRelayCommand(System.Func(Of TParam, System.Threading.CancellationToken, System.Threading.Tasks.Task))
+  nameWithType: AsyncRelayCommand<TParam>.AsyncRelayCommand(Func<TParam, CancellationToken, Task>)
+  nameWithType.vb: AsyncRelayCommand(Of TParam).AsyncRelayCommand(Func(Of TParam, CancellationToken, Task))
+- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Predicate{`0})
+  name: AsyncRelayCommand(Func<TParam, CancellationToken, Task>, Predicate<TParam>)
+  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1__ctor_System_Func__0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Predicate__0__
+  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Predicate{`0})
+  name.vb: AsyncRelayCommand(Func(Of TParam, CancellationToken, Task), Predicate(Of TParam))
+  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.AsyncRelayCommand(System.Func<TParam, System.Threading.CancellationToken, System.Threading.Tasks.Task>, System.Predicate<TParam>)
+  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).AsyncRelayCommand(System.Func(Of TParam, System.Threading.CancellationToken, System.Threading.Tasks.Task), System.Predicate(Of TParam))
+  nameWithType: AsyncRelayCommand<TParam>.AsyncRelayCommand(Func<TParam, CancellationToken, Task>, Predicate<TParam>)
+  nameWithType.vb: AsyncRelayCommand(Of TParam).AsyncRelayCommand(Func(Of TParam, CancellationToken, Task), Predicate(Of TParam))
 - uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task})
   name: AsyncRelayCommand(Func<TParam, Task>)
   href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1__ctor_System_Func__0_System_Threading_Tasks_Task__
@@ -273,6 +253,24 @@ references:
   fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).AsyncRelayCommand(System.Func(Of TParam, System.Threading.Tasks.Task), System.Predicate(Of TParam))
   nameWithType: AsyncRelayCommand<TParam>.AsyncRelayCommand(Func<TParam, Task>, Predicate<TParam>)
   nameWithType.vb: AsyncRelayCommand(Of TParam).AsyncRelayCommand(Func(Of TParam, Task), Predicate(Of TParam))
+- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task})
+  name: AsyncRelayCommand(Func<CancellationToken, Task>)
+  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1__ctor_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__
+  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task})
+  name.vb: AsyncRelayCommand(Func(Of CancellationToken, Task))
+  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.AsyncRelayCommand(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task>)
+  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).AsyncRelayCommand(System.Func(Of System.Threading.CancellationToken, System.Threading.Tasks.Task))
+  nameWithType: AsyncRelayCommand<TParam>.AsyncRelayCommand(Func<CancellationToken, Task>)
+  nameWithType.vb: AsyncRelayCommand(Of TParam).AsyncRelayCommand(Func(Of CancellationToken, Task))
+- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Func{System.Boolean})
+  name: AsyncRelayCommand(Func<CancellationToken, Task>, Func<Boolean>)
+  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1__ctor_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Func_System_Boolean__
+  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Func{System.Boolean})
+  name.vb: AsyncRelayCommand(Func(Of CancellationToken, Task), Func(Of Boolean))
+  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.AsyncRelayCommand(System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task>, System.Func<System.Boolean>)
+  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).AsyncRelayCommand(System.Func(Of System.Threading.CancellationToken, System.Threading.Tasks.Task), System.Func(Of System.Boolean))
+  nameWithType: AsyncRelayCommand<TParam>.AsyncRelayCommand(Func<CancellationToken, Task>, Func<Boolean>)
+  nameWithType.vb: AsyncRelayCommand(Of TParam).AsyncRelayCommand(Func(Of CancellationToken, Task), Func(Of Boolean))
 - uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.#ctor(System.Func{System.Threading.Tasks.Task})
   name: AsyncRelayCommand(Func<Task>)
   href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1__ctor_System_Func_System_Threading_Tasks_Task__
@@ -300,59 +298,6 @@ references:
   fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).AsyncRelayCommand
   nameWithType: AsyncRelayCommand<TParam>.AsyncRelayCommand
   nameWithType.vb: AsyncRelayCommand(Of TParam).AsyncRelayCommand
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.BionicCode#Utilities#Net#IAsyncRelayCommand#ExecuteAsync(System.Object)
-  name: IAsyncRelayCommand.ExecuteAsync(Object)
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_BionicCode_Utilities_Net_IAsyncRelayCommand_ExecuteAsync_System_Object_
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.BionicCode#Utilities#Net#IAsyncRelayCommand#ExecuteAsync(System.Object)
-  name.vb: BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync(Object)
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync(System.Object)
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync(System.Object)
-  nameWithType: AsyncRelayCommand<TParam>.IAsyncRelayCommand.ExecuteAsync(Object)
-  nameWithType.vb: AsyncRelayCommand(Of TParam).BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync(Object)
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.BionicCode#Utilities#Net#IAsyncRelayCommand#ExecuteAsync(System.Object,System.Threading.CancellationToken)
-  name: IAsyncRelayCommand.ExecuteAsync(Object, CancellationToken)
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_BionicCode_Utilities_Net_IAsyncRelayCommand_ExecuteAsync_System_Object_System_Threading_CancellationToken_
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.BionicCode#Utilities#Net#IAsyncRelayCommand#ExecuteAsync(System.Object,System.Threading.CancellationToken)
-  name.vb: BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync(Object, CancellationToken)
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync(System.Object, System.Threading.CancellationToken)
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync(System.Object, System.Threading.CancellationToken)
-  nameWithType: AsyncRelayCommand<TParam>.IAsyncRelayCommand.ExecuteAsync(Object, CancellationToken)
-  nameWithType.vb: AsyncRelayCommand(Of TParam).BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync(Object, CancellationToken)
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.BionicCode#Utilities#Net#IAsyncRelayCommand#ExecuteAsync*
-  name: IAsyncRelayCommand.ExecuteAsync
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_BionicCode_Utilities_Net_IAsyncRelayCommand_ExecuteAsync_
-  commentId: Overload:BionicCode.Utilities.Net.AsyncRelayCommand`1.BionicCode#Utilities#Net#IAsyncRelayCommand#ExecuteAsync
-  isSpec: "True"
-  name.vb: BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync
-  nameWithType: AsyncRelayCommand<TParam>.IAsyncRelayCommand.ExecuteAsync
-  nameWithType.vb: AsyncRelayCommand(Of TParam).BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.CanExecute
-  name: CanExecute()
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_CanExecute
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.CanExecute
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.CanExecute()
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).CanExecute()
-  nameWithType: AsyncRelayCommand<TParam>.CanExecute()
-  nameWithType.vb: AsyncRelayCommand(Of TParam).CanExecute()
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.CanExecute(`0)
-  name: CanExecute(TParam)
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_CanExecute__0_
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.CanExecute(`0)
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.CanExecute(TParam)
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).CanExecute(TParam)
-  nameWithType: AsyncRelayCommand<TParam>.CanExecute(TParam)
-  nameWithType.vb: AsyncRelayCommand(Of TParam).CanExecute(TParam)
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.CanExecute*
-  name: CanExecute
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_CanExecute_
-  commentId: Overload:BionicCode.Utilities.Net.AsyncRelayCommand`1.CanExecute
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.CanExecute
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).CanExecute
-  nameWithType: AsyncRelayCommand<TParam>.CanExecute
-  nameWithType.vb: AsyncRelayCommand(Of TParam).CanExecute
 - uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.CanExecuteChanged
   name: CanExecuteChanged
   href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_CanExecuteChanged
@@ -361,88 +306,6 @@ references:
   fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).CanExecuteChanged
   nameWithType: AsyncRelayCommand<TParam>.CanExecuteChanged
   nameWithType.vb: AsyncRelayCommand(Of TParam).CanExecuteChanged
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.CanExecuteNoParam
-  name: CanExecuteNoParam
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_CanExecuteNoParam
-  commentId: F:BionicCode.Utilities.Net.AsyncRelayCommand`1.CanExecuteNoParam
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.CanExecuteNoParam
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).CanExecuteNoParam
-  nameWithType: AsyncRelayCommand<TParam>.CanExecuteNoParam
-  nameWithType.vb: AsyncRelayCommand(Of TParam).CanExecuteNoParam
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.ExecuteAsync
-  name: ExecuteAsync()
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_ExecuteAsync
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.ExecuteAsync
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.ExecuteAsync()
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).ExecuteAsync()
-  nameWithType: AsyncRelayCommand<TParam>.ExecuteAsync()
-  nameWithType.vb: AsyncRelayCommand(Of TParam).ExecuteAsync()
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.ExecuteAsync(`0)
-  name: ExecuteAsync(TParam)
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_ExecuteAsync__0_
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.ExecuteAsync(`0)
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.ExecuteAsync(TParam)
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).ExecuteAsync(TParam)
-  nameWithType: AsyncRelayCommand<TParam>.ExecuteAsync(TParam)
-  nameWithType.vb: AsyncRelayCommand(Of TParam).ExecuteAsync(TParam)
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)
-  name: ExecuteAsync(TParam, CancellationToken)
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_ExecuteAsync__0_System_Threading_CancellationToken_
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.ExecuteAsync(TParam, System.Threading.CancellationToken)
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).ExecuteAsync(TParam, System.Threading.CancellationToken)
-  nameWithType: AsyncRelayCommand<TParam>.ExecuteAsync(TParam, CancellationToken)
-  nameWithType.vb: AsyncRelayCommand(Of TParam).ExecuteAsync(TParam, CancellationToken)
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)
-  name: ExecuteAsync(CancellationToken)
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_ExecuteAsync_System_Threading_CancellationToken_
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.ExecuteAsync(System.Threading.CancellationToken)
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.ExecuteAsync(System.Threading.CancellationToken)
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).ExecuteAsync(System.Threading.CancellationToken)
-  nameWithType: AsyncRelayCommand<TParam>.ExecuteAsync(CancellationToken)
-  nameWithType.vb: AsyncRelayCommand(Of TParam).ExecuteAsync(CancellationToken)
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.ExecuteAsync*
-  name: ExecuteAsync
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_ExecuteAsync_
-  commentId: Overload:BionicCode.Utilities.Net.AsyncRelayCommand`1.ExecuteAsync
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.ExecuteAsync
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).ExecuteAsync
-  nameWithType: AsyncRelayCommand<TParam>.ExecuteAsync
-  nameWithType.vb: AsyncRelayCommand(Of TParam).ExecuteAsync
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.ExecuteAsyncNoParam
-  name: ExecuteAsyncNoParam
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_ExecuteAsyncNoParam
-  commentId: F:BionicCode.Utilities.Net.AsyncRelayCommand`1.ExecuteAsyncNoParam
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.ExecuteAsyncNoParam
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).ExecuteAsyncNoParam
-  nameWithType: AsyncRelayCommand<TParam>.ExecuteAsyncNoParam
-  nameWithType.vb: AsyncRelayCommand(Of TParam).ExecuteAsyncNoParam
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.ExecuteNoParam
-  name: ExecuteNoParam
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_ExecuteNoParam
-  commentId: F:BionicCode.Utilities.Net.AsyncRelayCommand`1.ExecuteNoParam
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.ExecuteNoParam
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).ExecuteNoParam
-  nameWithType: AsyncRelayCommand<TParam>.ExecuteNoParam
-  nameWithType.vb: AsyncRelayCommand(Of TParam).ExecuteNoParam
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.InvalidateCommand
-  name: InvalidateCommand()
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_InvalidateCommand
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.InvalidateCommand
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.InvalidateCommand()
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).InvalidateCommand()
-  nameWithType: AsyncRelayCommand<TParam>.InvalidateCommand()
-  nameWithType.vb: AsyncRelayCommand(Of TParam).InvalidateCommand()
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.InvalidateCommand*
-  name: InvalidateCommand
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_InvalidateCommand_
-  commentId: Overload:BionicCode.Utilities.Net.AsyncRelayCommand`1.InvalidateCommand
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.InvalidateCommand
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).InvalidateCommand
-  nameWithType: AsyncRelayCommand<TParam>.InvalidateCommand
-  nameWithType.vb: AsyncRelayCommand(Of TParam).InvalidateCommand
 - uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.IsCommandManagerRequerySuggestedEnabled
   name: IsCommandManagerRequerySuggestedEnabled
   href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_IsCommandManagerRequerySuggestedEnabled
@@ -460,78 +323,6 @@ references:
   fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).IsCommandManagerRequerySuggestedEnabled
   nameWithType: AsyncRelayCommand<TParam>.IsCommandManagerRequerySuggestedEnabled
   nameWithType.vb: AsyncRelayCommand(Of TParam).IsCommandManagerRequerySuggestedEnabled
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.IsExecuting
-  name: IsExecuting
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_IsExecuting
-  commentId: P:BionicCode.Utilities.Net.AsyncRelayCommand`1.IsExecuting
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.IsExecuting
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).IsExecuting
-  nameWithType: AsyncRelayCommand<TParam>.IsExecuting
-  nameWithType.vb: AsyncRelayCommand(Of TParam).IsExecuting
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.IsExecuting*
-  name: IsExecuting
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_IsExecuting_
-  commentId: Overload:BionicCode.Utilities.Net.AsyncRelayCommand`1.IsExecuting
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.IsExecuting
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).IsExecuting
-  nameWithType: AsyncRelayCommand<TParam>.IsExecuting
-  nameWithType.vb: AsyncRelayCommand(Of TParam).IsExecuting
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.OnCanExecuteChanged
-  name: OnCanExecuteChanged()
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_OnCanExecuteChanged
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.OnCanExecuteChanged
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.OnCanExecuteChanged()
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).OnCanExecuteChanged()
-  nameWithType: AsyncRelayCommand<TParam>.OnCanExecuteChanged()
-  nameWithType.vb: AsyncRelayCommand(Of TParam).OnCanExecuteChanged()
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.OnCanExecuteChanged*
-  name: OnCanExecuteChanged
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_OnCanExecuteChanged_
-  commentId: Overload:BionicCode.Utilities.Net.AsyncRelayCommand`1.OnCanExecuteChanged
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.OnCanExecuteChanged
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).OnCanExecuteChanged
-  nameWithType: AsyncRelayCommand<TParam>.OnCanExecuteChanged
-  nameWithType.vb: AsyncRelayCommand(Of TParam).OnCanExecuteChanged
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.System#Windows#Input#ICommand#CanExecute(System.Object)
-  name: ICommand.CanExecute(Object)
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_System_Windows_Input_ICommand_CanExecute_System_Object_
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.System#Windows#Input#ICommand#CanExecute(System.Object)
-  name.vb: System.Windows.Input.ICommand.CanExecute(Object)
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.System.Windows.Input.ICommand.CanExecute(System.Object)
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).System.Windows.Input.ICommand.CanExecute(System.Object)
-  nameWithType: AsyncRelayCommand<TParam>.ICommand.CanExecute(Object)
-  nameWithType.vb: AsyncRelayCommand(Of TParam).System.Windows.Input.ICommand.CanExecute(Object)
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.System#Windows#Input#ICommand#CanExecute*
-  name: ICommand.CanExecute
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_System_Windows_Input_ICommand_CanExecute_
-  commentId: Overload:BionicCode.Utilities.Net.AsyncRelayCommand`1.System#Windows#Input#ICommand#CanExecute
-  isSpec: "True"
-  name.vb: System.Windows.Input.ICommand.CanExecute
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.System.Windows.Input.ICommand.CanExecute
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).System.Windows.Input.ICommand.CanExecute
-  nameWithType: AsyncRelayCommand<TParam>.ICommand.CanExecute
-  nameWithType.vb: AsyncRelayCommand(Of TParam).System.Windows.Input.ICommand.CanExecute
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.System#Windows#Input#ICommand#Execute(System.Object)
-  name: ICommand.Execute(Object)
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_System_Windows_Input_ICommand_Execute_System_Object_
-  commentId: M:BionicCode.Utilities.Net.AsyncRelayCommand`1.System#Windows#Input#ICommand#Execute(System.Object)
-  name.vb: System.Windows.Input.ICommand.Execute(Object)
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.System.Windows.Input.ICommand.Execute(System.Object)
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).System.Windows.Input.ICommand.Execute(System.Object)
-  nameWithType: AsyncRelayCommand<TParam>.ICommand.Execute(Object)
-  nameWithType.vb: AsyncRelayCommand(Of TParam).System.Windows.Input.ICommand.Execute(Object)
-- uid: BionicCode.Utilities.Net.AsyncRelayCommand`1.System#Windows#Input#ICommand#Execute*
-  name: ICommand.Execute
-  href: api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html#BionicCode_Utilities_Net_AsyncRelayCommand_1_System_Windows_Input_ICommand_Execute_
-  commentId: Overload:BionicCode.Utilities.Net.AsyncRelayCommand`1.System#Windows#Input#ICommand#Execute
-  isSpec: "True"
-  name.vb: System.Windows.Input.ICommand.Execute
-  fullName: BionicCode.Utilities.Net.AsyncRelayCommand<TParam>.System.Windows.Input.ICommand.Execute
-  fullName.vb: BionicCode.Utilities.Net.AsyncRelayCommand(Of TParam).System.Windows.Input.ICommand.Execute
-  nameWithType: AsyncRelayCommand<TParam>.ICommand.Execute
-  nameWithType.vb: AsyncRelayCommand(Of TParam).System.Windows.Input.ICommand.Execute
 - uid: BionicCode.Utilities.Net.BooleanMultiValueConverter
   name: BooleanMultiValueConverter
   href: api/BionicCode.Utilities.Net.BooleanMultiValueConverter.html
@@ -1510,76 +1301,19 @@ references:
   commentId: T:BionicCode.Utilities.Net.IAsyncRelayCommand
   fullName: BionicCode.Utilities.Net.IAsyncRelayCommand
   nameWithType: IAsyncRelayCommand
-- uid: BionicCode.Utilities.Net.IAsyncRelayCommand.CanExecute
-  name: CanExecute()
-  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_CanExecute
-  commentId: M:BionicCode.Utilities.Net.IAsyncRelayCommand.CanExecute
-  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand.CanExecute()
-  nameWithType: IAsyncRelayCommand.CanExecute()
-- uid: BionicCode.Utilities.Net.IAsyncRelayCommand.CanExecute*
-  name: CanExecute
-  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_CanExecute_
-  commentId: Overload:BionicCode.Utilities.Net.IAsyncRelayCommand.CanExecute
+- uid: BionicCode.Utilities.Net.IAsyncRelayCommand.IsCommandManagerRequerySuggestedEnabled
+  name: IsCommandManagerRequerySuggestedEnabled
+  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_IsCommandManagerRequerySuggestedEnabled
+  commentId: P:BionicCode.Utilities.Net.IAsyncRelayCommand.IsCommandManagerRequerySuggestedEnabled
+  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand.IsCommandManagerRequerySuggestedEnabled
+  nameWithType: IAsyncRelayCommand.IsCommandManagerRequerySuggestedEnabled
+- uid: BionicCode.Utilities.Net.IAsyncRelayCommand.IsCommandManagerRequerySuggestedEnabled*
+  name: IsCommandManagerRequerySuggestedEnabled
+  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_IsCommandManagerRequerySuggestedEnabled_
+  commentId: Overload:BionicCode.Utilities.Net.IAsyncRelayCommand.IsCommandManagerRequerySuggestedEnabled
   isSpec: "True"
-  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand.CanExecute
-  nameWithType: IAsyncRelayCommand.CanExecute
-- uid: BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync
-  name: ExecuteAsync()
-  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_ExecuteAsync
-  commentId: M:BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync
-  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync()
-  nameWithType: IAsyncRelayCommand.ExecuteAsync()
-- uid: BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync(System.Object)
-  name: ExecuteAsync(Object)
-  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_ExecuteAsync_System_Object_
-  commentId: M:BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync(System.Object)
-  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync(System.Object)
-  nameWithType: IAsyncRelayCommand.ExecuteAsync(Object)
-- uid: BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync(System.Object,System.Threading.CancellationToken)
-  name: ExecuteAsync(Object, CancellationToken)
-  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_ExecuteAsync_System_Object_System_Threading_CancellationToken_
-  commentId: M:BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync(System.Object,System.Threading.CancellationToken)
-  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync(System.Object, System.Threading.CancellationToken)
-  nameWithType: IAsyncRelayCommand.ExecuteAsync(Object, CancellationToken)
-- uid: BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync(System.Threading.CancellationToken)
-  name: ExecuteAsync(CancellationToken)
-  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_ExecuteAsync_System_Threading_CancellationToken_
-  commentId: M:BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync(System.Threading.CancellationToken)
-  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync(System.Threading.CancellationToken)
-  nameWithType: IAsyncRelayCommand.ExecuteAsync(CancellationToken)
-- uid: BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync*
-  name: ExecuteAsync
-  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_ExecuteAsync_
-  commentId: Overload:BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand.ExecuteAsync
-  nameWithType: IAsyncRelayCommand.ExecuteAsync
-- uid: BionicCode.Utilities.Net.IAsyncRelayCommand.InvalidateCommand
-  name: InvalidateCommand()
-  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_InvalidateCommand
-  commentId: M:BionicCode.Utilities.Net.IAsyncRelayCommand.InvalidateCommand
-  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand.InvalidateCommand()
-  nameWithType: IAsyncRelayCommand.InvalidateCommand()
-- uid: BionicCode.Utilities.Net.IAsyncRelayCommand.InvalidateCommand*
-  name: InvalidateCommand
-  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_InvalidateCommand_
-  commentId: Overload:BionicCode.Utilities.Net.IAsyncRelayCommand.InvalidateCommand
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand.InvalidateCommand
-  nameWithType: IAsyncRelayCommand.InvalidateCommand
-- uid: BionicCode.Utilities.Net.IAsyncRelayCommand.IsExecuting
-  name: IsExecuting
-  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_IsExecuting
-  commentId: P:BionicCode.Utilities.Net.IAsyncRelayCommand.IsExecuting
-  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand.IsExecuting
-  nameWithType: IAsyncRelayCommand.IsExecuting
-- uid: BionicCode.Utilities.Net.IAsyncRelayCommand.IsExecuting*
-  name: IsExecuting
-  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand.html#BionicCode_Utilities_Net_IAsyncRelayCommand_IsExecuting_
-  commentId: Overload:BionicCode.Utilities.Net.IAsyncRelayCommand.IsExecuting
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand.IsExecuting
-  nameWithType: IAsyncRelayCommand.IsExecuting
+  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand.IsCommandManagerRequerySuggestedEnabled
+  nameWithType: IAsyncRelayCommand.IsCommandManagerRequerySuggestedEnabled
 - uid: BionicCode.Utilities.Net.IAsyncRelayCommand`1
   name: IAsyncRelayCommand<TParam>
   href: api/BionicCode.Utilities.Net.IAsyncRelayCommand-1.html
@@ -1589,48 +1323,6 @@ references:
   fullName.vb: BionicCode.Utilities.Net.IAsyncRelayCommand(Of TParam)
   nameWithType: IAsyncRelayCommand<TParam>
   nameWithType.vb: IAsyncRelayCommand(Of TParam)
-- uid: BionicCode.Utilities.Net.IAsyncRelayCommand`1.CanExecute(`0)
-  name: CanExecute(TParam)
-  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand-1.html#BionicCode_Utilities_Net_IAsyncRelayCommand_1_CanExecute__0_
-  commentId: M:BionicCode.Utilities.Net.IAsyncRelayCommand`1.CanExecute(`0)
-  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand<TParam>.CanExecute(TParam)
-  fullName.vb: BionicCode.Utilities.Net.IAsyncRelayCommand(Of TParam).CanExecute(TParam)
-  nameWithType: IAsyncRelayCommand<TParam>.CanExecute(TParam)
-  nameWithType.vb: IAsyncRelayCommand(Of TParam).CanExecute(TParam)
-- uid: BionicCode.Utilities.Net.IAsyncRelayCommand`1.CanExecute*
-  name: CanExecute
-  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand-1.html#BionicCode_Utilities_Net_IAsyncRelayCommand_1_CanExecute_
-  commentId: Overload:BionicCode.Utilities.Net.IAsyncRelayCommand`1.CanExecute
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand<TParam>.CanExecute
-  fullName.vb: BionicCode.Utilities.Net.IAsyncRelayCommand(Of TParam).CanExecute
-  nameWithType: IAsyncRelayCommand<TParam>.CanExecute
-  nameWithType.vb: IAsyncRelayCommand(Of TParam).CanExecute
-- uid: BionicCode.Utilities.Net.IAsyncRelayCommand`1.ExecuteAsync(`0)
-  name: ExecuteAsync(TParam)
-  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand-1.html#BionicCode_Utilities_Net_IAsyncRelayCommand_1_ExecuteAsync__0_
-  commentId: M:BionicCode.Utilities.Net.IAsyncRelayCommand`1.ExecuteAsync(`0)
-  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand<TParam>.ExecuteAsync(TParam)
-  fullName.vb: BionicCode.Utilities.Net.IAsyncRelayCommand(Of TParam).ExecuteAsync(TParam)
-  nameWithType: IAsyncRelayCommand<TParam>.ExecuteAsync(TParam)
-  nameWithType.vb: IAsyncRelayCommand(Of TParam).ExecuteAsync(TParam)
-- uid: BionicCode.Utilities.Net.IAsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)
-  name: ExecuteAsync(TParam, CancellationToken)
-  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand-1.html#BionicCode_Utilities_Net_IAsyncRelayCommand_1_ExecuteAsync__0_System_Threading_CancellationToken_
-  commentId: M:BionicCode.Utilities.Net.IAsyncRelayCommand`1.ExecuteAsync(`0,System.Threading.CancellationToken)
-  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand<TParam>.ExecuteAsync(TParam, System.Threading.CancellationToken)
-  fullName.vb: BionicCode.Utilities.Net.IAsyncRelayCommand(Of TParam).ExecuteAsync(TParam, System.Threading.CancellationToken)
-  nameWithType: IAsyncRelayCommand<TParam>.ExecuteAsync(TParam, CancellationToken)
-  nameWithType.vb: IAsyncRelayCommand(Of TParam).ExecuteAsync(TParam, CancellationToken)
-- uid: BionicCode.Utilities.Net.IAsyncRelayCommand`1.ExecuteAsync*
-  name: ExecuteAsync
-  href: api/BionicCode.Utilities.Net.IAsyncRelayCommand-1.html#BionicCode_Utilities_Net_IAsyncRelayCommand_1_ExecuteAsync_
-  commentId: Overload:BionicCode.Utilities.Net.IAsyncRelayCommand`1.ExecuteAsync
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.IAsyncRelayCommand<TParam>.ExecuteAsync
-  fullName.vb: BionicCode.Utilities.Net.IAsyncRelayCommand(Of TParam).ExecuteAsync
-  nameWithType: IAsyncRelayCommand<TParam>.ExecuteAsync
-  nameWithType.vb: IAsyncRelayCommand(Of TParam).ExecuteAsync
 - uid: BionicCode.Utilities.Net.IDialogViewModel
   name: IDialogViewModel
   href: api/BionicCode.Utilities.Net.IDialogViewModel.html
@@ -2953,45 +2645,6 @@ references:
   commentId: T:BionicCode.Utilities.Net.ViewModel
   fullName: BionicCode.Utilities.Net.ViewModel
   nameWithType: ViewModel
-- uid: BionicCode.Utilities.Net.ViewModel.#ctor
-  name: ViewModel()
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel__ctor
-  commentId: M:BionicCode.Utilities.Net.ViewModel.#ctor
-  fullName: BionicCode.Utilities.Net.ViewModel.ViewModel()
-  nameWithType: ViewModel.ViewModel()
-- uid: BionicCode.Utilities.Net.ViewModel.#ctor*
-  name: ViewModel
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel__ctor_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.#ctor
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.ViewModel
-  nameWithType: ViewModel.ViewModel
-- uid: BionicCode.Utilities.Net.ViewModel.ClearErrors(System.String)
-  name: ClearErrors(String)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_ClearErrors_System_String_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.ClearErrors(System.String)
-  fullName: BionicCode.Utilities.Net.ViewModel.ClearErrors(System.String)
-  nameWithType: ViewModel.ClearErrors(String)
-- uid: BionicCode.Utilities.Net.ViewModel.ClearErrors*
-  name: ClearErrors
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_ClearErrors_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.ClearErrors
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.ClearErrors
-  nameWithType: ViewModel.ClearErrors
-- uid: BionicCode.Utilities.Net.ViewModel.CreateProgressReporterFromCurrentThread
-  name: CreateProgressReporterFromCurrentThread()
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_CreateProgressReporterFromCurrentThread
-  commentId: M:BionicCode.Utilities.Net.ViewModel.CreateProgressReporterFromCurrentThread
-  fullName: BionicCode.Utilities.Net.ViewModel.CreateProgressReporterFromCurrentThread()
-  nameWithType: ViewModel.CreateProgressReporterFromCurrentThread()
-- uid: BionicCode.Utilities.Net.ViewModel.CreateProgressReporterFromCurrentThread*
-  name: CreateProgressReporterFromCurrentThread
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_CreateProgressReporterFromCurrentThread_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.CreateProgressReporterFromCurrentThread
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.CreateProgressReporterFromCurrentThread
-  nameWithType: ViewModel.CreateProgressReporterFromCurrentThread
 - uid: BionicCode.Utilities.Net.ViewModel.CreateProgressReporterFromUiThread
   name: CreateProgressReporterFromUiThread()
   href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_CreateProgressReporterFromUiThread
@@ -3005,339 +2658,3 @@ references:
   isSpec: "True"
   fullName: BionicCode.Utilities.Net.ViewModel.CreateProgressReporterFromUiThread
   nameWithType: ViewModel.CreateProgressReporterFromUiThread
-- uid: BionicCode.Utilities.Net.ViewModel.DisableIndterminateMode
-  name: DisableIndterminateMode
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_DisableIndterminateMode
-  commentId: F:BionicCode.Utilities.Net.ViewModel.DisableIndterminateMode
-  fullName: BionicCode.Utilities.Net.ViewModel.DisableIndterminateMode
-  nameWithType: ViewModel.DisableIndterminateMode
-- uid: BionicCode.Utilities.Net.ViewModel.EnableIndterminateMode
-  name: EnableIndterminateMode
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_EnableIndterminateMode
-  commentId: F:BionicCode.Utilities.Net.ViewModel.EnableIndterminateMode
-  fullName: BionicCode.Utilities.Net.ViewModel.EnableIndterminateMode
-  nameWithType: ViewModel.EnableIndterminateMode
-- uid: BionicCode.Utilities.Net.ViewModel.ErrorsChanged
-  name: ErrorsChanged
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_ErrorsChanged
-  commentId: E:BionicCode.Utilities.Net.ViewModel.ErrorsChanged
-  fullName: BionicCode.Utilities.Net.ViewModel.ErrorsChanged
-  nameWithType: ViewModel.ErrorsChanged
-- uid: BionicCode.Utilities.Net.ViewModel.GetErrors(System.String)
-  name: GetErrors(String)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_GetErrors_System_String_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.GetErrors(System.String)
-  fullName: BionicCode.Utilities.Net.ViewModel.GetErrors(System.String)
-  nameWithType: ViewModel.GetErrors(String)
-- uid: BionicCode.Utilities.Net.ViewModel.GetErrors*
-  name: GetErrors
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_GetErrors_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.GetErrors
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.GetErrors
-  nameWithType: ViewModel.GetErrors
-- uid: BionicCode.Utilities.Net.ViewModel.GetPropertyErrors(System.String)
-  name: GetPropertyErrors(String)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_GetPropertyErrors_System_String_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.GetPropertyErrors(System.String)
-  fullName: BionicCode.Utilities.Net.ViewModel.GetPropertyErrors(System.String)
-  nameWithType: ViewModel.GetPropertyErrors(String)
-- uid: BionicCode.Utilities.Net.ViewModel.GetPropertyErrors*
-  name: GetPropertyErrors
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_GetPropertyErrors_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.GetPropertyErrors
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.GetPropertyErrors
-  nameWithType: ViewModel.GetPropertyErrors
-- uid: BionicCode.Utilities.Net.ViewModel.HasErrors
-  name: HasErrors
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_HasErrors
-  commentId: P:BionicCode.Utilities.Net.ViewModel.HasErrors
-  fullName: BionicCode.Utilities.Net.ViewModel.HasErrors
-  nameWithType: ViewModel.HasErrors
-- uid: BionicCode.Utilities.Net.ViewModel.HasErrors*
-  name: HasErrors
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_HasErrors_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.HasErrors
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.HasErrors
-  nameWithType: ViewModel.HasErrors
-- uid: BionicCode.Utilities.Net.ViewModel.IsIndeterminate
-  name: IsIndeterminate
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_IsIndeterminate
-  commentId: P:BionicCode.Utilities.Net.ViewModel.IsIndeterminate
-  fullName: BionicCode.Utilities.Net.ViewModel.IsIndeterminate
-  nameWithType: ViewModel.IsIndeterminate
-- uid: BionicCode.Utilities.Net.ViewModel.IsIndeterminate*
-  name: IsIndeterminate
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_IsIndeterminate_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.IsIndeterminate
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.IsIndeterminate
-  nameWithType: ViewModel.IsIndeterminate
-- uid: BionicCode.Utilities.Net.ViewModel.IsPropertyAttributeValid*
-  name: IsPropertyAttributeValid
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_IsPropertyAttributeValid_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.IsPropertyAttributeValid
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.IsPropertyAttributeValid
-  nameWithType: ViewModel.IsPropertyAttributeValid
-- uid: BionicCode.Utilities.Net.ViewModel.IsPropertyAttributeValid``1(``0,System.String)
-  name: IsPropertyAttributeValid<TValue>(TValue, String)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_IsPropertyAttributeValid__1___0_System_String_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.IsPropertyAttributeValid``1(``0,System.String)
-  name.vb: IsPropertyAttributeValid(Of TValue)(TValue, String)
-  fullName: BionicCode.Utilities.Net.ViewModel.IsPropertyAttributeValid<TValue>(TValue, System.String)
-  fullName.vb: BionicCode.Utilities.Net.ViewModel.IsPropertyAttributeValid(Of TValue)(TValue, System.String)
-  nameWithType: ViewModel.IsPropertyAttributeValid<TValue>(TValue, String)
-  nameWithType.vb: ViewModel.IsPropertyAttributeValid(Of TValue)(TValue, String)
-- uid: BionicCode.Utilities.Net.ViewModel.IsReportingProgress
-  name: IsReportingProgress
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_IsReportingProgress
-  commentId: P:BionicCode.Utilities.Net.ViewModel.IsReportingProgress
-  fullName: BionicCode.Utilities.Net.ViewModel.IsReportingProgress
-  nameWithType: ViewModel.IsReportingProgress
-- uid: BionicCode.Utilities.Net.ViewModel.IsReportingProgress*
-  name: IsReportingProgress
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_IsReportingProgress_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.IsReportingProgress
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.IsReportingProgress
-  nameWithType: ViewModel.IsReportingProgress
-- uid: BionicCode.Utilities.Net.ViewModel.IsValueValid*
-  name: IsValueValid
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_IsValueValid_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.IsValueValid
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.IsValueValid
-  nameWithType: ViewModel.IsValueValid
-- uid: BionicCode.Utilities.Net.ViewModel.IsValueValid``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}},System.String)
-  name: IsValueValid<TValue>(TValue, Func<TValue, (Boolean IsValid, IEnumerable<Object> ErrorMessages)>, String)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_IsValueValid__1___0_System_Func___0_System_ValueTuple_System_Boolean_System_Collections_Generic_IEnumerable_System_Object____System_String_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.IsValueValid``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}},System.String)
-  name.vb: IsValueValid(Of TValue)(TValue, Func(Of TValue, (IsValid As Boolean, ErrorMessages As IEnumerable(Of Object))(Of Boolean, IEnumerable(Of Object))), String)
-  fullName: BionicCode.Utilities.Net.ViewModel.IsValueValid<TValue>(TValue, System.Func<TValue, System.ValueTuple<System.Boolean, System.Collections.Generic.IEnumerable<System.Object>>>, System.String)
-  fullName.vb: BionicCode.Utilities.Net.ViewModel.IsValueValid(Of TValue)(TValue, System.Func(Of TValue, System.ValueTuple(Of System.Boolean, System.Collections.Generic.IEnumerable(Of System.Object))), System.String)
-  nameWithType: ViewModel.IsValueValid<TValue>(TValue, Func<TValue, (Boolean IsValid, IEnumerable<Object> ErrorMessages)>, String)
-  nameWithType.vb: ViewModel.IsValueValid(Of TValue)(TValue, Func(Of TValue, (IsValid As Boolean, ErrorMessages As IEnumerable(Of Object))(Of Boolean, IEnumerable(Of Object))), String)
-- uid: BionicCode.Utilities.Net.ViewModel.IsValueValidAsync*
-  name: IsValueValidAsync
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_IsValueValidAsync_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.IsValueValidAsync
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.IsValueValidAsync
-  nameWithType: ViewModel.IsValueValidAsync
-- uid: BionicCode.Utilities.Net.ViewModel.IsValueValidAsync``1(``0,System.Func{``0,System.Threading.Tasks.Task{System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}}},System.String)
-  name: IsValueValidAsync<TValue>(TValue, Func<TValue, Task<(Boolean IsValid, IEnumerable<Object> ErrorMessages)>>, String)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_IsValueValidAsync__1___0_System_Func___0_System_Threading_Tasks_Task_System_ValueTuple_System_Boolean_System_Collections_Generic_IEnumerable_System_Object_____System_String_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.IsValueValidAsync``1(``0,System.Func{``0,System.Threading.Tasks.Task{System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}}},System.String)
-  name.vb: IsValueValidAsync(Of TValue)(TValue, Func(Of TValue, Task(Of (IsValid As Boolean, ErrorMessages As IEnumerable(Of Object))(Of Boolean, IEnumerable(Of Object)))), String)
-  fullName: BionicCode.Utilities.Net.ViewModel.IsValueValidAsync<TValue>(TValue, System.Func<TValue, System.Threading.Tasks.Task<System.ValueTuple<System.Boolean, System.Collections.Generic.IEnumerable<System.Object>>>>, System.String)
-  fullName.vb: BionicCode.Utilities.Net.ViewModel.IsValueValidAsync(Of TValue)(TValue, System.Func(Of TValue, System.Threading.Tasks.Task(Of System.ValueTuple(Of System.Boolean, System.Collections.Generic.IEnumerable(Of System.Object)))), System.String)
-  nameWithType: ViewModel.IsValueValidAsync<TValue>(TValue, Func<TValue, Task<(Boolean IsValid, IEnumerable<Object> ErrorMessages)>>, String)
-  nameWithType.vb: ViewModel.IsValueValidAsync(Of TValue)(TValue, Func(Of TValue, Task(Of (IsValid As Boolean, ErrorMessages As IEnumerable(Of Object))(Of Boolean, IEnumerable(Of Object)))), String)
-- uid: BionicCode.Utilities.Net.ViewModel.OnErrorsChanged(System.String)
-  name: OnErrorsChanged(String)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_OnErrorsChanged_System_String_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.OnErrorsChanged(System.String)
-  fullName: BionicCode.Utilities.Net.ViewModel.OnErrorsChanged(System.String)
-  nameWithType: ViewModel.OnErrorsChanged(String)
-- uid: BionicCode.Utilities.Net.ViewModel.OnErrorsChanged*
-  name: OnErrorsChanged
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_OnErrorsChanged_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.OnErrorsChanged
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.OnErrorsChanged
-  nameWithType: ViewModel.OnErrorsChanged
-- uid: BionicCode.Utilities.Net.ViewModel.OnProgress(BionicCode.Utilities.Net.ProgressData)
-  name: OnProgress(ProgressData)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_OnProgress_BionicCode_Utilities_Net_ProgressData_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.OnProgress(BionicCode.Utilities.Net.ProgressData)
-  fullName: BionicCode.Utilities.Net.ViewModel.OnProgress(BionicCode.Utilities.Net.ProgressData)
-  nameWithType: ViewModel.OnProgress(ProgressData)
-- uid: BionicCode.Utilities.Net.ViewModel.OnProgress*
-  name: OnProgress
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_OnProgress_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.OnProgress
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.OnProgress
-  nameWithType: ViewModel.OnProgress
-- uid: BionicCode.Utilities.Net.ViewModel.OnProgressChanged(System.Double,System.Double)
-  name: OnProgressChanged(Double, Double)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_OnProgressChanged_System_Double_System_Double_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.OnProgressChanged(System.Double,System.Double)
-  fullName: BionicCode.Utilities.Net.ViewModel.OnProgressChanged(System.Double, System.Double)
-  nameWithType: ViewModel.OnProgressChanged(Double, Double)
-- uid: BionicCode.Utilities.Net.ViewModel.OnProgressChanged(System.Double,System.Double,System.String)
-  name: OnProgressChanged(Double, Double, String)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_OnProgressChanged_System_Double_System_Double_System_String_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.OnProgressChanged(System.Double,System.Double,System.String)
-  fullName: BionicCode.Utilities.Net.ViewModel.OnProgressChanged(System.Double, System.Double, System.String)
-  nameWithType: ViewModel.OnProgressChanged(Double, Double, String)
-- uid: BionicCode.Utilities.Net.ViewModel.OnProgressChanged*
-  name: OnProgressChanged
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_OnProgressChanged_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.OnProgressChanged
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.OnProgressChanged
-  nameWithType: ViewModel.OnProgressChanged
-- uid: BionicCode.Utilities.Net.ViewModel.OnPropertyChanged(System.Object,System.Object,System.String)
-  name: OnPropertyChanged(Object, Object, String)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_OnPropertyChanged_System_Object_System_Object_System_String_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.OnPropertyChanged(System.Object,System.Object,System.String)
-  fullName: BionicCode.Utilities.Net.ViewModel.OnPropertyChanged(System.Object, System.Object, System.String)
-  nameWithType: ViewModel.OnPropertyChanged(Object, Object, String)
-- uid: BionicCode.Utilities.Net.ViewModel.OnPropertyChanged(System.String)
-  name: OnPropertyChanged(String)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_OnPropertyChanged_System_String_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.OnPropertyChanged(System.String)
-  fullName: BionicCode.Utilities.Net.ViewModel.OnPropertyChanged(System.String)
-  nameWithType: ViewModel.OnPropertyChanged(String)
-- uid: BionicCode.Utilities.Net.ViewModel.OnPropertyChanged*
-  name: OnPropertyChanged
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_OnPropertyChanged_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.OnPropertyChanged
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.OnPropertyChanged
-  nameWithType: ViewModel.OnPropertyChanged
-- uid: BionicCode.Utilities.Net.ViewModel.ProgressChanged
-  name: ProgressChanged
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_ProgressChanged
-  commentId: E:BionicCode.Utilities.Net.ViewModel.ProgressChanged
-  fullName: BionicCode.Utilities.Net.ViewModel.ProgressChanged
-  nameWithType: ViewModel.ProgressChanged
-- uid: BionicCode.Utilities.Net.ViewModel.ProgressText
-  name: ProgressText
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_ProgressText
-  commentId: P:BionicCode.Utilities.Net.ViewModel.ProgressText
-  fullName: BionicCode.Utilities.Net.ViewModel.ProgressText
-  nameWithType: ViewModel.ProgressText
-- uid: BionicCode.Utilities.Net.ViewModel.ProgressText*
-  name: ProgressText
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_ProgressText_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.ProgressText
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.ProgressText
-  nameWithType: ViewModel.ProgressText
-- uid: BionicCode.Utilities.Net.ViewModel.ProgressValue
-  name: ProgressValue
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_ProgressValue
-  commentId: P:BionicCode.Utilities.Net.ViewModel.ProgressValue
-  fullName: BionicCode.Utilities.Net.ViewModel.ProgressValue
-  nameWithType: ViewModel.ProgressValue
-- uid: BionicCode.Utilities.Net.ViewModel.ProgressValue*
-  name: ProgressValue
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_ProgressValue_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.ProgressValue
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.ProgressValue
-  nameWithType: ViewModel.ProgressValue
-- uid: BionicCode.Utilities.Net.ViewModel.PropertyChanged
-  name: PropertyChanged
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_PropertyChanged
-  commentId: E:BionicCode.Utilities.Net.ViewModel.PropertyChanged
-  fullName: BionicCode.Utilities.Net.ViewModel.PropertyChanged
-  nameWithType: ViewModel.PropertyChanged
-- uid: BionicCode.Utilities.Net.ViewModel.PropertyHasError(System.String)
-  name: PropertyHasError(String)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_PropertyHasError_System_String_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.PropertyHasError(System.String)
-  fullName: BionicCode.Utilities.Net.ViewModel.PropertyHasError(System.String)
-  nameWithType: ViewModel.PropertyHasError(String)
-- uid: BionicCode.Utilities.Net.ViewModel.PropertyHasError*
-  name: PropertyHasError
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_PropertyHasError_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.PropertyHasError
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.PropertyHasError
-  nameWithType: ViewModel.PropertyHasError
-- uid: BionicCode.Utilities.Net.ViewModel.PropertyValueChanged
-  name: PropertyValueChanged
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_PropertyValueChanged
-  commentId: E:BionicCode.Utilities.Net.ViewModel.PropertyValueChanged
-  fullName: BionicCode.Utilities.Net.ViewModel.PropertyValueChanged
-  nameWithType: ViewModel.PropertyValueChanged
-- uid: BionicCode.Utilities.Net.ViewModel.SetBackingFieldDelegate`1
-  name: ViewModel.SetBackingFieldDelegate<TValue>
-  href: api/BionicCode.Utilities.Net.ViewModel.SetBackingFieldDelegate-1.html
-  commentId: T:BionicCode.Utilities.Net.ViewModel.SetBackingFieldDelegate`1
-  name.vb: ViewModel.SetBackingFieldDelegate(Of TValue)
-  fullName: BionicCode.Utilities.Net.ViewModel.SetBackingFieldDelegate<TValue>
-  fullName.vb: BionicCode.Utilities.Net.ViewModel.SetBackingFieldDelegate(Of TValue)
-  nameWithType: ViewModel.SetBackingFieldDelegate<TValue>
-  nameWithType.vb: ViewModel.SetBackingFieldDelegate(Of TValue)
-- uid: BionicCode.Utilities.Net.ViewModel.TrySetValue*
-  name: TrySetValue
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_TrySetValue_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.TrySetValue
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.TrySetValue
-  nameWithType: ViewModel.TrySetValue
-- uid: BionicCode.Utilities.Net.ViewModel.TrySetValue``1(``0,``0@,System.Boolean,System.Collections.Generic.IEqualityComparer{``0},System.String)
-  name: TrySetValue<TValue>(TValue, ref TValue, Boolean, IEqualityComparer<TValue>, String)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_TrySetValue__1___0___0__System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.TrySetValue``1(``0,``0@,System.Boolean,System.Collections.Generic.IEqualityComparer{``0},System.String)
-  name.vb: TrySetValue(Of TValue)(TValue, ByRef TValue, Boolean, IEqualityComparer(Of TValue), String)
-  fullName: BionicCode.Utilities.Net.ViewModel.TrySetValue<TValue>(TValue, ref TValue, System.Boolean, System.Collections.Generic.IEqualityComparer<TValue>, System.String)
-  fullName.vb: BionicCode.Utilities.Net.ViewModel.TrySetValue(Of TValue)(TValue, ByRef TValue, System.Boolean, System.Collections.Generic.IEqualityComparer(Of TValue), System.String)
-  nameWithType: ViewModel.TrySetValue<TValue>(TValue, ref TValue, Boolean, IEqualityComparer<TValue>, String)
-  nameWithType.vb: ViewModel.TrySetValue(Of TValue)(TValue, ByRef TValue, Boolean, IEqualityComparer(Of TValue), String)
-- uid: BionicCode.Utilities.Net.ViewModel.TrySetValue``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}},``0@,System.Boolean,System.Boolean,System.Boolean,System.Collections.Generic.IEqualityComparer{``0},System.String)
-  name: TrySetValue<TValue>(TValue, Func<TValue, (Boolean IsValid, IEnumerable<Object> ErrorMessages)>, ref TValue, Boolean, Boolean, Boolean, IEqualityComparer<TValue>, String)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_TrySetValue__1___0_System_Func___0_System_ValueTuple_System_Boolean_System_Collections_Generic_IEnumerable_System_Object______0__System_Boolean_System_Boolean_System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.TrySetValue``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}},``0@,System.Boolean,System.Boolean,System.Boolean,System.Collections.Generic.IEqualityComparer{``0},System.String)
-  name.vb: TrySetValue(Of TValue)(TValue, Func(Of TValue, (IsValid As Boolean, ErrorMessages As IEnumerable(Of Object))(Of Boolean, IEnumerable(Of Object))), ByRef TValue, Boolean, Boolean, Boolean, IEqualityComparer(Of TValue), String)
-  fullName: BionicCode.Utilities.Net.ViewModel.TrySetValue<TValue>(TValue, System.Func<TValue, System.ValueTuple<System.Boolean, System.Collections.Generic.IEnumerable<System.Object>>>, ref TValue, System.Boolean, System.Boolean, System.Boolean, System.Collections.Generic.IEqualityComparer<TValue>, System.String)
-  fullName.vb: BionicCode.Utilities.Net.ViewModel.TrySetValue(Of TValue)(TValue, System.Func(Of TValue, System.ValueTuple(Of System.Boolean, System.Collections.Generic.IEnumerable(Of System.Object))), ByRef TValue, System.Boolean, System.Boolean, System.Boolean, System.Collections.Generic.IEqualityComparer(Of TValue), System.String)
-  nameWithType: ViewModel.TrySetValue<TValue>(TValue, Func<TValue, (Boolean IsValid, IEnumerable<Object> ErrorMessages)>, ref TValue, Boolean, Boolean, Boolean, IEqualityComparer<TValue>, String)
-  nameWithType.vb: ViewModel.TrySetValue(Of TValue)(TValue, Func(Of TValue, (IsValid As Boolean, ErrorMessages As IEnumerable(Of Object))(Of Boolean, IEnumerable(Of Object))), ByRef TValue, Boolean, Boolean, Boolean, IEqualityComparer(Of TValue), String)
-- uid: BionicCode.Utilities.Net.ViewModel.TrySetValue``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.String}}},``0@,System.Boolean,System.Boolean,System.Boolean,System.Collections.Generic.IEqualityComparer{``0},System.String)
-  name: TrySetValue<TValue>(TValue, Func<TValue, (Boolean IsValid, IEnumerable<String> ErrorMessages)>, ref TValue, Boolean, Boolean, Boolean, IEqualityComparer<TValue>, String)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_TrySetValue__1___0_System_Func___0_System_ValueTuple_System_Boolean_System_Collections_Generic_IEnumerable_System_String______0__System_Boolean_System_Boolean_System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.TrySetValue``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.String}}},``0@,System.Boolean,System.Boolean,System.Boolean,System.Collections.Generic.IEqualityComparer{``0},System.String)
-  name.vb: TrySetValue(Of TValue)(TValue, Func(Of TValue, (IsValid As Boolean, ErrorMessages As IEnumerable(Of String))(Of Boolean, IEnumerable(Of String))), ByRef TValue, Boolean, Boolean, Boolean, IEqualityComparer(Of TValue), String)
-  fullName: BionicCode.Utilities.Net.ViewModel.TrySetValue<TValue>(TValue, System.Func<TValue, System.ValueTuple<System.Boolean, System.Collections.Generic.IEnumerable<System.String>>>, ref TValue, System.Boolean, System.Boolean, System.Boolean, System.Collections.Generic.IEqualityComparer<TValue>, System.String)
-  fullName.vb: BionicCode.Utilities.Net.ViewModel.TrySetValue(Of TValue)(TValue, System.Func(Of TValue, System.ValueTuple(Of System.Boolean, System.Collections.Generic.IEnumerable(Of System.String))), ByRef TValue, System.Boolean, System.Boolean, System.Boolean, System.Collections.Generic.IEqualityComparer(Of TValue), System.String)
-  nameWithType: ViewModel.TrySetValue<TValue>(TValue, Func<TValue, (Boolean IsValid, IEnumerable<String> ErrorMessages)>, ref TValue, Boolean, Boolean, Boolean, IEqualityComparer<TValue>, String)
-  nameWithType.vb: ViewModel.TrySetValue(Of TValue)(TValue, Func(Of TValue, (IsValid As Boolean, ErrorMessages As IEnumerable(Of String))(Of Boolean, IEnumerable(Of String))), ByRef TValue, Boolean, Boolean, Boolean, IEqualityComparer(Of TValue), String)
-- uid: BionicCode.Utilities.Net.ViewModel.TrySetValueAsync*
-  name: TrySetValueAsync
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_TrySetValueAsync_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.TrySetValueAsync
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.TrySetValueAsync
-  nameWithType: ViewModel.TrySetValueAsync
-- uid: BionicCode.Utilities.Net.ViewModel.TrySetValueAsync``1(``0,``0,System.Func{``0,System.Threading.Tasks.Task{System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}}},BionicCode.Utilities.Net.ViewModel.SetBackingFieldDelegate{``0},System.Boolean,System.Boolean,System.Boolean,System.Collections.Generic.IEqualityComparer{``0},System.String)
-  name: TrySetValueAsync<TValue>(TValue, TValue, Func<TValue, Task<(Boolean IsValid, IEnumerable<Object> ErrorMessages)>>, ViewModel.SetBackingFieldDelegate<TValue>, Boolean, Boolean, Boolean, IEqualityComparer<TValue>, String)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_TrySetValueAsync__1___0___0_System_Func___0_System_Threading_Tasks_Task_System_ValueTuple_System_Boolean_System_Collections_Generic_IEnumerable_System_Object_____BionicCode_Utilities_Net_ViewModel_SetBackingFieldDelegate___0__System_Boolean_System_Boolean_System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.TrySetValueAsync``1(``0,``0,System.Func{``0,System.Threading.Tasks.Task{System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}}},BionicCode.Utilities.Net.ViewModel.SetBackingFieldDelegate{``0},System.Boolean,System.Boolean,System.Boolean,System.Collections.Generic.IEqualityComparer{``0},System.String)
-  name.vb: TrySetValueAsync(Of TValue)(TValue, TValue, Func(Of TValue, Task(Of (IsValid As Boolean, ErrorMessages As IEnumerable(Of Object))(Of Boolean, IEnumerable(Of Object)))), ViewModel.SetBackingFieldDelegate(Of TValue), Boolean, Boolean, Boolean, IEqualityComparer(Of TValue), String)
-  fullName: BionicCode.Utilities.Net.ViewModel.TrySetValueAsync<TValue>(TValue, TValue, System.Func<TValue, System.Threading.Tasks.Task<System.ValueTuple<System.Boolean, System.Collections.Generic.IEnumerable<System.Object>>>>, BionicCode.Utilities.Net.ViewModel.SetBackingFieldDelegate<TValue>, System.Boolean, System.Boolean, System.Boolean, System.Collections.Generic.IEqualityComparer<TValue>, System.String)
-  fullName.vb: BionicCode.Utilities.Net.ViewModel.TrySetValueAsync(Of TValue)(TValue, TValue, System.Func(Of TValue, System.Threading.Tasks.Task(Of System.ValueTuple(Of System.Boolean, System.Collections.Generic.IEnumerable(Of System.Object)))), BionicCode.Utilities.Net.ViewModel.SetBackingFieldDelegate(Of TValue), System.Boolean, System.Boolean, System.Boolean, System.Collections.Generic.IEqualityComparer(Of TValue), System.String)
-  nameWithType: ViewModel.TrySetValueAsync<TValue>(TValue, TValue, Func<TValue, Task<(Boolean IsValid, IEnumerable<Object> ErrorMessages)>>, ViewModel.SetBackingFieldDelegate<TValue>, Boolean, Boolean, Boolean, IEqualityComparer<TValue>, String)
-  nameWithType.vb: ViewModel.TrySetValueAsync(Of TValue)(TValue, TValue, Func(Of TValue, Task(Of (IsValid As Boolean, ErrorMessages As IEnumerable(Of Object))(Of Boolean, IEnumerable(Of Object)))), ViewModel.SetBackingFieldDelegate(Of TValue), Boolean, Boolean, Boolean, IEqualityComparer(Of TValue), String)
-- uid: BionicCode.Utilities.Net.ViewModel.TrySetValueSilent*
-  name: TrySetValueSilent
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_TrySetValueSilent_
-  commentId: Overload:BionicCode.Utilities.Net.ViewModel.TrySetValueSilent
-  isSpec: "True"
-  fullName: BionicCode.Utilities.Net.ViewModel.TrySetValueSilent
-  nameWithType: ViewModel.TrySetValueSilent
-- uid: BionicCode.Utilities.Net.ViewModel.TrySetValueSilent``1(``0,``0@,System.Boolean,System.Collections.Generic.IEqualityComparer{``0},System.String)
-  name: TrySetValueSilent<TValue>(TValue, ref TValue, Boolean, IEqualityComparer<TValue>, String)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_TrySetValueSilent__1___0___0__System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.TrySetValueSilent``1(``0,``0@,System.Boolean,System.Collections.Generic.IEqualityComparer{``0},System.String)
-  name.vb: TrySetValueSilent(Of TValue)(TValue, ByRef TValue, Boolean, IEqualityComparer(Of TValue), String)
-  fullName: BionicCode.Utilities.Net.ViewModel.TrySetValueSilent<TValue>(TValue, ref TValue, System.Boolean, System.Collections.Generic.IEqualityComparer<TValue>, System.String)
-  fullName.vb: BionicCode.Utilities.Net.ViewModel.TrySetValueSilent(Of TValue)(TValue, ByRef TValue, System.Boolean, System.Collections.Generic.IEqualityComparer(Of TValue), System.String)
-  nameWithType: ViewModel.TrySetValueSilent<TValue>(TValue, ref TValue, Boolean, IEqualityComparer<TValue>, String)
-  nameWithType.vb: ViewModel.TrySetValueSilent(Of TValue)(TValue, ByRef TValue, Boolean, IEqualityComparer(Of TValue), String)
-- uid: BionicCode.Utilities.Net.ViewModel.TrySetValueSilent``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}},``0@,System.Boolean,System.Boolean,System.Boolean,System.Collections.Generic.IEqualityComparer{``0},System.String)
-  name: TrySetValueSilent<TValue>(TValue, Func<TValue, (Boolean IsValid, IEnumerable<Object> ErrorMessages)>, ref TValue, Boolean, Boolean, Boolean, IEqualityComparer<TValue>, String)
-  href: api/BionicCode.Utilities.Net.ViewModel.html#BionicCode_Utilities_Net_ViewModel_TrySetValueSilent__1___0_System_Func___0_System_ValueTuple_System_Boolean_System_Collections_Generic_IEnumerable_System_Object______0__System_Boolean_System_Boolean_System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String_
-  commentId: M:BionicCode.Utilities.Net.ViewModel.TrySetValueSilent``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}},``0@,System.Boolean,System.Boolean,System.Boolean,System.Collections.Generic.IEqualityComparer{``0},System.String)
-  name.vb: TrySetValueSilent(Of TValue)(TValue, Func(Of TValue, (IsValid As Boolean, ErrorMessages As IEnumerable(Of Object))(Of Boolean, IEnumerable(Of Object))), ByRef TValue, Boolean, Boolean, Boolean, IEqualityComparer(Of TValue), String)
-  fullName: BionicCode.Utilities.Net.ViewModel.TrySetValueSilent<TValue>(TValue, System.Func<TValue, System.ValueTuple<System.Boolean, System.Collections.Generic.IEnumerable<System.Object>>>, ref TValue, System.Boolean, System.Boolean, System.Boolean, System.Collections.Generic.IEqualityComparer<TValue>, System.String)
-  fullName.vb: BionicCode.Utilities.Net.ViewModel.TrySetValueSilent(Of TValue)(TValue, System.Func(Of TValue, System.ValueTuple(Of System.Boolean, System.Collections.Generic.IEnumerable(Of System.Object))), ByRef TValue, System.Boolean, System.Boolean, System.Boolean, System.Collections.Generic.IEqualityComparer(Of TValue), System.String)
-  nameWithType: ViewModel.TrySetValueSilent<TValue>(TValue, Func<TValue, (Boolean IsValid, IEnumerable<Object> ErrorMessages)>, ref TValue, Boolean, Boolean, Boolean, IEqualityComparer<TValue>, String)
-  nameWithType.vb: ViewModel.TrySetValueSilent(Of TValue)(TValue, Func(Of TValue, (IsValid As Boolean, ErrorMessages As IEnumerable(Of Object))(Of Boolean, IEnumerable(Of Object))), ByRef TValue, Boolean, Boolean, Boolean, IEqualityComparer(Of TValue), String)

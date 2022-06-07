@@ -1,6 +1,6 @@
-﻿namespace BionicCode.Utilities.UnitTest.Net.Standard
+﻿namespace BionicCode.Utilities.UnitTest.Net
 {
-  using BionicCode.Utilities.UnitTest.Net.Standard.Resources;
+  using BionicCode.Utilities.UnitTest.Net.Resources;
   using System;
   using System.Linq;
   using Xunit;
@@ -73,6 +73,15 @@
       this.ViewModelImpl.SilentValidatingProperty_Old = this.ValidTextValue;
 
       eventMonitor.Should().NotRaisePropertyChangeFor(viewModel => viewModel.SilentValidatingProperty_Old);
+    }
+
+    [Fact]
+    public void SetPropertyFailsValidationAndRejectedValueDoesNotRaisePropertyChangedEvent()
+    {
+      using IMonitor<ViewModelImpl> eventMonitor = this.ViewModelImpl.Monitor();
+      this.ViewModelImpl.ValidatingPropertyRejectInvalidValue
+        = this.InvalidTextValue;
+      eventMonitor.Should().NotRaisePropertyChangeFor(viewModel => viewModel.ValidatingPropertyRejectInvalidValue, "beacuse property was set silently");
     }
 
     [Fact]

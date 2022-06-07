@@ -90,14 +90,11 @@
       <h4><a class="xref" href="BionicCode.Utilities.Net.AppSettingsConnector.html">AppSettingsConnector</a></h4>
       <section><p>Exposes a basic static API to access the AppSettings file in order to manage application settings.</p>
 </section>
-      <h4><a class="xref" href="BionicCode.Utilities.Net.AsyncRelayCommand.html">AsyncRelayCommand</a></h4>
-      <section><p>A  reusable command that encapsulates the implementation of <span class="xref">System.Windows.Input.ICommand</span> with support for async/await. Enables instant creation of an ICommand without implementing the ICommand interface for each command.
-The <a class="xref" href="BionicCode.Utilities.Net.AsyncRelayCommand.html">AsyncRelayCommand</a> accepts asynchronous command handlers.
-<span class="xref">System.Windows.Input.ICommand</span></p>
-</section>
       <h4><a class="xref" href="BionicCode.Utilities.Net.AsyncRelayCommand-1.html">AsyncRelayCommand&lt;TParam&gt;</a></h4>
-      <section><p>A reusable command that encapsulates the implementation of <span class="xref">System.Windows.Input.ICommand</span> with support for async/await. Enables instant creation of an ICommand without implementing the ICommand interface for each command.
-The <a class="xref" href="BionicCode.Utilities.Net.AsyncRelayCommand.html">AsyncRelayCommand</a> accepts asynchronous command handlers.
+      <section><p>A reusable command that encapsulates the implementation of <span class="xref">System.Windows.Input.ICommand</span> with support for async/await command delegates.
+<br>Enables instant creation of an ICommand without implementing the ICommand interface for each command.
+The <a class="xref" href="BionicCode.Utilities.Net.AsyncRelayCommand-1.html">AsyncRelayCommand&lt;TParam&gt;</a> accepts asynchronous command handlers and supports data bindng to properties like <see cref="!:IsExecuting"></see> by implementing <span class="xref">System.ComponentModel.INotifyPropertyChanged</span>.
+<br>Call and await the <span class="xref">BionicCode.Utilities.Net.Common.IAsyncRelayCommandCommon.ExecuteAsync()</span> method or one of its overloads to execute the command explicitly asynchronously.
 <span class="xref">System.Windows.Input.ICommand</span></p>
 </section>
       <h4><a class="xref" href="BionicCode.Utilities.Net.BooleanMultiValueConverter.html">BooleanMultiValueConverter</a></h4>
@@ -182,11 +179,9 @@ Supports inversion of <span class="xref">System.Byte</span>, <span class="xref">
     <h3 id="interfaces">Interfaces
   </h3>
       <h4><a class="xref" href="BionicCode.Utilities.Net.IAsyncRelayCommand.html">IAsyncRelayCommand</a></h4>
-      <section><p>Extends <span class="xref">System.Windows.Input.ICommand</span> to allow asynchronous command execution.</p>
-</section>
+      <section></section>
       <h4><a class="xref" href="BionicCode.Utilities.Net.IAsyncRelayCommand-1.html">IAsyncRelayCommand&lt;TParam&gt;</a></h4>
-      <section><p>Extends <span class="xref">System.Windows.Input.ICommand</span> to allow asynchronous command execution, where the accepted parameter of the <a class="xref" href="BionicCode.Utilities.Net.IAsyncRelayCommand-1.html#BionicCode_Utilities_Net_IAsyncRelayCommand_1_ExecuteAsync__0_">ExecuteAsync(TParam)</a> and <a class="xref" href="BionicCode.Utilities.Net.IAsyncRelayCommand-1.html#BionicCode_Utilities_Net_IAsyncRelayCommand_1_CanExecute__0_">CanExecute(TParam)</a> is strongly typed to eliminate type casting inside the registered callbacks.</p>
-</section>
+      <section></section>
       <h4><a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html">IDialogViewModel</a></h4>
       <section><p>The DataContext and binding source for the dialog Window. Implement this interface or the derived abstract <a class="xref" href="BionicCode.Utilities.Net.DialogViewModel.html">DialogViewModel</a> to transport data from the view to the view model via binding. The <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html">IDialogViewModel</a> will be the content of the dialog window. This means the corresponding DataTemplate can define e.g. an input form that can bind to the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html">IDialogViewModel</a>. Register a callback with the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html#BionicCode_Utilities_Net_IDialogViewModel_ResponseCallbackAsync">ResponseCallbackAsync</a> property to process the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html#BionicCode_Utilities_Net_IDialogViewModel_DialogResult">DialogResult</a> and the data of the <a class="xref" href="BionicCode.Utilities.Net.IDialogViewModel.html">IDialogViewModel</a>.</p>
 </section>
@@ -214,10 +209,6 @@ The event args is the view model of <a class="xref" href="BionicCode.Utilities.N
       <h4><a class="xref" href="BionicCode.Utilities.Net.InversionMode.html">InversionMode</a></h4>
       <section><p>Enumeration to set the inversion direction of the <a class="xref" href="BionicCode.Utilities.Net.InvertExtension.html">InvertExtension</a>.</p>
 </section>
-    <h3 id="delegates">Delegates
-  </h3>
-      <h4><a class="xref" href="BionicCode.Utilities.Net.ViewModel.SetBackingFieldDelegate-1.html">ViewModel.SetBackingFieldDelegate&lt;TValue&gt;</a></h4>
-      <section></section>
 </article>
           </div>
           

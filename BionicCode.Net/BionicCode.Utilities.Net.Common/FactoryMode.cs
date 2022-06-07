@@ -23,6 +23,10 @@ namespace BionicCode.Utilities.Net
     /// <summary>
     /// A new instance is created for each request
     /// </summary>
-    Transient
+    Transient,
+    /// <summary>
+    /// Create an instance that is shared iside a particular scope
+    /// </summary>
+    Scoped
   }
 }
