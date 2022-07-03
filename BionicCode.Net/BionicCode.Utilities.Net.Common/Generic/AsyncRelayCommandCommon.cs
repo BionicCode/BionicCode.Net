@@ -222,7 +222,6 @@ namespace BionicCode.Utilities.Net.Common
 
     protected AsyncRelayCommandCommon() 
     {
-      ;
     }
 
     #endregion Constructors

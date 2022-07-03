@@ -12,6 +12,7 @@
   using FluentAssertions.Events;
   using System.Threading.Tasks;
   using System.Threading;
+  using System.IO;
 
   public class AsyncCommandTest : IDisposable
   {
@@ -35,8 +36,8 @@
 
     public AsyncCommandTest()
     {
-      this.Timeout = TimeSpan.FromMilliseconds(5);
-      this.AsyncDelay = TimeSpan.FromMilliseconds(5);
+      this.Timeout = TimeSpan.FromMilliseconds(10);
+      this.AsyncDelay = TimeSpan.FromMilliseconds(15);
       this.LongRunningAsyncDelay = TimeSpan.FromSeconds(15);
       this.TestCommand = new AsyncRelayCommand<string>(ExecuteTestCommand, CanExecuteTestCommand);
       this.TestNoParamCommand = new AsyncRelayCommand(ExecuteTestNoParamCommand, CanExecuteTestNoParamCommand);
@@ -159,28 +160,32 @@
     [Fact]
     public async Task AwaitSynchronousCommand()
     {
-      TimeSpan exeutionTime = await Profiler.LogTimeAsync(() => this.TestCommand.ExecuteAsync(this.ValidCommandParameter));
+      ProfilerBatchResult profilerResult = await Profiler.LogTimeAsync(() => this.TestCommand.ExecuteAsync(this.ValidCommandParameter), 1);
+      TimeSpan exeutionTime = profilerResult.Results.First().ElapsedTime;
       exeutionTime.Milliseconds.Should().BeGreaterThanOrEqualTo(this.AsyncDelay.Milliseconds);
     }
 
     [Fact]
     public async Task AwaitSynchronousNoParamCommand()
     {
-      TimeSpan exeutionTime = await Profiler.LogTimeAsync(this.TestNoParamCommand.ExecuteAsync);
+      ProfilerBatchResult profilerResult = await Profiler.LogTimeAsync(this.TestNoParamCommand.ExecuteAsync, 1);
+      TimeSpan exeutionTime = profilerResult.Results.First().ElapsedTime;
       exeutionTime.Milliseconds.Should().BeGreaterThanOrEqualTo(this.AsyncDelay.Milliseconds);
     }
 
     [Fact]
     public async Task AwaitAsynchronousCommand()
     {
-      TimeSpan exeutionTime = await Profiler.LogTimeAsync(() => this.AsyncTestCommand.ExecuteAsync(this.ValidCommandParameter));
+      ProfilerBatchResult profilerResult = await Profiler.LogTimeAsync(() => this.AsyncTestCommand.ExecuteAsync(this.ValidCommandParameter), 1);
+      TimeSpan exeutionTime = profilerResult.Results.First().ElapsedTime;
       exeutionTime.Milliseconds.Should().BeGreaterThanOrEqualTo(this.AsyncDelay.Milliseconds);
     }
 
     [Fact]
     public async Task AwaitAsynchronousNoParamCommand()
     {
-      TimeSpan exeutionTime = await Profiler.LogTimeAsync(this.AsyncTestNoParamCommand.ExecuteAsync);
+      ProfilerBatchResult profilerResult = await Profiler.LogTimeAsync(this.AsyncTestNoParamCommand.ExecuteAsync, 1);
+      TimeSpan exeutionTime = profilerResult.Results.First().ElapsedTime;
       exeutionTime.Milliseconds.Should().BeGreaterThanOrEqualTo(this.AsyncDelay.Milliseconds);
     }
 
@@ -770,16 +775,20 @@
       cancellationTokenSource.Cancel();
     }
 
-    //[Fact]
-    //public async Task ExecutingNoParamCommandWithTimeoutMustBeCancelledOnTimeoutExpired()
-    //{
-    //  using var cancellationTokenSource = new CancellationTokenSource();
-    //  Task task = this.CancellableTestNoParamCommand.ExecuteAsync(cancellationTokenSource.Token)
-    //    .ContinueWith(task => task.Status.Should().Be(TaskStatus.Canceled));
-    //  Task.Run(async () => await task);
-    //  await Task.Delay(10);
-    //  cancellationTokenSource.Cancel();
-    //}
+    [Fact]
+    public async Task ExecutingNoParamCommandWithTimeoutMustBeCancelledOnTimeoutExpired()
+    {
+      using var cancellationTokenSource = new CancellationTokenSource();
+      ProfilerBatchResult profilerBatchResult = await Profiler.LogTimeAsync(() => this.CancellableAsyncTestNoParamCommand.ExecuteAsync(this.Timeout), 1, (result, summary) =>
+      {
+        File.WriteAllText("profiler_summary.log", summary);
+      });
+
+      ProfilerResult profilerResult = profilerBatchResult.Results.First();
+      profilerResult.ProfiledTask.Status.Should().Be(TaskStatus.Canceled);
+      profilerResult.ElapsedTime.Milliseconds.Should().BeGreaterThanOrEqualTo(this.Timeout.Milliseconds);
+      profilerResult.ElapsedTime.Should().BeLessThan(this.LongRunningAsyncDelay);
+    }
 
     //[Fact]
     //public async Task ExecutingAsyncNoParamCommandWithCancellationTokenMustBeCancelled()
