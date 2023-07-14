@@ -1,9 +1,9 @@
-﻿using System;
-using System.Globalization;
-using System.Windows.Data;
-
-namespace BionicCode.Controls.Net.Wpf.Converters
+﻿namespace BionicCode.Controls.Net.Wpf
 {
+  using System;
+  using System.Globalization;
+  using System.Windows.Data;
+
   [ValueConversion(typeof(bool), typeof(string))]
   class SwitchIsCheckedToStringConverter : IValueConverter
   {
@@ -27,8 +27,8 @@ namespace BionicCode.Controls.Net.Wpf.Converters
       }
 
       return (bool) value 
-        ? Resources.Resources.SwitchStateToggled 
-        : Resources.Resources.SwitchStateUntoggled;
+        ? Resources.SwitchStateToggled 
+        : Resources.SwitchStateUntoggled;
     }
 
     /// <summary>

@@ -1,18 +1,18 @@
-﻿#region Info
-
-// 2021/02/04  00:47
-// BionicCode.Controls.Net.Wpf
-
-#endregion
-
-using System;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Shapes;
-using BionicCode.Utilities.Net.Wpf.Extensions;
-
-namespace BionicCode.Controls.Net.Wpf
+﻿namespace BionicCode.Controls.Net.Wpf
 {
+  #region Info
+
+  // 2021/02/04  00:47
+  // BionicCode.Controls.Net.Wpf
+
+  #endregion
+
+  using System;
+  using System.Windows;
+  using System.Windows.Media;
+  using System.Windows.Shapes;
+  using BionicCode.Utilities.Net;
+
   public class VerticalDigitSegment : DigitSegment
   {
     public VerticalDigitSegment()

@@ -8,7 +8,7 @@
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using BionicCode.Utilities.Net.Wpf.Extensions;
+using BionicCode.Utilities.Net;
 
 namespace BionicCode.Controls.Net.Wpf
 {

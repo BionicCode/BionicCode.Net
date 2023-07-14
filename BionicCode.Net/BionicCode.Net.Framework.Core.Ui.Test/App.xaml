@@ -7,7 +7,7 @@
         <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/Resources/Colors.xaml" />
         <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/Resources/Constants.xaml" />
-        <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/Resources/ControlResources.xaml" />
+        <!--<ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/Resources/ControlResources.xaml" />-->
         </ResourceDictionary.MergedDictionaries>
       <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Pink"/>
       <!--<Style x:Key="{x:Static wpf:AnalogClockFace.DefaultAnalogClockFaceTimePickerStyleKey}" TargetType="wpf:AnalogClockFace" BasedOn="{StaticResource {x:Static wpf:AnalogClockFace.DefaultAnalogClockFaceTimePickerStyleKey}}">

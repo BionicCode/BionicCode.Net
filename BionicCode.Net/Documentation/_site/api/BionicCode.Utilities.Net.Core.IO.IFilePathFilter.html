@@ -1,0 +1,964 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Interface IFilePathFilter
+   | BionicCode.NET API Reference </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Interface IFilePathFilter
+   | BionicCode.NET API Reference ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../../images/logo.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../../images/BionicCode_Logo.png" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter">
+  
+  
+  <h1 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter" class="text-break">Interface IFilePathFilter
+  </h1>
+  <div class="markdown level0 summary"><p>API to enumerate the filesystem e.g., by extension</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="BionicCode.Utilities.Net.Core.IO.html">BionicCode.Utilities.Net.Core.IO</a></h6>
+  <h6><strong>Assembly</strong>: BionicCode.Utilities.Net.Core.dll</h6>
+  <h5 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IFilePathFilter</code></pre>
+  </div>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_Collections_Generic_IEnumerable_System_String__FileExtensions_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable%7BSystem.String%7D%2CFileExtensions%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Core/IO/IFilePathFilter.cs/#L241">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles*"></a>
+  <h4 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_Collections_Generic_IEnumerable_System_String__FileExtensions_System_Boolean_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},FileExtensions,System.Boolean)">EnumerateFiles(IEnumerable&lt;String&gt;, FileExtensions, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Extracts valid paths or paths with a specified extension from a collection of paths.
+The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
+will be applied to all containing files.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;FileInfo&gt; EnumerateFiles(IEnumerable&lt;string&gt; pathEntries, FileExtensions fileExtensionsToCollect, bool isIncludingSubdirectories)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><span class="parametername">pathEntries</span></td>
+        <td><p>A string collection holding folder and/ or file paths filter.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">FileExtensions</span></td>
+        <td><span class="parametername">fileExtensionsToCollect</span></td>
+        <td><p>The flagged Enum type <see cref="!:FileExtensions"></see> that defines one or more extensions to filter from the folder.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isIncludingSubdirectories</span></td>
+        <td><p>Sets the filter whether to apply to sub directories or not.
+<code>True</code> includes subdirectories and <code>False</code> ignores them.
+Is <code>false</code> by default.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.IO.FileInfo</span>&gt;</td>
+        <td><p>A enumerable collection of <span class="xref">System.IO.FileInfo</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_Collections_Generic_IEnumerable_System_String__FileExtensions_System_Boolean__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To ignore file extensions and collect all files found pass the <see cref="!:FileExtensions.Any"></see> value.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_Collections_Generic_IEnumerable_System_String__FileExtensions_System_IO_EnumerationOptions_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable%7BSystem.String%7D%2CFileExtensions%2CSystem.IO.EnumerationOptions)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Core/IO/IFilePathFilter.cs/#L98">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles*"></a>
+  <h4 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_Collections_Generic_IEnumerable_System_String__FileExtensions_System_IO_EnumerationOptions_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},FileExtensions,System.IO.EnumerationOptions)">EnumerateFiles(IEnumerable&lt;String&gt;, FileExtensions, EnumerationOptions)</h4>
+  <div class="markdown level1 summary"><p>Extracts valid paths or paths with a specified extension from a collection of paths.
+The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
+will be applied to all containing files.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;FileInfo&gt; EnumerateFiles(IEnumerable&lt;string&gt; pathEntries, FileExtensions fileExtensionsToCollect, EnumerationOptions enumerationOptions)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><span class="parametername">pathEntries</span></td>
+        <td><p>A string collection holding folder and/ or file paths filter.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">FileExtensions</span></td>
+        <td><span class="parametername">fileExtensionsToCollect</span></td>
+        <td><p>The flagged Enum type <see cref="!:FileExtensions"></see> that defines one or more extensions to filter from the folder.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.IO.EnumerationOptions</span></td>
+        <td><span class="parametername">enumerationOptions</span></td>
+        <td><p>An instance of <span class="xref">System.IO.EnumerationOptions</span> to configures the enumeration behavior.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.IO.FileInfo</span>&gt;</td>
+        <td><p>A enumerable collection of <span class="xref">System.IO.FileInfo</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_Collections_Generic_IEnumerable_System_String__FileExtensions_System_IO_EnumerationOptions__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To ignore file extensions and collect all files found pass the <see cref="!:FileExtensions.Any"></see> value.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_Collections_Generic_IEnumerable_System_String__System_Predicate_System_IO_FileInfo__System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable%7BSystem.String%7D%2CSystem.Predicate%7BSystem.IO.FileInfo%7D%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Core/IO/IFilePathFilter.cs/#L217">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles*"></a>
+  <h4 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_Collections_Generic_IEnumerable_System_String__System_Predicate_System_IO_FileInfo__System_Boolean_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.Boolean)">EnumerateFiles(IEnumerable&lt;String&gt;, Predicate&lt;FileInfo&gt;, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Extracts valid paths or paths with a specified extension from a collection of paths.
+The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
+will be applied to all containing files.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;FileInfo&gt; EnumerateFiles(IEnumerable&lt;string&gt; pathEntries, Predicate&lt;FileInfo&gt; filterPredicate, bool isIncludingSubdirectories)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><span class="parametername">pathEntries</span></td>
+        <td><p>A string collection holding folder and/ or file paths filter.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Predicate</span>&lt;<span class="xref">System.IO.FileInfo</span>&gt;</td>
+        <td><span class="parametername">filterPredicate</span></td>
+        <td><p>A delegate used to filter the <span class="xref">System.IO.FileInfo</span> items.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isIncludingSubdirectories</span></td>
+        <td><p>Sets the filter whether to apply to sub directories or not.
+<code>True</code> includes subdirectories and <code>False</code> ignores them.
+Is <code>false</code> by default.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.IO.FileInfo</span>&gt;</td>
+        <td><p>A enumerable collection of <span class="xref">System.IO.FileInfo</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_Collections_Generic_IEnumerable_System_String__System_Predicate_System_IO_FileInfo__System_Boolean__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To ignore file extensions and collect all files found pass the <see cref="!:FileExtensions.Any"></see> value.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_Collections_Generic_IEnumerable_System_String__System_Predicate_System_IO_FileInfo__System_IO_EnumerationOptions_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable%7BSystem.String%7D%2CSystem.Predicate%7BSystem.IO.FileInfo%7D%2CSystem.IO.EnumerationOptions)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Core/IO/IFilePathFilter.cs/#L76">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles*"></a>
+  <h4 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_Collections_Generic_IEnumerable_System_String__System_Predicate_System_IO_FileInfo__System_IO_EnumerationOptions_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)">EnumerateFiles(IEnumerable&lt;String&gt;, Predicate&lt;FileInfo&gt;, EnumerationOptions)</h4>
+  <div class="markdown level1 summary"><p>Extracts valid paths or paths with a specified extension from a collection of paths.
+The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
+will be applied to all containing files.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;FileInfo&gt; EnumerateFiles(IEnumerable&lt;string&gt; pathEntries, Predicate&lt;FileInfo&gt; filterPredicate, EnumerationOptions enumerationOptions)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><span class="parametername">pathEntries</span></td>
+        <td><p>A string collection holding folder and/ or file paths filter.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Predicate</span>&lt;<span class="xref">System.IO.FileInfo</span>&gt;</td>
+        <td><span class="parametername">filterPredicate</span></td>
+        <td><p>A delegate used to filter the <span class="xref">System.IO.FileInfo</span> items.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.IO.EnumerationOptions</span></td>
+        <td><span class="parametername">enumerationOptions</span></td>
+        <td><p>An instance of <span class="xref">System.IO.EnumerationOptions</span> to configures the enumeration behavior.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.IO.FileInfo</span>&gt;</td>
+        <td><p>A enumerable collection of <span class="xref">System.IO.FileInfo</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_Collections_Generic_IEnumerable_System_String__System_Predicate_System_IO_FileInfo__System_IO_EnumerationOptions__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To ignore file extensions and collect all files found pass the <see cref="!:FileExtensions.Any"></see> value.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_String_FileExtensions_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String%2CFileExtensions%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Core/IO/IFilePathFilter.cs/#L169">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles*"></a>
+  <h4 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_String_FileExtensions_System_Boolean_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,FileExtensions,System.Boolean)">EnumerateFiles(String, FileExtensions, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Extracts valid paths or paths with a specified extension from a collection of paths.
+The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
+will be applied to all containing files.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;FileInfo&gt; EnumerateFiles(string folderPath, FileExtensions fileExtensionsToCollect, bool isIncludingSubdirectories)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">folderPath</span></td>
+        <td><p>The path to the folder to filter.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">FileExtensions</span></td>
+        <td><span class="parametername">fileExtensionsToCollect</span></td>
+        <td><p>The flagged Enum type <see cref="!:FileExtensions"></see> that defines one or more extensions to filter from the folder.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isIncludingSubdirectories</span></td>
+        <td><p>Sets the filter whether to apply to sub directories or not.
+<code>True</code> includes subdirectories and <code>False</code> ignores them.
+Is <code>false</code> by default.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.IO.FileInfo</span>&gt;</td>
+        <td><p>A enumerable collection of <span class="xref">System.IO.FileInfo</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_String_FileExtensions_System_Boolean__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To ignore file extensions and collect all files found pass the <see cref="!:FileExtensions.Any"></see> value.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_String_FileExtensions_System_IO_EnumerationOptions_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String%2CFileExtensions%2CSystem.IO.EnumerationOptions)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Core/IO/IFilePathFilter.cs/#L32">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles*"></a>
+  <h4 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_String_FileExtensions_System_IO_EnumerationOptions_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,FileExtensions,System.IO.EnumerationOptions)">EnumerateFiles(String, FileExtensions, EnumerationOptions)</h4>
+  <div class="markdown level1 summary"><p>Extracts valid paths or paths with a specified extension from a collection of paths.
+The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
+will be applied to all containing files.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;FileInfo&gt; EnumerateFiles(string folderPath, FileExtensions fileExtensionsToCollect, EnumerationOptions enumerationOptions)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">folderPath</span></td>
+        <td><p>The path to the folder to filter.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">FileExtensions</span></td>
+        <td><span class="parametername">fileExtensionsToCollect</span></td>
+        <td><p>The flagged Enum type <see cref="!:FileExtensions"></see> that defines one or more extensions to filter from the folder.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.IO.EnumerationOptions</span></td>
+        <td><span class="parametername">enumerationOptions</span></td>
+        <td><p>An instance of <span class="xref">System.IO.EnumerationOptions</span> to configures the enumeration behavior.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.IO.FileInfo</span>&gt;</td>
+        <td><p>A enumerable collection of <span class="xref">System.IO.FileInfo</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_String_FileExtensions_System_IO_EnumerationOptions__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To ignore file extensions and collect all files found pass the <see cref="!:FileExtensions.Any"></see> value.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_String_System_Predicate_System_IO_FileInfo__System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String%2CSystem.Predicate%7BSystem.IO.FileInfo%7D%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Core/IO/IFilePathFilter.cs/#L193">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles*"></a>
+  <h4 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_String_System_Predicate_System_IO_FileInfo__System_Boolean_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.Boolean)">EnumerateFiles(String, Predicate&lt;FileInfo&gt;, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Extracts valid paths or paths with a specified extension from a collection of paths.
+The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
+will be applied to all containing files.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;FileInfo&gt; EnumerateFiles(string folderPath, Predicate&lt;FileInfo&gt; filterPredicate, bool isIncludingSubdirectories)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">folderPath</span></td>
+        <td><p>The path to the folder to filter.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Predicate</span>&lt;<span class="xref">System.IO.FileInfo</span>&gt;</td>
+        <td><span class="parametername">filterPredicate</span></td>
+        <td><p>A delegate used to filter the <span class="xref">System.IO.FileInfo</span> items.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isIncludingSubdirectories</span></td>
+        <td><p>Sets the filter whether to apply to sub directories or not.
+<code>True</code> includes subdirectories and <code>False</code> ignores them.
+Is <code>false</code> by default.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.IO.FileInfo</span>&gt;</td>
+        <td><p>A enumerable collection of <span class="xref">System.IO.FileInfo</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_String_System_Predicate_System_IO_FileInfo__System_Boolean__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To ignore file extensions and collect all files found pass the <see cref="!:FileExtensions.Any"></see> value.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_String_System_Predicate_System_IO_FileInfo__System_IO_EnumerationOptions_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String%2CSystem.Predicate%7BSystem.IO.FileInfo%7D%2CSystem.IO.EnumerationOptions)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Core/IO/IFilePathFilter.cs/#L54">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles*"></a>
+  <h4 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_String_System_Predicate_System_IO_FileInfo__System_IO_EnumerationOptions_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFiles(System.String,System.Predicate{System.IO.FileInfo},System.IO.EnumerationOptions)">EnumerateFiles(String, Predicate&lt;FileInfo&gt;, EnumerationOptions)</h4>
+  <div class="markdown level1 summary"><p>Extracts valid paths or paths with a specified extension from a collection of paths.
+The path collection can be a mix-up of files and folders. In case the path describes a folder, the extension filter
+will be applied to all containing files.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;FileInfo&gt; EnumerateFiles(string folderPath, Predicate&lt;FileInfo&gt; filterPredicate, EnumerationOptions enumerationOptions)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">folderPath</span></td>
+        <td><p>The path to the folder to filter.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Predicate</span>&lt;<span class="xref">System.IO.FileInfo</span>&gt;</td>
+        <td><span class="parametername">filterPredicate</span></td>
+        <td><p>A delegate used to filter the <span class="xref">System.IO.FileInfo</span> items.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.IO.EnumerationOptions</span></td>
+        <td><span class="parametername">enumerationOptions</span></td>
+        <td><p>An instance of <span class="xref">System.IO.EnumerationOptions</span> to configures the enumeration behavior.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.IO.FileInfo</span>&gt;</td>
+        <td><p>A enumerable collection of <span class="xref">System.IO.FileInfo</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFiles_System_String_System_Predicate_System_IO_FileInfo__System_IO_EnumerationOptions__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To ignore file extensions and collect all files found pass the <see cref="!:FileExtensions.Any"></see> value.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFileSystem_System_Collections_Generic_IEnumerable_System_String__System_Predicate_System_IO_FileSystemInfo__System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable%7BSystem.String%7D%2CSystem.Predicate%7BSystem.IO.FileSystemInfo%7D%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Core/IO/IFilePathFilter.cs/#L287">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFileSystem_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem*"></a>
+  <h4 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFileSystem_System_Collections_Generic_IEnumerable_System_String__System_Predicate_System_IO_FileSystemInfo__System_Boolean_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.Boolean)">EnumerateFileSystem(IEnumerable&lt;String&gt;, Predicate&lt;FileSystemInfo&gt;, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Extracts valid paths or paths with a specified extension from a collection of paths.
+The path collection can be a mix-up of files and folders.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;FileSystemInfo&gt; EnumerateFileSystem(IEnumerable&lt;string&gt; pathEntries, Predicate&lt;FileSystemInfo&gt; filterPredicate, bool isIncludingSubdirectories)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><span class="parametername">pathEntries</span></td>
+        <td><p>A string collection holding folder and/ or file paths filter.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Predicate</span>&lt;<span class="xref">System.IO.FileSystemInfo</span>&gt;</td>
+        <td><span class="parametername">filterPredicate</span></td>
+        <td><p>A delegate used to filter the <span class="xref">System.IO.FileSystemInfo</span> items.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isIncludingSubdirectories</span></td>
+        <td><p>Sets the filter whether to apply to sub directories or not.
+<code>True</code> includes subdirectories and <code>False</code> ignores them.
+Is <code>false</code> by default.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.IO.FileSystemInfo</span>&gt;</td>
+        <td><p>A enumerable collection of <span class="xref">System.IO.FileInfo</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFileSystem_System_Collections_Generic_IEnumerable_System_String__System_Predicate_System_IO_FileSystemInfo__System_Boolean__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To ignore file extensions and collect all files found pass the <see cref="!:FileExtensions.Any"></see> value.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFileSystem_System_Collections_Generic_IEnumerable_System_String__System_Predicate_System_IO_FileSystemInfo__System_IO_EnumerationOptions_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable%7BSystem.String%7D%2CSystem.Predicate%7BSystem.IO.FileSystemInfo%7D%2CSystem.IO.EnumerationOptions)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Core/IO/IFilePathFilter.cs/#L140">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFileSystem_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem*"></a>
+  <h4 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFileSystem_System_Collections_Generic_IEnumerable_System_String__System_Predicate_System_IO_FileSystemInfo__System_IO_EnumerationOptions_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.Collections.Generic.IEnumerable{System.String},System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)">EnumerateFileSystem(IEnumerable&lt;String&gt;, Predicate&lt;FileSystemInfo&gt;, EnumerationOptions)</h4>
+  <div class="markdown level1 summary"><p>Extracts valid paths or paths with a specified extension from a collection of paths.
+The path collection can be a mix-up of files and folders.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;FileSystemInfo&gt; EnumerateFileSystem(IEnumerable&lt;string&gt; pathEntries, Predicate&lt;FileSystemInfo&gt; filterPredicate, EnumerationOptions enumerationOptions)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><span class="parametername">pathEntries</span></td>
+        <td><p>A string collection holding folder and/ or file paths filter.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Predicate</span>&lt;<span class="xref">System.IO.FileSystemInfo</span>&gt;</td>
+        <td><span class="parametername">filterPredicate</span></td>
+        <td><p>A delegate used to filter the <span class="xref">System.IO.FileSystemInfo</span> items.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.IO.EnumerationOptions</span></td>
+        <td><span class="parametername">enumerationOptions</span></td>
+        <td><p>An instance of <span class="xref">System.IO.EnumerationOptions</span> to configures the enumeration behavior.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.IO.FileSystemInfo</span>&gt;</td>
+        <td><p>A enumerable collection of <span class="xref">System.IO.FileInfo</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFileSystem_System_Collections_Generic_IEnumerable_System_String__System_Predicate_System_IO_FileSystemInfo__System_IO_EnumerationOptions__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To ignore file extensions and collect all files found pass the <see cref="!:FileExtensions.Any"></see> value.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFileSystem_System_String_System_Predicate_System_IO_FileSystemInfo__System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.String%2CSystem.Predicate%7BSystem.IO.FileSystemInfo%7D%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Core/IO/IFilePathFilter.cs/#L264">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFileSystem_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem*"></a>
+  <h4 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFileSystem_System_String_System_Predicate_System_IO_FileSystemInfo__System_Boolean_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.Boolean)">EnumerateFileSystem(String, Predicate&lt;FileSystemInfo&gt;, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Extracts valid paths or paths with a specified extension from a collection of paths.
+The path collection can be a mix-up of files and folders.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;FileSystemInfo&gt; EnumerateFileSystem(string folderPath, Predicate&lt;FileSystemInfo&gt; filterPredicate, bool isIncludingSubdirectories)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">folderPath</span></td>
+        <td><p>The path to the folder to filter.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Predicate</span>&lt;<span class="xref">System.IO.FileSystemInfo</span>&gt;</td>
+        <td><span class="parametername">filterPredicate</span></td>
+        <td><p>A delegate used to filter the <span class="xref">System.IO.FileSystemInfo</span> items.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isIncludingSubdirectories</span></td>
+        <td><p>Sets the filter whether to apply to sub directories or not.
+<code>True</code> includes subdirectories and <code>False</code> ignores them.
+Is <code>false</code> by default.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.IO.FileSystemInfo</span>&gt;</td>
+        <td><p>A enumerable collection of <span class="xref">System.IO.FileInfo</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFileSystem_System_String_System_Predicate_System_IO_FileSystemInfo__System_Boolean__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To ignore file extensions and collect all files found pass the <see cref="!:FileExtensions.Any"></see> value.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFileSystem_System_String_System_Predicate_System_IO_FileSystemInfo__System_IO_EnumerationOptions_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.String%2CSystem.Predicate%7BSystem.IO.FileSystemInfo%7D%2CSystem.IO.EnumerationOptions)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Core/IO/IFilePathFilter.cs/#L119">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFileSystem_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem*"></a>
+  <h4 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFileSystem_System_String_System_Predicate_System_IO_FileSystemInfo__System_IO_EnumerationOptions_" data-uid="BionicCode.Utilities.Net.Core.IO.IFilePathFilter.EnumerateFileSystem(System.String,System.Predicate{System.IO.FileSystemInfo},System.IO.EnumerationOptions)">EnumerateFileSystem(String, Predicate&lt;FileSystemInfo&gt;, EnumerationOptions)</h4>
+  <div class="markdown level1 summary"><p>Extracts valid paths or paths with a specified extension from a collection of paths.
+The path collection can be a mix-up of files and folders.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;FileSystemInfo&gt; EnumerateFileSystem(string folderPath, Predicate&lt;FileSystemInfo&gt; filterPredicate, EnumerationOptions enumerationOptions)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">folderPath</span></td>
+        <td><p>The path to the folder to filter.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Predicate</span>&lt;<span class="xref">System.IO.FileSystemInfo</span>&gt;</td>
+        <td><span class="parametername">filterPredicate</span></td>
+        <td><p>A delegate used to filter the <span class="xref">System.IO.FileSystemInfo</span> items.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.IO.EnumerationOptions</span></td>
+        <td><span class="parametername">enumerationOptions</span></td>
+        <td><p>An instance of <span class="xref">System.IO.EnumerationOptions</span> to configures the enumeration behavior.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.IO.FileSystemInfo</span>&gt;</td>
+        <td><p>A enumerable collection of <span class="xref">System.IO.FileInfo</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Core_IO_IFilePathFilter_EnumerateFileSystem_System_String_System_Predicate_System_IO_FileSystemInfo__System_IO_EnumerationOptions__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To ignore file extensions and collect all files found pass the <see cref="!:FileExtensions.Any"></see> value.</p>
+</div>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.HelperExtensionsCommon.html#BionicCode_Utilities_Net_HelperExtensionsCommon_ToDictionary_System_Object_">HelperExtensionsCommon.ToDictionary(Object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.html#BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_ToDictionary_System_Object_">HelperExtensions.ToDictionary(Object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.html#BionicCode_Utilities_Net_Framework_Wpf_Extensions_HelperExtensions_ToDictionary_System_Object_">HelperExtensions.ToDictionary(Object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Uwp.Extensions.HelperExtensions.html#BionicCode_Utilities_Net_Uwp_Extensions_HelperExtensions_ToDictionary_System_Object_">HelperExtensions.ToDictionary(Object)</a>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Core_IO_IFilePathFilter.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Core.IO.IFilePathFilter%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Core/IO/IFilePathFilter.cs/#L11" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

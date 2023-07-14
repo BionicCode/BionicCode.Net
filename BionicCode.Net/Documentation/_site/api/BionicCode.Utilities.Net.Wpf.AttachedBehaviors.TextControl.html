@@ -1,0 +1,769 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class TextControl
+   | BionicCode.NET API Reference </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class TextControl
+   | BionicCode.NET API Reference ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../../images/logo.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../../images/BionicCode_Logo.png" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl">
+  
+  
+  <h1 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl" class="text-break">Class TextControl
+  </h1>
+  <div class="markdown level0 summary"><p>Attached behavior that supports dynamic text highlighting for controls derived from <see cref="!:TextBlock"></see> or <see cref="!:RichTextBox"></see>.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">TextControl</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.html">BionicCode.Utilities.Net.Wpf.AttachedBehaviors</a></h6>
+  <h6><strong>Assembly</strong>: BionicCode.Utilities.Net.Wpf.dll</h6>
+  <h5 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class TextControl : DependencyObject</code></pre>
+  </div>
+  <h3 id="fields">Fields
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/apiSpec/new?filename=BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_HighlightBackgroundProperty.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.HighlightBackgroundProperty%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/AttachedBehaviors/TextControl.cs/#L53">View Source</a>
+  </span>
+  <h4 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_HighlightBackgroundProperty" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.HighlightBackgroundProperty">HighlightBackgroundProperty</h4>
+  <div class="markdown level1 summary"><p>Attached property to define the background <see cref="!:Brush"></see> for the highlight text, which is defined by <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.HighlightRange.html">HighlightRange</a> items contained in the <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html#BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_HighlightRangesProperty">HighlightRangesProperty</a> attached property.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly DependencyProperty HighlightBackgroundProperty</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DependencyProperty</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/apiSpec/new?filename=BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_HighlightForegroundProperty.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.HighlightForegroundProperty%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/AttachedBehaviors/TextControl.cs/#L80">View Source</a>
+  </span>
+  <h4 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_HighlightForegroundProperty" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.HighlightForegroundProperty">HighlightForegroundProperty</h4>
+  <div class="markdown level1 summary"><p>Attached property to define the foreground <see cref="!:Brush"></see> for the highlight text, which is defined by <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.HighlightRange.html">HighlightRange</a> items contained in the <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html#BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_HighlightRangesProperty">HighlightRangesProperty</a> attached property.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly DependencyProperty HighlightForegroundProperty</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DependencyProperty</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/apiSpec/new?filename=BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_HighlightRangesProperty.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.HighlightRangesProperty%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/AttachedBehaviors/TextControl.cs/#L135">View Source</a>
+  </span>
+  <h4 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_HighlightRangesProperty" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.HighlightRangesProperty">HighlightRangesProperty</h4>
+  <div class="markdown level1 summary"><p>Attached property to define a <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.HighlightRangeCollection.html">HighlightRangeCollection</a> of <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.HighlightRange.html">HighlightRange</a> items. cref=&quot;HighlightRangesProperty&quot;/&gt; attached property.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly DependencyProperty HighlightRangesProperty</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DependencyProperty</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_HighlightRangesProperty_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This collection implements <span class="xref">System.Collections.Specialized.INotifyCollectionChanged</span>.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/apiSpec/new?filename=BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_IsHighlightingEnabledProperty.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.IsHighlightingEnabledProperty%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/AttachedBehaviors/TextControl.cs/#L107">View Source</a>
+  </span>
+  <h4 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_IsHighlightingEnabledProperty" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.IsHighlightingEnabledProperty">IsHighlightingEnabledProperty</h4>
+  <div class="markdown level1 summary"><p>Attached property to enable or disable the highlight attached behavior <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html">TextControl</a>. cref=&quot;HighlightRangesProperty&quot;/&gt; attached property.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly DependencyProperty IsHighlightingEnabledProperty</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DependencyProperty</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/apiSpec/new?filename=BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_TextProperty.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.TextProperty%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/AttachedBehaviors/TextControl.cs/#L27">View Source</a>
+  </span>
+  <h4 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_TextProperty" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.TextProperty">TextProperty</h4>
+  <div class="markdown level1 summary"><p>Attached property to serve as alternative text property for the <see cref="!:RichTextBox"></see> (instead of using <see cref="!:RichTextBox.Document"></see>). Optional property to use with <see cref="!:TextBlock"></see> (instead of <see cref="!:TextBlock.Text"></see>). The defined <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.HighlightRange.html">HighlightRange</a> items contained in the attached property <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html#BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_HighlightRangesProperty">HighlightRangesProperty</a> collection will always be applied to <see cref="!:TextBlock.Text"></see> and the <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html#BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_TextProperty">TextProperty</a> values.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly DependencyProperty TextProperty</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DependencyProperty</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_TextProperty_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>In case of the <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html#BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_TextProperty">TextProperty</a> being attached to a <see cref="!:RichTextBox"></see>, the string value will be converted to a <see cref="!:FlowDocument"></see> and assigned to the <see cref="!:RichTextBox.Document"></see> property.</p>
+</div>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/apiSpec/new?filename=BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_GetHighlightBackground_DependencyObject_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.GetHighlightBackground(DependencyObject)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/AttachedBehaviors/TextControl.cs/#L71">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_GetHighlightBackground_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.GetHighlightBackground*"></a>
+  <h4 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_GetHighlightBackground_DependencyObject_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.GetHighlightBackground(DependencyObject)">GetHighlightBackground(DependencyObject)</h4>
+  <div class="markdown level1 summary"><p>Get method of the attached property <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html#BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_HighlightBackgroundProperty">HighlightBackgroundProperty</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Brush GetHighlightBackground(DependencyObject attachingElement)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DependencyObject</span></td>
+        <td><span class="parametername">attachingElement</span></td>
+        <td><p>The attaching <see cref="!:TextBlock"></see> or <see cref="!:RichTextBox"></see>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Brush</span></td>
+        <td><p>The <see cref="!:Brush"></see> for the background of the highlight text ranges.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/apiSpec/new?filename=BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_GetHighlightForeground_DependencyObject_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.GetHighlightForeground(DependencyObject)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/AttachedBehaviors/TextControl.cs/#L98">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_GetHighlightForeground_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.GetHighlightForeground*"></a>
+  <h4 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_GetHighlightForeground_DependencyObject_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.GetHighlightForeground(DependencyObject)">GetHighlightForeground(DependencyObject)</h4>
+  <div class="markdown level1 summary"><p>Get method of the attached property <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html#BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_HighlightForegroundProperty">HighlightForegroundProperty</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Brush GetHighlightForeground(DependencyObject attachingElement)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DependencyObject</span></td>
+        <td><span class="parametername">attachingElement</span></td>
+        <td><p>The attaching <see cref="!:TextBlock"></see> or <see cref="!:RichTextBox"></see>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Brush</span></td>
+        <td><p>The <see cref="!:Brush"></see> for the foreground of the highlight text ranges.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/apiSpec/new?filename=BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_GetHighlightRanges_DependencyObject_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.GetHighlightRanges(DependencyObject)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/AttachedBehaviors/TextControl.cs/#L153">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_GetHighlightRanges_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.GetHighlightRanges*"></a>
+  <h4 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_GetHighlightRanges_DependencyObject_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.GetHighlightRanges(DependencyObject)">GetHighlightRanges(DependencyObject)</h4>
+  <div class="markdown level1 summary"><p>Get method of the attached property <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html#BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_HighlightRangesProperty">HighlightRangesProperty</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HighlightRangeCollection GetHighlightRanges(DependencyObject attachingElement)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DependencyObject</span></td>
+        <td><span class="parametername">attachingElement</span></td>
+        <td><p>The attaching <see cref="!:TextBlock"></see> or <see cref="!:RichTextBox"></see>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.HighlightRangeCollection.html">HighlightRangeCollection</a></td>
+        <td><p>A <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.HighlightRangeCollection.html">HighlightRangeCollection</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/apiSpec/new?filename=BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_GetIsHighlightingEnabled_DependencyObject_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.GetIsHighlightingEnabled(DependencyObject)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/AttachedBehaviors/TextControl.cs/#L125">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_GetIsHighlightingEnabled_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.GetIsHighlightingEnabled*"></a>
+  <h4 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_GetIsHighlightingEnabled_DependencyObject_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.GetIsHighlightingEnabled(DependencyObject)">GetIsHighlightingEnabled(DependencyObject)</h4>
+  <div class="markdown level1 summary"><p>Get method of the attached property <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html#BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_HighlightForegroundProperty">HighlightForegroundProperty</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool GetIsHighlightingEnabled(DependencyObject attachingElement)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DependencyObject</span></td>
+        <td><span class="parametername">attachingElement</span></td>
+        <td><p>The attaching <see cref="!:TextBlock"></see> or <see cref="!:RichTextBox"></see>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> if the the attached <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html">TextControl</a> behavior is enabled or <code>false</code> if it is disabled.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/apiSpec/new?filename=BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_GetText_DependencyObject_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.GetText(DependencyObject)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/AttachedBehaviors/TextControl.cs/#L45">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_GetText_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.GetText*"></a>
+  <h4 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_GetText_DependencyObject_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.GetText(DependencyObject)">GetText(DependencyObject)</h4>
+  <div class="markdown level1 summary"><p>Get method of the attached property <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html#BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_TextProperty">TextProperty</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string GetText(DependencyObject attachingElement)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DependencyObject</span></td>
+        <td><span class="parametername">attachingElement</span></td>
+        <td><p>The attaching <see cref="!:TextBlock"></see> or <see cref="!:RichTextBox"></see>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><p>The current text value.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/apiSpec/new?filename=BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_SetHighlightBackground_DependencyObject_Brush_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.SetHighlightBackground(DependencyObject%2CBrush)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/AttachedBehaviors/TextControl.cs/#L64">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_SetHighlightBackground_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.SetHighlightBackground*"></a>
+  <h4 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_SetHighlightBackground_DependencyObject_Brush_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.SetHighlightBackground(DependencyObject,Brush)">SetHighlightBackground(DependencyObject, Brush)</h4>
+  <div class="markdown level1 summary"><p>Set method of attached property <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html#BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_HighlightBackgroundProperty">HighlightBackgroundProperty</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void SetHighlightBackground(DependencyObject attachingElement, Brush value)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DependencyObject</span></td>
+        <td><span class="parametername">attachingElement</span></td>
+        <td><p>The attaching <see cref="!:TextBlock"></see> or <see cref="!:RichTextBox"></see>.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Brush</span></td>
+        <td><span class="parametername">value</span></td>
+        <td><p>The <see cref="!:Brush"></see> for the background of the highlight text ranges.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/apiSpec/new?filename=BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_SetHighlightForeground_DependencyObject_Brush_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.SetHighlightForeground(DependencyObject%2CBrush)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/AttachedBehaviors/TextControl.cs/#L91">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_SetHighlightForeground_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.SetHighlightForeground*"></a>
+  <h4 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_SetHighlightForeground_DependencyObject_Brush_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.SetHighlightForeground(DependencyObject,Brush)">SetHighlightForeground(DependencyObject, Brush)</h4>
+  <div class="markdown level1 summary"><p>Set method of attached property <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html#BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_HighlightForegroundProperty">HighlightForegroundProperty</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void SetHighlightForeground(DependencyObject attachingElement, Brush value)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DependencyObject</span></td>
+        <td><span class="parametername">attachingElement</span></td>
+        <td><p>The attaching <see cref="!:TextBlock"></see> or <see cref="!:RichTextBox"></see>.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Brush</span></td>
+        <td><span class="parametername">value</span></td>
+        <td><p>The <see cref="!:Brush"></see> for the foreground of the highlight text ranges.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/apiSpec/new?filename=BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_SetHighlightRanges_DependencyObject_BionicCode_Utilities_Net_Wpf_AttachedBehaviors_HighlightRangeCollection_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.SetHighlightRanges(DependencyObject%2CBionicCode.Utilities.Net.Wpf.AttachedBehaviors.HighlightRangeCollection)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/AttachedBehaviors/TextControl.cs/#L146">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_SetHighlightRanges_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.SetHighlightRanges*"></a>
+  <h4 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_SetHighlightRanges_DependencyObject_BionicCode_Utilities_Net_Wpf_AttachedBehaviors_HighlightRangeCollection_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.SetHighlightRanges(DependencyObject,BionicCode.Utilities.Net.Wpf.AttachedBehaviors.HighlightRangeCollection)">SetHighlightRanges(DependencyObject, HighlightRangeCollection)</h4>
+  <div class="markdown level1 summary"><p>Set method of attached property <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html#BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_HighlightRangesProperty">HighlightRangesProperty</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void SetHighlightRanges(DependencyObject attachingElement, HighlightRangeCollection value)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DependencyObject</span></td>
+        <td><span class="parametername">attachingElement</span></td>
+        <td><p>The attaching <see cref="!:TextBlock"></see> or <see cref="!:RichTextBox"></see>.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.HighlightRangeCollection.html">HighlightRangeCollection</a></td>
+        <td><span class="parametername">value</span></td>
+        <td><p>A <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.HighlightRangeCollection.html">HighlightRangeCollection</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/apiSpec/new?filename=BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_SetIsHighlightingEnabled_DependencyObject_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.SetIsHighlightingEnabled(DependencyObject%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/AttachedBehaviors/TextControl.cs/#L118">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_SetIsHighlightingEnabled_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.SetIsHighlightingEnabled*"></a>
+  <h4 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_SetIsHighlightingEnabled_DependencyObject_System_Boolean_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.SetIsHighlightingEnabled(DependencyObject,System.Boolean)">SetIsHighlightingEnabled(DependencyObject, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Set method of attached property <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html#BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_IsHighlightingEnabledProperty">IsHighlightingEnabledProperty</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void SetIsHighlightingEnabled(DependencyObject attachingElement, bool value)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DependencyObject</span></td>
+        <td><span class="parametername">attachingElement</span></td>
+        <td><p>The attaching <see cref="!:TextBlock"></see> or <see cref="!:RichTextBox"></see>.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">value</span></td>
+        <td><p><code>true</code> to enable the attached <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html">TextControl</a> behavior or <code>false</code> to disable it.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/apiSpec/new?filename=BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_SetText_DependencyObject_System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.SetText(DependencyObject%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/AttachedBehaviors/TextControl.cs/#L38">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_SetText_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.SetText*"></a>
+  <h4 id="BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_SetText_DependencyObject_System_String_" data-uid="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.SetText(DependencyObject,System.String)">SetText(DependencyObject, String)</h4>
+  <div class="markdown level1 summary"><p>Set method of attached property <a class="xref" href="BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl.html#BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl_TextProperty">TextProperty</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void SetText(DependencyObject attachingElement, string value)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DependencyObject</span></td>
+        <td><span class="parametername">attachingElement</span></td>
+        <td><p>The attaching <see cref="!:TextBlock"></see> or <see cref="!:RichTextBox"></see>.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">value</span></td>
+        <td><p>The text to display.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Extensions.HelperExtensions.html#BionicCode_Utilities_Net_Extensions_HelperExtensions_ToDictionary_System_Object_">HelperExtensions.ToDictionary(Object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.html#BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_ToDictionary_System_Object_">HelperExtensions.ToDictionary(Object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.html#BionicCode_Utilities_Net_Framework_Wpf_Extensions_HelperExtensions_ToDictionary_System_Object_">HelperExtensions.ToDictionary(Object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Uwp.Extensions.HelperExtensions.html#BionicCode_Utilities_Net_Uwp_Extensions_HelperExtensions_ToDictionary_System_Object_">HelperExtensions.ToDictionary(Object)</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><span><a href="https://github.com/BionicCode/BionicCode.Net#textcontrol">See advanced example</a></span></div>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/new/develop/apiSpec/new?filename=BionicCode_Utilities_Net_Wpf_AttachedBehaviors_TextControl.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Wpf.AttachedBehaviors.TextControl%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/AttachedBehaviors/TextControl.cs/#L19" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Windows;
+namespace BionicCode.Utilities.Net
+{
+  using System;
+  using System.Collections;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Reflection;
+
+#if !NETSTANDARD
+  using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
-using Popup = System.Windows.Controls.Primitives.Popup;
+using System.Windows.Controls.Primitives;
 
-namespace BionicCode.Utilities.Net.Wpf.Extensions
-{
   /// <summary>
   /// Collection of extension methods e.g. visual tree traversal
   /// </summary>
-  public static class HelperExtensions
+  public static partial class HelperExtensions
   {
     /// <summary>
     /// Traverses the visual tree towards the root until an element with a matching element name is found.
@@ -23,8 +25,13 @@ namespace BionicCode.Utilities.Net.Wpf.Extensions
     /// <param name="child"></param>
     /// <param name="resultElement"></param>
     /// <returns></returns>
+#if NET
+    public static bool TryFindVisualParentElement<TParent>(this DependencyObject child, out TParent? resultElement)
+      where TParent : DependencyObject
+#else
     public static bool TryFindVisualParentElement<TParent>(this DependencyObject child, out TParent resultElement)
       where TParent : DependencyObject
+#endif
     {
       resultElement = null;
 
@@ -46,10 +53,17 @@ namespace BionicCode.Utilities.Net.Wpf.Extensions
     /// <param name="elementName">The element name the visual parent must match.</param>
     /// <param name="resultElement"></param>
     /// <returns></returns>
+#if NET
+    public static bool TryFindVisualParentElementByName<TChild>(
+      this DependencyObject child,
+      string elementName,
+      out TChild? resultElement) where TChild : FrameworkElement
+#else
     public static bool TryFindVisualParentElementByName<TChild>(
       this DependencyObject child,
       string elementName,
       out TChild resultElement) where TChild : FrameworkElement
+#endif
     {
       resultElement = null;
 
@@ -65,45 +79,50 @@ namespace BionicCode.Utilities.Net.Wpf.Extensions
       return parentElement?.TryFindVisualParentElementByName(elementName, out resultElement) ?? false;
     }
 
-      /// <summary>
-      /// Traverses the visual tree towards the leafs until an element with a matching element type is found.
-      /// </summary>
-      /// <typeparam name="TChild">The type the visual child must match.</typeparam>
-      /// <param name="parent"></param>
-      /// <param name="resultElement"></param>
-      /// <returns></returns>
-      public static bool TryFindVisualChildElement<TChild>(this DependencyObject parent, out TChild resultElement)
-        where TChild : DependencyObject
+    /// <summary>
+    /// Traverses the visual tree towards the leafs until an element with a matching element type is found.
+    /// </summary>
+    /// <typeparam name="TChild">The type the visual child must match.</typeparam>
+    /// <param name="parent"></param>
+    /// <param name="resultElement"></param>
+    /// <returns></returns>
+#if NET
+    public static bool TryFindVisualChildElement<TChild>(this DependencyObject parent, out TChild? resultElement)
+      where TChild : DependencyObject
+#else
+    public static bool TryFindVisualChildElement<TChild>(this DependencyObject parent, out TChild resultElement)
+      where TChild : DependencyObject
+#endif
+    {
+      resultElement = null;
+
+      if (parent is System.Windows.Controls.Primitives.Popup popup)
       {
-        resultElement = null;
-
-        if (parent is Popup popup)
+        parent = popup.Child;
+        if (parent == null)
         {
-          parent = popup.Child;
-          if (parent == null)
-          {
-            return false;
-          }
+          return false;
         }
-
-        for (var childIndex = 0; childIndex < VisualTreeHelper.GetChildrenCount(parent); childIndex++)
-        {
-          DependencyObject childElement = VisualTreeHelper.GetChild(parent, childIndex);
-
-          if (childElement is TChild child)
-          {
-            resultElement = child;
-            return true;
-          }
-
-          if (childElement.TryFindVisualChildElement(out resultElement))
-          {
-            return true;
-          }
-        }
-
-        return false;
       }
+
+      for (var childIndex = 0; childIndex < VisualTreeHelper.GetChildrenCount(parent); childIndex++)
+      {
+        DependencyObject childElement = VisualTreeHelper.GetChild(parent, childIndex);
+
+        if (childElement is TChild child)
+        {
+          resultElement = child;
+          return true;
+        }
+
+        if (childElement.TryFindVisualChildElement(out resultElement))
+        {
+          return true;
+        }
+      }
+
+      return false;
+    }
 
     /// <summary>
     /// Traverses the visual tree towards the leafs until an element with a matching element name is found.
@@ -112,14 +131,21 @@ namespace BionicCode.Utilities.Net.Wpf.Extensions
     /// <param name="childElementName">The name the visual child's name must match.</param>
     /// <param name="resultElement">The found element or <c>null</c> if no matching element was found.</param>
     /// <returns><c>true</c> when an element with the specified <paramref name="childElementName"/> was found, otherwise <c>false</c>.</returns>
+#if NET
+    public static bool TryFindVisualChildElementByName<TChild>(
+      this DependencyObject parent,
+      string childElementName,
+      out TChild? resultElement) where TChild : FrameworkElement
+#else
     public static bool TryFindVisualChildElementByName<TChild>(
       this DependencyObject parent,
       string childElementName,
       out TChild resultElement) where TChild : FrameworkElement
+#endif
     {
       resultElement = null;
       
-      if (parent is Popup popup)
+      if (parent is System.Windows.Controls.Primitives.Popup popup)
       {
         parent = popup.Child;
         if (parent == null)
@@ -164,7 +190,7 @@ namespace BionicCode.Utilities.Net.Wpf.Extensions
       {
         DependencyObject childElement = VisualTreeHelper.GetChild(parent, childIndex);
 
-        if (childElement is Popup popup)
+        if (childElement is System.Windows.Controls.Primitives.Popup popup)
         {
           childElement = popup.Child;
         }
@@ -195,7 +221,7 @@ namespace BionicCode.Utilities.Net.Wpf.Extensions
       {
         DependencyObject childElement = VisualTreeHelper.GetChild(parent, childIndex);
 
-        if (childElement is Popup popup)
+        if (childElement is System.Windows.Controls.Primitives.Popup popup)
         {
           childElement = popup.Child;
         }
@@ -212,110 +238,6 @@ namespace BionicCode.Utilities.Net.Wpf.Extensions
       }
     }
 
-    /// <summary>
-    /// Coverts any type to a <see cref="Dictionary{TKey,TValue}"/>, where the <c>TKey</c> is the member name and <c>TValue</c> the member's value.
-    /// </summary>
-    /// <param name="instanceToConvert"></param>
-    /// <returns>A <see cref="Dictionary{TKey,TValue}"/>, where the <c>TKey</c> is the member name of type <see cref="string"/> and <c>TValue</c> the member's value of type <see cref="object"/>.</returns>
-    public static Dictionary<string, object> ToDictionary(this object instanceToConvert)
-    {
-      Dictionary<string, object> resultDictionary = instanceToConvert.GetType()
-        .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
-        .Where(propertyInfo => !propertyInfo.GetIndexParameters().Any())
-        .ToDictionary(
-          propertyInfo => propertyInfo.Name,
-          propertyInfo => HelperExtensions.ConvertPropertyToDictionary(propertyInfo, instanceToConvert));
-      resultDictionary.Add("IsCollection", false);
-      return resultDictionary;
-    }
-
-    private static object ConvertPropertyToDictionary(PropertyInfo propertyInfo, object owner)
-    {
-      Type propertyType = propertyInfo.PropertyType;
-      object propertyValue = propertyInfo.GetValue(owner);
-      if (propertyValue is Type)
-      {
-        return propertyValue;
-      }
-
-      // If property is a collection don't traverse collection properties but the items instead
-      if (!propertyType.Equals(typeof(string)) && typeof(IEnumerable).IsAssignableFrom(propertyType))
-      {
-        var items = new Dictionary<string, object>();
-        var enumerable = propertyInfo.GetValue(owner) as IEnumerable;
-        int index = 0;
-        foreach (object item in enumerable)
-        {
-          // If property is a string stop traversal
-          if (item.GetType().IsPrimitive || item is string)
-          {
-            items.Add(index.ToString(), item);
-          }
-          else if (item is IEnumerable enumerableItem)
-          {
-            items.Add(index.ToString(), HelperExtensions.ConvertIEnumerableToDictionary(enumerableItem));
-          }
-          else
-          {
-            Dictionary<string, object> dictionary = item.ToDictionary();
-            items.Add(index.ToString(), dictionary);
-          }
-
-          index++;
-        }
-
-        items.Add("IsCollection", true);
-        items.Add("Count", index);
-        return items;
-      }
-
-      // If property is a string stop traversal
-      if (propertyType.IsPrimitive || propertyType.Equals(typeof(string)))
-      {
-        return propertyValue;
-      }
-
-      PropertyInfo[] properties =
-        propertyType.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
-      if (properties.Any())
-      {
-        Dictionary<string, object> resultDictionary = properties.ToDictionary(
-          subtypePropertyInfo => subtypePropertyInfo.Name,
-          subtypePropertyInfo => propertyValue == null
-            ? null
-            : HelperExtensions.ConvertPropertyToDictionary(subtypePropertyInfo, propertyValue));
-        resultDictionary.Add("IsCollection", false);
-        return resultDictionary;
-      }
-
-      return propertyValue;
-    }
-
-    private static Dictionary<string, object> ConvertIEnumerableToDictionary(IEnumerable enumerable)
-    {
-      var items = new Dictionary<string, object>();
-      int index = 0;
-      foreach (object item in enumerable)
-      {
-        // If property is a string stop traversal
-        if (item.GetType().IsPrimitive || item is string)
-        {
-          items.Add(index.ToString(), item);
-        }
-        else
-        {
-          Dictionary<string, object> dictionary = item.ToDictionary();
-          items.Add(index.ToString(), dictionary);
-        }
-
-        index++;
-      }
-
-      items.Add("IsCollection", true);
-      items.Add("Count", index);
-      return items;
-    }
-
     public static UIElement CloneElement(this UIElement elementToClone)
     {
       string serializedElement = XamlWriter.Save(elementToClone);
@@ -323,7 +245,7 @@ namespace BionicCode.Utilities.Net.Wpf.Extensions
       return cloneElement;
     }
 
-    public static bool TryAssignValueToUnknownElement(this FrameworkElement frameworkElement, object value)
+    public static bool TryAssignValue(this FrameworkElement frameworkElement, object value)      
     {
       switch (frameworkElement)
       {
@@ -412,11 +334,40 @@ namespace BionicCode.Utilities.Net.Wpf.Extensions
       return true;
     }
 
-    public static System.Windows.Point ToScreenPoint(this Point cartesianPoint, double height) => new Point(cartesianPoint.X, height - cartesianPoint.Y);
+    public static System.Windows.Point ToScreenPoint(this Point cartesianPoint, double yAxisPositiveLimit) => new Point(cartesianPoint.X, yAxisPositiveLimit - cartesianPoint.Y);
 
     public static System.Windows.Point ToCartesianPoint(this Point cartesianPoint, double height) => new Point(cartesianPoint.X, height - cartesianPoint.Y);
 
     public static double ToRadians(this double angleDegrees) => angleDegrees * (Math.PI / 180);
     public static double ToDegrees(this double angleRadians) => angleRadians * (180 / Math.PI);
+
+    public static (Point MaxX, Point MinX, Point MaxY, Point MinY) GetExtremePoints(this IEnumerable<Point> points)
+    {
+      Point maxX = default;
+      Point minX = default;
+      Point maxY = default;
+      Point minY = default;
+      foreach (Point point in points)
+      {
+        if (point.X > maxX.X)
+        {
+          maxX = point;
+        }
+        if (point.X < minX.X)
+        {
+          minX = point;
+        }
+        if (point.Y > maxY.Y)
+        {
+          maxY = point;
+        }
+        if (point.Y < minY.Y)
+        {
+          minY = point;
+        }
+      }
+      return (maxX, minX, maxY, minY);
+    }
   }
+#endif
 }

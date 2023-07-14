@@ -1,15 +1,15 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-
-namespace BionicCode.Controls.Net.Wpf
+﻿namespace BionicCode.Controls.Net.Wpf
 {
+  using System;
+  using System.Windows;
+  using System.Windows.Controls;
+  using System.Windows.Controls.Primitives;
+  using System.Windows.Data;
+  using System.Windows.Input;
+  using System.Windows.Media;
+  using System.Windows.Media.Animation;
+  using System.Windows.Shapes;
+
   /// <summary>
   /// Customizable page frame that displays a collection of arbitrary data model items according to a provided <see cref="ItemsControl.ItemTemplate"/>. The items are selectable.
   /// </summary>

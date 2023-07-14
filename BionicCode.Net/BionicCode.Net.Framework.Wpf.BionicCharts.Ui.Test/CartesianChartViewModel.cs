@@ -8,7 +8,7 @@ using System.Windows.Input;
 using BionicCode.Controls.Net.Framework.Wpf.BionicCharts;
 using BionicCode.Utilities.Net.Framework.Wpf;
 using BionicCode.Utilities.Net.Framework.Wpf.Generic;
-using BionicCode.Utilities.Net.Standard.ViewModel;
+using BionicCode.Utilities.Net;
 
 namespace BionicCode.Net.Framework.Wpf.BionicCharts.Ui.Test
 {

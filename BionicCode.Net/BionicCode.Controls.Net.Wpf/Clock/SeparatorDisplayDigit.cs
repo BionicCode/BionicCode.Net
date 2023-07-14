@@ -8,7 +8,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using BionicCode.Utilities.Net.Wpf.Extensions;
+using BionicCode.Utilities.Net;
 
 namespace BionicCode.Controls.Net.Wpf
 {

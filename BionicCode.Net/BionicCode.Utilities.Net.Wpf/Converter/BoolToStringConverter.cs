@@ -1,10 +1,10 @@
-﻿using System;
-using System.Globalization;
-using System.Windows;
-using System.Windows.Data;
-
-namespace BionicCode.Utilities.Net.Wpf.Converter
+﻿namespace BionicCode.Utilities.Net
 {
+#if NET || NET461_OR_GREATER
+  using System;
+  using System.Globalization;
+  using System.Windows;
+using System.Windows.Data;
   /// <summary>
   /// Implementation of <see cref="IValueConverter"/> that converts a <see cref="bool"/> to a custom string representation e.g., convert <c>true</c> to <c>"Enabled"</c>.
   /// </summary>
@@ -62,7 +62,6 @@ namespace BionicCode.Utilities.Net.Wpf.Converter
       set => SetValue(BoolToStringConverter.FalseValueProperty, value);
     }
 
-
     /// <summary>
     /// The <see cref="DependencyProperty"/> of the <see cref="NullValue"/> property.
     /// </summary>
@@ -82,8 +81,7 @@ namespace BionicCode.Utilities.Net.Wpf.Converter
       set => SetValue(BoolToStringConverter.NullValueProperty, value);
     }
 
-
-    #region Implementation of IValueConverter
+  #region Implementation of IValueConverter
 
     /// <inheritdoc />
     public object Convert(
@@ -110,6 +108,7 @@ namespace BionicCode.Utilities.Net.Wpf.Converter
       CultureInfo culture) =>
       (value as string)?.Equals(this.TrueValue, StringComparison.OrdinalIgnoreCase) ?? false;
 
-    #endregion
+  #endregion
   }
+#endif
 }

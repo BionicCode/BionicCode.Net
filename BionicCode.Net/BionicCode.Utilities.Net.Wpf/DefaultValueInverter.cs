@@ -1,18 +1,18 @@
-﻿#region Info
-
-// //  
-// BionicCode.BionicUtilities.Net.Core.Wpf
-
-#endregion
-
-using System;
-using System.Globalization;
-using System.Windows;
-using BionicCode.Utilities.Net.Standard;
-using BionicCode.Utilities.Net.Wpf.Markup;
-
-namespace BionicCode.Utilities.Net.Wpf
+﻿namespace BionicCode.Utilities.Net
 {
+  #region Info
+
+  // //  
+  // BionicCode.BionicUtilities.Net.Core.Wpf
+
+  #endregion
+
+  using System;
+  using System.Globalization;
+  using System.Windows;
+  using BionicCode.Utilities.Net;
+  using BionicCode.Utilities.Net;
+
   /// <summary>
   /// Class that inverts a value.
   /// Supports inversion of <see cref="byte"/>, <see cref="int"/>, <see cref="double"/>, <see cref="decimal"/>, <see cref="float"/>, <see cref="bool"/> and <see cref="Visibility"/>. <para>This class can be used with the <see cref="InvertExtension"/>.</para>
@@ -81,11 +81,14 @@ namespace BionicCode.Utilities.Net.Wpf
         case byte byteValue:
           invertedValue = ~byteValue;
           break;
+
+#if NET461_OR_GREATER
         case Visibility visibilityValue:
           invertedValue = visibilityValue.Equals(Visibility.Hidden) || visibilityValue.Equals(Visibility.Collapsed)
             ? Visibility.Visible
             : Visibility.Collapsed;
           break;
+#endif
       }
 
       if (valueIsString)
@@ -95,7 +98,7 @@ namespace BionicCode.Utilities.Net.Wpf
       return invertedValue != null;
     }
 
-    #endregion Implementation of IValueInverter
+#endregion Implementation of IValueInverter
 
     private bool TryConvertStringToNumber(object value, out object numericValue)
     {

@@ -13,7 +13,7 @@ using System;
 
 namespace BionicCode.Controls.Net.Wpf
 {
-    public class CalendarEvent : BionicCode.Utilities.Net.Standard.ViewModel.ViewModel, ICalendarEvent
+    public class CalendarEvent : BionicCode.Utilities.Net.ViewModel, ICalendarEvent
     {
         #region
 

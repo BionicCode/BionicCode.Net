@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BionicCode.Utilities.Net.Standard.ViewModel;
-
-namespace BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart
+﻿namespace BionicCode.Controls.Net.Wpf
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Text;
+  using System.Threading.Tasks;
+  using BionicCode.Utilities.Net;
+
   public class CartesianChartPoint : ViewModel, ICartesianChartPoint
   {
     /// <summary>
@@ -119,12 +119,12 @@ namespace BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart
         return true;
       }
 
-      if (obj.GetType() != this.GetType())
+      if (obj.GetType() != GetType())
       {
         return false;
       }
 
-      return Equals((ICartesianChartPoint) obj);
+      return Equals((ICartesianChartPoint)obj);
     }
 
     /// <inheritdoc />
@@ -132,7 +132,7 @@ namespace BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart
     {
       unchecked
       {
-        return (this.X.GetHashCode() * 397) ^ this.Y.GetHashCode();
+        return this.X.GetHashCode() * 397 ^ this.Y.GetHashCode();
       }
     }
 

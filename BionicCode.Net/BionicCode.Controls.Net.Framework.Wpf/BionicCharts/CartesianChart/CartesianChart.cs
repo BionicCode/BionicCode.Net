@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 
 namespace BionicCode.Controls.Net.Framework.Wpf.BionicCharts
 {
@@ -24,7 +25,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCharts
     /// </summary>
     public bool IsItemsSourceSorted
     {
-      get => (bool) GetValue(CartesianChart.IsItemsSourceSortedProperty);
+      get => (bool)GetValue(CartesianChart.IsItemsSourceSortedProperty);
       set => SetValue(CartesianChart.IsItemsSourceSortedProperty, value);
     }
 
@@ -39,7 +40,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCharts
       MaxYValue
     {
       get => (double
-        ) GetValue(CartesianChart.MaxYValueProperty);
+        )GetValue(CartesianChart.MaxYValueProperty);
       set => SetValue(CartesianChart.MaxYValueProperty, value);
     }
 
@@ -51,7 +52,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCharts
 
     public double MaxXValue
     {
-      get => (double) GetValue(CartesianChart.MaxXValueProperty);
+      get => (double)GetValue(CartesianChart.MaxXValueProperty);
       set => SetValue(CartesianChart.MaxXValueProperty, value);
     }
 
@@ -63,7 +64,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCharts
 
     public double MinXValue
     {
-      get => (double) GetValue(CartesianChart.MinXValueProperty);
+      get => (double)GetValue(CartesianChart.MinXValueProperty);
       set => SetValue(CartesianChart.MinXValueProperty, value);
     }
 
@@ -75,7 +76,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCharts
 
     public double MinYValue
     {
-      get => (double) GetValue(CartesianChart.MinYValueProperty);
+      get => (double)GetValue(CartesianChart.MinYValueProperty);
       set => SetValue(CartesianChart.MinYValueProperty, value);
     }
 
@@ -93,7 +94,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCharts
     /// </summary>
     public bool IsAutoScaleEnabled
     {
-      get => (bool) GetValue(CartesianChart.IsAutoScaleEnabledProperty);
+      get => (bool)GetValue(CartesianChart.IsAutoScaleEnabledProperty);
       set => SetValue(CartesianChart.IsAutoScaleEnabledProperty, value);
     }
 
@@ -148,26 +149,26 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCharts
 
           break;
         case NotifyCollectionChangedAction.Remove:
-        {
-          // Do  nothing if removed items don't affect min max coordinate values
-          IEnumerable<ICartesianChartPoint> cartesianChartPoints = e.NewItems.OfType<ICartesianChartPoint>();
-          IEnumerable<Point> points = e.NewItems.OfType<Point>();
-          if (cartesianChartPoints.All(
-            chartPoint => chartPoint.X < this.MaxXValue && chartPoint.Y < this.MaxYValue &&
-                          chartPoint.X > this.MinXValue && chartPoint.Y > this.MinYValue) && points.All(
-            chartPoint => chartPoint.X < this.MaxXValue && chartPoint.Y < this.MaxYValue &&
-                          chartPoint.X > this.MinXValue && chartPoint.Y > this.MinYValue))
           {
-            return;
-          }
+            // Do  nothing if removed items don't affect min max coordinate values
+            IEnumerable<ICartesianChartPoint> cartesianChartPoints = e.NewItems.OfType<ICartesianChartPoint>();
+            IEnumerable<Point> points = e.NewItems.OfType<Point>();
+            if (cartesianChartPoints.All(
+              chartPoint => chartPoint.X < this.MaxXValue && chartPoint.Y < this.MaxYValue &&
+                            chartPoint.X > this.MinXValue && chartPoint.Y > this.MinYValue) && points.All(
+              chartPoint => chartPoint.X < this.MaxXValue && chartPoint.Y < this.MaxYValue &&
+                            chartPoint.X > this.MinXValue && chartPoint.Y > this.MinYValue))
+            {
+              return;
+            }
 
-          if (this.IsAutoScaleEnabled)
-          {
-            CalculateMinMaxChartValues(e.NewItems);
-          }
+            if (this.IsAutoScaleEnabled)
+            {
+              CalculateMinMaxChartValues(e.NewItems);
+            }
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -325,4 +326,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf.BionicCharts
       return (chartPoint, chartPointMinima, chartPointMaxima);
     }
   }
+
+
+
 }

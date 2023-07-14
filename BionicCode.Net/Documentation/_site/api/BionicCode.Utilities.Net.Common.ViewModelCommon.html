@@ -1,0 +1,1634 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class ViewModelCommon
+   | BionicCode.NET API Reference </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class ViewModelCommon
+   | BionicCode.NET API Reference ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../../images/logo.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../../images/BionicCode_Logo.png" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon">
+  
+  
+  <h1 id="BionicCode_Utilities_Net_Common_ViewModelCommon" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon" class="text-break">Class ViewModelCommon
+  </h1>
+  <div class="markdown level0 summary"><p>Base class recommended to use for view models across the application. Encapsulates implementations of <span class="xref">System.ComponentModel.INotifyPropertyChanged</span> and <span class="xref">System.ComponentModel.INotifyDataErrorInfo</span>.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">ViewModelCommon</span></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="BionicCode.Utilities.Net.Common.IViewModelCommon.html">IViewModelCommon</a></div>
+    <div><span class="xref">System.ComponentModel.INotifyDataErrorInfo</span></div>
+    <div><a class="xref" href="BionicCode.Utilities.Net.Common.IProgressReporterCommon.html">IProgressReporterCommon</a></div>
+    <div><span class="xref">System.ComponentModel.INotifyPropertyChanged</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="BionicCode.Utilities.Net.Common.html">BionicCode.Utilities.Net.Common</a></h6>
+  <h6><strong>Assembly</strong>: BionicCode.Utilities.Net.Common.dll</h6>
+  <h5 id="BionicCode_Utilities_Net_Common_ViewModelCommon_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class ViewModelCommon : IViewModelCommon, INotifyDataErrorInfo, IProgressReporterCommon, INotifyPropertyChanged</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon__ctor.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L26">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon__ctor_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.#ctor*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon__ctor" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.#ctor">ViewModelCommon()</h4>
+  <div class="markdown level1 summary"><p>Default constructor</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected ViewModelCommon()</code></pre>
+  </div>
+  <h3 id="fields">Fields
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_DisableIndterminateMode.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.DisableIndterminateMode%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L373">View Source</a>
+  </span>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_DisableIndterminateMode" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.DisableIndterminateMode">DisableIndterminateMode</h4>
+  <div class="markdown level1 summary"><p>Constant representing value of <span class="xref">System.Double.NegativeInfinity</span>. When assigned to <a class="xref" href="BionicCode.Utilities.Net.ProgressData.html#BionicCode_Utilities_Net_ProgressData_Progress">Progress</a> and when calling the default implementation of <a class="xref" href="BionicCode.Utilities.Net.Common.ViewModelCommon.html#BionicCode_Utilities_Net_Common_ViewModelCommon_OnProgress_BionicCode_Utilities_Net_ProgressData_">OnProgress(ProgressData)</a> the value will automatically set <a class="xref" href="BionicCode.Utilities.Net.Common.ViewModelCommon.html#BionicCode_Utilities_Net_Common_ViewModelCommon_IsIndeterminate">IsIndeterminate</a> to <code>false</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const double DisableIndterminateMode = -Infinity</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Double</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_EnableIndterminateMode.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.EnableIndterminateMode%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L368">View Source</a>
+  </span>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_EnableIndterminateMode" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.EnableIndterminateMode">EnableIndterminateMode</h4>
+  <div class="markdown level1 summary"><p>Constant representing value of <span class="xref">System.Double.PositiveInfinity</span>. When assigned to <a class="xref" href="BionicCode.Utilities.Net.ProgressData.html#BionicCode_Utilities_Net_ProgressData_Progress">Progress</a> and when calling the default implementation of <a class="xref" href="BionicCode.Utilities.Net.Common.ViewModelCommon.html#BionicCode_Utilities_Net_Common_ViewModelCommon_OnProgress_BionicCode_Utilities_Net_ProgressData_">OnProgress(ProgressData)</a> the value will automatically set <a class="xref" href="BionicCode.Utilities.Net.Common.ViewModelCommon.html#BionicCode_Utilities_Net_Common_ViewModelCommon_IsIndeterminate">IsIndeterminate</a> to <code>true</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const double EnableIndterminateMode = Infinity</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Double</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_HasErrors.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.HasErrors%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L339">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_HasErrors_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.HasErrors*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_HasErrors" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.HasErrors">HasErrors</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasErrors { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_IsIndeterminate.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.IsIndeterminate%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L413">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_IsIndeterminate_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.IsIndeterminate*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_IsIndeterminate" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.IsIndeterminate">IsIndeterminate</h4>
+  <div class="markdown level1 summary"><p>Indicates that the progress reporting is indeterminate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsIndeterminate { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_IsReportingProgress.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.IsReportingProgress%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L405">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_IsReportingProgress_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.IsReportingProgress*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_IsReportingProgress" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.IsReportingProgress">IsReportingProgress</h4>
+  <div class="markdown level1 summary"><p>Indicates ongoing progress reporting</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsReportingProgress { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Common_ViewModelCommon_IsReportingProgress_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Raises <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_ProgressText.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.ProgressText%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L426">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_ProgressText_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.ProgressText*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_ProgressText" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.ProgressText">ProgressText</h4>
+  <div class="markdown level1 summary"><p>The progress message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ProgressText { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Common_ViewModelCommon_ProgressText_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Raises <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_ProgressValue.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.ProgressValue%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L440">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_ProgressValue_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.ProgressValue*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_ProgressValue" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.ProgressValue">ProgressValue</h4>
+  <div class="markdown level1 summary"><p>The progress value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double ProgressValue { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Double</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Common_ViewModelCommon_ProgressValue_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Raises <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event.</p>
+</div>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_ClearErrors_System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.ClearErrors(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L264">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_ClearErrors_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.ClearErrors*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_ClearErrors_System_String_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.ClearErrors(System.String)">ClearErrors(String)</h4>
+  <div class="markdown level1 summary"><p>Removes all error objects related to a property.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual bool ClearErrors(string propertyName)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">propertyName</span></td>
+        <td><p>The property to clear error objects  for.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> if an item was removed or <code>false</code> if no item was removed or the property was not found.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_CreateProgressReporterFromCurrentThread.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.CreateProgressReporterFromCurrentThread%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L381">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_CreateProgressReporterFromCurrentThread_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.CreateProgressReporterFromCurrentThread*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_CreateProgressReporterFromCurrentThread" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.CreateProgressReporterFromCurrentThread">CreateProgressReporterFromCurrentThread()</h4>
+  <div class="markdown level1 summary"><p>Creates a <span class="xref">System.IProgress&lt;T&gt;</span> instance that is associated with the caller's thread.
+The registered progress callback is the virtual <code><a class="xref" href="BionicCode.Utilities.Net.Common.ViewModelCommon.html">ViewModelCommon</a>.OnProgress(ProgressData)</code> member.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IProgress&lt;ProgressData&gt; CreateProgressReporterFromCurrentThread()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.IProgress</span>&lt;<a class="xref" href="BionicCode.Utilities.Net.ProgressData.html">ProgressData</a>&gt;</td>
+        <td><p>A <span class="xref">System.IProgress&lt;T&gt;</span> instance that posts progress to the thread <a class="xref" href="BionicCode.Utilities.Net.Common.ViewModelCommon.html#BionicCode_Utilities_Net_Common_ViewModelCommon_CreateProgressReporterFromCurrentThread">CreateProgressReporterFromCurrentThread()</a> was called from.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Common_ViewModelCommon_CreateProgressReporterFromCurrentThread_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To create a <span class="xref">System.IProgress&lt;T&gt;</span> instance that is associated with the application's primary dispatcher thread, for example to update proerties that bind to a <code>DispatcherObject</code>, call <see cref="!:CreateProgressReporterFromUiThread"></see>.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_GetErrors_System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.GetErrors(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L331">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_GetErrors_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.GetErrors*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_GetErrors_System_String_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.GetErrors(System.String)">GetErrors(String)</h4>
+  <div class="markdown level1 summary"><p>Gets all error messages of the specified property. If the <code data-dev-comment-type="paramref" class="paramref">propertyName</code> is <code>null</code> all error messages will be returned.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable GetErrors(string propertyName = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">propertyName</span></td>
+        <td><p>The of the property of which the error messages should be returned.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.IEnumerable</span></td>
+        <td><p>An <span class="xref">System.Collections.IEnumerable</span> containing all error messages of the specified property.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Common_ViewModelCommon_GetErrors_System_String__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>If the <code data-dev-comment-type="paramref" class="paramref">propertyName</code> is <code>null</code> all current error messages will be returned.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_GetPropertyErrors_System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.GetPropertyErrors(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L281">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_GetPropertyErrors_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.GetPropertyErrors*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_GetPropertyErrors_System_String_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.GetPropertyErrors(System.String)">GetPropertyErrors(String)</h4>
+  <div class="markdown level1 summary"><p>Gets all error messages of the specified property. If the <code data-dev-comment-type="paramref" class="paramref">propertyName</code> is <code>null</code> all error messages will be returned.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;string&gt; GetPropertyErrors(string propertyName = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">propertyName</span></td>
+        <td><p>The of the property of which the error messages should be returned.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><p>Returns an <span class="xref">System.Collections.Generic.IEnumerable&lt;T&gt;</span> containing all error messages of the specified property.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Common_ViewModelCommon_GetPropertyErrors_System_String__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>If the <code data-dev-comment-type="paramref" class="paramref">propertyName</code> is <code>null</code> all current error messages will be returned.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_IsPropertyAttributeValid__1___0_System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.IsPropertyAttributeValid%60%601(%60%600%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L178">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_IsPropertyAttributeValid_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.IsPropertyAttributeValid*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_IsPropertyAttributeValid__1___0_System_String_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.IsPropertyAttributeValid``1(``0,System.String)">IsPropertyAttributeValid&lt;TValue&gt;(TValue, String)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual bool IsPropertyAttributeValid&lt;TValue&gt;(TValue value, string propertyName)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TValue</span></td>
+        <td><span class="parametername">value</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">propertyName</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TValue</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_IsValueValid__1___0_System_Func___0_System_ValueTuple_System_Boolean_System_Collections_Generic_IEnumerable_System_Object____System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.IsValueValid%60%601(%60%600%2CSystem.Func%7B%60%600%2CSystem.ValueTuple%7BSystem.Boolean%2CSystem.Collections.Generic.IEnumerable%7BSystem.Object%7D%7D%7D%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L159">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_IsValueValid_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.IsValueValid*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_IsValueValid__1___0_System_Func___0_System_ValueTuple_System_Boolean_System_Collections_Generic_IEnumerable_System_Object____System_String_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.IsValueValid``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}},System.String)">IsValueValid&lt;TValue&gt;(TValue, Func&lt;TValue, (Boolean IsValid, IEnumerable&lt;Object&gt; ErrorMessages)&gt;, String)</h4>
+  <div class="markdown level1 summary"><p>Can be used to check whether a value is valid.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual bool IsValueValid&lt;TValue&gt;(TValue value, Func&lt;TValue, (bool IsValid, IEnumerable&lt;object&gt; ErrorMessages)&gt; validationDelegate, string propertyName = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TValue</span></td>
+        <td><span class="parametername">value</span></td>
+        <td><p>The value to check.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Func</span>&lt;TValue, <span class="xref">System.ValueTuple</span>&lt;<span class="xref">System.Boolean</span>, <span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Object</span>&gt;&gt;&gt;</td>
+        <td><span class="parametername">validationDelegate</span></td>
+        <td><p>The validation delegate <span class="xref">System.Func&lt;T, TResult&gt;</span>which is invoked on the value.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">propertyName</span></td>
+        <td><p>The name of the property to set. Default name is the property that called this method.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when the value is valid, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TValue</span></td>
+        <td><p>Generic type parameter of the value to check.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_OnErrorsChanged_System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.OnErrorsChanged(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L469">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_OnErrorsChanged_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.OnErrorsChanged*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_OnErrorsChanged_System_String_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.OnErrorsChanged(System.String)">OnErrorsChanged(String)</h4>
+  <div class="markdown level1 summary"><p>Raised when the validation state of the view model has changed (e.g. error added or removed).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnErrorsChanged(string propertyName)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">propertyName</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_OnProgress_BionicCode_Utilities_Net_ProgressData_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.OnProgress(BionicCode.Utilities.Net.ProgressData)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L354">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_OnProgress_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.OnProgress*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_OnProgress_BionicCode_Utilities_Net_ProgressData_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.OnProgress(BionicCode.Utilities.Net.ProgressData)">OnProgress(ProgressData)</h4>
+  <div class="markdown level1 summary"><p>When overridden, handles the <span class="xref">System.IProgress`1.Report(`0)</span> that is invoked by the <span class="xref">System.IProgress&lt;T&gt;</span> instance returned from <a class="xref" href="BionicCode.Utilities.Net.Common.ViewModelCommon.html#BionicCode_Utilities_Net_Common_ViewModelCommon_CreateProgressReporterFromCurrentThread">CreateProgressReporterFromCurrentThread()</a>. Can be used as progress delegate for any <span class="xref">System.IProgress&lt;T&gt;</span>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnProgress(ProgressData progress)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.ProgressData.html">ProgressData</a></td>
+        <td><span class="parametername">progress</span></td>
+        <td><p>The progress argument.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Common_ViewModelCommon_OnProgress_BionicCode_Utilities_Net_ProgressData__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>The default implementation provides the followwing logic: a value of <span class="xref">System.Double.NegativeInfinity</span> or <a class="xref" href="BionicCode.Utilities.Net.Common.ViewModelCommon.html#BionicCode_Utilities_Net_Common_ViewModelCommon_DisableIndterminateMode">DisableIndterminateMode</a> will automatically set the <a class="xref" href="BionicCode.Utilities.Net.Common.ViewModelCommon.html#BionicCode_Utilities_Net_Common_ViewModelCommon_IsIndeterminate">IsIndeterminate</a> property to <code>false</code>. A value of <span class="xref">System.Double.PositiveInfinity</span> or <a class="xref" href="BionicCode.Utilities.Net.Common.ViewModelCommon.html#BionicCode_Utilities_Net_Common_ViewModelCommon_EnableIndterminateMode">EnableIndterminateMode</a> will automatically set the <a class="xref" href="BionicCode.Utilities.Net.Common.ViewModelCommon.html#BionicCode_Utilities_Net_Common_ViewModelCommon_IsIndeterminate">IsIndeterminate</a> property to <code>true</code>.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_OnProgressChanged_System_Double_System_Double_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.OnProgressChanged(System.Double%2CSystem.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L389">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_OnProgressChanged_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.OnProgressChanged*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_OnProgressChanged_System_Double_System_Double_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.OnProgressChanged(System.Double,System.Double)">OnProgressChanged(Double, Double)</h4>
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="BionicCode.Utilities.Net.Common.IProgressReporterCommon.html#BionicCode_Utilities_Net_Common_IProgressReporterCommon_ProgressChanged">ProgressChanged</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnProgressChanged(double oldValue, double newValue)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Double</span></td>
+        <td><span class="parametername">oldValue</span></td>
+        <td><p>The old progress value.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Double</span></td>
+        <td><span class="parametername">newValue</span></td>
+        <td><p>The new progress value.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_OnProgressChanged_System_Double_System_Double_System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.OnProgressChanged(System.Double%2CSystem.Double%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L397">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_OnProgressChanged_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.OnProgressChanged*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_OnProgressChanged_System_Double_System_Double_System_String_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.OnProgressChanged(System.Double,System.Double,System.String)">OnProgressChanged(Double, Double, String)</h4>
+  <div class="markdown level1 summary"><p>Raises the <a class="xref" href="BionicCode.Utilities.Net.Common.IProgressReporterCommon.html#BionicCode_Utilities_Net_Common_IProgressReporterCommon_ProgressChanged">ProgressChanged</a> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnProgressChanged(double oldValue, double newValue, string progressText)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Double</span></td>
+        <td><span class="parametername">oldValue</span></td>
+        <td><p>The old progress value.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Double</span></td>
+        <td><span class="parametername">newValue</span></td>
+        <td><p>The new progress value.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">progressText</span></td>
+        <td><p>The progress message.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_OnPropertyChanged_System_Object_System_Object_System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.OnPropertyChanged(System.Object%2CSystem.Object%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L303">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_OnPropertyChanged_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.OnPropertyChanged*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_OnPropertyChanged_System_Object_System_Object_System_String_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.OnPropertyChanged(System.Object,System.Object,System.String)">OnPropertyChanged(Object, Object, String)</h4>
+  <div class="markdown level1 summary"><p>Method called to fire a <a class="xref" href="BionicCode.Utilities.Net.Common.ViewModelCommon.html#BionicCode_Utilities_Net_Common_ViewModelCommon_PropertyChanged">PropertyChanged</a> event.
+Also raises the <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event to support binding.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NotifyPropertyChangedInvocator]
+protected virtual void OnPropertyChanged(object oldValue, object newValue, string propertyName = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">oldValue</span></td>
+        <td><p>The value before the property change.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">newValue</span></td>
+        <td><p>The value after the property change.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">propertyName</span></td>
+        <td><p>The property name.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_OnPropertyChanged_System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.OnPropertyChanged(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L293">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_OnPropertyChanged_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.OnPropertyChanged*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_OnPropertyChanged_System_String_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.OnPropertyChanged(System.String)">OnPropertyChanged(String)</h4>
+  <div class="markdown level1 summary"><p>Method called to fire a <a class="xref" href="BionicCode.Utilities.Net.Common.ViewModelCommon.html#BionicCode_Utilities_Net_Common_ViewModelCommon_PropertyChanged">PropertyChanged</a> event.
+Also raises the <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event to support binding.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NotifyPropertyChangedInvocator]
+protected virtual void OnPropertyChanged(string propertyName = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">propertyName</span></td>
+        <td><p>The property name.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_PropertyHasError_System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.PropertyHasError(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L277">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_PropertyHasError_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.PropertyHasError*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_PropertyHasError_System_String_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.PropertyHasError(System.String)">PropertyHasError(String)</h4>
+  <div class="markdown level1 summary"><p>Checks whether the specified property has errors or is valid.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual bool PropertyHasError(string propertyName = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">propertyName</span></td>
+        <td><p>The name of the property to check for errors.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when the specified property has at least one error. Otherwise <code>false</code> when the property is valid.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_TrySetValue__1___0___0__System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.TrySetValue%60%601(%60%600%2C%60%600%40%2CSystem.Boolean%2CSystem.Collections.Generic.IEqualityComparer%7B%60%600%7D%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L43">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_TrySetValue_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.TrySetValue*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_TrySetValue__1___0___0__System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.TrySetValue``1(``0,``0@,System.Boolean,System.Collections.Generic.IEqualityComparer{``0},System.String)">TrySetValue&lt;TValue&gt;(TValue, ref TValue, Boolean, IEqualityComparer&lt;TValue&gt;, String)</h4>
+  <div class="markdown level1 summary"><p>Generic property setter. Sets the value of any property of the extending view model by passing in a the corresponding property backing field. Automatically raises the <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event for this property.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual bool TrySetValue&lt;TValue&gt;(TValue value, ref TValue targetBackingField, bool isRejectEqualValuesEnabled = true, IEqualityComparer&lt;TValue&gt; equalityComparer = null, string propertyName = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TValue</span></td>
+        <td><span class="parametername">value</span></td>
+        <td><p>The new property value.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">TValue</span></td>
+        <td><span class="parametername">targetBackingField</span></td>
+        <td><p>The backing field of the target property for the new value. Passed in by reference using <code>ref</code> keyword.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isRejectEqualValuesEnabled</span></td>
+        <td><p>Default: <code>true</code>. Default: <code>true</code>. Enable equality check before setting the value to avoid raising the <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event on equality. Set to <code>false</code> to always raise the <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEqualityComparer</span>&lt;TValue&gt;</td>
+        <td><span class="parametername">equalityComparer</span></td>
+        <td><p>A <span class="xref">System.Collections.Generic.IEqualityComparer&lt;T&gt;</span> to check for value equality. If this optional parameter is not provided <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span> will be used.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">propertyName</span></td>
+        <td><p>The name of the property that changes. By default the property name is automatically set to the property that called this setter method.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when the property has changed or <code>false</code> when equality checking is enabled and the new property equals the old property value.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TValue</span></td>
+        <td><p>The generic type parameter of the new property value.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Common_ViewModelCommon_TrySetValue__1___0___0__System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>If equality checking is enabled by setting the <code data-dev-comment-type="paramref" class="paramref">isRejectEqualValuesEnabled</code> parameter to <code>true</code> and the new value equals the old value, then the <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event won't be raised. If equality checking is enabled and no <span class="xref">System.Collections.Generic.IEqualityComparer&lt;T&gt;</span> was provided by setting the <code data-dev-comment-type="paramref" class="paramref">equalityComparer</code> parameter, the method will check for reference equality using <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_TrySetValue__1___0_System_Func___0_System_ValueTuple_System_Boolean_System_Collections_Generic_IEnumerable_System_Object______0__System_Boolean_System_Boolean_System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.TrySetValue%60%601(%60%600%2CSystem.Func%7B%60%600%2CSystem.ValueTuple%7BSystem.Boolean%2CSystem.Collections.Generic.IEnumerable%7BSystem.Object%7D%7D%7D%2C%60%600%40%2CSystem.Boolean%2CSystem.Boolean%2CSystem.Boolean%2CSystem.Collections.Generic.IEqualityComparer%7B%60%600%7D%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L90">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_TrySetValue_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.TrySetValue*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_TrySetValue__1___0_System_Func___0_System_ValueTuple_System_Boolean_System_Collections_Generic_IEnumerable_System_Object______0__System_Boolean_System_Boolean_System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.TrySetValue``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}},``0@,System.Boolean,System.Boolean,System.Boolean,System.Collections.Generic.IEqualityComparer{``0},System.String)">TrySetValue&lt;TValue&gt;(TValue, Func&lt;TValue, (Boolean IsValid, IEnumerable&lt;Object&gt; ErrorMessages)&gt;, ref TValue, Boolean, Boolean, Boolean, IEqualityComparer&lt;TValue&gt;, String)</h4>
+  <div class="markdown level1 summary"><p>Sets the value of the referenced property and executes a validation delegate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual bool TrySetValue&lt;TValue&gt;(TValue value, Func&lt;TValue, (bool IsValid, IEnumerable&lt;object&gt; ErrorMessages)&gt; validationDelegate, ref TValue targetBackingField, bool isRejectInvalidValueEnabled = false, bool isThrowExceptionOnValidationErrorEnabled = false, bool isRejectEqualValuesEnabled = true, IEqualityComparer&lt;TValue&gt; equalityComparer = null, string propertyName = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TValue</span></td>
+        <td><span class="parametername">value</span></td>
+        <td><p>The new value which is to be set to the property.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Func</span>&lt;TValue, <span class="xref">System.ValueTuple</span>&lt;<span class="xref">System.Boolean</span>, <span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Object</span>&gt;&gt;&gt;</td>
+        <td><span class="parametername">validationDelegate</span></td>
+        <td><p>The callback that is used to validate the new value.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">TValue</span></td>
+        <td><span class="parametername">targetBackingField</span></td>
+        <td><p>The reference to the backing field.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isRejectInvalidValueEnabled</span></td>
+        <td><p>When <code>true</code> the invalid value is not stored to the backing field.<br> Use this to ensure that the view model in a valid state.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isThrowExceptionOnValidationErrorEnabled</span></td>
+        <td><p>Enable throwing an <span class="xref">System.ArgumentException</span> if validation failed. Use this when <code>ValidatesOnExceptions</code> on a <code>Binding</code> is set to <code>true</code></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isRejectEqualValuesEnabled</span></td>
+        <td><p>Default: <code>true</code>. Enable equality check before setting the value to avoid raising the <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event on equality. Set to <code>false</code> to always raise the <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEqualityComparer</span>&lt;TValue&gt;</td>
+        <td><span class="parametername">equalityComparer</span></td>
+        <td><p>A <span class="xref">System.Collections.Generic.IEqualityComparer&lt;T&gt;</span> to check for value equality. If this optional parameter is not provided <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span> will be used.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">propertyName</span></td>
+        <td><p>The name of the property to set. Default name is the property that called this method.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>Returns <code>true</code> if the new value doesn't equal the old value and the new value is valid. Returns <code>false</code> if the new value equals the old value or the validation has failed.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TValue</span></td>
+        <td><p>The generic value type parameter</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Common_ViewModelCommon_TrySetValue__1___0_System_Func___0_System_ValueTuple_System_Boolean_System_Collections_Generic_IEnumerable_System_Object______0__System_Boolean_System_Boolean_System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This property setter supports invalid value rejection, which means values are only assigned to the backing field if they are valid which is when the <code data-dev-comment-type="paramref" class="paramref">validationDelegate</code> return <code>true</code>.<br> To support visual validation error feed back and proper behavior in <code>TwoWay</code> binding scenarios, <br> it is recommended to set <code data-dev-comment-type="paramref" class="paramref">isThrowExceptionOnValidationErrorEnabled</code> to <code>true</code> and set the validation mode of the binding to <code>Binding.ValidatesOnExceptions</code>.<br>If not doing so, the binding target will clear the new value and show the last valid value instead. <br>If equality checking is enabled by setting the <code data-dev-comment-type="paramref" class="paramref">isRejectEqualValuesEnabled</code> parameter to <code>true</code> (the parameter defaults to <code>trur</code>) and the new value equals the old value, then the <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event won't be raised. If equality checking is enabled and no <span class="xref">System.Collections.Generic.IEqualityComparer&lt;T&gt;</span> was provided by setting the <code data-dev-comment-type="paramref" class="paramref">equalityComparer</code> parameter, the method will check for reference equality using <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>.</p>
+</div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ArgumentException</span></td>
+        <td><p>Thrown if <code data-dev-comment-type="paramref" class="paramref">isThrowExceptionOnValidationErrorEnabled</code> is set to <code>true</code> and validation failed</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_TrySetValueSilent__1___0___0__System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.TrySetValueSilent%60%601(%60%600%2C%60%600%40%2CSystem.Boolean%2CSystem.Collections.Generic.IEqualityComparer%7B%60%600%7D%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L67">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_TrySetValueSilent_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.TrySetValueSilent*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_TrySetValueSilent__1___0___0__System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.TrySetValueSilent``1(``0,``0@,System.Boolean,System.Collections.Generic.IEqualityComparer{``0},System.String)">TrySetValueSilent&lt;TValue&gt;(TValue, ref TValue, Boolean, IEqualityComparer&lt;TValue&gt;, String)</h4>
+  <div class="markdown level1 summary"><p>Generic property setter. Silently sets the value of any property of the extending view model by passing in a the corresponding property backing field. Suppresses a <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event for this property.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual bool TrySetValueSilent&lt;TValue&gt;(TValue value, ref TValue targetBackingField, bool isRejectEqualValuesEnabled = true, IEqualityComparer&lt;TValue&gt; equalityComparer = null, string propertyName = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TValue</span></td>
+        <td><span class="parametername">value</span></td>
+        <td><p>The new property value.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">TValue</span></td>
+        <td><span class="parametername">targetBackingField</span></td>
+        <td><p>The backing field of the target property for the new value. Passed in by reference using <code>ref</code> keyword.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isRejectEqualValuesEnabled</span></td>
+        <td><p>Default: <code>true</code>. Default: <code>true</code>. Enable equality check before setting the value to avoid raising the <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event on equality. Set to <code>false</code> to always raise the <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEqualityComparer</span>&lt;TValue&gt;</td>
+        <td><span class="parametername">equalityComparer</span></td>
+        <td><p>A <span class="xref">System.Collections.Generic.IEqualityComparer&lt;T&gt;</span> to check for value equality. If this optional parameter is not provided <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span> will be used.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">propertyName</span></td>
+        <td><p>The name of the property that changes. By default the property name is automatically set to the property that called this setter method.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when the property has changed or <code>false</code> when the property value didn't change (e.g. on equality of old and new value).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TValue</span></td>
+        <td><p>The generic type parameter of the new property value.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Common_ViewModelCommon_TrySetValueSilent__1___0___0__System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>If equality checking is enabled by setting the <code data-dev-comment-type="paramref" class="paramref">isRejectEqualValuesEnabled</code> parameter to <code>true</code> and the new value equals the old value, then the <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event won't be raised. If equality checking is enabled and no <span class="xref">System.Collections.Generic.IEqualityComparer&lt;T&gt;</span> was provided by setting the <code data-dev-comment-type="paramref" class="paramref">equalityComparer</code> parameter, the method will check for reference equality using <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_TrySetValueSilent__1___0_System_Func___0_System_ValueTuple_System_Boolean_System_Collections_Generic_IEnumerable_System_Object______0__System_Boolean_System_Boolean_System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.TrySetValueSilent%60%601(%60%600%2CSystem.Func%7B%60%600%2CSystem.ValueTuple%7BSystem.Boolean%2CSystem.Collections.Generic.IEnumerable%7BSystem.Object%7D%7D%7D%2C%60%600%40%2CSystem.Boolean%2CSystem.Boolean%2CSystem.Boolean%2CSystem.Collections.Generic.IEqualityComparer%7B%60%600%7D%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L135">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Common_ViewModelCommon_TrySetValueSilent_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.TrySetValueSilent*"></a>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_TrySetValueSilent__1___0_System_Func___0_System_ValueTuple_System_Boolean_System_Collections_Generic_IEnumerable_System_Object______0__System_Boolean_System_Boolean_System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String_" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.TrySetValueSilent``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}},``0@,System.Boolean,System.Boolean,System.Boolean,System.Collections.Generic.IEqualityComparer{``0},System.String)">TrySetValueSilent&lt;TValue&gt;(TValue, Func&lt;TValue, (Boolean IsValid, IEnumerable&lt;Object&gt; ErrorMessages)&gt;, ref TValue, Boolean, Boolean, Boolean, IEqualityComparer&lt;TValue&gt;, String)</h4>
+  <div class="markdown level1 summary"><p>Silently sets the value of the referenced property without raising <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> and executes a validation delegate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual bool TrySetValueSilent&lt;TValue&gt;(TValue value, Func&lt;TValue, (bool IsValid, IEnumerable&lt;object&gt; ErrorMessages)&gt; validationDelegate, ref TValue targetBackingField, bool isRejectInvalidValueEnabled = false, bool isThrowExceptionOnValidationErrorEnabled = false, bool isRejectEqualValuesEnabled = true, IEqualityComparer&lt;TValue&gt; equalityComparer = null, string propertyName = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TValue</span></td>
+        <td><span class="parametername">value</span></td>
+        <td><p>The new value which is to be set to the property.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Func</span>&lt;TValue, <span class="xref">System.ValueTuple</span>&lt;<span class="xref">System.Boolean</span>, <span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Object</span>&gt;&gt;&gt;</td>
+        <td><span class="parametername">validationDelegate</span></td>
+        <td><p>The callback that is used to validate the new value.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">TValue</span></td>
+        <td><span class="parametername">targetBackingField</span></td>
+        <td><p>The reference to the backing field.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isRejectInvalidValueEnabled</span></td>
+        <td><p>When <code>true</code> the invalid value is not stored to the backing field.<br> Use this to ensure that the view model in a valid state.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isThrowExceptionOnValidationErrorEnabled</span></td>
+        <td><p>Enable throwing an <span class="xref">System.ArgumentException</span> if validation failed. Use this when <code>ValidatesOnExceptions</code> on a <code>Binding</code> is set to <code>true</code></p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isRejectEqualValuesEnabled</span></td>
+        <td><p>Default: <code>true</code>. Default: <code>true</code>. Enable equality check before setting the value to avoid raising the <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event on equality. Set to <code>false</code> to always raise the <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEqualityComparer</span>&lt;TValue&gt;</td>
+        <td><span class="parametername">equalityComparer</span></td>
+        <td><p>A <span class="xref">System.Collections.Generic.IEqualityComparer&lt;T&gt;</span> to check for value equality. If this optional parameter is not provided <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span> will be used.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">propertyName</span></td>
+        <td><p>The name of the property to set. Default name is the property that called this method.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>Returns <code>true</code> if the new value doesn't equal the old value and the new value is valid. Returns <code>false</code> if the new value equals the old value or the validation has failed.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TValue</span></td>
+        <td><p>The generic value type parameter</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Common_ViewModelCommon_TrySetValueSilent__1___0_System_Func___0_System_ValueTuple_System_Boolean_System_Collections_Generic_IEnumerable_System_Object______0__System_Boolean_System_Boolean_System_Boolean_System_Collections_Generic_IEqualityComparer___0__System_String__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This property setter supports invalid value rejection, which means values are only assigned to the backing field if they are valid which is when the <code data-dev-comment-type="paramref" class="paramref">validationDelegate</code> return <code>true</code>.<br> To support visual validation error feed back and proper behavior in <code>TwoWay</code> binding scenarios, <br> it is recommended to set <code data-dev-comment-type="paramref" class="paramref">isThrowExceptionOnValidationErrorEnabled</code> to <code>true</code> and set the validation mode of the binding to <code>Binding.ValidatesOnExceptions</code>.<br>If not doing so, the binding target will clear the new value and show the last valid value instead. <br>If equality checking is enabled by setting the <code data-dev-comment-type="paramref" class="paramref">isRejectEqualValuesEnabled</code> parameter to <code>true</code> and the new value equals the old value, then the <span class="xref">System.ComponentModel.INotifyPropertyChanged.PropertyChanged</span> event won't be raised. If equality checking is enabled and no <span class="xref">System.Collections.Generic.IEqualityComparer&lt;T&gt;</span> was provided by setting the <code data-dev-comment-type="paramref" class="paramref">equalityComparer</code> parameter, the method will check for reference equality using <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>.</p>
+</div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ArgumentException</span></td>
+        <td><p>Thrown on validation failed</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="events">Events
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_ErrorsChanged.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.ErrorsChanged%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L342">View Source</a>
+  </span>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_ErrorsChanged" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.ErrorsChanged">ErrorsChanged</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;DataErrorsChangedEventArgs&gt; ErrorsChanged</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;<span class="xref">System.ComponentModel.DataErrorsChangedEventArgs</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_ProgressChanged.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.ProgressChanged%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L454">View Source</a>
+  </span>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_ProgressChanged" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.ProgressChanged">ProgressChanged</h4>
+  <div class="markdown level1 summary"><p>Raised when <a class="xref" href="BionicCode.Utilities.Net.Common.IProgressReporterCommon.html#BionicCode_Utilities_Net_Common_IProgressReporterCommon_ProgressValue">ProgressValue</a>, <a class="xref" href="BionicCode.Utilities.Net.Common.IProgressReporterCommon.html#BionicCode_Utilities_Net_Common_IProgressReporterCommon_ProgressText">ProgressText</a> or <a class="xref" href="BionicCode.Utilities.Net.Common.IProgressReporterCommon.html#BionicCode_Utilities_Net_Common_IProgressReporterCommon_IsIndeterminate">IsIndeterminate</a> has changed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event EventHandler&lt;ProgressChangedEventArgs&gt; ProgressChanged</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;<a class="xref" href="BionicCode.Utilities.Net.ProgressChangedEventArgs.html">ProgressChangedEventArgs</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_PropertyChanged.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.PropertyChanged%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L286">View Source</a>
+  </span>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_PropertyChanged" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.PropertyChanged">PropertyChanged</h4>
+  <div class="markdown level1 summary"><p>Event fired whenever a child property changes its value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event PropertyChangedEventHandler PropertyChanged</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ComponentModel.PropertyChangedEventHandler</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon_PropertyValueChanged.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon.PropertyValueChanged%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L459">View Source</a>
+  </span>
+  <h4 id="BionicCode_Utilities_Net_Common_ViewModelCommon_PropertyValueChanged" data-uid="BionicCode.Utilities.Net.Common.ViewModelCommon.PropertyValueChanged">PropertyValueChanged</h4>
+  <div class="markdown level1 summary"><p>PropertyChanged implementation that sends old value and new value of the change and raises the INotifyPropertyChanged event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event PropertyValueChangedEventHandler&lt;object&gt; PropertyValueChanged</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.PropertyValueChangedEventHandler-1.html">PropertyValueChangedEventHandler</a>&lt;<span class="xref">System.Object</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Common.IViewModelCommon.html">IViewModelCommon</a>
+  </div>
+  <div>
+      <span class="xref">System.ComponentModel.INotifyDataErrorInfo</span>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Common.IProgressReporterCommon.html">IProgressReporterCommon</a>
+  </div>
+  <div>
+      <span class="xref">System.ComponentModel.INotifyPropertyChanged</span>
+  </div>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.HelperExtensionsCommon.html#BionicCode_Utilities_Net_HelperExtensionsCommon_ToDictionary_System_Object_">HelperExtensionsCommon.ToDictionary(Object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.html#BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_ToDictionary_System_Object_">HelperExtensions.ToDictionary(Object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.html#BionicCode_Utilities_Net_Framework_Wpf_Extensions_HelperExtensions_ToDictionary_System_Object_">HelperExtensions.ToDictionary(Object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Uwp.Extensions.HelperExtensions.html#BionicCode_Utilities_Net_Uwp_Extensions_HelperExtensions_ToDictionary_System_Object_">HelperExtensions.ToDictionary(Object)</a>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Common_ViewModelCommon.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Common.ViewModelCommon%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ViewModel/ViewModelCommon.cs/#L21" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

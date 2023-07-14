@@ -1,0 +1,2090 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Interface IEventAggregator
+   | BionicCode.NET API Reference </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Interface IEventAggregator
+   | BionicCode.NET API Reference ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../../images/logo.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../../images/BionicCode_Logo.png" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="BionicCode.Utilities.Net.IEventAggregator">
+  
+  
+  <h1 id="BionicCode_Utilities_Net_IEventAggregator" data-uid="BionicCode.Utilities.Net.IEventAggregator" class="text-break">Interface IEventAggregator
+  </h1>
+  <div class="markdown level0 summary"><p>Allows listening to events without introducing direct coupling between observer and observable. The observer can handle events withou introducing a dependency to the event source.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="BionicCode.Utilities.Net.html">BionicCode.Utilities.Net</a></h6>
+  <h6><strong>Assembly</strong>: BionicCode.Utilities.Net.Common.dll</h6>
+  <h5 id="BionicCode_Utilities_Net_IEventAggregator_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IEventAggregator</code></pre>
+  </div>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_System_Delegate_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.Delegate)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L141">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_System_Delegate_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.Delegate)">TryRegisterGlobalObserver(Delegate)</h4>
+  <div class="markdown level1 summary"><p>Registers a handler for any registered event source with a compatible event delegate signature.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterGlobalObserver(Delegate eventHandler)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Delegate</span></td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_System_Delegate_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.Delegate%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L149">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_System_Delegate_System_Boolean_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.Delegate,System.Boolean)">TryRegisterGlobalObserver(Delegate, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Registers a handler for any registered event source with a compatible event delegate signature.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterGlobalObserver(Delegate eventHandler, bool isMarshalEventToCurrentThreadEnabled)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Delegate</span></td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isMarshalEventToCurrentThreadEnabled</span></td>
+        <td><p><code>true</code> if the current <span class="xref">System.Threading.SynchronizationContext</span> should be captured to execute the event handler.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_System_Delegate_System_Threading_SynchronizationContext_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.Delegate%2CSystem.Threading.SynchronizationContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L157">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_System_Delegate_System_Threading_SynchronizationContext_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.Delegate,System.Threading.SynchronizationContext)">TryRegisterGlobalObserver(Delegate, SynchronizationContext)</h4>
+  <div class="markdown level1 summary"><p>Registers a handler for any registered event source with a compatible event delegate signature.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterGlobalObserver(Delegate eventHandler, SynchronizationContext synchronizationContext)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Delegate</span></td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Threading.SynchronizationContext</span></td>
+        <td><span class="parametername">synchronizationContext</span></td>
+        <td><p>The <span class="xref">System.Threading.SynchronizationContext</span> that the event delegate is to be executed on.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_System_String_System_Delegate_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.String%2CSystem.Delegate)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L87">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_System_String_System_Delegate_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.String,System.Delegate)">TryRegisterGlobalObserver(String, Delegate)</h4>
+  <div class="markdown level1 summary"><p>Register an event delegate to handle a specific event which could be published by any type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterGlobalObserver(string eventName, Delegate eventHandler)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The name of the observed event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Delegate</span></td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_System_String_System_Delegate_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.String%2CSystem.Delegate%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L96">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_System_String_System_Delegate_System_Boolean_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.String,System.Delegate,System.Boolean)">TryRegisterGlobalObserver(String, Delegate, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Register an event delegate to handle a specific event which could be published by any type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterGlobalObserver(string eventName, Delegate eventHandler, bool isMarshalEventToCurrentThreadEnabled)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The name of the observed event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Delegate</span></td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isMarshalEventToCurrentThreadEnabled</span></td>
+        <td><p><code>true</code> if the current <span class="xref">System.Threading.SynchronizationContext</span> should be captured to execute the event handler.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_System_String_System_Delegate_System_Threading_SynchronizationContext_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.String%2CSystem.Delegate%2CSystem.Threading.SynchronizationContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L105">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_System_String_System_Delegate_System_Threading_SynchronizationContext_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.String,System.Delegate,System.Threading.SynchronizationContext)">TryRegisterGlobalObserver(String, Delegate, SynchronizationContext)</h4>
+  <div class="markdown level1 summary"><p>Register an event delegate to handle a specific event which could be published by any type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterGlobalObserver(string eventName, Delegate eventHandler, SynchronizationContext synchronizationContext)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The name of the observed event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Delegate</span></td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Threading.SynchronizationContext</span></td>
+        <td><span class="parametername">synchronizationContext</span></td>
+        <td><p>The <span class="xref">System.Threading.SynchronizationContext</span> that the event delegate is to be executed on.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver__1_System_EventHandler___0__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver%60%601(System.EventHandler%7B%60%600%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L165">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver__1_System_EventHandler___0__" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver``1(System.EventHandler{``0})">TryRegisterGlobalObserver&lt;TEventArgs&gt;(EventHandler&lt;TEventArgs&gt;)</h4>
+  <div class="markdown level1 summary"><p>Registers a handler for any registered event source with a compatible event delegate signature.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterGlobalObserver&lt;TEventArgs&gt;(EventHandler&lt;TEventArgs&gt; eventHandler)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;TEventArgs&gt;</td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TEventArgs</span></td>
+        <td><p>The type of the event args object.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver__1_System_EventHandler___0__System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver%60%601(System.EventHandler%7B%60%600%7D%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L174">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver__1_System_EventHandler___0__System_Boolean_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver``1(System.EventHandler{``0},System.Boolean)">TryRegisterGlobalObserver&lt;TEventArgs&gt;(EventHandler&lt;TEventArgs&gt;, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Registers a handler for any registered event source with a compatible event delegate signature.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterGlobalObserver&lt;TEventArgs&gt;(EventHandler&lt;TEventArgs&gt; eventHandler, bool isMarshalEventToCurrentThreadEnabled)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;TEventArgs&gt;</td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isMarshalEventToCurrentThreadEnabled</span></td>
+        <td><p><code>true</code> if the current <span class="xref">System.Threading.SynchronizationContext</span> should be captured to execute the event handler.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TEventArgs</span></td>
+        <td><p>The type of the event args object.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver__1_System_EventHandler___0__System_Threading_SynchronizationContext_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver%60%601(System.EventHandler%7B%60%600%7D%2CSystem.Threading.SynchronizationContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L183">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver__1_System_EventHandler___0__System_Threading_SynchronizationContext_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver``1(System.EventHandler{``0},System.Threading.SynchronizationContext)">TryRegisterGlobalObserver&lt;TEventArgs&gt;(EventHandler&lt;TEventArgs&gt;, SynchronizationContext)</h4>
+  <div class="markdown level1 summary"><p>Registers a handler for any registered event source with a compatible event delegate signature.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterGlobalObserver&lt;TEventArgs&gt;(EventHandler&lt;TEventArgs&gt; eventHandler, SynchronizationContext synchronizationContext)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;TEventArgs&gt;</td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Threading.SynchronizationContext</span></td>
+        <td><span class="parametername">synchronizationContext</span></td>
+        <td><p>The <span class="xref">System.Threading.SynchronizationContext</span> that the event delegate is to be executed on.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TEventArgs</span></td>
+        <td><p>The type of the event args object.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver__1_System_String_System_EventHandler___0__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver%60%601(System.String%2CSystem.EventHandler%7B%60%600%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L114">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver__1_System_String_System_EventHandler___0__" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver``1(System.String,System.EventHandler{``0})">TryRegisterGlobalObserver&lt;TEventArgs&gt;(String, EventHandler&lt;TEventArgs&gt;)</h4>
+  <div class="markdown level1 summary"><p>Register an event delegate to handle a specific event which could be published by any type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterGlobalObserver&lt;TEventArgs&gt;(string eventName, EventHandler&lt;TEventArgs&gt; eventHandler)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The name of the observed event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;TEventArgs&gt;</td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TEventArgs</span></td>
+        <td><p>The type of the event args object.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver__1_System_String_System_EventHandler___0__System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver%60%601(System.String%2CSystem.EventHandler%7B%60%600%7D%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L124">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver__1_System_String_System_EventHandler___0__System_Boolean_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver``1(System.String,System.EventHandler{``0},System.Boolean)">TryRegisterGlobalObserver&lt;TEventArgs&gt;(String, EventHandler&lt;TEventArgs&gt;, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Register an event delegate to handle a specific event which could be published by any type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterGlobalObserver&lt;TEventArgs&gt;(string eventName, EventHandler&lt;TEventArgs&gt; eventHandler, bool isMarshalEventToCurrentThreadEnabled)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The name of the observed event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;TEventArgs&gt;</td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isMarshalEventToCurrentThreadEnabled</span></td>
+        <td><p><code>true</code> if the current <span class="xref">System.Threading.SynchronizationContext</span> should be captured to execute the event handler.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TEventArgs</span></td>
+        <td><p>The type of the event args object.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver__1_System_String_System_EventHandler___0__System_Threading_SynchronizationContext_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver%60%601(System.String%2CSystem.EventHandler%7B%60%600%7D%2CSystem.Threading.SynchronizationContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L134">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterGlobalObserver__1_System_String_System_EventHandler___0__System_Threading_SynchronizationContext_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver``1(System.String,System.EventHandler{``0},System.Threading.SynchronizationContext)">TryRegisterGlobalObserver&lt;TEventArgs&gt;(String, EventHandler&lt;TEventArgs&gt;, SynchronizationContext)</h4>
+  <div class="markdown level1 summary"><p>Register an event delegate to handle a specific event which could be published by any type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterGlobalObserver&lt;TEventArgs&gt;(string eventName, EventHandler&lt;TEventArgs&gt; eventHandler, SynchronizationContext synchronizationContext)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The name of the observed event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;TEventArgs&gt;</td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Threading.SynchronizationContext</span></td>
+        <td><span class="parametername">synchronizationContext</span></td>
+        <td><p>The <span class="xref">System.Threading.SynchronizationContext</span> that the event delegate is to be executed on.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TEventArgs</span></td>
+        <td><p>The type of the event args object.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterObservable_System_Object_System_Collections_Generic_IEnumerable_System_String__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterObservable(System.Object%2CSystem.Collections.Generic.IEnumerable%7BSystem.String%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L18">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterObservable_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterObservable*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterObservable_System_Object_System_Collections_Generic_IEnumerable_System_String__" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterObservable(System.Object,System.Collections.Generic.IEnumerable{System.String})">TryRegisterObservable(Object, IEnumerable&lt;String&gt;)</h4>
+  <div class="markdown level1 summary"><p>Register a type as event source.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterObservable(object eventSource, IEnumerable&lt;string&gt; eventNames)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">eventSource</span></td>
+        <td><p>The publisher instance.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><span class="parametername">eventNames</span></td>
+        <td><p>A collection of event names that define the observed events of the <code data-dev-comment-type="paramref" class="paramref">eventSource</code></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver_System_String_System_Type_System_Delegate_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver(System.String%2CSystem.Type%2CSystem.Delegate)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L27">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver_System_String_System_Type_System_Delegate_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver(System.String,System.Type,System.Delegate)">TryRegisterObserver(String, Type, Delegate)</h4>
+  <div class="markdown level1 summary"><p>Registers an event delegate to handle a specific event published by a specific observable type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterObserver(string eventName, Type eventSourceType, Delegate eventHandler)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The name of the observed event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">eventSourceType</span></td>
+        <td><p>The type of the observable.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Delegate</span></td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver_System_String_System_Type_System_Delegate_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver(System.String%2CSystem.Type%2CSystem.Delegate%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L37">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver_System_String_System_Type_System_Delegate_System_Boolean_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver(System.String,System.Type,System.Delegate,System.Boolean)">TryRegisterObserver(String, Type, Delegate, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Registers an event delegate to handle a specific event published by a specific observable type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterObserver(string eventName, Type eventSourceType, Delegate eventHandler, bool isMarshalEventToCurrentThreadEnabled)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The name of the observed event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">eventSourceType</span></td>
+        <td><p>The type of the observable.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Delegate</span></td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isMarshalEventToCurrentThreadEnabled</span></td>
+        <td><p><code>true</code> if the current <span class="xref">System.Threading.SynchronizationContext</span> should be captured to execute the event handler.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver_System_String_System_Type_System_Delegate_System_Threading_SynchronizationContext_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver(System.String%2CSystem.Type%2CSystem.Delegate%2CSystem.Threading.SynchronizationContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L47">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver_System_String_System_Type_System_Delegate_System_Threading_SynchronizationContext_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver(System.String,System.Type,System.Delegate,System.Threading.SynchronizationContext)">TryRegisterObserver(String, Type, Delegate, SynchronizationContext)</h4>
+  <div class="markdown level1 summary"><p>Registers an event delegate to handle a specific event published by a specific observable type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterObserver(string eventName, Type eventSourceType, Delegate eventHandler, SynchronizationContext synchronizationContext)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The name of the observed event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">eventSourceType</span></td>
+        <td><p>The type of the observable.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Delegate</span></td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Threading.SynchronizationContext</span></td>
+        <td><span class="parametername">synchronizationContext</span></td>
+        <td><p>The <span class="xref">System.Threading.SynchronizationContext</span> that the event delegate is to be executed on.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver__1_System_String_System_Type_System_EventHandler___0__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver%60%601(System.String%2CSystem.Type%2CSystem.EventHandler%7B%60%600%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L57">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver__1_System_String_System_Type_System_EventHandler___0__" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver``1(System.String,System.Type,System.EventHandler{``0})">TryRegisterObserver&lt;TEventArgs&gt;(String, Type, EventHandler&lt;TEventArgs&gt;)</h4>
+  <div class="markdown level1 summary"><p>Registers an event delegate to handle a specific event published by a specific observable type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterObserver&lt;TEventArgs&gt;(string eventName, Type eventSourceType, EventHandler&lt;TEventArgs&gt; eventHandler)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The name of the observed event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">eventSourceType</span></td>
+        <td><p>The type of the observable.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;TEventArgs&gt;</td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TEventArgs</span></td>
+        <td><p>The type of the event args object.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver__1_System_String_System_Type_System_EventHandler___0__System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver%60%601(System.String%2CSystem.Type%2CSystem.EventHandler%7B%60%600%7D%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L68">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver__1_System_String_System_Type_System_EventHandler___0__System_Boolean_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver``1(System.String,System.Type,System.EventHandler{``0},System.Boolean)">TryRegisterObserver&lt;TEventArgs&gt;(String, Type, EventHandler&lt;TEventArgs&gt;, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Registers an event delegate to handle a specific event published by a specific observable type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterObserver&lt;TEventArgs&gt;(string eventName, Type eventSourceType, EventHandler&lt;TEventArgs&gt; eventHandler, bool isMarshalEventToCurrentThreadEnabled)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The name of the observed event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">eventSourceType</span></td>
+        <td><p>The type of the observable.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;TEventArgs&gt;</td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isMarshalEventToCurrentThreadEnabled</span></td>
+        <td><p><code>true</code> if the current <span class="xref">System.Threading.SynchronizationContext</span> should be captured to execute the event handler.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TEventArgs</span></td>
+        <td><p>The type of the event args object.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver__1_System_String_System_Type_System_EventHandler___0__System_Threading_SynchronizationContext_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver%60%601(System.String%2CSystem.Type%2CSystem.EventHandler%7B%60%600%7D%2CSystem.Threading.SynchronizationContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L79">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRegisterObserver__1_System_String_System_Type_System_EventHandler___0__System_Threading_SynchronizationContext_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver``1(System.String,System.Type,System.EventHandler{``0},System.Threading.SynchronizationContext)">TryRegisterObserver&lt;TEventArgs&gt;(String, Type, EventHandler&lt;TEventArgs&gt;, SynchronizationContext)</h4>
+  <div class="markdown level1 summary"><p>Registers an event delegate to handle a specific event published by a specific observable type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRegisterObserver&lt;TEventArgs&gt;(string eventName, Type eventSourceType, EventHandler&lt;TEventArgs&gt; eventHandler, SynchronizationContext synchronizationContext)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The name of the observed event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">eventSourceType</span></td>
+        <td><p>The type of the observable.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;TEventArgs&gt;</td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>A delegate that handles the specified event.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Threading.SynchronizationContext</span></td>
+        <td><span class="parametername">synchronizationContext</span></td>
+        <td><p>The <span class="xref">System.Threading.SynchronizationContext</span> that the event delegate is to be executed on.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when registration was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TEventArgs</span></td>
+        <td><p>The type of the event args object.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRemoveAllObservers_System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRemoveAllObservers(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L229">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveAllObservers_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveAllObservers*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveAllObservers_System_String_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveAllObservers(System.String)">TryRemoveAllObservers(String)</h4>
+  <div class="markdown level1 summary"><p>Removes all event handlers for a specified event no matter event publisher type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRemoveAllObservers(string eventName)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The event name of the event that the delegate is handling.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when removal was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRemoveAllObservers_System_String_System_Type_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRemoveAllObservers(System.String%2CSystem.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L237">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveAllObservers_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveAllObservers*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveAllObservers_System_String_System_Type_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveAllObservers(System.String,System.Type)">TryRemoveAllObservers(String, Type)</h4>
+  <div class="markdown level1 summary"><p>Removes all event handlers for a specific event publisher type and specific event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRemoveAllObservers(string eventName, Type eventSourceType)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The event name of the event that the delegate is handling.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">eventSourceType</span></td>
+        <td><p>The type of the event publisher.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when removal was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRemoveAllObservers_System_Type_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRemoveAllObservers(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L244">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveAllObservers_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveAllObservers*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveAllObservers_System_Type_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveAllObservers(System.Type)">TryRemoveAllObservers(Type)</h4>
+  <div class="markdown level1 summary"><p>Removes all event handlers for a specified event publisher type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRemoveAllObservers(Type eventSourceType)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">eventSourceType</span></td>
+        <td><p>The type of the event publisher.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when removal was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRemoveGlobalObserver_System_Delegate_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRemoveGlobalObserver(System.Delegate)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L268">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveGlobalObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveGlobalObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveGlobalObserver_System_Delegate_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveGlobalObserver(System.Delegate)">TryRemoveGlobalObserver(Delegate)</h4>
+  <div class="markdown level1 summary"><p>Removes the event handler for all registered events with a compatible event delegate signature.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRemoveGlobalObserver(Delegate eventHandler)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Delegate</span></td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>The event handler to remove.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when removal was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRemoveGlobalObserver_System_String_System_Delegate_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRemoveGlobalObserver(System.String%2CSystem.Delegate)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L252">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveGlobalObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveGlobalObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveGlobalObserver_System_String_System_Delegate_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveGlobalObserver(System.String,System.Delegate)">TryRemoveGlobalObserver(String, Delegate)</h4>
+  <div class="markdown level1 summary"><p>Removes the event handler for a specified event no matter the event publisher type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRemoveGlobalObserver(string eventName, Delegate eventHandler)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The event name of the event that the delegate is handling.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Delegate</span></td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>The event handler to remove</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when removal was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRemoveGlobalObserver__1_System_EventHandler___0__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRemoveGlobalObserver%60%601(System.EventHandler%7B%60%600%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L276">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveGlobalObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveGlobalObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveGlobalObserver__1_System_EventHandler___0__" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveGlobalObserver``1(System.EventHandler{``0})">TryRemoveGlobalObserver&lt;TEventArgs&gt;(EventHandler&lt;TEventArgs&gt;)</h4>
+  <div class="markdown level1 summary"><p>Removes the event handler for all registered events with a compatible event delegate signature.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRemoveGlobalObserver&lt;TEventArgs&gt;(EventHandler&lt;TEventArgs&gt; eventHandler)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;TEventArgs&gt;</td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>The event handler to remove.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when removal was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TEventArgs</span></td>
+        <td><p>The type of the event args object.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRemoveGlobalObserver__1_System_String_System_EventHandler___0__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRemoveGlobalObserver%60%601(System.String%2CSystem.EventHandler%7B%60%600%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L261">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveGlobalObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveGlobalObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveGlobalObserver__1_System_String_System_EventHandler___0__" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveGlobalObserver``1(System.String,System.EventHandler{``0})">TryRemoveGlobalObserver&lt;TEventArgs&gt;(String, EventHandler&lt;TEventArgs&gt;)</h4>
+  <div class="markdown level1 summary"><p>Removes the event handler for a specified event no matter the event publisher type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRemoveGlobalObserver&lt;TEventArgs&gt;(string eventName, EventHandler&lt;TEventArgs&gt; eventHandler)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The event name of the event that the delegate is handling.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;TEventArgs&gt;</td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>The event handler to remove</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when removal was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TEventArgs</span></td>
+        <td><p>The type of the event args object.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRemoveObservable_System_Object_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRemoveObservable(System.Object%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L203">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveObservable_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveObservable*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveObservable_System_Object_System_Boolean_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveObservable(System.Object,System.Boolean)">TryRemoveObservable(Object, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Unregister the event publisher for all events.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRemoveObservable(object eventSource, bool removeEventObservers = false)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">eventSource</span></td>
+        <td><p>The event publisher instance.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">removeEventObservers</span></td>
+        <td><p>If <code>true</code> removes all event listeners of the specified events. The value is <code>false</code> by default.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when removal was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRemoveObservable_System_Object_System_Collections_Generic_IEnumerable_System_String__System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRemoveObservable(System.Object%2CSystem.Collections.Generic.IEnumerable%7BSystem.String%7D%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L192">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveObservable_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveObservable*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveObservable_System_Object_System_Collections_Generic_IEnumerable_System_String__System_Boolean_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveObservable(System.Object,System.Collections.Generic.IEnumerable{System.String},System.Boolean)">TryRemoveObservable(Object, IEnumerable&lt;String&gt;, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Unregister the event publisher for a collection of specified events.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRemoveObservable(object eventSource, IEnumerable&lt;string&gt; eventNames, bool removeEventObservers = false)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">eventSource</span></td>
+        <td><p>The event publisher instance.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><span class="parametername">eventNames</span></td>
+        <td><p>The names of the events to unregister.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">removeEventObservers</span></td>
+        <td><p>If <code>true</code> removes all event listeners of the specified events. The value is <code>false</code> by default.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when removal was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRemoveObserver_System_String_System_Type_System_Delegate_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRemoveObserver(System.String%2CSystem.Type%2CSystem.Delegate)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L212">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveObserver_System_String_System_Type_System_Delegate_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveObserver(System.String,System.Type,System.Delegate)">TryRemoveObserver(String, Type, Delegate)</h4>
+  <div class="markdown level1 summary"><p>Removes the event handler for a specified event of a certain event publisher type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRemoveObserver(string eventName, Type eventSourceType, Delegate eventHandler)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The event name of the event that the delegate is handling.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">eventSourceType</span></td>
+        <td><p>The type of the event publisher.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Delegate</span></td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>The event handler to remove.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when removal was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator_TryRemoveObserver__1_System_String_System_Type_System_EventHandler___0__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator.TryRemoveObserver%60%601(System.String%2CSystem.Type%2CSystem.EventHandler%7B%60%600%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L222">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveObserver_" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveObserver*"></a>
+  <h4 id="BionicCode_Utilities_Net_IEventAggregator_TryRemoveObserver__1_System_String_System_Type_System_EventHandler___0__" data-uid="BionicCode.Utilities.Net.IEventAggregator.TryRemoveObserver``1(System.String,System.Type,System.EventHandler{``0})">TryRemoveObserver&lt;TEventArgs&gt;(String, Type, EventHandler&lt;TEventArgs&gt;)</h4>
+  <div class="markdown level1 summary"><p>Removes the event handler for a specified event of a certain event publisher type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool TryRemoveObserver&lt;TEventArgs&gt;(string eventName, Type eventSourceType, EventHandler&lt;TEventArgs&gt; eventHandler)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">eventName</span></td>
+        <td><p>The event name of the event that the delegate is handling.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">eventSourceType</span></td>
+        <td><p>The type of the event publisher.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.EventHandler</span>&lt;TEventArgs&gt;</td>
+        <td><span class="parametername">eventHandler</span></td>
+        <td><p>The event handler to remove.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p><code>true</code> when removal was successful, otherwise <code>false</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TEventArgs</span></td>
+        <td><p>The type of the event args object.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.HelperExtensionsCommon.html#BionicCode_Utilities_Net_HelperExtensionsCommon_ToDictionary_System_Object_">HelperExtensionsCommon.ToDictionary(Object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Core.Wpf.Extensions.HelperExtensions.html#BionicCode_Utilities_Net_Core_Wpf_Extensions_HelperExtensions_ToDictionary_System_Object_">HelperExtensions.ToDictionary(Object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Framework.Wpf.Extensions.HelperExtensions.html#BionicCode_Utilities_Net_Framework_Wpf_Extensions_HelperExtensions_ToDictionary_System_Object_">HelperExtensions.ToDictionary(Object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.Uwp.Extensions.HelperExtensions.html#BionicCode_Utilities_Net_Uwp_Extensions_HelperExtensions_ToDictionary_System_Object_">HelperExtensions.ToDictionary(Object)</a>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/new/dev/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IEventAggregator.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IEventAggregator%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IEventAggregator.cs/#L10" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

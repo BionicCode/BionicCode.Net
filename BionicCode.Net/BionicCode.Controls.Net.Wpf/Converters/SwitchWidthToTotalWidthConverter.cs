@@ -1,9 +1,9 @@
-﻿using System;
-using System.Globalization;
-using System.Windows.Data;
-
-namespace BionicCode.Controls.Net.Wpf.Converters
+﻿namespace BionicCode.Controls.Net.Wpf
 {
+  using System;
+  using System.Globalization;
+  using System.Windows.Data;
+
   class SwitchWidthToTotalWidthConverter : IMultiValueConverter
   {
     #region Implementation of IMultiValueConverter

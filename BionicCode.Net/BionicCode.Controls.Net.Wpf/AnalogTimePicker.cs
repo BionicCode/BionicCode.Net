@@ -1,23 +1,22 @@
-﻿#region Info
-
-// 2021/01/09  10:13
-// BionicCode.Controls.Net.Core.Wpf
-
-#endregion
-
-using System;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Markup;
-using BionicCode.Utilities.Net.Wpf.Extensions;
-
-namespace BionicCode.Controls.Net.Wpf
+﻿namespace BionicCode.Controls.Net.Wpf
 {
+  #region Info
+
+  // 2021/01/09  10:13
+  // BionicCode.Controls.Net.Core.Wpf
+
+  #endregion
+
+  using System;
+  using System.Collections.ObjectModel;
+  using System.Globalization;
+  using System.Linq;
+  using System.Text;
+  using System.Windows;
+  using System.Windows.Controls;
+  using System.Windows.Input;
+  using System.Windows.Markup;
+
   [ContentProperty("AnalogClockFace")]
   [TemplateVisualState(Name = AnalogTimePicker.VisualStatePickerOpen, GroupName = "PanelStates")]
   [TemplateVisualState(Name = AnalogTimePicker.VisualStatePickerClosed, GroupName = "PanelStates")]
@@ -202,16 +201,7 @@ namespace BionicCode.Controls.Net.Wpf
       this.AnalogClockFace.SelectedSecond = (steps + this.AnalogClockFace.SelectedSecond + change) % steps;
     }
 
-    private void OnOverflowPickerScrollChanged(object sender, ScrollChangedEventArgs e)
-    {
-      GenerateSelectableDays(e.VerticalChange);
-    }
-
-    private void GenerateSelectableDays(double verticalChange)
-    {
-      ;
-    }
-
+  
     #endregion
 
     private static void OnSelectedTimeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

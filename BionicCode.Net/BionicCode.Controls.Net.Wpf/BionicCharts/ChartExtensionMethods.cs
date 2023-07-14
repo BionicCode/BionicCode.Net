@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.TextFormatting;
 
-namespace BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart
+namespace BionicCode.Controls.Net.Wpf
 {
   public static class ChartExtensionMethods
   {
@@ -144,16 +144,16 @@ namespace BionicCode.Controls.Net.Wpf.BionicCharts.CartesianChart
     /// Transforms the point from a cartesian coordinate system to a point in a screen coordinate system (which has its y-axis inverted, starting at the top-left position).
     /// </summary>
     /// <param name="point">An instance of <see cref="Point"/>.</param>
-    /// <param name="yLimit">The maximum value on the screen's y-axis.</param>
+    /// <param name="yAxisPositiveLimit">The maximum value on the cartesian y-axis.</param>
     /// <returns>A point which has its values transformed from a cartesian coordinate system to a point in a screen coordinate system.</returns>
-    public static Point ToPointOnScreen(this Point point, double yLimit) => new Point(point.X, yLimit - point.Y);
+    public static Point ToPointOnScreen(this Point point, double yAxisPositiveLimit) => new Point(point.X, yAxisPositiveLimit - point.Y);
 
     /// <summary>
     /// Transforms the point from a cartesian coordinate system to a point in a screen coordinate system (which has its y-axis inverted, starting at the top-left position).
     /// </summary>
     /// <param name="chartPoint">An instance of <see cref="ICartesianChartPoint"/>.</param>
-    /// <param name="yLimit">The maximum value on the screen's y-axis.</param>
+    /// <param name="yAxisPositiveLimit">The maximum value on the cartesian y-axis.</param>
     /// <returns>A point which has its values transformed from a cartesian coordinate system to a point in a screen coordinate system.</returns>
-    public static Point ToPointOnScreen(this ICartesianChartPoint chartPoint, double yLimit) => new Point(chartPoint.X, yLimit - chartPoint.Y);
+    public static Point ToPointOnScreen(this ICartesianChartPoint chartPoint, double yAxisPositiveLimit) => new Point(chartPoint.X, yAxisPositiveLimit - chartPoint.Y);
   }
 }

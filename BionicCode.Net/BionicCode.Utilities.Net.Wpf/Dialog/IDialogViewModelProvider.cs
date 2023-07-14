@@ -3,10 +3,11 @@
 // BionicUtilities.Net
 #endregion
 
+namespace BionicCode.Utilities.Net
+{
 using System.Windows;
 
-namespace BionicCode.Utilities.Net.Wpf.Dialog
-{
+#if NET || NET461_OR_GREATER
   /// <summary>
   /// The binding source for the current dialog view and the attached property <see cref="Dialog.DialogDataContextProperty"/>.
   /// </summary>
@@ -22,4 +23,5 @@ namespace BionicCode.Utilities.Net.Wpf.Dialog
     /// <seealso href="https://github.com/BionicCode/BionicCode.Net#mvvm-dialog-attached-behavior">See advanced example</seealso>
     IDialogViewModel DialogViewModel { get; }
   }
+#endif
 }

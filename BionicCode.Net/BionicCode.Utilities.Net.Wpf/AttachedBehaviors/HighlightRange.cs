@@ -1,4 +1,4 @@
-﻿namespace BionicCode.Utilities.Net.Wpf.AttachedBehaviors
+﻿namespace BionicCode.Utilities.Net
 {
   /// <summary>
   /// Represents a text range, described by a <see cref="StartIndex"/> and <see cref="EndIndex"/>.

@@ -1,53 +1,25 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
-
-namespace BionicCode.Utilities.Net.Wpf
+﻿namespace BionicCode.Utilities.Net
 {
-  /// <summary>
-  /// Extends <see cref="ICommand"/> to allow asynchronous command execution.
-  /// </summary>
-  public interface IAsyncRelayCommand : ICommand
+  using System;
+  using System.ComponentModel;
+  using System.Threading;
+  using System.Threading.Tasks;
+  using System.Windows.Input;
+  using BionicCode.Utilities.Net.Common;
+
+  /// <inheritdoc/>
+  public interface IAsyncRelayCommand : IAsyncRelayCommandCommon, ICommand, INotifyPropertyChanged
   {
+#if !NETSTANDARD
     /// <summary>
-    /// Checks if the <see cref="ICommand"/> can execute.
+    /// Controls whether the command's <see cref="ICommand.CanExecuteChanged"/> is attached to the <see cref="CommandManager.RequerySuggested"/> event. 
     /// </summary>
-    /// <returns><c>true</c> when the <see cref="ICommand"/> can execute, otherwise <c>false</c>.</returns>
-    bool CanExecute();
-    /// <summary>
-    /// Executes the AsyncRelayCommand asynchronously.
-    /// </summary>
-    Task ExecuteAsync();
-    /// <summary>
-    /// Executes the AsyncRelayCommand asynchronously.
-    /// </summary>
-    Task ExecuteAsync(CancellationToken cancellationToken);
-    /// <summary>
-    /// Asynchronously executes the AsyncRelayCommand on the current command target.
-    /// </summary>
-    /// <param name="parameter">
-    /// The command parameter.
-    /// </param>
-    /// <returns>An awaitable <see cref="Task"/> instance.</returns>
-    Task ExecuteAsync(object parameter);
-    /// <summary>
-    /// Asynchronously executes the AsyncRelayCommand on the current command target.
-    /// </summary>
-    /// <param name="parameter">
-    /// The command parameter.
-    /// </param>
-    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to cancel the execution.</param>
-    /// <returns>An awaitable <see cref="Task"/> instance.</returns>
-    Task ExecuteAsync(object parameter, CancellationToken cancellationToken);
-
-    /// <summary>
-    /// Raises the <seealso cref="ICommand.CanExecuteChanged"/> event of this particular command only.
-    /// </summary>
-    void InvalidateCommand();
-
-    /// <summary>
-    /// A flag to signal if the asynchronous operation has completed.
-    /// </summary>
-    bool IsExecuting { get; }
+    /// <value><c>true</c> to attach the <see cref="ICommand.CanExecuteChanged"/> is attached to the <see cref="CommandManager.RequerySuggested"/> event. 
+    /// <br/>The default is <c>true</c>.</value>
+    /// <remarks>If the <see cref="IsCommandManagerRequerySuggestedEnabled"/> property is set to <c>true</c>, calling the <see cref="CommandManager.InvalidateRequerySuggested"/> method will also raise the <see cref="ICommand.CanExecuteChanged"/> event.
+    /// <br/>This is the default behavior. <see cref="CommandManager.InvalidateRequerySuggested"/> is regularly invoked by the framework to keep UI elemnts, that implement <see cref="ICommandSource"/> (like the Button control) and listen to the <see cref="ICommand.CanExecuteChanged"/> event, updated. 
+    /// <br/>When the <see cref="IsCommandManagerRequerySuggestedEnabled"/> property ios set to <c>false</c>, the <see cref="ICommand.CanExecuteChanged"/> must be raised explicitly by calling the <see cref="InvalidateCommand"/> method.</remarks>
+    bool IsCommandManagerRequerySuggestedEnabled { get; set; }
+#endif
   }
 }

@@ -13,7 +13,7 @@ using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using BionicCode.Utilities.Net.Wpf.Extensions;
+using BionicCode.Utilities.Net;
 
 namespace BionicCode.Controls.Net.Wpf
 {

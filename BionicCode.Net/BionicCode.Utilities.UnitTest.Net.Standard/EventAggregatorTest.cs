@@ -1,14 +1,13 @@
-﻿using System;
-using BionicCode.Utilities.Net.Standard;
-using BionicCode.Utilities.Net.Standard.Exception;
-using Xunit;
-using FluentAssertions;
-using BionicCode.Utilities.UnitTest.Net.Standard.Resources;
-
-namespace BionicCode.Utilities.UnitTest.Net.Standard
+﻿namespace BionicCode.Utilities.UnitTest.Net
 {
-  
-  
+  using System;
+  using BionicCode.Utilities.Net;
+  using Xunit;
+  using FluentAssertions;
+  using BionicCode.Utilities.UnitTest.Net.Resources;
+
+
+
   public class EventAggregatorTest
   {    
     public EventAggregatorTest()

@@ -27,7 +27,7 @@ namespace BionicCode.Controls.Net.Framework.Wpf
     #region Overrides of UIElement
 
     /// <inheritdoc />
-    protected override void OnPreviewTextInput(TextCompositionEventArgs e)
+    protected override void OnPreviewTextInputAsync(TextCompositionEventArgs e)
     {
       base.OnPreviewTextInput(e);
       if (!IsValidInput(e.Text))

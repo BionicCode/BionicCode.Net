@@ -1,12 +1,13 @@
-﻿using System;
-using System.Globalization;
-using System.Windows.Data;
-
-namespace BionicCode.Utilities.Net.Wpf.Converter
+﻿namespace BionicCode.Utilities.Net
 {
+  using System;
+  using System.Globalization;
+
+#if NET || NET461_OR_GREATER
+using System.Windows.Data;
   public class PercentageToPixelConverter : IValueConverter
   {
-    #region Implementation of IValueConverter
+  #region Implementation of IValueConverter
 
     /// <inheritdoc />
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -35,6 +36,7 @@ namespace BionicCode.Utilities.Net.Wpf.Converter
       return pixelValue;
     }
 
-    #endregion
+  #endregion
   }
+#endif
 }

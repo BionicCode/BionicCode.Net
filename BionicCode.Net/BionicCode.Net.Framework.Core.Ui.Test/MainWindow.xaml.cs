@@ -35,5 +35,10 @@ namespace BionicCode.Net.Wpf.Ui.Test
     }
 
     private void OnTimerIntervalElapsed(object? sender, EventArgs e) => this.CurrentDateTime = DateTime.Now;
+
+    private void CartesianChart_CleanUpVirtualizedItem(object sender, System.Windows.Controls.CleanUpVirtualizedItemEventArgs e)
+    {
+
+    }
   }
 }

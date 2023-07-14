@@ -1,16 +1,16 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Windows.Data;
-
-namespace BionicCode.Utilities.Net.Wpf.Converter
+﻿namespace BionicCode.Utilities.Net
 {
+#if NET || NET461_OR_GREATER
+  using System;
+  using System.Globalization;
+  using System.Linq;
+using System.Windows.Data;
   /// <summary>
   /// An <see cref="IMultiValueConverter"/> implementation that checks if all values are <c>true</c>. Supports <see cref="BindingMode.OneWay"/> or <see cref="BindingMode.OneTime"/> only.
   /// </summary>
   public class BooleanMultiValueConverter : IMultiValueConverter
   {
-    #region Implementation of IMultiValueConverter
+  #region Implementation of IMultiValueConverter
 
     /// <inheritdoc />
     public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) => values?.OfType<bool>().All(value => value);
@@ -27,6 +27,7 @@ namespace BionicCode.Utilities.Net.Wpf.Converter
     public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) =>
       throw new NotSupportedException();
 
-    #endregion
+  #endregion
   }
+#endif
 }

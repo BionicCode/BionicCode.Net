@@ -1,4 +1,8 @@
-﻿using System;
+﻿
+namespace BionicCode.Utilities.Net
+{
+#if NET || NET461_OR_GREATER
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -8,15 +12,13 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-namespace BionicCode.Utilities.Net.Wpf.AttachedBehaviors
-{
   /// <summary>
   /// Attached behavior that supports dynamic text highlighting for controls derived from <see cref="TextBlock"/> or <see cref="RichTextBox"/>.
   /// </summary>
   /// <seealso href="https://github.com/BionicCode/BionicCode.Net#textcontrol">See advanced example</seealso>
   public class TextControl : DependencyObject
   {
-    #region TextValue attached property
+#region TextValue attached property
 
     /// <summary>
     /// Attached property to serve as alternative text property for the <see cref="RichTextBox"/> (instead of using <see cref="RichTextBox.Document"/>). Optional property to use with <see cref="TextBlock"/> (instead of <see cref="TextBlock.Text"/>). The defined <see cref="HighlightRange"/> items contained in the attached property <see cref="HighlightRangesProperty"/> collection will always be applied to <see cref="TextBlock.Text"/> and the <see cref="TextProperty"/> values. 
@@ -42,9 +44,9 @@ namespace BionicCode.Utilities.Net.Wpf.AttachedBehaviors
     /// <returns>The current text value.</returns>
     public static string GetText(DependencyObject attachingElement) => (string)attachingElement.GetValue(TextControl.TextProperty);
 
-    #endregion
+#endregion
 
-    #region HighlightBackgroundColor attached property
+#region HighlightBackgroundColor attached property
     /// <summary>
     /// Attached property to define the background <see cref="Brush"/> for the highlight text, which is defined by <see cref="HighlightRange"/> items contained in the <see cref="HighlightRangesProperty"/> attached property. 
     /// </summary>
@@ -68,9 +70,9 @@ namespace BionicCode.Utilities.Net.Wpf.AttachedBehaviors
     /// <returns>The <see cref="Brush"/> for the background of the highlight text ranges.</returns>
     public static Brush GetHighlightBackground(DependencyObject attachingElement) => (Brush)attachingElement.GetValue(TextControl.HighlightBackgroundProperty);
 
-    #endregion
+#endregion
 
-    #region HighlightForeground attached property
+#region HighlightForeground attached property
 
     /// <summary>
     /// Attached property to define the foreground <see cref="Brush"/> for the highlight text, which is defined by <see cref="HighlightRange"/> items contained in the <see cref="HighlightRangesProperty"/> attached property. 
@@ -95,9 +97,9 @@ namespace BionicCode.Utilities.Net.Wpf.AttachedBehaviors
     /// <returns>The <see cref="Brush"/> for the foreground of the highlight text ranges.</returns>
     public static Brush GetHighlightForeground(DependencyObject attachingElement) => (Brush)attachingElement.GetValue(TextControl.HighlightForegroundProperty);
 
-    #endregion
+#endregion
 
-    #region IsEnabled attached property
+#region IsEnabled attached property
 
     /// <summary>
     /// Attached property to enable or disable the highlight attached behavior <see cref="TextControl"/>. cref="HighlightRangesProperty"/> attached property. 
@@ -122,9 +124,9 @@ namespace BionicCode.Utilities.Net.Wpf.AttachedBehaviors
     /// <returns><c>true</c> if the the attached <see cref="TextControl"/> behavior is enabled or <c>false</c> if it is disabled.</returns>
     public static bool GetIsHighlightingEnabled(DependencyObject attachingElement) => (bool)attachingElement.GetValue(TextControl.IsHighlightingEnabledProperty);
 
-    #endregion
+#endregion
 
-    #region HighlightRanges attached property
+#region HighlightRanges attached property
 
     /// <summary>
     /// Attached property to define a <see cref="HighlightRangeCollection"/> of <see cref="HighlightRange"/> items. cref="HighlightRangesProperty"/> attached property. 
@@ -150,9 +152,9 @@ namespace BionicCode.Utilities.Net.Wpf.AttachedBehaviors
     /// <returns>A <see cref="HighlightRangeCollection"/>.</returns>
     public static HighlightRangeCollection GetHighlightRanges(DependencyObject attachingElement) => (HighlightRangeCollection)attachingElement.GetValue(TextControl.HighlightRangesProperty);
 
-    #endregion
+#endregion
 
-    #region IsInitialized attached property
+#region IsInitialized attached property
 
     private static readonly DependencyProperty IsInitializedProperty = DependencyProperty.RegisterAttached(
       "IsInitialized",
@@ -164,7 +166,7 @@ namespace BionicCode.Utilities.Net.Wpf.AttachedBehaviors
 
     private static bool GetIsInitialized(DependencyObject attachingElement) => (bool)attachingElement.GetValue(TextControl.IsInitializedProperty);
 
-    #endregion
+#endregion
 
     private static Dictionary<INotifyCollectionChanged, DependencyObject> INotifyCollectionToAttachedElementMap { get; }
 
@@ -515,4 +517,5 @@ namespace BionicCode.Utilities.Net.Wpf.AttachedBehaviors
       return 0;
     }
   }
+#endif
 }

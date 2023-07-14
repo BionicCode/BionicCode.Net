@@ -1,4 +1,4 @@
-﻿namespace BionicCode.Utilities.Net.Wpf.Dialog
+﻿namespace BionicCode.Utilities.Net
 {
   /// <summary>
   /// An enumeration to represent the dialog' status after it was closed.

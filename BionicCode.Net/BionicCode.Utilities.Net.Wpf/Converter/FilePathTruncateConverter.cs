@@ -1,12 +1,12 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-using System.Text;
-using System.Windows;
-using System.Windows.Data;
-
-namespace BionicCode.Utilities.Net.Wpf.Converter
+﻿namespace BionicCode.Utilities.Net
 {
+  using System;
+  using System.Globalization;
+  using System.IO;
+  using System.Text;
+  using System.Windows;
+#if NET || NET461_OR_GREATER
+using System.Windows.Data;
   /// <summary>
   ///   Converter to truncate file paths exceeding a specific length by replacing a number of characters with an ellipsis.
   /// </summary>
@@ -41,7 +41,6 @@ namespace BionicCode.Utilities.Net.Wpf.Converter
       int maxLength = parameter == null
         ? this.MaxLength
         : System.Convert.ToInt32(parameter);
-
 
       return maxLength >= path.Length ? path : InsertCharacterEllipsis(path, maxLength);
     }
@@ -84,4 +83,5 @@ namespace BionicCode.Utilities.Net.Wpf.Converter
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
       throw new NotSupportedException();
   }
+#endif
 }

@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Globalization;
-using System.Windows;
-using System.Windows.Data;
-
-namespace BionicCode.Utilities.Net.Wpf.Converter
+﻿namespace BionicCode.Utilities.Net
 {
+  using System;
+  using System.Collections;
+  using System.Globalization;
+  using System.Windows;
+
+#if NET || NET461_OR_GREATER
+using System.Windows.Data;
   [ValueConversion(typeof(double), typeof(bool))]
   public class IsGreaterThanValueConverter : DependencyObject, IValueConverter
   {
@@ -32,7 +33,7 @@ namespace BionicCode.Utilities.Net.Wpf.Converter
       get => GetValue(IsGreaterThanValueConverter.CompareValueProperty);
       set => SetValue(IsGreaterThanValueConverter.CompareValueProperty, value);
     }
-    #region Implementation of IValueConverter
+  #region Implementation of IValueConverter
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
@@ -45,6 +46,7 @@ namespace BionicCode.Utilities.Net.Wpf.Converter
       throw new NotSupportedException();
     }
 
-    #endregion
+  #endregion
   }
+#endif
 }
