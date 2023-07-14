@@ -1,13 +1,10 @@
 namespace BionicCode.Utilities.Net.Common
 {
   using System;
-  using System.Collections.Concurrent;
   using System.ComponentModel;
-  using System.Runtime.CompilerServices;
   using System.Threading;
   using System.Threading.Tasks;
   using System.Windows.Input;
-  using System.Linq;
 
   /// <summary>
   /// A reusable command that encapsulates the implementation of <see cref="ICommand"/> with support for async/await command delegates. 
@@ -144,7 +141,7 @@ namespace BionicCode.Utilities.Net.Common
     /// </summary>
     /// <param name="executeNoParam">The execution handler.</param>
     /// <param name="canExecuteNoParam">The execution status handler.</param>
-    protected AsyncRelayCommandCommon(Action executeNoParam, Func<bool> canExecuteNoParam) 
+    protected AsyncRelayCommandCommon(Action executeNoParam, Func<bool> canExecuteNoParam)
       : base(executeNoParam, canExecuteNoParam)
     {
     }
@@ -166,7 +163,7 @@ namespace BionicCode.Utilities.Net.Common
     /// <param name="executeAsyncNoParam">The awaitable execution handler.</param>
     /// <param name="canExecuteNoParam">The execution status handler.</param>
     protected AsyncRelayCommandCommon(Func<Task> executeAsyncNoParam, Func<bool> canExecuteNoParam) : base(executeAsyncNoParam, canExecuteNoParam)
-    { 
+    {
     }
 
     /// <summary>
@@ -220,7 +217,7 @@ namespace BionicCode.Utilities.Net.Common
       this.CanExecuteDelegate = canExecute?.ToFunc();
     }
 
-    protected AsyncRelayCommandCommon() 
+    protected AsyncRelayCommandCommon()
     {
     }
 
@@ -230,7 +227,7 @@ namespace BionicCode.Utilities.Net.Common
     ///   Determines whether this AsyncRelayCommandCommon can execute.
     /// </summary>
     /// <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
-    new public bool CanExecute() => CanExecute(default);
+    public new bool CanExecute() => CanExecute(default);
 
     /// <summary>
     ///   Determines whether this AsyncRelayCommandCommon can execute.
@@ -255,7 +252,6 @@ namespace BionicCode.Utilities.Net.Common
     /// <inheritdoc />
     public async Task ExecuteAsync(TParam parameter, CancellationToken cancellationToken) => await ExecuteAsync(parameter, Timeout.InfiniteTimeSpan, cancellationToken);
 
-    
     /// <inheritdoc />
     public async Task ExecuteAsync(TParam parameter, TimeSpan timeout, CancellationToken cancellationToken)
     {
@@ -272,7 +268,7 @@ namespace BionicCode.Utilities.Net.Common
       using (var reentrancyMonitor = new ReentrancyMonitor(IncrementPendingCount, DecrementPendingCount))
       {
         await this.SemaphoreSlim.WaitAsync(reentrancyMonitor.CancellationTokenSource.Token);
-        
+
         // In case we left the semaphore before it could throw the OperationCanceledException (race-comdition).
         if (this.IsPendingCancelling || this.IsPendingCancelled)
         {
@@ -316,6 +312,7 @@ namespace BionicCode.Utilities.Net.Common
             else
             {
               this.ExecuteDelegate.Invoke(parameter);
+              await Task.CompletedTask;
             }
           }
         }
@@ -326,22 +323,19 @@ namespace BionicCode.Utilities.Net.Common
         this.MergedCommandCancellationTokenSource = null;
         this.IsExecuting = false;
         this.IsCancelled = this.CurrentCancellationToken.IsCancellationRequested;
-        this.SemaphoreSlim.Release();
+        _ = this.SemaphoreSlim.Release();
       }
     }
-
     #region ICommand implementation
 #if NET
-    bool ICommand.CanExecute(object? parameter)
-#else
-    bool ICommand.CanExecute(object parameter)
-#endif
-    {
-      return parameter == null
+    bool ICommand.CanExecute(object? parameter) => parameter == null
         ? CanExecute(default)
         : CanExecute((TParam)parameter);
-    }
-
+#else
+    bool ICommand.CanExecute(object parameter) => parameter == null
+        ? CanExecute(default)
+        : CanExecute((TParam)parameter);
+#endif
     /// <inheritdoc />
     async void ICommand.Execute(object parameter) => await ExecuteAsync((TParam)parameter, CancellationToken.None);
 

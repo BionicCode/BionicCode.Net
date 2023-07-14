@@ -1,23 +1,23 @@
-﻿#region Info
-
-// 2021/01/09  15:11
-// BionicCode.Controls.Net.Core.Wpf
-
-#endregion
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Shapes;
-using BionicCode.Utilities.Net.Wpf.Extensions;
-
-namespace BionicCode.Controls.Net.Wpf
+﻿namespace BionicCode.Controls.Net.Wpf
 {
+  #region Info
+
+  // 2021/01/09  15:11
+  // BionicCode.Controls.Net.Core.Wpf
+
+  #endregion
+
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Windows;
+  using System.Windows.Controls;
+  using System.Windows.Data;
+  using System.Windows.Input;
+  using System.Windows.Media;
+  using System.Windows.Shapes;
+  using BionicCode.Utilities.Net;
+
   [TemplatePart(Name = "PART_HostPanel", Type = typeof(Panel))]
   public class AnalogClockFace : ClockFace
   {

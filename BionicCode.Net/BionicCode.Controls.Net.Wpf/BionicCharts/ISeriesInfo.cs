@@ -1,4 +1,4 @@
-﻿namespace BionicCode.Controls.Net.Wpf.BionicCharts
+﻿namespace BionicCode.Controls.Net.Wpf
 {
   using System.Collections;
   using System.Windows.Media;

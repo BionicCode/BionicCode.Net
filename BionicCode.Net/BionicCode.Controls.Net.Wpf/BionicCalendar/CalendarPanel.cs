@@ -25,7 +25,7 @@ namespace BionicCode.Controls.Net.Wpf
   using Panel = System.Windows.Controls.Panel;
   using RowDefinition = System.Windows.Controls.RowDefinition;
   using ScrollViewer = System.Windows.Controls.ScrollViewer;
-  using BionicCode.Utilities.Net.Wpf.Extensions;
+  using BionicCode.Utilities.Net;
 
   #endregion
 

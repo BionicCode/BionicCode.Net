@@ -1,11 +1,11 @@
-﻿namespace BionicCode.Controls.Net.Wpf.BionicCharts
+﻿namespace BionicCode.Controls.Net.Wpf
 {
   using System;
   using System.Collections.Generic;
   using System.Linq;
   using System.Text;
   using System.Threading.Tasks;
-  using BionicCode.Utilities.Net.Standard.ViewModel;
+  using BionicCode.Utilities.Net;
 
   public class CartesianChartPoint : ViewModel, ICartesianChartPoint
   {

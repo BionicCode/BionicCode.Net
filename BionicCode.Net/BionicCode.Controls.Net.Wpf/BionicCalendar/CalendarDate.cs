@@ -17,7 +17,7 @@ using System;
 
 namespace BionicCode.Controls.Net.Wpf
 {
-    public class CalendarDate : BionicCode.Utilities.Net.Standard.ViewModel.ViewModel, ICalendarDate
+    public class CalendarDate : BionicCode.Utilities.Net.ViewModel, ICalendarDate
     {
         #region
 

@@ -1,4 +1,4 @@
-﻿//using BionicCode.Utilities.Net.Wpf.Extensions;
+﻿//using BionicCode.Utilities.Net;
 //using System;
 //using System.Collections.Generic;
 //using System.Collections.ObjectModel;
@@ -9,7 +9,7 @@
 //using System.Windows.Documents;
 //using System.Windows.Media;
 
-//namespace BionicCode.Controls.Net.Wpf.BionicCharts
+//namespace BionicCode.Controls.Net.Wpf
 //{ 
 //  public class VirtualizingCartesianCanvas : VirtualizingPanel, IScrollInfo
 //  {

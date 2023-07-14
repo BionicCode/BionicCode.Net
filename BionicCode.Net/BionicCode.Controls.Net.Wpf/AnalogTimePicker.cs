@@ -1,22 +1,22 @@
-﻿#region Info
-
-// 2021/01/09  10:13
-// BionicCode.Controls.Net.Core.Wpf
-
-#endregion
-
-using System;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Markup;
-
-namespace BionicCode.Controls.Net.Wpf
+﻿namespace BionicCode.Controls.Net.Wpf
 {
+  #region Info
+
+  // 2021/01/09  10:13
+  // BionicCode.Controls.Net.Core.Wpf
+
+  #endregion
+
+  using System;
+  using System.Collections.ObjectModel;
+  using System.Globalization;
+  using System.Linq;
+  using System.Text;
+  using System.Windows;
+  using System.Windows.Controls;
+  using System.Windows.Input;
+  using System.Windows.Markup;
+
   [ContentProperty("AnalogClockFace")]
   [TemplateVisualState(Name = AnalogTimePicker.VisualStatePickerOpen, GroupName = "PanelStates")]
   [TemplateVisualState(Name = AnalogTimePicker.VisualStatePickerClosed, GroupName = "PanelStates")]

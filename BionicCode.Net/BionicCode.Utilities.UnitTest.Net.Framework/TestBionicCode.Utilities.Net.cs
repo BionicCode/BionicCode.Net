@@ -13,7 +13,6 @@
     private void SomeCode()
     {
       var viewModel = new TestViewModel();
-      new EventAggregator()
     }
   }
 

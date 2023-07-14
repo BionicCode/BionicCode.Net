@@ -1,27 +1,127 @@
 {
   "metadata": [
     {
-      "src": [
-        {
-          "files": [
-            "BionicCode.Utilities.Net/**.csproj",
-            "BionicCode.Utilities.Net.Wpf/**.csproj"
-            //"**/**.csproj"
-          ],
-          "exclude": [
-            //"**/BionicCode.Utilities.UnitTest**.csproj"
-          ],
-          "src": ".."
-        }
-      ],
-      "dest": "api",
-      //"properties": {
-      //  "TargetFramework": "net6.0"
-      //},
-      "disableGitFeatures": false,
-      "disableDefaultFilter": false
+      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/*.dll",
+      "dest": "temp/api/netstandard2.0",
+      "properties": {
+        "TargetFramework": "netstandard2.0"
+      }
+    },
+    {
+      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/*.dll",
+      "dest": "temp/api/netstandard2.1",
+      "properties": {
+        "TargetFramework": "netstandard2.1"
+      }
+    },
+    {
+      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/*.dll",
+      "dest": "temp/api/net7.0",
+      "properties": {
+        "TargetFramework": "net7.0"
+      }
+    },
+    {
+      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/*.dll",
+      "dest": "temp/api/net7.0-windows",
+      "properties": {
+        "TargetFramework": "netnet7.0-windows"
+      }
+    },
+    {
+      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/*.dll",
+      "dest": "temp/api/net6.0",
+      "properties": {
+        "TargetFramework": "net6.0"
+      }
+    },
+    {
+      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/*.dll",
+      "dest": "temp/api/net6.0-windows",
+      "properties": {
+        "TargetFramework": "netnet6.0-windows"
+      }
+    },
+    {
+      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/*.dll",
+      "dest": "temp/api/net5.0",
+      "properties": {
+        "TargetFramework": "net5.0"
+      }
+    },
+    {
+      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/*.dll",
+      "dest": "temp/api/net5.0-windows",
+      "properties": {
+        "TargetFramework": "net5.0-windows"
+      }
     }
   ],
+  "merge": {
+    "content": [
+      {
+        "files": "*.yml",
+        "src": "temp/api/netstandard2.0"
+      },
+      {
+        "files": "*.yml",
+        "src": "temp/api/netstandard2.1"
+      },
+      {
+        "files": "*.yml",
+        "src": "temp/api/net7.0"
+      },
+      {
+        "files": "*.yml",
+        "src": "temp/api/net7.0-windows"
+      },
+      {
+        "files": "*.yml",
+        "src": "temp/api/net6.0"
+      },
+      {
+        "files": "*.yml",
+        "src": "temp/api/net6.0-windows"
+      },
+      {
+        "files": "*.yml",
+        "src": "temp/api/net5.0"
+      },
+      {
+        "files": "*.yml",
+        "src": "temp/api/net5.0-windows"
+      }
+    ],
+    "fileMetadata": {
+      "platform": {
+        "temp/api/netstandard2.0/*.yml": [
+          "netstandard2.0"
+        ],
+        "temp/api/netstandard2.1/*.yml": [
+          "netstandard2.1"
+        ],
+        "temp/api/net7.0/*.yml": [
+          "net7.0"
+        ],
+        "temp/api/nets7.0-windows/*.yml": [
+          "net7.0-windows"
+        ],
+        "temp/api/net7.0/*.yml": [
+          "net6.0"
+        ],
+        "temp/api/nets7.0-windows/*.yml": [
+          "net6.0-windows"
+        ],
+        "temp/api/net7.0/*.yml": [
+          "net5.0"
+        ],
+        "temp/api/nets7.0-windows/*.yml": [
+          "net5.0-windows"
+        ]
+      }
+    },
+    "dest": "api"
+  },
   "build": {
     "content": [
       {

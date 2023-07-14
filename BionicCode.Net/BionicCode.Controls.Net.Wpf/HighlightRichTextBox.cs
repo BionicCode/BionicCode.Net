@@ -1,19 +1,19 @@
-﻿#region Usings
-
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Media;
-
-#endregion
-
+﻿
 namespace BionicCode.Controls.Net.Wpf
 {
+  #region Usings
+
+  using System;
+  using System.Collections.Generic;
+  using System.Collections.ObjectModel;
+  using System.Collections.Specialized;
+  using System.Linq;
+  using System.Windows;
+  using System.Windows.Controls;
+  using System.Windows.Documents;
+  using System.Windows.Media;
+#endregion
+
   /// <summary>
   /// Implement this interface to apply a custom highlight style for more complex scenarios e.g., code editors.
   /// </summary>
@@ -178,7 +178,7 @@ namespace BionicCode.Controls.Net.Wpf
 
   public struct MatchInfo : IEquatable<MatchInfo>
   {
-    public MatchInfo(int startIndex, int length, string value, TextRange textRange)
+    public MatchInfo(int startIndex, int length, string value, System.Windows.Documents.TextRange textRange)
     {
       this.StartIndex = startIndex;
       this.Length = length;
@@ -189,7 +189,7 @@ namespace BionicCode.Controls.Net.Wpf
     public int StartIndex { get; }
     public int Length { get; }
     public string Value { get; }
-    public TextRange TextRange { get; }
+    public System.Windows.Documents.TextRange TextRange { get; }
 
     public override bool Equals(object obj) => obj is MatchInfo matchInfo && Equals(matchInfo);
 
@@ -442,7 +442,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public IEnumerable<MatchInfo> EnumerateSearch(int documentOffset)
     {
-      string content = new TextRange(this.Document.ContentStart, this.Document.ContentEnd).Text;
+      string content = new System.Windows.Documents.TextRange(this.Document.ContentStart, this.Document.ContentEnd).Text;
       if (documentOffset < 0 || documentOffset > content.Length)
       {
         throw new ArgumentException("Invalid offset", nameof(documentOffset));
@@ -467,7 +467,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public IEnumerable<MatchInfo> EnumerateSearch(int documentOffset, IEnumerable<DelimiterPair> delimiters)
     {
-      string content = new TextRange(this.Document.ContentStart, this.Document.ContentEnd).Text;
+      string content = new System.Windows.Documents.TextRange(this.Document.ContentStart, this.Document.ContentEnd).Text;
       if (documentOffset < 0 || documentOffset > content.Length)
       {
         throw new ArgumentException("Invalid offset", nameof(documentOffset));
@@ -500,7 +500,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public IEnumerable<MatchInfo> EnumerateSearch(int documentOffset, IEnumerable<string> searchKeys)
     {
-      string content = new TextRange(this.Document.ContentStart, this.Document.ContentEnd).Text;
+      string content = new System.Windows.Documents.TextRange(this.Document.ContentStart, this.Document.ContentEnd).Text;
       if (documentOffset < 0 || documentOffset > content.Length)
       {
         throw new ArgumentException("Invalid offset", nameof(documentOffset));
@@ -605,7 +605,7 @@ namespace BionicCode.Controls.Net.Wpf
         this.IsInputHandled = true;
         TextChange changeInfo = e.Changes.ToList().OrderBy(change => change.AddedLength).Last();
 
-        string pastedInputWithoutLineFeed = new TextRange(
+        string pastedInputWithoutLineFeed = new System.Windows.Documents.TextRange(
           this.Document.ContentStart.GetPositionAtOffset(changeInfo.Offset, LogicalDirection.Forward)
             .GetInsertionPosition(LogicalDirection.Forward),
           this.Document.ContentStart.GetPositionAtOffset(
@@ -793,7 +793,7 @@ namespace BionicCode.Controls.Net.Wpf
 
           TextPointer matchEnd = CreateMatchEndPointer(pastedContentIndex, matchIndex, delimiterPair.End);
 
-          var match = new TextRange(matchStart, matchEnd);
+          var match = new System.Windows.Documents.TextRange(matchStart, matchEnd);
           yield return new MatchInfo(matchIndex - (match.Text.Length - 1), match.Text.Length, match.Text, match);
           inputIndex = matchIndex + delimiterPair.End.Length;
           matchStart = null;
@@ -818,14 +818,14 @@ namespace BionicCode.Controls.Net.Wpf
             break;
           }
 
-          TextRange match = CreateFullMatch(pastedContentIndex, matchIndex, searchKey);
+          System.Windows.Documents.TextRange match = CreateFullMatch(pastedContentIndex, matchIndex, searchKey);
             yield return new MatchInfo(matchIndex - (match.Text.Length - 1), match.Text.Length, match.Text, match);
             inputIndex = matchIndex + searchKey.Length;
         }
       }
     }
 
-    private TextRange CreateFullMatch
+    private System.Windows.Documents.TextRange CreateFullMatch
     (
       Dictionary<int, (TextPointer RunPointer, string RunText)> pastedContentIndex,
       int inputIndex,
@@ -857,7 +857,7 @@ namespace BionicCode.Controls.Net.Wpf
 
       TextPointer matchEnd = endEntry.Value.RunPointer.GetPositionAtOffset(matchEndOffset, LogicalDirection.Forward);
 
-      return new TextRange(matchStart, matchEnd);
+      return new System.Windows.Documents.TextRange(matchStart, matchEnd);
     }
 
     private TextPointer CreateMatchStartPointer(
@@ -919,6 +919,7 @@ namespace BionicCode.Controls.Net.Wpf
       {
         return false;
       }
+
       DelimiterPair maxStartLengthDelimiter = this.DelimiterPairs.Aggregate((longestStartDelimiter, nextDelimiterPair) => nextDelimiterPair.Start.Length > longestStartDelimiter.Start.Length ? nextDelimiterPair : longestStartDelimiter);
 
       DelimiterPair maxEndLengthDelimiter = this.DelimiterPairs.Aggregate((longestStartDelimiter, nextDelimiterPair) => nextDelimiterPair.Start.Length > longestStartDelimiter.Start.Length ? nextDelimiterPair : longestStartDelimiter);
@@ -945,7 +946,7 @@ namespace BionicCode.Controls.Net.Wpf
           {
             continue;
           }
-          var match = new TextRange(
+          var match = new System.Windows.Documents.TextRange(
             this.Document.ContentStart.GetPositionAtOffset(delimiterStartMatchIndex)
               .GetInsertionPosition(LogicalDirection.Forward),
             this.Document.ContentStart.GetPositionAtOffset(changeOffset, LogicalDirection.Forward)

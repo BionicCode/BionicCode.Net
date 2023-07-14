@@ -11,7 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
-using BionicCode.Utilities.Net.Wpf.Extensions;
+using BionicCode.Utilities.Net;
 
 namespace BionicCode.Controls.Net.Wpf
 {

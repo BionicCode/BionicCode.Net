@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.TextFormatting;
 
-namespace BionicCode.Controls.Net.Wpf.BionicCharts
+namespace BionicCode.Controls.Net.Wpf
 {
   public static class ChartExtensionMethods
   {

@@ -137,7 +137,7 @@ using System.Windows.Data;
 #region IsModal attached property
 
     /// <summary>
-    /// Attached property that controls if the <see cref="Window"/> is shown modal.
+    /// Attached property that controls if the <see cref="System.Windows.Window"/> is shown modal.
     /// </summary>
     public static readonly DependencyProperty IsModalProperty = DependencyProperty.RegisterAttached(
       "IsModal", typeof(bool), typeof(Dialog), new PropertyMetadata(default(bool)));
@@ -213,7 +213,7 @@ using System.Windows.Data;
 
       if (Dialog.GetIsModal(attachingElement))
       {
-        window.ShowDialog();
+        _ = window.ShowDialog();
       }
       else
       {
@@ -235,9 +235,9 @@ using System.Windows.Data;
       };
 
       var titleBinding = new Binding(nameof(IDialogViewModel.Title)) { Source = newDialogViewModel };
-      window.SetBinding(Window.TitleProperty, titleBinding);
+      _ = window.SetBinding(Window.TitleProperty, titleBinding);
       var iconBinding = new Binding(nameof(IDialogViewModel.TitleBarIcon)) { Source = newDialogViewModel };
-      window.SetBinding(Window.IconProperty, iconBinding);
+      _ = window.SetBinding(Window.IconProperty, iconBinding);
 
       if (attachingElement is Window parentWindow
           || attachingElement.TryFindVisualParentElement(out parentWindow))
@@ -261,8 +261,8 @@ using System.Windows.Data;
     {
       var dialog = sender as Window;
       var dialogViewModel = dialog?.DataContext as IDialogViewModel;
-      Dialog.ViewModelToDialogMap.Remove(dialogViewModel);
-      Dialog.DialogToAttachingElementMap.Remove(dialog);
+      _ = Dialog.ViewModelToDialogMap.Remove(dialogViewModel);
+      _ = Dialog.DialogToAttachingElementMap.Remove(dialog);
       dialog.Closed -= Dialog.CleanUpOnDialogClosed;
       dialog.Closing -= Dialog.PreventCloseDialogOnClosing;
       dialogViewModel.InteractionCompleted -= Dialog.CloseDialogOnInteractionCompleted;
@@ -272,7 +272,7 @@ using System.Windows.Data;
         await dialogViewModel.SendResponseAsyncCommand.ExecuteAsync(DialogResult.Aborted);
       }
 
-      Dialog.IsClosedByWindowsChromeCloseButton.Remove(dialogViewModel);
+      _ = Dialog.IsClosedByWindowsChromeCloseButton.Remove(dialogViewModel);
     }
 
     private static void CloseDialogOnInteractionCompleted(object sender, EventArgs e)

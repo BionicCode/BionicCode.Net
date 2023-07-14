@@ -12,7 +12,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using BionicCode.Utilities.Net.Wpf.Extensions;
+using BionicCode.Utilities.Net;
 
 namespace BionicCode.Controls.Net.Wpf
 {

@@ -8,10 +8,8 @@
   using System.Threading.Tasks;
   using System.Windows;
   using System.Windows.Input;
-  using BionicCode.Controls.Net.Wpf.BionicCharts;
-  using BionicCode.Utilities.Net.Standard.ViewModel;
-  using BionicCode.Utilities.Net.Wpf;
-  using BionicCode.Utilities.Net.Wpf.Generic;
+  using BionicCode.Controls.Net;
+  using BionicCode.Utilities.Net;
 
   class CartesianChartViewModel : ViewModel
   {

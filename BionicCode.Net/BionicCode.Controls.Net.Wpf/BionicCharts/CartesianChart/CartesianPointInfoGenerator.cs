@@ -1,16 +1,16 @@
 ﻿/* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
 Before:
-namespace BionicCode.Controls.Net.Wpf.BionicCharts
+namespace BionicCode.Controls.Net.Wpf
 After:
-namespace BionicCode.Controls.Net.Wpf.BionicCharts
+namespace BionicCode.Controls.Net.Wpf
 */
 
-namespace BionicCode.Controls.Net.Wpf.BionicCharts
+namespace BionicCode.Controls.Net.Wpf
 {
   using System;
   using System.Windows;
   using System.Linq;
-  using BionicCode.Utilities.Net.Wpf.Extensions;
+  using BionicCode.Utilities.Net;
 
   /* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
   Before:

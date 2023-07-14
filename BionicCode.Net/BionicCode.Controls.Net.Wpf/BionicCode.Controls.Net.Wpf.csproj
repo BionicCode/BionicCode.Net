@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BionicCode.Utilities.Net.Wpf\BionicCode.Utilities.Net.csproj" />
+    <ProjectReference Include="..\BionicCode.Utilities.Net.Wpf\BionicCode.Utilities.Net.Wpf.csproj" />
   </ItemGroup>
   
 
@@ -28,6 +28,10 @@
     <Compile Update="BionicCharts\CartesianChart\CartesianChart.cs">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Exception\" />
   </ItemGroup>
 
 </Project>

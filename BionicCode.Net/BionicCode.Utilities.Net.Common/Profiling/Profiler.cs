@@ -8,30 +8,6 @@
   using System.Threading.Tasks;
 
   /// <summary>
-  /// A delegate to print the results of the <see cref="Profiler"/> to a output (e.g. file).
-  /// </summary>
-  /// <param name="results">A <see cref="ProfilerBatchResult"/> object that holds the results of the benchmark run.</param>
-  /// <param name="preformattedOutput">The print-ready output of the bencmark results.
-  /// <br/>Returns a default table of the following format:
-  /// <br/>
-  /// <code>
-  ///           ╭───────────────┬────────────────────────────┬────────────────╮
-  ///           | Iteration #   │ Duration [ms]              │ Is cancelled   |
-  ///           ┝━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥
-  ///           │ 1             │                     1.0512 │ False          |
-  ///           │ 2             │                     1.0020 │ False          │
-  ///           │ 3             │                     0.8732 │ False          │
-  ///           │ 4             │                     0.0258 │ True (ignored) │
-  ///           │ 5             │                     0.9943 │ False          │
-  /// ╭═════════╧═══════════════╪════════════════════════════┼────────────────┤
-  /// │ Total:    -             │                     3.9207 │                │
-  /// │ Min:      3             │                     0.8732 │                │
-  /// │ Max:      1             │                     1.0512 │                │
-  /// │ Average:  -             │                     0.9802 │                │
-  /// ╰─────────────────────────┴────────────────────────────┴────────────────╯
-  /// </code></param>
-  public delegate void ProfilerLogger(ProfilerBatchResult results, string preformattedOutput);
-  /// <summary>
   /// Helper methods to measure code execution time.
   /// </summary>
   public static class Profiler
@@ -79,7 +55,7 @@
         throw new ArgumentException(ExceptionMessages.GetArgumentExceptionMessage_ProfilerRunCount(), nameof(runCount));
       }
 
-      StringBuilder outputBuilder = new StringBuilder();
+      var outputBuilder = new StringBuilder();
       BuildSummaryHeader(outputBuilder);
 
       var stopwatch = new Stopwatch();
@@ -152,25 +128,25 @@
     /// Provide an instance of the <see cref="ProfilerLogger"/> delegate for the <paramref name="logger"/> parameter to control the output target or customize the formatting.</remarks>
     public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, ProfilerLogger logger)
     {
-      StringBuilder outputBuilder = new StringBuilder();
+      var outputBuilder = new StringBuilder();
       BuildSummaryHeader(outputBuilder);
 
       IEnumerable<ProfilerResult> iterationResults = await InternalLogAverageTimeAsync(asyncAction, runCount, 1, outputBuilder);
-      
+
       IEnumerable<ProfilerResult> passedIterations = iterationResults.Where(profilerResult => !profilerResult.IsProfiledTaskCancelled);
       TimeSpan totalDuration = GetTotalElapsedTime(passedIterations);
       TimeSpan averageDuration = GetAverageDuration(passedIterations, runCount);
-      ProfilerResult minResult = passedIterations.IsEmpty() 
-        ? ProfilerResult.Empty 
+      ProfilerResult minResult = passedIterations.IsEmpty()
+        ? ProfilerResult.Empty
         : passedIterations.Min();
       ProfilerResult maxResult = passedIterations.IsEmpty()
         ? ProfilerResult.Empty
         : passedIterations.Max();
       bool hasCancelledTask = iterationResults.Any(profilerResult => profilerResult.IsProfiledTaskCancelled);
       BuildSummaryFooter(outputBuilder, totalDuration, averageDuration, minResult, maxResult);
-      
+
       var result = new ProfilerBatchResult(hasCancelledTask, runCount, iterationResults, totalDuration, averageDuration, outputBuilder.ToString(), minResult, maxResult);
-      
+
       logger?.Invoke(result, result.Summary);
       return result;
     }
@@ -184,13 +160,13 @@
       {
         for (; iterationCounter <= runCount; iterationCounter++)
         {
-          profiledTask = asyncAction.Invoke();
           stopwatch.Restart();
+          profiledTask = asyncAction.Invoke();
           await profiledTask;
           stopwatch.Stop();
           TimeSpan stopwatchElapsed = stopwatch.Elapsed;
-          bool isProfiledTaskCancelled = profiledTask.Status == TaskStatus.Canceled 
-            || profiledTask.Status == TaskStatus.Faulted;
+          bool isProfiledTaskCancelled = profiledTask.Status is TaskStatus.Canceled
+            || profiledTask.Status is TaskStatus.Faulted;
           var iterationResult = new ProfilerResult(iterationCounter, profiledTask, isProfiledTaskCancelled, stopwatchElapsed);
           iterationResults.Add(iterationResult);
 
@@ -218,22 +194,21 @@
       string headerCol1 = "Iteration #";
       string headerCol2 = "Duration [ms]";
       string headerCol3 = "Is cancelled";
-      outputBuilder.AppendLine($"{"╭",11}───────────────┬────────────────────────────┬────────────────╮");
-      outputBuilder.AppendLine($"{"│",11} {headerCol1,-13} │ {headerCol2,-26} │ {headerCol3,-14} │");
-      outputBuilder.AppendLine($"{"┝", 11}━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥");
+      _ = outputBuilder
+        .AppendLine($"{"╭",11}───────────────┬────────────────────────────┬────────────────╮")
+        .AppendLine($"{"│",11} {headerCol1,-13} │ {headerCol2,-26} │ {headerCol3,-14} │")
+        .AppendLine($"{"┝",11}━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥");
     }
 
     private static void BuildSummaryEntry(StringBuilder outputBuilder, int iterationCounter, ProfilerResult iterationResult) => outputBuilder.AppendLine($"{"│",11} {iterationCounter,-13:N0} │ {iterationResult.ElapsedTime.TotalMilliseconds,26:N6} │ {iterationResult.IsProfiledTaskCancelled + (iterationResult.IsProfiledTaskCancelled ? " (ignored)" : ""),-14} │");
 
-    private static void BuildSummaryFooter(StringBuilder outputBuilder, TimeSpan totalDuration, TimeSpan averageDuration, ProfilerResult min, ProfilerResult max)
-    {
-      outputBuilder.AppendLine($"╭═════════╧═══════════════╪════════════════════════════┼────────────────┤");
-      outputBuilder.AppendLine($"{"│ Total:", -11} {"-", -13} │ {totalDuration.TotalMilliseconds, 26:N6} │{"│",17}");
-      outputBuilder.AppendLine($"{"│ Min:",-11} {(min.Iteration < 0 ? "-" : min.Iteration.ToString("N0")),-13:N0} │ {(min.Iteration < 0 ? "-" : min.ElapsedTime.TotalMilliseconds.ToString("N6")),26:N6} │{"│",17}");
-      outputBuilder.AppendLine($"{"│ Max:",-11} {(max.Iteration < 0 ? "-" : max.Iteration.ToString("N0")),-13:N0} │ {(max.Iteration < 0 ? "-" : max.ElapsedTime.TotalMilliseconds.ToString("N6")),26:N6} │{"│",17}");
-      outputBuilder.AppendLine($"{"│ Average:",- 11} {"-", -13} │ {averageDuration.TotalMilliseconds, 26:N6} │{"│",17}");
-      outputBuilder.AppendLine($"╰─────────────────────────┴────────────────────────────┴────────────────╯");
-    }
+    private static void BuildSummaryFooter(StringBuilder outputBuilder, TimeSpan totalDuration, TimeSpan averageDuration, ProfilerResult min, ProfilerResult max) => _ = outputBuilder
+        .AppendLine($"╭═════════╧═══════════════╪════════════════════════════┼────────────────┤")
+        .AppendLine($"{"│ Total:",-11} {"-",-13} │ {totalDuration.TotalMilliseconds,26:N6} │{"│",17}")
+        .AppendLine($"{"│ Min:",-11} {(min.Iteration < 0 ? "-" : min.Iteration.ToString("N0")),-13:N0} │ {(min.Iteration < 0 ? "-" : min.ElapsedTime.TotalMilliseconds.ToString("N6")),26:N6} │{"│",17}")
+        .AppendLine($"{"│ Max:",-11} {(max.Iteration < 0 ? "-" : max.Iteration.ToString("N0")),-13:N0} │ {(max.Iteration < 0 ? "-" : max.ElapsedTime.TotalMilliseconds.ToString("N6")),26:N6} │{"│",17}")
+        .AppendLine($"{"│ Average:",-11} {"-",-13} │ {averageDuration.TotalMilliseconds,26:N6} │{"│",17}")
+        .AppendLine($"╰─────────────────────────┴────────────────────────────┴────────────────╯");
 
     private static TimeSpan GetTotalElapsedTime(IEnumerable<ProfilerResult> entries)
     {

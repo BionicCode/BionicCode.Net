@@ -1,4 +1,4 @@
-﻿//namespace BionicCode.Controls.Net.Wpf.BionicCharts
+﻿//namespace BionicCode.Controls.Net.Wpf
 //{
 //  using System;
 //  using System.Collections.Generic;
@@ -13,11 +13,11 @@
 //  
 //  /* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
 //  Before:
-//    using BionicCode.Utilities.Net.Wpf.Extensions;
+//    using BionicCode.Utilities.Net;
 //  After:
-//    //    using BionicCode.Utilities.Net.Wpf.Extensions;
+//    //    using BionicCode.Utilities.Net;
 //  */
-//  using BionicCode.Utilities.Net.Wpf.Extensions;
+//  using BionicCode.Utilities.Net;
 
 //  internal class VirtualizingCartesianPanel : ChartPanel
 //  {

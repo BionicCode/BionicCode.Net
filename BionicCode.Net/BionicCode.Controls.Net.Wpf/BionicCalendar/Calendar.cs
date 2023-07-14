@@ -18,7 +18,7 @@ namespace BionicCode.Controls.Net.Wpf
   using System.Windows.Controls.Primitives;
   using System.Windows.Input;
   using System.Windows.Media;
-  using BionicCode.Utilities.Net.Wpf.Extensions;
+  using BionicCode.Utilities.Net;
 
   #endregion
 

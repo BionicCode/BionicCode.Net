@@ -40,6 +40,22 @@
         ? throw new ArgumentNullException(nameof(source)) 
         : source.Skip(startIndex).Take(count);
 
+#if NETSTANDARD2_1 || NET
+    /// <summary>
+    /// Returns a range of elements.
+    /// </summary>
+    /// <typeparam name="TItem"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="startIndex">The inclusive starting index of the range.</param>
+    /// <param name="count">The number of elements to take.</param>
+    /// <returns>An <see cref="IEnumerable{T}"/> that contains the requested range of the original <paramref name="source"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    public static IEnumerable<TItem> TakeRange<TItem>(this IEnumerable<TItem> source, Range range)
+      => source == null
+        ? throw new ArgumentNullException(nameof(source))
+        : source.Skip(range.Start.IsFromEnd ? source.Count() - 1 - range.Start.Value : range.Start.Value).Take(range.End.IsFromEnd ? source.Count() - 1 - range.End.Value : range.End.Value);
+#endif
+
     /// <summary>
     /// Adds a range of items to the <see cref="ICollection{T}"/>.
     /// </summary>
@@ -269,6 +285,6 @@
       return isFound;
     }
 
-    #endregion
+#endregion
   }
 }

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;net472;net48;net5.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net472;net48;net5.0;net6.0;net7.0</TargetFrameworks>
     <ApplicationIcon>logo.ico</ApplicationIcon>
     <RootNamespace>BionicCode.Utilities.Net</RootNamespace>
     <AssemblyName>BionicCode.Utilities.Net</AssemblyName>
@@ -31,6 +31,9 @@ For bug reports or feature requests please visit the project home on GutHub (fol
 	<PropertyGroup>
 		<BuildDocFx Condition="$(TargetFramework) != 'net6.0-windows'">false</BuildDocFx>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+		<BaseOutputPath>../../Assemblies</BaseOutputPath>
+		<Nullable>disable</Nullable>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
@@ -46,7 +49,7 @@ For bug reports or feature requests please visit the project home on GutHub (fol
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <ProjectReference Include="..\BionicCode.Utilities.Net.Common\BionicCode.Utilities.Net.Common.csproj" />
   </ItemGroup>

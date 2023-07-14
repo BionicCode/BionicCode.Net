@@ -1,9 +1,9 @@
-﻿namespace BionicCode.Controls.Net.Wpf.BionicCharts
+﻿namespace BionicCode.Controls.Net.Wpf
 {
   using System.Windows.Controls;
   using System.Windows;
   using System;
-    using BionicCode.Utilities.Net.Wpf.Extensions;
+    using BionicCode.Utilities.Net;
   using System.Windows.Media;
   using System.Windows.Controls.Primitives;
 

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Windows.Controls;
-using System.Windows.Input;
-
-namespace BionicCode.Controls.Net.Wpf
+﻿namespace BionicCode.Controls.Net.Wpf
 {
+  using System;
+  using System.Globalization;
+  using System.Linq;
+  using System.Windows.Controls;
+  using System.Windows.Input;
+
   public class TimeTextBox : TextBox
   {
     #region Overrides of TextBoxBase

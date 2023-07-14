@@ -1,5 +1,5 @@
 ﻿
-namespace BionicCode.Controls.Net.Wpf.BionicCharts
+namespace BionicCode.Controls.Net.Wpf
 {
   using System;
   using System.Collections.Generic;

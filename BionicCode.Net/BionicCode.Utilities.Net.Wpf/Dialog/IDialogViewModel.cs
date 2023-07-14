@@ -52,6 +52,7 @@ using System.Windows.Media;
     /// <remarks>When extending the abstract class <see cref="DialogViewModel"/> (instead of the <see cref="IDialogViewModel"/> interface) together with the attached property <see cref="Dialog.DialogDataContextProperty"/> raising this event will notify the <see cref="Dialog"/> attached behavior class to close the Window.</remarks>
     event EventHandler InteractionCompleted;
 
+    /// <summary> 
     /// Event is raised before <see cref="InteractionCompleted"/> event. Setting the property <see cref="CancelEventArgs.Cancel"/> of the <see cref="CancelEventArgs"/> event argument to <c>true</c> will cancel the dialog close process. 
     /// </summary>
     event EventHandler<CancelEventArgs> InteractionCompleting;

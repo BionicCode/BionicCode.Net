@@ -1,13 +1,13 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:converters="clr-namespace:BionicCode.Controls.Net.Wpf.Converters">
-    <ResourceDictionary.MergedDictionaries>
+                    xmlns:local="clr-namespace:BionicCode.Controls.Net.Wpf">
+  <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/Resources/Colors.xaml" />
         <ResourceDictionary Source="/BionicCode.Controls.Net.Wpf;component/Resources/Constants.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <converters:SwitchIsCheckedToStringConverter x:Key="IsCheckedToStringConverter"/>
-    <converters:SwitchWidthToTotalWidthConverter x:Key="AbsoluteWidthConverter"/>
+  <local:SwitchIsCheckedToStringConverter x:Key="IsCheckedToStringConverter"/>
+  <local:SwitchWidthToTotalWidthConverter x:Key="AbsoluteWidthConverter"/>
 
     <Style x:Key="FlipSwitchToggleButtonStyle" TargetType="ToggleButton">
         <Setter Property="Height" Value="20"/>
