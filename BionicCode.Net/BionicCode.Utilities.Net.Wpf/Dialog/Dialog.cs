@@ -11,7 +11,6 @@ using System.ComponentModel;
 using System.Windows;
 
 #if NET || NET461_OR_GREATER
-using BionicCode.Utilities.Net;
 using System.Windows.Controls;
 using System.Windows.Data;
   /// <summary>

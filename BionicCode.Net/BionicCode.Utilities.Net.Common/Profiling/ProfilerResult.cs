@@ -7,7 +7,7 @@
   /// <summary>
   /// The result of a single benchmark run or iteration.
   /// </summary>
-  public struct ProfilerResult : IEquatable<ProfilerResult>, IComparable<ProfilerResult>
+  public readonly struct ProfilerResult : IEquatable<ProfilerResult>, IComparable<ProfilerResult>
   {
     internal static ProfilerResult Empty => new ProfilerResult(-1, TimeSpan.Zero);
 
@@ -58,11 +58,16 @@
 
     /// <inheritdoc/>
     public override bool Equals(object obj) => obj is ProfilerResult result && Equals(result);
+
     /// <inheritdoc/>
     public bool Equals(ProfilerResult other) => this.ElapsedTime.Equals(other.ElapsedTime) && this.IsProfiledTaskCancelled == other.IsProfiledTaskCancelled && this.Iteration == other.Iteration && EqualityComparer<Task>.Default.Equals(this.ProfiledTask, other.ProfiledTask);
 
     /// <inheritdoc/>
+#if NET || NETSTANDARD2_1_OR_GREATER
+    public override int GetHashCode() => HashCode.Combine(this.ElapsedTime, this.IsProfiledTaskCancelled, this.Iteration, this.ProfiledTask);
+#else
     public override int GetHashCode()
+#pragma warning restore IDE0070 // Use 'System.HashCode'
     {
       int hashCode = 208172843;
       hashCode = hashCode * -1521134295 + this.ElapsedTime.GetHashCode();
@@ -71,6 +76,7 @@
       hashCode = hashCode * -1521134295 + EqualityComparer<Task>.Default.GetHashCode(this.ProfiledTask);
       return hashCode;
     }
+#endif
 
     public static bool operator <(ProfilerResult left, ProfilerResult right) => left.ElapsedTime < right.ElapsedTime;
     public static bool operator >(ProfilerResult left, ProfilerResult right) => left.ElapsedTime > right.ElapsedTime;

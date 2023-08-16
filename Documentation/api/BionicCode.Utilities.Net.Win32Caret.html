@@ -1,0 +1,891 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class Win32Caret
+   | BionicCode.NET API Reference </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class Win32Caret
+   | BionicCode.NET API Reference ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../../images/logo.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../../images/BionicCode_Logo.png" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="BionicCode.Utilities.Net.Win32Caret">
+  
+  
+  <h1 id="BionicCode_Utilities_Net_Win32Caret" data-uid="BionicCode.Utilities.Net.Win32Caret" class="text-break">Class Win32Caret
+  </h1>
+  <div class="markdown level0 summary"><p>Wrapper of Win32 caret functions.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
+    <div class="level1"><span class="xref">Win32Caret</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/bsc2ak47(v=vs.110).aspx">Object.Equals(Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/w4hkze5k(v=vs.110).aspx">Object.Equals(Object, Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/zdee4b3y(v=vs.110).aspx">Object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/dfwy45w9(v=vs.110).aspx">Object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">Object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/hz2a0b8x(v=vs.110).aspx">Object.ReferenceEquals(Object, Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/7bxwbwt2(v=vs.110).aspx">Object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="BionicCode.Utilities.Net.html">BionicCode.Utilities.Net</a></h6>
+  <h6><strong>Assembly</strong>: BionicCode.Utilities.Net.Wpf.dll</h6>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class Win32Caret : IDisposable</code></pre>
+  </div>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>To create multiple carets, create the required number of <a class="xref" href="BionicCode.Utilities.Net.Win32Caret.html">Win32Caret</a> instances.</p>
+<p>This type implements <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a>. Calling <a class="xref" href="https://msdn.microsoft.com/en-us/library/es4s3w1d(v=vs.110).aspx">Dispose()</a> will destroy the caret.</p>
+</div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret__ctor_System_Windows_Window_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.%23ctor(System.Windows.Window)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L50">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Win32Caret__ctor_" data-uid="BionicCode.Utilities.Net.Win32Caret.#ctor*"></a>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret__ctor_System_Windows_Window_" data-uid="BionicCode.Utilities.Net.Win32Caret.#ctor(System.Windows.Window)">Win32Caret(Window)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Win32Caret(Window hostingWindow)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.windows.window(v=vs.110).aspx">Window</a></td>
+        <td><span class="parametername">hostingWindow</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_CaretVisibility.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.CaretVisibility%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L46">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Win32Caret_CaretVisibility_" data-uid="BionicCode.Utilities.Net.Win32Caret.CaretVisibility*"></a>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret_CaretVisibility" data-uid="BionicCode.Utilities.Net.Win32Caret.CaretVisibility">CaretVisibility</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CaretVisibility CaretVisibility { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.CaretVisibility.html">CaretVisibility</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_CurrentCaretInfo.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.CurrentCaretInfo%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L42">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Win32Caret_CurrentCaretInfo_" data-uid="BionicCode.Utilities.Net.Win32Caret.CurrentCaretInfo*"></a>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret_CurrentCaretInfo" data-uid="BionicCode.Utilities.Net.Win32Caret.CurrentCaretInfo">CurrentCaretInfo</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CaretInfo CurrentCaretInfo { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.CaretInfo.html">CaretInfo</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_HostingWindow.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.HostingWindow%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L43">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Win32Caret_HostingWindow_" data-uid="BionicCode.Utilities.Net.Win32Caret.HostingWindow*"></a>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret_HostingWindow" data-uid="BionicCode.Utilities.Net.Win32Caret.HostingWindow">HostingWindow</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Window HostingWindow { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.windows.window(v=vs.110).aspx">Window</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_HostingWindowHandle.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.HostingWindowHandle%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L44">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Win32Caret_HostingWindowHandle_" data-uid="BionicCode.Utilities.Net.Win32Caret.HostingWindowHandle*"></a>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret_HostingWindowHandle" data-uid="BionicCode.Utilities.Net.Win32Caret.HostingWindowHandle">HostingWindowHandle</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IntPtr HostingWindowHandle { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.intptr(v=vs.110).aspx">IntPtr</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_ChangePosition_BionicCode_Utilities_Net_CaretInfo_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.ChangePosition(BionicCode.Utilities.Net.CaretInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L132">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Win32Caret_ChangePosition_" data-uid="BionicCode.Utilities.Net.Win32Caret.ChangePosition*"></a>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret_ChangePosition_BionicCode_Utilities_Net_CaretInfo_" data-uid="BionicCode.Utilities.Net.Win32Caret.ChangePosition(BionicCode.Utilities.Net.CaretInfo)">ChangePosition(CaretInfo)</h4>
+  <div class="markdown level1 summary"><p>Change the position at where the caret is rendered.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ChangePosition(CaretInfo caretInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.CaretInfo.html">CaretInfo</a></td>
+        <td><span class="parametername">caretInfo</span></td>
+        <td><p>Defines the properties of the caret.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><p><code>true</code> if successfull.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.invalidoperationexception(v=vs.110).aspx">InvalidOperationException</a></td>
+        <td><p>The caret was already detroyed.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_ChangePosition_BionicCode_Utilities_Net_CaretInfo__seealso">See Also</h5>
+  <div class="seealso">
+      <div><span><a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setcaretpos">SetCaretPos function (winuser.h)</a></span></div>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_Destroy.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.Destroy%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L96">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Win32Caret_Destroy_" data-uid="BionicCode.Utilities.Net.Win32Caret.Destroy*"></a>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret_Destroy" data-uid="BionicCode.Utilities.Net.Win32Caret.Destroy">Destroy()</h4>
+  <div class="markdown level1 summary"><p>Destroys the Win32 caret and disposes the current instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Destroy()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><p><code>true</code> if successfull.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_Destroy_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To temporarily hide the caret call <a class="xref" href="BionicCode.Utilities.Net.Win32Caret.html#BionicCode_Utilities_Net_Win32Caret_Hide">Hide()</a> instead.</p>
+</div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.invalidoperationexception(v=vs.110).aspx">InvalidOperationException</a></td>
+        <td><p>The caret was already detroyed.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_Destroy_seealso">See Also</h5>
+  <div class="seealso">
+      <div><span><a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycaret">DestroyCaret function (winuser.h)</a></span></div>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_Dispose.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.Dispose%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L187">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Win32Caret_Dispose_" data-uid="BionicCode.Utilities.Net.Win32Caret.Dispose*"></a>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret_Dispose" data-uid="BionicCode.Utilities.Net.Win32Caret.Dispose">Dispose()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_Dispose_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.Dispose(System.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L193">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Win32Caret_Dispose_" data-uid="BionicCode.Utilities.Net.Win32Caret.Dispose*"></a>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret_Dispose_System_Boolean_" data-uid="BionicCode.Utilities.Net.Win32Caret.Dispose(System.Boolean)">Dispose(Boolean)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual bool Dispose(bool disposing)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><span class="parametername">disposing</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_DisposeInternal.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.DisposeInternal%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L218">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Win32Caret_DisposeInternal_" data-uid="BionicCode.Utilities.Net.Win32Caret.DisposeInternal*"></a>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret_DisposeInternal" data-uid="BionicCode.Utilities.Net.Win32Caret.DisposeInternal">DisposeInternal()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected bool DisposeInternal()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_Finalize.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.Finalize%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L212">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Win32Caret_Finalize_" data-uid="BionicCode.Utilities.Net.Win32Caret.Finalize*"></a>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret_Finalize" data-uid="BionicCode.Utilities.Net.Win32Caret.Finalize">Finalize()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected void Finalize()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_GetBlinkTime.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.GetBlinkTime%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L159">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Win32Caret_GetBlinkTime_" data-uid="BionicCode.Utilities.Net.Win32Caret.GetBlinkTime*"></a>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret_GetBlinkTime" data-uid="BionicCode.Utilities.Net.Win32Caret.GetBlinkTime">GetBlinkTime()</h4>
+  <div class="markdown level1 summary"><p>Retrieves the time required to invert the caret's pixels. The user can set this value using <a class="xref" href="BionicCode.Utilities.Net.Win32Caret.html#BionicCode_Utilities_Net_Win32Caret_SetBlinkTime_System_TimeSpan_">SetBlinkTime(TimeSpan)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TimeSpan GetBlinkTime()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.timespan(v=vs.110).aspx">TimeSpan</a></td>
+        <td><p>A <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.timespan(v=vs.110).aspx">TimeSpan</a> holding the blink time in milliseconds. A return value of <a class="xref" href="https://msdn.microsoft.com/en-us/library/k0c7yab2(v=vs.110).aspx">Zero</a> indicates that the caret does not blink.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_GetBlinkTime_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>The flash time of a caret is twice as much as the blink time: &quot;Blink&quot; is the period of time between successive state changes in the caret animation. &quot;Flash&quot; is 2 * blink, the period of time to transition from visible, to hidden, to visible again.</p>
+</div>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_GetBlinkTime_seealso">See Also</h5>
+  <div class="seealso">
+      <div><span><a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcaretblinktime">GetCaretBlinkTime function (winuser.h)</a></span></div>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_GetFlashTime.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.GetFlashTime%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L171">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Win32Caret_GetFlashTime_" data-uid="BionicCode.Utilities.Net.Win32Caret.GetFlashTime*"></a>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret_GetFlashTime" data-uid="BionicCode.Utilities.Net.Win32Caret.GetFlashTime">GetFlashTime()</h4>
+  <div class="markdown level1 summary"><p>Returns the current flash time, which is twice the blink time value returned by <a class="xref" href="BionicCode.Utilities.Net.Win32Caret.html#BionicCode_Utilities_Net_Win32Caret_GetBlinkTime">GetBlinkTime()</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TimeSpan GetFlashTime()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.timespan(v=vs.110).aspx">TimeSpan</a></td>
+        <td><p>A <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.timespan(v=vs.110).aspx">TimeSpan</a> holding the flash time in milliseconds.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_GetFlashTime_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>The flash time of a caret is twice as much as the blink time: &quot;Blink&quot; is the period of time between successive state changes in the caret animation. &quot;Flash&quot; is 2 * blink, the period of time to transition from visible, to hidden, to visible again.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_GetPosition_System_Windows_Point__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.GetPosition(System.Windows.Point%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L151">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Win32Caret_GetPosition_" data-uid="BionicCode.Utilities.Net.Win32Caret.GetPosition*"></a>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret_GetPosition_System_Windows_Point__" data-uid="BionicCode.Utilities.Net.Win32Caret.GetPosition(System.Windows.Point@)">GetPosition(out Point)</h4>
+  <div class="markdown level1 summary"><p>Copies the caret's position to the specified <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.windows.point(v=vs.110).aspx">Point</a> structure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool GetPosition(out Point caretPsoition)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.windows.point(v=vs.110).aspx">Point</a></td>
+        <td><span class="parametername">caretPsoition</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><p><code>true</code> if successfull.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_GetPosition_System_Windows_Point___remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>The caret position is always given in the client coordinates of the window that contains the caret.</p>
+<p>This API does not participate in DPI virtualization. The returned values are interpreted as logical sizes in terms of the window in question. The calling thread is not taken into consideration.</p>
+</div>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_GetPosition_System_Windows_Point___seealso">See Also</h5>
+  <div class="seealso">
+      <div><span><a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcaretpos">GetCaretPos function (winuser.h)</a></span></div>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_Hide.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.Hide%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L114">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Win32Caret_Hide_" data-uid="BionicCode.Utilities.Net.Win32Caret.Hide*"></a>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret_Hide" data-uid="BionicCode.Utilities.Net.Win32Caret.Hide">Hide()</h4>
+  <div class="markdown level1 summary"><p>Hides the caret, but does not destroy it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Hide()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><p><code>true</code> if successfull.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_Hide_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To destroy the caret call <a class="xref" href="BionicCode.Utilities.Net.Win32Caret.html#BionicCode_Utilities_Net_Win32Caret_Destroy">Destroy()</a> or <a class="xref" href="https://msdn.microsoft.com/en-us/library/es4s3w1d(v=vs.110).aspx">Dispose()</a>.</p>
+</div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.invalidoperationexception(v=vs.110).aspx">InvalidOperationException</a></td>
+        <td><p>The caret was already detroyed.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_Hide_seealso">See Also</h5>
+  <div class="seealso">
+      <div><span><a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-hidecaret">HideCaret function (winuser.h)</a></span></div>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_SetBlinkTime_System_TimeSpan_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.SetBlinkTime(System.TimeSpan)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L185">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Win32Caret_SetBlinkTime_" data-uid="BionicCode.Utilities.Net.Win32Caret.SetBlinkTime*"></a>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret_SetBlinkTime_System_TimeSpan_" data-uid="BionicCode.Utilities.Net.Win32Caret.SetBlinkTime(System.TimeSpan)">SetBlinkTime(TimeSpan)</h4>
+  <div class="markdown level1 summary"><p>Sets the caret blink time to the specified number of milliseconds. The blink time is the elapsed time, in milliseconds, required to invert the caret's pixels.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool SetBlinkTime(TimeSpan blinkTimeInMilliseconds)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.timespan(v=vs.110).aspx">TimeSpan</a></td>
+        <td><span class="parametername">blinkTimeInMilliseconds</span></td>
+        <td><p>Caret blink rate in milliseconds.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><p><code>true</code> if successfull.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_SetBlinkTime_System_TimeSpan__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>The user can set the blink time using the Control Panel. Applications should respect the setting that the user has chosen. The SetCaretBlinkTime function should only be used by application that allow the user to set the blink time, such as a Control Panel applet.</p>
+<p>The flash time is the elapsed time, in milliseconds, required to display, invert, and restore the caret&apos;s display. The flash time of a caret is twice as much as the blink time: &quot;Blink&quot; is the period of time between successive state changes in the caret animation. &quot;Flash&quot; is 2 * blink, the period of time to transition from visible, to hidden, to visible again.</p>
+<p>If you change the blink time, subsequently activated applications will use the modified blink time, even if you restore the previous blink time when you lose the keyboard focus or become inactive.This is due to the multithreaded environment, where deactivation of your application is not synchronized with the activation of another application.This feature allows the system to activate another application even if the current application is not responding.</p>
+</div>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_SetBlinkTime_System_TimeSpan__seealso">See Also</h5>
+  <div class="seealso">
+      <div><span><a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setcaretblinktime">SetCaretBlinkTime function (winuser.h)</a></span></div>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_Show_BionicCode_Utilities_Net_CaretInfo_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.Show(BionicCode.Utilities.Net.CaretInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L64">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Win32Caret_Show_" data-uid="BionicCode.Utilities.Net.Win32Caret.Show*"></a>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret_Show_BionicCode_Utilities_Net_CaretInfo_" data-uid="BionicCode.Utilities.Net.Win32Caret.Show(BionicCode.Utilities.Net.CaretInfo)">Show(CaretInfo)</h4>
+  <div class="markdown level1 summary"><p>Create and show a caret for the current hosting Window.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Show(CaretInfo caretInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.CaretInfo.html">CaretInfo</a></td>
+        <td><span class="parametername">caretInfo</span></td>
+        <td><p>Defines the properties of the caret.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><p><code>true</code> if the operation was successfull. Returns <code>false</code> if the creation has failed ot the caret is already visible.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_Show_BionicCode_Utilities_Net_CaretInfo__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To create multiple carets, create the required number of <a class="xref" href="BionicCode.Utilities.Net.Win32Caret.html">Win32Caret</a> instances.</p>
+</div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.invalidoperationexception(v=vs.110).aspx">InvalidOperationException</a></td>
+        <td><p>The caret was already detroyed.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_Show_BionicCode_Utilities_Net_CaretInfo__seealso">See Also</h5>
+  <div class="seealso">
+      <div><span><a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showcaret">ShowCaret function (winuser.h)</a></span></div>
+  </div>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><span><a href="https://learn.microsoft.com/en-us/windows/win32/menurc/carets">https://learn.microsoft.com/en-us/windows/win32/menurc/carets</a></span></div>
+      <div><span><a href="https://learn.microsoft.com/en-us/windows/win32/menurc/about-carets">https://learn.microsoft.com/en-us/windows/win32/menurc/about-carets</a></span></div>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L16" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

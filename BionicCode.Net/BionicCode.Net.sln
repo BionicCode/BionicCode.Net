@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BionicCode.Net.Wpf.Ui.Test"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BionicCode.Controls.Net.Wpf", "BionicCode.Controls.Net.Wpf\BionicCode.Controls.Net.Wpf.csproj", "{CBCC24C7-DC13-43C6-AFBC-9FB38C3008B2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BionicCode.Utilities.UnitTest.Net", "BionicCode.Utilities.UnitTest.Net.Standard\BionicCode.Utilities.UnitTest.Net.csproj", "{1BDAAFF4-104A-41AD-9631-7E585995E96C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BionicCode.Utilities.Net.UnitTest", "BionicCode.Utilities.UnitTest.Net.Standard\BionicCode.Utilities.Net.UnitTest.csproj", "{1BDAAFF4-104A-41AD-9631-7E585995E96C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BionicCode.Net.Standard.Ui.Test", "BionicCode.Net.Standard.Ui.Test\BionicCode.Net.Standard.Ui.Test.csproj", "{F27CF0C2-77A1-475E-8080-B362C1FD6A6E}"
 EndProject

@@ -1,4 +1,4 @@
-﻿namespace BionicCode.Utilities.UnitTest.Net
+﻿namespace BionicCode.Utilities.Net.UnitTest
 {
   using System;
   using System.Diagnostics;
@@ -8,7 +8,7 @@
   using System.Threading;
   using System.Threading.Tasks;
   using BionicCode.Utilities.Net;
-  using BionicCode.Utilities.UnitTest.Net.Resources;
+  using BionicCode.Utilities.Net.UnitTest.Resources;
   using FluentAssertions;
   using FluentAssertions.Events;
   using Xunit;
@@ -71,7 +71,7 @@
     private static string CrateProfilerSummary(string summary, string currentMethodName)
       => $"UnitTest profiler summary: {currentMethodName}{Environment.NewLine}{summary}";
 
-    private static ProfilerLogger CreateProfilerLogger([CallerMemberName] string currentMethodName = "unknown")
+    private static ProfilerLoggerDelegate CreateProfilerLogger([CallerMemberName] string currentMethodName = "unknown")
       => UnitTestHelper.IsDebugModeEnabled && IsProfilerLoggingEnabled
       ? (result, summary) =>
         {
@@ -173,7 +173,7 @@
     [Fact]
     public async Task AwaitSynchronousCommand()
     {
-      ProfilerLogger logger = CreateProfilerLogger();
+      ProfilerLoggerDelegate logger = CreateProfilerLogger();
       ProfilerBatchResult profilerResult = await Profiler.LogTimeAsync(async () => await this.TestCommand.ExecuteAsync(this.ValidCommandParameter), 1, logger);
       TimeSpan exeutionTime = profilerResult.Results.First().ElapsedTime;
       _ = exeutionTime.Milliseconds.Should().BeGreaterThanOrEqualTo(this.AsyncDelay.Milliseconds);
@@ -182,7 +182,7 @@
     [Fact]
     public async Task AwaitSynchronousNoParamCommand()
     {
-      ProfilerLogger logger = CreateProfilerLogger();
+      ProfilerLoggerDelegate logger = CreateProfilerLogger();
       ProfilerBatchResult profilerResult = await Profiler.LogTimeAsync(this.TestNoParamCommand.ExecuteAsync, 1, logger);
       TimeSpan exeutionTime = profilerResult.Results.First().ElapsedTime;
       _ = exeutionTime.Milliseconds.Should().BeGreaterThanOrEqualTo(this.AsyncDelay.Milliseconds);
@@ -191,7 +191,7 @@
     [Fact]
     public async Task AwaitAsynchronousCommand()
     {
-      ProfilerLogger logger = CreateProfilerLogger();
+      ProfilerLoggerDelegate logger = CreateProfilerLogger();
       ProfilerBatchResult profilerResult = await Profiler.LogTimeAsync(async () => await this.AsyncTestCommand.ExecuteAsync(this.ValidCommandParameter), 1, logger);
       TimeSpan exeutionTime = profilerResult.Results.First().ElapsedTime;
       _ = exeutionTime.Milliseconds.Should().BeGreaterThanOrEqualTo(this.AsyncDelay.Milliseconds);
@@ -200,7 +200,7 @@
     [Fact]
     public async Task AwaitAsynchronousNoParamCommand()
     {
-      ProfilerLogger logger = CreateProfilerLogger();
+      ProfilerLoggerDelegate logger = CreateProfilerLogger();
       ProfilerBatchResult profilerResult = await Profiler.LogTimeAsync(this.AsyncTestNoParamCommand.ExecuteAsync, 1, logger);
       TimeSpan exeutionTime = profilerResult.Results.First().ElapsedTime;
       _ = exeutionTime.Milliseconds.Should().BeGreaterThanOrEqualTo(this.AsyncDelay.Milliseconds);
@@ -782,7 +782,7 @@
     public async Task ExecutingNoParamCommandWithTimeoutMustBeCancelledOnTimeoutExpired()
     {
       using var cancellationTokenSource = new CancellationTokenSource();
-      ProfilerLogger logger = CreateProfilerLogger();
+      ProfilerLoggerDelegate logger = CreateProfilerLogger();
       ProfilerBatchResult profilerBatchResult = await Profiler.LogTimeAsync(() => this.CancellableAsyncTestNoParamCommand.ExecuteAsync(this.Timeout), 1, logger);
       ProfilerResult profilerResult = profilerBatchResult.Results.First();
       _ = profilerResult.ProfiledTask.Status.Should().Be(TaskStatus.Canceled);

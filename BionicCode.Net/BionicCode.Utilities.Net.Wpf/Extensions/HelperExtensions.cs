@@ -182,38 +182,6 @@ using System.Windows.Controls.Primitives;
     /// <typeparam name="TChildren">The type the visual children must match.</typeparam>
     /// <param name="parent">The current extended <see cref="DependencyObject"/>.</param>
     /// <returns>An enumerable collection of matching visual child elements.</returns>
-    [Obsolete("Use 'EnumerateVisualChildElements()' instead")]
-    public static IEnumerable<TChildren> FindVisualChildElements<TChildren>(this DependencyObject parent)
-      where TChildren : DependencyObject
-    {
-      for (var childIndex = 0; childIndex < VisualTreeHelper.GetChildrenCount(parent); childIndex++)
-      {
-        DependencyObject childElement = VisualTreeHelper.GetChild(parent, childIndex);
-
-        if (childElement is System.Windows.Controls.Primitives.Popup popup)
-        {
-          childElement = popup.Child;
-        }
-
-        if (childElement is TChildren element)
-        {
-          yield return element;
-        }
-
-        foreach (TChildren visualChildElement in childElement.FindVisualChildElements<TChildren>())
-        {
-          yield return visualChildElement;
-        }
-      }
-    }
-
-    /// <summary>
-    /// Traverses the visual tree towards the leafs until all elements with a matching element type is found.
-    /// Returns an <see cref="IEnumerable{T}"/> to enable deferred traversal.
-    /// </summary>
-    /// <typeparam name="TChildren">The type the visual children must match.</typeparam>
-    /// <param name="parent">The current extended <see cref="DependencyObject"/>.</param>
-    /// <returns>An enumerable collection of matching visual child elements.</returns>
     public static IEnumerable<TChildren> EnumerateVisualChildElements<TChildren>(this DependencyObject parent)
       where TChildren : DependencyObject
     {
@@ -238,6 +206,12 @@ using System.Windows.Controls.Primitives;
       }
     }
 
+    /// <summary>
+    /// Deep clones a <see cref="UIElement"/>.
+    /// </summary>
+    /// <param name="elementToClone"></param>
+    /// <returns>A clone of the <paramref name="elementToClone"/> instance.</returns>
+    /// <remarks>This member uses serialization to produce a clone of the <see cref="UIElement"/> instance.</remarks>
     public static UIElement CloneElement(this UIElement elementToClone)
     {
       string serializedElement = XamlWriter.Save(elementToClone);
@@ -245,6 +219,12 @@ using System.Windows.Controls.Primitives;
       return cloneElement;
     }
 
+    /// <summary>
+    /// Tries to add a value to the visual tree of an unknown <see cref="FrameworkElement"/>. For example if the element is a <see cref="TextBlock"/> the value is assigned to the <see cref="TextBlock.Text"/> property.
+    /// </summary>
+    /// <param name="frameworkElement"></param>
+    /// <param name="value"></param>
+    /// <returns><c>true</c> if the assignment was succesful. Otherwise <c>false</c>.</returns>
     public static bool TryAssignValue(this FrameworkElement frameworkElement, object value)      
     {
       switch (frameworkElement)

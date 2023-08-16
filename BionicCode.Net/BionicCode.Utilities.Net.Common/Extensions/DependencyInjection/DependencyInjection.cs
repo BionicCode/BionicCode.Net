@@ -6,7 +6,7 @@
   using System.Linq;
   using System.Reflection;
   using System.Threading.Tasks;
-  /* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard2.0)'
+  /* Unmerged change from project 'BionicCode.Utilities.Net (netstandard2.0)'
   Before:
     using System.Runtime.CompilerServices;
   After:

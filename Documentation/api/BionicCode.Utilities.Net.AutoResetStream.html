@@ -1,0 +1,1464 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class AutoResetStream
+   | BionicCode.NET API Reference </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class AutoResetStream
+   | BionicCode.NET API Reference ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../../images/logo.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../../images/BionicCode_Logo.png" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="BionicCode.Utilities.Net.AutoResetStream">
+  
+  
+  <h1 id="BionicCode_Utilities_Net_AutoResetStream" data-uid="BionicCode.Utilities.Net.AutoResetStream" class="text-break">Class AutoResetStream
+  </h1>
+  <div class="markdown level0 summary"><p>Decorates a <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a> instance to support auto-rewind after read/write access.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
+    <div class="level1"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.marshalbyrefobject(v=vs.110).aspx">MarshalByRefObject</a></div>
+    <div class="level2"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a></div>
+    <div class="level3"><span class="xref">AutoResetStream</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/z5b68e43(v=vs.110).aspx">Stream.Null</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/1atfd1k6(v=vs.110).aspx">Stream.BeginRead(Byte[], Int32, Int32, AsyncCallback, Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/yhk84w80(v=vs.110).aspx">Stream.BeginWrite(Byte[], Int32, Int32, AsyncCallback, Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/dd782932(v=vs.110).aspx">Stream.CopyTo(Stream)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/dd783870(v=vs.110).aspx">Stream.CopyTo(Stream, Int32)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/hh159084(v=vs.110).aspx">Stream.CopyToAsync(Stream)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/hh137801(v=vs.110).aspx">Stream.CopyToAsync(Stream, Int32)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/sk94aky6(v=vs.110).aspx">Stream.CreateWaitHandle()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/ms227422(v=vs.110).aspx">Stream.Dispose()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/h3w78864(v=vs.110).aspx">Stream.EndRead(IAsyncResult)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/wdw3d87b(v=vs.110).aspx">Stream.EndWrite(IAsyncResult)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/hh193384(v=vs.110).aspx">Stream.FlushAsync()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/dd383692(v=vs.110).aspx">Stream.ObjectInvariant()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/hh137813(v=vs.110).aspx">Stream.ReadAsync(Byte[], Int32, Int32)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/ms143451(v=vs.110).aspx">Stream.Synchronized(Stream)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/hh158629(v=vs.110).aspx">Stream.WriteAsync(Byte[], Int32, Int32)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/c6y7316f(v=vs.110).aspx">MarshalByRefObject.GetLifetimeService()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/ms131262(v=vs.110).aspx">MarshalByRefObject.MemberwiseClone(Boolean)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/w4hkze5k(v=vs.110).aspx">Object.Equals(Object, Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/dfwy45w9(v=vs.110).aspx">Object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">Object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/hz2a0b8x(v=vs.110).aspx">Object.ReferenceEquals(Object, Object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="BionicCode.Utilities.Net.html">BionicCode.Utilities.Net</a></h6>
+  <h6><strong>Assembly</strong>: BionicCode.Utilities.Net.Common.dll</h6>
+  <h5 id="BionicCode_Utilities_Net_AutoResetStream_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class AutoResetStream : Stream, IDisposable</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream__ctor.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L42">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream__ctor_" data-uid="BionicCode.Utilities.Net.AutoResetStream.#ctor*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream__ctor" data-uid="BionicCode.Utilities.Net.AutoResetStream.#ctor">AutoResetStream()</h4>
+  <div class="markdown level1 summary"><p>Default constructor. Creates an instance where the <a class="xref" href="BionicCode.Utilities.Net.AutoResetStream.html#BionicCode_Utilities_Net_AutoResetStream_BaseStream">BaseStream</a> is set to a <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.memorystream(v=vs.110).aspx">MemoryStream</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AutoResetStream()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream__ctor_System_IO_Stream_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.%23ctor(System.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L51">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream__ctor_" data-uid="BionicCode.Utilities.Net.AutoResetStream.#ctor*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream__ctor_System_IO_Stream_" data-uid="BionicCode.Utilities.Net.AutoResetStream.#ctor(System.IO.Stream)">AutoResetStream(Stream)</h4>
+  <div class="markdown level1 summary"><p>Constructor which accepts the <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a> instance to decorate in order to extend its behavior.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AutoResetStream(Stream baseStream)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a></td>
+        <td><span class="parametername">baseStream</span></td>
+        <td><p>The <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a> instance to decorate in order to extend its behavior.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream__ctor_System_IO_Stream_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.%23ctor(System.IO.Stream%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L60">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream__ctor_" data-uid="BionicCode.Utilities.Net.AutoResetStream.#ctor*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream__ctor_System_IO_Stream_System_Boolean_" data-uid="BionicCode.Utilities.Net.AutoResetStream.#ctor(System.IO.Stream,System.Boolean)">AutoResetStream(Stream, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Constructor which accepts the <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a> instance to decorate in order to extend its behavior.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AutoResetStream(Stream baseStream, bool leaveDecoratedStreamOpen)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a></td>
+        <td><span class="parametername">baseStream</span></td>
+        <td><p>The <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a> instance to decorate in order to extend its behavior.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><span class="parametername">leaveDecoratedStreamOpen</span></td>
+        <td><p>When set to <code>true</code> the decorated underlying <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a> will be disposed or closed too, if the <a class="xref" href="BionicCode.Utilities.Net.AutoResetStream.html">AutoResetStream</a> is disposed or closed.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream__ctor_System_IO_Stream_System_IO_SeekOrigin_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.%23ctor(System.IO.Stream%2CSystem.IO.SeekOrigin%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L72">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream__ctor_" data-uid="BionicCode.Utilities.Net.AutoResetStream.#ctor*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream__ctor_System_IO_Stream_System_IO_SeekOrigin_System_Boolean_" data-uid="BionicCode.Utilities.Net.AutoResetStream.#ctor(System.IO.Stream,System.IO.SeekOrigin,System.Boolean)">AutoResetStream(Stream, SeekOrigin, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Constructor which accepts the <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a> instance to decorate in order to extend its behavior.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AutoResetStream(Stream baseStream, SeekOrigin resetOrigin, bool leaveDecoratedStreamOpen)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a></td>
+        <td><span class="parametername">baseStream</span></td>
+        <td><p>The <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a> instance to decorate in order to extend its behavior.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.seekorigin(v=vs.110).aspx">SeekOrigin</a></td>
+        <td><span class="parametername">resetOrigin</span></td>
+        <td><p>The origin to which the stream should be reset to.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><span class="parametername">leaveDecoratedStreamOpen</span></td>
+        <td><p>When set to <code>true</code> the decorated underlying <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a> will be disposed or closed too, if the <a class="xref" href="BionicCode.Utilities.Net.AutoResetStream.html">AutoResetStream</a> is disposed or closed.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_BaseStream.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.BaseStream%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L18">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_BaseStream_" data-uid="BionicCode.Utilities.Net.AutoResetStream.BaseStream*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_BaseStream" data-uid="BionicCode.Utilities.Net.AutoResetStream.BaseStream">BaseStream</h4>
+  <div class="markdown level1 summary"><p>The decorated <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a> instance which will be extended.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Stream BaseStream { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a></td>
+        <td><p>An instance of type <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a>. This instance will be decorated to extend the default <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a> features and behaviors.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_CanRead.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.CanRead%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L158">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_CanRead_" data-uid="BionicCode.Utilities.Net.AutoResetStream.CanRead*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_CanRead" data-uid="BionicCode.Utilities.Net.AutoResetStream.CanRead">CanRead</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool CanRead { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/0cde30tt(v=vs.110).aspx">Stream.CanRead</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_CanSeek.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.CanSeek%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L204">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_CanSeek_" data-uid="BionicCode.Utilities.Net.AutoResetStream.CanSeek*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_CanSeek" data-uid="BionicCode.Utilities.Net.AutoResetStream.CanSeek">CanSeek</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool CanSeek { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/23ke5bx8(v=vs.110).aspx">Stream.CanSeek</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_CanTimeout.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.CanTimeout%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L161">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_CanTimeout_" data-uid="BionicCode.Utilities.Net.AutoResetStream.CanTimeout*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_CanTimeout" data-uid="BionicCode.Utilities.Net.AutoResetStream.CanTimeout">CanTimeout</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool CanTimeout { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/e1393y88(v=vs.110).aspx">Stream.CanTimeout</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_CanWrite.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.CanWrite%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L207">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_CanWrite_" data-uid="BionicCode.Utilities.Net.AutoResetStream.CanWrite*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_CanWrite" data-uid="BionicCode.Utilities.Net.AutoResetStream.CanWrite">CanWrite</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool CanWrite { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/a83yafhb(v=vs.110).aspx">Stream.CanWrite</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_IsDisposingDecoratedStream.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.IsDisposingDecoratedStream%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L37">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_IsDisposingDecoratedStream_" data-uid="BionicCode.Utilities.Net.AutoResetStream.IsDisposingDecoratedStream*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_IsDisposingDecoratedStream" data-uid="BionicCode.Utilities.Net.AutoResetStream.IsDisposingDecoratedStream">IsDisposingDecoratedStream</h4>
+  <div class="markdown level1 summary"><p>Gets whether the decorated underlying <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a> will be closed or disposed when the <a class="xref" href="BionicCode.Utilities.Net.AutoResetStream.html">AutoResetStream</a> instance is closed or disposed. Use constructor to set the value in order to configure the behavior.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsDisposingDecoratedStream { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_Length.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.Length%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L210">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_Length_" data-uid="BionicCode.Utilities.Net.AutoResetStream.Length*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_Length" data-uid="BionicCode.Utilities.Net.AutoResetStream.Length">Length</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override long Length { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int64(v=vs.110).aspx">Int64</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/s11f0b46(v=vs.110).aspx">Stream.Length</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_Position.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.Position%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L213">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_Position_" data-uid="BionicCode.Utilities.Net.AutoResetStream.Position*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_Position" data-uid="BionicCode.Utilities.Net.AutoResetStream.Position">Position</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override long Position { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int64(v=vs.110).aspx">Int64</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/d9936z61(v=vs.110).aspx">Stream.Position</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_ReadTimeout.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.ReadTimeout%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L118">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_ReadTimeout_" data-uid="BionicCode.Utilities.Net.AutoResetStream.ReadTimeout*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_ReadTimeout" data-uid="BionicCode.Utilities.Net.AutoResetStream.ReadTimeout">ReadTimeout</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int ReadTimeout { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/7c9eh21k(v=vs.110).aspx">Stream.ReadTimeout</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_ResetOrigin.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.ResetOrigin%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L32">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_ResetOrigin_" data-uid="BionicCode.Utilities.Net.AutoResetStream.ResetOrigin*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_ResetOrigin" data-uid="BionicCode.Utilities.Net.AutoResetStream.ResetOrigin">ResetOrigin</h4>
+  <div class="markdown level1 summary"><p>Defines the position to which the stream should reset to.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SeekOrigin ResetOrigin { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.seekorigin(v=vs.110).aspx">SeekOrigin</a></td>
+        <td><p>A <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.seekorigin(v=vs.110).aspx">SeekOrigin</a> value.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_WriteTimeout.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.WriteTimeout%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L155">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_WriteTimeout_" data-uid="BionicCode.Utilities.Net.AutoResetStream.WriteTimeout*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_WriteTimeout" data-uid="BionicCode.Utilities.Net.AutoResetStream.WriteTimeout">WriteTimeout</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int WriteTimeout { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/47k15968(v=vs.110).aspx">Stream.WriteTimeout</a></div>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_Close.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.Close%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L164">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_Close_" data-uid="BionicCode.Utilities.Net.AutoResetStream.Close*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_Close" data-uid="BionicCode.Utilities.Net.AutoResetStream.Close">Close()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Close()</code></pre>
+  </div>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/4sa733cf(v=vs.110).aspx">Stream.Close()</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_CopyToAsync_System_IO_Stream_System_Int32_System_Threading_CancellationToken_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.CopyToAsync(System.IO.Stream%2CSystem.Int32%2CSystem.Threading.CancellationToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L148">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_CopyToAsync_" data-uid="BionicCode.Utilities.Net.AutoResetStream.CopyToAsync*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_CopyToAsync_System_IO_Stream_System_Int32_System_Threading_CancellationToken_" data-uid="BionicCode.Utilities.Net.AutoResetStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">CopyToAsync(Stream, Int32, CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override async Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a></td>
+        <td><span class="parametername">destination</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td><span class="parametername">bufferSize</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.cancellationtoken(v=vs.110).aspx">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.task(v=vs.110).aspx">Task</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/hh158751(v=vs.110).aspx">Stream.CopyToAsync(Stream, Int32, CancellationToken)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_Dispose_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.Dispose(System.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L174">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_Dispose_" data-uid="BionicCode.Utilities.Net.AutoResetStream.Dispose*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_Dispose_System_Boolean_" data-uid="BionicCode.Utilities.Net.AutoResetStream.Dispose(System.Boolean)">Dispose(Boolean)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void Dispose(bool disposing)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><span class="parametername">disposing</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/ms143450(v=vs.110).aspx">Stream.Dispose(Boolean)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_Equals_System_Object_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.Equals(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L186">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_Equals_" data-uid="BionicCode.Utilities.Net.AutoResetStream.Equals*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_Equals_System_Object_" data-uid="BionicCode.Utilities.Net.AutoResetStream.Equals(System.Object)">Equals(Object)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object obj)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></td>
+        <td><span class="parametername">obj</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/bsc2ak47(v=vs.110).aspx">Object.Equals(Object)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_Flush.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.Flush%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L88">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_Flush_" data-uid="BionicCode.Utilities.Net.AutoResetStream.Flush*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_Flush" data-uid="BionicCode.Utilities.Net.AutoResetStream.Flush">Flush()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Flush()</code></pre>
+  </div>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/ke2cwez4(v=vs.110).aspx">Stream.Flush()</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_FlushAsync_System_Threading_CancellationToken_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.FlushAsync(System.Threading.CancellationToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L91">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_FlushAsync_" data-uid="BionicCode.Utilities.Net.AutoResetStream.FlushAsync*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_FlushAsync_System_Threading_CancellationToken_" data-uid="BionicCode.Utilities.Net.AutoResetStream.FlushAsync(System.Threading.CancellationToken)">FlushAsync(CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task FlushAsync(CancellationToken cancellationToken)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.cancellationtoken(v=vs.110).aspx">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.task(v=vs.110).aspx">Task</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/hh138277(v=vs.110).aspx">Stream.FlushAsync(CancellationToken)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_GetHashCode.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.GetHashCode%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L189">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_GetHashCode_" data-uid="BionicCode.Utilities.Net.AutoResetStream.GetHashCode*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_GetHashCode" data-uid="BionicCode.Utilities.Net.AutoResetStream.GetHashCode">GetHashCode()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/zdee4b3y(v=vs.110).aspx">Object.GetHashCode()</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_InitializeLifetimeService.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.InitializeLifetimeService%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L199">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_InitializeLifetimeService_" data-uid="BionicCode.Utilities.Net.AutoResetStream.InitializeLifetimeService*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_InitializeLifetimeService" data-uid="BionicCode.Utilities.Net.AutoResetStream.InitializeLifetimeService">InitializeLifetimeService()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override object InitializeLifetimeService()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/zwt5tzck(v=vs.110).aspx">MarshalByRefObject.InitializeLifetimeService()</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_Read_System_Byte___System_Int32_System_Int32_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.Read(System.Byte%5B%5D%2CSystem.Int32%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L94">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_Read_" data-uid="BionicCode.Utilities.Net.AutoResetStream.Read*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_Read_System_Byte___System_Int32_System_Int32_" data-uid="BionicCode.Utilities.Net.AutoResetStream.Read(System.Byte[],System.Int32,System.Int32)">Read(Byte[], Int32, Int32)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int Read(byte[] buffer, int offset, int count)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.byte(v=vs.110).aspx">Byte</a>[]</td>
+        <td><span class="parametername">buffer</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td><span class="parametername">offset</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td><span class="parametername">count</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/29tb55d8(v=vs.110).aspx">Stream.Read(Byte[], Int32, Int32)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_ReadAsync_System_Byte___System_Int32_System_Int32_System_Threading_CancellationToken_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.ReadAsync(System.Byte%5B%5D%2CSystem.Int32%2CSystem.Int32%2CSystem.Threading.CancellationToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L102">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_ReadAsync_" data-uid="BionicCode.Utilities.Net.AutoResetStream.ReadAsync*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_ReadAsync_System_Byte___System_Int32_System_Int32_System_Threading_CancellationToken_" data-uid="BionicCode.Utilities.Net.AutoResetStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">ReadAsync(Byte[], Int32, Int32, CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override async Task&lt;int&gt; ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.byte(v=vs.110).aspx">Byte</a>[]</td>
+        <td><span class="parametername">buffer</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td><span class="parametername">offset</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td><span class="parametername">count</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.cancellationtoken(v=vs.110).aspx">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/dd321424(v=vs.110).aspx">Task</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/hh193669(v=vs.110).aspx">Stream.ReadAsync(Byte[], Int32, Int32, CancellationToken)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_ReadByte.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.ReadByte%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L110">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_ReadByte_" data-uid="BionicCode.Utilities.Net.AutoResetStream.ReadByte*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_ReadByte" data-uid="BionicCode.Utilities.Net.AutoResetStream.ReadByte">ReadByte()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int ReadByte()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/5k3tk84z(v=vs.110).aspx">Stream.ReadByte()</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_Reset_System_IO_SeekOrigin_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.Reset(System.IO.SeekOrigin)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L83">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_Reset_" data-uid="BionicCode.Utilities.Net.AutoResetStream.Reset*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_Reset_System_IO_SeekOrigin_" data-uid="BionicCode.Utilities.Net.AutoResetStream.Reset(System.IO.SeekOrigin)">Reset(SeekOrigin)</h4>
+  <div class="markdown level1 summary"><p>Resets the <a class="xref" href="https://msdn.microsoft.com/en-us/library/d9936z61(v=vs.110).aspx">Position</a> to an offset of '0' relative to the provided <code data-dev-comment-type="paramref" class="paramref">seekOrigin</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Reset(SeekOrigin seekOrigin = SeekOrigin.Current)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.seekorigin(v=vs.110).aspx">SeekOrigin</a></td>
+        <td><span class="parametername">seekOrigin</span></td>
+        <td><p>The optional relative position of the <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a> to apply the zero offset to. The default is <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.seekorigin(v=vs.110).aspx">Begin</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_Seek_System_Int64_System_IO_SeekOrigin_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.Seek(System.Int64%2CSystem.IO.SeekOrigin)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L121">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_Seek_" data-uid="BionicCode.Utilities.Net.AutoResetStream.Seek*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_Seek_System_Int64_System_IO_SeekOrigin_" data-uid="BionicCode.Utilities.Net.AutoResetStream.Seek(System.Int64,System.IO.SeekOrigin)">Seek(Int64, SeekOrigin)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override long Seek(long offset, SeekOrigin origin)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int64(v=vs.110).aspx">Int64</a></td>
+        <td><span class="parametername">offset</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.seekorigin(v=vs.110).aspx">SeekOrigin</a></td>
+        <td><span class="parametername">origin</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int64(v=vs.110).aspx">Int64</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/x3d54zs7(v=vs.110).aspx">Stream.Seek(Int64, SeekOrigin)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_SetLength_System_Int64_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.SetLength(System.Int64)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L124">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_SetLength_" data-uid="BionicCode.Utilities.Net.AutoResetStream.SetLength*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_SetLength_System_Int64_" data-uid="BionicCode.Utilities.Net.AutoResetStream.SetLength(System.Int64)">SetLength(Int64)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void SetLength(long value)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int64(v=vs.110).aspx">Int64</a></td>
+        <td><span class="parametername">value</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/7c2w1ac6(v=vs.110).aspx">Stream.SetLength(Int64)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_ToString.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.ToString%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L192">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_ToString_" data-uid="BionicCode.Utilities.Net.AutoResetStream.ToString*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_ToString" data-uid="BionicCode.Utilities.Net.AutoResetStream.ToString">ToString()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/7bxwbwt2(v=vs.110).aspx">Object.ToString()</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_Write_System_Byte___System_Int32_System_Int32_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.Write(System.Byte%5B%5D%2CSystem.Int32%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L127">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_Write_" data-uid="BionicCode.Utilities.Net.AutoResetStream.Write*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_Write_System_Byte___System_Int32_System_Int32_" data-uid="BionicCode.Utilities.Net.AutoResetStream.Write(System.Byte[],System.Int32,System.Int32)">Write(Byte[], Int32, Int32)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Write(byte[] buffer, int offset, int count)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.byte(v=vs.110).aspx">Byte</a>[]</td>
+        <td><span class="parametername">buffer</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td><span class="parametername">offset</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td><span class="parametername">count</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/xsfehx6h(v=vs.110).aspx">Stream.Write(Byte[], Int32, Int32)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_WriteAsync_System_Byte___System_Int32_System_Int32_System_Threading_CancellationToken_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.WriteAsync(System.Byte%5B%5D%2CSystem.Int32%2CSystem.Int32%2CSystem.Threading.CancellationToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L134">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_WriteAsync_" data-uid="BionicCode.Utilities.Net.AutoResetStream.WriteAsync*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_WriteAsync_System_Byte___System_Int32_System_Int32_System_Threading_CancellationToken_" data-uid="BionicCode.Utilities.Net.AutoResetStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">WriteAsync(Byte[], Int32, Int32, CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.byte(v=vs.110).aspx">Byte</a>[]</td>
+        <td><span class="parametername">buffer</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td><span class="parametername">offset</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td><span class="parametername">count</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.cancellationtoken(v=vs.110).aspx">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.task(v=vs.110).aspx">Task</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/hh137799(v=vs.110).aspx">Stream.WriteAsync(Byte[], Int32, Int32, CancellationToken)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream_WriteByte_System_Byte_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream.WriteByte(System.Byte)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L141">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_AutoResetStream_WriteByte_" data-uid="BionicCode.Utilities.Net.AutoResetStream.WriteByte*"></a>
+  <h4 id="BionicCode_Utilities_Net_AutoResetStream_WriteByte_System_Byte_" data-uid="BionicCode.Utilities.Net.AutoResetStream.WriteByte(System.Byte)">WriteByte(Byte)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void WriteByte(byte value)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.byte(v=vs.110).aspx">Byte</a></td>
+        <td><span class="parametername">value</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/015bdtez(v=vs.110).aspx">Stream.WriteByte(Byte)</a></div>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a>
+  </div>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.HelperExtensionsCommon.html#BionicCode_Utilities_Net_HelperExtensionsCommon_ToDictionary_System_Object_">HelperExtensionsCommon.ToDictionary(Object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.HelperExtensionsCommon.html#BionicCode_Utilities_Net_HelperExtensionsCommon_ToFlatDictionary_System_Object_">HelperExtensionsCommon.ToFlatDictionary(Object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.HelperExtensionsCommon.html#BionicCode_Utilities_Net_HelperExtensionsCommon_HasReachedEnd_System_IO_Stream_">HelperExtensionsCommon.HasReachedEnd(Stream)</a>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_AutoResetStream.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.AutoResetStream%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IO/AutoResetStream.cs/#L10" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

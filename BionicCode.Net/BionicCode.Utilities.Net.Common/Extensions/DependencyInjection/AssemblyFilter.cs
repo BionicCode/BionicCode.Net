@@ -13,30 +13,31 @@
 
     public AssemblyFilter(IServiceCollection services, IEnumerable<Assembly> assemblies)
     {
-      Services = services;
-      Assemblies = assemblies;
+      this.Services = services;
+      this.Assemblies = assemblies;
     }
 
     public IFilteredExportServiceCollection AsSingleton()
     {
       IEnumerable<Type> tImplementations = GetConcreteTypesFromAssemblies();
-      return new FilteredExportServiceCollection(Services, tImplementations, ServiceLifetime.Singleton);
+
+      return new FilteredExportServiceCollection(this.Services, tImplementations, ServiceLifetime.Singleton);
     }
 
     public IFilteredExportServiceCollection AsTransient()
     {
       IEnumerable<Type> tImplementations = GetConcreteTypesFromAssemblies();
-      return new FilteredExportServiceCollection(Services, tImplementations, ServiceLifetime.Transient);
+      return new FilteredExportServiceCollection(this.Services, tImplementations, ServiceLifetime.Transient);
     }
 
     public IFilteredExportServiceCollection AsScoped()
     {
       IEnumerable<Type> tImplementations = GetConcreteTypesFromAssemblies();
-      return new FilteredExportServiceCollection(Services, tImplementations, ServiceLifetime.Scoped);
+      return new FilteredExportServiceCollection(this.Services, tImplementations, ServiceLifetime.Scoped);
     }
 
     private IEnumerable<Type> GetConcreteTypesFromAssemblies()
-      => Assemblies
+      => this.Assemblies
               .SelectMany(assembly => assembly.GetTypes())
               .Where(type => !type.IsInterface && !type.IsAbstract);
 

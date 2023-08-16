@@ -24,9 +24,9 @@
 
     /// <summary>
     /// Configures the lifetime scope of the created object instances.
-    /// Default is <see cref=".FactoryMode.Singleton"/>
+    /// Default is <see cref="FactoryMode.Singleton"/>
     /// </summary>
-    /// <value>The lifetime scope  <see cref=".FactoryMode.Singleton"/> of the created object instances</value>
+    /// <value>The lifetime scope  <see cref="FactoryMode.Singleton"/> of the created object instances</value>
     FactoryMode FactoryMode { get; set; }
   }
 }

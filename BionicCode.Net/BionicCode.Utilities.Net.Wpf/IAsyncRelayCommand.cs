@@ -5,7 +5,6 @@
   using System.Threading;
   using System.Threading.Tasks;
   using System.Windows.Input;
-  using BionicCode.Utilities.Net.Common;
 
   /// <inheritdoc/>
   public interface IAsyncRelayCommand : IAsyncRelayCommandCommon, ICommand, INotifyPropertyChanged
@@ -18,7 +17,7 @@
     /// <br/>The default is <c>true</c>.</value>
     /// <remarks>If the <see cref="IsCommandManagerRequerySuggestedEnabled"/> property is set to <c>true</c>, calling the <see cref="CommandManager.InvalidateRequerySuggested"/> method will also raise the <see cref="ICommand.CanExecuteChanged"/> event.
     /// <br/>This is the default behavior. <see cref="CommandManager.InvalidateRequerySuggested"/> is regularly invoked by the framework to keep UI elemnts, that implement <see cref="ICommandSource"/> (like the Button control) and listen to the <see cref="ICommand.CanExecuteChanged"/> event, updated. 
-    /// <br/>When the <see cref="IsCommandManagerRequerySuggestedEnabled"/> property ios set to <c>false</c>, the <see cref="ICommand.CanExecuteChanged"/> must be raised explicitly by calling the <see cref="InvalidateCommand"/> method.</remarks>
+    /// <br/>When the <see cref="IsCommandManagerRequerySuggestedEnabled"/> property ios set to <c>false</c>, the <see cref="ICommand.CanExecuteChanged"/> must be raised explicitly by calling the <see cref="AsyncRelayCommandCommon.InvalidateCommand"/> method.</remarks>
     bool IsCommandManagerRequerySuggestedEnabled { get; set; }
 #endif
   }

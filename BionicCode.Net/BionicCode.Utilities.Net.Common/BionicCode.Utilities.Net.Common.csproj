@@ -4,7 +4,7 @@
 		<TargetFrameworks>netstandard2.0;netstandard2.1;net472;net48;net5.0;net6.0;net7.0</TargetFrameworks>
 		<ApplicationIcon>logo.ico</ApplicationIcon>
 		<RootNamespace>BionicCode.Utilities.Net</RootNamespace>
-		<AssemblyName>BionicCode.Utilities.Net.Common</AssemblyName>
+		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
 		<Authors>Brian Sampoh</Authors>
 		<Company>BionicCode</Company>
 		<Description>.NET Standard 2.0 - Reusable utility and class library for .NET Standard 2.0 - Featuring: ViewModel (abstract base class), Profiling, Extension Methods, ValueChangedEventArgs, EventAggregator and more.</Description>

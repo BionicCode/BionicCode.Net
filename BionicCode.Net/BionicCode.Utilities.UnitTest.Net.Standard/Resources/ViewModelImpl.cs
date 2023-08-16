@@ -1,4 +1,4 @@
-﻿namespace BionicCode.Utilities.UnitTest.Net.Resources
+﻿namespace BionicCode.Utilities.Net.UnitTest.Resources
 {
   using System;
   using System.Collections.Generic;
@@ -45,22 +45,22 @@
     public string ValidatingPropertyRejectInvalidValueAndPropertyNameIsNull
     {
       get => this.validatingPropertyRejectInvalidValueAndPropertyNameIsNull;
-      set => TrySetValue(value, this.PropertyValidationDelegate, ref this.validatingPropertyRejectInvalidValueAndPropertyNameIsNull,  propertyName:null, isRejectInvalidValueEnabled:true);
+      set => TrySetValue(value, this.PropertyValidationDelegate, ref this.validatingPropertyRejectInvalidValueAndPropertyNameIsNull,  propertyName:null, methodConfiguration: new SetValueOptions(true, false, true));
     }
 
     private string validatingPropertyRejectInvalidValueAndPropertyNameIsNullAsync;
     public string ValidatingPropertyRejectInvalidValueAndPropertyNameIsNullAsync
     {
       get => this.validatingPropertyRejectInvalidValueAndPropertyNameIsNullAsync;
-      set => TrySetValueAsync(value, this.validatingPropertyRejectInvalidValueAndPropertyNameIsNullAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyRejectInvalidValueAndPropertyNameIsNullAsync = value, propertyName: null, isRejectInvalidValueEnabled: true);
+      set => TrySetValueAsync(value, this.validatingPropertyRejectInvalidValueAndPropertyNameIsNullAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyRejectInvalidValueAndPropertyNameIsNullAsync = value, propertyName: null, methodConfiguration: new SetValueOptions(true, false, true));
     }
 
-    private string validatingPropertyRejectInvalidValueAndPropertyNameIsNull_Old;
-    public string ValidatingPropertyRejectInvalidValueAndPropertyNameIsNull_Old
-    {
-      get => this.validatingPropertyRejectInvalidValueAndPropertyNameIsNull_Old;
-      set => TrySetValue(value, this.PropertyValidationDelegate_Old, ref this.validatingPropertyRejectInvalidValueAndPropertyNameIsNull_Old, propertyName: null, isRejectInvalidValueEnabled: true);
-    }
+    //private string validatingPropertyRejectInvalidValueAndPropertyNameIsNull_Old;
+    //public string ValidatingPropertyRejectInvalidValueAndPropertyNameIsNull_Old
+    //{
+    //  get => this.validatingPropertyRejectInvalidValueAndPropertyNameIsNull_Old;
+    //  set => TrySetValue(value, this.PropertyValidationDelegate_Old, ref this.validatingPropertyRejectInvalidValueAndPropertyNameIsNull_Old, propertyName: null, methodConfiguration: new SetValueOptions(true, false,true));
+    //}
 
     private string validatingProperty;
     public string ValidatingProperty
@@ -76,12 +76,12 @@
       set => base.TrySetValueAsync(value, this.validatingPropertyAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyAsync = value);
     }
 
-    private string validatingProperty_Old;
-    public string ValidatingProperty_Old
-    {
-      get => this.validatingProperty_Old;
-      set => base.TrySetValue(value, this.PropertyValidationDelegate_Old, ref this.validatingProperty_Old);
-    }
+    //private string validatingProperty_Old;
+    //public string ValidatingProperty_Old
+    //{
+    //  get => this.validatingProperty_Old;
+    //  set => base.TrySetValue(value, this.PropertyValidationDelegate_Old, ref this.validatingProperty_Old);
+    //}
 
     private string silentValidatingProperty;
     public string SilentValidatingProperty
@@ -96,18 +96,19 @@
       get => this.silentValidatingPropertyAsync;
       set => base.TrySetValueSilentAsync(value, this.silentValidatingPropertyAsync, this.PropertyValidationDelegateAsync, value => this.silentValidatingPropertyAsync = value);
     }
-    private string silentValidatingProperty_Old;
-    public string SilentValidatingProperty_Old
-    {
-      get => this.silentValidatingProperty_Old;
-      set => TrySetValueSilent(value, this.PropertyValidationDelegate_Old, ref this.silentValidatingProperty_Old);
-    }
+
+    //private string silentValidatingProperty_Old;
+    //public string SilentValidatingProperty_Old
+    //{
+    //  get => this.silentValidatingProperty_Old;
+    //  set => TrySetValueSilent(value, this.PropertyValidationDelegate_Old, ref this.silentValidatingProperty_Old);
+    //}
 
     private string validatingPropertyRejectInvalidValue;
     public string ValidatingPropertyRejectInvalidValue
     {
       get => this.validatingPropertyRejectInvalidValue;
-      set => TrySetValue(value, this.PropertyValidationDelegate, ref this.validatingPropertyRejectInvalidValue, isRejectInvalidValueEnabled: true, isRejectEqualValuesEnabled: true);
+      set => TrySetValue(value, this.PropertyValidationDelegate, ref this.validatingPropertyRejectInvalidValue, methodConfiguration: new SetValueOptions(true, false, true));
     }
 
     private string validatingPropertyRejectInvalidValueAsync;
@@ -117,24 +118,22 @@
       set => TrySetValueAsync(value, this.validatingPropertyRejectInvalidValueAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyRejectInvalidValueAsync = value, isRejectInvalidValueEnabled: true, isRejectEqualValuesEnabled: true);
     }
 
-    private string validatingPropertyRejectInvalidValue_Old;
-    public string ValidatingPropertyRejectInvalidValue_Old
-    {
-      get => this.validatingPropertyRejectInvalidValue_Old;
-      set => TrySetValue(value, this.PropertyValidationDelegate_Old, ref this.validatingPropertyRejectInvalidValue_Old, isRejectInvalidValueEnabled: true, isRejectEqualValuesEnabled: true);
-    }
+    //private string validatingPropertyRejectInvalidValue_Old;
+    //public string ValidatingPropertyRejectInvalidValue_Old
+    //{
+    //  get => this.validatingPropertyRejectInvalidValue_Old;
+    //  set => TrySetValue(value, this.PropertyValidationDelegate_Old, ref this.validatingPropertyRejectInvalidValue_Old, isRejectInvalidValueEnabled: true, isRejectEqualValuesEnabled: true);
+    //}
 
     private string validatingPropertyThrowExceptionOnInvalidValue;
     public string ValidatingPropertyThrowExceptionOnInvalidValue
     {
       get => this.validatingPropertyThrowExceptionOnInvalidValue;
-      set => TrySetValue(value, this.PropertyValidationDelegate, ref this.validatingPropertyThrowExceptionOnInvalidValue, isThrowExceptionOnValidationErrorEnabled:true);
+      set => TrySetValue(value, this.PropertyValidationDelegate, ref this.validatingPropertyThrowExceptionOnInvalidValue, methodConfiguration: new SetValueOptions(false, true, false));
     }
 
-    public Task<bool> SetPropertyThrowExceptionOnInvalidValueUsingTrySetValueAsyncExplicitly(string value, string propertyName)
-    {
-       return TrySetValueAsync(value, this.validatingPropertyThrowExceptionOnInvalidValue, this.PropertyValidationDelegateAsync, value => this.validatingPropertyThrowExceptionOnInvalidValue = value, isThrowExceptionOnValidationErrorEnabled: true, propertyName: propertyName);           
-    }
+    public Task<bool> SetPropertyThrowExceptionOnInvalidValueUsingTrySetValueAsyncExplicitly(string value, string propertyName) 
+      => TrySetValueAsync(value, this.validatingPropertyThrowExceptionOnInvalidValue, this.PropertyValidationDelegateAsync, value => this.validatingPropertyThrowExceptionOnInvalidValue = value, isThrowExceptionOnValidationErrorEnabled: true, methodConfiguration: new SetValueOptions(false, true, false), propertyName: propertyName);
 
     private string validatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync;
     public string ValidatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync

@@ -1,128 +1,24 @@
 {
   "metadata": [
     {
-      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/*.dll",
-      "dest": "temp/api/netstandard2.0",
-      "properties": {
-        "TargetFramework": "netstandard2.0"
-      }
-    },
-    {
-      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/*.dll",
-      "dest": "temp/api/netstandard2.1",
-      "properties": {
-        "TargetFramework": "netstandard2.1"
-      }
-    },
-    {
-      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/*.dll",
-      "dest": "temp/api/net7.0",
-      "properties": {
-        "TargetFramework": "net7.0"
-      }
-    },
-    {
-      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/*.dll",
-      "dest": "temp/api/net7.0-windows",
-      "properties": {
-        "TargetFramework": "netnet7.0-windows"
-      }
-    },
-    {
-      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/*.dll",
-      "dest": "temp/api/net6.0",
-      "properties": {
-        "TargetFramework": "net6.0"
-      }
-    },
-    {
-      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/*.dll",
-      "dest": "temp/api/net6.0-windows",
-      "properties": {
-        "TargetFramework": "netnet6.0-windows"
-      }
-    },
-    {
-      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/*.dll",
-      "dest": "temp/api/net5.0",
-      "properties": {
-        "TargetFramework": "net5.0"
-      }
-    },
-    {
-      "src": "F:/-Programming-/C#/GitOpenSourceRepository/BionicCode.Net/Assemblies/Release/*.dll",
-      "dest": "temp/api/net5.0-windows",
-      "properties": {
-        "TargetFramework": "net5.0-windows"
-      }
+      "src": [
+        {
+          "files": [
+            "BionicCode.Utilities.Net/**.csproj",
+            "BionicCode.Utilities.Net.Wpf/**.csproj"
+          ],
+          "exclude": [ "_site/**", "**/bin/**", "**/obj/**", "**/[Tt]ests/**" ],
+          "src": "../"
+        }
+      ],
+      "dest": "api",
+      "disableGitFeatures": false
     }
   ],
-  "merge": {
-    "content": [
-      {
-        "files": "*.yml",
-        "src": "temp/api/netstandard2.0"
-      },
-      {
-        "files": "*.yml",
-        "src": "temp/api/netstandard2.1"
-      },
-      {
-        "files": "*.yml",
-        "src": "temp/api/net7.0"
-      },
-      {
-        "files": "*.yml",
-        "src": "temp/api/net7.0-windows"
-      },
-      {
-        "files": "*.yml",
-        "src": "temp/api/net6.0"
-      },
-      {
-        "files": "*.yml",
-        "src": "temp/api/net6.0-windows"
-      },
-      {
-        "files": "*.yml",
-        "src": "temp/api/net5.0"
-      },
-      {
-        "files": "*.yml",
-        "src": "temp/api/net5.0-windows"
-      }
-    ],
-    "fileMetadata": {
-      "platform": {
-        "temp/api/netstandard2.0/*.yml": [
-          "netstandard2.0"
-        ],
-        "temp/api/netstandard2.1/*.yml": [
-          "netstandard2.1"
-        ],
-        "temp/api/net7.0/*.yml": [
-          "net7.0"
-        ],
-        "temp/api/nets7.0-windows/*.yml": [
-          "net7.0-windows"
-        ],
-        "temp/api/net7.0/*.yml": [
-          "net6.0"
-        ],
-        "temp/api/nets7.0-windows/*.yml": [
-          "net6.0-windows"
-        ],
-        "temp/api/net7.0/*.yml": [
-          "net5.0"
-        ],
-        "temp/api/nets7.0-windows/*.yml": [
-          "net5.0-windows"
-        ]
-      }
-    },
-    "dest": "api"
-  },
   "build": {
+    "xref": [
+      "C:\\Users\\Mobil\\.nuget\\packages\\msdn.4.5.2\\0.1.0-alpha-1611021200\\content\\msdn.4.5.2.zip"
+    ],
     "content": [
       {
         "files": [
@@ -169,7 +65,7 @@
       "_appFaviconPath": "../images/logo.ico",
       "_gitContribute": {
         "repo": "https://github.com/BionicCode/BionicCode.Net",
-        "branch": "develop",
+        "branch": "master",
         "apiSpecFolder": "docs-ref-overwrite"
       },
       "_enableSearch": "true"

@@ -6,6 +6,7 @@
   using System.Linq;
   using System.Text;
   using System.Threading.Tasks;
+  using static System.Collections.Specialized.BitVector32;
 
   /// <summary>
   /// Helper methods to measure code execution time.
@@ -18,7 +19,7 @@
     /// <param name="action">The code to measure execution time.</param>
     /// <returns>The average execution time of all <paramref name="runCount"/> number of iterations as <see cref="TimeSpan"/>.</returns>
     /// <param name="runCount">Number of iterations the <paramref name="action"/> should be executed.</param>
-    /// <remarks>Use the <see cref="LogTime(Action, int, ProfilerLogger)"/> overload and provide an instance of the <see cref="ProfilerLogger"/> delegate for the <c>logger</c> parameter to control the output target or customize the formatting.</remarks>
+    /// <remarks>Use the <see cref="LogTime(Action, int, ProfilerLoggerDelegate)"/> overload and provide an instance of the <see cref="ProfilerLoggerDelegate"/> delegate for the <c>logger</c> parameter to control the output target or customize the formatting.</remarks>
     public static ProfilerBatchResult LogTime(Action action, int runCount)
       => LogTime(action, runCount, null);
 
@@ -28,7 +29,7 @@
     /// <param name="action">The code to measure execution time.</param>
     /// <returns>The average execution time of all <paramref name="runCount"/> number of iterations as <see cref="TimeSpan"/>.</returns>
     /// <param name="runCount">Number of iterations the <paramref name="action"/> should be executed.</param>
-    /// <param name="logger">A delegate of type <see cref="ProfilerLogger"/> which can be used to automatically let the <see cref="LogTime(Action, int, ProfilerLogger)"/> print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
+    /// <param name="logger">A delegate of type <see cref="ProfilerLoggerDelegate"/> which can be used to automatically let the <see cref="LogTime(Action, int, ProfilerLoggerDelegate)"/> print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
     /// 
     /// <br/>
     /// <code>
@@ -47,8 +48,8 @@
     /// │ Average:  -             │                     0.9802 │                │
     /// ╰─────────────────────────┴────────────────────────────┴────────────────╯
     /// </code></param>
-    /// <remarks>Provide an instance of the <see cref="ProfilerLogger"/> delegate for the <paramref name="logger"/> parameter to control the output target or customize the formatting.</remarks>
-    public static ProfilerBatchResult LogTime(Action action, int runCount, ProfilerLogger logger)
+    /// <remarks>Provide an instance of the <see cref="ProfilerLoggerDelegate"/> delegate for the <paramref name="logger"/> parameter to control the output target or customize the formatting.</remarks>
+    public static ProfilerBatchResult LogTime(Action action, int runCount, ProfilerLoggerDelegate logger)
     {
       if (runCount < 1)
       {
@@ -93,7 +94,7 @@
     /// <remarks>
     /// <para>Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <see cref="ProfilerBatchResult.Summary"/>, but marked as cancelled).
     /// <br/>A cancelled task is a <see cref="Task"/> where the <see cref="Task.Status"/> returns either <see cref="TaskStatus.Canceled"/> or <see cref="TaskStatus.Faulted"/> or an <see cref="OperationCanceledException"/> exception was thrown.</para>
-    /// Use the <see cref="LogTimeAsync(Func{Task}, int, ProfilerLogger)"/> overload and provide an instance of the <see cref="ProfilerLogger"/> delegate for the <c>logger</c> parameter to control the output target or customize the formatting.</remarks>
+    /// Use the <see cref="LogTimeAsync(Func{Task}, int, ProfilerLoggerDelegate)"/> overload and provide an instance of the <see cref="ProfilerLoggerDelegate"/> delegate for the <c>logger</c> parameter to control the output target or customize the formatting.</remarks>
     public static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount)
       => LogTimeAsync(asyncAction, runCount, null);
 
@@ -102,7 +103,7 @@
     /// </summary>
     /// <param name="asyncAction">A delegate that executes the asynchronous code to measure execution time.</param>
     /// <param name="runCount">Number of iterations the <paramref name="asyncAction"/> should be executed.</param>
-    /// <param name="logger">A delegate of type <see cref="ProfilerLogger"/> which can be used to automatically let the <see cref="LogTimeAsync(Func{Task}, int, ProfilerLogger)"/> print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
+    /// <param name="logger">A delegate of type <see cref="ProfilerLoggerDelegate"/> which can be used to automatically let the <see cref="LogTimeAsync(Func{Task}, int, ProfilerLoggerDelegate)"/> print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
     /// 
     /// <br/>
     /// <code>
@@ -125,8 +126,8 @@
     /// <remarks>
     /// <para>Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <see cref="ProfilerBatchResult.Summary"/>, but marked as cancelled).
     /// <br/>A cancelled task is a <see cref="Task"/> where the <see cref="Task.Status"/> returns either <see cref="TaskStatus.Canceled"/> or <see cref="TaskStatus.Faulted"/> or an <see cref="OperationCanceledException"/> exception was thrown.</para>
-    /// Provide an instance of the <see cref="ProfilerLogger"/> delegate for the <paramref name="logger"/> parameter to control the output target or customize the formatting.</remarks>
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, ProfilerLogger logger)
+    /// Provide an instance of the <see cref="ProfilerLoggerDelegate"/> delegate for the <paramref name="logger"/> parameter to control the output target or customize the formatting.</remarks>
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, ProfilerLoggerDelegate logger)
     {
       var outputBuilder = new StringBuilder();
       BuildSummaryHeader(outputBuilder);
@@ -150,6 +151,52 @@
       logger?.Invoke(result, result.Summary);
       return result;
     }
+
+    /// <summary>
+    /// Measures the execution time of using block i.e. the scope of the <see cref="IDisposable"/>'s lifetime.
+    /// </summary>
+    /// <param name="logger">A delegate of type <see cref="ProfilerLoggerDelegate"/> which can be used to automatically let the <see cref="LogTimeAsync(Func{Task}, int, ProfilerLoggerDelegate)"/> print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
+    /// 
+    /// <br/>
+    /// <code>
+    ///           ╭───────────────┬────────────────────────────┬────────────────╮
+    ///           | Iteration #   │ Duration [ms]              │ Is cancelled   |
+    ///           ┝━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥
+    ///           │ 1             │                     1.0512 │ False          |
+    ///           │ 2             │                     1.0020 │ False          │
+    ///           │ 3             │                     0.8732 │ False          │
+    ///           │ 4             │                     0.0258 │ True (ignored) │
+    ///           │ 5             │                     0.9943 │ False          │
+    /// ╭═════════╧═══════════════╪════════════════════════════┼────────────────┤
+    /// │ Total:    -             │                     3.9207 │                │
+    /// │ Min:      3             │                     0.8732 │                │
+    /// │ Max:      1             │                     1.0512 │                │
+    /// │ Average:  -             │                     0.9802 │                │
+    /// ╰─────────────────────────┴────────────────────────────┴────────────────╯
+    /// </code></param>
+    /// <param name="result">A <see cref="Task"/> holding the <see cref="ProfilerBatchResult"/> result which contains meta data like average execution time or a formatted report (<see cref="ProfilerBatchResult.Summary"/>).</param>
+    /// <returns>An <see cref="IDisposable"/> to control the scope of the profiling.</returns>
+    /// <remarks>
+    /// Time is measured during the lifetime of the <see cref="IDisposable"/> instance: from time of creation to the final <see cref="IDisposable.Dispose"/> call.
+    /// <br/>It's recommended to use the <see cref="IDisposable"/> managed by a using-statement or using-expression.</remarks>
+    public static IDisposable LogTimeScoped(ProfilerLoggerDelegate logger, out ProfilerBatchResult result)
+    {
+      result = new ProfilerBatchResult(false,0,Enumerable.Empty<ProfilerResult>(), TimeSpan.Zero, TimeSpan.Zero, string.Empty, default, default);
+      var profilerScope = new ProfilerScope(logger);
+      profilerScope.StartProfiling(in result);
+      return profilerScope;
+    }
+
+    /// <summary>
+    /// Measures the execution time of a using block i.e. the scope of the <see cref="IDisposable"/>'s lifetime.
+    /// </summary>
+    /// <param name="result">A <see cref="Task"/> holding the <see cref="ProfilerBatchResult"/> result which contains meta data like average execution time or a formatted report (<see cref="ProfilerBatchResult.Summary"/>).</param>
+    /// <returns>An <see cref="IDisposable"/> to control the scope of the profiling.</returns>
+    /// <remarks>
+    /// Time is measured during the lifetime of the <see cref="IDisposable"/> instance: from time of creation to the final <see cref="IDisposable.Dispose"/> call.
+    /// <br/>It's recommended to use the <see cref="IDisposable"/> managed by a using-statement or using-expression.</remarks>
+    public static IDisposable LogTimeScoped(out ProfilerBatchResult result)
+      => LogTimeScoped(null, out result);
 
     private static async Task<IEnumerable<ProfilerResult>> InternalLogAverageTimeAsync(Func<Task> asyncAction, int runCount, int iterationCounter, StringBuilder outputBuilder)
     {
@@ -189,7 +236,7 @@
       return iterationResults;
     }
 
-    private static void BuildSummaryHeader(StringBuilder outputBuilder)
+    internal static void BuildSummaryHeader(StringBuilder outputBuilder)
     {
       string headerCol1 = "Iteration #";
       string headerCol2 = "Duration [ms]";
@@ -200,9 +247,9 @@
         .AppendLine($"{"┝",11}━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥");
     }
 
-    private static void BuildSummaryEntry(StringBuilder outputBuilder, int iterationCounter, ProfilerResult iterationResult) => outputBuilder.AppendLine($"{"│",11} {iterationCounter,-13:N0} │ {iterationResult.ElapsedTime.TotalMilliseconds,26:N6} │ {iterationResult.IsProfiledTaskCancelled + (iterationResult.IsProfiledTaskCancelled ? " (ignored)" : ""),-14} │");
+    internal static void BuildSummaryEntry(StringBuilder outputBuilder, int iterationCounter, ProfilerResult iterationResult) => outputBuilder.AppendLine($"{"│",11} {iterationCounter,-13:N0} │ {iterationResult.ElapsedTime.TotalMilliseconds,26:N6} │ {iterationResult.IsProfiledTaskCancelled + (iterationResult.IsProfiledTaskCancelled ? " (ignored)" : ""),-14} │");
 
-    private static void BuildSummaryFooter(StringBuilder outputBuilder, TimeSpan totalDuration, TimeSpan averageDuration, ProfilerResult min, ProfilerResult max) => _ = outputBuilder
+    internal static void BuildSummaryFooter(StringBuilder outputBuilder, TimeSpan totalDuration, TimeSpan averageDuration, ProfilerResult min, ProfilerResult max) => _ = outputBuilder
         .AppendLine($"╭═════════╧═══════════════╪════════════════════════════┼────────────────┤")
         .AppendLine($"{"│ Total:",-11} {"-",-13} │ {totalDuration.TotalMilliseconds,26:N6} │{"│",17}")
         .AppendLine($"{"│ Min:",-11} {(min.Iteration < 0 ? "-" : min.Iteration.ToString("N0")),-13:N0} │ {(min.Iteration < 0 ? "-" : min.ElapsedTime.TotalMilliseconds.ToString("N6")),26:N6} │{"│",17}")

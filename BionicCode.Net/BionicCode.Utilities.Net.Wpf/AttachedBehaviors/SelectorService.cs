@@ -6,7 +6,6 @@ namespace BionicCode.Utilities.Net
   using System.Collections.Generic;
   using System.Windows;
   using System.Windows.Input;
-  using BionicCode.Utilities.Net;
   using System.Windows.Controls;
   using System.Windows.Threading;
 

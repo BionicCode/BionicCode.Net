@@ -1,9 +1,10 @@
-﻿using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace BionicCode.Utilities.Net
+﻿namespace BionicCode.Utilities.Net
 {
+  using System;
+  using System.IO;
+  using System.Threading;
+  using System.Threading.Tasks;
+
   /// <summary>
   /// Decorates a <see cref="Stream"/> instance to support auto-rewind after read/write access.
   /// </summary>
@@ -190,13 +191,6 @@ namespace BionicCode.Utilities.Net
 
     /// <inheritdoc />
     public override string ToString() => this.BaseStream.ToString();
-
-    #endregion
-
-    #region Overrides of MarshalByRefObject
-
-    /// <inheritdoc />
-    public override object InitializeLifetimeService() => this.BaseStream.InitializeLifetimeService();
 
     #endregion
 

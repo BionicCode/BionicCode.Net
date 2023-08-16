@@ -1,4 +1,4 @@
-﻿namespace BionicCode.Utilities.UnitTest.Net
+﻿namespace BionicCode.Utilities.Net.UnitTest
 {
   using System;
   using Xunit;

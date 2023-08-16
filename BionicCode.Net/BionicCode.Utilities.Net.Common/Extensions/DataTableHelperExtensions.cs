@@ -1,4 +1,4 @@
-﻿namespace BionicCode.Utilities.Net.Extensions
+﻿namespace BionicCode.Utilities.Net
 {
   using System;
   using System.Collections.Generic;

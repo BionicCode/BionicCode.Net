@@ -1,4 +1,4 @@
-﻿namespace BionicCode.Utilities.Net.Common
+﻿namespace BionicCode.Utilities.Net
 {
   using System;
   using System.ComponentModel;
@@ -9,6 +9,7 @@
   /// <summary>
   /// An interface to define a reusable command that encapsulates the implementation of <see cref="ICommand"/> with support for async/await command delegates and data binding (implements <see cref="INotifyPropertyChanged"/>). 
   /// <br/>Enables instant creation of an ICommand without implementing the ICommand interface for each command.
+  /// </summary>
   public interface IAsyncRelayCommandCommon : ICommand, INotifyPropertyChanged
   {
     /// <summary>
@@ -54,7 +55,7 @@
     /// <summary>
     /// Cancels all pending and executing commands.
     /// </summary>
-    /// <remarks>See <see cref="CancellationTokenSource.Cancel"/> for the exception behavior of this overload.</remarks>
+    /// <remarks>See <see cref="CancellationTokenSource.Cancel()"/> for the exception behavior of this overload.</remarks>
     void CancelAll();
 
     /// <summary>
@@ -67,7 +68,7 @@
     /// <summary>
     /// Cancels the currently executing command.
     /// </summary>
-    /// <remarks>See <see cref="CancellationTokenSource.Cancel"/> for the exception behavior of this overload.</remarks>
+    /// <remarks>See <see cref="CancellationTokenSource.Cancel()"/> for the exception behavior of this overload.</remarks>
     void CancelExecuting();
 
     /// <summary>
@@ -80,7 +81,7 @@
     /// <summary>
     /// Cancels all pending command executions.
     /// </summary>    
-    /// <remarks>See <see cref="CancellationTokenSource.Cancel"/> for the exception behavior of this overload.</remarks>
+    /// <remarks>See <see cref="CancellationTokenSource.Cancel()"/> for the exception behavior of this overload.</remarks>
     void CancelPending();
 
     /// <summary>

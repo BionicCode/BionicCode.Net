@@ -1,6 +1,6 @@
-﻿namespace BionicCode.Utilities.UnitTest.Net
+﻿namespace BionicCode.Utilities.Net.UnitTest
 {
-  using BionicCode.Utilities.UnitTest.Net.Resources;
+  using BionicCode.Utilities.Net.UnitTest.Resources;
   using System;
   using System.Linq;
   using Xunit;

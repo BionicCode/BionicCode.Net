@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 
-using BionicCode.Utilities.Net;
   /// <summary>
   /// Set of attached behaviors for the <see cref="System.Windows.Controls.Primitives.Popup"/> control.
   /// </summary>

@@ -46,8 +46,7 @@
     /// </summary>
     /// <typeparam name="TItem"></typeparam>
     /// <param name="source"></param>
-    /// <param name="startIndex">The inclusive starting index of the range.</param>
-    /// <param name="count">The number of elements to take.</param>
+    /// <param name="range">A <see cref="Range"/> to define the range of elements to be taken.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> that contains the requested range of the original <paramref name="source"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     public static IEnumerable<TItem> TakeRange<TItem>(this IEnumerable<TItem> source, Range range)
@@ -200,14 +199,11 @@
         throw new ArgumentNullException(nameof(source));
       }
 
-      if (predicate == null)
-      {
-        throw new ArgumentNullException(nameof(predicate));
-      }
-
-      return TryFindLast(source, predicate, out TItem result) 
-        ? result 
-        : default;
+      return predicate == null
+        ? throw new ArgumentNullException(nameof(predicate))
+        : TryFindLast(source, predicate, out TItem result)
+          ? result
+          : default;
     }
 
     /// <summary>
@@ -238,14 +234,11 @@
         throw new ArgumentNullException(nameof(predicate));
       }
 
-      if (source.IsEmpty())
-      {
-        throw new InvalidOperationException(ExceptionMessages.GetInvalidOperationExceptionMessage_CollectionEmpty());
-      }
-
-      return TryFindLast(source, predicate, out TItem result)
-        ? result
-        : throw new InvalidOperationException(ExceptionMessages.GetInvalidOperationExceptionMessage_ItemNotFound(nameof(predicate)));
+      return source.IsEmpty()
+        ? throw new InvalidOperationException(ExceptionMessages.GetInvalidOperationExceptionMessage_CollectionEmpty())
+        : TryFindLast(source, predicate, out TItem result)
+         ? result
+         : throw new InvalidOperationException(ExceptionMessages.GetInvalidOperationExceptionMessage_ItemNotFound(nameof(predicate)));
     }
 
     private static bool TryFindLast<TItem>(IEnumerable<TItem> source, Func<TItem, bool> predicate, out TItem result)

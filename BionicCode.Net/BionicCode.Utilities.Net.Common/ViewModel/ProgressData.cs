@@ -5,7 +5,7 @@
   public readonly struct ProgressData
   {
     /// <summary>
-    /// Data model to report progress to a implementation of <see cref="IProgressReporter"/>. When using the <see cref="IProgress{T}"/> returned from the <see cref="IProgressReporter.CreateProgressReporterFromCurrentThread"/> method, the <see cref="ProgressData"/> serves as the argument.
+    /// Data model to report progress to a implementation of <see cref="IProgressReporterCommon"/>. When using the <see cref="IProgress{T}"/> returned from the <see cref="IProgressReporterCommon.CreateProgressReporterFromCurrentThread"/> method, the <see cref="ProgressData"/> serves as the argument.
     /// </summary>
     /// <param name="message">A progress message.</param>
     /// <param name="progress">The progress value.</param>

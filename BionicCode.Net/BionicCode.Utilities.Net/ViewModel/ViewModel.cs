@@ -12,7 +12,6 @@ namespace BionicCode.Utilities.Net
   using System.Threading;
   using System.Threading.Tasks;
   using JetBrains.Annotations;
-  using BionicCode.Utilities.Net.Common;
 
   /// <summary>
   /// Base class recommended to use for view models across the application. Encapsulates implementations of <see cref="INotifyPropertyChanged"/> and <see cref="INotifyDataErrorInfo"/>.

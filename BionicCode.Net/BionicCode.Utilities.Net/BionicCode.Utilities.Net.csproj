@@ -51,7 +51,6 @@ For bug reports or feature requests please visit the project home on GutHub (fol
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <ProjectReference Include="..\BionicCode.Utilities.Net.Common\BionicCode.Utilities.Net.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,5 +58,9 @@ For bug reports or feature requests please visit the project home on GutHub (fol
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BionicCode.Utilities.Net.Common\BionicCode.Utilities.Net.Common.csproj" />
   </ItemGroup>
 </Project>

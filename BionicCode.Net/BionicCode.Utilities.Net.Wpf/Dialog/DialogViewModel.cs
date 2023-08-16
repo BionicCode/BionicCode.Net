@@ -55,7 +55,7 @@ using System.Windows.Media;
     /// <summary>
     /// Asynchronously called when the SendResponseAsyncCommand is executed.
     /// </summary>
-    /// <param name="result">A <see cref="BionicCode.Utilities.Net.DialogResult"/> value that was received by the ICommand.</param>
+    /// <param name="result">A <see cref="DialogResult"/> value that was received by the ICommand.</param>
     /// <returns>A <c>Task</c> instance to make this method awaitable.</returns>
     protected virtual async Task ExecuteSendResponseCommandAsync(DialogResult result)
     {

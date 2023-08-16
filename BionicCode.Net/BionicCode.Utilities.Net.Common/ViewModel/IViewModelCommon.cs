@@ -1,4 +1,4 @@
-namespace BionicCode.Utilities.Net.Common
+namespace BionicCode.Utilities.Net
 {
   #region Info
   // //  

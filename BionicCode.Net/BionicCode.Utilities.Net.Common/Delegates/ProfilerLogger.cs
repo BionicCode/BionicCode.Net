@@ -23,5 +23,5 @@
   /// │ Average:  -             │                     0.9802 │                │
   /// ╰─────────────────────────┴────────────────────────────┴────────────────╯
   /// </code></param>
-  public delegate void ProfilerLogger(ProfilerBatchResult results, string preformattedOutput);
+  public delegate void ProfilerLoggerDelegate(ProfilerBatchResult results, string preformattedOutput);
 }

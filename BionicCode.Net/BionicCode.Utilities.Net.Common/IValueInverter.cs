@@ -1,14 +1,14 @@
-﻿#region Info
-
-// //  
-// BionicCode.BionicUtilities.Net.Core.Wpf
-
-#endregion
-
-using System;
-
-namespace BionicCode.Utilities.Net
+﻿namespace BionicCode.Utilities.Net
 {
+  #region Info
+
+  // //  
+  // BionicCode.BionicUtilities.Net.Core.Wpf
+
+  #endregion
+
+  using System;
+
   /// <summary>
   /// Provide an implementation to invert an object or objects.
   /// </summary>

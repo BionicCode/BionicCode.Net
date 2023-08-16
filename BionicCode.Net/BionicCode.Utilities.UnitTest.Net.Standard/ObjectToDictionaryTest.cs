@@ -1,4 +1,4 @@
-namespace BionicCode.Utilities.UnitTest.Net
+namespace BionicCode.Utilities.Net.UnitTest
 {
   using System;
   using System.Collections.Generic;
@@ -6,7 +6,7 @@ namespace BionicCode.Utilities.UnitTest.Net
   using Xunit;
   using BionicCode.Utilities.Net;
   using FluentAssertions;
-  using BionicCode.Utilities.UnitTest.Net.Resources;
+  using BionicCode.Utilities.Net.UnitTest.Resources;
 
   public class TestObject
   {

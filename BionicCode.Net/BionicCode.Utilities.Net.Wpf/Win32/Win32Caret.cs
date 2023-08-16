@@ -108,7 +108,7 @@
     /// Hides the caret, but does not destroy it.
     /// </summary>
     /// <returns><c>true</c> if successfull.</returns>
-    /// <remarks>To destroy the caret call <see cref="Destroy"/> or <see cref="Dispose"/>.</remarks>
+    /// <remarks>To destroy the caret call <see cref="Destroy"/> or <see cref="IDisposable.Dispose"/>.</remarks>
     /// <exception cref="InvalidOperationException">The caret was already detroyed.</exception>
     /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-hidecaret">HideCaret function (winuser.h)</seealso>
     public bool Hide()

@@ -103,7 +103,7 @@ public abstract class Factory<TObject> : IFactory<TObject>
     /// <summary>
     /// Initializes instance. 
     /// </summary>
-    /// <param name="factoryMode">Describes the created objects lifetime using <see cref=".FactoryMode"/>.</param>
+    /// <param name="factoryMode">Describes the created objects lifetime using <see cref="FactoryMode"/>.</param>
     protected Factory(FactoryMode factoryMode)
     {
       this.FactoryMode = factoryMode;

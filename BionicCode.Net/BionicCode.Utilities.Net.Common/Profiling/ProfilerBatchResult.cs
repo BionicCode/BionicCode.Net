@@ -10,7 +10,7 @@
   /// <br/>and provides meta data on hte collected data.
   /// </summary>
   /// <remarks>For example, the <see cref="ProfilerBatchResult"/> is returned by multi-run benchmark methods like <see cref="Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.Task}, int)"/>.</remarks>
-  public struct ProfilerBatchResult
+  public class ProfilerBatchResult
   {
     internal ProfilerBatchResult(bool hasCancelledProfiledTask, int iterationCount, IEnumerable<ProfilerResult> results, TimeSpan totalDuration, TimeSpan averageDuration, string summary, ProfilerResult minResult, ProfilerResult maxResult)
     {
@@ -28,31 +28,31 @@
     /// In case ansync operation was benchmarked, this property returns whether the <see cref="Task"/> was cancelled or not.
     /// </summary>
     /// <value><see langword="true"/> if the benchmark series contains a cancelled run (where the <see cref="Task"/> is cancelled).</value>
-    bool HasCancelledProfiledTask { get; }
+    public bool HasCancelledProfiledTask { get; internal set; }
     
     /// <summary>
     /// The number of iterations the <see cref="Profiler"/> has run the specified operation.
     /// </summary>
     /// <value>The number of iterations (which is equivalent to the number of results).</value>
-    public int IterationCount { get; }
+    public int IterationCount { get; internal set; }
 
     /// <summary>
     /// The logged results of each iteration.
     /// </summary>
     /// <value>The results of each iteration.</value>
-    public IEnumerable<ProfilerResult> Results { get; }
+    public IEnumerable<ProfilerResult> Results { get; internal set; }
 
     /// <summary>
     /// The total duration of all logged iterations.
     /// </summary>
     /// <value>The sum of each duration per iteration.</value>
-    public TimeSpan TotalDuration { get; }
+    public TimeSpan TotalDuration { get; internal set; }
 
     /// <summary>
     /// The average duration of all logged iterations.
     /// </summary>
     /// <value>The average duration of all iterations.</value>
-    public TimeSpan AverageDuration { get; }
+    public TimeSpan AverageDuration { get; internal set; }
 
     /// <summary>
     /// A report of the benchmarking ready for output, formatted as follows:
@@ -76,16 +76,16 @@
     /// </code>
     /// </summary>
     /// <value>A formatted string that presents the results of the benchmarking in an Unicode formatted table.</value>
-    public string Summary { get; }
+    public string Summary { get; internal set; }
 
     /// <summary>
     /// The smallest <see cref="ProfilerResult"/> result of the batch run (which is the fastest).
     /// </summary>
-    public ProfilerResult MinResult { get; }
+    public ProfilerResult MinResult { get; internal set; }
 
     /// <summary>
     /// The greatest <see cref="ProfilerResult"/> result of the batch run (which is the slowest).
     /// </summary>
-    public ProfilerResult MaxResult { get; }
+    public ProfilerResult MaxResult { get; internal set; }
   }
 }
