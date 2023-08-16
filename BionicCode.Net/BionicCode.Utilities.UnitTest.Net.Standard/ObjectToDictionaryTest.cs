@@ -75,63 +75,63 @@ namespace BionicCode.Utilities.Net.UnitTest
     [Fact]
     public void ReturnsDictionaryFromObject()
     {
-      this.Object.ToDictionary()
+      _ = this.Object.ToDictionary()
         .Should().BeOfType(typeof(Dictionary<string, object>));
     }
 
     [Fact]
     public void ReturnsDictionaryOfDictionariesFromObjectIgnoringDecoratedProperties()
     {
-      this.Object.DeepObjectGraph
+      _ = this.Object.DeepObjectGraph
         .Should().NotContainKey(nameof(this.Object.IgnoredProperty));
     }
 
     [Fact]
     public void ReturnsDictionaryOfDictionariesFromObjectIgnoringPrivateProperties()
     {
-      this.Object.DeepObjectGraph
+      _ = this.Object.DeepObjectGraph
         .Should().NotContainKey("PrivateProperty");
     }
 
     [Fact]
     public void ReturnsDictionaryOfDictionariesFromObjectIgnoringProtectedProperties()
     {
-      this.Object.DeepObjectGraph
+      _ = this.Object.DeepObjectGraph
         .Should().NotContainKey("ProtectedProperty");
     }
 
     [Fact]
     public void ReturnsDictionaryOfDictionariesFromObjectIgnoringInternalProperties()
     {
-      this.Object.DeepObjectGraph
+      _ = this.Object.DeepObjectGraph
         .Should().NotContainKey(nameof(this.Object.InternalProperty));
     }
 
     [Fact]
     public void ReturnsDictionaryOfDictionariesFromObjectIncludingStaticProperties()
     {
-      this.Object.DeepObjectGraph
+      _ = this.Object.DeepObjectGraph
         .Should().ContainKey(nameof(TestObject.StaticProperty));
     }
 
     [Fact]
     public void ReturnsDictionaryOfDictionariesFromObjectIncludingPublicProperties()
     {
-      this.Object.DeepObjectGraph
+      _ = this.Object.DeepObjectGraph
         .Should().ContainKey(nameof(this.Object.PublicProperty));
     }
 
     [Fact]
     public void ReturnsDictionaryOfDictionariesFromObject()
     {
-      this.Object.DeepObjectGraph[nameof(this.Object.Items)]
+      _ = this.Object.DeepObjectGraph[nameof(this.Object.Items)]
         .Should().BeOfType(typeof(Dictionary<string, object>));
     }
 
     [Fact]
     public void ReturnsDictionaryFromObjectAndInvokeDelegate()
     {
-      this.Object.DeepObjectGraph[nameof(this.Object.SuceedingContainsPredicate)]
+      _ = this.Object.DeepObjectGraph[nameof(this.Object.SuceedingContainsPredicate)]
         .As<Func<int, bool>>()
         .Invoke(4)
         .Should().BeTrue();
@@ -144,7 +144,7 @@ namespace BionicCode.Utilities.Net.UnitTest
     [Fact]
     public void ReturnsDictionaryFromObjectAndCollectionsMustHaveOriginalCount()
     {
-      this.Object.DeepObjectGraph[nameof(this.Object.Items)]
+      _ = this.Object.DeepObjectGraph[nameof(this.Object.Items)]
         .As<IDictionary<string, object>>()
         .Should().HaveCount(this.Object.ItemsCount);
     }
@@ -152,7 +152,7 @@ namespace BionicCode.Utilities.Net.UnitTest
     [Fact]
     public void ReturnsDictionaryFromObjectAndCollectionsMustContain_4_AtIndex_5()
     {
-      this.Object.DeepObjectGraph[nameof(this.Object.Items)]
+      _ = this.Object.DeepObjectGraph[nameof(this.Object.Items)]
         .As<IDictionary<string, object>>()["5"]
         .Should().BeEquivalentTo(this.Object.Items.ElementAt(5));
     }
@@ -160,7 +160,7 @@ namespace BionicCode.Utilities.Net.UnitTest
     [Fact]
     public void ReturnsDictionaryFromObjectAndCollectionsMustContain_DictionariesOfPerson()
     {
-      this.Object.DeepObjectGraph[nameof(this.Object.Persons)]
+      _ = this.Object.DeepObjectGraph[nameof(this.Object.Persons)]
         .As<IDictionary<string, object>>()["5"]
         .As<IDictionary<string, object>>()["Id"]
         .Should().BeEquivalentTo(this.Object.Persons[5].Id);
@@ -169,7 +169,7 @@ namespace BionicCode.Utilities.Net.UnitTest
     [Fact]
     public void ReturnsFlattenedDictionaryFromObjectAndCollectionsMustContain_4_AtIndex_5()
     {
-      this.Object.FlatObjectGraph[nameof(this.Object.Items)]
+      _ = this.Object.FlatObjectGraph[nameof(this.Object.Items)]
         .As<IList<int>>()[5]
         .Should().Be(this.Object.Items.ElementAt(5));
     }
@@ -177,7 +177,7 @@ namespace BionicCode.Utilities.Net.UnitTest
     [Fact]
     public void ReturnsFlattenedDictionaryOfOriginalTypedValuesFromObject()
     {
-      this.Object.FlatObjectGraph[nameof(this.Object.Items)]
+      _ = this.Object.FlatObjectGraph[nameof(this.Object.Items)]
         .Should().BeOfType(this.Object.Items.GetType());
       this.Object.FlatObjectGraph[nameof(this.Object.Items)]
         .Should().NotBeOfType(typeof(IDictionary<string, object>));
@@ -186,7 +186,7 @@ namespace BionicCode.Utilities.Net.UnitTest
     [Fact]
     public void ReturnsFlattenedDictionaryFromObjectAndCollectionsMustContain_Persons()
     {
-      this.Object.FlatObjectGraph[nameof(this.Object.Persons)]
+      _ = this.Object.FlatObjectGraph[nameof(this.Object.Persons)]
         .As<IList<Person>>()[5].Id
         .Should().Be(this.Object.Persons[5].Id);
     }
@@ -194,7 +194,7 @@ namespace BionicCode.Utilities.Net.UnitTest
     [Fact]
     public void ReturnsFlattenedDictionaryFromObjectAndInvokeDelegate()
     {
-      this.Object.FlatObjectGraph[nameof(this.Object.SuceedingContainsPredicate)]
+      _ = this.Object.FlatObjectGraph[nameof(this.Object.SuceedingContainsPredicate)]
         .As<Func<int, bool>>()
         .Invoke(4)
         .Should().BeTrue();

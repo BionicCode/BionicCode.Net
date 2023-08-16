@@ -115,7 +115,7 @@
     public string ValidatingPropertyRejectInvalidValueAsync
     {
       get => this.validatingPropertyRejectInvalidValueAsync;
-      set => TrySetValueAsync(value, this.validatingPropertyRejectInvalidValueAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyRejectInvalidValueAsync = value, isRejectInvalidValueEnabled: true, isRejectEqualValuesEnabled: true);
+      set => TrySetValueAsync(value, this.validatingPropertyRejectInvalidValueAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyRejectInvalidValueAsync = value, new SetValueOptions(true, false, true));
     }
 
     //private string validatingPropertyRejectInvalidValue_Old;
@@ -133,16 +133,13 @@
     }
 
     public Task<bool> SetPropertyThrowExceptionOnInvalidValueUsingTrySetValueAsyncExplicitly(string value, string propertyName) 
-      => TrySetValueAsync(value, this.validatingPropertyThrowExceptionOnInvalidValue, this.PropertyValidationDelegateAsync, value => this.validatingPropertyThrowExceptionOnInvalidValue = value, isThrowExceptionOnValidationErrorEnabled: true, methodConfiguration: new SetValueOptions(false, true, false), propertyName: propertyName);
+      => TrySetValueAsync(value, this.validatingPropertyThrowExceptionOnInvalidValue, this.PropertyValidationDelegateAsync, value => this.validatingPropertyThrowExceptionOnInvalidValue = value, methodConfiguration: new SetValueOptions(false, true, false), propertyName: propertyName);
 
     private string validatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync;
     public string ValidatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync
     {
       get => this.validatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync;
-      set
-      {
-        _ = TrySetValueAsync(value, this.validatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync = value, isThrowExceptionOnValidationErrorEnabled: true);
-      }
+      set => _ = TrySetValueAsync(value, this.validatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync = value, new SetValueOptions(false, true, true));
     }
 
     private string validatingPropertyThrowExceptionOnInvalidValuePropagatedBySynchronousExecutionAsync;
@@ -151,39 +148,39 @@
       get => this.validatingPropertyThrowExceptionOnInvalidValuePropagatedBySynchronousExecutionAsync;
       set
       {
-        _ =  TrySetValueAsync(value, this.validatingPropertyThrowExceptionOnInvalidValuePropagatedBySynchronousExecutionAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyThrowExceptionOnInvalidValuePropagatedBySynchronousExecutionAsync = value, isThrowExceptionOnValidationErrorEnabled: true)
+        _ =  TrySetValueAsync(value, this.validatingPropertyThrowExceptionOnInvalidValuePropagatedBySynchronousExecutionAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyThrowExceptionOnInvalidValuePropagatedBySynchronousExecutionAsync = value, new SetValueOptions(false, true, true))
           .ConfigureAwait(false)
           .GetAwaiter()
           .GetResult();
       }
     }
 
-    private string validatingPropertyThrowExceptionOnInvalidValue_Old;
-    public string ValidatingPropertyThrowingExceptionOnInvalidValue_Old
-    {
-      get => this.validatingPropertyThrowExceptionOnInvalidValue_Old;
-      set => TrySetValue(value, this.PropertyValidationDelegate_Old, ref this.validatingPropertyThrowExceptionOnInvalidValue_Old, isThrowExceptionOnValidationErrorEnabled: true);
-    }
+    //private string validatingPropertyThrowExceptionOnInvalidValue_Old;
+    //public string ValidatingPropertyThrowingExceptionOnInvalidValue_Old
+    //{
+    //  get => this.validatingPropertyThrowExceptionOnInvalidValue_Old;
+    //  set => TrySetValue(value, this.PropertyValidationDelegate_Old, ref this.validatingPropertyThrowExceptionOnInvalidValue_Old, isThrowExceptionOnValidationErrorEnabled: true);
+    //}
 
     private string validatingPropertyThrowExceptionAndRejectValueOnInvalidValue;
     public string ValidatingPropertyThrowExceptionAndRejectValueOnInvalidValue
     {
       get => this.validatingPropertyThrowExceptionAndRejectValueOnInvalidValue;
-      set => TrySetValue(value, this.PropertyValidationDelegate, ref this.validatingPropertyThrowExceptionAndRejectValueOnInvalidValue, isThrowExceptionOnValidationErrorEnabled:true, isRejectInvalidValueEnabled:true);
+      set => TrySetValue(value, this.PropertyValidationDelegate, ref this.validatingPropertyThrowExceptionAndRejectValueOnInvalidValue, new SetValueOptions(true, true, true));
     }
 
     private string validatingPropertyThrowExceptionAndRejectValueOnInvalidValueAsync;
     public string ValidatingPropertyThrowExceptionAndRejectValueOnInvalidValueAsync
     {
       get => this.validatingPropertyThrowExceptionAndRejectValueOnInvalidValueAsync;
-      set => _ = TrySetValueAsync(value, this.validatingPropertyThrowExceptionAndRejectValueOnInvalidValueAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyThrowExceptionAndRejectValueOnInvalidValueAsync = value, isThrowExceptionOnValidationErrorEnabled: true, isRejectInvalidValueEnabled: true).ConfigureAwait(false).GetAwaiter().GetResult();
+      set => _ = TrySetValueAsync(value, this.validatingPropertyThrowExceptionAndRejectValueOnInvalidValueAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyThrowExceptionAndRejectValueOnInvalidValueAsync = value, new SetValueOptions(true, true, true)).ConfigureAwait(false).GetAwaiter().GetResult();
     }
 
-    private string validatingPropertyThrowExceptionAndRejectValueOnInvalidValue_Old;
-    public string ValidatingPropertyThrowExceptionAndRejectValueOnInvalidValue_Old
-    {
-      get => this.validatingPropertyThrowExceptionAndRejectValueOnInvalidValue_Old;
-      set => TrySetValue(value, this.PropertyValidationDelegate_Old, ref this.validatingPropertyThrowExceptionAndRejectValueOnInvalidValue_Old, isThrowExceptionOnValidationErrorEnabled: true, isRejectInvalidValueEnabled: true);
-    }
+    //private string validatingPropertyThrowExceptionAndRejectValueOnInvalidValue_Old;
+    //public string ValidatingPropertyThrowExceptionAndRejectValueOnInvalidValue_Old
+    //{
+    //  get => this.validatingPropertyThrowExceptionAndRejectValueOnInvalidValue_Old;
+    //  set => TrySetValue(value, this.PropertyValidationDelegate_Old, ref this.validatingPropertyThrowExceptionAndRejectValueOnInvalidValue_Old, isThrowExceptionOnValidationErrorEnabled: true, isRejectInvalidValueEnabled: true);
+    //}
   }
 }

@@ -57,8 +57,8 @@
       this.ViewModelImpl.ValidatingPropertyRejectInvalidValueAsync
         = this.ValidTextValue;
 
-      this.PropertyChangedEventInvocationCount.Should().Be(1, "second assignment was rejected due to failing validation and third assignment has new value equals old value");
-      this.ViewModelImpl.ValidatingPropertyRejectInvalidValueAsync.Should().Be(this.ValidTextValue);
+      _ = this.PropertyChangedEventInvocationCount.Should().Be(1, "second assignment was rejected due to failing validation and third assignment has new value equals old value");
+      _ = this.ViewModelImpl.ValidatingPropertyRejectInvalidValueAsync.Should().Be(this.ValidTextValue);
     }
 
     [Fact]
@@ -66,7 +66,7 @@
     {
       this.ViewModelImpl.ValidatingPropertyAsync
         = this.ValidTextValue;
-      this.ViewModelImpl.ValidatingPropertyAsync.Should().Be(this.ValidTextValue);
+      _ = this.ViewModelImpl.ValidatingPropertyAsync.Should().Be(this.ValidTextValue);
     }
 
     [Fact]
@@ -75,7 +75,7 @@
       this.ViewModelImpl.SilentValidatingPropertyAsync
         = this.ValidTextValue;
 
-      this.ViewModelImpl.SilentValidatingPropertyAsync.Should().Be(this.ValidTextValue);
+      _ = this.ViewModelImpl.SilentValidatingPropertyAsync.Should().Be(this.ValidTextValue);
     }
 
     [Fact]
@@ -84,7 +84,7 @@
       this.ViewModelImpl.ValidatingPropertyRejectInvalidValueAndPropertyNameIsNullAsync
         = this.ValidTextValue;
 
-      this.ViewModelImpl.ValidatingPropertyRejectInvalidValueAndPropertyNameIsNullAsync
+      _ = this.ViewModelImpl.ValidatingPropertyRejectInvalidValueAndPropertyNameIsNullAsync
         .Should().Be(this.ValidTextValue);
     }
 
@@ -94,7 +94,7 @@
       this.ViewModelImpl.ValidatingPropertyAsync
         = this.InvalidTextValue;
 
-      this.ViewModelImpl.ValidatingPropertyAsync.Should().Be(this.InvalidTextValue);
+      _ = this.ViewModelImpl.ValidatingPropertyAsync.Should().Be(this.InvalidTextValue);
     }
 
     [Fact]
@@ -103,7 +103,7 @@
       this.ViewModelImpl.ValidatingPropertyRejectInvalidValueAsync
         = this.InvalidTextValue;
 
-      this.ViewModelImpl.ValidatingPropertyRejectInvalidValueAsync.Should().NotBe(this.InvalidTextValue);
+      _ = this.ViewModelImpl.ValidatingPropertyRejectInvalidValueAsync.Should().NotBe(this.InvalidTextValue);
     }
 
     [Fact]
@@ -118,14 +118,14 @@
     [Fact]
     public void SetPropertyAsyncFailsValidationAndValidationExceptionIsNotThrownBecauseCallIsNotAwaited()
     {
-      this.ViewModelImpl.Invoking(viewModel => viewModel.ValidatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync = this.InvalidTextValue)
+      _ = this.ViewModelImpl.Invoking(viewModel => viewModel.ValidatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync = this.InvalidTextValue)
         .Should().NotThrow<ArgumentException>();
     }
 
     [Fact]
     public void SetPropertyAsyncFailsValidationAndValidationExceptionIsThrownBecauseCallIsExecutedSynchronously()
     {
-      this.ViewModelImpl
+      _ = this.ViewModelImpl
         .Invoking(viewModel => viewModel.ValidatingPropertyThrowExceptionOnInvalidValuePropagatedBySynchronousExecutionAsync = this.InvalidTextValue)
         .Should().Throw<ArgumentException>();
     }
@@ -133,7 +133,7 @@
     [Fact]
     public void SetPropertyAsyncFailsValidationAndValidationExceptionIsThrownBecauseCallExecutedAndAwaitedExplicitly()
     {
-      this.ViewModelImpl.Awaiting(viewModel 
+      _ = this.ViewModelImpl.Awaiting(viewModel
           => viewModel.SetPropertyThrowExceptionOnInvalidValueUsingTrySetValueAsyncExplicitly(this.InvalidTextValue, nameof(viewModel.ValidatingPropertyThrowExceptionOnInvalidValue)))
         .Should().ThrowAsync<ArgumentException>();
     }
@@ -141,10 +141,10 @@
     [Fact]
     public void SetPropertyFailsValidationAndValidationExceptionIsThrownAndValueRejected()
     {
-      this.ViewModelImpl
+      _ = this.ViewModelImpl
         .Invoking(viewModel => viewModel.ValidatingPropertyThrowExceptionAndRejectValueOnInvalidValueAsync = this.InvalidTextValue)
         .Should().ThrowExactly<ArgumentException>();
-      this.ViewModelImpl.ValidatingPropertyThrowExceptionAndRejectValueOnInvalidValueAsync
+      _ = this.ViewModelImpl.ValidatingPropertyThrowExceptionAndRejectValueOnInvalidValueAsync
         .Should().NotBe(this.InvalidTextValue);
     }
 
@@ -154,7 +154,7 @@
       this.ViewModelImpl.ValidatingPropertyAsync
         = this.InvalidTextValue;
 
-      this.ViewModelImpl.HasErrors.Should().BeTrue();
+      _ = this.ViewModelImpl.HasErrors.Should().BeTrue();
     }
 
     [Fact]
@@ -165,7 +165,7 @@
       this.ViewModelImpl.ValidatingPropertyAsync
         = this.ValidTextValue;
 
-      this.ViewModelImpl.HasErrors.Should().BeFalse();
+      _ = this.ViewModelImpl.HasErrors.Should().BeFalse();
     }
 
     [Fact]
@@ -178,7 +178,7 @@
 
       IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors();
 
-      errors.Should().BeEmpty();
+      _ = errors.Should().BeEmpty();
     }
 
     [Fact]
@@ -187,7 +187,7 @@
       this.ViewModelImpl.ValidatingPropertyAsync
         = this.InvalidTextValue;
 
-      this.ViewModelImpl.PropertyHasError(nameof(this.ViewModelImpl.ValidatingPropertyAsync)).Should().BeTrue();
+      _ = this.ViewModelImpl.PropertyHasError(nameof(this.ViewModelImpl.ValidatingPropertyAsync)).Should().BeTrue();
     }
 
     [Fact]
@@ -198,7 +198,7 @@
       
       IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors(nameof(this.ViewModelImpl.ValidatingPropertyAsync));
 
-      errors.Should().HaveCount(1);
+      _ = errors.Should().HaveCount(1);
     }
 
     [Fact]
@@ -209,7 +209,7 @@
 
       IEnumerable errors = this.ViewModelImpl.GetErrors(nameof(this.ViewModelImpl.ValidatingPropertyAsync));
 
-      errors.Cast<string>().Should().HaveCount(1);
+      _ = errors.Cast<string>().Should().HaveCount(1);
     }
 
     [Fact]
@@ -220,7 +220,7 @@
       
       IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors();
 
-      errors.Should().HaveCount(2);
+      _ = errors.Should().HaveCount(2);
     }
 
     [Fact]
@@ -231,7 +231,7 @@
 
       IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors(nameof(this.ViewModelImpl.ValidatingPropertyAsync));
 
-      errors.Should().HaveCount(2);
+      _ = errors.Should().HaveCount(2);
     }
 
     [Fact]
@@ -242,7 +242,7 @@
       
       IEnumerable errors = this.ViewModelImpl.GetErrors();
 
-      errors.Cast<string>().Should().HaveCount(2);
+      _ = errors.Cast<string>().Should().HaveCount(2);
     }
 
     [Fact]
@@ -254,12 +254,12 @@
       IEnumerable<string> errors = this.ViewModelImpl.GetPropertyErrors(nameof(this.ViewModelImpl.ValidatingPropertyAsync));
 
       string firtsErrorMessage = errors.First();
-      firtsErrorMessage.Should().Be(this.UppercaseValidationErrorMessage);
+      _ = firtsErrorMessage.Should().Be(this.UppercaseValidationErrorMessage);
     }
 
     private void OnPropertyValueChanged(object sender, PropertyValueChangedArgs<object> e)
     {
-      sender.Should().BeOfType(this.SenderType);
+      _ = sender.Should().BeOfType(this.SenderType);
 
       this.PropertyValueChangedEventInvocationCount++;
       this.CurrentPropertyValueChangedArgs = e;
@@ -267,7 +267,7 @@
 
     private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      sender.Should().BeOfType(this.SenderType);
+      _ = sender.Should().BeOfType(this.SenderType);
 
       this.PropertyChangedEventInvocationCount++;
     }
