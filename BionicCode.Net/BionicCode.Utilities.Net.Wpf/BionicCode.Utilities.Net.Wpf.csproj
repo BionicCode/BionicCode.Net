@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net7.0-windows;net6.0-windows;net5.0-windows;netstandard2.0;netstandard2.1;net472;net48</TargetFrameworks>
+		<TargetFrameworks>net7.0-windows;net6.0-windows;netstandard2.0;netstandard2.1;net472;net48</TargetFrameworks>
 		<UseWPF>true</UseWPF>
 		<PackageReleaseNotes>
 			- added default implementation of ViewModel.OnProgress (which is used to retrieve the IProgress&lt;ProgressData&gt; instance by calling ViewModel.CreateProgressReporterFromCurrentThread()

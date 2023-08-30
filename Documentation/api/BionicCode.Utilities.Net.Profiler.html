@@ -128,7 +128,7 @@
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Profiler_LogTime_System_Action_System_Int32_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Profiler.LogTime(System.Action%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/Profiler.cs/#L22">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/Profiler.cs/#L23">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_Profiler_LogTime_" data-uid="BionicCode.Utilities.Net.Profiler.LogTime*"></a>
   <h4 id="BionicCode_Utilities_Net_Profiler_LogTime_System_Action_System_Int32_" data-uid="BionicCode.Utilities.Net.Profiler.LogTime(System.Action,System.Int32)">LogTime(Action, Int32)</h4>
@@ -180,23 +180,39 @@
     </tbody>
   </table>
   <h5 id="BionicCode_Utilities_Net_Profiler_LogTime_System_Action_System_Int32__remarks">Remarks</h5>
-  <div class="markdown level1 remarks"><p>Use the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTime_System_Action_System_Int32_BionicCode_Utilities_Net_ProfilerLogger_">LogTime(Action, Int32, ProfilerLogger)</a> overload and provide an instance of the <a class="xref" href="BionicCode.Utilities.Net.ProfilerLogger.html">ProfilerLogger</a> delegate for the <code>logger</code> parameter to control the output target or customize the formatting.</p>
+  <div class="markdown level1 remarks"><p>Use the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTime_System_Action_System_Int32_BionicCode_Utilities_Net_ProfilerLoggerDelegate_">LogTime(Action, Int32, ProfilerLoggerDelegate)</a> overload and provide an instance of the <a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerDelegate.html">ProfilerLoggerDelegate</a> delegate for the <code>logger</code> parameter to control the output target or customize the formatting.</p>
 </div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.argumentoutofrangeexception(v=vs.110).aspx">ArgumentOutOfRangeException</a></td>
+        <td><p>Thrown when the value of<code data-dev-comment-type="paramref" class="paramref">runCount</code> is not between '0' and 'ulong.MaxValue'.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Profiler_LogTime_System_Action_System_Int32_BionicCode_Utilities_Net_ProfilerLogger_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Profiler.LogTime(System.Action%2CSystem.Int32%2CBionicCode.Utilities.Net.ProfilerLogger)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Profiler_LogTime_System_Action_System_Int32_BionicCode_Utilities_Net_ProfilerLoggerDelegate_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Profiler.LogTime(System.Action%2CSystem.Int32%2CBionicCode.Utilities.Net.ProfilerLoggerDelegate)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/Profiler.cs/#L51">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/Profiler.cs/#L53">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_Profiler_LogTime_" data-uid="BionicCode.Utilities.Net.Profiler.LogTime*"></a>
-  <h4 id="BionicCode_Utilities_Net_Profiler_LogTime_System_Action_System_Int32_BionicCode_Utilities_Net_ProfilerLogger_" data-uid="BionicCode.Utilities.Net.Profiler.LogTime(System.Action,System.Int32,BionicCode.Utilities.Net.ProfilerLogger)">LogTime(Action, Int32, ProfilerLogger)</h4>
+  <h4 id="BionicCode_Utilities_Net_Profiler_LogTime_System_Action_System_Int32_BionicCode_Utilities_Net_ProfilerLoggerDelegate_" data-uid="BionicCode.Utilities.Net.Profiler.LogTime(System.Action,System.Int32,BionicCode.Utilities.Net.ProfilerLoggerDelegate)">LogTime(Action, Int32, ProfilerLoggerDelegate)</h4>
   <div class="markdown level1 summary"><p>Measures the execution time of a method.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilerBatchResult LogTime(Action action, int runCount, ProfilerLogger logger)</code></pre>
+    <pre><code class="lang-csharp hljs">public static ProfilerBatchResult LogTime(Action action, int runCount, ProfilerLoggerDelegate logger)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -221,9 +237,9 @@
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="BionicCode.Utilities.Net.ProfilerLogger.html">ProfilerLogger</a></td>
+        <td><a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerDelegate.html">ProfilerLoggerDelegate</a></td>
         <td><span class="parametername">logger</span></td>
-        <td><p>A delegate of type <a class="xref" href="BionicCode.Utilities.Net.ProfilerLogger.html">ProfilerLogger</a> which can be used to automatically let the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTime_System_Action_System_Int32_BionicCode_Utilities_Net_ProfilerLogger_">LogTime(Action, Int32, ProfilerLogger)</a> print the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_Summary">Summary</a> to a destination (e.g. file) in the following formatting:</p>
+        <td><p>A delegate of type <a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerDelegate.html">ProfilerLoggerDelegate</a> which can be used to automatically let the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTime_System_Action_System_Int32_BionicCode_Utilities_Net_ProfilerLoggerDelegate_">LogTime(Action, Int32, ProfilerLoggerDelegate)</a> print the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_Summary">Summary</a> to a destination (e.g. file) in the following formatting:</p>
 <br>
 <pre><code>          ╭───────────────┬────────────────────────────┬────────────────╮
           | Iteration #   │ Duration [ms]              │ Is cancelled   |
@@ -259,9 +275,121 @@
       </tr>
     </tbody>
   </table>
-  <h5 id="BionicCode_Utilities_Net_Profiler_LogTime_System_Action_System_Int32_BionicCode_Utilities_Net_ProfilerLogger__remarks">Remarks</h5>
-  <div class="markdown level1 remarks"><p>Provide an instance of the <a class="xref" href="BionicCode.Utilities.Net.ProfilerLogger.html">ProfilerLogger</a> delegate for the <code data-dev-comment-type="paramref" class="paramref">logger</code> parameter to control the output target or customize the formatting.</p>
+  <h5 id="BionicCode_Utilities_Net_Profiler_LogTime_System_Action_System_Int32_BionicCode_Utilities_Net_ProfilerLoggerDelegate__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Provide an instance of the <a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerDelegate.html">ProfilerLoggerDelegate</a> delegate for the <code data-dev-comment-type="paramref" class="paramref">logger</code> parameter to control the output target or customize the formatting.</p>
 </div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.argumentoutofrangeexception(v=vs.110).aspx">ArgumentOutOfRangeException</a></td>
+        <td><p>Thrown when the value of<code data-dev-comment-type="paramref" class="paramref">runCount</code> is not between '0' and 'ulong.MaxValue'.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Action_System_Int32_BionicCode_Utilities_Net_ProfilerLoggerAsyncDelegate_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Action%2CSystem.Int32%2CBionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/Profiler.cs/#L83">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Profiler_LogTimeAsync_" data-uid="BionicCode.Utilities.Net.Profiler.LogTimeAsync*"></a>
+  <h4 id="BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Action_System_Int32_BionicCode_Utilities_Net_ProfilerLoggerAsyncDelegate_" data-uid="BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Action,System.Int32,BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate)">LogTimeAsync(Action, Int32, ProfilerLoggerAsyncDelegate)</h4>
+  <div class="markdown level1 summary"><p>Measures the execution time of a method.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static async Task&lt;ProfilerBatchResult&gt; LogTimeAsync(Action action, int runCount, ProfilerLoggerAsyncDelegate asyncLogger)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.action(v=vs.110).aspx">Action</a></td>
+        <td><span class="parametername">action</span></td>
+        <td><p>The code to measure execution time.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td><span class="parametername">runCount</span></td>
+        <td><p>Number of iterations the <code data-dev-comment-type="paramref" class="paramref">action</code> should be executed.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate.html">ProfilerLoggerAsyncDelegate</a></td>
+        <td><span class="parametername">asyncLogger</span></td>
+        <td><p>A delegate of type <a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate.html">ProfilerLoggerAsyncDelegate</a> which can be used to automatically let the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTime_System_Action_System_Int32_BionicCode_Utilities_Net_ProfilerLoggerDelegate_">LogTime(Action, Int32, ProfilerLoggerDelegate)</a> print the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_Summary">Summary</a> to a destination (e.g. file) in the following formatting:</p>
+<br>
+<pre><code>          ╭───────────────┬────────────────────────────┬────────────────╮
+          | Iteration #   │ Duration [ms]              │ Is cancelled   |
+          ┝━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥
+          │ 1             │                     1.0512 │ False          |
+          │ 2             │                     1.0020 │ False          │
+          │ 3             │                     0.8732 │ False          │
+          │ 4             │                     0.0258 │ True (ignored) │
+          │ 5             │                     0.9943 │ False          │
+╭═════════╧═══════════════╪════════════════════════════┼────────────────┤
+│ Total:    -             │                     3.9207 │                │
+│ Min:      3             │                     0.8732 │                │
+│ Max:      1             │                     1.0512 │                │
+│ Average:  -             │                     0.9802 │                │
+╰─────────────────────────┴────────────────────────────┴────────────────╯</code></pre>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/dd321424(v=vs.110).aspx">Task</a>&lt;<a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html">ProfilerBatchResult</a>&gt;</td>
+        <td><p>The average execution time of all <code data-dev-comment-type="paramref" class="paramref">runCount</code> number of iterations as <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.timespan(v=vs.110).aspx">TimeSpan</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Action_System_Int32_BionicCode_Utilities_Net_ProfilerLoggerAsyncDelegate__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Provide an instance of the <a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate.html">ProfilerLoggerAsyncDelegate</a> delegate for the <code data-dev-comment-type="paramref" class="paramref">asyncLogger</code> parameter to control the output target or customize the formatting.</p>
+</div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.argumentoutofrangeexception(v=vs.110).aspx">ArgumentOutOfRangeException</a></td>
+        <td><p>Thrown when the value of<code data-dev-comment-type="paramref" class="paramref">runCount</code> is not between '0' and 'ulong.MaxValue'.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func%7BSystem.Threading.Tasks.Task%7D%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
@@ -276,7 +404,7 @@
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static Task&lt;ProfilerBatchResult&gt; LogTimeAsync(Func&lt;Task&gt; asyncAction, int runCount)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async Task&lt;ProfilerBatchResult&gt; LogTimeAsync(Func&lt;Task&gt; asyncAction, int runCount)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -321,23 +449,39 @@
   <h5 id="BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32__remarks">Remarks</h5>
   <div class="markdown level1 remarks"><p>Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_Summary">Summary</a>, but marked as cancelled).
 <br>A cancelled task is a <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.task(v=vs.110).aspx">Task</a> where the <a class="xref" href="https://msdn.microsoft.com/en-us/library/dd235651(v=vs.110).aspx">Status</a> returns either <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.taskstatus(v=vs.110).aspx">Canceled</a> or <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.taskstatus(v=vs.110).aspx">Faulted</a> or an <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.operationcanceledexception(v=vs.110).aspx">OperationCanceledException</a> exception was thrown.</p>
-Use the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_BionicCode_Utilities_Net_ProfilerLogger_">LogTimeAsync(Func&lt;Task&gt;, Int32, ProfilerLogger)</a> overload and provide an instance of the <a class="xref" href="BionicCode.Utilities.Net.ProfilerLogger.html">ProfilerLogger</a> delegate for the <code>logger</code> parameter to control the output target or customize the formatting.
+Use the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_BionicCode_Utilities_Net_ProfilerLoggerDelegate_">LogTimeAsync(Func&lt;Task&gt;, Int32, ProfilerLoggerDelegate)</a> overload and provide an instance of the <a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerDelegate.html">ProfilerLoggerDelegate</a> delegate for the <code>logger</code> parameter to control the output target or customize the formatting.
 </div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.argumentoutofrangeexception(v=vs.110).aspx">ArgumentOutOfRangeException</a></td>
+        <td><p>Thrown when the value of <code data-dev-comment-type="paramref" class="paramref">runCount</code> is not between '0' and 'ulong.MaxValue'.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_BionicCode_Utilities_Net_ProfilerLogger_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func%7BSystem.Threading.Tasks.Task%7D%2CSystem.Int32%2CBionicCode.Utilities.Net.ProfilerLogger)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_BionicCode_Utilities_Net_ProfilerLoggerAsyncDelegate_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func%7BSystem.Threading.Tasks.Task%7D%2CSystem.Int32%2CBionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/Profiler.cs/#L129">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/Profiler.cs/#L163">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_Profiler_LogTimeAsync_" data-uid="BionicCode.Utilities.Net.Profiler.LogTimeAsync*"></a>
-  <h4 id="BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_BionicCode_Utilities_Net_ProfilerLogger_" data-uid="BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.Task},System.Int32,BionicCode.Utilities.Net.ProfilerLogger)">LogTimeAsync(Func&lt;Task&gt;, Int32, ProfilerLogger)</h4>
+  <h4 id="BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_BionicCode_Utilities_Net_ProfilerLoggerAsyncDelegate_" data-uid="BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.Task},System.Int32,BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate)">LogTimeAsync(Func&lt;Task&gt;, Int32, ProfilerLoggerAsyncDelegate)</h4>
   <div class="markdown level1 summary"><p>Measures the execution time of a method.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static async Task&lt;ProfilerBatchResult&gt; LogTimeAsync(Func&lt;Task&gt; asyncAction, int runCount, ProfilerLogger logger)</code></pre>
+    <pre><code class="lang-csharp hljs">public static async Task&lt;ProfilerBatchResult&gt; LogTimeAsync(Func&lt;Task&gt; asyncAction, int runCount, ProfilerLoggerAsyncDelegate asyncLogger)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -362,9 +506,9 @@ Use the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html#BionicCode_
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="BionicCode.Utilities.Net.ProfilerLogger.html">ProfilerLogger</a></td>
-        <td><span class="parametername">logger</span></td>
-        <td><p>A delegate of type <a class="xref" href="BionicCode.Utilities.Net.ProfilerLogger.html">ProfilerLogger</a> which can be used to automatically let the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_BionicCode_Utilities_Net_ProfilerLogger_">LogTimeAsync(Func&lt;Task&gt;, Int32, ProfilerLogger)</a> print the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_Summary">Summary</a> to a destination (e.g. file) in the following formatting:</p>
+        <td><a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate.html">ProfilerLoggerAsyncDelegate</a></td>
+        <td><span class="parametername">asyncLogger</span></td>
+        <td><p>An asynchronous delegate of type <a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate.html">ProfilerLoggerAsyncDelegate</a> which can be used to automatically let the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_BionicCode_Utilities_Net_ProfilerLoggerDelegate_">LogTimeAsync(Func&lt;Task&gt;, Int32, ProfilerLoggerDelegate)</a> print the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_Summary">Summary</a> to a destination (e.g. file) in the following formatting:</p>
 <br>
 <pre><code>          ╭───────────────┬────────────────────────────┬────────────────╮
           | Iteration #   │ Duration [ms]              │ Is cancelled   |
@@ -400,11 +544,457 @@ Use the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html#BionicCode_
       </tr>
     </tbody>
   </table>
-  <h5 id="BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_BionicCode_Utilities_Net_ProfilerLogger__remarks">Remarks</h5>
+  <h5 id="BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_BionicCode_Utilities_Net_ProfilerLoggerAsyncDelegate__remarks">Remarks</h5>
   <div class="markdown level1 remarks"><p>Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_Summary">Summary</a>, but marked as cancelled).
 <br>A cancelled task is a <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.task(v=vs.110).aspx">Task</a> where the <a class="xref" href="https://msdn.microsoft.com/en-us/library/dd235651(v=vs.110).aspx">Status</a> returns either <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.taskstatus(v=vs.110).aspx">Canceled</a> or <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.taskstatus(v=vs.110).aspx">Faulted</a> or an <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.operationcanceledexception(v=vs.110).aspx">OperationCanceledException</a> exception was thrown.</p>
-Provide an instance of the <a class="xref" href="BionicCode.Utilities.Net.ProfilerLogger.html">ProfilerLogger</a> delegate for the <code data-dev-comment-type="paramref" class="paramref">logger</code> parameter to control the output target or customize the formatting.
+Provide an instance of the <a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate.html">ProfilerLoggerAsyncDelegate</a> delegate for the <code data-dev-comment-type="paramref" class="paramref">asyncLogger</code> parameter to control the output target or customize the formatting.
 </div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.argumentoutofrangeexception(v=vs.110).aspx">ArgumentOutOfRangeException</a></td>
+        <td><p>Thrown when the value of<code data-dev-comment-type="paramref" class="paramref">runCount</code> is not between '0' and 'ulong.MaxValue'.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_BionicCode_Utilities_Net_ProfilerLoggerDelegate_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func%7BSystem.Threading.Tasks.Task%7D%2CSystem.Int32%2CBionicCode.Utilities.Net.ProfilerLoggerDelegate)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/Profiler.cs/#L130">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Profiler_LogTimeAsync_" data-uid="BionicCode.Utilities.Net.Profiler.LogTimeAsync*"></a>
+  <h4 id="BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_BionicCode_Utilities_Net_ProfilerLoggerDelegate_" data-uid="BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.Task},System.Int32,BionicCode.Utilities.Net.ProfilerLoggerDelegate)">LogTimeAsync(Func&lt;Task&gt;, Int32, ProfilerLoggerDelegate)</h4>
+  <div class="markdown level1 summary"><p>Measures the execution time of a method.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static async Task&lt;ProfilerBatchResult&gt; LogTimeAsync(Func&lt;Task&gt; asyncAction, int runCount, ProfilerLoggerDelegate logger)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/bb534960(v=vs.110).aspx">Func</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.task(v=vs.110).aspx">Task</a>&gt;</td>
+        <td><span class="parametername">asyncAction</span></td>
+        <td><p>A delegate that executes the asynchronous code to measure execution time.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td><span class="parametername">runCount</span></td>
+        <td><p>Number of iterations the <code data-dev-comment-type="paramref" class="paramref">asyncAction</code> should be executed.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerDelegate.html">ProfilerLoggerDelegate</a></td>
+        <td><span class="parametername">logger</span></td>
+        <td><p>A delegate of type <a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerDelegate.html">ProfilerLoggerDelegate</a> which can be used to automatically let the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_BionicCode_Utilities_Net_ProfilerLoggerDelegate_">LogTimeAsync(Func&lt;Task&gt;, Int32, ProfilerLoggerDelegate)</a> print the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_Summary">Summary</a> to a destination (e.g. file) in the following formatting:</p>
+<br>
+<pre><code>          ╭───────────────┬────────────────────────────┬────────────────╮
+          | Iteration #   │ Duration [ms]              │ Is cancelled   |
+          ┝━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥
+          │ 1             │                     1.0512 │ False          |
+          │ 2             │                     1.0020 │ False          │
+          │ 3             │                     0.8732 │ False          │
+          │ 4             │                     0.0258 │ True (ignored) │
+          │ 5             │                     0.9943 │ False          │
+╭═════════╧═══════════════╪════════════════════════════┼────────────────┤
+│ Total:    -             │                     3.9207 │                │
+│ Min:      3             │                     0.8732 │                │
+│ Max:      1             │                     1.0512 │                │
+│ Average:  -             │                     0.9802 │                │
+╰─────────────────────────┴────────────────────────────┴────────────────╯</code></pre>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/dd321424(v=vs.110).aspx">Task</a>&lt;<a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html">ProfilerBatchResult</a>&gt;</td>
+        <td><p>A <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.task(v=vs.110).aspx">Task</a> holding the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html">ProfilerBatchResult</a> result which contains neta data like average execution time or a formatted report (<a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_Summary">Summary</a>) of all <code data-dev-comment-type="paramref" class="paramref">runCount</code> number of iterations.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_BionicCode_Utilities_Net_ProfilerLoggerDelegate__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_Summary">Summary</a>, but marked as cancelled).
+<br>A cancelled task is a <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.task(v=vs.110).aspx">Task</a> where the <a class="xref" href="https://msdn.microsoft.com/en-us/library/dd235651(v=vs.110).aspx">Status</a> returns either <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.taskstatus(v=vs.110).aspx">Canceled</a> or <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.taskstatus(v=vs.110).aspx">Faulted</a> or an <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.operationcanceledexception(v=vs.110).aspx">OperationCanceledException</a> exception was thrown.</p>
+Provide an instance of the <a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerDelegate.html">ProfilerLoggerDelegate</a> delegate for the <code data-dev-comment-type="paramref" class="paramref">logger</code> parameter to control the output target or customize the formatting.
+</div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.argumentoutofrangeexception(v=vs.110).aspx">ArgumentOutOfRangeException</a></td>
+        <td><p>Thrown when the value of <code data-dev-comment-type="paramref" class="paramref">runCount</code> is not between '0' and 'ulong.MaxValue'.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerBatchResult__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Profiler.LogTimeScoped(BionicCode.Utilities.Net.ProfilerBatchResult%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/Profiler.cs/#L521">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Profiler_LogTimeScoped_" data-uid="BionicCode.Utilities.Net.Profiler.LogTimeScoped*"></a>
+  <h4 id="BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerBatchResult__" data-uid="BionicCode.Utilities.Net.Profiler.LogTimeScoped(BionicCode.Utilities.Net.ProfilerBatchResult@)">LogTimeScoped(out ProfilerBatchResult)</h4>
+  <div class="markdown level1 summary"><p>Measures the execution time of a using block i.e. the scope of the <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a>'s lifetime.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IDisposable LogTimeScoped(out ProfilerBatchResult result)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html">ProfilerBatchResult</a></td>
+        <td><span class="parametername">result</span></td>
+        <td><p>A <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.task(v=vs.110).aspx">Task</a> holding the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html">ProfilerBatchResult</a> result which contains meta data like average execution time or a formatted report (<a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_Summary">Summary</a>).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a></td>
+        <td><p>An <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a> to control the scope of the profiling.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerBatchResult___remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Time is measured during the lifetime of the <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a> instance: from time of creation to the final <a class="xref" href="https://msdn.microsoft.com/en-us/library/es4s3w1d(v=vs.110).aspx">Dispose()</a> call.
+<br>It's recommended to use the <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a> managed by a using-statement or using-expression.</p>
+</div>
+  <h5 id="BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerBatchResult___examples">Examples</h5>
+  <pre><code>public static void Main(string[] args)
+{
+ ProfilerBatchResult result;
+ using (Profiler.LogTimeScoped(out result))
+ {
+   FibonacciSeries(0, 1, 1, 100);
+ }
+
+ // Print a preformatted summary
+ Console.Write(result.Summary);
+
+ // Print the average duration
+ Console.Write(result.AverageDuration);
+}
+
+public static void FibonacciSeries(int firstNumber, int secondNumber, int counter, int number)
+{
+  Console.Write(firstNumber + &quot; &quot;);
+  if (counter &lt; number)
+  {
+    FibonacciSeries(secondNumber, firstNumber + secondNumber, counter + 1, number);
+  }
+}</code></pre>
+<p>Output:</p>
+<pre><code>          ╭───────────────┬────────────────────────────┬────────────────╮
+          | Iteration #   │ Duration [ms]              │ Is cancelled   |
+          ┝━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥
+          │ 1             │                     1.0512 │ False          |
+          │ 2             │                     1.0020 │ False          │
+          │ 3             │                     0.8732 │ False          │
+          │ 4             │                     0.0258 │ True (ignored) │
+          │ 5             │                     0.9943 │ False          │
+╭═════════╧═══════════════╪════════════════════════════┼────────────────┤
+│ Total:    -             │                     3.9207 │                │
+│ Min:      3             │                     0.8732 │                │
+│ Max:      1             │                     1.0512 │                │
+│ Average:  -             │                     0.9802 │                │
+╰─────────────────────────┴────────────────────────────┴────────────────╯</code></pre>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerLoggerAsyncDelegate_BionicCode_Utilities_Net_ProfilerBatchResult__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Profiler.LogTimeScoped(BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate%2CBionicCode.Utilities.Net.ProfilerBatchResult%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/Profiler.cs/#L460">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Profiler_LogTimeScoped_" data-uid="BionicCode.Utilities.Net.Profiler.LogTimeScoped*"></a>
+  <h4 id="BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerLoggerAsyncDelegate_BionicCode_Utilities_Net_ProfilerBatchResult__" data-uid="BionicCode.Utilities.Net.Profiler.LogTimeScoped(BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate,BionicCode.Utilities.Net.ProfilerBatchResult@)">LogTimeScoped(ProfilerLoggerAsyncDelegate, out ProfilerBatchResult)</h4>
+  <div class="markdown level1 summary"><p>Measures the execution time of using block i.e. the scope of the <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a>'s lifetime.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IDisposable LogTimeScoped(ProfilerLoggerAsyncDelegate logger, out ProfilerBatchResult result)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate.html">ProfilerLoggerAsyncDelegate</a></td>
+        <td><span class="parametername">logger</span></td>
+        <td><p>An asynchronous delegate of type <a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate.html">ProfilerLoggerAsyncDelegate</a> which can be used to automatically let the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_BionicCode_Utilities_Net_ProfilerLoggerDelegate_">LogTimeAsync(Func&lt;Task&gt;, Int32, ProfilerLoggerDelegate)</a> print the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_Summary">Summary</a> to a destination (e.g. file) in the following formatting:</p>
+<br>
+<pre><code>          ╭───────────────┬────────────────────────────┬────────────────╮
+          | Iteration #   │ Duration [ms]              │ Is cancelled   |
+          ┝━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥
+          │ 1             │                     1.0512 │ False          |
+          │ 2             │                     1.0020 │ False          │
+          │ 3             │                     0.8732 │ False          │
+          │ 4             │                     0.0258 │ True (ignored) │
+          │ 5             │                     0.9943 │ False          │
+╭═════════╧═══════════════╪════════════════════════════┼────────────────┤
+│ Total:    -             │                     3.9207 │                │
+│ Min:      3             │                     0.8732 │                │
+│ Max:      1             │                     1.0512 │                │
+│ Average:  -             │                     0.9802 │                │
+╰─────────────────────────┴────────────────────────────┴────────────────╯</code></pre>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html">ProfilerBatchResult</a></td>
+        <td><span class="parametername">result</span></td>
+        <td><p>A <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.task(v=vs.110).aspx">Task</a> holding the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html">ProfilerBatchResult</a> result which contains meta data like average execution time or a formatted report (<a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_Summary">Summary</a>).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a></td>
+        <td><p>An <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a> to control the scope of the profiling.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerLoggerAsyncDelegate_BionicCode_Utilities_Net_ProfilerBatchResult___remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Time is measured during the lifetime of the <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a> instance: from time of creation to the final <a class="xref" href="https://msdn.microsoft.com/en-us/library/es4s3w1d(v=vs.110).aspx">Dispose()</a> call.
+<br>It's recommended to use the <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a> managed by a using-statement or using-expression.</p>
+<p>
+<a href="https://sampoh.de/github/docs/bioniccode.net/api/BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerLoggerAsyncDelegate_BionicCode_Utilities_Net_ProfilerBatchResult__">LogTimeScoped(ProfilerLoggerAsyncDelegate, out ProfilerBatchResult)</a>
+</p>
+</div>
+  <h5 id="BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerLoggerAsyncDelegate_BionicCode_Utilities_Net_ProfilerBatchResult___examples">Examples</h5>
+  <pre><code>public static void Main(string[] args)
+{
+ ProfilerBatchResult result;
+ using (Profiler.LogTimeScoped(LogToFileAsync, out result))
+ {
+   FibonacciSeries(0, 1, 1, 100);
+ }
+
+ // Print a preformatted summary
+ Console.Write(result.Summary);
+
+ // Print the average duration
+ Console.Write(result.AverageDuration);
+}
+
+private static async Task LogToFileAsync(ProfilerBatchResult result, string summary)
+{
+  await File.WriteAllTextAsync(summary, @&quot;c:\profiler_log.txt&quot;);
+}
+
+public static void FibonacciSeries(int firstNumber, int secondNumber, int counter, int number)
+{
+  Console.Write(firstNumber + &quot; &quot;);
+  if (counter &lt; number)
+  {
+    FibonacciSeries(secondNumber, firstNumber + secondNumber, counter + 1, number);
+  }
+}</code></pre>
+<p>Output:</p>
+<pre><code>          ╭───────────────┬────────────────────────────┬────────────────╮
+          | Iteration #   │ Duration [ms]              │ Is cancelled   |
+          ┝━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥
+          │ 1             │                     1.0512 │ False          |
+          │ 2             │                     1.0020 │ False          │
+          │ 3             │                     0.8732 │ False          │
+          │ 4             │                     0.0258 │ True (ignored) │
+          │ 5             │                     0.9943 │ False          │
+╭═════════╧═══════════════╪════════════════════════════┼────────────────┤
+│ Total:    -             │                     3.9207 │                │
+│ Min:      3             │                     0.8732 │                │
+│ Max:      1             │                     1.0512 │                │
+│ Average:  -             │                     0.9802 │                │
+╰─────────────────────────┴────────────────────────────┴────────────────╯</code></pre>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerLoggerDelegate_BionicCode_Utilities_Net_ProfilerBatchResult__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Profiler.LogTimeScoped(BionicCode.Utilities.Net.ProfilerLoggerDelegate%2CBionicCode.Utilities.Net.ProfilerBatchResult%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/Profiler.cs/#L371">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_Profiler_LogTimeScoped_" data-uid="BionicCode.Utilities.Net.Profiler.LogTimeScoped*"></a>
+  <h4 id="BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerLoggerDelegate_BionicCode_Utilities_Net_ProfilerBatchResult__" data-uid="BionicCode.Utilities.Net.Profiler.LogTimeScoped(BionicCode.Utilities.Net.ProfilerLoggerDelegate,BionicCode.Utilities.Net.ProfilerBatchResult@)">LogTimeScoped(ProfilerLoggerDelegate, out ProfilerBatchResult)</h4>
+  <div class="markdown level1 summary"><p>Measures the execution time of using block i.e. the scope of the <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a>'s lifetime.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IDisposable LogTimeScoped(ProfilerLoggerDelegate logger, out ProfilerBatchResult result)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerDelegate.html">ProfilerLoggerDelegate</a></td>
+        <td><span class="parametername">logger</span></td>
+        <td><p>A delegate of type <a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerDelegate.html">ProfilerLoggerDelegate</a> which can be used to automatically let the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_BionicCode_Utilities_Net_ProfilerLoggerDelegate_">LogTimeAsync(Func&lt;Task&gt;, Int32, ProfilerLoggerDelegate)</a> print the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_Summary">Summary</a> to a destination (e.g. file) in the following formatting:</p>
+<br>
+<pre><code>          ╭───────────────┬────────────────────────────┬────────────────╮
+          | Iteration #   │ Duration [ms]              │ Is cancelled   |
+          ┝━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥
+          │ 1             │                     1.0512 │ False          |
+          │ 2             │                     1.0020 │ False          │
+          │ 3             │                     0.8732 │ False          │
+          │ 4             │                     0.0258 │ True (ignored) │
+          │ 5             │                     0.9943 │ False          │
+╭═════════╧═══════════════╪════════════════════════════┼────────────────┤
+│ Total:    -             │                     3.9207 │                │
+│ Min:      3             │                     0.8732 │                │
+│ Max:      1             │                     1.0512 │                │
+│ Average:  -             │                     0.9802 │                │
+╰─────────────────────────┴────────────────────────────┴────────────────╯</code></pre>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html">ProfilerBatchResult</a></td>
+        <td><span class="parametername">result</span></td>
+        <td><p>A <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.task(v=vs.110).aspx">Task</a> holding the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html">ProfilerBatchResult</a> result which contains meta data like average execution time or a formatted report (<a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_Summary">Summary</a>).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a></td>
+        <td><p>An <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a> to control the scope of the profiling.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerLoggerDelegate_BionicCode_Utilities_Net_ProfilerBatchResult___remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Time is measured during the lifetime of the <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a> instance: from time of creation to the final <a class="xref" href="https://msdn.microsoft.com/en-us/library/es4s3w1d(v=vs.110).aspx">Dispose()</a> call.
+<br>It's recommended to use the <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a> managed by a using-statement or using-expression.</p>
+</div>
+  <h5 id="BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerLoggerDelegate_BionicCode_Utilities_Net_ProfilerBatchResult___examples">Examples</h5>
+  <pre><code>public static void Main(string[] args)
+{
+ ProfilerBatchResult result;
+ using (Profiler.LogTimeScoped(out result))
+ {
+   FibonacciSeries(0, 1, 1, 100);
+ }
+
+ // Print a preformatted summary
+ Console.Write(result.Summary);
+
+ // Print the average duration
+ Console.Write(result.AverageDuration);
+}
+
+public static void FibonacciSeries(int firstNumber, int secondNumber, int counter, int number)
+{
+  Console.Write(firstNumber + &quot; &quot;);
+  if (counter &lt; number)
+  {
+    FibonacciSeries(secondNumber, firstNumber + secondNumber, counter + 1, number);
+  }
+}</code></pre>
+<p>Output:</p>
+<pre><code>          ╭───────────────┬────────────────────────────┬────────────────╮
+          | Iteration #   │ Duration [ms]              │ Is cancelled   |
+          ┝━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥
+          │ 1             │                     1.0512 │ False          |
+          │ 2             │                     1.0020 │ False          │
+          │ 3             │                     0.8732 │ False          │
+          │ 4             │                     0.0258 │ True (ignored) │
+          │ 5             │                     0.9943 │ False          │
+╭═════════╧═══════════════╪════════════════════════════┼────────────────┤
+│ Total:    -             │                     3.9207 │                │
+│ Min:      3             │                     0.8732 │                │
+│ Max:      1             │                     1.0512 │                │
+│ Average:  -             │                     0.9802 │                │
+╰─────────────────────────┴────────────────────────────┴────────────────╯</code></pre>
+
 </article>
           </div>
           

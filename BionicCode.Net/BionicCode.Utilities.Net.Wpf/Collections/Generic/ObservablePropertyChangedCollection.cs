@@ -72,26 +72,22 @@
       base.SetItem(index, item);
     }
 
-    private void StartListenToItemPropertyChanged(INotifyPropertyChanged propertyChangedItem)
-    {
+    private void StartListenToItemPropertyChanged(INotifyPropertyChanged propertyChangedItem) =>
 
-#if NET461_OR_GREATER
+#if NET461_OR_GREATER || NET
       PropertyChangedEventManager.AddHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
 #else
       propertyChangedItem.PropertyChanged += OnItemPropertyChanged;
 #endif
-    }
 
-    private void StopListenToItemPropertyChanged(INotifyPropertyChanged propertyChangedItem)
-    {
-#if NET461_OR_GREATER
+    private void StopListenToItemPropertyChanged(INotifyPropertyChanged propertyChangedItem) =>
+#if NET461_OR_GREATER || NET
       PropertyChangedEventManager.RemoveHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
 #else
       propertyChangedItem.PropertyChanged -= OnItemPropertyChanged;
 #endif
-    }
 
-#endregion Overrides of ObservableCollection<TItem>
+    #endregion Overrides of ObservableCollection<TItem>
 
     private PropertyChangedEventHandler childPropertyChanged;
 

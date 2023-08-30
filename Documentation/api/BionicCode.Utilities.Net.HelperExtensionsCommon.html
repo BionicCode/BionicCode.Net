@@ -125,10 +125,138 @@
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_AddColumn__1_System_Data_DataTable_System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.AddColumn%60%601(System.Data.DataTable%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/DataTableHelperExtensions.cs/#L22">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddColumn_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddColumn*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddColumn__1_System_Data_DataTable_System_String_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddColumn``1(System.Data.DataTable,System.String)">AddColumn&lt;TData&gt;(DataTable, String)</h4>
+  <div class="markdown level1 summary"><p>Adds a new <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datacolumn(v=vs.110).aspx">DataColumn</a> to a <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datatable(v=vs.110).aspx">DataTable</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void AddColumn&lt;TData&gt;(this DataTable source, string columnName)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datatable(v=vs.110).aspx">DataTable</a></td>
+        <td><span class="parametername">source</span></td>
+        <td><p>The <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datatable(v=vs.110).aspx">DataTable</a> to add the new <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datacolumn(v=vs.110).aspx">DataColumn</a> to.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><span class="parametername">columnName</span></td>
+        <td><p>The column's name.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TData</span></td>
+        <td><p>The data type of the column value.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddColumn__1_System_Data_DataTable_System_String__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Added columns are initialized to the default value of <code data-dev-comment-type="typeparamref" class="typeparamref">TData</code> for all existing rows.
+<br><a class="xref" href="BionicCode.Utilities.Net.HelperExtensionsCommon.html#BionicCode_Utilities_Net_HelperExtensionsCommon_AddColumn__1_System_Data_DataTable_System_String_System_Int32_">AddColumn&lt;TData&gt;(DataTable, String, Int32)</a> should be called before an overload of <a class="xref" href="BionicCode.Utilities.Net.HelperExtensionsCommon.html#BionicCode_Utilities_Net_HelperExtensionsCommon_AddRow_System_Data_DataTable_System_Object___">AddRow(DataTable, Object[])</a></p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_AddColumn__1_System_Data_DataTable_System_String_System_Int32_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.AddColumn%60%601(System.Data.DataTable%2CSystem.String%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/DataTableHelperExtensions.cs/#L47">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddColumn_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddColumn*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddColumn__1_System_Data_DataTable_System_String_System_Int32_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddColumn``1(System.Data.DataTable,System.String,System.Int32)">AddColumn&lt;TData&gt;(DataTable, String, Int32)</h4>
+  <div class="markdown level1 summary"><p>Adds a new <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datacolumn(v=vs.110).aspx">DataColumn</a> to a <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datatable(v=vs.110).aspx">DataTable</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void AddColumn&lt;TData&gt;(this DataTable source, string columnName, int columnIndex)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datatable(v=vs.110).aspx">DataTable</a></td>
+        <td><span class="parametername">source</span></td>
+        <td><p>The <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datatable(v=vs.110).aspx">DataTable</a> to add the new <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datacolumn(v=vs.110).aspx">DataColumn</a> to.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><span class="parametername">columnName</span></td>
+        <td><p>The column's name.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td><span class="parametername">columnIndex</span></td>
+        <td><p>The explicit index of the created <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datacolumn(v=vs.110).aspx">DataColumn</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TData</span></td>
+        <td><p>The data type of the column value.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddColumn__1_System_Data_DataTable_System_String_System_Int32__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>If <code data-dev-comment-type="paramref" class="paramref">columnIndex</code> is less than 0 or greater than the existing number of columns - 1 (greater than the ordinal of the last column) then an Invalid <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.argumentexception(v=vs.110).aspx">ArgumentException</a> is thrown.</p>
+<p>Any columns between the previous and new ordinal will be renumbered, to adjust for a column&apos;s new ordinal.</p>
+Added columns are initialized to the default value of <code data-dev-comment-type="typeparamref" class="typeparamref">TData</code> for all existing rows.
+<br><a class="xref" href="BionicCode.Utilities.Net.HelperExtensionsCommon.html#BionicCode_Utilities_Net_HelperExtensionsCommon_AddColumn__1_System_Data_DataTable_System_String_System_Int32_">AddColumn&lt;TData&gt;(DataTable, String, Int32)</a> should be called before an overload of <a class="xref" href="BionicCode.Utilities.Net.HelperExtensionsCommon.html#BionicCode_Utilities_Net_HelperExtensionsCommon_AddRow_System_Data_DataTable_System_Object___">AddRow(DataTable, Object[])</a>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_AddRange__1_System_Collections_Generic_ICollection___0__System_Collections_Generic_IEnumerable___0__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.AddRange%60%601(System.Collections.Generic.ICollection%7B%60%600%7D%2CSystem.Collections.Generic.IEnumerable%7B%60%600%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/CollectionHelperExtensions.cs/#L69">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/CollectionHelperExtensions.cs/#L68">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddRange_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddRange*"></a>
   <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddRange__1_System_Collections_Generic_ICollection___0__System_Collections_Generic_IEnumerable___0__" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddRange``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEnumerable{``0})">AddRange&lt;TItem&gt;(ICollection&lt;TItem&gt;, IEnumerable&lt;TItem&gt;)</h4>
@@ -224,7 +352,7 @@
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_AddRange__2_System_Collections_Generic_IDictionary___0___1__System_Collections_Generic_IDictionary___0___1__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.AddRange%60%602(System.Collections.Generic.IDictionary%7B%60%600%2C%60%601%7D%2CSystem.Collections.Generic.IDictionary%7B%60%600%2C%60%601%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/CollectionHelperExtensions.cs/#L100">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/CollectionHelperExtensions.cs/#L99">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddRange_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddRange*"></a>
   <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddRange__2_System_Collections_Generic_IDictionary___0___1__System_Collections_Generic_IDictionary___0___1__" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IDictionary{``0,``1})">AddRange&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, IDictionary&lt;TKey, TValue&gt;)</h4>
@@ -325,7 +453,7 @@
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_AddRange__2_System_Collections_Generic_IDictionary___0___1__System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair___0___1___.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.AddRange%60%602(System.Collections.Generic.IDictionary%7B%60%600%2C%60%601%7D%2CSystem.Collections.Generic.IEnumerable%7BSystem.Collections.Generic.KeyValuePair%7B%60%600%2C%60%601%7D%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/CollectionHelperExtensions.cs/#L131">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/CollectionHelperExtensions.cs/#L130">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddRange_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddRange*"></a>
   <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddRange__2_System_Collections_Generic_IDictionary___0___1__System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair___0___1___" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{``0,``1}})">AddRange&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;)</h4>
@@ -426,7 +554,7 @@
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_AddRange__2_System_Collections_Generic_IDictionary___0___1__System_Collections_Generic_IEnumerable_System_ValueTuple___0___1___.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.AddRange%60%602(System.Collections.Generic.IDictionary%7B%60%600%2C%60%601%7D%2CSystem.Collections.Generic.IEnumerable%7BSystem.ValueTuple%7B%60%600%2C%60%601%7D%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/CollectionHelperExtensions.cs/#L162">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/CollectionHelperExtensions.cs/#L161">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddRange_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddRange*"></a>
   <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddRange__2_System_Collections_Generic_IDictionary___0___1__System_Collections_Generic_IEnumerable_System_ValueTuple___0___1___" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IEnumerable{System.ValueTuple{``0,``1}})">AddRange&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, IEnumerable&lt;(TKey Key, TValue Value)&gt;)</h4>
@@ -518,6 +646,158 @@
       <tr>
         <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.argumentnullexception(v=vs.110).aspx">ArgumentNullException</a></td>
         <td><p><code data-dev-comment-type="paramref" class="paramref">range</code> parameter is <span class="xref">null</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_AddRow_System_Data_DataTable_System_Collections_Generic_IEnumerable_System_Object__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.AddRow(System.Data.DataTable%2CSystem.Collections.Generic.IEnumerable%7BSystem.Object%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/DataTableHelperExtensions.cs/#L84">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddRow_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddRow*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddRow_System_Data_DataTable_System_Collections_Generic_IEnumerable_System_Object__" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddRow(System.Data.DataTable,System.Collections.Generic.IEnumerable{System.Object})">AddRow(DataTable, IEnumerable&lt;Object&gt;)</h4>
+  <div class="markdown level1 summary"><p>Adds a new <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datarow(v=vs.110).aspx">DataRow</a> to a <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datatable(v=vs.110).aspx">DataTable</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void AddRow(this DataTable source, IEnumerable&lt;object&gt; columnValues)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datatable(v=vs.110).aspx">DataTable</a></td>
+        <td><span class="parametername">source</span></td>
+        <td><p>The <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datatable(v=vs.110).aspx">DataTable</a> to add the new <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datarow(v=vs.110).aspx">DataRow</a> to.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a>&gt;</td>
+        <td><span class="parametername">columnValues</span></td>
+        <td><p>The ordered row's cell values, where the item index maps to the column index.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.indexoutofrangeexception(v=vs.110).aspx">IndexOutOfRangeException</a></td>
+        <td><p>When <code data-dev-comment-type="paramref" class="paramref">columnValues</code> contains less elements than <code data-dev-comment-type="paramref" class="paramref">source</code> has columns.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_AddRow_System_Data_DataTable_System_Object___.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.AddRow(System.Data.DataTable%2CSystem.Object%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/DataTableHelperExtensions.cs/#L67">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddRow_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddRow*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddRow_System_Data_DataTable_System_Object___" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddRow(System.Data.DataTable,System.Object[])">AddRow(DataTable, Object[])</h4>
+  <div class="markdown level1 summary"><p>Adds a new <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datarow(v=vs.110).aspx">DataRow</a> to a <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datatable(v=vs.110).aspx">DataTable</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void AddRow(this DataTable source, params object[] columnValues)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datatable(v=vs.110).aspx">DataTable</a></td>
+        <td><span class="parametername">source</span></td>
+        <td><p>The <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datatable(v=vs.110).aspx">DataTable</a> to add the new <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datarow(v=vs.110).aspx">DataRow</a> to.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a>[]</td>
+        <td><span class="parametername">columnValues</span></td>
+        <td><p>The row's cell values ordered by column index.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_AddRow_System_Data_DataTable_System_ValueTuple_System_Int32_System_Object____.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.AddRow(System.Data.DataTable%2CSystem.ValueTuple%7BSystem.Int32%2CSystem.Object%7D%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/DataTableHelperExtensions.cs/#L101">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddRow_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddRow*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_AddRow_System_Data_DataTable_System_ValueTuple_System_Int32_System_Object____" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.AddRow(System.Data.DataTable,System.ValueTuple{System.Int32,System.Object}[])">AddRow(DataTable, (Int32 ColumnIndex, Object ColumnValue)[])</h4>
+  <div class="markdown level1 summary"><p>Adds a new <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datarow(v=vs.110).aspx">DataRow</a> to a <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datatable(v=vs.110).aspx">DataTable</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void AddRow(this DataTable source, params (int ColumnIndex, object ColumnValue)[] columnValues)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datatable(v=vs.110).aspx">DataTable</a></td>
+        <td><span class="parametername">source</span></td>
+        <td><p>The <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datatable(v=vs.110).aspx">DataTable</a> to add the new <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.data.datarow(v=vs.110).aspx">DataRow</a> to.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.ValueTuple</span>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a>&gt;[]</td>
+        <td><span class="parametername">columnValues</span></td>
+        <td><p>The row's cell values passed as tuples of <code>(int ColumnIndex, object ColumnValue)</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.indexoutofrangeexception(v=vs.110).aspx">IndexOutOfRangeException</a></td>
+        <td><p>When <code data-dev-comment-type="paramref" class="paramref">columnValues</code> contains less elements than <code data-dev-comment-type="paramref" class="paramref">source</code> has columns or a contained tuple has an invalid index.</p>
 </td>
       </tr>
     </tbody>
@@ -655,7 +935,7 @@
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_LastInSorted__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.LastInSorted%60%601(System.Collections.Generic.IEnumerable%7B%60%600%7D%2CSystem.Func%7B%60%600%2CSystem.Boolean%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/CollectionHelperExtensions.cs/#L229">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/CollectionHelperExtensions.cs/#L225">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_LastInSorted_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.LastInSorted*"></a>
   <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_LastInSorted__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.LastInSorted``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">LastInSorted&lt;TItem&gt;(IEnumerable&lt;TItem&gt;, Func&lt;TItem, Boolean&gt;)</h4>
@@ -758,7 +1038,7 @@ While the standard <a class="xref" href="https://msdn.microsoft.com/en-us/librar
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_LastOrDefaultInSorted__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.LastOrDefaultInSorted%60%601(System.Collections.Generic.IEnumerable%7B%60%600%7D%2CSystem.Func%7B%60%600%2CSystem.Boolean%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/CollectionHelperExtensions.cs/#L196">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/CollectionHelperExtensions.cs/#L195">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_LastOrDefaultInSorted_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.LastOrDefaultInSorted*"></a>
   <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_LastOrDefaultInSorted__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.LastOrDefaultInSorted``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">LastOrDefaultInSorted&lt;TItem&gt;(IEnumerable&lt;TItem&gt;, Func&lt;TItem, Boolean&gt;)</h4>

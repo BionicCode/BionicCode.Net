@@ -29,10 +29,7 @@ namespace BionicCode.Utilities.Net
     /// <inheritdoc/>
     public bool IsExecuting
     {
-      get
-      {
-        return this.isExecuting;
-      }
+      get => this.isExecuting;
       internal set
       {
         this.isExecuting = value;
@@ -44,10 +41,7 @@ namespace BionicCode.Utilities.Net
     /// <inheritdoc/>
     public bool IsPendingCancelled
     {
-      get
-      {
-        return this.isPendingCancelled;
-      }
+      get => this.isPendingCancelled;
       internal set
       {
         this.isPendingCancelled = value;
@@ -59,10 +53,7 @@ namespace BionicCode.Utilities.Net
     /// <inheritdoc/>
     public bool IsCancelled
     {
-      get
-      {
-        return this.isCancelled;
-      }
+      get => this.isCancelled;
       internal set
       {
         this.isCancelled = value;
@@ -77,10 +68,7 @@ namespace BionicCode.Utilities.Net
     /// <inheritdoc/>
     public int PendingCount
     {
-      get
-      {
-        return this.pendingCount;
-      }
+      get => this.pendingCount;
       internal set
       {
         this.pendingCount = value;
@@ -108,7 +96,7 @@ namespace BionicCode.Utilities.Net
 
     private CancellationTokenSource CommandCancellationTokenSource { get; set; }
     private CancellationTokenSource MergedCommandCancellationTokenSource { get; set; }
-    protected SemaphoreSlim SemaphoreSlim { get; }
+    internal SemaphoreSlim SemaphoreSlim { get; }
 
     /// <summary>
     /// The registered parameterless async execute delegate.
@@ -228,18 +216,18 @@ namespace BionicCode.Utilities.Net
     /// <summary>
     ///   Creates a new parameterless synchronous command that supports cancellation.
     /// </summary>
-    /// <param name="executeAsync">The awaitable execution handler.</param>
+    /// <param name="executeCancellable">The awaitable execution handler.</param>
     /// <param name="canExecute">The can execute handler.</param>
-    protected AsyncRelayCommandCommon(Action<CancellationToken> executeAsync, Func<bool> canExecute) : this()
+    protected AsyncRelayCommandCommon(Action<CancellationToken> executeCancellable, Func<bool> canExecute) : this()
     {
-      this.ExecuteCancellableNoParamDelegate = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
+      this.ExecuteCancellableNoParamDelegate = executeCancellable ?? throw new ArgumentNullException(nameof(executeCancellable));
       this.CanExecuteNoParamDelegate = canExecute ?? (() => true);
     }
 
-    protected AsyncRelayCommandCommon()
-    {
-      this.SemaphoreSlim = new SemaphoreSlim(MaxThreads, MaxThreads);
-    }
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    protected AsyncRelayCommandCommon() => this.SemaphoreSlim = new SemaphoreSlim(MaxThreads, MaxThreads);
 
     #endregion Constructors
 
@@ -273,7 +261,7 @@ namespace BionicCode.Utilities.Net
 
       using (var reentrancyMonitor = new ReentrancyMonitor(IncrementPendingCount, DecrementPendingCount))
       {
-        await this.SemaphoreSlim.WaitAsync(reentrancyMonitor.CancellationTokenSource.Token);
+        _ = await this.SemaphoreSlim.WaitAsync(timeout, reentrancyMonitor.CancellationTokenSource.Token);
         
         // In case we left the semaphore before it could throw the OperationCanceledException (race-comdition).
         if (this.IsPendingCancelling || this.IsPendingCancelled)
@@ -306,7 +294,7 @@ namespace BionicCode.Utilities.Net
         this.MergedCommandCancellationTokenSource = null;
         this.IsExecuting = false;
         this.IsCancelled = this.CurrentCancellationToken.IsCancellationRequested;
-        this.SemaphoreSlim.Release();
+        _ = this.SemaphoreSlim.Release();
       }
     }
 
@@ -343,14 +331,14 @@ namespace BionicCode.Utilities.Net
 
     internal void DecrementPendingCount()
     {
-      Interlocked.Decrement(ref this.pendingCount);
+      _ = Interlocked.Decrement(ref this.pendingCount);
       OnPropertyChanged(nameof(this.PendingCount));
       OnPropertyChanged(nameof(this.HasPending));
     }
 
     internal void IncrementPendingCount()
     {
-      Interlocked.Increment(ref this.pendingCount);
+      _ = Interlocked.Increment(ref this.pendingCount);
       OnPropertyChanged(nameof(this.PendingCount));
       OnPropertyChanged(nameof(this.HasPending));
     }
@@ -434,13 +422,10 @@ namespace BionicCode.Utilities.Net
 
     #region ICommand implementation
 #if NET
-    bool ICommand.CanExecute(object? parameter)
+    bool ICommand.CanExecute(object? parameter) => CanExecute();
 #else
-    bool ICommand.CanExecute(object parameter)
+    bool ICommand.CanExecute(object parameter) => CanExecute();
 #endif
-    {
-      return CanExecute();
-    }
 
     /// <inheritdoc />
     async void ICommand.Execute(object parameter) => await ExecuteAsync();

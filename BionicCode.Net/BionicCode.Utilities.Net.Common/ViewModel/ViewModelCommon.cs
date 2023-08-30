@@ -14,23 +14,6 @@ namespace BionicCode.Utilities.Net
   using JetBrains.Annotations;
 
   /// <summary>
-  /// A delegate that can be passed to a <see cref="ViewModelCommon.TrySetValue{TValue}(TValue, Func{TValue, ValueTuple{bool, IEnumerable{object}}}, ref TValue, string)"/> and overload to provide a custom validation method.
-  /// </summary>
-  /// <typeparam name="TValue">The type of the value to validate.</typeparam>
-  /// <param name="propertyValue">The value to validate.</param>
-  /// <returns>The validation result.</returns>
-  public delegate PropertyValidationResult PropertyValidationDelegate<TValue>(TValue propertyValue);
-
-  /// <summary>
-  /// A delegate that can be passed to a <see cref="ViewModelCommon.TrySetValueAsync{TValue}(TValue, TValue, Func{TValue, Task{ValueTuple{bool, IEnumerable{object}}}}, SetBackingFieldDelegate{TValue}, ViewModelCommon.SetValueOptions, IEqualityComparer{TValue}, string)"/> and overload 
-  /// <br/>to provide a custom asynchroous validation method.
-  /// </summary>
-  /// <typeparam name="TValue">The type of the value to validate.</typeparam>
-  /// <param name="propertyValue">The value to validate.</param>
-  /// <returns>The validation result.</returns>
-  public delegate Task<PropertyValidationResult> PropertyValidationDelegateAsync<TValue>(TValue propertyValue);
-
-  /// <summary>
   /// Base class recommended to use for view models across the application. Encapsulates implementations of <see cref="INotifyPropertyChanged"/> and <see cref="INotifyDataErrorInfo"/>.
   /// </summary>
   public abstract partial class ViewModelCommon : IViewModelCommon
@@ -199,7 +182,6 @@ namespace BionicCode.Utilities.Net
       => TrySetValueInternal(value, validationDelegate, ref targetBackingField, methodConfiguration, null, true, propertyName);
 
     /// <summary>
-    /// <summary>
     ///  Sets the value of the referenced property and executes a validation delegate.
     /// </summary>
     /// <typeparam name="TValue">The generic value type parameter</typeparam>
@@ -223,7 +205,6 @@ namespace BionicCode.Utilities.Net
     protected virtual bool TrySetValue<TValue>(TValue value, Func<TValue, (bool IsValid, IEnumerable<object> ErrorMessages)> validationDelegate, ref TValue targetBackingField, SetValueOptions methodConfiguration, IEqualityComparer<TValue> equalityComparer, [CallerMemberName] string propertyName = default)
       => TrySetValueInternal(value, validationDelegate is null ? null : new PropertyValidationDelegate<TValue>(propertyValue => new PropertyValidationResult(validationDelegate.Invoke(propertyValue))), ref targetBackingField, methodConfiguration, equalityComparer, true, propertyName);
 
-    /// <summary>
     /// <summary>
     ///  Sets the value of the referenced property and executes a validation delegate.
     /// </summary>
@@ -1241,7 +1222,7 @@ namespace BionicCode.Utilities.Net
     }
 
     /// <inheritdoc/>
-    public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
+    public event ProgressChangedEventHandler ProgressChanged;
 
     #endregion
 

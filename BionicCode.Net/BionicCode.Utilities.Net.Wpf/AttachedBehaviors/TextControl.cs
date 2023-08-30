@@ -170,10 +170,7 @@ using System.Windows.Media;
 
     private static Dictionary<INotifyCollectionChanged, DependencyObject> INotifyCollectionToAttachedElementMap { get; }
 
-    static TextControl()
-    {
-      TextControl.INotifyCollectionToAttachedElementMap = new Dictionary<INotifyCollectionChanged, DependencyObject>();
-    }
+    static TextControl() => TextControl.INotifyCollectionToAttachedElementMap = new Dictionary<INotifyCollectionChanged, DependencyObject>();
 
     private static void OnIsHighlightingEnabledChanged(DependencyObject attachingElement, DependencyPropertyChangedEventArgs e)
     {
@@ -193,6 +190,7 @@ using System.Windows.Media;
         {
           highlightRangeCollection.CollectionChanged -= TextControl.CreateTextHighlightsOnHighLightRangeCollectionChanged;
         }
+
         string text = TextControl.GetText(attachingElement);
         TextControl.OnTextChanged(attachingElement, new DependencyPropertyChangedEventArgs(TextControl.TextProperty, text, text));
       }
@@ -301,7 +299,7 @@ using System.Windows.Media;
             text);
         }
 
-        rangeLength = Math.Min(highlightRange.EndIndex - highlightPosition + 1, text.Length);
+        rangeLength = System.Math.Min(highlightRange.EndIndex - highlightPosition + 1, text.Length);
         string textRange = text.Substring(highlightRange.StartIndex, rangeLength);
         var range = new TextRange(textBox.Document.ContentEnd, textBox.Document.ContentEnd) { Text = textRange };
         range.ApplyPropertyValue(TextElement.BackgroundProperty, highlightBackground);
@@ -328,7 +326,7 @@ using System.Windows.Media;
       IEnumerable<HighlightRange> orderedHighlightRanges,
       string text)
     {
-      int rangeLength = Math.Min(orderedHighlightRanges.First().StartIndex, text.Length);
+      int rangeLength = System.Math.Min(orderedHighlightRanges.First().StartIndex, text.Length);
       if (rangeLength > 0)
       {
         string textRange = text.Substring(0, rangeLength);
@@ -347,7 +345,7 @@ using System.Windows.Media;
       int highlightPosition,
       string text)
     {
-      int rangeLength = Math.Min(highlightRange.StartIndex - highlightPosition, text.Length);
+      int rangeLength = System.Math.Min(highlightRange.StartIndex - highlightPosition, text.Length);
       string textRange = text.Substring(highlightPosition, rangeLength);
       textBox.Document.Blocks.Add(new Paragraph(new Run(textRange)));
       highlightPosition += rangeLength;
@@ -365,7 +363,7 @@ using System.Windows.Media;
       if (bindingExpression != null)
       {
         TextControl.SetText(textBlock, textBlock.Text);
-        textBlock.SetBinding(TextControl.TextProperty, bindingExpression.ParentBindingBase);
+        _ = textBlock.SetBinding(TextControl.TextProperty, bindingExpression.ParentBindingBase);
       }
 
       TextControl.CreateTextBlockHighlights(textBlock);
@@ -424,7 +422,7 @@ using System.Windows.Media;
       if (dependencyPropertyChangedEventArgs.OldValue is INotifyCollectionChanged oldHighlightRanges)
       {
         oldHighlightRanges.CollectionChanged -= TextControl.CreateTextHighlightsOnHighLightRangeCollectionChanged;
-        TextControl.INotifyCollectionToAttachedElementMap.Remove(oldHighlightRanges);
+        _ = TextControl.INotifyCollectionToAttachedElementMap.Remove(oldHighlightRanges);
       }
 
       if ((attachingElement as FrameworkElement).IsLoaded)
@@ -470,7 +468,7 @@ using System.Windows.Media;
             text);
         }
 
-        rangeLength = Math.Min(highlightRange.EndIndex - highlightPosition + 1, text.Length);
+        rangeLength = System.Math.Min(highlightRange.EndIndex - highlightPosition + 1, text.Length);
         string textRange = text.Substring(highlightRange.StartIndex, rangeLength);
         textBlock.Inlines.Add(new Run(textRange) { Background = highlightBackground, Foreground = highlightForeground });
         highlightPosition += rangeLength;
@@ -494,7 +492,7 @@ using System.Windows.Media;
       int highlightPosition,
       string text)
     {
-      int rangeLength = Math.Min(highlightRange.StartIndex - highlightPosition, text.Length);
+      int rangeLength = System.Math.Min(highlightRange.StartIndex - highlightPosition, text.Length);
       string textRange = text.Substring(highlightPosition, rangeLength);
       textBlock.Inlines.Add(new Run(textRange));
       highlightPosition += rangeLength;
@@ -506,7 +504,7 @@ using System.Windows.Media;
       IEnumerable<HighlightRange> orderedHighlightRanges,
       string text)
     {
-      int rangeLength = Math.Min(orderedHighlightRanges.First().StartIndex, text.Length);
+      int rangeLength = System.Math.Min(orderedHighlightRanges.First().StartIndex, text.Length);
       if (rangeLength > 0)
       {
         string textRange = text.Substring(0, rangeLength);

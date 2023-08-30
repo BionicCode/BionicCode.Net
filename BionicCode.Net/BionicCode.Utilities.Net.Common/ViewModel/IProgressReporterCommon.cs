@@ -47,6 +47,6 @@
     /// <summary>
     /// Raised when <see cref="ProgressValue"/>, <see cref="ProgressText"/> or <see cref="IsIndeterminate"/> has changed.
     /// </summary>
-    event EventHandler<ProgressChangedEventArgs> ProgressChanged;
+    event ProgressChangedEventHandler ProgressChanged;
   }
 }

@@ -455,7 +455,7 @@
             .Aggregate((result, current) => result += ", " + current).TrimEnd(',', ' ');
 
           throw new WrongEventHandlerSignatureException(
-            $"The found callback signature does not match the registered delegate{Environment.NewLine}'{FormatTypeName(handler.GetType())}'. {Environment.NewLine}{Environment.NewLine}Expected: '{delegateInvokeMethodInfo.ReturnType.Name} {handler.Method.Name}({handlerSignatureParameterList})'.{Environment.NewLine}Actual: '{handler.Method}'.", e);
+            $"The found callback signature does not match the registered delegate{System.Environment.NewLine}'{FormatTypeName(handler.GetType())}'. {System.Environment.NewLine}{System.Environment.NewLine}Expected: '{delegateInvokeMethodInfo.ReturnType.Name} {handler.Method.Name}({handlerSignatureParameterList})'.{System.Environment.NewLine}Actual: '{handler.Method}'.", e);
         }
       }
     }
@@ -466,6 +466,7 @@
       {
         return isFullyQualified ? typeToFormat.FullName : typeToFormat.Name;
       }
+
       Type[] genericArguments = typeToFormat.GetGenericArguments();
       string originalTypeName = isFullyQualified ? typeToFormat.FullName : typeToFormat.Name;
       return originalTypeName.Substring(0, originalTypeName.IndexOf("`", StringComparison.OrdinalIgnoreCase)) + "<" + String.Join(", ", genericArguments.Select(type => FormatTypeName(type))) + ">";

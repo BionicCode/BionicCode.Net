@@ -11,7 +11,7 @@
   using BionicCode.Utilities.Net.UnitTest.Resources;
   using FluentAssertions.Equivalency;
 
-public class FactoryTest : IDisposable
+  public class FactoryTest : IDisposable
 {
   PersonFactory PersonFactory { get; }
 

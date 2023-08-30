@@ -1,0 +1,29 @@
+﻿namespace BionicCode.Utilities.Net
+{
+  using System;
+  using System.Reflection;
+  using System.Runtime.Versioning;
+
+  // TODO::Move context related prperties properties from ProfilerBtchResult to Context class and compose
+  public class ProfilerContext
+  {
+    public ProfilerContext(string assemblyName, string targetName, ProfiledTargetType targetType, string sourceFileName, int lineNumber)
+    {
+      this.AssemblyName = assemblyName;
+      this.SourceFileName = sourceFileName;
+      this.LineNumber = lineNumber;
+      this.TargetName = targetName;
+      this.TargetType = targetType;
+      this.RuntimeVersionFactory = new Lazy<string>(() => Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName);
+    }
+
+    public string AssemblyName { get; }
+    public string CallerName { get; }
+    public string SourceFileName { get; }
+    public int LineNumber { get; }
+    public string TargetName { get; }
+    public ProfiledTargetType TargetType { get; }
+    public Lazy<string> RuntimeVersionFactory { get; }
+    public string RuntimeVersion => this.RuntimeVersionFactory.Value;
+  }
+}

@@ -5,6 +5,7 @@
         {
           "files": [
             "BionicCode.Utilities.Net/**.csproj",
+            "BionicCode.Utilities.Net.Common/**.csproj",
             "BionicCode.Utilities.Net.Wpf/**.csproj"
           ],
           "exclude": [ "_site/**", "**/bin/**", "**/obj/**", "**/[Tt]ests/**" ],

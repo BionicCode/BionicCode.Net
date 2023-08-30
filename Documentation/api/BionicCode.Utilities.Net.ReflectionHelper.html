@@ -83,7 +83,8 @@
   
   <h1 id="BionicCode_Utilities_Net_ReflectionHelper" data-uid="BionicCode.Utilities.Net.ReflectionHelper" class="text-break">Class ReflectionHelper
   </h1>
-  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 summary"><p>A set of helpers to simplify some reflection tasks.</p>
+</div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
@@ -124,14 +125,121 @@
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ReflectionHelper_GetCurrentFilePath_System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ReflectionHelper.GetCurrentFilePath(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ReflectionHelper.cs/#L24">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_ReflectionHelper_GetCurrentFilePath_" data-uid="BionicCode.Utilities.Net.ReflectionHelper.GetCurrentFilePath*"></a>
+  <h4 id="BionicCode_Utilities_Net_ReflectionHelper_GetCurrentFilePath_System_String_" data-uid="BionicCode.Utilities.Net.ReflectionHelper.GetCurrentFilePath(System.String)">GetCurrentFilePath(String)</h4>
+  <div class="markdown level1 summary"><p>A convenient helper to return the file path of the source file that contains the current caller context without the need to decorate the member with the <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.runtime.compilerservices.callerfilepathattribute(v=vs.110).aspx">CallerFilePathAttribute</a> attribute.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string GetCurrentFilePath(string callerFilePath = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><span class="parametername">callerFilePath</span></td>
+        <td><p>The file path (optional and not required).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><p>The file path of the source file that contains the current context.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_ReflectionHelper_GetCurrentFilePath_System_String__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Passing a <code data-dev-comment-type="paramref" class="paramref">callerFilePath</code> argument is not required as thie value is actually retrieved via refelection.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ReflectionHelper_GetCurrentLineNumber_System_Int32_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ReflectionHelper.GetCurrentLineNumber(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ReflectionHelper.cs/#L32">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_ReflectionHelper_GetCurrentLineNumber_" data-uid="BionicCode.Utilities.Net.ReflectionHelper.GetCurrentLineNumber*"></a>
+  <h4 id="BionicCode_Utilities_Net_ReflectionHelper_GetCurrentLineNumber_System_Int32_" data-uid="BionicCode.Utilities.Net.ReflectionHelper.GetCurrentLineNumber(System.Int32)">GetCurrentLineNumber(Int32)</h4>
+  <div class="markdown level1 summary"><p>A convenient helper to return the line number of the caller at which the current context was called without the need to decorate the member with the <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.runtime.compilerservices.callerlinenumberattribute(v=vs.110).aspx">CallerLineNumberAttribute</a> attribute.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int GetCurrentLineNumber(int callerLineNumber = 0)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td><span class="parametername">callerLineNumber</span></td>
+        <td><p>The line number (optional and not required).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td><p>The line number of the caller at which the current context was called.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_ReflectionHelper_GetCurrentLineNumber_System_Int32__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Passing a <code data-dev-comment-type="paramref" class="paramref">callerLineNumber</code> argument is not required as thie value is actually retrieved via refelection.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ReflectionHelper_GetCurrentMemberName_System_String_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ReflectionHelper.GetCurrentMemberName(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ReflectionHelper.cs/#L7">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ReflectionHelper.cs/#L16">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_ReflectionHelper_GetCurrentMemberName_" data-uid="BionicCode.Utilities.Net.ReflectionHelper.GetCurrentMemberName*"></a>
   <h4 id="BionicCode_Utilities_Net_ReflectionHelper_GetCurrentMemberName_System_String_" data-uid="BionicCode.Utilities.Net.ReflectionHelper.GetCurrentMemberName(System.String)">GetCurrentMemberName(String)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>A convenient helper to return the member name of the current context without the need to decorate the member with the <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.runtime.compilerservices.callermembernameattribute(v=vs.110).aspx">CallerMemberNameAttribute</a> attribute.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -150,7 +258,8 @@
       <tr>
         <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
         <td><span class="parametername">callerMemberName</span></td>
-        <td></td>
+        <td><p>The member name (optional and not required).</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -165,10 +274,14 @@
     <tbody>
       <tr>
         <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-        <td></td>
+        <td><p>The member name of the current context.</p>
+</td>
       </tr>
     </tbody>
   </table>
+  <h5 id="BionicCode_Utilities_Net_ReflectionHelper_GetCurrentMemberName_System_String__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Passing a <code data-dev-comment-type="paramref" class="paramref">callerMemberName</code> argument is not required as thie value is actually retrieved via refelection.</p>
+</div>
 </article>
           </div>
           
@@ -180,7 +293,7 @@
                     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ReflectionHelper.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ReflectionHelper%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ReflectionHelper.cs/#L5" class="contribution-link">View Source</a>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/ReflectionHelper.cs/#L8" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

@@ -83,7 +83,8 @@
   
   <h1 id="BionicCode_Utilities_Net_IInitializable" data-uid="BionicCode.Utilities.Net.IInitializable" class="text-break">Interface IInitializable
   </h1>
-  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 summary"><p>An interface to enable polymorphism for types like view model classes etc. that require an explicit (asynchronous) initialization.</p>
+</div>
   <div class="markdown level0 conceptual"></div>
   <h6><strong>Namespace</strong>: <a class="xref" href="BionicCode.Utilities.Net.html">BionicCode.Utilities.Net</a></h6>
   <h6><strong>Assembly</strong>: BionicCode.Utilities.Net.Common.dll</h6>
@@ -91,6 +92,11 @@
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public interface IInitializable</code></pre>
   </div>
+  <h5 id="BionicCode_Utilities_Net_IInitializable_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>It's considered bad practice to have a longrunning cobstructor. Also constructors don't have an async context.
+<br>Deferring the initilaization of the instance is a convenient way to avoid the shortcommings and code smells.
+<br>It's also a clean way to &quot;lazy&quot; initialize expensive resources.</p>
+</div>
   <h3 id="properties">Properties
   </h3>
   <span class="small pull-right mobile-hide">
@@ -98,11 +104,12 @@
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IInitializable_IsInitialized.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IInitializable.IsInitialized%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IInitializable.cs/#L8">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IInitializable.cs/#L23">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_IInitializable_IsInitialized_" data-uid="BionicCode.Utilities.Net.IInitializable.IsInitialized*"></a>
   <h4 id="BionicCode_Utilities_Net_IInitializable_IsInitialized" data-uid="BionicCode.Utilities.Net.IInitializable.IsInitialized">IsInitialized</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns whether the instance is already initialized.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -119,7 +126,8 @@
     <tbody>
       <tr>
         <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
-        <td></td>
+        <td><p><code>true</code> when <a class="xref" href="BionicCode.Utilities.Net.IInitializable.html#BionicCode_Utilities_Net_IInitializable_InitializeAsync">InitializeAsync()</a> was already called, otherwise <code>false</code>.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -130,11 +138,12 @@
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IInitializable_InitializeAsync.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IInitializable.InitializeAsync%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IInitializable.cs/#L7">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IInitializable.cs/#L17">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_IInitializable_InitializeAsync_" data-uid="BionicCode.Utilities.Net.IInitializable.InitializeAsync*"></a>
   <h4 id="BionicCode_Utilities_Net_IInitializable_InitializeAsync" data-uid="BionicCode.Utilities.Net.IInitializable.InitializeAsync">InitializeAsync()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Asynchronous method that executes the insatnce initialization routine.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -151,7 +160,8 @@
     <tbody>
       <tr>
         <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/dd321424(v=vs.110).aspx">Task</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a>&gt;</td>
-        <td></td>
+        <td><p>Return <code>true</code> when initialized successfully, otherwise <code>false</code>.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -173,7 +183,7 @@
                     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_IInitializable.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.IInitializable%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IInitializable.cs/#L5" class="contribution-link">View Source</a>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/IInitializable.cs/#L11" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

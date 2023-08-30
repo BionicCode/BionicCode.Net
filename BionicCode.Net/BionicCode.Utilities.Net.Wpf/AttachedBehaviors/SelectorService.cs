@@ -9,32 +9,61 @@ namespace BionicCode.Utilities.Net
   using System.Windows.Controls;
   using System.Windows.Threading;
 
+  /// <summary>
+  /// An attached behavior that enhances the functionality of a <see cref="System.Windows.Controls.Primitives.Selector"/> for example by enabling infinite scrolling (carousel) or item selection on scroll.
+  /// </summary>
   public class SelectorService : DependencyObject
   {
-#region IsInfiniteScrollEnabled attached property
+    #region IsInfiniteScrollEnabled attached property
 
+    /// <summary>
+    /// Enable carousel mode for a <see cref="System.Windows.Controls.Primitives.Selector"/>.
+    /// </summary>
     public static readonly DependencyProperty IsInfiniteScrollEnabledProperty = DependencyProperty.RegisterAttached(
       "IsInfiniteScrollEnabled",
       typeof(bool),
       typeof(SelectorService),
       new PropertyMetadata(default));
 
+    /// <summary>
+    /// The set method for the attached property <see cref="IsInfiniteScrollEnabledProperty"/>.
+    /// </summary>
+    /// <param name="attachingElement">The attaching element.</param>
+    /// <param name="value"><see langword="true"/> to enable the behavior or <see langword="false"/> to disable it.</param>
     public static void SetIsInfiniteScrollEnabled(DependencyObject attachingElement, bool value) => attachingElement.SetValue(SelectorService.IsInfiniteScrollEnabledProperty, value);
 
+    /// <summary>
+    /// The get method for the attached property <see cref="IsInfiniteScrollEnabledProperty"/>.
+    /// </summary>
+    /// <param name="attachingElement">The attaching element.</param>
+    /// <returns><see langword="true"/> if the behavior is enabled or <see langword="false"/> if it is disabled.</returns>
     public static bool GetIsInfiniteScrollEnabled(DependencyObject attachingElement) => (bool)attachingElement.GetValue(SelectorService.IsInfiniteScrollEnabledProperty);
 
 #endregion IsInfiniteScrollEnabled attached property
 
 #region IsSelectOnScrollEnabled attached property
 
+    /// <summary>
+    /// Enable select on scroll behavior for a <see cref="System.Windows.Controls.Primitives.Selector"/>.
+    /// </summary>
     public static readonly DependencyProperty IsSelectOnScrollEnabledProperty = DependencyProperty.RegisterAttached(
       "IsSelectOnScrollEnabled",
       typeof(bool),
       typeof(SelectorService),
       new PropertyMetadata(default(bool), SelectorService.OnIsSelectOnScrollEnabledChanged));
 
+    /// <summary>
+    /// The set method for the attached property <see cref="IsSelectOnScrollEnabledProperty"/>.
+    /// </summary>
+    /// <param name="attachingElement">The attaching element.</param>
+    /// <param name="value"><see langword="true"/> to enable the behavior or <see langword="false"/> to disable it.</param>
     public static void SetIsSelectOnScrollEnabled(DependencyObject attachingElement, bool value) => attachingElement.SetValue(SelectorService.IsSelectOnScrollEnabledProperty, value);
 
+    /// <summary>
+    /// The get method for the attached property <see cref="IsSelectOnScrollEnabledProperty"/>.
+    /// </summary>
+    /// <param name="attachingElement">The attaching element.</param>
+    /// <returns><see langword="true"/> if the behavior is enabled or <see langword="false"/> if it is disabled.</returns>
     public static bool GetIsSelectOnScrollEnabled(DependencyObject attachingElement) => (bool)attachingElement.GetValue(SelectorService.IsSelectOnScrollEnabledProperty);
 
 #endregion IsSelectOnScrollEnabled attached property
@@ -54,6 +83,7 @@ namespace BionicCode.Utilities.Net
       {
         throw new ArgumentException($"Attaching element must be of type '{typeof(System.Windows.Controls.Primitives.Selector).FullName}'", nameof(attachedElement));
       }
+
       if ((bool)e.NewValue)
       {
         SelectorService.EnableInfiniteScroll(selector);
@@ -72,12 +102,13 @@ namespace BionicCode.Utilities.Net
         return;
       }
 
-      scrollTargetElement.ApplyTemplate();
+      _ = scrollTargetElement.ApplyTemplate();
       if (scrollTargetElement.TryFindVisualChildElement(out ScrollViewer scrollViewer))
       {
         SelectorService.ScrollViewerTable.Add(scrollTargetElement, scrollViewer);
         SelectorService.ScrollViewerReverseTable.Add(scrollViewer, scrollTargetElement);
       }
+
       scrollTargetElement.PreviewMouseWheel += SelectorService.HandleInfiniteLoopOnScrollChanged;
       scrollTargetElement.SelectionChanged += SelectorService.OnSelectionChanged;
       SelectorService.ScrollIntoView(scrollTargetElement);
@@ -100,8 +131,8 @@ namespace BionicCode.Utilities.Net
     {
       if (SelectorService.ScrollViewerTable.TryGetValue(scrollTargetElement, out ScrollViewer scrollViewer))
       {
-        SelectorService.ScrollViewerTable.Remove(scrollTargetElement);
-        SelectorService.ScrollViewerReverseTable.Remove(scrollViewer);
+        _ = SelectorService.ScrollViewerTable.Remove(scrollTargetElement);
+        _ = SelectorService.ScrollViewerReverseTable.Remove(scrollViewer);
       }
 
       scrollTargetElement.PreviewMouseWheel -= SelectorService.HandleInfiniteLoopOnScrollChanged;
@@ -118,28 +149,31 @@ namespace BionicCode.Utilities.Net
           {
             if (SelectorService.GetIsInfiniteScrollEnabled(selector))
             {
-              selector.Items.MoveCurrentToLast();
+              _ = selector.Items.MoveCurrentToLast();
             }
             else
             {
               return;
             }
           }
+
           break;
         case int delta when delta < 0:
           if (!selector.Items.MoveCurrentToNext())
           {
             if (SelectorService.GetIsInfiniteScrollEnabled(selector))
             {
-              selector.Items.MoveCurrentToFirst();
+              _ = selector.Items.MoveCurrentToFirst();
             }
             else
             {
               return;
             }
           }
+
           break;
       }
+
       selector.SelectedIndex = selector.Items.CurrentPosition;
       SelectorService.ScrollIntoView(selector);
     }
@@ -150,9 +184,7 @@ namespace BionicCode.Utilities.Net
       SelectorService.ExecuteDeferredScroll(selector);
     }
 
-    private static void ExecuteDeferredScroll(System.Windows.Controls.Primitives.Selector selector)
-    {
-      selector.Dispatcher.InvokeAsync(
+    private static void ExecuteDeferredScroll(System.Windows.Controls.Primitives.Selector selector) => selector.Dispatcher.InvokeAsync(
         () =>
         {
           if (SelectorService.ScrollViewerTable.TryGetValue(selector, out ScrollViewer scrollViewer))
@@ -172,7 +204,6 @@ namespace BionicCode.Utilities.Net
           }
         },
         DispatcherPriority.ContextIdle);
-    }
 
     private static void EnsureItemRealization(System.Windows.Controls.Primitives.Selector selector)
     {

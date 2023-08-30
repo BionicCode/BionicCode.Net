@@ -40,7 +40,7 @@
 
     public IMultiExportServiceCollection Register()
     {
-      foreach (Type tImplementation in Source)
+      foreach (Type tImplementation in this.Source)
       {
         switch (this.ServiceLifetime)
         {

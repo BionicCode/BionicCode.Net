@@ -5,6 +5,7 @@ namespace BionicCode.Utilities.Net
   using System.Collections.Generic;
   using System.Linq;
   using System.Reflection;
+  using MathNet = System.Math;
 
 #if !NETSTANDARD
   using System.Windows;
@@ -314,20 +315,27 @@ using System.Windows.Controls.Primitives;
       return true;
     }
 
-    public static System.Windows.Point ToScreenPoint(this Point cartesianPoint, double yAxisPositiveLimit) => new Point(cartesianPoint.X, yAxisPositiveLimit - cartesianPoint.Y);
+    public static System.Windows.Point ToScreenPoint(this CartesianPoint cartesianPoint, double yAxisPositiveLimit) => new System.Windows.Point(cartesianPoint.X, yAxisPositiveLimit - cartesianPoint.Y);
 
-    public static System.Windows.Point ToCartesianPoint(this Point cartesianPoint, double height) => new Point(cartesianPoint.X, height - cartesianPoint.Y);
+    public static System.Windows.Point ToCartesianPoint(this System.Windows.Point cartesianPoint, double height) => new System.Windows.Point(cartesianPoint.X, height - cartesianPoint.Y);
 
-    public static double ToRadians(this double angleDegrees) => angleDegrees * (Math.PI / 180);
-    public static double ToDegrees(this double angleRadians) => angleRadians * (180 / Math.PI);
+    /// <summary>
+    /// Converts a <see cref="BionicCode.Utilities.Net.CartesianPoint"/> to a <see cref="System.Windows.Point"/>.
+    /// </summary>
+    /// <param name="librarypoint">The curent instance of the <see cref="BionicCode.Utilities.Net.CartesianPoint"/>.</param>
+    /// <returns>A <see cref="System.Windows.Point"/> with equivalent dimension values.</returns>
+    public static System.Windows.Point ToWpfPoint(this BionicCode.Utilities.Net.CartesianPoint librarypoint) => new System.Windows.Point(librarypoint.X, librarypoint.Y);
 
-    public static (Point MaxX, Point MinX, Point MaxY, Point MinY) GetExtremePoints(this IEnumerable<Point> points)
+    public static double ToRadians(this double angleDegrees) => angleDegrees * (MathNet.PI / 180);
+    public static double ToDegrees(this double angleRadians) => angleRadians * (180 / MathNet.PI);
+
+    public static (CartesianPoint MaxX, CartesianPoint MinX, CartesianPoint MaxY, CartesianPoint MinY) GetExtremePoints(this IEnumerable<CartesianPoint> points)
     {
-      Point maxX = default;
-      Point minX = default;
-      Point maxY = default;
-      Point minY = default;
-      foreach (Point point in points)
+      CartesianPoint maxX = default;
+      CartesianPoint minX = default;
+      CartesianPoint maxY = default;
+      CartesianPoint minY = default;
+      foreach (CartesianPoint point in points)
       {
         if (point.X > maxX.X)
         {

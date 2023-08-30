@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html",
-          "hash": "3rGLKDjXy0YtiT51IJmg6vgvldrM5IdF4U6ii0/PqJU="
+          "hash": "EEp5aHdPep9HjgazjRnd2slOBp2MsjpZ4YhMC+HROhs="
         }
       },
       "is_incremental": false,
@@ -33,7 +33,43 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommand.html",
-          "hash": "WAuRlqPi0J3oFxgUswtfp8/E8nm5oCKlwhp6S2muI7k="
+          "hash": "ktYC4di44vCq49B694KAN2HXUNeEMI5OIEyAWJFls1c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommandCommon-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommandCommon-1.html",
+          "hash": "8dP+W1rOt+x6YHg19A/sY6WlR+eCYxOS9gNUa/uvoTg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommandCommon.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommandCommon.html",
+          "hash": "HMrWwgGASosdoVtDE/W9c5FtN1VB/C8O9ONLXIxgFjo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.AutoResetStream.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.AutoResetStream.html",
+          "hash": "VRCq8nSHrlKF5UFqrtGPaYxKwEZjBhYwFpNQ7aZXpAk="
         }
       },
       "is_incremental": false,
@@ -45,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.BoolToStringConverter.html",
-          "hash": "/HbwjL61Vdik6nCX6roLSX2ETTYpGnGUEXpVs1QP1Fs="
+          "hash": "nhESvBp8eJMa546EfV2ARivwz9ReSIF2D3zBuKbzyrY="
         }
       },
       "is_incremental": false,
@@ -57,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.BooleanMultiValueConverter.html",
-          "hash": "R8zGfvdttygZ2FvySLBBO1FJoiJzEgVD4CkLCxOv+kU="
+          "hash": "QupVZc8ueVEe6YMe/AcfT8WQPennDkampKMXOsh/g3E="
         }
       },
       "is_incremental": false,
@@ -69,7 +105,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.CaretInfo.html",
-          "hash": "QWjyu2RjEqvuiURZFuBZ2wS6GnWfXvRG2Mhj0czEHps="
+          "hash": "v1gES3IcPevB+2I6ZI6IdLr53kY4nboVTk6XFTkxP+0="
         }
       },
       "is_incremental": false,
@@ -81,7 +117,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.CaretVisibility.html",
-          "hash": "XSRAwjLs7trq8tnaWQhL13XVqfFXu5A1E8gB1cqyGDI="
+          "hash": "r/ZPyFpbmFUhz1IT4vnijrWJdjPicqRKDFRy9MStp1A="
         }
       },
       "is_incremental": false,
@@ -93,7 +129,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.DefaultValueInverter.html",
-          "hash": "avF1hvobeNUpvxzVu5yl3LUSBbkdm1Mirt1RyuMJWHI="
+          "hash": "QF7dWfVgLioRtDBYEkFgrkilJ3JyqIOjPnMD2fdly4o="
         }
       },
       "is_incremental": false,
@@ -105,7 +141,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.Dialog.html",
-          "hash": "hpLX6KC2HIZBswK5Qq6Y6KDdd2yIynmrsppFoYi0VXU="
+          "hash": "AOi/St6jYu9fTOfCmA4MkhtJdDLB7JQvbEPP78jeZRI="
         }
       },
       "is_incremental": false,
@@ -117,7 +153,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.DialogResult.html",
-          "hash": "YlZlnxZGvk+qVEJ6R8tPuLjP6g2O8fXmyJcP6FhhEqk="
+          "hash": "eJmhilCrgAXQSY1P47hjOoeeqz2QM8a4R4IzunyDrCQ="
         }
       },
       "is_incremental": false,
@@ -129,7 +165,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.DialogViewModel.html",
-          "hash": "17+iB/TQM9lVWHMFICauKCJNQw4YZfRX4olF1qCAsXQ="
+          "hash": "gHoJgncSdesuvhfowGLZcQyejqujkrowZPtPp0az7jQ="
         }
       },
       "is_incremental": false,
@@ -141,7 +177,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.DividerValueConverter.html",
-          "hash": "LgDHicLl8YvhirPd+GREaqdW5u6Lkz2biDNu1VWUTxw="
+          "hash": "jewH6piSv3TpgpjD27tAXCpElj0S4mwLIXWwAIlpQvs="
         }
       },
       "is_incremental": false,
@@ -153,7 +189,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.EnumExtension.html",
-          "hash": "lGznoVowtst0Lo54kYxaQkYeMOnvlFF31AdKwmdED1o="
+          "hash": "S1pkrG18FxbeQsV3TbSQ4Lt0PLNeCHmbV5ZH8G0zD0w="
         }
       },
       "is_incremental": false,
@@ -165,7 +201,55 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.EqualsExtension.html",
-          "hash": "gTqwATe8JVWhfV5P+SzhDBnhQDC86m+6ny3VB95zo3M="
+          "hash": "ok4I97/GYJ3Kjn3/8Rut91yPdlcV21vL4sKKDWuIgD8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.EventAggregator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.EventAggregator.html",
+          "hash": "4Ev2RXQBE274Ar84LthhPHlj5JOxtoXossjmBub8NOk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Factory-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Factory-1.html",
+          "hash": "DfyRnpK465s0CmwZBZWpy70/GVp2MtYKqQI+mvcl0Qs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.FactoryMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.FactoryMode.html",
+          "hash": "NRSyOrMMoIx3JrPXfvKJNg2cQUReFR6MOFbAHAYMuyk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.FileExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.FileExtensions.html",
+          "hash": "fg0DzN//YYpiVgPrZpulaxF13z27g7eiEOwAHrQINF4="
         }
       },
       "is_incremental": false,
@@ -177,7 +261,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.FilePathTruncateConverter.html",
-          "hash": "XYmHcbKxV60NGGOa0n+dWOomZjfCDp7xR0/ViBRXDRs="
+          "hash": "VQlBsL20CK3WqopLgWnpBRTOjjK+goNPm3yrB6eZv0c="
         }
       },
       "is_incremental": false,
@@ -197,11 +281,23 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.HelperExtensionsCommon.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.HelperExtensionsCommon.html",
+          "hash": "oukMmBWxJdM+7Ts5kSDwS4B/Nc8ICIKHUtnILLg4zHk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/BionicCode.Utilities.Net.HighlightRange.yml",
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.HighlightRange.html",
-          "hash": "CEN67hOmAFuJCpIrZ1dGi1n/ijs//5KNdLcRN9oBWl4="
+          "hash": "YX+N8K7w3dIRuxvWjd90YiKtI4grMnZGGxkfek6Uf/Y="
         }
       },
       "is_incremental": false,
@@ -213,7 +309,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.HighlightRangeCollection.html",
-          "hash": "Qyo5kh0oTBaTDdbTxDKKFsfYyXRsjLp3Jet0nDzO36k="
+          "hash": "t6zTnyS2+6+aLWv3qMk4dAHUhYEHyqwqJYE47E0Ny8U="
         }
       },
       "is_incremental": false,
@@ -225,7 +321,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommand-1.html",
-          "hash": "puk/Zli9HAwtXkG0LwWmtnWQ4NREzvVP98JfOmWcJ+M="
+          "hash": "/59+hc0u60dsm7qbnT7Si3NSqd/FpUveXK5KCT8c+4M="
         }
       },
       "is_incremental": false,
@@ -237,7 +333,31 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommand.html",
-          "hash": "VNK9JBZul4yeIqr1StFnBCxH4VFVCcxsunAImFzT3Fg="
+          "hash": "pNyRW+FBmnmmtoreUaXXIfeBFg+jcdM4Fd8D4KgW+sY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommandCommon-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommandCommon-1.html",
+          "hash": "JEQaEabfNetuBo0OsbLzggnNjeR1rrI1mpfDezWWV6I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommandCommon.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommandCommon.html",
+          "hash": "21Haf91XOpltcAXpy+1cVasM17JnMPSuNd1pzb/cyyo="
         }
       },
       "is_incremental": false,
@@ -249,7 +369,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IDialogViewModel.html",
-          "hash": "rhxNrql5SBU9WxybFznsiijHs4EPMJeXgkM/OiCRkcs="
+          "hash": "EA812SlFk8D68DDO9x3Iurt0JKOuQZ3Q0OidgPW0W9s="
         }
       },
       "is_incremental": false,
@@ -261,7 +381,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IDialogViewModelProvider.html",
-          "hash": "uAeQFKPVu0lAmnZIPsAbdaDOC0W0gOG2Os+IGAAsSeg="
+          "hash": "Q8qg4wMuv7B8nv/Mrh8JykA+raZJJ8MXHpRID97pVgo="
         }
       },
       "is_incremental": false,
@@ -273,7 +393,43 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IDialogViewModelProviderSource.html",
-          "hash": "XOd3/GN4Ipj82BkYC9IAMAzIoj49IS48BnS+fGSSsME="
+          "hash": "MKqD4L+PebgSlkjfAYved+HCglSUoJj/c/jmL61pu9s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IEventAggregator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IEventAggregator.html",
+          "hash": "ugIFFJsURM3gVbxJNWzNnNRorsE+3sLqXnlv9N5P5gU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IFactory-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IFactory-1.html",
+          "hash": "efN14lhQi8xO35+rdQ0031zAWa1CeFqTqvfZjgNsWmE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IInitializable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IInitializable.html",
+          "hash": "xXtjapDg24yeugWYQRZ8DxBwurNEBJv0erS6pfNVWTQ="
         }
       },
       "is_incremental": false,
@@ -285,7 +441,19 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IMruManager.html",
-          "hash": "rtAXdDfMxJYZYIr+VeT7ZFJXBcsFWdIIWJmyIAx7c4Y="
+          "hash": "zDpMbwTWe4hoYwu8M0JVam7uUZ9mEwb2jVI0RCli1CA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.INullObject.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.INullObject.html",
+          "hash": "hH7YYIE8hQmbsoaSFHZL353MvYjS+XlZE91zEWLyUOQ="
         }
       },
       "is_incremental": false,
@@ -297,7 +465,31 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IProgressReporter.html",
-          "hash": "JNnjd8fNK9R8WApMku/oBM0gC+8q1b8QT9i9fg7CyIg="
+          "hash": "USHcM3EXehb3r82GcJSZw3udLohC3PeNxSvXEk2U3MU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IProgressReporterCommon.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IProgressReporterCommon.html",
+          "hash": "yXLFrgFsDT+IrIVe/VKi78PPihi2iRx/AQGrD6m/Zk8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IValueInverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IValueInverter.html",
+          "hash": "xfFl9b9w42EwHigyJ3zmb5CZAZTRcoxBmRsETuPt1FI="
         }
       },
       "is_incremental": false,
@@ -309,7 +501,43 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IViewModel.html",
-          "hash": "EgmQgvd1jlBSaDSPjrMWAy/ep8x4IWfdZSWRZNrgX1U="
+          "hash": "w2eN74ouUdgt6NRsdpbdzRJZ9T8C2f/MgskjOFF9Snc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IViewModelCommon.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IViewModelCommon.html",
+          "hash": "Bdk0X71D8+qjSRtGLex8NwnOle+X6cjxobSG4pDdEX0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IgnoreAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IgnoreAttribute.html",
+          "hash": "2InxV4lu+AfZI2qEfCN1r2BF4GUmJa5mtrTiz8AvFLM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.IgnoreInObjectGraphAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.IgnoreInObjectGraphAttribute.html",
+          "hash": "sC9NjsoYf75q7gnF0BTalpwI55Dl8PmPrZ9n4Yf5qaU="
         }
       },
       "is_incremental": false,
@@ -321,7 +549,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.InversionMode.html",
-          "hash": "Aqz9eFRVNP9VgSw91deIT0btjVns+finSR6d7lSWvas="
+          "hash": "3SAai0Ieeb/O9v6hTQvctZC+VqpF45JRKJ0Y8fDFbVQ="
         }
       },
       "is_incremental": false,
@@ -333,7 +561,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.InvertBooleanConverter.html",
-          "hash": "g3A2L0K6/MWTP7aCLmOpLnaiQfYGUYJ1cj1SOQ8+28k="
+          "hash": "8UGYNCS9gaLmK4J6WezOY2eskMxij5Nhz0pIHQVg/wE="
         }
       },
       "is_incremental": false,
@@ -345,7 +573,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.InvertExtension.html",
-          "hash": "NtW9BjyeTO47twCCIGVroYZq3oEv+TTz4+TLInUaXos="
+          "hash": "ZTnWS6cByNg7vIl7pu9E752cQ1u2ZTtnI8YUM4Rr+KE="
         }
       },
       "is_incremental": false,
@@ -357,7 +585,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.InvertValueConverter.html",
-          "hash": "skwNHH6/izzYAwPLKTA/rHo90Wxw/7Nk1W5fjJpKJs8="
+          "hash": "VpMA0QArWMWXUbh035YTPYBovTqYqKXFSlqsK9udNTg="
         }
       },
       "is_incremental": false,
@@ -369,7 +597,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IsGreaterThanValueConverter.html",
-          "hash": "7DeWSRq6N7CO7ZGOHCcx5TCObe8hzICROsXblceSdGY="
+          "hash": "hizLNhHziZwfAtQp+8AZQlGU3XLNZu5gvWurl7HjFLo="
         }
       },
       "is_incremental": false,
@@ -381,7 +609,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.MostRecentlyUsedFileItem.html",
-          "hash": "qFqlqRG3UJwoYFHNe1QAi7ogYGCijHZlQmemIHHpJtg="
+          "hash": "QTXB1Wmh1oVLXsvev7WQqb+thfv6F9SrcANj8gfh6Jo="
         }
       },
       "is_incremental": false,
@@ -393,7 +621,19 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.MruManager.html",
-          "hash": "+9GjqeQ0KJCBRdr5JO4sbrTBOnH3k4WWSLfN3GwzZ7I="
+          "hash": "cxahMaYAkRk6b2HjhoOWv3kGVhZsR54pfxCumjiza08="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.NullObjectFactory-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.NullObjectFactory-1.html",
+          "hash": "D7CVQGqpJ2GqRpJ8XygoXsja/gXRk29CxJbSls8IhyA="
         }
       },
       "is_incremental": false,
@@ -405,7 +645,19 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ObservablePropertyChangedCollection-1.html",
-          "hash": "KNRlqjz7bdjn9YUrw8IBbd2L4XuyA/C0dWzr6tZoE4Q="
+          "hash": "x4eDA//Z5DK3nw65TXkPH/0Bdi/3ESvPuE1UfjTJZlY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ObservableQueue-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ObservableQueue-1.html",
+          "hash": "vDufjemNHgS7Uw6uNpPY7OAFEgHUSJeBOdgPolnNkJ0="
         }
       },
       "is_incremental": false,
@@ -417,7 +669,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PasswordBoxService.html",
-          "hash": "wrGrwOXwr8jWKvbJi0TOAoH5ZT/PjCNwjPeccQ3ltX8="
+          "hash": "fT9FZAThAC9Gs8xFMmPEpPm8U3SXPpB152MyhpYlD2s="
         }
       },
       "is_incremental": false,
@@ -429,7 +681,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PercentageToPixelConverter.html",
-          "hash": "HzADpqsyT+LtKSGsqiD8eeNW7qWUOZNuMpFWiiXhmF8="
+          "hash": "vYLgvGBbbkYfmArvkMBrl3kr1o3dmEfdvNjXiaxVUG0="
         }
       },
       "is_incremental": false,
@@ -441,7 +693,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PercentageToThicknessConverter.html",
-          "hash": "c4tGK5msbBE2EIS8HG1NQVqvvqaes5quwvcg6bDPkz8="
+          "hash": "kaDncO4aFf2TCEWuT8riGsztOrZIBJls1WYnP0s62ts="
         }
       },
       "is_incremental": false,
@@ -453,7 +705,7 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PopupService.html",
-          "hash": "VKPhMjA3vhzUzFPq+Ve/wiIkMA1lYjon7lFPbeS/8rQ="
+          "hash": "7FJAnpl1gb/fX3lN50xgiuq281BUhL5IFK1H3ePt300="
         }
       },
       "is_incremental": false,
@@ -465,7 +717,175 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PrimitiveExtension.html",
-          "hash": "+1b4iLJt8pJp9zanvV5Cz+zcMsA0KLNI+5ZP5rsrWWE="
+          "hash": "HK8bWYcNZ20ljbM3NVNwVe+xkoZG3hexeFdToaDqOL4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Profiler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Profiler.html",
+          "hash": "wzBQR2+3c9rVewkVP64imSAtsm7uKzg+Db9kZOzUCVw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerBatchResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerBatchResult.html",
+          "hash": "7Z0BJ76NvkbFO1WzjVI9K0GzhYOrypdTZKvM5WtZ5+Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate.html",
+          "hash": "2ez6jm3BGVt2vkaZcU7n1/+a6YuIMneBsMgJLhLn2AA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerLoggerDelegate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerLoggerDelegate.html",
+          "hash": "YLOEyrwOwOCjSZQqee5bRCaB+sMSibGFzm7Enm4mXsk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerResult.html",
+          "hash": "9MsRIw8mQZziHtY1pYGrBluvpgITr6LQnA4R3wjG/Mk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProgressChangedEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProgressChangedEventArgs.html",
+          "hash": "FMOM/IBHHOLqPlApQDJ2aA6H5MixUhUb77F0GVgBJ2c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProgressChangedEventHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProgressChangedEventHandler.html",
+          "hash": "XfvP4d6Lx+I0iLZogpgZ5IhX4rwWiKxR+y1mpNdkmx8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProgressData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProgressData.html",
+          "hash": "xEBXDSclGDWAn1lKYI85rt1T74aybFCjekse2V1cZ3Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PropertyValidationDelegate-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PropertyValidationDelegate-1.html",
+          "hash": "vD751f9Wa84OiQzZZwPTQu6hSIiLa1Zyb+P/Co1hsig="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PropertyValidationDelegateAsync-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PropertyValidationDelegateAsync-1.html",
+          "hash": "sDYqAMyyDcZX9fxXJ2iYiFUV7lmqxpeihbzvP6Cp3cM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PropertyValidationResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PropertyValidationResult.html",
+          "hash": "U2XGF5dWgIHlCPPJy3h4ir8R2WnWoEcq4pO4gizWnEE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PropertyValueChangedArgs-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PropertyValueChangedArgs-1.html",
+          "hash": "fYcUYBm1bJ5aPU7h9W2kAUiCBg0UwFvJv8pAlW2/BCk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.PropertyValueChangedEventHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.PropertyValueChangedEventHandler-1.html",
+          "hash": "2+Zetc2/5IAO140rkcjttZCrdsameBLNVCvkPE8i7T8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ReflectionHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ReflectionHelper.html",
+          "hash": "jeNt8xsKyzidshGcpsRQD3GVDgqw/T+cjRJsMT3erR8="
         }
       },
       "is_incremental": false,
@@ -477,7 +897,19 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.SelectorService.html",
-          "hash": "r5mZx9yiXH9oEsZsIJ1k7DdfneT2rhQe2yyZbLPjPOQ="
+          "hash": "z9FlRV1g0VDvsJi9y9QsRhfAyhg0BrggKpPinOQ8TZ8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.SetBackingFieldDelegate-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.SetBackingFieldDelegate-1.html",
+          "hash": "WFF8xGiIYOPEMpY3k0VjLOCQXzmc//ANyKKuHqQD4VY="
         }
       },
       "is_incremental": false,
@@ -489,7 +921,31 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.TextControl.html",
-          "hash": "kyjLqKLKkcusP/pvNnWURudfPhszvOBthEPvpwyEO5s="
+          "hash": "ocB5+CPnOvDgJ04g1jaN5Jhvr/xkPtjyG6D9DJELiW8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ValueChangedEventArgs-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ValueChangedEventArgs-1.html",
+          "hash": "K28mt10xVqt81Aury0VITnPMGBBJHZXf4jpi76lNJAc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ValueEventArgs-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ValueEventArgs-1.html",
+          "hash": "90yiRbIDEtCLpOtPI3e4kXRPDf4xGiUomCZC4NzPl+E="
         }
       },
       "is_incremental": false,
@@ -501,7 +957,31 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ViewModel.html",
-          "hash": "zahGTHwMo2+X2QBtrrkfN4MSDyx0z6TDmy+aOG9u7sM="
+          "hash": "fjT7rOG2c5Ic9/acmBuYS5MSfDPjsRm89SxUdFPjep4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.html",
+          "hash": "3Zh+U2JYWQeeoP8U2mIkVaiJsXzL17+la2/VWpCpU4w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ViewModelCommon.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ViewModelCommon.html",
+          "hash": "J+Q3ynCoLf4zGM5bFf5+Vm1kFd6JTgdi6E3JX1cf3Gg="
         }
       },
       "is_incremental": false,
@@ -513,7 +993,19 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.Win32Caret.html",
-          "hash": "Cfi4ylOQxyx8qxw3BaKU61sEdYQ/MPWb25J3ygyofXo="
+          "hash": "YS+FGjVRwyunHggrz13LyzKHH4CsEsL9oD5PyFnzllA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.WrongEventHandlerSignatureException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.WrongEventHandlerSignatureException.html",
+          "hash": "fDwtyycPivA7nWPRn7wi0Wa6WTjfQCZZHTsfHwvQ1w8="
         }
       },
       "is_incremental": false,
@@ -525,7 +1017,91 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.html",
-          "hash": "re9wSfBOI6FW97AgxFmjp0eV9+37R8Y8yZ8M36wuNrA="
+          "hash": "6FlfD+E4V+h0mfucnNJ2PUdoGLVJp0LO8dzRyh3uUNo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.AssemblyFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.AssemblyFilter.html",
+          "hash": "ESfC7yqJHqn6TXjimYt9JvO3pppWstpOBwyVEMUWv/E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.FilteredExportServiceCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.FilteredExportServiceCollection.html",
+          "hash": "z13kIJ8XejxNLYYkVYQ/3qbJOx+BMr1aJwO/6gtlYpg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.IAssemblyFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.IAssemblyFilter.html",
+          "hash": "uhyN34iFRwwaTmhEhfImn66qJmhSMADy8kAxPI8v/yg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.IFilteredExportServiceCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.IFilteredExportServiceCollection.html",
+          "hash": "+ZsllaDHahHSAYJ0vd3LFaZdwGuIg9RC0MtVeqKXQb8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.IMultiExportServiceCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.IMultiExportServiceCollection.html",
+          "hash": "jKqlCiQw8utnu4aWUjbAGTKt3UysdaBnvbmDeixu1oA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.MultiExportServiceCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.MultiExportServiceCollection.html",
+          "hash": "eXZnSgjUw1tBJOevT9lr6SySp0H3/vucniWSbORXEgA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Microsoft.Extensions.DependencyInjection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Microsoft.Extensions.DependencyInjection.html",
+          "hash": "xlPhJIZ2kUvTSM5dBZWxHtGpISdIWkalbQYaj10NCZk="
         }
       },
       "is_incremental": false,
@@ -549,7 +1125,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "JLF/qCGDD3blaSzIdsw8WBE2U9myQW64GYyPoYdZPfQ="
+          "hash": "Lr33daRE5lCG2UnSXfQouQZRlkiBG9CJ8JNVnz/W26I="
         }
       },
       "is_incremental": false,
@@ -658,7 +1234,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 44,
+          "total_file_count": 92,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {

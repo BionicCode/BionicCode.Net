@@ -28,7 +28,7 @@
     static extern bool SetCaretPos(int x, int y);
 
     [DllImport("user32.dll")]
-    static extern bool GetCaretPos(out Point lpPoint);
+    static extern bool GetCaretPos(out CartesianPoint lpPoint);
 
     [DllImport("user32.dll")]
     static extern bool DestroyCaret();
@@ -141,14 +141,14 @@
     }
 
     /// <summary>
-    /// Copies the caret's position to the specified <see cref="Point"/> structure.
+    /// Copies the caret's position to the specified <see cref="CartesianPoint"/> structure.
     /// </summary>
     /// <param name="caretInfo">Defines the properties of the caret.</param>
     /// <returns><c>true</c> if successfull.</returns>
     /// <remarks>The caret position is always given in the client coordinates of the window that contains the caret.
     /// <para>This API does not participate in DPI virtualization. The returned values are interpreted as logical sizes in terms of the window in question. The calling thread is not taken into consideration.</para></remarks>
     /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcaretpos">GetCaretPos function (winuser.h)</seealso>
-    public bool GetPosition(out Point caretPsoition) => GetCaretPos(out caretPsoition);
+    public bool GetPosition(out CartesianPoint caretPsoition) => GetCaretPos(out caretPsoition);
 
     /// <summary>
     /// Retrieves the time required to invert the caret's pixels. The user can set this value using <see cref="SetBlinkTime(TimeSpan)"/>.

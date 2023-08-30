@@ -74,16 +74,14 @@ using System.Windows;
       }
     }
 
-    private static void EnableFollowTargetMovementOnPopupLoaded(object sender, RoutedEventArgs e)
-    {
-      PopupService.EnableFollowTargetMovement(sender as System.Windows.Controls.Primitives.Popup);
-    }
+    private static void EnableFollowTargetMovementOnPopupLoaded(object sender, RoutedEventArgs e) => PopupService.EnableFollowTargetMovement(sender as System.Windows.Controls.Primitives.Popup);
 
     private static void EnableFollowTargetMovement(System.Windows.Controls.Primitives.Popup popup)
     {
       Window window = PopupService.GetParentWindow(popup);
       if (PopupService.WindowToPopupsMap.TryGetValue(window, out IList<System.Windows.Controls.Primitives.Popup> popups)
-          && !popups.Contains(popup))
+        && popups != null
+        && !popups.Contains(popup))
       {
         popups.Add(popup);
       }
@@ -109,10 +107,10 @@ using System.Windows;
       if (PopupService.WindowToPopupsMap.TryGetValue(window, out IList<System.Windows.Controls.Primitives.Popup> popups)
           && !popups.Contains(popup))
       {
-        popups.Remove(popup);
+        _ = popups.Remove(popup);
         if (!popups.Any())
         {
-          PopupService.WindowToPopupsMap.Remove(window);
+          _ = PopupService.WindowToPopupsMap.Remove(window);
         }
       }
 

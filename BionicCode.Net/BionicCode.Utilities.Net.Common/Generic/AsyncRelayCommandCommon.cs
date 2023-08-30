@@ -217,6 +217,9 @@ namespace BionicCode.Utilities.Net
       this.CanExecuteDelegate = canExecute?.ToFunc();
     }
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
     protected AsyncRelayCommandCommon()
     {
     }

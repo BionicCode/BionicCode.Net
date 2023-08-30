@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;netstandard2.1;net472;net48;net5.0;net6.0;net7.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;net472;net48;net6.0;net7.0;</TargetFrameworks>
 		<ApplicationIcon>logo.ico</ApplicationIcon>
 		<RootNamespace>BionicCode.Utilities.Net</RootNamespace>
 		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
@@ -42,6 +42,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Profiling\Plotter.js" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Profiling\Plotter.js" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Include="..\..\..\..\BionicCode_Logo.png">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
@@ -52,6 +60,9 @@
 	  <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
 	  <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+	  <PackageReference Include="System.Management" Version="7.0.2" />
+	  <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
+	  <PackageReference Include="System.Text.Json" Version="7.0.3" />
 	</ItemGroup>
 
 </Project>
