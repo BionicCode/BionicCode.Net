@@ -43,12 +43,8 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic type parameters to construct the full signature name like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
-    public static string ToDisplaySignatureName(this PropertyInfo propertyInfo, bool? isPropertyGet)
-      => isPropertyGet == null
-        ? propertyInfo.ToDisplaySignatureName()
-        : isPropertyGet == true
-          ? propertyInfo.GetGetMethod(true).ToDisplaySignatureName() 
-          : propertyInfo.GetSetMethod(true).ToDisplaySignatureName();
+    public static string ToDisplaySignatureName(this PropertyInfo propertyInfo, bool isQualifyMemberEnabled = false)
+      => ((MemberInfo)propertyInfo).ToDisplaySignatureName(isQualifyMemberEnabled);
 
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.
@@ -61,8 +57,8 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic type parameters to construct the full signature name like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
-    public static string ToDisplaySignatureName(this MethodInfo methodInfo)
-      => ((MemberInfo)methodInfo).ToDisplaySignatureName();
+    public static string ToDisplaySignatureName(this MethodInfo methodInfo, bool isQualifyMemberEnabled = false)
+      => ((MemberInfo)methodInfo).ToDisplaySignatureName(isQualifyMemberEnabled);
 
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.
@@ -76,7 +72,7 @@
     /// <br/>This helper unwraps the generic type parameters to construct the full signature name like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
     public static string ToDisplaySignatureName(this Type typeInfo)
-      => ((MemberInfo)typeInfo).ToDisplaySignatureName();
+      => ((MemberInfo)typeInfo).ToDisplaySignatureName(false);
 
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.
@@ -89,8 +85,8 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic type parameters to construct the full signature name like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
-    public static string ToDisplaySignatureName(this ConstructorInfo constructorInfo)
-      => ((MemberInfo)constructorInfo).ToDisplaySignatureName();
+    public static string ToDisplaySignatureName(this ConstructorInfo constructorInfo, bool isQualifyMemberEnabled = false)
+      => ((MemberInfo)constructorInfo).ToDisplaySignatureName(isQualifyMemberEnabled);
 
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.
@@ -103,10 +99,10 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic type parameters to construct the full signature name like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
-    public static string ToDisplaySignatureName(this FieldInfo fieldInfo)
-      => ((MemberInfo)fieldInfo).ToDisplaySignatureName();
+    public static string ToDisplaySignatureName(this FieldInfo fieldInfo, bool isQualifyMemberEnabled = false)
+      => ((MemberInfo)fieldInfo).ToDisplaySignatureName(isQualifyMemberEnabled);
 
-    public static string ToDisplaySignatureName(this MemberInfo memberInfo)
+    internal static string ToDisplaySignatureName(this MemberInfo memberInfo, bool isQualifyMemberEnabled = false)
     {
       Type type = memberInfo as Type;
       PropertyInfo propertyInfo = memberInfo as PropertyInfo;
@@ -240,7 +236,7 @@
           ?? eventDeclaredFieldInfo?.FieldType;
 
         var typeReference = new CodeTypeReference(returnType);
-        string returnTypeName = HelperExtensionsCommon.CodeProvider.GetTypeOutput(typeReference);
+        string returnTypeName = HelperExtensionsCommon.CodeProvider.GetTypeOutput(typeReference).Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
 
         _ = fullMemberNameBuilder
           .Append(returnTypeName)
@@ -260,7 +256,7 @@
       else
       {
         // Set actual qualified member name
-        if (memberInfo.DeclaringType != null)
+        if (isQualifyMemberEnabled && memberInfo.DeclaringType != null)
         {
           _ = fullMemberNameBuilder.Append(memberInfo.DeclaringType.ToDisplayName())
             .Append('.');
@@ -277,7 +273,7 @@
         {
           _ = fullMemberNameBuilder
             .Append("this")
-          .Append(' ');
+            .Append(' ');
         }
       }
       else if (isProperty && !isIndexerProperty)
@@ -331,7 +327,8 @@
       } 
       else if (isConstructor || isMethod)
       {
-        _ = fullMemberNameBuilder.Append(')');
+        _ = fullMemberNameBuilder.Append(')')
+          .Append(';');
       }
       else if (isProperty)
       {
