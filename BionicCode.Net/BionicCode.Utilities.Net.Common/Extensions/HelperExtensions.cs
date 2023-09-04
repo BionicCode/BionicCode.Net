@@ -141,45 +141,6 @@
         .Append(accessModifier.ToDisplayStringValue())
         .Append(' ');
 
-      #region dead backup code
-      //if ((method?.IsPrivate ?? false) || (constructor?.IsPrivate ?? false))
-      //{
-      //  _ = fullMemberNameBuilder
-      //    .Append("private")
-      //    .Append(' ');
-      //}
-      //else if ((method?.IsPublic ?? false) || (constructor?.IsPublic ?? false))
-      //{
-      //  _ = fullMemberNameBuilder
-      //    .Append("public")
-      //    .Append(' ');
-      //}
-      //else if ((method?.IsAssembly ?? false) || (constructor?.IsAssembly ?? false))
-      //{
-      //  _ = fullMemberNameBuilder
-      //    .Append("internal")
-      //    .Append(' ');
-      //}
-      //else if ((method?.IsFamily ?? false) || (constructor?.IsFamily ?? false))
-      //{
-      //  _ = fullMemberNameBuilder
-      //    .Append("protected")
-      //    .Append(' ');
-      //}
-      //else if ((method?.IsFamilyOrAssembly ?? false) || (constructor?.IsFamilyOrAssembly ?? false))
-      //{
-      //  _ = fullMemberNameBuilder.
-      //    Append("protected public")
-      //    .Append(' ');
-      //}
-      //else if ((method?.IsFamilyAndAssembly ?? false) || (constructor?.IsFamilyAndAssembly ?? false))
-      //{
-      //  _ = fullMemberNameBuilder
-      //    .Append("private protected")
-      //    .Append(' ');
-      //} 
-      #endregion
-
       if ((methodInfo?.IsFinal ?? false) 
         || (constructorInfo?.IsFinal ?? false)
         || (propertyGetMethodInfo?.IsFinal ?? false) 
@@ -294,7 +255,7 @@
       }
       else if (isConstructor)
       {
-        _ = fullMemberNameBuilder.Append(constructorInfo.DeclaringType.ToDisplayName());
+        _ = fullMemberNameBuilder.Append(constructorInfo.ToDisplayName());
       }
       else
       {

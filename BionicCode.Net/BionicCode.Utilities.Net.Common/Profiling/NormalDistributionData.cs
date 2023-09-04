@@ -1,21 +1,34 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System.Collections.Generic;
+  using System.Linq;
   using System.Text.Json.Serialization;
 
-  internal partial class HtmlLogger
+  internal class NormalDistributionData<TData>
   {
-    internal class NormalDistributionData<TData>
+    public NormalDistributionData(int index, IEnumerable<TData> values, double mean, double standardDeviation)
     {
-      public NormalDistributionData(int index, IEnumerable<TData> values)
-      {
-        this.Index = index;
-        this.Values = values;
-      }
-
-      [JsonIgnore]
-      public int Index { get; }
-      public IEnumerable<TData> Values { get; }
+      this.Index = index;
+      this.Values = values;
+      this.Mean = mean;
+      this.StandardDeviation = standardDeviation;
     }
+
+    public TData this[int index] => this.Values.ElementAt(index);
+
+    [JsonIgnore]
+    public int Index { get; }
+    [JsonIgnore]
+    public int Count => this.Values.Count();
+
+    [JsonPropertyName("values")]
+    public IEnumerable<TData> Values { get; }
+    [JsonIgnore]
+    public double Mean { get; }
+    [JsonIgnore]
+    public double StandardDeviation { get; }
+
+    [JsonIgnore]
+    public string Title { get; set; }
   }
 }

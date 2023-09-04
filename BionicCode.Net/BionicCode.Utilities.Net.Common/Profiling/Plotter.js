@@ -2,36 +2,28 @@
 google.charts.setOnLoadCallback(prepareData);
 
 function prepareData() {{
-    const dataValuesJsonText = '{0}';
-    const dataValuesCollectionJson = JSON.parse(dataValuesJsonText);
-    let dataValuesCollection = [];
-    for (let dataValuesCollectionJsonIndex = 0; dataValuesCollectionJsonIndex < dataValuesCollectionJson.length; dataValuesCollectionJsonIndex += 1) {{
-      let dataValuesJson = dataValuesCollectionJson[dataValuesCollectionJsonIndex]['Values'];
-      let dataValues = [['Elapsed time', 'Probability density']];
-      for (let dataValuesIndex = 0; dataValuesIndex < dataValuesJson.length; dataValuesIndex += 1) {{
-        const value = [dataValuesJson[dataValuesIndex].X, dataValuesJson[dataValuesIndex].Y];
-        dataValues.push(value);
-      }}
 
-      dataValuesCollection.push(dataValues);
+  const chartTableJsonText = '{0}';
+  const chartTableJson = JSON.parse(chartTableJsonText);
+  var dataTable = new google.visualization.DataTable();
+
+  const columns = chartTableJson['columns'];
+  for (let columnIndex = 0; columnIndex < columns.length; columnIndex += 1) {{
+    const column = columns[columnIndex];
+    dataTable.addColumn(column);
   }}
 
-  drawChart(dataValuesCollection);
-  document.getElementById('json_data').innerHTML += "xyz:" + dataValuesCollection;
+  const rows = chartTableJson['rows'];
+  for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {{
+    const row = rows[rowIndex];
+    const cells = row['cellValues'];
+    dataTable.addRow(cells);
+  }}
+
+  drawChart(dataTable, chartTableJson['options']);
 }}
 
-function drawChart(dataValuesCollection) {{
-  const options = {{
-    title: 'Normal distribution',
-    hAxis: {{ title: 'Elapsed time [µs]' }},
-    vAxis: {{ title: 'Probability density' }},
-    legend: 'none'
-}};
-  for (let dataValuesCollectionIndex = 0; dataValuesCollectionIndex < dataValuesCollection.length; dataValuesCollectionIndex += 1) {{
-      
-    let dataValues = dataValuesCollection[dataValuesCollectionIndex];
-      const data = google.visualization.arrayToDataTable(dataValues);
-      const chart = new google.visualization.LineChart(document.getElementById('chart'));
-      chart.draw(data, options);
-  }}
-}}
+function drawChart(dataTable, options) {{
+    const chart = new google.visualization.LineChart(document.getElementById('chart'));
+    chart.draw(dataTable, options);
+}}  

@@ -2,6 +2,7 @@
 namespace BionicCode.Utilities.Net
 {
   using System;
+  using System.Collections.Generic;
 
   internal class ExceptionMessages
   {
@@ -14,6 +15,13 @@ namespace BionicCode.Utilities.Net
     public static string GetArgumentExceptionMessage_ProfilerRunCount() => "The value must be between '0' and 'ulong.MaxValue'.";
     public static string GetArgumentExceptionMessage_ProfilerWarmUpCount() => "The value must be between '0' and 'ulong.MaxValue'.";
     public static string GetIndexOutOfRangeExceptionMessage(int index, string collectionName) => $"The index '{index}' is out of range of collection {collectionName}.";
+    public static string GetMissingProfiledArgumentAttributeExceptionMessage_Property() => $"The profiled property requires 1 parameter but no argument list was provided.Please decorate the profiled member with at least one 'ProfilerArgumentAttribute' to specify a set of arguments to enable the invocation of the member.";
+    public static string GetMissingProfiledArgumentAttributeExceptionMessage_IndexerProperty() => $"The profiled indexer property requires 2 parameters (index and value) but no argument list was provided.Please decorate the profiled member with at least one 'ProfilerArgumentAttribute' to specify a set of arguments to enable the invocation of the member.";
+    public static string GetMissingProfiledArgumentAttributeExceptionMessage_Method(int parameterCount) => $"The profiled method requires {parameterCount} {(parameterCount == 1 ? "parameter" : "parameters")} but no argument list was provided.Please decorate the profiled member with at least one 'ProfilerArgumentAttribute' to specify a set of arguments to enable the invocation of the member.";
+    public static string GetMissingProfiledArgumentAttributeExceptionMessage_Constructor(int parameterCount) => $"The profiled constructor requires {parameterCount} {(parameterCount == 1 ? "parameter" : "parameters")} but no argument list was provided.Please decorate the profiled member with at least one 'ProfilerArgumentAttribute' to specify a set of arguments to enable the invocation of the member.";
+    public static string GetMissingProfiledArgumentAttributeExceptionMessage_Delegate(int parameterCount) => $"The profiled delegate requires {parameterCount} {(parameterCount == 1 ? "parameter" : "parameters")} but no argument list was provided.Please decorate the profiled member with at least one 'ProfilerArgumentAttribute' to specify a set of arguments to enable the invocation of the member.";
+    public static string GetMissingCreationMemberOfProfiledTypeExceptionMessage(Type profiledType) => $@"Unable to create an instance of the type {profiledType.FullName} that declares the profiled member.
+{System.Environment.NewLine} Please provide a parameterless constructor. Alternatively, provide a factory member that returns a properly initialized instance of the declaring owner. That member must be static and decorated with the '{nameof(ProfilerFactoryAttribute)}'. Additionally that member must be either a parameterless method, a parameterless Func delegate, a property or field. The access modifier (e.g. private, internal, public) is not constrained.";
   }
 }
 

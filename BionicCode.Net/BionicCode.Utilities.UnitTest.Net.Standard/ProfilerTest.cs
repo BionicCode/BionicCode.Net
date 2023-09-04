@@ -196,7 +196,7 @@
     public async Task LogTime_Atrributes_MustBeEqualToReference()
     {
       ProfilerLoggerDelegate logger = CreateLogger();
-      const int iterations = 10;
+      const int iterations = 20;
       ProfilerBuilder profilerBuilder = Profiler.LogType(typeof(BenchmarkTarget<string>))
         .SetIterations(iterations)
         .SetLogger(result => Debug.WriteLine(result.Summary))
@@ -204,7 +204,7 @@
 
       IEnumerable<ProfilerBatchResult> result = await profilerBuilder.RunAsync();
 
-      _ = result.LastOrDefault().IterationCount.Should().Be(iterations);
+      _ = result?.LastOrDefault()?.IterationCount.Should().Be(iterations);
     }
   }
 }

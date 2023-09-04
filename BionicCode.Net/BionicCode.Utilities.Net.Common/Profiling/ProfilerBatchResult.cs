@@ -79,8 +79,6 @@
       return summaryBuilder.ToString();
     }
 
-    private bool HasCancelledTask() => this.Results.Any(result => result.IsProfiledTaskCancelled);
-
     internal void Combine(ProfilerBatchResult batchResultToAppend)
       => AddResultRange(batchResultToAppend.Results);
 
@@ -138,9 +136,18 @@
       return totalDeviationMicroseconds / this.IterationCount;
     }
 
+    private bool HasCancelledTask() => this.Results.Any(result => result.IsProfiledTaskCancelled);
+
+    /// <summary>
+    /// The index of the current result batch.
+    /// </summary>
     public int Index { get; internal set; }
 
     private double standardDeviationInMicroseconds;
+    /// <summary>
+    /// The stamdard deviation over all the <see cref="ProfilerResult"/> items.
+    /// </summary>
+    /// <value>Stamdard deviation in microseconds.</value>
     public double StandardDeviationInMicroseconds 
     {
       get
@@ -156,6 +163,9 @@
     }
 
     private double variance;
+    /// <summary>
+    /// The variance over all the <see cref="ProfilerResult"/> items.
+    /// </summary>
     public double Variance
     {
       get
@@ -173,25 +183,43 @@
     /// <summary>
     /// In case ansync operation was benchmarked, this property returns whether the <see cref="Task"/> was cancelled or not.
     /// </summary>
-    /// <standardDeviationInMicroseconds><see langword="true"/> if the benchmark series contains a cancelled run (where the <see cref="Task"/> is cancelled).</standardDeviationInMicroseconds>
+    /// <value><see langword="true"/> if the benchmark series contains a cancelled run (where the <see cref="Task"/> is cancelled).</value>
     public bool HasCancelledProfiledTask => this.HasCancelledProfiledTaskFactory.Value;
 
     /// <summary>
     /// The number of iterations the <see cref="Profiler"/> has run the specified operation.
     /// </summary>
-    /// <standardDeviationInMicroseconds>The number of iterations (which is equivalent to the number of results).</standardDeviationInMicroseconds>
+    /// <value>The number of iterations (which is equivalent to the number of results) per argument list.</value>
+    /// <remarks>Using the profiler with annotations (attributes) (see <see cref="ProfileAttribute"/>) allows to specify argument lists (see <see cref="ProfilerArgumentAttribute"/>) to simulate real-world behavior where usually the values of the arguments that are provided to the member change.
+    /// <br/>A member is executed and profiled with each argument list for the number of the <see cref="IterationCount"/> times.
+    /// <br/>For example if a method is profiled with three argument lists and an iteration count of 10, the <see cref="IterationCount"/> will return <c>10</c> and the total iterations run for the profiled member is <c>30</c>, the product of <see cref="IterationCount"/> and <see cref="ArgumentListCount"/> (see <see cref="TotalIterationCount"/>).</remarks>
     public int IterationCount { get; internal set; }
+
+    /// <summary>
+    /// The total number of iterations to conduct the profiling.
+    /// </summary>
+    /// <value>The value is based on the number of iterations and the number of argument lists. If <see cref="IterationCount"/> returns <c>10</c> and <see cref="ArgumentListCount"/> returns <c>3</c> then <see cref="TotalIterationCount"/> will return <c>30</c> because each argument list is executed 10 times.</value>
+    public int TotalIterationCount => System.Math.Max(this.ArgumentListCount, 1) * this.IterationCount;
+
+    /// <summary>
+    /// The number of iterations the <see cref="Profiler"/> has run the specified operation.
+    /// </summary>
+    /// <value>The number of iterations (which is equivalent to the number of results) per argument list.</value>
+    /// <remarks>Using the profiler with annotations (attributes) allows to specify argument lists to simulate real-world behavior where usually the values of the arguments that are provided to the member change.
+    /// <br/>A member is executed and profiled with each argument list for the number of the <see cref="IterationCount"/> times.
+    /// <br/>For example if a method is profiled with three argument lists and an iteration count of 10, the <see cref="IterationCount"/> will return <c>10</c> and the total iterations run for the profiled member is the product of <see cref="IterationCount"/> and <see cref="ArgumentListCount"/>.</remarks>
+    public int ArgumentListCount { get; internal set; }
 
     /// <summary>
     /// The logged results of each iteration.
     /// </summary>
-    /// <standardDeviationInMicroseconds>The results of each iteration.</standardDeviationInMicroseconds>
+    /// <value>The read-only results of all iterations.</value>
     public IReadOnlyCollection<ProfilerResult> Results { get; }
 
     /// <summary>
     /// The total duration of all logged iterations.
     /// </summary>
-    /// <standardDeviationInMicroseconds>The sum of each duration per iteration.</standardDeviationInMicroseconds>
+    /// <value>The sum of each duration per iteration.</value>
     public TimeSpan TotalDuration { get; internal set; }
 #if NET7_0_OR_GREATER
     internal double TotalDurationInMicroseconds => this.TotalDuration.TotalMicroseconds;
@@ -202,7 +230,7 @@
     /// <summary>
     /// The average duration of all logged iterations.
     /// </summary>
-    /// <standardDeviationInMicroseconds>The average duration of all iterations.</standardDeviationInMicroseconds>
+    /// <value>The average duration of all iterations.</value>
     public TimeSpan AverageDuration { get; internal set; }
 
 #if NET7_0_OR_GREATER
@@ -232,7 +260,7 @@
     /// ╰─────────────────────────┴────────────────────────────┴────────────────╯
     /// </code>
     /// </summary>
-    /// <standardDeviationInMicroseconds>A formatted string that presents the results of the benchmarking in an Unicode formatted table.</standardDeviationInMicroseconds>
+    /// <value>A formatted string that presents the results of the benchmarking in an Unicode formatted table.</value>
     public string Summary => this.SummaryFactory.Value;
     private Lazy<string> SummaryFactory { get; }
 

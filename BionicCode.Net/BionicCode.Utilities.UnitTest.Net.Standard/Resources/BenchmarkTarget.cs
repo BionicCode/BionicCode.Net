@@ -6,19 +6,20 @@
 
   public class BenchmarkTarget<TParam>
   {
-    [Profile]
-    [ProfilerArgument(true)]
+    //[Profile]
+    [ProfilerArgument(100)]
     //[ProfilerArgument(200)]
     //[ProfilerArgument(300)]
-    public bool NumericValue
+    public int NumericValue
     {
       //[Profile]
+      //[ProfilerArgument(500)]
       get;
 
-      //[Profile]
-      //[ProfilerArgument(500)]
-      //[ProfilerArgument(600)]
-      //[ProfilerArgument(700)]
+      [Profile]
+      [ProfilerArgument(500)]
+      [ProfilerArgument(600)]
+      [ProfilerArgument(700)]
       private set;
     }
 
@@ -47,12 +48,13 @@
       { { "Twelve", 12 } };
       this.KeyValuePairsReverse = new Dictionary<int, string>()
       { { 20, "Twenty" } };
+      //System.Threading.Thread.Sleep(500);
     }
 
     //[ProfilerFactoryAttribute]
     //private static BenchmarkTarget<TParam> factory  = new BenchmarkTarget<TParam>(300);
 
-    [Profile]
+    //[Profile]
     [ProfilerArgument(500)]
     public BenchmarkTarget(int numericValue)
     {
