@@ -223,12 +223,39 @@
         if (profiledMethodInfo.IsGeneric)
         {
           Type[] genericTypeArguments = profiledMethodInfo.MethodInfo.GetGenericArguments();
-          MethodInfo genericMethodInfo = profiledMethodInfo.MethodInfo.MakeGenericMethod(genericTypeArguments);
+          ParameterInfo[] methodParameters = profiledMethodInfo.MethodInfo.GetParameters();
+          var genericParameterTypes = new Type[genericTypeArguments.Length];
+          int genericParameterTypesIndex = 0;
+          foreach (Type genericTypeArgument in genericTypeArguments)
+          {
+            for (int genericParameterIndex = 0; genericParameterIndex < methodParameters.Length; genericParameterIndex++)
+            {
+              ParameterInfo parameterAtCurrentPosition = methodParameters[genericParameterIndex];
+              if (parameterAtCurrentPosition.ParameterType.Name.Equals(genericTypeArgument.Name, StringComparison.Ordinal))
+              {
+                object argumentForGenericParameterPosition = argumentList.ElementAt(genericParameterIndex);
+                genericParameterTypes[genericParameterTypesIndex++] = argumentForGenericParameterPosition.GetType();
+              }
+            }
+          }
+
+          MethodInfo genericMethodInfo = profiledMethodInfo.MethodInfo.MakeGenericMethod(genericParameterTypes);
           if (profiledMethodInfo.IsAsync)
           {
             if (profiledMethodInfo.IsAsyncTask)
             {
-              asyncMethod = () => (Task)genericMethodInfo.Invoke(targetInstance, argumentList.ToArray());
+              asyncMethod = async () =>
+              {
+                try
+                {
+                  await (Task)genericMethodInfo.Invoke(targetInstance, argumentList.ToArray());
+                }
+                catch (ArgumentException e)
+                {
+
+                  throw new ProfilerArgumentException(ExceptionMessages.GetArgumentListMismatchExceptionMessage(), e);
+                }
+              };
             }
             else
             {
@@ -436,5 +463,5 @@
 
       return null;
     }
-  }
+  }  
 }

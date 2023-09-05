@@ -16,7 +16,7 @@
       //[ProfilerArgument(500)]
       get;
 
-      [Profile]
+      //[Profile]
       [ProfilerArgument(500)]
       [ProfilerArgument(600)]
       [ProfilerArgument(700)]
@@ -61,7 +61,7 @@
       //this.NumericValue = numericValue;
     }
 
-    [Profile]
+    //[Profile]
     [ProfilerArgument(500, "1")]
     [ProfilerArgument(1000, "2")]
     [ProfilerArgument(200, "3")]
@@ -77,6 +77,6 @@
     [ProfilerArgument(500, "1", 1)]
     [ProfilerArgument(1000, "2", 2)]
     [ProfilerArgument(200, "3", 3)]
-    public static async Task TimeConsumingMethod<TMethodParam1, TMethodParam2>(int delayInMilliseconds, TMethodParam1 someValue1, TMethodParam1 someValue2) => await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliseconds));
+    public static async Task TimeConsumingMethod<TMethodParam1, TMethodParam2>(int delayInMilliseconds, TMethodParam1 someValue1, TMethodParam2 someValue2) => await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliseconds));
   }
 }

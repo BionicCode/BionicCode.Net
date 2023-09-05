@@ -316,9 +316,9 @@ table {{
   	<span class=""labelSpan"">Line number: </span><span class=""valueSpan"">{batchResult.Context.LineNumber}</span><br />
   <span style=""font-weight: bold; font-size: 14pt"">Profiler</span><br/>
   	<span class=""labelSpan"">Timestamp: </span><span class=""valueSpan"">{batchResult.TimeStamp}</span><br />
-  	<span class=""labelSpan"">Number of iterations: </span><span class=""valueSpan"">{batchResult.IterationCount} runs for each argument list</span><br />
-  	<span class=""labelSpan"">Number of argument lists: </span><span class=""valueSpan"">{batchResult.ArgumentListCount}</span><br />
-  	<span class=""labelSpan"">Total number of iterations: </span><span class=""valueSpan"">{batchResult.TotalIterationCount} ({batchResult.IterationCount} runs for each of {batchResult.ArgumentListCount} argument {(batchResult.ArgumentListCount == 1 ? "list" : "lists")}) </span><br />
+  	<span class=""labelSpan"">Iterations: </span><span class=""valueSpan"">{batchResult.IterationCount} runs for each argument list</span><br />
+  	<span class=""labelSpan"">Argument lists: </span><span class=""valueSpan"">{batchResult.ArgumentListCount}</span><br />
+  	<span class=""labelSpan"">Total iterations: </span><span class=""valueSpan"">{batchResult.TotalIterationCount} ({batchResult.IterationCount} runs for each of {batchResult.ArgumentListCount} argument {(batchResult.ArgumentListCount == 1 ? "list" : "lists")}) </span><br />
   <span style=""font-weight: bold; font-size: 14pt"">Machine</span><br/>  
   	<span class=""labelSpan"">OS architecture: </span><span class=""valueSpan"">{(environmentInfo.Is64BitOperatingSystem ? 64 : 32)} bit</span><br />   
   	<span class=""labelSpan"">Process architecture: </span><span class=""valueSpan"">{(environmentInfo.Is64BitProcess ? 64 : 32)} bit</span><br />   
