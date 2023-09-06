@@ -500,7 +500,7 @@
       ProfilerBatchResult result = new ProfilerBatchResult(runCount, DateTime.Now);
       var assemblyOfTargetType = Assembly.GetCallingAssembly();
       string asseblyName = assemblyOfTargetType.GetName().Name;
-      var context = new ProfilerContext(asseblyName, action?.GetType().ToDisplayName() ?? asyncAction?.GetType().ToDisplayName(), ProfiledTargetType.Delegate, sourceFileName, lineNumber);
+      var context = new ProfilerContext(asseblyName, action?.GetType().ToDisplayName() ?? asyncAction?.GetType().ToDisplayName(), ProfiledTargetType.Delegate, sourceFileName, lineNumber, null);
       result.Context = context;
 
       await LogAverageTimeInternalAsync(asyncAction, asyncValueTaskAction, action, warmUpCount, runCount, result);
@@ -533,7 +533,7 @@
       var result = new ProfilerBatchResult(runCount, DateTime.Now);
       var assemblyOfTargetType = Assembly.GetCallingAssembly();
       string asseblyName = assemblyOfTargetType.GetName().Name;
-      var context = new ProfilerContext(asseblyName, action?.GetType().ToDisplayName(), ProfiledTargetType.Delegate, sourceFileName, lineNumber);
+      var context = new ProfilerContext(asseblyName, action?.GetType().ToDisplayName(), ProfiledTargetType.Delegate, sourceFileName, lineNumber, null);
       result.Context = context;
 
       LogAverageTimeInternal(action, warmUpCount, runCount, result);
@@ -694,7 +694,7 @@
       result = new ProfilerBatchResult(1,  DateTime.Now);
       var assemblyOfTargetType = Assembly.GetCallingAssembly();
       string asseblyName = assemblyOfTargetType.GetName().Name;
-      var context = new ProfilerContext(asseblyName, scopeName, ProfiledTargetType.Delegate, sourceFileName, lineNumber);
+      var context = new ProfilerContext(asseblyName, scopeName, ProfiledTargetType.Delegate, sourceFileName, lineNumber, null);
       result.Context = context;
       var profilerScopeProvider = new ProfilerScopeProvider(logger, context);
       IDisposable profilerScope = profilerScopeProvider.StartProfiling(out result);
@@ -788,7 +788,7 @@
       result = new ProfilerBatchResult(1,DateTime.Now);
       var assemblyOfTargetType = Assembly.GetCallingAssembly();
       string asseblyName = assemblyOfTargetType.GetName().Name;
-      var context = new ProfilerContext(asseblyName, scopeName, ProfiledTargetType.Delegate, sourceFileName, lineNumber);
+      var context = new ProfilerContext(asseblyName, scopeName, ProfiledTargetType.Delegate, sourceFileName, lineNumber, null);
       result.Context = context;
       var profilerScopeProvider = new ProfilerScopeProvider(logger, context);
       IDisposable profilerScope = profilerScopeProvider.StartProfiling(out result);

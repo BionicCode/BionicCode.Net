@@ -6,14 +6,14 @@
 
   public class BenchmarkTarget<TParam>
   {
-    //[Profile]
+    [Profile]
     [ProfilerArgument(100)]
-    //[ProfilerArgument(200)]
-    //[ProfilerArgument(300)]
+    [ProfilerArgument(200)]
+    [ProfilerArgument(300)]
     public int NumericValue
     {
       //[Profile]
-      //[ProfilerArgument(500)]
+      [ProfilerArgument(500)]
       get;
 
       //[Profile]
@@ -23,19 +23,23 @@
       private set;
     }
 
+    public int Count => this.KeyValuePairs.Count;
+
     private Dictionary<string, int> KeyValuePairs { get; }
     private Dictionary<int, string> KeyValuePairsReverse { get; }
 
-    //[Profile]
-    [ProfilerArgument(12, Index = "Twelve")]
+    [Profile]
+    [ProfilerArgument(12, Index = "A")]
+    [ProfilerArgument(20, Index = "T")]
     public int this[string key]
     {
       get => this.KeyValuePairs[key];
       set => this.KeyValuePairs[key] = value;
     }
 
-    //[Profile]
+    [Profile]
     [ProfilerArgument("Twenty", Index = 20)]
+    [ProfilerArgument("Twelve", Index = 12)]
     public string this[int key]
     {
       get => this.KeyValuePairsReverse[key];
@@ -44,38 +48,45 @@
 
     public BenchmarkTarget()
     {
-      this.KeyValuePairs = new Dictionary<string, int>()
-      { { "Twelve", 12 } };
-      this.KeyValuePairsReverse = new Dictionary<int, string>()
-      { { 20, "Twenty" } };
-      //System.Threading.Thread.Sleep(500);
+      this.KeyValuePairs = new Dictionary<string, int>();
+      this.KeyValuePairsReverse = new Dictionary<int, string>();
+      int numericValue = 0;
+      for (int itemCount = 65; itemCount < 65 + 26; itemCount++, numericValue++)
+      {
+        int smallLetterOffset = 32;
+        this.KeyValuePairs.Add(new string(new[] { (char)itemCount }), numericValue);
+        this.KeyValuePairsReverse.Add(numericValue, new string(new[] { (char)itemCount }));
+
+        this.KeyValuePairs.Add(new string(new[] { (char)(itemCount + smallLetterOffset) }), numericValue + 26);
+        this.KeyValuePairsReverse.Add(numericValue + 26, new string(new[] { (char)(itemCount + smallLetterOffset)}));
+      }
     }
 
     //[ProfilerFactoryAttribute]
     //private static BenchmarkTarget<TParam> factory  = new BenchmarkTarget<TParam>(300);
 
-    //[Profile]
+    [Profile]
     [ProfilerArgument(500)]
-    public BenchmarkTarget(int numericValue)
+    public BenchmarkTarget(int numericValue) : this()
     {
-      //this.NumericValue = numericValue;
+      this.NumericValue = numericValue;
     }
 
-    //[Profile]
+    [Profile]
     [ProfilerArgument(500, "1")]
     [ProfilerArgument(1000, "2")]
     [ProfilerArgument(200, "3")]
     public static async Task TimeConsumingMethod(int delayInMilliseconds, TParam someValue) => await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliseconds));
 
-    //[Profile]
+    [Profile]
     [ProfilerArgument(500, "1")]
     [ProfilerArgument(1000, "2")]
     [ProfilerArgument(200, "3")]
     public static async Task TimeConsumingMethod<TMethodParam>(int delayInMilliseconds, TMethodParam someValue) => await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliseconds));
 
     [Profile]
-    [ProfilerArgument(500, "1", 1)]
-    [ProfilerArgument(1000, "2", 2)]
+    [ProfilerArgument(100, "1", 1)]
+    [ProfilerArgument(10, "2", 2)]
     [ProfilerArgument(200, "3", 3)]
     public static async Task TimeConsumingMethod<TMethodParam1, TMethodParam2>(int delayInMilliseconds, TMethodParam1 someValue1, TMethodParam2 someValue2) => await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliseconds));
   }

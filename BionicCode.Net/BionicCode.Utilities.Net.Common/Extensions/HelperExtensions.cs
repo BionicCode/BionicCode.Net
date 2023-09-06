@@ -21,6 +21,13 @@
   /// </summary>
   public static partial class HelperExtensionsCommon
   {
+    /// <summary>
+    /// The property name of an indexer property. This name is compiler generated and equals the value of the <see langword="static"/>field <see cref="System.Windows.Data.Binding.IndexerName" />.
+    /// </summary>
+    /// <value>The generated property name of an indexer is <c>Item</c>.</value>
+    /// <remarks>This field exists to enable writing of cross-platform compatible reflection code without the requirement to import the PresentationFramework.dll.</remarks>
+    public static readonly string IndexerName = "Item";
+
     private static CSharpCodeProvider CodeProvider { get; } = new CSharpCodeProvider();
 
     /// <summary>
@@ -721,24 +728,24 @@
     /// <param name="accessModifier"></param>
     /// <returns></returns>
     /// <exception cref="NotSupportedException">The enum value is not supported. (This exception is only intended for internal maintainance and will never be thrown in production code)</exception>
-    public static string ToDisplayStringValue(this AccessModifier accessModifier)
+    public static string ToDisplayStringValue(this AccessModifier accessModifier, bool toUpperCase = false)
     {
       switch (accessModifier)
       {
         case AccessModifier.Default:
-          return "internal";
+          return toUpperCase ? "Internal" : "internal";
         case AccessModifier.Public:
-          return "public";
+          return toUpperCase ? "Public" : "public";
         case AccessModifier.ProtectedInternal:
-          return "protected internal";
+          return toUpperCase ? "Protected Internal" : "protected internal";
         case AccessModifier.Internal:
-          return "internal";
+          return toUpperCase ? "Internal" : "internal";
         case AccessModifier.Protected:
-          return "protected";
+          return toUpperCase ? "Protected" : "protected";
         case AccessModifier.PrivateProtected:
-          return "private protected";
+          return toUpperCase ? "Provate Protected" : "private protected";
         case AccessModifier.Private:
-          return "private";
+          return toUpperCase ? "Private" : "private";
         default:
           throw new NotSupportedException();
       }
@@ -750,26 +757,26 @@
     /// <param name="profiledTargetType"></param>
     /// <returns></returns>
     /// <exception cref="NotSupportedException">The enum value is not supported. (This exception is only intended for internal maintainance and will never be thrown in production code)</exception>
-    public static string ToDisplayStringValue(this ProfiledTargetType profiledTargetType)
+    public static string ToDisplayStringValue(this ProfiledTargetType profiledTargetType, bool toUpperCase = false)
     {
       switch (profiledTargetType)
       {
         case ProfiledTargetType.None:
-          return "None";
+          return toUpperCase ? "None" : "none";
         case ProfiledTargetType.PropertyGet:
-          return "Property get()";
+          return toUpperCase ? "Property get()" : "property get()";
         case ProfiledTargetType.PropertySet:
-          return "Property set()";
+          return toUpperCase ? "Property set()" : "property set()";
         case ProfiledTargetType.Property:
-          return "Property";
+          return toUpperCase ? "Property" : "property";
         case ProfiledTargetType.Constructor:
-          return "Constructor";
+          return toUpperCase ? "Constructor" : "constructor";
         case ProfiledTargetType.Event:
-          return "Event";
+          return toUpperCase ? "Event" : "event";
         case ProfiledTargetType.Delegate:
-          return "Delegate";
+          return toUpperCase ? "Delegate" : "delegate";
         case ProfiledTargetType.Method:
-          return "Method";
+          return toUpperCase ? "Method" : "method";
         default:
           throw new NotSupportedException();
       }

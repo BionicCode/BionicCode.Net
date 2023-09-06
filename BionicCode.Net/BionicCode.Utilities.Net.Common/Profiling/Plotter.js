@@ -27,3 +27,8 @@ function drawChart(dataTable, options) {{
     const chart = new google.visualization.LineChart(document.getElementById('chart'));
     chart.draw(dataTable, options);
 }}  
+
+function copyToClipboard() {{
+  const filePath = document.getElementById("report_file_path").innerHTML;
+  navigator.clipboard.writeText(filePath);
+}}

@@ -105,7 +105,7 @@
                 ? ProfiledTargetType.PropertyGet 
                 : ProfiledTargetType.Method;
 
-            var context = new ProfilerContext(method.AssemblyName, fullSignatureName, targetType, method.SourceFilePath, method.LineNumber);
+            var context = new ProfilerContext(method.AssemblyName, fullSignatureName, targetType, method.SourceFilePath, method.LineNumber, memberInfo.MemberInfo);
             result.Context = context;
 
             if (memberResults.IsEmpty())
@@ -123,7 +123,7 @@
           else if (memberIsConstructor)
           {
             ProfilerBatchResult result = Profiler.LogTime(constructor.ConstructorDelegate, this.Configuration.WarmUpIterations, this.Configuration.Iterations, this.Configuration.ProfilerLogger, constructor.SourceFilePath, lineNumber: constructor.LineNumber);
-            var context = new ProfilerContext(constructor.AssemblyName, fullSignatureName, ProfiledTargetType.Constructor, constructor.SourceFilePath, constructor.LineNumber);
+            var context = new ProfilerContext(constructor.AssemblyName, fullSignatureName, ProfiledTargetType.Constructor, constructor.SourceFilePath, constructor.LineNumber, memberInfo.MemberInfo);
             result.Context = context;
 
             if (memberResults.IsEmpty())
@@ -141,7 +141,7 @@
           else if (memberIsProperty)
           {
             ProfilerBatchResult propertyGetResult = Profiler.LogTime(property.GetDelegate, this.Configuration.WarmUpIterations, this.Configuration.Iterations, this.Configuration.ProfilerLogger, property.SourceFilePath, lineNumber: property.LineNumber);
-            var context = new ProfilerContext(property.AssemblyName, fullSignatureName, ProfiledTargetType.PropertyGet, property.SourceFilePath, property.LineNumber);
+            var context = new ProfilerContext(property.AssemblyName, fullSignatureName, ProfiledTargetType.PropertyGet, property.SourceFilePath, property.LineNumber, memberInfo.MemberInfo);
             propertyGetResult.Context = context;
             propertyGetResult.Index = 0;
 
@@ -158,7 +158,7 @@
             }
 
             ProfilerBatchResult propertySetResult = Profiler.LogTime(property.SetDelegate, this.Configuration.WarmUpIterations, this.Configuration.Iterations, this.Configuration.ProfilerLogger, property.SourceFilePath, lineNumber: property.LineNumber);
-            context = new ProfilerContext(property.AssemblyName, fullSignatureName, ProfiledTargetType.PropertySet, property.SourceFilePath, property.LineNumber);
+            context = new ProfilerContext(property.AssemblyName, fullSignatureName, ProfiledTargetType.PropertySet, property.SourceFilePath, property.LineNumber, memberInfo.MemberInfo);
             propertySetResult.Context = context;
             propertySetResult.Index = 1;
 
@@ -424,7 +424,7 @@
         
         IEnumerable<IEnumerable<object>> argumentLists = new List<IEnumerable<object>> { new VoidArgumentList() };
         bool isPropertyIndexer = propertyInfo.GetIndexParameters().Length > 0;
-        bool isRequiringArguments = isPropertyIndexer || propertyInfo.GetSetMethod() != null;
+        bool isRequiringArguments = isPropertyIndexer || propertyInfo.GetSetMethod(true) != null;
         if (isRequiringArguments)
         {
           argumentLists = isPropertyIndexer
