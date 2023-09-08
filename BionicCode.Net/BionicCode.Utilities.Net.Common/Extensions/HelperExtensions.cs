@@ -5,6 +5,7 @@
   using System.Collections;
   using System.Collections.Generic;
   using System.Data.Common;
+  using System.Diagnostics;
   using System.IO;
   using System.Linq;
   using System.Net.PeerToPeer;
@@ -122,7 +123,7 @@
       EventInfo eventInfo = memberInfo as EventInfo;
       MethodInfo eventAddMethodInfo = eventInfo?.GetAddMethod(true);
       FieldInfo eventDeclaredFieldInfo = eventInfo?.DeclaringType.GetField(eventInfo.Name, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-      
+
       ParameterInfo[] indexerPropertyIndexParameters = propertyInfo?.GetIndexParameters() ?? Array.Empty<ParameterInfo>();
 
       bool isProperty = memberInfo.MemberType.HasFlag(MemberTypes.Property);
@@ -144,9 +145,9 @@
         .Append(accessModifier.ToDisplayStringValue())
         .Append(' ');
 
-      if ((methodInfo?.IsFinal ?? false) 
+      if ((methodInfo?.IsFinal ?? false)
         || (constructorInfo?.IsFinal ?? false)
-        || (propertyGetMethodInfo?.IsFinal ?? false) 
+        || (propertyGetMethodInfo?.IsFinal ?? false)
         || (propertySetMethodInfo?.IsFinal ?? false))
       {
         _ = fullMemberNameBuilder
@@ -154,7 +155,7 @@
           .Append(' ');
       }
 
-      if ((methodInfo?.IsStatic ?? false) 
+      if ((methodInfo?.IsStatic ?? false)
         || (constructorInfo?.IsStatic ?? false)
         || (propertyGetMethodInfo?.IsStatic ?? false)
         || (propertySetMethodInfo?.IsStatic ?? false)
@@ -165,7 +166,7 @@
           .Append("static")
           .Append(' ');
       }
-      
+
 
       bool isAbstract = false;
       if ((methodInfo?.IsAbstract ?? false)
@@ -180,9 +181,9 @@
           .Append(' ');
       }
 
-      if (!isAbstract 
+      if (!isAbstract
         && ((methodInfo?.IsVirtual ?? false)
-        || (constructorInfo?.IsVirtual ?? false) 
+        || (constructorInfo?.IsVirtual ?? false)
         || (propertyGetMethodInfo?.IsVirtual ?? false)
         || (propertySetMethodInfo?.IsVirtual ?? false)
         || (eventAddMethodInfo?.IsVirtual ?? false)))
@@ -231,15 +232,15 @@
       }
 
       // Set return type
-      if (isMethod 
-        || isProperty 
+      if (isMethod
+        || isProperty
         || isField
         || isDelegate
         || isEvent)
       {
-        Type returnType = fieldInfo?.FieldType 
-          ?? methodInfo?.ReturnType 
-          ?? propertyGetMethodInfo?.ReturnType 
+        Type returnType = fieldInfo?.FieldType
+          ?? methodInfo?.ReturnType
+          ?? propertyGetMethodInfo?.ReturnType
           ?? eventDeclaredFieldInfo?.FieldType;
 
         var typeReference = new CodeTypeReference(returnType);
@@ -306,9 +307,9 @@
         }
       }
 
-      IEnumerable<ParameterInfo> paramters = methodInfo?.GetParameters() 
-        ?? constructorInfo?.GetParameters() 
-        ?? indexerPropertyIndexParameters 
+      IEnumerable<ParameterInfo> paramters = methodInfo?.GetParameters()
+        ?? constructorInfo?.GetParameters()
+        ?? indexerPropertyIndexParameters
         ?? Enumerable.Empty<ParameterInfo>();
 
       if (paramters.Any())
@@ -325,13 +326,13 @@
         }
 
         // Remove trailing comma and whitespace
-        _ = fullMemberNameBuilder.Remove(fullMemberNameBuilder.Length - 2, 2); 
+        _ = fullMemberNameBuilder.Remove(fullMemberNameBuilder.Length - 2, 2);
       }
 
       if (isIndexerProperty)
       {
         _ = fullMemberNameBuilder.Append(']');
-      } 
+      }
       else if (isConstructor || isMethod)
       {
         _ = fullMemberNameBuilder.Append(')')
@@ -362,8 +363,9 @@
     public static AccessModifier GetAccessModifier(this MemberInfo memberInfo)
     {
       switch (memberInfo)
-      { 
-        case Type typeInfo: return typeInfo.IsPublic ? AccessModifier.Public
+      {
+        case Type typeInfo:
+          return typeInfo.IsPublic ? AccessModifier.Public
             : typeInfo.IsNestedPrivate ? AccessModifier.Private
             : typeInfo.IsNestedAssembly ? AccessModifier.Internal
             : typeInfo.IsNestedFamily ? AccessModifier.Protected
@@ -481,14 +483,14 @@
     /// </remarks>
     public static string ToFullDisplayName(this MemberInfo memberInfo)
     {
-      string fullMemberName = memberInfo is Type typeInfo 
-        ? $"{typeInfo.Namespace}.{typeInfo.ToDisplayName()}" 
+      string fullMemberName = memberInfo is Type typeInfo
+        ? $"{typeInfo.Namespace}.{typeInfo.ToDisplayName()}"
         : $"{memberInfo.DeclaringType.Namespace}.{memberInfo.DeclaringType.ToDisplayName()}.{memberInfo.Name}";
 
       if (memberInfo.MemberType.HasFlag(MemberTypes.Field)
         || memberInfo.MemberType.HasFlag(MemberTypes.Property)
         || memberInfo.MemberType.HasFlag(MemberTypes.Event))
-      { 
+      {
         return fullMemberName;
       }
 
@@ -559,7 +561,7 @@
       => HelperExtensionsCommon.DelegateType.Value.IsAssignableFrom(typeInfo);
 
     // TODO::Test if checking get() is enough to determine if a property is overriden
-    public static bool IsOverride(this PropertyInfo methodInfo) 
+    public static bool IsOverride(this PropertyInfo methodInfo)
       => methodInfo.GetGetMethod(true).IsOverride();
 
     public static bool IsOverride(this MethodInfo methodInfo)
@@ -607,7 +609,7 @@
           }
 
           MethodInfo extensionMethodInfo = typeInfo.GetMethod(nameof(Task.GetAwaiter), BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { methodInfo.ReturnType }, null);
-          if (extensionMethodInfo == null 
+          if (extensionMethodInfo == null
             || !extensionMethodInfo.IsExtensionMethodOf(methodInfo.ReturnType))
           {
             return false;
@@ -615,7 +617,7 @@
 
           if (extensionMethodInfo.ReturnType.GetProperty("IsCompleted") != null
             && extensionMethodInfo.ReturnType.GetInterface(nameof(INotifyCompletion)) != null
-            && extensionMethodInfo.ReturnType.GetMethod("GetResult") is MethodInfo getResultMethodInfo 
+            && extensionMethodInfo.ReturnType.GetMethod("GetResult") is MethodInfo getResultMethodInfo
             && getResultMethodInfo.GetParameters().Length == 0)
           {
             return true;
@@ -641,7 +643,7 @@
     /// <returns><see langword="true"/> if the <paramref name="typeInfo"/> is allowed to define extension methods. Otherwise <see langword="false"/>.</returns>
     /// <remarks>To be able to define extension methods a class must be static, non-generic, a top level type. 
     /// <br/>In addition this method checks if the declaring class and the method are both decorated with the <see cref="ExtensionAttribute"/> which is added by the compiler.</remarks>
-    public static bool CanDeclareExtensionMethods(this Type typeInfo) 
+    public static bool CanDeclareExtensionMethods(this Type typeInfo)
     {
       if (!typeInfo.IsStatic() || typeInfo.IsNested || typeInfo.IsGenericType)
       {
@@ -722,66 +724,6 @@
       return false;
     }
 
-    /// <summary>
-    /// Converts the value of <see cref="AccessModifier"/> to a string representation.
-    /// </summary>
-    /// <param name="accessModifier"></param>
-    /// <returns></returns>
-    /// <exception cref="NotSupportedException">The enum value is not supported. (This exception is only intended for internal maintainance and will never be thrown in production code)</exception>
-    public static string ToDisplayStringValue(this AccessModifier accessModifier, bool toUpperCase = false)
-    {
-      switch (accessModifier)
-      {
-        case AccessModifier.Default:
-          return toUpperCase ? "Internal" : "internal";
-        case AccessModifier.Public:
-          return toUpperCase ? "Public" : "public";
-        case AccessModifier.ProtectedInternal:
-          return toUpperCase ? "Protected Internal" : "protected internal";
-        case AccessModifier.Internal:
-          return toUpperCase ? "Internal" : "internal";
-        case AccessModifier.Protected:
-          return toUpperCase ? "Protected" : "protected";
-        case AccessModifier.PrivateProtected:
-          return toUpperCase ? "Provate Protected" : "private protected";
-        case AccessModifier.Private:
-          return toUpperCase ? "Private" : "private";
-        default:
-          throw new NotSupportedException();
-      }
-    }
-
-    /// <summary>
-    /// Converts the value of <see cref="AccessModifier"/> to a string representation.
-    /// </summary>
-    /// <param name="profiledTargetType"></param>
-    /// <returns></returns>
-    /// <exception cref="NotSupportedException">The enum value is not supported. (This exception is only intended for internal maintainance and will never be thrown in production code)</exception>
-    public static string ToDisplayStringValue(this ProfiledTargetType profiledTargetType, bool toUpperCase = false)
-    {
-      switch (profiledTargetType)
-      {
-        case ProfiledTargetType.None:
-          return toUpperCase ? "None" : "none";
-        case ProfiledTargetType.PropertyGet:
-          return toUpperCase ? "Property get()" : "property get()";
-        case ProfiledTargetType.PropertySet:
-          return toUpperCase ? "Property set()" : "property set()";
-        case ProfiledTargetType.Property:
-          return toUpperCase ? "Property" : "property";
-        case ProfiledTargetType.Constructor:
-          return toUpperCase ? "Constructor" : "constructor";
-        case ProfiledTargetType.Event:
-          return toUpperCase ? "Event" : "event";
-        case ProfiledTargetType.Delegate:
-          return toUpperCase ? "Delegate" : "delegate";
-        case ProfiledTargetType.Method:
-          return toUpperCase ? "Method" : "method";
-        default:
-          throw new NotSupportedException();
-      }
-    }
-
     //public static object GetAwaiter(this object obj)
     //{
     //  MethodInfo getAwaiterMethodInfo = obj.GetType().GetMethod(nameof(Task.GetAwaiter));
@@ -826,14 +768,14 @@
     //  return null;
     //}
 
-    public static dynamic Cast(this object obj, Type type) 
-      => typeof(HelperExtensionsCommon).GetMethod(nameof(HelperExtensionsCommon.Cast), BindingFlags.Static | BindingFlags.NonPublic, null, new[] { typeof(object) }, null).GetGenericMethodDefinition().MakeGenericMethod(type).Invoke(obj, null);
+    public static dynamic Cast(this object obj, Type type)
+        => typeof(HelperExtensionsCommon).GetMethod(nameof(HelperExtensionsCommon.Cast), BindingFlags.Static | BindingFlags.NonPublic, null, new[] { typeof(object) }, null).GetGenericMethodDefinition().MakeGenericMethod(type).Invoke(obj, null);
 
     private static T Cast<T>(this object obj) => (T)obj;
 
 #if !NET7_0_OR_GREATER
-    public static double TotalMicroseconds(this TimeSpan duration) => duration.TotalMilliseconds * 1000d;
-    public static double TotalNanoseconds(this TimeSpan duration) => duration.TotalMilliseconds * 1000000d;
+    public static double TotalMicroseconds(this TimeSpan duration) => System.Math.Round(duration.Ticks / (double)Stopwatch.Frequency * 1E6, 1);
+    public static double TotalNanoseconds(this TimeSpan duration) => System.Math.Round(duration.Ticks / (double)Stopwatch.Frequency * 1E9, 0);
 #endif
   }
 }

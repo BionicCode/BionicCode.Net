@@ -9,58 +9,64 @@
   /// </summary>
   public struct ProfilerResult : IEquatable<ProfilerResult>, IComparable<ProfilerResult>
   {
-    internal static ProfilerResult Empty => new ProfilerResult(-1, TimeSpan.Zero, null);
-    internal static ProfilerResult MaxDuration => new ProfilerResult(-1, TimeSpan.MaxValue, null);
-    internal static ProfilerResult MinDuration => new ProfilerResult(-1, TimeSpan.MinValue, null);
+    internal static ProfilerResult Empty => new ProfilerResult(-1, Microseconds.Zero, TimeUnit.Microseconds, null);
+    internal static ProfilerResult MaxDuration => new ProfilerResult(-1, Microseconds.MaxValue, TimeUnit.Microseconds, null);
+    internal static ProfilerResult MinDuration => new ProfilerResult(-1, Microseconds.MinValue, TimeUnit.Microseconds, null);
 
-    internal ProfilerResult(int iteration, TimeSpan elapsedTime, ProfilerBatchResult owner) : this(iteration, null, elapsedTime, TimeSpan.MinValue, owner)
+    internal ProfilerResult(int iteration, Microseconds elapsedTime, TimeUnit baseUnit, ProfilerBatchResult owner) : this(iteration, null, elapsedTime, Microseconds.MinValue, baseUnit, owner)
     {
     }
 
-    internal ProfilerResult(int iteration, Task profiledTask, TimeSpan elapsedTime, ProfilerBatchResult owner) : this(iteration, profiledTask, elapsedTime, TimeSpan.MinValue, owner)
+    internal ProfilerResult(int iteration, Task profiledTask, Microseconds elapsedTime, TimeUnit baseUnit, ProfilerBatchResult owner) : this(iteration, profiledTask, elapsedTime, Microseconds.MinValue, baseUnit, owner)
     {
     }
 
-    internal ProfilerResult(int iteration, Task profiledTask, TimeSpan elapsedTime, TimeSpan deviation, ProfilerBatchResult owner)
+    internal ProfilerResult(int iteration, Task profiledTask, Microseconds elapsedTime, Microseconds deviation, TimeUnit baseUnit, ProfilerBatchResult owner)
     {
       this.Owner = owner;
       this.Iteration = iteration;
       this.ProfiledTask = profiledTask;
       this.ElapsedTime = elapsedTime;
       this.deviation = deviation;
+      this.BaseUnit = baseUnit;
     }
 
-    internal TimeSpan GetDeviation() => this.ElapsedTime.Subtract(this.Owner?.AverageDuration ?? TimeSpan.Zero);
+    internal Microseconds GetDeviation() => this.ElapsedTime - (this.Owner?.AverageDuration ?? Microseconds.Zero);
 
     /// <summary>
-    /// The duration of the benchmark run.
+    /// The duration of the benchmark run in microseconds.
     /// </summary>
-    /// <value>The duration.</value>
-    public TimeSpan ElapsedTime { get; }
-
-#if NET7_0_OR_GREATER
-    internal double ElapsedTimeInMicroseconds => this.ElapsedTime.TotalMicroseconds;
-#else
-    internal double ElapsedTimeInMicroseconds => this.ElapsedTime.TotalMicroseconds();
-#endif
-
-    private TimeSpan deviation;
+    /// <value>The duration in microseconds.</value>
+    public Microseconds ElapsedTime { get; }
 
     /// <summary>
-    /// The deviation from the arithmetic mean.
+    /// The duration of the benchmark run converted to the base unit.
     /// </summary>
-    /// <value>A positive or negative value to describe the deviation from the arithmetic mean.</value>
-    public TimeSpan Deviation => this.deviation == TimeSpan.MinValue 
+    /// <value>The duration converted from microseconds to the base unit defined by the <see cref="BaseUnit"/> property.</value>
+    public double ElapsedTimeConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.ElapsedTime);
+
+    private Microseconds deviation;
+
+    /// <summary>
+    /// The deviation from the arithmetic mean in microseconds.
+    /// </summary>
+    /// <value>A positive or negative value to describe the deviation from the arithmetic mean in microseconds.</value>
+    public Microseconds Deviation => this.deviation == Microseconds.MinValue 
       ? this.Owner is null 
         ? throw new InvalidOperationException("The property is unset") 
         : (this.deviation = GetDeviation())
       : this.deviation;
 
-#if NET7_0_OR_GREATER
-    internal double DeviationInMicroseconds => this.Deviation.TotalMicroseconds;
-#else
-    internal double DeviationInMicroseconds => this.Deviation.TotalMicroseconds();
-#endif
+    /// <summary>
+    /// The deviation from the arithmetic mean converted to the base unit.
+    /// </summary>
+    /// <value>A positive or negative value to describe the deviation from the arithmetic mean. the value is converted from microseconds to the base unit defined by the <see cref="BaseUnit"/> property.</value>
+    public double DeviationConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.Deviation);
+
+    /// <summary>
+    /// The base unit used to calculate the values for <see cref="DeviationConverted"/> and <see cref="ElapsedTimeConverted"/>.
+    /// </summary>
+    public TimeUnit BaseUnit { get; internal set; }
 
     /// <summary>
     /// In case the benchmarked operation is an async method, <see cref="IsProfiledTaskCancelled"/> indiocates wwhether the <see langword="async"/>operation was cancelled or not.

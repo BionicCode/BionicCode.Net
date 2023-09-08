@@ -15,20 +15,22 @@
   public class ProfilerBuilder : IAttributeProfilerConfiguration
   {
     private Type Type { get; }
-    private bool IsWarmUpEnabled { get; set; }
+    private bool IsWarmupEnabled { get; set; }
     private bool IsDefaultLogOutputEnabled { get; set; }
     private int Iterations { get; set; }
-    private int WarmUpIterations { get; set; }
+    private int WarmupIterations { get; set; }
+    private TimeUnit BaseUnit { get; set; }
     private Assembly TypeAssembly { get; }
     private ProfilerLoggerAsyncDelegate AsyncProfilerLogger { get; set; }
     private ProfilerLoggerDelegate ProfilerLogger { get; set; }
 
     Type IAttributeProfilerConfiguration.Type => this.Type;
     Assembly IAttributeProfilerConfiguration.TypeAssembly => this.TypeAssembly;
-    bool IAttributeProfilerConfiguration.IsWarmupEnabled => this.IsWarmUpEnabled;
+    TimeUnit IAttributeProfilerConfiguration.BaseUnit => this.BaseUnit;
+    bool IAttributeProfilerConfiguration.IsWarmupEnabled => this.IsWarmupEnabled;
     bool IAttributeProfilerConfiguration.IsDefaultLogOutputEnabled => this.IsDefaultLogOutputEnabled;
     int IAttributeProfilerConfiguration.Iterations => this.Iterations;
-    int IAttributeProfilerConfiguration.WarmUpIterations => this.WarmUpIterations;
+    int IAttributeProfilerConfiguration.WarmupIterations => this.WarmupIterations;
     ProfilerLoggerAsyncDelegate IAttributeProfilerConfiguration.AsyncProfilerLogger => this.AsyncProfilerLogger;
     ProfilerLoggerDelegate IAttributeProfilerConfiguration.ProfilerLogger => this.ProfilerLogger;
 
@@ -36,10 +38,11 @@
     {
       this.Type = targetType;
       this.TypeAssembly = Assembly.GetAssembly(targetType);
-      this.IsWarmUpEnabled = true;
+      this.IsWarmupEnabled = true;
       this.IsDefaultLogOutputEnabled = true;
-      this.WarmUpIterations = Profiler.WarmUpCount;
+      this.WarmupIterations = Profiler.WarmupCount;
       this.Iterations = 1;
+      this.BaseUnit = TimeUnit.Microseconds;
     }
 
     /// <summary>
@@ -52,6 +55,19 @@
     public ProfilerBuilder SetIterations(int iterations)
     {
       this.Iterations = iterations;
+      return this;
+    }
+
+    /// <summary>
+    /// Set the time unit that the results are converted to.
+    /// </summary>
+    /// <param name="timeUnit">The unit that all result related time ispresented in. The default is <see cref="TimeUnit.Microseconds"/>.</param>
+    /// <returns>
+    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.
+    /// </returns>
+    public ProfilerBuilder SetBaseUnit(TimeUnit timeUnit)
+    {
+      this.BaseUnit = timeUnit;
       return this;
     }
 
@@ -84,17 +100,17 @@
     /// <summary>
     /// Enable warm up iterations to trigger the JIT compiler. Warm up is enabled by default.
     /// </summary>
-    /// <param name="warmUpIterations">The number of iterations to perform before starting the profiling. The default is <c>4</c>.</param>
+    /// <param name="warmupIterations">The number of iterations to perform before starting the profiling. The default is <c>4</c>.</param>
     /// <returns>
     /// The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.
     /// </returns>
     /// <remarks>When running code the first time there is always the incurrence of the JIT to compile the code. 
     /// <br/>For this reason it is recommended to execute the code at least once in order to avoid the JIT to impact the profiling.
     /// </remarks>
-    public ProfilerBuilder EnableWarmUp(int warmUpIterations = 4)
+    public ProfilerBuilder EnableWarmup(int warmupIterations = 4)
     {
-      this.WarmUpIterations = warmUpIterations;
-      this.IsWarmUpEnabled = true;
+      this.WarmupIterations = warmupIterations;
+      this.IsWarmupEnabled = true;
       return this;
     }
 
@@ -105,9 +121,9 @@
     /// <remarks>When running code the first time there is always the incurrence of the JIT to compile the code. 
     /// <br/>For this reason it is recommended to execute the code at least once in order to avoid the JIT to impact the profiling.
     /// </remarks>
-    public ProfilerBuilder DisableWarmUp()
+    public ProfilerBuilder DisableWarmup()
     {
-      this.IsWarmUpEnabled = false;
+      this.IsWarmupEnabled = false;
       return this;
     }
 
@@ -139,16 +155,16 @@
     /// <summary>
     /// Enable warm up iterations to trigger the JIT compiler. Warm up is enabled by default.
     /// </summary>
-    /// <param name="warmUpIterations">The number of iterations to perform before starting the profiling. The default is <c>4</c>.</param>
+    /// <param name="warmupIterations">The number of iterations to perform before starting the profiling. The default is <c>4</c>.</param>
     /// <returns>
     /// The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.
     /// </returns>
     /// <remarks>When running code the first time there is always the incurrence of the JIT to compile the code. 
     /// <br/>For this reason it is recommended to execute the code at least once in order to avoid the JIT to impact the profiling.
     /// </remarks>
-    public ProfilerBuilder SetWarmUpIterations(int warmUpIterations)
+    public ProfilerBuilder SetWarmupIterations(int warmupIterations)
     {
-      this.WarmUpIterations = warmUpIterations;
+      this.WarmupIterations = warmupIterations;
       return this;
     }
 

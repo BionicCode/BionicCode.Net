@@ -7,7 +7,7 @@
   // TODO::Move context related prperties properties from ProfilerBtchResult to Context class and compose
   public class ProfilerContext
   {
-    public ProfilerContext(string assemblyName, string targetName, ProfiledTargetType targetType, string sourceFileName, int lineNumber, MemberInfo targetTypeInfo)
+    public ProfilerContext(string assemblyName, string targetName, ProfiledTargetType targetType, string sourceFileName, int lineNumber, MemberInfo targetTypeInfo, int warmupCount)
     {
       this.AssemblyName = assemblyName;
       this.SourceFileName = sourceFileName;
@@ -16,6 +16,7 @@
       this.TargetType = targetType;
       this.RuntimeVersionFactory = new Lazy<string>(() => Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName);
       this.TargetTypeInfo = targetTypeInfo;
+      this.WarmupCount = warmupCount;
     }
 
     public string AssemblyName { get; }
@@ -26,5 +27,6 @@
     public ProfiledTargetType TargetType { get; }
     public Lazy<string> RuntimeVersionFactory { get; }
     public string RuntimeVersion => this.RuntimeVersionFactory.Value;
+    public int WarmupCount { get; }
   }
 }

@@ -10,16 +10,16 @@
     public ProfilerLoggerAsyncDelegate AsyncLogger { get; }
     public ProfilerBatchResult Result { get; }
 
-    internal ProfilerScopeProvider(ProfilerLoggerDelegate logger, ProfilerContext profilerContext)
+    internal ProfilerScopeProvider(ProfilerLoggerDelegate logger, ProfilerContext profilerContext, TimeUnit baseUnit)
     {
       this.Logger = logger;
-      this.Result = new ProfilerBatchResult(1, DateTime.Now) { Context = profilerContext };
+      this.Result = new ProfilerBatchResult(1, DateTime.Now) { Context = profilerContext, BaseUnit = baseUnit };
     }
 
-    internal ProfilerScopeProvider(ProfilerLoggerAsyncDelegate logger, ProfilerContext profilerContext)
+    internal ProfilerScopeProvider(ProfilerLoggerAsyncDelegate logger, ProfilerContext profilerContext, TimeUnit baseUnit)
     {
       this.AsyncLogger = logger;
-      this.Result = new ProfilerBatchResult(1, DateTime.Now) { Context = profilerContext };
+      this.Result = new ProfilerBatchResult(1, DateTime.Now) { Context = profilerContext, BaseUnit = baseUnit };
     }
 
     public IDisposable StartProfiling(out ProfilerBatchResult profilerBatchResult)
@@ -55,7 +55,7 @@
           {
             this.Stopwatch.Stop();
 
-            var ireationResult = new ProfilerResult(1, this.Stopwatch.Elapsed, this.ScopeProvider.Result);
+            var ireationResult = new ProfilerResult(1, this.Stopwatch.Elapsed, this.ScopeProvider.Result.BaseUnit, this.ScopeProvider.Result);
 
             this.ScopeProvider.Result.AddResult(ireationResult);
             this.ScopeProvider.Result.IterationCount = 1;
@@ -63,6 +63,7 @@
             this.ScopeProvider.Result.AverageDuration = this.Stopwatch.Elapsed;
             this.ScopeProvider.Result.MinResult = ireationResult;
             this.ScopeProvider.Result.MaxResult = ireationResult;
+            this.ScopeProvider.Result.BaseUnit = Profiler.DefaultBaseUnit;
 
             ProfilerContext context = this.ScopeProvider.Result.Context;
             var summaryBuilder = new StringBuilder();

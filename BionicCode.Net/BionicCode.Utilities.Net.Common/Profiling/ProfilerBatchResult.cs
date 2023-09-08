@@ -32,8 +32,8 @@
       this.TimeStamp = timeStamp;
       this.ResultsInternal = new List<ProfilerResult>();
       this.Results = new ReadOnlyCollection<ProfilerResult>(this.ResultsInternal);
-      this.TotalDuration = TimeSpan.Zero;
-      this.AverageDuration = TimeSpan.Zero;
+      this.TotalDuration = Microseconds.Zero;
+      this.AverageDuration = Microseconds.Zero;
       this.MinResult = ProfilerResult.MaxDuration;
       this.MaxResult = ProfilerResult.MinDuration;
       this.Index = 0;
@@ -48,8 +48,8 @@
       this.TimeStamp = DateTime.Now;
       this.ResultsInternal = new List<ProfilerResult>();
       this.Results = new ReadOnlyCollection<ProfilerResult>(this.ResultsInternal);
-      this.TotalDuration = TimeSpan.Zero;
-      this.AverageDuration = TimeSpan.Zero;
+      this.TotalDuration = Microseconds.Zero;
+      this.AverageDuration = Microseconds.Zero;
       this.MinResult = ProfilerResult.Empty;
       this.MaxResult = ProfilerResult.Empty;
       this.Index = 0;
@@ -104,8 +104,8 @@
 
       this.ResultsInternal.Add(result);
 
-      this.TotalDuration = this.TotalDuration.Add(result.ElapsedTime);
-      this.AverageDuration = TimeSpan.FromTicks(this.TotalDuration.Ticks / this.IterationCount);
+      this.TotalDuration = this.TotalDuration + result.ElapsedTime;
+      this.AverageDuration = this.TotalDuration / (this.IterationCount * 1000d);
 
       if (result < this.MinResult)
       {
@@ -122,7 +122,7 @@
     {
       this.IsDataCalculated = true;
       this.Variance = CalculateVariance();
-      this.StandardDeviationInMicroseconds = System.Math.Sqrt(this.Variance);
+      this.StandardDeviation = System.Math.Round(System.Math.Sqrt(this.Variance), 1);
     }
 
     private double CalculateVariance()
@@ -130,7 +130,7 @@
       double totalDeviationMicroseconds = 0;
       foreach (ProfilerResult result in this.Results)
       {
-        totalDeviationMicroseconds += System.Math.Pow(result.DeviationInMicroseconds, 2);
+        totalDeviationMicroseconds += System.Math.Pow(result.Deviation, 2);
       }
 
       return totalDeviationMicroseconds / this.IterationCount;
@@ -143,12 +143,12 @@
     /// </summary>
     public int Index { get; internal set; }
 
-    private double standardDeviationInMicroseconds;
+    private Microseconds standardDeviation;
     /// <summary>
-    /// The stamdard deviation over all the <see cref="ProfilerResult"/> items.
+    /// The stamdard deviation over all the <see cref="ProfilerResult"/> items in microseconds.
     /// </summary>
     /// <value>Stamdard deviation in microseconds.</value>
-    public double StandardDeviationInMicroseconds 
+    public Microseconds StandardDeviation 
     {
       get
       { 
@@ -157,10 +157,16 @@
           CalculateData();
         }
 
-        return  this.standardDeviationInMicroseconds;
+        return  this.standardDeviation;
       } 
-      private set => this.standardDeviationInMicroseconds = value; 
+      private set => this.standardDeviation = value;
     }
+
+    /// <summary>
+    /// The stamdard deviation over all the <see cref="ProfilerResult"/> items converted to the base unit.
+    /// </summary>
+    /// <value>Stamdard deviation converted from microseconds to the base unit defined by the <see cref="BaseUnit"/> property.</value>
+    public double StandardDeviationConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.StandardDeviation);
 
     private double variance;
     /// <summary>
@@ -217,27 +223,40 @@
     public IReadOnlyCollection<ProfilerResult> Results { get; }
 
     /// <summary>
-    /// The total duration of all logged iterations.
+    /// The total duration of all logged iterations in microseconds.
     /// </summary>
-    /// <value>The sum of each duration per iteration.</value>
-    public TimeSpan TotalDuration { get; internal set; }
-#if NET7_0_OR_GREATER
-    internal double TotalDurationInMicroseconds => this.TotalDuration.TotalMicroseconds;
-#else
-    internal double TotalDurationInMicroseconds => this.TotalDuration.TotalMicroseconds();
-#endif
+    /// <value>The sum of each duration per iteration in microseconds.</value>
+    public Microseconds TotalDuration { get; internal set; }
 
     /// <summary>
-    /// The average duration of all logged iterations.
+    /// The total duration of all logged iterations converted to the base unit.
     /// </summary>
-    /// <value>The average duration of all iterations.</value>
-    public TimeSpan AverageDuration { get; internal set; }
+    /// <value>The sum of each duration per iteration converted from microseconds to the base unit defined by the <see cref="BaseUnit"/> property.</value>
+    public double TotalDurationConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.TotalDuration);
 
-#if NET7_0_OR_GREATER
-    internal double AverageDurationInMicroseconds => this.AverageDuration.TotalMicroseconds;
-#else
-    internal double AverageDurationInMicroseconds => this.AverageDuration.TotalMicroseconds();
-#endif
+    /// <summary>
+    /// The average duration of all logged iterations in microseconds.
+    /// </summary>
+    /// <value>The average duration of all iterations in microseconds.</value>
+    public Microseconds AverageDuration { get; internal set; }
+
+    /// <summary>
+    /// The average duration of all logged iterations converted to the base unit.
+    /// </summary>
+    /// <value>The average duration of all iterations converted from microseconds to the base unit defined by the <see cref="BaseUnit"/> property.</value>
+    public double AverageDurationConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.AverageDuration);
+
+    /// <summary>
+    /// The range of all logged iterations in microseconds.
+    /// </summary>
+    /// <value>The range of all iterations in microseconds.</value>
+    public Microseconds Range => this.MaxResult.ElapsedTime - this.MinResult.ElapsedTime;
+
+    /// <summary>
+    /// The range of all logged iterations converted to the base unit.
+    /// </summary>
+    /// <value>The range of all iterations converted from microseconds to the base unit defined by the <see cref="BaseUnit"/> property.</value>
+    public double RangeConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.Range);
 
     /// <summary>
     /// A report of the benchmarking ready for output, formatted as follows:
@@ -289,5 +308,10 @@
     /// </summary>
     /// <remarks>The context describes machine atributes like core clock and core count to help to compare results from sessions on different machines.</remarks>
     public ProfilerContext Context { get; internal set; }
+
+    /// <summary>
+    /// The base unit used to calculate the values for <see cref="TotalDurationConverted"/>, <see cref="StandardDeviationConverted"/> and <see cref="AverageDurationConverted"/>.
+    /// </summary>
+    public TimeUnit BaseUnit { get; internal set; }
   }
 }

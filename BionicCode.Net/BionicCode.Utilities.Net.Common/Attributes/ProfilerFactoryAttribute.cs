@@ -3,7 +3,7 @@
   using System;
 
   /// <summary>
-  /// Used to decorate a member that returns an instance for the currently profiled type.
+  /// Used to decorate a <see langword="static"/> member that returns an instance for the currently profiled type.
   /// </summary>
   /// <remarks>This attribute can be used in case the type has no default constructor, or profiling requires a specially initialized instance.
   /// <br/>The default constructor must be an instance constructor and can be defined with any access modifier (e.g. <see langword="public"/> or <see langword="private"/>).
@@ -24,8 +24,16 @@
     /// <summary>
     /// Constructor without any required parameters.
     /// </summary>
-    public ProfilerFactoryAttribute()
+    public ProfilerFactoryAttribute() => this.ArgumentList = Array.Empty<object>();
+
+    /// <summary>
+    /// Constructor without any required parameters.
+    /// </summary>
+    public ProfilerFactoryAttribute(params object[] argumentList)
     {
+      this.ArgumentList = argumentList;
     }
+
+    public object[] ArgumentList { get; }
   }
 }

@@ -881,7 +881,7 @@
       ProfilerBatchResult profilerBatchResult = await Profiler.LogTimeAsync(() => this.AsyncCancellableTestNoParamCommand.ExecuteAsync(this.Timeout), 1, logger);
       ProfilerResult profilerResult = profilerBatchResult.Results.First();
       _ = profilerResult.ProfiledTask.Status.Should().Be(TaskStatus.Canceled);
-      _ = profilerResult.ElapsedTime.Microseconds.Should().BeGreaterThanOrEqualTo(this.Timeout.Microseconds);
+      _ = profilerResult.ElapsedTime.Value.Should().BeGreaterThanOrEqualTo(this.Timeout.Microseconds);
       _ = profilerResult.ElapsedTime.Should().BeLessThanOrEqualTo(this.LongRunningAsyncDelay);
     }
 

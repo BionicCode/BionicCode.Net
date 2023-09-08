@@ -74,7 +74,7 @@
         };
         chartOptions.AddSeries(series);
 
-        if (batchResult.StandardDeviationInMicroseconds == 0)
+        if (batchResult.StandardDeviation == Microseconds.Zero)
         {
           continue;
         }
@@ -83,13 +83,13 @@
         {
 
 #if NET7_0_OR_GREATER
-        IEnumerable<CartesianPoint> normalDistributionValues = Math.NormDist(batchResult.AverageDurationInMicroseconds, batchResult.StandardDeviationInMicroseconds, 0.01);
+        IEnumerable<CartesianPoint> normalDistributionValues = Math.NormDist(batchResult.AverageDuration, batchResult.StandardDeviation, 0.01);
 #else
-          IEnumerable<CartesianPoint> normalDistributionValues = Math.NormDist(batchResult.AverageDuration.TotalMicroseconds(), batchResult.StandardDeviationInMicroseconds, 0.01);
+          IEnumerable<CartesianPoint> normalDistributionValues = Math.NormDist(batchResult.AverageDuration, batchResult.StandardDeviation, 0.01);
 
 #endif
 
-          var result = new NormalDistributionData<CartesianPoint>(batchResult.Index, normalDistributionValues, batchResult.AverageDurationInMicroseconds, batchResult.StandardDeviationInMicroseconds)
+          var result = new NormalDistributionData<CartesianPoint>(batchResult.Index, normalDistributionValues, batchResult.AverageDuration, batchResult.StandardDeviation)
           {
             Title = series.Title
           };
@@ -341,11 +341,17 @@ table {{
   	<span class=""label-span"">Source file: </span><span class=""valueSpan"">{batchResult.Context.SourceFileName}</span><br /> 
   	<span class=""label-span"">Line number: </span><span class=""valueSpan"">{batchResult.Context.LineNumber}</span><br />
   <span style=""font-weight: bold; font-size: 14pt"">Profiler</span><br/>
-  	<span class=""label-span"">Timestamp: </span><span class=""valueSpan"">{batchResult.TimeStamp}</span><br />
+  	<span class=""label-span"">Timestamp: </span><span class=""valueSpan"">{batchResult.TimeStamp}</span><br />  	
+<span class=""label-span"">Base unit: </span><span class=""valueSpan"">{batchResult.BaseUnit.ToDisplayStringValue()}</span><br />
+
+  	<span class=""label-span"">Warmup iterations: </span><span class=""valueSpan"">{batchResult.Context.WarmupCount} runs for each argument list</span><br />
   	<span class=""label-span"">Iterations: </span><span class=""valueSpan"">{batchResult.IterationCount} runs for each argument list</span><br />
   	<span class=""label-span"">Argument lists: </span><span class=""valueSpan"">{batchResult.ArgumentListCount}</span><br />
   	<span class=""label-span"">Total iterations: </span><span class=""valueSpan"">{batchResult.TotalIterationCount} ({batchResult.IterationCount} runs for each of {batchResult.ArgumentListCount} argument {(batchResult.ArgumentListCount == 1 ? "list" : "lists")}) </span><br />
   <span style=""font-weight: bold; font-size: 14pt"">Machine</span><br/>  
+
+  	<span class=""label-span"">Timer: </span><span class=""valueSpan"">{((await Environment.GetEnvironmentInfoAsync()).HasHighPrecisionTimer ? $"High precision counter" : "System timer (normal precision)")}</span><br />     	
+<span class=""label-span"">Timer resolution: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).NanosecondsPerTick} ns</span><br />     	
   	<span class=""label-span"">OS architecture: </span><span class=""valueSpan"">{(environmentInfo.Is64BitOperatingSystem ? 64 : 32)} bit</span><br />   
   	<span class=""label-span"">Process architecture: </span><span class=""valueSpan"">{(environmentInfo.Is64BitProcess ? 64 : 32)} bit</span><br />   
   	<span class=""label-span"">Processor: </span><span class=""valueSpan"">{environmentInfo.ProcessorName}</span><br />   
@@ -359,10 +365,10 @@ table {{
 
 <tr>
 <th class=""header"">Iteration #</th>
-<th class=""header"">Elapsed time [µs]</th>
-<th class=""header"">Mean µ [µs]</th>
-<th class=""header"">Deviation [µs]</th>
-<th class=""header"">Standard deviation σ [µs]</th>
+<th class=""header"">Elapsed time [{batchResult.BaseUnit.ToDisplayStringValue()}]</th>
+<th class=""header"">Mean µ [{batchResult.BaseUnit.ToDisplayStringValue()}]</th>
+<th class=""header"">Deviation [{batchResult.BaseUnit.ToDisplayStringValue()}]</th>
+<th class=""header"">Standard deviation σ [{batchResult.BaseUnit.ToDisplayStringValue()}]</th>
 <th class=""header"">Variance σ²</th>
 </tr>
 </thead>
@@ -373,10 +379,10 @@ table {{
       {
         _ = htmlDocumentBuilder.Append($@"<tr>
 <td class=""dataRow"">{resultIndex++}</td>
-<td class=""dataRow"">{result.ElapsedTimeInMicroseconds}</td>
-<td class=""dataRow"">{batchResult.AverageDurationInMicroseconds}</td>
-<td class=""dataRow"">{result.DeviationInMicroseconds}</td>
-<td class=""dataRow"">{batchResult.StandardDeviationInMicroseconds}</td>
+<td class=""dataRow"">{result.ElapsedTimeConverted}</td>
+<td class=""dataRow"">{batchResult.AverageDurationConverted}</td>
+<td class=""dataRow"">{result.DeviationConverted}</td>
+<td class=""dataRow"">{batchResult.StandardDeviationConverted}</td>
 <td class=""dataRow"">{batchResult.Variance}</td>
 </tr>");
       }
@@ -389,16 +395,21 @@ table {{
 </tr>
 <tr>
 <td class=""dataRow"">{batchResult.TotalIterationCount}</td>
-<td class=""dataRow"">{batchResult.TotalDurationInMicroseconds}</td>
-<td class=""dataRow"">{batchResult.AverageDurationInMicroseconds}</td>
+<td class=""dataRow"">{batchResult.TotalDurationConverted}</td>
+<td class=""dataRow"">{batchResult.AverageDurationConverted}</td>
 <td class=""dataRow"">-</td>
-<td class=""dataRow"">{batchResult.StandardDeviationInMicroseconds}</td>
+<td class=""dataRow"">{batchResult.StandardDeviationConverted}</td>
 <td class=""dataRow"">{batchResult.Variance}</td>
-<td class=""dataRow"">Min (fastest): {batchResult.MinResult.ElapsedTimeInMicroseconds} µs (#{batchResult.MinResult.Iteration})</td>
-<td class=""dataRow"">Max (slowest): {batchResult.MaxResult.ElapsedTimeInMicroseconds} µs (#{batchResult.MaxResult.Iteration})</td>
+
 </tr>
 </tfoot>
-</table></div>")
+</table>
+<div>
+<p class=""dataRow"">Min (fastest): {batchResult.MinResult.ElapsedTimeConverted} {batchResult.BaseUnit.ToDisplayStringValue()} (#{batchResult.MinResult.Iteration})</p>
+<p class=""dataRow"">Max (slowest): {batchResult.MaxResult.ElapsedTimeConverted} {batchResult.BaseUnit.ToDisplayStringValue()} (#{batchResult.MaxResult.Iteration})</p>
+<p class=""dataRow"">Range: {batchResult.RangeConverted} {batchResult.BaseUnit.ToDisplayStringValue()}</p>
+</div>
+</div>")
         .Append($@"<a class=""navigation-link"" href=""#chart"">Go to plot</a>")
         .Append($@"<a class=""navigation-link"" href=""#document_start"">Go to top 🡡</a>");
     }

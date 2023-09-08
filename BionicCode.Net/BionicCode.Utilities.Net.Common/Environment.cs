@@ -3,8 +3,10 @@
   using System;
   using System.Collections;
   using System.Collections.Generic;
+  using System.Diagnostics;
   using System.Management;
   using System.Runtime.InteropServices;
+  using System.Threading;
   using System.Threading.Tasks;
 
   /// <summary>
@@ -28,31 +30,45 @@
     private static EnvironmentInfo Info { get; set; }
 
     private static Dictionary<ManagementOperationObserver, ManagementObjectSearcher> ManagementObjectSearcherTable { get; } = new Dictionary<ManagementOperationObserver, ManagementObjectSearcher>();
-    
-    public static async Task<EnvironmentInfo> GetEnvironmentInfoAsync()
+    private static SemaphoreSlim Semaphore { get; } = new SemaphoreSlim(1, 1);
+
+    public static async ValueTask<EnvironmentInfo> GetEnvironmentInfoAsync()
     {
       if (Environment.Info != default)
       {
         return Environment.Info;
       }
 
-      Environment.TaskCompletionSource = new TaskCompletionSource<EnvironmentInfo>();
-
+      await Environment.Semaphore.WaitAsync();
       try
       {
-        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_Processor");
-        var watcher = new ManagementOperationObserver();
-        Environment.ManagementObjectSearcherTable.Add(watcher, searcher);
-        watcher.ObjectReady += OnWmiProcessorQueryResultReady;
-        watcher.Completed += OnWmiProcessorQueryCompleted;
-        searcher.Get(watcher);
-      }
-      catch (ManagementException e)
-      {
-        _ = Environment.TaskCompletionSource.TrySetResult(EnvironmentInfo.Default);
-      }
+        if (Environment.Info != default)
+        {
+          return Environment.Info;
+        }
 
-      return await Environment.TaskCompletionSource.Task;
+        Environment.TaskCompletionSource = new TaskCompletionSource<EnvironmentInfo>();
+
+        try
+        {
+          ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_Processor");
+          var watcher = new ManagementOperationObserver();
+          Environment.ManagementObjectSearcherTable.Add(watcher, searcher);
+          watcher.ObjectReady += OnWmiProcessorQueryResultReady;
+          watcher.Completed += OnWmiProcessorQueryCompleted;
+          searcher.Get(watcher);
+        }
+        catch (ManagementException e)
+        {
+          _ = Environment.TaskCompletionSource.TrySetResult(EnvironmentInfo.Default);
+        }
+
+        return await Environment.TaskCompletionSource.Task;
+      }
+      finally
+      {
+        _ = Environment.Semaphore.Release();
+      }
     }
 
     private static void OnWmiProcessorQueryCompleted(object sender, CompletedEventArgs e)
@@ -80,6 +96,7 @@
 
   public readonly struct EnvironmentInfo : IEquatable<EnvironmentInfo>
   {
+    private static double NanosecondsPerSecond = 1E9;
     public static EnvironmentInfo Default { get; } = new EnvironmentInfo("Unknown", -1, System.Environment.ProcessorCount, -1, -1, System.Environment.Is64BitProcess, System.Environment.Is64BitOperatingSystem, RuntimeEnvironment.GetSystemVersion());
 
     public EnvironmentInfo(string processorName, int processorCoreCount, int processorLogicalCoreCount, int thradCount, int processorSpeed, bool is64BitProcess, bool is64BitOperatingSystem, string runtimeVersion)
@@ -92,8 +109,11 @@
       this.Is64BitProcess = is64BitProcess;
       this.Is64BitOperatingSystem = is64BitOperatingSystem;
       this.RuntimeVersion = runtimeVersion;
+      this.NanosecondsPerTick = NanosecondsPerSecond / Stopwatch.Frequency;
     }
 
+    public bool HasHighPrecisionTimer => Stopwatch.IsHighResolution;
+    public double NanosecondsPerTick { get; }
     public string ProcessorName { get; }
     public int ProcessorCoreCount { get; }
     public int ProcessorSpeed { get; }
