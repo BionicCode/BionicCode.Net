@@ -9,19 +9,19 @@
   /// </summary>
   public struct ProfilerResult : IEquatable<ProfilerResult>, IComparable<ProfilerResult>
   {
-    internal static ProfilerResult Empty => new ProfilerResult(-1, Microseconds.Zero, TimeUnit.Microseconds, null);
-    internal static ProfilerResult MaxDuration => new ProfilerResult(-1, Microseconds.MaxValue, TimeUnit.Microseconds, null);
-    internal static ProfilerResult MinDuration => new ProfilerResult(-1, Microseconds.MinValue, TimeUnit.Microseconds, null);
+    internal static ProfilerResult Empty => new ProfilerResult(-1, Microseconds.Zero, TimeUnit.Microseconds, null, -1);
+    internal static ProfilerResult MaxDuration => new ProfilerResult(-1, Microseconds.MaxValue, TimeUnit.Microseconds, null, -1);
+    internal static ProfilerResult MinDuration => new ProfilerResult(-1, Microseconds.MinValue, TimeUnit.Microseconds, null, -1);
 
-    internal ProfilerResult(int iteration, Microseconds elapsedTime, TimeUnit baseUnit, ProfilerBatchResult owner) : this(iteration, null, elapsedTime, Microseconds.MinValue, baseUnit, owner)
+    internal ProfilerResult(int iteration, Microseconds elapsedTime, TimeUnit baseUnit, ProfilerBatchResult owner, int argumentListIndex) : this(iteration, null, elapsedTime, Microseconds.MinValue, baseUnit, owner, argumentListIndex)
     {
     }
 
-    internal ProfilerResult(int iteration, Task profiledTask, Microseconds elapsedTime, TimeUnit baseUnit, ProfilerBatchResult owner) : this(iteration, profiledTask, elapsedTime, Microseconds.MinValue, baseUnit, owner)
+    internal ProfilerResult(int iteration, Task profiledTask, Microseconds elapsedTime, TimeUnit baseUnit, ProfilerBatchResult owner, int argumentListIndex) : this(iteration, profiledTask, elapsedTime, Microseconds.MinValue, baseUnit, owner, argumentListIndex)
     {
     }
 
-    internal ProfilerResult(int iteration, Task profiledTask, Microseconds elapsedTime, Microseconds deviation, TimeUnit baseUnit, ProfilerBatchResult owner)
+    internal ProfilerResult(int iteration, Task profiledTask, Microseconds elapsedTime, Microseconds deviation, TimeUnit baseUnit, ProfilerBatchResult owner, int argumentListIndex)
     {
       this.Owner = owner;
       this.Iteration = iteration;
@@ -29,6 +29,7 @@
       this.ElapsedTime = elapsedTime;
       this.deviation = deviation;
       this.BaseUnit = baseUnit;
+      this.ArgumentListIndex = argumentListIndex;
     }
 
     internal Microseconds GetDeviation() => this.ElapsedTime - (this.Owner?.AverageDuration ?? Microseconds.Zero);
@@ -43,7 +44,7 @@
     /// The duration of the benchmark run converted to the base unit.
     /// </summary>
     /// <value>The duration converted from microseconds to the base unit defined by the <see cref="BaseUnit"/> property.</value>
-    public double ElapsedTimeConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.ElapsedTime);
+    public double ElapsedTimeConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.ElapsedTime, true);
 
     private Microseconds deviation;
 
@@ -61,7 +62,7 @@
     /// The deviation from the arithmetic mean converted to the base unit.
     /// </summary>
     /// <value>A positive or negative value to describe the deviation from the arithmetic mean. the value is converted from microseconds to the base unit defined by the <see cref="BaseUnit"/> property.</value>
-    public double DeviationConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.Deviation);
+    public double DeviationConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.Deviation, true);
 
     /// <summary>
     /// The base unit used to calculate the values for <see cref="DeviationConverted"/> and <see cref="ElapsedTimeConverted"/>.
@@ -75,10 +76,24 @@
     public bool IsProfiledTaskCancelled => this.ProfiledTask?.Status is TaskStatus.Canceled || this.ProfiledTask?.Status is TaskStatus.Faulted;
 
     /// <summary>
-    /// In case of a multi-run benchmark run (e.g. by calling <see cref="Profiler.LogTime(Action, int, string, int)"/>), the property <see cref="Iteration"/> returns the run's actual number the <see cref="ProfilerResult"/> is associated with.
+    /// In case of a multi-run benchmark run (e.g. by calling <see cref="Profiler.LogTime(Action, int, TimeUnit, string, int)"/>), the property <see cref="Iteration"/> returns the run's actual number the <see cref="ProfilerResult"/> is associated with.
     /// </summary>
     /// <value>The number of the run the <see cref="ProfilerResult"/> is associated with. Otherwise <c>-1</c>.</value>
+    /// <remarks>
+    /// In case of a attributed benchmark run (e.g. by calling <see cref="Profiler.CreateProfilerBuilder(Type)"/>), the property <see cref="Iteration"/> returns the number of runs for each argument list (defined using the <see cref="ProfilerArgumentAttribute"/> attribute) 
+    /// <br/>and the <see cref="ArgumentListIndex"/> property returns the index of the argument list that the <see cref="ProfilerResult"/> is associated with.
+    /// </remarks>
     public int Iteration { get; }
+
+    /// <summary>
+    /// In case of a attributed benchmark run (e.g. by calling <see cref="Profiler.CreateProfilerBuilder(Type)"/>), the property returns the index of the argument list the <see cref="ProfilerResult"/> is associated with.
+    /// </summary>
+    /// <value>The index of the argument list the <see cref="ProfilerResult"/> is associated with. Otherwise <c>-1</c>.</value>
+    /// <remarks>
+    /// In case of a attributed benchmark run (e.g. by calling <see cref="Profiler.CreateProfilerBuilder(Type)"/>), the property <see cref="Iteration"/> returns the number of runs for each argument list (defined using the <see cref="ProfilerArgumentAttribute"/> attribute) 
+    /// <br/>and the <see cref="ArgumentListIndex"/> property returns the index of the argument list that the <see cref="ProfilerResult"/> is associated with.
+    /// </remarks>
+    public int ArgumentListIndex { get; }
 
     /// <summary>
     /// The <see cref="Task"/> returned from the async operation that was benchmarked.

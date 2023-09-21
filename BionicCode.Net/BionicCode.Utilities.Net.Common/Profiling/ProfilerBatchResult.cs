@@ -105,7 +105,7 @@
       this.ResultsInternal.Add(result);
 
       this.TotalDuration = this.TotalDuration + result.ElapsedTime;
-      this.AverageDuration = this.TotalDuration / (this.IterationCount * 1000d);
+      this.AverageDuration = this.TotalDuration / (double)this.ResultsInternal.Count;
 
       if (result < this.MinResult)
       {
@@ -166,7 +166,7 @@
     /// The stamdard deviation over all the <see cref="ProfilerResult"/> items converted to the base unit.
     /// </summary>
     /// <value>Stamdard deviation converted from microseconds to the base unit defined by the <see cref="BaseUnit"/> property.</value>
-    public double StandardDeviationConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.StandardDeviation);
+    public double StandardDeviationConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.StandardDeviation, true);
 
     private double variance;
     /// <summary>
@@ -232,7 +232,7 @@
     /// The total duration of all logged iterations converted to the base unit.
     /// </summary>
     /// <value>The sum of each duration per iteration converted from microseconds to the base unit defined by the <see cref="BaseUnit"/> property.</value>
-    public double TotalDurationConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.TotalDuration);
+    public double TotalDurationConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.TotalDuration, true);
 
     /// <summary>
     /// The average duration of all logged iterations in microseconds.
@@ -244,7 +244,7 @@
     /// The average duration of all logged iterations converted to the base unit.
     /// </summary>
     /// <value>The average duration of all iterations converted from microseconds to the base unit defined by the <see cref="BaseUnit"/> property.</value>
-    public double AverageDurationConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.AverageDuration);
+    public double AverageDurationConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.AverageDuration, true);
 
     /// <summary>
     /// The range of all logged iterations in microseconds.
@@ -256,7 +256,7 @@
     /// The range of all logged iterations converted to the base unit.
     /// </summary>
     /// <value>The range of all iterations converted from microseconds to the base unit defined by the <see cref="BaseUnit"/> property.</value>
-    public double RangeConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.Range);
+    public double RangeConverted => TimeValueConverter.ConvertTo(this.BaseUnit, this.Range, true);
 
     /// <summary>
     /// A report of the benchmarking ready for output, formatted as follows:
@@ -313,5 +313,7 @@
     /// The base unit used to calculate the values for <see cref="TotalDurationConverted"/>, <see cref="StandardDeviationConverted"/> and <see cref="AverageDurationConverted"/>.
     /// </summary>
     public TimeUnit BaseUnit { get; internal set; }
+
+    internal ProfilerBatchResult ProfilerReferenceResult { get; set; }
   }
 }

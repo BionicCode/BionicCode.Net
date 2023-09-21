@@ -9,7 +9,6 @@
 
   internal class AttributeProfiler
   {    
-
     private IAttributeProfilerConfiguration Configuration { get; }
     private IEnumerable<IProfilerLogger> DefaultLoggers { get; }
 
@@ -19,40 +18,60 @@
       this.DefaultLoggers = new List<IProfilerLogger>() { new HtmlLogger() };
     }
 
-    internal async Task<IEnumerable<ProfilerBatchResult>> StartAsync()
+    internal async Task<ProfiledTypeResultCollection> StartAsync()
+    {
+      var typeResults = new ProfiledTypeResultCollection();
+      foreach (Type typeToProfile in this.Configuration.Type)
+      {
+        ProfilerBatchResultGroupCollection typeMemberResults = await ProfileType(typeToProfile);
+        typeResults.Add(typeMemberResults);
+      }
+
+      if (typeResults.Any() && this.Configuration.IsDefaultLogOutputEnabled)
+      {
+        foreach (IProfilerLogger logger in this.DefaultLoggers)
+        {
+          await logger.LogAsync(typeResults);
+        }
+      }
+
+      return typeResults;
+    }
+
+    private async Task<ProfilerBatchResultGroupCollection> ProfileType(Type typeToProfile)
     {
       object targetInstance = null;
       bool hasProfiledInstanceMembers = false;
-      bool findInstanceProviderMemberInfo = !this.Configuration.Type.IsAbstract;
+      bool isInstanceProviderMemberInfoRequired = !typeToProfile.IsAbstract;
       var targetMembers = new List<ProfiledMemberInfo>();
-      GetTargetMethods(findInstanceProviderMemberInfo, targetMembers, out bool hasProfiledInstanceMethods, out InstanceProviderInfo instanceProviderMethodInfo);
+      GetTargetMethods(typeToProfile, isInstanceProviderMemberInfoRequired, targetMembers, out bool hasProfiledInstanceMethods, out InstanceProviderInfo instanceProviderMethodInfo);
       hasProfiledInstanceMembers |= hasProfiledInstanceMethods;
-      if (findInstanceProviderMemberInfo && instanceProviderMethodInfo != null)
+      if (isInstanceProviderMemberInfoRequired && instanceProviderMethodInfo != null)
       {
-        findInstanceProviderMemberInfo = false;
+        isInstanceProviderMemberInfoRequired = false;
         targetInstance = ((MethodInfo)instanceProviderMethodInfo?.MemberInfo).Invoke(null, instanceProviderMethodInfo.ArgumentList);
       }
 
-      GetTargetProperties(findInstanceProviderMemberInfo, targetMembers, out bool hasProfiledInstanceProperties, out InstanceProviderInfo instanceProviderPropertyInfo);
+      GetTargetProperties(typeToProfile, isInstanceProviderMemberInfoRequired, targetMembers, out bool hasProfiledInstanceProperties, out InstanceProviderInfo instanceProviderPropertyInfo);
       hasProfiledInstanceMembers |= hasProfiledInstanceProperties;
-      if (findInstanceProviderMemberInfo && instanceProviderPropertyInfo != null)
+      if (isInstanceProviderMemberInfoRequired && instanceProviderPropertyInfo != null)
       {
-        findInstanceProviderMemberInfo = false;
+        isInstanceProviderMemberInfoRequired = false;
         targetInstance = ((PropertyInfo)instanceProviderPropertyInfo.MemberInfo).GetValue(null, null);
       }
 
-      if (findInstanceProviderMemberInfo)
+      if (isInstanceProviderMemberInfoRequired)
       {
-        InstanceProviderInfo instanceProviderFieldInfo = GetInstanceProviderField();
-        findInstanceProviderMemberInfo = instanceProviderFieldInfo == null;
+        InstanceProviderInfo instanceProviderFieldInfo = GetInstanceProviderField(typeToProfile);
+        isInstanceProviderMemberInfoRequired = instanceProviderFieldInfo == null;
         targetInstance = ((FieldInfo)instanceProviderFieldInfo?.MemberInfo)?.GetValue(null);
       }
 
-      GetTargetConstructors(findInstanceProviderMemberInfo, targetMembers, out InstanceProviderInfo instanceProviderConstructorInfo);
+      GetTargetConstructors(typeToProfile, isInstanceProviderMemberInfoRequired, targetMembers, out InstanceProviderInfo instanceProviderConstructorInfo);
 
       // We don't need an instance if we have an abstract (abstract, static) type
       // or the profiled members are only constructors.
-      bool isTargetInstanceRequired = !this.Configuration.Type.IsAbstract
+      bool isTargetInstanceRequired = !typeToProfile.IsAbstract
         && hasProfiledInstanceMembers;
 
       if (isTargetInstanceRequired && targetInstance == null)
@@ -61,13 +80,13 @@
       }
 
       return isTargetInstanceRequired && targetInstance == null
-        ? throw new MissingMemberException(ExceptionMessages.GetMissingCreationMemberOfProfiledTypeExceptionMessage(this.Configuration.Type))
-        : await ProfileMembersAsync(targetMembers, targetInstance);
+        ? throw new MissingMemberException(ExceptionMessages.GetMissingCreationMemberOfProfiledTypeExceptionMessage(typeToProfile))
+        : await ProfileMembersAsync(targetMembers, targetInstance, typeToProfile);
     }
 
-    private async Task<IEnumerable<ProfilerBatchResult>> ProfileMembersAsync(IEnumerable<ProfiledMemberInfo> memberInfos, object profiledInstance)
+    private async Task<ProfilerBatchResultGroupCollection> ProfileMembersAsync(IEnumerable<ProfiledMemberInfo> memberInfos, object profiledInstance, Type typeToProfile)
     {
-      var profilerResults = new ProfilerBatchResultCollection();
+      var resultGroups = new ProfilerBatchResultGroupCollection(typeToProfile);
       foreach (ProfiledMemberInfo memberInfo in memberInfos)
       {
         string fullSignatureName = CreateMemberSignatureName(memberInfo.MemberInfo);
@@ -79,20 +98,21 @@
         ProfiledConstructorInfo constructor = memberInfo as ProfiledConstructorInfo;
         ProfiledPropertyInfo property = memberInfo as ProfiledPropertyInfo;
 
-        var memberResults = new ProfilerBatchResultCollection();
-        foreach (IEnumerable<object> argumentList in memberInfo.ArgumentLists)
+        var memberResultGroup = new ProfilerBatchResultGroup();
+        for (int argumentListIndex = 0; argumentListIndex < memberInfo.ArgumentLists.Count(); argumentListIndex++)
         {
+          IEnumerable<object> argumentList = memberInfo.ArgumentLists.ElementAt(argumentListIndex);
           CreateTargetMemberDelegate(profiledInstance, memberInfo, argumentList);
           if (memberIsMethod)
           {
             ProfilerBatchResult result = null;
             if (method.IsAsync)
             {
-              result = await Profiler.LogTimeAsync(method.AsyncMethodDelegate.Invoke, this.Configuration.WarmupIterations, this.Configuration.Iterations, this.Configuration.ProfilerLogger, this.Configuration.BaseUnit, method.SourceFilePath, method.LineNumber);
+              result = await Profiler.LogTimeAsyncInternal(method.AsyncMethodDelegate.Invoke, null, null, this.Configuration.WarmupIterations, this.Configuration.Iterations, argumentListIndex, this.Configuration.ProfilerLogger, this.Configuration.AsyncProfilerLogger, this.Configuration.BaseUnit, method.SourceFilePath, method.LineNumber);
             }
             else
             {
-              result = Profiler.LogTime(method.MethodDelegate.Invoke, this.Configuration.WarmupIterations, this.Configuration.Iterations, this.Configuration.ProfilerLogger, this.Configuration.BaseUnit, method.SourceFilePath, method.LineNumber);
+              result = Profiler.LogTimeInternal(method.MethodDelegate.Invoke, this.Configuration.WarmupIterations, this.Configuration.Iterations, argumentListIndex, this.Configuration.ProfilerLogger, this.Configuration.BaseUnit, method.SourceFilePath, method.LineNumber);
             }
 
             ProfiledTargetType targetType = method.MethodName.StartsWith("set_", StringComparison.Ordinal) && method.MethodInfo.GetParameters().Length == 1
@@ -105,87 +125,85 @@
             result.Context = context;
             result.BaseUnit = this.Configuration.BaseUnit;
 
-            if (memberResults.IsEmpty())
+            if (memberResultGroup.IsEmpty())
             {
-              memberResults.ProfiledTargetType = ProfiledTargetType.Method;
-              memberResults.ProfiledTargetMemberName = fullSignatureName;
+              memberResultGroup.ProfiledTargetType = ProfiledTargetType.Method;
+              memberResultGroup.ProfiledTargetSignatureMemberName = fullSignatureName;
+              memberResultGroup.ProfiledTargetMemberShortName = method.MethodInfo.ToDisplayName();
               result.ArgumentListCount = argumentList is VoidArgumentList ? 0 : memberInfo.ArgumentLists.Count();
-              memberResults.Add(result);
+              memberResultGroup.Add(result);
             }
             else
             {
-              memberResults.First().Combine(result);
+              memberResultGroup.First().Combine(result);
             }
           }
           else if (memberIsConstructor)
           {
-            ProfilerBatchResult result = Profiler.LogTime(constructor.ConstructorDelegate, this.Configuration.WarmupIterations, this.Configuration.Iterations, this.Configuration.ProfilerLogger, this.Configuration.BaseUnit, constructor.SourceFilePath, lineNumber: constructor.LineNumber);
+            ProfilerBatchResult result = Profiler.LogTimeInternal(constructor.ConstructorDelegate, this.Configuration.WarmupIterations, this.Configuration.Iterations, argumentListIndex, this.Configuration.ProfilerLogger, this.Configuration.BaseUnit, constructor.SourceFilePath, lineNumber: constructor.LineNumber);
             var context = new ProfilerContext(constructor.AssemblyName, fullSignatureName, ProfiledTargetType.Constructor, constructor.SourceFilePath, constructor.LineNumber, memberInfo.MemberInfo, this.Configuration.WarmupIterations);
             result.Context = context;
             result.BaseUnit = this.Configuration.BaseUnit;
 
-            if (memberResults.IsEmpty())
+            if (memberResultGroup.IsEmpty())
             {
-              memberResults.ProfiledTargetType = ProfiledTargetType.Constructor;
-              memberResults.ProfiledTargetMemberName = fullSignatureName;
+              memberResultGroup.ProfiledTargetType = ProfiledTargetType.Constructor;
+              memberResultGroup.ProfiledTargetSignatureMemberName = fullSignatureName;
+              memberResultGroup.ProfiledTargetMemberShortName = constructor.ConstructorInfo.ToDisplayName();
               result.ArgumentListCount = argumentList is VoidArgumentList ? 0 : memberInfo.ArgumentLists.Count();
-              memberResults.Add(result);
+              memberResultGroup.Add(result);
             }
             else
             {
-              memberResults.First().Combine(result);
+              memberResultGroup.First().Combine(result);
             }
           }
           else if (memberIsProperty)
           {
-            ProfilerBatchResult propertyGetResult = Profiler.LogTime(property.GetDelegate, this.Configuration.WarmupIterations, this.Configuration.Iterations, this.Configuration.ProfilerLogger, this.Configuration.BaseUnit, property.SourceFilePath, lineNumber: property.LineNumber);
+            ProfilerBatchResult propertyGetResult = Profiler.LogTimeInternal(property.GetDelegate, this.Configuration.WarmupIterations, this.Configuration.Iterations, argumentListIndex, this.Configuration.ProfilerLogger, this.Configuration.BaseUnit, property.SourceFilePath, lineNumber: property.LineNumber);
             var context = new ProfilerContext(property.AssemblyName, fullSignatureName, ProfiledTargetType.PropertyGet, property.SourceFilePath, property.LineNumber, memberInfo.MemberInfo, this.Configuration.WarmupIterations);
             propertyGetResult.Context = context;
             propertyGetResult.Index = 0;
             propertyGetResult.BaseUnit = this.Configuration.BaseUnit;
 
-            if (memberResults.IsEmpty())
+            if (memberResultGroup.IsEmpty())
             {
-              memberResults.ProfiledTargetType = ProfiledTargetType.Property;
-              memberResults.ProfiledTargetMemberName = fullSignatureName;
+              memberResultGroup.ProfiledTargetType = ProfiledTargetType.Property;
+              memberResultGroup.ProfiledTargetSignatureMemberName = fullSignatureName;
+              memberResultGroup.ProfiledTargetMemberShortName = property.PropertyInfo.ToDisplayName();
               propertyGetResult.ArgumentListCount = argumentList is VoidArgumentList ? 0 : memberInfo.ArgumentLists.Count();
-              memberResults.Add(propertyGetResult);
+              memberResultGroup.Add(propertyGetResult);
             }
             else
             {
-              memberResults[0].Combine(propertyGetResult);
+              memberResultGroup[0].Combine(propertyGetResult);
             }
 
-            ProfilerBatchResult propertySetResult = Profiler.LogTime(property.SetDelegate, this.Configuration.WarmupIterations, this.Configuration.Iterations, this.Configuration.ProfilerLogger, this.Configuration.BaseUnit, property.SourceFilePath, lineNumber: property.LineNumber);
+            ProfilerBatchResult propertySetResult = Profiler.LogTimeInternal(property.SetDelegate, this.Configuration.WarmupIterations, this.Configuration.Iterations, argumentListIndex, this.Configuration.ProfilerLogger, this.Configuration.BaseUnit, property.SourceFilePath, lineNumber: property.LineNumber);
             context = new ProfilerContext(property.AssemblyName, fullSignatureName, ProfiledTargetType.PropertySet, property.SourceFilePath, property.LineNumber, memberInfo.MemberInfo, this.Configuration.WarmupIterations);
             propertySetResult.Context = context;
             propertySetResult.Index = 1;
             propertySetResult.BaseUnit = this.Configuration.BaseUnit;
 
-            if (memberResults.Count == 1)
+            if (memberResultGroup.Count == 1)
             {
               propertySetResult.ArgumentListCount = argumentList is VoidArgumentList ? 0 : memberInfo.ArgumentLists.Count();
-              memberResults.Add(propertySetResult);
+              memberResultGroup.Add(propertySetResult);
             }
             else
             {
-              memberResults[1].Combine(propertySetResult);
+              memberResultGroup[1].Combine(propertySetResult);
             }
           }
         }
 
-        if (memberResults.Any() && this.Configuration.IsDefaultLogOutputEnabled)
+        if (memberResultGroup.Any())
         {
-          foreach (IProfilerLogger logger in this.DefaultLoggers)
-          {
-            await logger.LogAsync(memberResults);
-          }
+          resultGroups.Add(memberResultGroup);
         }
-
-        memberResults.ForEach(profilerResults.Add);
       }
 
-      return profilerResults;
+      return resultGroups;
     }
 
     private string CreateMemberSignatureName(MemberInfo memberInfo)
@@ -313,17 +331,17 @@
       }
     }
 
-    private void GetTargetMethods(bool isFindInstanceProviderEnabled, IList<ProfiledMemberInfo> targetMembers, out bool hasProfiledInstanceMethods, out InstanceProviderInfo instanceProviderMethodInfo)
+    private void GetTargetMethods(Type typeToProfile,bool isFindInstanceProviderEnabled, IList<ProfiledMemberInfo> targetMembers, out bool hasProfiledInstanceMethods, out InstanceProviderInfo instanceProviderMethodInfo)
     {
       hasProfiledInstanceMethods = false;
       instanceProviderMethodInfo = null;
       bool hasHighPriorityInstanceProvider = false;
-      foreach (MethodInfo methodInfo in this.Configuration.Type.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+      foreach (MethodInfo methodInfo in typeToProfile.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
       {
         bool isMethodStatic = methodInfo.IsStatic;
         if (isFindInstanceProviderEnabled
           && isMethodStatic
-          && this.Configuration.Type.IsAssignableFrom(methodInfo.ReturnType))
+          && typeToProfile.IsAssignableFrom(methodInfo.ReturnType))
         {
           if (instanceProviderMethodInfo == null || !hasHighPriorityInstanceProvider)
           {
@@ -359,17 +377,17 @@
           }
         }
 
-        string asseblyName = this.Configuration.TypeAssembly.GetName().Name;
+        string asseblyName = this.Configuration.GetAssembly(typeToProfile).GetName().Name;
         var profiledMethodInfo = new ProfiledMethodInfo(argumentLists, methodInfo, profileAttribute.SourceFilePath, profileAttribute.LineNumber, asseblyName, isMethodStatic);
         targetMembers.Add(profiledMethodInfo);
       }
     }
 
-    private void GetTargetConstructors(bool isFindInstanceProviderEnabled, IList<ProfiledMemberInfo> targetMembers, out InstanceProviderInfo instanceProviderConstructorInfo)
+    private void GetTargetConstructors(Type typeToProfile, bool isFindInstanceProviderEnabled, IList<ProfiledMemberInfo> targetMembers, out InstanceProviderInfo instanceProviderConstructorInfo)
     {
       instanceProviderConstructorInfo = null;
       bool hasHighPriorityInstanceProvider = false;
-      foreach (ConstructorInfo constructorInfo in this.Configuration.Type.GetConstructors(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+      foreach (ConstructorInfo constructorInfo in typeToProfile.GetConstructors(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
       {
         bool isConstructorStatic = constructorInfo.IsStatic;
         if (isFindInstanceProviderEnabled
@@ -408,24 +426,24 @@
           }
         }
 
-        string asseblyName = this.Configuration.TypeAssembly.GetName().Name;
+        string asseblyName = this.Configuration.GetAssembly(typeToProfile).GetName().Name;
         ProfiledConstructorInfo profiledConstructorInfo = new ProfiledConstructorInfo(argumentLists, constructorInfo, profileAttribute.SourceFilePath, profileAttribute.LineNumber, asseblyName, isConstructorStatic);
         targetMembers.Add(profiledConstructorInfo);
       }
     }
 
-    private void GetTargetProperties(bool isFindInstanceProviderEnabled, IList<ProfiledMemberInfo> targetMembers, out bool hasProfiledInstanceProperties, out InstanceProviderInfo instanceProviderPropertyInfo)
+    private void GetTargetProperties(Type typeToProfile, bool isFindInstanceProviderEnabled, IList<ProfiledMemberInfo> targetMembers, out bool hasProfiledInstanceProperties, out InstanceProviderInfo instanceProviderPropertyInfo)
     {
       hasProfiledInstanceProperties = false;
       instanceProviderPropertyInfo = null;
       bool hasHighPriorityInstanceProvider = false;
-      foreach (PropertyInfo propertyInfo in this.Configuration.Type.GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+      foreach (PropertyInfo propertyInfo in typeToProfile.GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
       {
         bool isPropertyStatic = propertyInfo.GetGetMethod(true)?.IsStatic ?? false;
 
         if (isFindInstanceProviderEnabled
           && isPropertyStatic
-          && this.Configuration.Type.IsAssignableFrom(propertyInfo.PropertyType))
+          && typeToProfile.IsAssignableFrom(propertyInfo.PropertyType))
         {
           if (instanceProviderPropertyInfo == null || !hasHighPriorityInstanceProvider)
           {
@@ -463,20 +481,20 @@
           }
         }
 
-        string asseblyName = this.Configuration.TypeAssembly.GetName().Name;
+        string asseblyName = this.Configuration.GetAssembly(typeToProfile).GetName().Name;
         var profiledPropertyInfo = new ProfiledPropertyInfo(argumentLists, propertyInfo, profileAttribute.SourceFilePath, profileAttribute.LineNumber, asseblyName, isPropertyIndexer, isPropertyStatic);
         targetMembers.Add(profiledPropertyInfo);
       }
     }
 
-    private InstanceProviderInfo GetInstanceProviderField()
+    private InstanceProviderInfo GetInstanceProviderField(Type typeToProfile)
     {
       bool hasHighPriorityInstanceProvider = false;
       FieldInfo instanceProviderFieldInfo = null;
-      foreach (FieldInfo fieldInfo in this.Configuration.Type.GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+      foreach (FieldInfo fieldInfo in typeToProfile.GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
       {
         if (fieldInfo.IsStatic
-          && this.Configuration.Type.IsAssignableFrom(fieldInfo.FieldType))
+          && typeToProfile.IsAssignableFrom(fieldInfo.FieldType))
         {
           if (instanceProviderFieldInfo == null || !hasHighPriorityInstanceProvider)
           {

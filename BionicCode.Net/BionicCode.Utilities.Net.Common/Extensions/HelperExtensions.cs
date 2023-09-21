@@ -284,28 +284,6 @@
             .Append(' ');
         }
       }
-      else if (isProperty && !isIndexerProperty)
-      {
-        _ = fullMemberNameBuilder
-          .Append(' ')
-          .Append('{')
-          .Append(' ');
-        if (propertyGetMethodInfo != null)
-        {
-          _ = fullMemberNameBuilder
-            .Append("get")
-            .Append(';')
-            .Append(' ');
-        }
-
-        if (propertySetMethodInfo != null)
-        {
-          _ = fullMemberNameBuilder
-            .Append("set")
-            .Append(';')
-            .Append(' ');
-        }
-      }
 
       IEnumerable<ParameterInfo> paramters = methodInfo?.GetParameters()
         ?? constructorInfo?.GetParameters()
@@ -333,14 +311,36 @@
       {
         _ = fullMemberNameBuilder.Append(']');
       }
+
+
+      if (isProperty)
+      {
+        _ = fullMemberNameBuilder
+          .Append(' ')
+          .Append('{')
+          .Append(' ');
+        if (propertyGetMethodInfo != null)
+        {
+          _ = fullMemberNameBuilder
+            .Append("get")
+            .Append(';')
+            .Append(' ');
+        }
+
+        if (propertySetMethodInfo != null)
+        {
+          _ = fullMemberNameBuilder
+            .Append("set")
+            .Append(';')
+            .Append(' ');
+        }
+
+        _ = fullMemberNameBuilder.Append('}');
+      }
       else if (isConstructor || isMethod)
       {
         _ = fullMemberNameBuilder.Append(')')
           .Append(';');
-      }
-      else if (isProperty)
-      {
-        _ = fullMemberNameBuilder.Append('}');
       }
       else if (isEvent || isField)
       {
@@ -423,7 +423,10 @@
     /// </remarks>
     public static string ToDisplayName(this MemberInfo memberInfo)
     {
-      string memberName = memberInfo.Name;
+      bool isMemberIndexerProperty = memberInfo is PropertyInfo propertyInfo && (propertyInfo.GetIndexParameters()?.Length ?? -1) > 0;
+      string memberName = isMemberIndexerProperty
+        ? $"{memberInfo.Name}[]" 
+        : memberInfo.Name;
 
       // Those member types can't be generic
       if (memberInfo.MemberType.HasFlag(MemberTypes.Field)

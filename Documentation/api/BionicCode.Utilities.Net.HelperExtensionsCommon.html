@@ -37,7 +37,7 @@
               </button>
               
               <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../../images/BionicCode_Logo.png" alt="">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
@@ -121,6 +121,42 @@
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public static class HelperExtensionsCommon</code></pre>
   </div>
+  <h3 id="fields">Fields
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_IndexerName.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.IndexerName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L30">View Source</a>
+  </span>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_IndexerName" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IndexerName">IndexerName</h4>
+  <div class="markdown level1 summary"><p>The property name of an indexer property. This name is compiler generated and equals the value of the <span class="xref">static</span>field <see cref="!:System.Windows.Data.Binding.IndexerName"></see>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly string IndexerName</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><p>The generated property name of an indexer is <code>Item</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_HelperExtensionsCommon_IndexerName_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This field exists to enable writing of cross-platform compatible reflection code without the requirement to import the PresentationFramework.dll.</p>
+</div>
   <h3 id="methods">Methods
   </h3>
   <span class="small pull-right mobile-hide">
@@ -804,6 +840,185 @@ Added columns are initialized to the default value of <code data-dev-comment-typ
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_CanDeclareExtensionMethods_System_Type_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.CanDeclareExtensionMethods(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L649">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_CanDeclareExtensionMethods_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.CanDeclareExtensionMethods*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_CanDeclareExtensionMethods_System_Type_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.CanDeclareExtensionMethods(System.Type)">CanDeclareExtensionMethods(Type)</h4>
+  <div class="markdown level1 summary"><p>Extension method that checks if the provided <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a> is qualified to define extension methods.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool CanDeclareExtensionMethods(this Type typeInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a></td>
+        <td><span class="parametername">typeInfo</span></td>
+        <td><p>The extended <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a> istance.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><p><span class="xref">true</span> if the <code data-dev-comment-type="paramref" class="paramref">typeInfo</code> is allowed to define extension methods. Otherwise <span class="xref">false</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_HelperExtensionsCommon_CanDeclareExtensionMethods_System_Type__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To be able to define extension methods a class must be static, non-generic, a top level type.
+<br>In addition this method checks if the declaring class and the method are both decorated with the <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.runtime.compilerservices.extensionattribute(v=vs.110).aspx">ExtensionAttribute</a> which is added by the compiler.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_Cast_System_Object_System_Type_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.Cast(System.Object%2CSystem.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L774">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_Cast_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.Cast*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_Cast_System_Object_System_Type_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.Cast(System.Object,System.Type)">Cast(Object, Type)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static dynamic Cast(this object obj, Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></td>
+        <td><span class="parametername">obj</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a></td>
+        <td><span class="parametername">type</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_GetAccessModifier_System_Reflection_MemberInfo_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.GetAccessModifier(System.Reflection.MemberInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L363">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_GetAccessModifier_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.GetAccessModifier*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_GetAccessModifier_System_Reflection_MemberInfo_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.GetAccessModifier(System.Reflection.MemberInfo)">GetAccessModifier(MemberInfo)</h4>
+  <div class="markdown level1 summary"><p>Gets the access modifier for <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.memberinfo(v=vs.110).aspx">MemberInfo</a> objects like <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.methodinfo(v=vs.110).aspx">MethodInfo</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.constructorinfo(v=vs.110).aspx">ConstructorInfo</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.propertyinfo(v=vs.110).aspx">PropertyInfo</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.eventinfo(v=vs.110).aspx">EventInfo</a> or <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.fieldinfo(v=vs.110).aspx">FieldInfo</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static AccessModifier GetAccessModifier(this MemberInfo memberInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.memberinfo(v=vs.110).aspx">MemberInfo</a></td>
+        <td><span class="parametername">memberInfo</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.AccessModifier.html">AccessModifier</a></td>
+        <td><p>The <a class="xref" href="BionicCode.Utilities.Net.AccessModifier.html">AccessModifier</a> for the current <code data-dev-comment-type="paramref" class="paramref">memberInfo</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_HelperExtensionsCommon_GetAccessModifier_System_Reflection_MemberInfo__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>For a <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.propertyinfo(v=vs.110).aspx">PropertyInfo</a> the property accessor with the least restriction provides the access modifier for the property. This is acompiler rule.</p>
+</div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.invalidoperationexception(v=vs.110).aspx">InvalidOperationException</a></td>
+        <td><p>Unable to identify the accessibility of the <code data-dev-comment-type="paramref" class="paramref">memberInfo</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.notsupportedexception(v=vs.110).aspx">NotSupportedException</a></td>
+        <td><p>The type provided by the <code data-dev-comment-type="paramref" class="paramref">memberInfo</code> is not supported.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_HasReachedEnd_System_IO_Stream_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.HasReachedEnd(System.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
@@ -831,6 +1046,201 @@ Added columns are initialized to the default value of <code data-dev-comment-typ
       <tr>
         <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a></td>
         <td><span class="parametername">streamToCheck</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_IsAwaitable_System_Reflection_MethodInfo_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.IsAwaitable(System.Reflection.MethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L590">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsAwaitable_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsAwaitable*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsAwaitable_System_Reflection_MethodInfo_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsAwaitable(System.Reflection.MethodInfo)">IsAwaitable(MethodInfo)</h4>
+  <div class="markdown level1 summary"><p>Checks if the provided <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.methodinfo(v=vs.110).aspx">MethodInfo</a> belongs to an asnychronous/awaitable method.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsAwaitable(this MethodInfo methodInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.methodinfo(v=vs.110).aspx">MethodInfo</a></td>
+        <td><span class="parametername">methodInfo</span></td>
+        <td><p>The <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.methodinfo(v=vs.110).aspx">MethodInfo</a> to check if it belongs to an awaitable method.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><p><span class="xref">true</span> if the associated method is awaitable. Otherwise <span class="xref">false</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsAwaitable_System_Reflection_MethodInfo__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>The method first checks if the return type is either <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.threading.tasks.task(v=vs.110).aspx">Task</a> or <span class="xref">System.Threading.Tasks.ValueTask</span>. If that fails, it checks if the returned type (by compiler convention) exposes a &quot;GetAwaiter&quot; named method that returns an appropriate type (awaiter).
+<br>If that fails too, it checks whther there exists any extension method named &quot;GetAwaiter&quot; for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_IsAwaitableTask_System_Reflection_MethodInfo_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.IsAwaitableTask(System.Reflection.MethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L574">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsAwaitableTask_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsAwaitableTask*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsAwaitableTask_System_Reflection_MethodInfo_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsAwaitableTask(System.Reflection.MethodInfo)">IsAwaitableTask(MethodInfo)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsAwaitableTask(this MethodInfo methodInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.methodinfo(v=vs.110).aspx">MethodInfo</a></td>
+        <td><span class="parametername">methodInfo</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_IsAwaitableValueTask_System_Reflection_MethodInfo_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.IsAwaitableValueTask(System.Reflection.MethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L579">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsAwaitableValueTask_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsAwaitableValueTask*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsAwaitableValueTask_System_Reflection_MethodInfo_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsAwaitableValueTask(System.Reflection.MethodInfo)">IsAwaitableValueTask(MethodInfo)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsAwaitableValueTask(this MethodInfo methodInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.methodinfo(v=vs.110).aspx">MethodInfo</a></td>
+        <td><span class="parametername">methodInfo</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_IsDelegate_System_Type_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.IsDelegate(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L563">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsDelegate_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsDelegate*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsDelegate_System_Type_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsDelegate(System.Type)">IsDelegate(Type)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsDelegate(this Type typeInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a></td>
+        <td><span class="parametername">typeInfo</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -926,6 +1336,256 @@ Added columns are initialized to the default value of <code data-dev-comment-typ
       <tr>
         <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.argumentnullexception(v=vs.110).aspx">ArgumentNullException</a></td>
         <td><p><code data-dev-comment-type="paramref" class="paramref">source</code> is <span class="xref">null</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_IsExtensionMethod_System_Reflection_MethodInfo_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.IsExtensionMethod(System.Reflection.MethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L666">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsExtensionMethod_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsExtensionMethod*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsExtensionMethod_System_Reflection_MethodInfo_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsExtensionMethod(System.Reflection.MethodInfo)">IsExtensionMethod(MethodInfo)</h4>
+  <div class="markdown level1 summary"><p>Extension method to check if a <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.methodinfo(v=vs.110).aspx">MethodInfo</a> is the info of an extension method.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsExtensionMethod(this MethodInfo methodInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.methodinfo(v=vs.110).aspx">MethodInfo</a></td>
+        <td><span class="parametername">methodInfo</span></td>
+        <td><p>The extended <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.methodinfo(v=vs.110).aspx">MethodInfo</a> istance to validate.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><p><span class="xref">true</span> if the <code data-dev-comment-type="paramref" class="paramref">methodInfo</code> is an extension method. Otherwise <span class="xref">false</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_IsExtensionMethodOf_System_Reflection_MethodInfo_System_Type_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.IsExtensionMethodOf(System.Reflection.MethodInfo%2CSystem.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L702">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsExtensionMethodOf_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsExtensionMethodOf*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsExtensionMethodOf_System_Reflection_MethodInfo_System_Type_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsExtensionMethodOf(System.Reflection.MethodInfo,System.Type)">IsExtensionMethodOf(MethodInfo, Type)</h4>
+  <div class="markdown level1 summary"><p>Extension method to check if a <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.methodinfo(v=vs.110).aspx">MethodInfo</a> is the info of an extension method for a particular type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsExtensionMethodOf(this MethodInfo methodInfo, Type typeToExtend)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.methodinfo(v=vs.110).aspx">MethodInfo</a></td>
+        <td><span class="parametername">methodInfo</span></td>
+        <td><p>The extended <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.methodinfo(v=vs.110).aspx">MethodInfo</a> istance to validate.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a></td>
+        <td><span class="parametername">typeToExtend</span></td>
+        <td><p>The <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a> the <code data-dev-comment-type="paramref" class="paramref">methodInfo</code> is expected to extend.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><p><span class="xref">true</span> if the <code data-dev-comment-type="paramref" class="paramref">methodInfo</code> is an extension method for <code data-dev-comment-type="paramref" class="paramref">typeToExtend</code>. Otherwise <span class="xref">false</span>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_IsOverride_System_Reflection_MethodInfo_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.IsOverride(System.Reflection.MethodInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L570">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsOverride_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsOverride*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsOverride_System_Reflection_MethodInfo_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsOverride(System.Reflection.MethodInfo)">IsOverride(MethodInfo)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsOverride(this MethodInfo methodInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.methodinfo(v=vs.110).aspx">MethodInfo</a></td>
+        <td><span class="parametername">methodInfo</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_IsOverride_System_Reflection_PropertyInfo_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.IsOverride(System.Reflection.PropertyInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L567">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsOverride_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsOverride*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsOverride_System_Reflection_PropertyInfo_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsOverride(System.Reflection.PropertyInfo)">IsOverride(PropertyInfo)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsOverride(this PropertyInfo methodInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.propertyinfo(v=vs.110).aspx">PropertyInfo</a></td>
+        <td><span class="parametername">methodInfo</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_IsStatic_System_Type_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.IsStatic(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L639">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsStatic_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsStatic*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_IsStatic_System_Type_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.IsStatic(System.Type)">IsStatic(Type)</h4>
+  <div class="markdown level1 summary"><p>Extension method to check if a <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a> is static.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsStatic(this Type typeInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a></td>
+        <td><span class="parametername">typeInfo</span></td>
+        <td><p>The extended <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a> istance.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><p><span class="xref">true</span> if the <code data-dev-comment-type="paramref" class="paramref">typeInfo</code> is static. Otherwise <span class="xref">false</span>.</p>
 </td>
       </tr>
     </tbody>
@@ -1354,6 +2014,564 @@ While the standard <a class="xref" href="https://msdn.microsoft.com/en-us/librar
 </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplayName_System_Reflection_MemberInfo_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayName(System.Reflection.MemberInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L424">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplayName_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayName*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplayName_System_Reflection_MemberInfo_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayName(System.Reflection.MemberInfo)">ToDisplayName(MemberInfo)</h4>
+  <div class="markdown level1 summary"><p>Extension method to convert generic and non-generic member names to a readable display name without the namespace.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToDisplayName(this MemberInfo memberInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.memberinfo(v=vs.110).aspx">MemberInfo</a></td>
+        <td><span class="parametername">memberInfo</span></td>
+        <td><p>The <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.memberinfo(v=vs.110).aspx">MemberInfo</a> to extend.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><p>A readable name of type members, especially generic members. For example, <code>&quot;Task.Run`1&quot;</code> becomes <code>&quot;Task.Run&lt;TResult&gt;&quot;</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplayName_System_Reflection_MemberInfo__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Because <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a> dervies from <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.memberinfo(v=vs.110).aspx">MemberInfo</a> this extension method also works on <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a>.</p>
+Usually <a class="xref" href="https://msdn.microsoft.com/en-us/library/179ty784(v=vs.110).aspx">Name</a> for generic members like <code>&quot;Task.Run&lt;TResult>&quot;</code> would return <code>&quot;Task.Run`1&quot;</code>. 
+<br>This helper unwraps the generic type parameters to construct the full type name like <code>&quot;Task.Run&lt;TResult>&quot;</code>.
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_System_Reflection_ConstructorInfo_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName(System.Reflection.ConstructorInfo%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L96">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_System_Reflection_ConstructorInfo_System_Boolean_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName(System.Reflection.ConstructorInfo,System.Boolean)">ToDisplaySignatureName(ConstructorInfo, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToDisplaySignatureName(this ConstructorInfo constructorInfo, bool isQualifyMemberEnabled = false)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.constructorinfo(v=vs.110).aspx">ConstructorInfo</a></td>
+        <td><span class="parametername">constructorInfo</span></td>
+        <td><p>The <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.constructorinfo(v=vs.110).aspx">ConstructorInfo</a> to extend.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><span class="parametername">isQualifyMemberEnabled</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><p>A readable name of type members, especially generic members. For example, <code>&quot;Task.Run`1&quot;</code> becomes <code>&quot;Task.Run&lt;TResult&gt;&quot;</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_System_Reflection_ConstructorInfo_System_Boolean__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Usually <a class="xref" href="https://msdn.microsoft.com/en-us/library/179ty784(v=vs.110).aspx">Name</a> for generic members like <code>Task.Run&lt;TResult&gt;</code> would return <code>&quot;Task.Run`1&quot;</code>.
+<br>This helper unwraps the generic type parameters to construct the full signature name like <code>&quot;public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);&quot;</code>.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_System_Reflection_FieldInfo_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName(System.Reflection.FieldInfo%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L110">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_System_Reflection_FieldInfo_System_Boolean_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName(System.Reflection.FieldInfo,System.Boolean)">ToDisplaySignatureName(FieldInfo, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToDisplaySignatureName(this FieldInfo fieldInfo, bool isQualifyMemberEnabled = false)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.fieldinfo(v=vs.110).aspx">FieldInfo</a></td>
+        <td><span class="parametername">fieldInfo</span></td>
+        <td><p>The <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.fieldinfo(v=vs.110).aspx">FieldInfo</a> to extend.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><span class="parametername">isQualifyMemberEnabled</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><p>A readable name of type members, especially generic members. For example, <code>&quot;Task.Run`1&quot;</code> becomes <code>&quot;Task.Run&lt;TResult&gt;&quot;</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_System_Reflection_FieldInfo_System_Boolean__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Usually <a class="xref" href="https://msdn.microsoft.com/en-us/library/179ty784(v=vs.110).aspx">Name</a> for generic members like <code>Task.Run&lt;TResult&gt;</code> would return <code>&quot;Task.Run`1&quot;</code>.
+<br>This helper unwraps the generic type parameters to construct the full signature name like <code>&quot;public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);&quot;</code>.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_System_Reflection_MethodInfo_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName(System.Reflection.MethodInfo%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L68">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_System_Reflection_MethodInfo_System_Boolean_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName(System.Reflection.MethodInfo,System.Boolean)">ToDisplaySignatureName(MethodInfo, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToDisplaySignatureName(this MethodInfo methodInfo, bool isQualifyMemberEnabled = false)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.methodinfo(v=vs.110).aspx">MethodInfo</a></td>
+        <td><span class="parametername">methodInfo</span></td>
+        <td><p>The <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.methodinfo(v=vs.110).aspx">MethodInfo</a> to extend.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><span class="parametername">isQualifyMemberEnabled</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><p>A readable name of type members, especially generic members. For example, <code>&quot;Task.Run`1&quot;</code> becomes <code>&quot;Task.Run&lt;TResult&gt;&quot;</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_System_Reflection_MethodInfo_System_Boolean__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Usually <a class="xref" href="https://msdn.microsoft.com/en-us/library/179ty784(v=vs.110).aspx">Name</a> for generic members like <code>Task.Run&lt;TResult&gt;</code> would return <code>&quot;Task.Run`1&quot;</code>.
+<br>This helper unwraps the generic type parameters to construct the full signature name like <code>&quot;public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);&quot;</code>.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_System_Reflection_PropertyInfo_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName(System.Reflection.PropertyInfo%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L54">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_System_Reflection_PropertyInfo_System_Boolean_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName(System.Reflection.PropertyInfo,System.Boolean)">ToDisplaySignatureName(PropertyInfo, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToDisplaySignatureName(this PropertyInfo propertyInfo, bool isQualifyMemberEnabled = false)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.propertyinfo(v=vs.110).aspx">PropertyInfo</a></td>
+        <td><span class="parametername">propertyInfo</span></td>
+        <td><p>The <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.propertyinfo(v=vs.110).aspx">PropertyInfo</a> to extend.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><span class="parametername">isQualifyMemberEnabled</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><p>A readable name of type members, especially generic members. For example, <code>&quot;Task.Run`1&quot;</code> becomes <code>&quot;Task.Run&lt;TResult&gt;&quot;</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_System_Reflection_PropertyInfo_System_Boolean__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Usually <a class="xref" href="https://msdn.microsoft.com/en-us/library/179ty784(v=vs.110).aspx">Name</a> for generic members like <code>Task.Run&lt;TResult&gt;</code> would return <code>&quot;Task.Run`1&quot;</code>.
+<br>This helper unwraps the generic type parameters to construct the full signature name like <code>&quot;public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);&quot;</code>.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_System_Type_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L82">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_System_Type_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName(System.Type)">ToDisplaySignatureName(Type)</h4>
+  <div class="markdown level1 summary"><p>Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToDisplaySignatureName(this Type typeInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a></td>
+        <td><span class="parametername">typeInfo</span></td>
+        <td><p>The <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a> to extend.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><p>A readable name of type members, especially generic members. For example, <code>&quot;Task.Run`1&quot;</code> becomes <code>&quot;Task.Run&lt;TResult&gt;&quot;</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplaySignatureName_System_Type__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Usually <a class="xref" href="https://msdn.microsoft.com/en-us/library/179ty784(v=vs.110).aspx">Name</a> for generic members like <code>Task.Run&lt;TResult&gt;</code> would return <code>&quot;Task.Run`1&quot;</code>.
+<br>This helper unwraps the generic type parameters to construct the full signature name like <code>&quot;public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);&quot;</code>.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplayStringValue_BionicCode_Utilities_Net_AccessModifier_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayStringValue(BionicCode.Utilities.Net.AccessModifier%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/EnumToStringExtensions.cs/#L15">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplayStringValue_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayStringValue*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplayStringValue_BionicCode_Utilities_Net_AccessModifier_System_Boolean_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayStringValue(BionicCode.Utilities.Net.AccessModifier,System.Boolean)">ToDisplayStringValue(AccessModifier, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Converts the value of <a class="xref" href="BionicCode.Utilities.Net.AccessModifier.html">AccessModifier</a> to a string representation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToDisplayStringValue(this AccessModifier accessModifier, bool toUpperCase = false)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.AccessModifier.html">AccessModifier</a></td>
+        <td><span class="parametername">accessModifier</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><span class="parametername">toUpperCase</span></td>
+        <td><p>Controls whether to convert the string's first character to uppercase (<code data-dev-comment-type="paramref" class="paramref">toUpperCase</code>=<code>true</code>). The default is lowercase (<code data-dev-comment-type="paramref" class="paramref">toUpperCase</code>=<code>true</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><p>The readable string representation of the enum value.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.notsupportedexception(v=vs.110).aspx">NotSupportedException</a></td>
+        <td><p>The enum value is not supported. (This exception is only intended for internal maintainance and will never be thrown in production code)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplayStringValue_BionicCode_Utilities_Net_ProfiledTargetType_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayStringValue(BionicCode.Utilities.Net.ProfiledTargetType%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/EnumToStringExtensions.cs/#L45">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplayStringValue_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayStringValue*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplayStringValue_BionicCode_Utilities_Net_ProfiledTargetType_System_Boolean_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayStringValue(BionicCode.Utilities.Net.ProfiledTargetType,System.Boolean)">ToDisplayStringValue(ProfiledTargetType, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Converts the value of <a class="xref" href="BionicCode.Utilities.Net.ProfiledTargetType.html">ProfiledTargetType</a> to a string representation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToDisplayStringValue(this ProfiledTargetType profiledTargetType, bool toUpperCase = false)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.ProfiledTargetType.html">ProfiledTargetType</a></td>
+        <td><span class="parametername">profiledTargetType</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><span class="parametername">toUpperCase</span></td>
+        <td><p>Controls whether to convert the string's first character to uppercase (<code data-dev-comment-type="paramref" class="paramref">toUpperCase</code>=<code>true</code>). The default is lowercase (<code data-dev-comment-type="paramref" class="paramref">toUpperCase</code>=<code>true</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><p>The readable string representation of the enum value.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.notsupportedexception(v=vs.110).aspx">NotSupportedException</a></td>
+        <td><p>The enum value is not supported. (This exception is only intended for internal maintainance and will never be thrown in production code)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplayStringValue_BionicCode_Utilities_Net_TimeUnit_System_Boolean_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayStringValue(BionicCode.Utilities.Net.TimeUnit%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/EnumToStringExtensions.cs/#L77">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplayStringValue_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayStringValue*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToDisplayStringValue_BionicCode_Utilities_Net_TimeUnit_System_Boolean_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayStringValue(BionicCode.Utilities.Net.TimeUnit,System.Boolean)">ToDisplayStringValue(TimeUnit, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Converts the value of <a class="xref" href="BionicCode.Utilities.Net.TimeUnit.html">TimeUnit</a> to a string representation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToDisplayStringValue(this TimeUnit timeUnit, bool toUpperCase = false)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.TimeUnit.html">TimeUnit</a></td>
+        <td><span class="parametername">timeUnit</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><span class="parametername">toUpperCase</span></td>
+        <td><p>Controls whether to convert the string's first character to uppercase (<code data-dev-comment-type="paramref" class="paramref">toUpperCase</code>=<code>true</code>). The default is lowercase (<code data-dev-comment-type="paramref" class="paramref">toUpperCase</code>=<code>true</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><p>The readable string representation of the enum value.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.notsupportedexception(v=vs.110).aspx">NotSupportedException</a></td>
+        <td><p>The enum value is not supported. (This exception is only intended for internal maintainance and will never be thrown in production code)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_ToFlatDictionary_System_Object_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.ToFlatDictionary(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
@@ -1412,10 +2630,65 @@ While the standard <a class="xref" href="https://msdn.microsoft.com/en-us/librar
 </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_ToFullDisplayName_System_Reflection_MemberInfo_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.MemberInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L487">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToFullDisplayName_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToFullDisplayName_System_Reflection_MemberInfo_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.MemberInfo)">ToFullDisplayName(MemberInfo)</h4>
+  <div class="markdown level1 summary"><p>Extension method to convert generic and non-generic type names to a readable display name including the namespace.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToFullDisplayName(this MemberInfo memberInfo)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.memberinfo(v=vs.110).aspx">MemberInfo</a></td>
+        <td><span class="parametername">memberInfo</span></td>
+        <td><p>The <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a> to extend.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><p>A readable name of type members, especially generic members. For example, <code>&quot;Task.Run`1&quot;</code> becomes <code>&quot;System.Threading.Tasks.Task.Run&lt;TResult&gt;&quot;</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToFullDisplayName_System_Reflection_MemberInfo__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Because <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a> dervies from <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.reflection.memberinfo(v=vs.110).aspx">MemberInfo</a> this extension method also works on <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a>.</p>
+Usually <a class="xref" href="https://msdn.microsoft.com/en-us/library/179ty784(v=vs.110).aspx">Name</a> for generic members like <code>&quot;Task.Run&lt;TResult>&quot;</code> would return <code>&quot;Task.Run`1&quot;</code>. 
+<br>This helper unwraps the generic type parameters to construct the full type name like <code>&quot;System.Threading.Tasks.Task.Run&lt;TResult>&quot;</code>.
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_ToFunc__1_System_Predicate___0__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.ToFunc%60%601(System.Predicate%7B%60%600%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L21">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L40">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToFunc_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToFunc*"></a>
   <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_ToFunc__1_System_Predicate___0__" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.ToFunc``1(System.Predicate{``0})">ToFunc&lt;TParam&gt;(Predicate&lt;TParam&gt;)</h4>
@@ -1473,6 +2746,100 @@ While the standard <a class="xref" href="https://msdn.microsoft.com/en-us/librar
         <td><span class="parametername">TParam</span></td>
         <td><p>The parameter type for the predicate.</p>
 </td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_TotalMicroseconds_System_TimeSpan_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.TotalMicroseconds(System.TimeSpan)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L780">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_TotalMicroseconds_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.TotalMicroseconds*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_TotalMicroseconds_System_TimeSpan_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.TotalMicroseconds(System.TimeSpan)">TotalMicroseconds(TimeSpan)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static double TotalMicroseconds(this TimeSpan duration)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.timespan(v=vs.110).aspx">TimeSpan</a></td>
+        <td><span class="parametername">duration</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.double(v=vs.110).aspx">Double</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_HelperExtensionsCommon_TotalNanoseconds_System_TimeSpan_.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.HelperExtensionsCommon.TotalNanoseconds(System.TimeSpan)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Extensions/HelperExtensions.cs/#L781">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_HelperExtensionsCommon_TotalNanoseconds_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.TotalNanoseconds*"></a>
+  <h4 id="BionicCode_Utilities_Net_HelperExtensionsCommon_TotalNanoseconds_System_TimeSpan_" data-uid="BionicCode.Utilities.Net.HelperExtensionsCommon.TotalNanoseconds(System.TimeSpan)">TotalNanoseconds(TimeSpan)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static double TotalNanoseconds(this TimeSpan duration)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.timespan(v=vs.110).aspx">TimeSpan</a></td>
+        <td><span class="parametername">duration</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.double(v=vs.110).aspx">Double</a></td>
+        <td></td>
       </tr>
     </tbody>
   </table>

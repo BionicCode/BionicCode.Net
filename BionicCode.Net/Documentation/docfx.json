@@ -58,11 +58,12 @@
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [
-      "default"
+      "default",
+      "../../Documentation/rest.tagpage.1/content"
     ],
     "globalMetadata": {
       "_appTitle": "BionicCode.NET API Reference",
-      "_appLogoPath": "../images/BionicCode_Logo.png",
+      //"_appLogoPath": "../images/BionicCode_Logo.png",
       "_appFaviconPath": "../images/logo.ico",
       "_gitContribute": {
         "repo": "https://github.com/BionicCode/BionicCode.Net",

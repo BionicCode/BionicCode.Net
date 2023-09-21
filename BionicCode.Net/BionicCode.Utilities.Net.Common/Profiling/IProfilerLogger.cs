@@ -9,6 +9,6 @@
 
   internal interface IProfilerLogger
   {
-    Task LogAsync(ProfilerBatchResultCollection batchResults);
+    Task LogAsync(ProfiledTypeResultCollection typeResults);
   }
 }

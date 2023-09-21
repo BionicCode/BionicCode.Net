@@ -56,27 +56,27 @@ using System.Windows.Data;
       if (fileName.Length >= maxLength)
       {
         string fileExtension = Path.GetExtension(fileName);
-        pathBuilder.Append(pathSegments[0]);
-        pathBuilder.Append(@"\...\");
-        pathBuilder.Append(fileName.Substring(0, (int) Math.Floor(maxLength / 2.0)));
-        pathBuilder.Append(" ...");
-        pathBuilder.Append(
-          fileName.Substring(fileName.Length - fileExtension.Length - (int) Math.Ceiling(maxLength / 2.0)));
+        _ = pathBuilder.Append(pathSegments[0])
+          .Append(@"\...\")
+          .Append(fileName.Substring(0, (int)System.Math.Floor(maxLength / 2.0)))
+          .Append(" ...")
+          .Append(
+          fileName.Substring(fileName.Length - fileExtension.Length - (int)System.Math.Ceiling(maxLength / 2.0)));
         return pathBuilder.ToString();
       }
 
       while (pathSegmentIndex < pathSegments.Length &&
              pathBuilder.Length + pathSegments[pathSegmentIndex].Length + 1 + fileName.Length < maxLength)
       {
-        pathBuilder.Append(pathSegments[pathSegmentIndex++] + @"\");
+        _ = pathBuilder.Append(pathSegments[pathSegmentIndex++] + @"\");
       }
 
       if (pathSegmentIndex < pathSegments.Length)
       {
-        pathBuilder.Append(@"...\");
+        _ = pathBuilder.Append(@"...\");
       }
 
-      pathBuilder.Append(fileName);
+      _ = pathBuilder.Append(fileName);
       return pathBuilder.ToString();
     }
 

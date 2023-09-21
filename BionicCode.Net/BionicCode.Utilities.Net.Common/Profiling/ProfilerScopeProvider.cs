@@ -55,20 +55,20 @@
           {
             this.Stopwatch.Stop();
 
-            var ireationResult = new ProfilerResult(1, this.Stopwatch.Elapsed, this.ScopeProvider.Result.BaseUnit, this.ScopeProvider.Result);
+            var iterationResult = new ProfilerResult(1, this.Stopwatch.Elapsed, this.ScopeProvider.Result.BaseUnit, this.ScopeProvider.Result, -1);
 
-            this.ScopeProvider.Result.AddResult(ireationResult);
+            this.ScopeProvider.Result.AddResult(iterationResult);
             this.ScopeProvider.Result.IterationCount = 1;
             this.ScopeProvider.Result.TotalDuration = this.Stopwatch.Elapsed;
             this.ScopeProvider.Result.AverageDuration = this.Stopwatch.Elapsed;
-            this.ScopeProvider.Result.MinResult = ireationResult;
-            this.ScopeProvider.Result.MaxResult = ireationResult;
+            this.ScopeProvider.Result.MinResult = iterationResult;
+            this.ScopeProvider.Result.MaxResult = iterationResult;
             this.ScopeProvider.Result.BaseUnit = Profiler.DefaultBaseUnit;
 
             ProfilerContext context = this.ScopeProvider.Result.Context;
             var summaryBuilder = new StringBuilder();
             Profiler.BuildSummaryHeader(summaryBuilder, $"Target: scope (context: {context.TargetName})", context.TargetName, context.SourceFileName, context.LineNumber);
-            Profiler.BuildSummaryEntry(summaryBuilder, ireationResult);
+            Profiler.BuildSummaryEntry(summaryBuilder, iterationResult);
             Profiler.BuildSummaryFooter(summaryBuilder, this.ScopeProvider.Result);
 
             this.ScopeProvider.Logger?.Invoke(this.ScopeProvider.Result);

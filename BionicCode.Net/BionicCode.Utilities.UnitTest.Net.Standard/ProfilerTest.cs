@@ -197,14 +197,21 @@
     {
       ProfilerLoggerDelegate logger = CreateLogger();
       const int iterations = 20;
-      ProfilerBuilder profilerBuilder = Profiler.LogType(typeof(BenchmarkTarget<string>))
+      var targetTypes = new List<Type>
+      {
+        typeof(BenchmarkTarget<string>),
+        typeof(BenchmarkTargetAlternate<int>)
+      };
+
+      ProfilerBuilder profilerBuilder = Profiler.CreateProfilerBuilder(targetTypes)
         .SetIterations(iterations)
         .SetLogger(result => Debug.WriteLine(result.Summary))
-        .EnableDefaultLogOutput();
+        .EnableDefaultLogOutput()
+        .SetBaseUnit(TimeUnit.Microseconds);
 
-      IEnumerable<ProfilerBatchResult> result = await profilerBuilder.RunAsync();
+      ProfiledTypeResultCollection result = await profilerBuilder.RunAsync();
 
-      _ = result?.LastOrDefault()?.IterationCount.Should().Be(iterations);
+      _ = result.First().First().First().IterationCount.Should().Be(iterations);
     }
   }
 }

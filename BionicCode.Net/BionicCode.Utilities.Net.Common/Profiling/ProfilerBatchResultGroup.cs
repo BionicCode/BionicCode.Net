@@ -1,11 +1,12 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System.Collections.Generic;
+  using System.Linq;
 
   /// <summary>
   /// A list to hold a collection of <see cref="ProfilerBatchResult"/> items.
   /// </summary>
-  public class ProfilerBatchResultCollection : List<ProfilerBatchResult>
+  public class ProfilerBatchResultGroup : List<ProfilerBatchResult>
   {
     /// <summary>
     /// Describes the profiled member that the <see cref="ProfilerBatchResult"/> items represent.
@@ -17,25 +18,32 @@
     /// <summary>
     /// The signature name of the profiled type member.
     /// </summary>
-    internal string ProfiledTargetMemberName { get; set; }
+    internal string ProfiledTargetSignatureMemberName { get; set; }
 
-    public ProfilerBatchResultCollection(ProfiledTargetType profiledTargetType)
+    /// <summary>
+    /// The signature name of the profiled type member.
+    /// </summary>
+    internal string ProfiledTargetMemberShortName { get; set; }
+
+    internal TimeUnit CommonBaseUnit => this.Min(result => result.BaseUnit);
+
+    public ProfilerBatchResultGroup(ProfiledTargetType profiledTargetType)
     {
       this.ProfiledTargetType = profiledTargetType;
     }
 
-    internal ProfilerBatchResultCollection()
+    internal ProfilerBatchResultGroup()
     {
       this.ProfiledTargetType = ProfiledTargetType.None;
-      this.ProfiledTargetMemberName = string.Empty;
+      this.ProfiledTargetSignatureMemberName = string.Empty;
     }
 
-    public ProfilerBatchResultCollection(ProfiledTargetType profiledTargetType, IEnumerable<ProfilerBatchResult> collection) : base(collection)
+    public ProfilerBatchResultGroup(ProfiledTargetType profiledTargetType, IEnumerable<ProfilerBatchResult> collection) : base(collection)
     {
       this.ProfiledTargetType = profiledTargetType;
     }
 
-    public ProfilerBatchResultCollection(ProfiledTargetType profiledTargetType, int capacity) : base(capacity)
+    public ProfilerBatchResultGroup(ProfiledTargetType profiledTargetType, int capacity) : base(capacity)
     {
       this.ProfiledTargetType = profiledTargetType;
     }

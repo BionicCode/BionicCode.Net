@@ -37,7 +37,7 @@
               </button>
               
               <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../../images/BionicCode_Logo.png" alt="">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
@@ -124,25 +124,25 @@
     <pre><code class="lang-csharp hljs">public class ProfilerBatchResult</code></pre>
   </div>
   <h5 id="BionicCode_Utilities_Net_ProfilerBatchResult_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>For example, the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html">ProfilerBatchResult</a> is returned by multi-run benchmark methods like <a class="xref" href="BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTimeAsync_System_Func_System_Threading_Tasks_Task__System_Int32_">LogTimeAsync(Func&lt;Task&gt;, Int32)</a>.</p>
+  <div class="markdown level0 remarks"><p>For example, the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html">ProfilerBatchResult</a> is returned by multi-run benchmark methods like <see cref="!:Profiler.LogTime(System.Action, int, string, string, int)"></see>.</p>
 </div>
   <h3 id="properties">Properties
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_AverageDuration.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.AverageDuration%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_ArgumentListCount.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.ArgumentListCount%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L55">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L217">View Source</a>
   </span>
-  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_AverageDuration_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.AverageDuration*"></a>
-  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_AverageDuration" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.AverageDuration">AverageDuration</h4>
-  <div class="markdown level1 summary"><p>The average duration of all logged iterations.</p>
+  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_ArgumentListCount_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.ArgumentListCount*"></a>
+  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_ArgumentListCount" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.ArgumentListCount">ArgumentListCount</h4>
+  <div class="markdown level1 summary"><p>The number of iterations the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html">Profiler</a> has run the specified operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TimeSpan AverageDuration { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public int ArgumentListCount { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -154,18 +154,152 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.timespan(v=vs.110).aspx">TimeSpan</a></td>
-        <td><p>The average duration of all iterations.</p>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td><p>The number of iterations (which is equivalent to the number of results) per argument list.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_ProfilerBatchResult_ArgumentListCount_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Using the profiler with annotations (attributes) allows to specify argument lists to simulate real-world behavior where usually the values of the arguments that are provided to the member change.
+<br>A member is executed and profiled with each argument list for the number of the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_IterationCount">IterationCount</a> times.
+<br>For example if a method is profiled with three argument lists and an iteration count of 10, the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_IterationCount">IterationCount</a> will return <code>10</code> and the total iterations run for the profiled member is the product of <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_IterationCount">IterationCount</a> and <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_ArgumentListCount">ArgumentListCount</a>.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_AverageDuration.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.AverageDuration%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L241">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_AverageDuration_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.AverageDuration*"></a>
+  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_AverageDuration" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.AverageDuration">AverageDuration</h4>
+  <div class="markdown level1 summary"><p>The average duration of all logged iterations in microseconds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Microseconds AverageDuration { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.Microseconds.html">Microseconds</a></td>
+        <td><p>The average duration of all iterations in microseconds.</p>
 </td>
       </tr>
     </tbody>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_AverageDurationConverted.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.AverageDurationConverted%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L247">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_AverageDurationConverted_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.AverageDurationConverted*"></a>
+  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_AverageDurationConverted" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.AverageDurationConverted">AverageDurationConverted</h4>
+  <div class="markdown level1 summary"><p>The average duration of all logged iterations converted to the base unit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double AverageDurationConverted { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.double(v=vs.110).aspx">Double</a></td>
+        <td><p>The average duration of all iterations converted from microseconds to the base unit defined by the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_BaseUnit">BaseUnit</a> property.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_BaseUnit.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.BaseUnit%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L315">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_BaseUnit_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.BaseUnit*"></a>
+  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_BaseUnit" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.BaseUnit">BaseUnit</h4>
+  <div class="markdown level1 summary"><p>The base unit used to calculate the values for <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_TotalDurationConverted">TotalDurationConverted</a>, <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_StandardDeviationConverted">StandardDeviationConverted</a> and <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_AverageDurationConverted">AverageDurationConverted</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeUnit BaseUnit { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.TimeUnit.html">TimeUnit</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_Context.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.Context%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L310">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_Context_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.Context*"></a>
+  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_Context" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.Context">Context</h4>
+  <div class="markdown level1 summary"><p>Describes the context that the profiler was executed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ProfilerContext Context { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.ProfilerContext.html">ProfilerContext</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="BionicCode_Utilities_Net_ProfilerBatchResult_Context_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>The context describes machine atributes like core clock and core count to help to compare results from sessions on different machines.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_HasCancelledProfiledTask.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.HasCancelledProfiledTask%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L31">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L193">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_ProfilerBatchResult_HasCancelledProfiledTask_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.HasCancelledProfiledTask*"></a>
   <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_HasCancelledProfiledTask" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.HasCancelledProfiledTask">HasCancelledProfiledTask</h4>
@@ -194,10 +328,41 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_Index.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.Index%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L144">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_Index_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.Index*"></a>
+  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_Index" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.Index">Index</h4>
+  <div class="markdown level1 summary"><p>The index of the current result batch.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Index { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_IterationCount.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.IterationCount%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L37">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L202">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_ProfilerBatchResult_IterationCount_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.IterationCount*"></a>
   <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_IterationCount" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.IterationCount">IterationCount</h4>
@@ -219,17 +384,22 @@
     <tbody>
       <tr>
         <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
-        <td><p>The number of iterations (which is equivalent to the number of results).</p>
+        <td><p>The number of iterations (which is equivalent to the number of results) per argument list.</p>
 </td>
       </tr>
     </tbody>
   </table>
+  <h5 id="BionicCode_Utilities_Net_ProfilerBatchResult_IterationCount_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Using the profiler with annotations (attributes) (see <a class="xref" href="BionicCode.Utilities.Net.ProfileAttribute.html">ProfileAttribute</a>) allows to specify argument lists (see <a class="xref" href="BionicCode.Utilities.Net.ProfilerArgumentAttribute.html">ProfilerArgumentAttribute</a>) to simulate real-world behavior where usually the values of the arguments that are provided to the member change.
+<br>A member is executed and profiled with each argument list for the number of the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_IterationCount">IterationCount</a> times.
+<br>For example if a method is profiled with three argument lists and an iteration count of 10, the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_IterationCount">IterationCount</a> will return <code>10</code> and the total iterations run for the profiled member is <code>30</code>, the product of <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_IterationCount">IterationCount</a> and <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_ArgumentListCount">ArgumentListCount</a> (see <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_TotalIterationCount">TotalIterationCount</a>).</p>
+</div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_MaxResult.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.MaxResult%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L89">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L294">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_ProfilerBatchResult_MaxResult_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.MaxResult*"></a>
   <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_MaxResult" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.MaxResult">MaxResult</h4>
@@ -260,7 +430,7 @@
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_MinResult.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.MinResult%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L84">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L289">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_ProfilerBatchResult_MinResult_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.MinResult*"></a>
   <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_MinResult" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.MinResult">MinResult</h4>
@@ -288,19 +458,19 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_Results.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.Results%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_Range.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.Range%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L43">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L253">View Source</a>
   </span>
-  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_Results_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.Results*"></a>
-  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_Results" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.Results">Results</h4>
-  <div class="markdown level1 summary"><p>The logged results of each iteration.</p>
+  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_Range_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.Range*"></a>
+  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_Range" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.Range">Range</h4>
+  <div class="markdown level1 summary"><p>The range of all logged iterations in microseconds.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerable&lt;ProfilerResult&gt; Results { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public Microseconds Range { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -312,8 +482,136 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable</a>&lt;<a class="xref" href="BionicCode.Utilities.Net.ProfilerResult.html">ProfilerResult</a>&gt;</td>
-        <td><p>The results of each iteration.</p>
+        <td><a class="xref" href="BionicCode.Utilities.Net.Microseconds.html">Microseconds</a></td>
+        <td><p>The range of all iterations in microseconds.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_RangeConverted.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.RangeConverted%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L259">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_RangeConverted_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.RangeConverted*"></a>
+  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_RangeConverted" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.RangeConverted">RangeConverted</h4>
+  <div class="markdown level1 summary"><p>The range of all logged iterations converted to the base unit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double RangeConverted { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.double(v=vs.110).aspx">Double</a></td>
+        <td><p>The range of all iterations converted from microseconds to the base unit defined by the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_BaseUnit">BaseUnit</a> property.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_Results.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.Results%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L223">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_Results_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.Results*"></a>
+  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_Results" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.Results">Results</h4>
+  <div class="markdown level1 summary"><p>The logged results of each iteration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyCollection&lt;ProfilerResult&gt; Results { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/hh881542(v=vs.110).aspx">IReadOnlyCollection</a>&lt;<a class="xref" href="BionicCode.Utilities.Net.ProfilerResult.html">ProfilerResult</a>&gt;</td>
+        <td><p>The read-only results of all iterations.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_StandardDeviation.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.StandardDeviation%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L151">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_StandardDeviation_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.StandardDeviation*"></a>
+  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_StandardDeviation" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.StandardDeviation">StandardDeviation</h4>
+  <div class="markdown level1 summary"><p>The stamdard deviation over all the <a class="xref" href="BionicCode.Utilities.Net.ProfilerResult.html">ProfilerResult</a> items in microseconds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Microseconds StandardDeviation { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.Microseconds.html">Microseconds</a></td>
+        <td><p>Stamdard deviation in microseconds.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_StandardDeviationConverted.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.StandardDeviationConverted%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L169">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_StandardDeviationConverted_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.StandardDeviationConverted*"></a>
+  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_StandardDeviationConverted" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.StandardDeviationConverted">StandardDeviationConverted</h4>
+  <div class="markdown level1 summary"><p>The stamdard deviation over all the <a class="xref" href="BionicCode.Utilities.Net.ProfilerResult.html">ProfilerResult</a> items converted to the base unit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double StandardDeviationConverted { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.double(v=vs.110).aspx">Double</a></td>
+        <td><p>Stamdard deviation converted from microseconds to the base unit defined by the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_BaseUnit">BaseUnit</a> property.</p>
 </td>
       </tr>
     </tbody>
@@ -323,7 +621,7 @@
     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_Summary.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.Summary%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L79">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L283">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_ProfilerBatchResult_Summary_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.Summary*"></a>
   <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_Summary" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.Summary">Summary</h4>
@@ -367,19 +665,19 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_TotalDuration.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.TotalDuration%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_TimeStamp.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.TimeStamp%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L49">View Source</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L299">View Source</a>
   </span>
-  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_TotalDuration_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.TotalDuration*"></a>
-  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_TotalDuration" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.TotalDuration">TotalDuration</h4>
-  <div class="markdown level1 summary"><p>The total duration of all logged iterations.</p>
+  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_TimeStamp_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.TimeStamp*"></a>
+  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_TimeStamp" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.TimeStamp">TimeStamp</h4>
+  <div class="markdown level1 summary"><p>The timestamp that describes the moment in time the profiling session associated with this current result was executed.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TimeSpan TotalDuration { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public DateTime TimeStamp { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -391,13 +689,142 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.timespan(v=vs.110).aspx">TimeSpan</a></td>
-        <td><p>The sum of each duration per iteration.</p>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.datetime(v=vs.110).aspx">DateTime</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_TotalDuration.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.TotalDuration%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L229">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_TotalDuration_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.TotalDuration*"></a>
+  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_TotalDuration" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.TotalDuration">TotalDuration</h4>
+  <div class="markdown level1 summary"><p>The total duration of all logged iterations in microseconds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Microseconds TotalDuration { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="BionicCode.Utilities.Net.Microseconds.html">Microseconds</a></td>
+        <td><p>The sum of each duration per iteration in microseconds.</p>
 </td>
       </tr>
     </tbody>
   </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_TotalDurationConverted.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.TotalDurationConverted%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L235">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_TotalDurationConverted_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.TotalDurationConverted*"></a>
+  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_TotalDurationConverted" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.TotalDurationConverted">TotalDurationConverted</h4>
+  <div class="markdown level1 summary"><p>The total duration of all logged iterations converted to the base unit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double TotalDurationConverted { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.double(v=vs.110).aspx">Double</a></td>
+        <td><p>The sum of each duration per iteration converted from microseconds to the base unit defined by the <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_BaseUnit">BaseUnit</a> property.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_TotalIterationCount.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.TotalIterationCount%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L208">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_TotalIterationCount_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.TotalIterationCount*"></a>
+  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_TotalIterationCount" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.TotalIterationCount">TotalIterationCount</h4>
+  <div class="markdown level1 summary"><p>The total number of iterations to conduct the profiling.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int TotalIterationCount { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+        <td><p>The value is based on the number of iterations and the number of argument lists. If <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_IterationCount">IterationCount</a> returns <code>10</code> and <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_ArgumentListCount">ArgumentListCount</a> returns <code>3</code> then <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html#BionicCode_Utilities_Net_ProfilerBatchResult_TotalIterationCount">TotalIterationCount</a> will return <code>30</code> because each argument list is executed 10 times.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult_Variance.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult.Variance%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L175">View Source</a>
+  </span>
+  <a id="BionicCode_Utilities_Net_ProfilerBatchResult_Variance_" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.Variance*"></a>
+  <h4 id="BionicCode_Utilities_Net_ProfilerBatchResult_Variance" data-uid="BionicCode.Utilities.Net.ProfilerBatchResult.Variance">Variance</h4>
+  <div class="markdown level1 summary"><p>The variance over all the <a class="xref" href="BionicCode.Utilities.Net.ProfilerResult.html">ProfilerResult</a> items.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double Variance { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.double(v=vs.110).aspx">Double</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
   <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.HelperExtensionsCommon.html#BionicCode_Utilities_Net_HelperExtensionsCommon_Cast_System_Object_System_Type_">HelperExtensionsCommon.Cast(Object, Type)</a>
+  </div>
   <div>
       <a class="xref" href="BionicCode.Utilities.Net.HelperExtensionsCommon.html#BionicCode_Utilities_Net_HelperExtensionsCommon_ToDictionary_System_Object_">HelperExtensionsCommon.ToDictionary(Object)</a>
   </div>
@@ -415,7 +842,7 @@
                     <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_ProfilerBatchResult.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.ProfilerBatchResult%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L13" class="contribution-link">View Source</a>
+                    <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Common/Profiling/ProfilerBatchResult.cs/#L20" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

@@ -37,7 +37,7 @@
               </button>
               
               <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../../images/BionicCode_Logo.png" alt="">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
@@ -595,19 +595,19 @@
 </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_GetPosition_System_Windows_Point__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.GetPosition(System.Windows.Point%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/BionicCode/BionicCode.Net/new/master/docs-ref-overwrite/new?filename=BionicCode_Utilities_Net_Win32Caret_GetPosition_BionicCode_Utilities_Net_CartesianPoint__.md&amp;value=---%0Auid%3A%20BionicCode.Utilities.Net.Win32Caret.GetPosition(BionicCode.Utilities.Net.CartesianPoint%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/BionicCode/BionicCode.Net/blob/develop/BionicCode.Net/BionicCode.Utilities.Net.Wpf/Win32/Win32Caret.cs/#L151">View Source</a>
   </span>
   <a id="BionicCode_Utilities_Net_Win32Caret_GetPosition_" data-uid="BionicCode.Utilities.Net.Win32Caret.GetPosition*"></a>
-  <h4 id="BionicCode_Utilities_Net_Win32Caret_GetPosition_System_Windows_Point__" data-uid="BionicCode.Utilities.Net.Win32Caret.GetPosition(System.Windows.Point@)">GetPosition(out Point)</h4>
-  <div class="markdown level1 summary"><p>Copies the caret's position to the specified <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.windows.point(v=vs.110).aspx">Point</a> structure.</p>
+  <h4 id="BionicCode_Utilities_Net_Win32Caret_GetPosition_BionicCode_Utilities_Net_CartesianPoint__" data-uid="BionicCode.Utilities.Net.Win32Caret.GetPosition(BionicCode.Utilities.Net.CartesianPoint@)">GetPosition(out CartesianPoint)</h4>
+  <div class="markdown level1 summary"><p>Copies the caret's position to the specified <a class="xref" href="BionicCode.Utilities.Net.CartesianPoint.html">CartesianPoint</a> structure.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool GetPosition(out Point caretPsoition)</code></pre>
+    <pre><code class="lang-csharp hljs">public bool GetPosition(out CartesianPoint caretPsoition)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -620,7 +620,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.windows.point(v=vs.110).aspx">Point</a></td>
+        <td><a class="xref" href="BionicCode.Utilities.Net.CartesianPoint.html">CartesianPoint</a></td>
         <td><span class="parametername">caretPsoition</span></td>
         <td></td>
       </tr>
@@ -642,11 +642,11 @@
       </tr>
     </tbody>
   </table>
-  <h5 id="BionicCode_Utilities_Net_Win32Caret_GetPosition_System_Windows_Point___remarks">Remarks</h5>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_GetPosition_BionicCode_Utilities_Net_CartesianPoint___remarks">Remarks</h5>
   <div class="markdown level1 remarks"><p>The caret position is always given in the client coordinates of the window that contains the caret.</p>
 <p>This API does not participate in DPI virtualization. The returned values are interpreted as logical sizes in terms of the window in question. The calling thread is not taken into consideration.</p>
 </div>
-  <h5 id="BionicCode_Utilities_Net_Win32Caret_GetPosition_System_Windows_Point___seealso">See Also</h5>
+  <h5 id="BionicCode_Utilities_Net_Win32Caret_GetPosition_BionicCode_Utilities_Net_CartesianPoint___seealso">See Also</h5>
   <div class="seealso">
       <div><span><a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcaretpos">GetCaretPos function (winuser.h)</a></span></div>
   </div>
@@ -842,6 +842,9 @@
       <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a>
   </div>
   <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="BionicCode.Utilities.Net.HelperExtensionsCommon.html#BionicCode_Utilities_Net_HelperExtensionsCommon_Cast_System_Object_System_Type_">HelperExtensionsCommon.Cast(Object, Type)</a>
+  </div>
   <div>
       <a class="xref" href="BionicCode.Utilities.Net.HelperExtensionsCommon.html#BionicCode_Utilities_Net_HelperExtensionsCommon_ToDictionary_System_Object_">HelperExtensionsCommon.ToDictionary(Object)</a>
   </div>

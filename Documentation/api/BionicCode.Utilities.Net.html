@@ -37,7 +37,7 @@
               </button>
               
               <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../../images/BionicCode_Logo.png" alt="">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
@@ -89,6 +89,9 @@
   </h3>
       <h4><a class="xref" href="BionicCode.Utilities.Net.AppSettingsConnector.html">AppSettingsConnector</a></h4>
       <section><p>Exposes a basic static API to access the AppSettings file in order to manage application settings.</p>
+</section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.AsyncProfilerOptions.html">AsyncProfilerOptions</a></h4>
+      <section><p>Configures the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html">Profiler</a> to use with async API.</p>
 </section>
       <h4><a class="xref" href="BionicCode.Utilities.Net.AsyncRelayCommand.html">AsyncRelayCommand</a></h4>
       <section><p>A reusable command that encapsulates the implementation of <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.windows.input.icommand(v=vs.110).aspx">ICommand</a> with support for async/await command delegates.
@@ -143,6 +146,9 @@ Supports inversion of <a class="xref" href="https://msdn.microsoft.com/en-us/lib
       <h4><a class="xref" href="BionicCode.Utilities.Net.EnumExtension.html">EnumExtension</a></h4>
       <section><p>XAML extension to return the values of an enumeration.</p>
 </section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.Environment.html">Environment</a></h4>
+      <section><p>A collection of reusable static helper methods related to the development environment.</p>
+</section>
       <h4><a class="xref" href="BionicCode.Utilities.Net.EqualsExtension.html">EqualsExtension</a></h4>
       <section><p>XAML Equality comparer.</p>
 </section>
@@ -182,6 +188,9 @@ For example, the attribute is used by the <a class="xref" href="BionicCode.Utili
 </section>
       <h4><a class="xref" href="BionicCode.Utilities.Net.IsGreaterThanValueConverter.html">IsGreaterThanValueConverter</a></h4>
       <section></section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.Math.html">Math</a></h4>
+      <section><p>Additional mth functions</p>
+</section>
       <h4><a class="xref" href="BionicCode.Utilities.Net.MostRecentlyUsedFileItem.html">MostRecentlyUsedFileItem</a></h4>
       <section><p>An immutable item that represents a Most Recently Used file (MRU) table entry.</p>
 </section>
@@ -211,13 +220,37 @@ For example, the attribute is used by the <a class="xref" href="BionicCode.Utili
       <h4><a class="xref" href="BionicCode.Utilities.Net.PrimitiveExtension.html">PrimitiveExtension</a></h4>
       <section><p>XAML markup extension that allows to define primitive type values like <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a> or <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a>.</p>
 </section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.ProfileAttribute.html">ProfileAttribute</a></h4>
+      <section><p>Use to decorate a member like method, constructor or property that should be profiled.</p>
+</section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.ProfiledTypeResultCollection.html">ProfiledTypeResultCollection</a></h4>
+      <section></section>
       <h4><a class="xref" href="BionicCode.Utilities.Net.Profiler.html">Profiler</a></h4>
       <section><p>Helper methods to measure code execution time.</p>
+</section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.ProfilerArgumentAttribute.html">ProfilerArgumentAttribute</a></h4>
+      <section><p>Use to decorate a member like method, constructor or property that should be profiled with particular argument list.</p>
 </section>
       <h4><a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html">ProfilerBatchResult</a></h4>
       <section><p>The result of a multi iteration benchmark session.
 <br>The <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html">ProfilerBatchResult</a> consolidates all <a class="xref" href="BionicCode.Utilities.Net.ProfilerResult.html">ProfilerResult</a> result items of a single benchmark run
 <br>and provides meta data on hte collected data.</p>
+</section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResultGroup.html">ProfilerBatchResultGroup</a></h4>
+      <section><p>A list to hold a collection of <a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResult.html">ProfilerBatchResult</a> items.</p>
+</section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.ProfilerBatchResultGroupCollection.html">ProfilerBatchResultGroupCollection</a></h4>
+      <section></section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.ProfilerBuilder.html">ProfilerBuilder</a></h4>
+      <section><p>Class to configure the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html">Profiler</a> when used with annotated profiling. Call <a class="xref" href="BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_CreateProfilerBuilder__1">CreateProfilerBuilder&lt;TTarget&gt;()</a> to obtain an instance.</p>
+</section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.ProfilerContext.html">ProfilerContext</a></h4>
+      <section></section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.ProfilerFactoryAttribute.html">ProfilerFactoryAttribute</a></h4>
+      <section><p>Used to decorate a <span class="xref">static</span> member that returns an instance for the currently profiled type.</p>
+</section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.ProfilerOptions.html">ProfilerOptions</a></h4>
+      <section><p>Configures the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html">Profiler</a>.</p>
 </section>
       <h4><a class="xref" href="BionicCode.Utilities.Net.ProgressChangedEventArgs.html">ProgressChangedEventArgs</a></h4>
       <section><p>Event args for the <a class="xref" href="BionicCode.Utilities.Net.ProgressChangedEventHandler.html">ProgressChangedEventHandler</a>.</p>
@@ -263,13 +296,28 @@ by holding the old and the new value.</p>
       <h4><a class="xref" href="BionicCode.Utilities.Net.CaretInfo.html">CaretInfo</a></h4>
       <section><p>Struct to store caret information.</p>
 </section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.CartesianPoint.html">CartesianPoint</a></h4>
+      <section><p>Point - Defaults to 0,0</p>
+</section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.EnvironmentInfo.html">EnvironmentInfo</a></h4>
+      <section></section>
       <h4><a class="xref" href="BionicCode.Utilities.Net.HighlightRange.html">HighlightRange</a></h4>
       <section><p>Represents a text range, described by a <a class="xref" href="BionicCode.Utilities.Net.HighlightRange.html#BionicCode_Utilities_Net_HighlightRange_StartIndex">StartIndex</a> and <a class="xref" href="BionicCode.Utilities.Net.HighlightRange.html#BionicCode_Utilities_Net_HighlightRange_EndIndex">EndIndex</a>.</p>
 </section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.Microseconds.html">Microseconds</a></h4>
+      <section></section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.Milliseconds.html">Milliseconds</a></h4>
+      <section></section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.Minutes.html">Minutes</a></h4>
+      <section></section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.Nanoseconds.html">Nanoseconds</a></h4>
+      <section></section>
       <h4><a class="xref" href="BionicCode.Utilities.Net.ProfilerResult.html">ProfilerResult</a></h4>
       <section><p>The result of a single benchmark run or iteration.</p>
 </section>
       <h4><a class="xref" href="BionicCode.Utilities.Net.ProgressData.html">ProgressData</a></h4>
+      <section></section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.Seconds.html">Seconds</a></h4>
       <section></section>
     <h3 id="interfaces">Interfaces
   </h3>
@@ -328,6 +376,8 @@ The event args is the view model of <a class="xref" href="BionicCode.Utilities.N
 </section>
     <h3 id="enums">Enums
   </h3>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.AccessModifier.html">AccessModifier</a></h4>
+      <section></section>
       <h4><a class="xref" href="BionicCode.Utilities.Net.CaretVisibility.html">CaretVisibility</a></h4>
       <section></section>
       <h4><a class="xref" href="BionicCode.Utilities.Net.DialogResult.html">DialogResult</a></h4>
@@ -342,10 +392,14 @@ The event args is the view model of <a class="xref" href="BionicCode.Utilities.N
       <h4><a class="xref" href="BionicCode.Utilities.Net.InversionMode.html">InversionMode</a></h4>
       <section><p>Enumeration to set the inversion direction of the <a class="xref" href="BionicCode.Utilities.Net.InvertExtension.html">InvertExtension</a>.</p>
 </section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.ProfiledTargetType.html">ProfiledTargetType</a></h4>
+      <section></section>
+      <h4><a class="xref" href="BionicCode.Utilities.Net.TimeUnit.html">TimeUnit</a></h4>
+      <section></section>
     <h3 id="delegates">Delegates
   </h3>
       <h4><a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate.html">ProfilerLoggerAsyncDelegate</a></h4>
-      <section><p>A delegate to print the results of the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html">Profiler</a> to a output (e.g. file).</p>
+      <section><p>An asynchronous delegate to print the results of the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html">Profiler</a> to a output (e.g. file).</p>
 </section>
       <h4><a class="xref" href="BionicCode.Utilities.Net.ProfilerLoggerDelegate.html">ProfilerLoggerDelegate</a></h4>
       <section><p>A delegate to print the results of the <a class="xref" href="BionicCode.Utilities.Net.Profiler.html">Profiler</a> to a output (e.g. file).</p>

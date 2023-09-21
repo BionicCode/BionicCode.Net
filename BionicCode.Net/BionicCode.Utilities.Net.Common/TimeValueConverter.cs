@@ -30,106 +30,127 @@
     internal static double ToNanoseconds(Milliseconds milliseconds) => milliseconds.Value * 1E6;
     internal static double ToNanoseconds(Microseconds microseconds) => microseconds.Value * 1E3;
 
-    internal static double ConvertTo(TimeUnit timeUnit, Minutes minutes)
+    internal static double ConvertTo(TimeUnit timeUnit, Minutes minutes, bool isMaxTimerResolutionRoundingEnabled)
     {
       switch (timeUnit)
       {
         case TimeUnit.None:
-          return minutes;
-        case TimeUnit.Seconds:
-          return ToSeconds(minutes);
-        case TimeUnit.Milliseconds:
-          return ToMilliseconds(minutes);
-        case TimeUnit.Microseconds:
-          return ToMicroseconds(minutes);
-        case TimeUnit.Nanoseconds:
-          return ToNanoseconds(minutes);
         case TimeUnit.Minutes:
-          return minutes;
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Minutes, minutes) : minutes.Value;
+        case TimeUnit.Seconds:
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Seconds, ToSeconds(minutes)) : ToSeconds(minutes);
+        case TimeUnit.Milliseconds:
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Milliseconds, ToMilliseconds(minutes)) : ToMilliseconds(minutes);
+        case TimeUnit.Microseconds:
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Microseconds, ToMicroseconds(minutes)) : ToMicroseconds(minutes);
+        case TimeUnit.Nanoseconds:
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Nanoseconds, ToNanoseconds(minutes)) : minutes.Value;
         default:
           throw new NotSupportedException();
       }
     }
 
-    internal static double ConvertTo(TimeUnit timeUnit, Seconds seconds)
+    internal static double ConvertTo(TimeUnit timeUnit, Seconds seconds, bool isMaxTimerResolutionRoundingEnabled)
     {
       switch (timeUnit)
       {
         case TimeUnit.None:
-          return seconds;
         case TimeUnit.Seconds:
-          return seconds;
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Seconds, seconds) : seconds.Value;
         case TimeUnit.Milliseconds:
-          return ToMilliseconds(seconds);
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Milliseconds, ToMilliseconds(seconds)) : ToMilliseconds(seconds);
         case TimeUnit.Microseconds:
-          return ToMicroseconds(seconds);
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Microseconds, ToMicroseconds(seconds)) : ToMicroseconds(seconds);
         case TimeUnit.Nanoseconds:
-          return ToNanoseconds(seconds);
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Nanoseconds, ToNanoseconds(seconds)) : ToNanoseconds(seconds);
         case TimeUnit.Minutes:
-          return ToMinutes(seconds);
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Minutes, ToMinutes(seconds)) : ToMinutes(seconds);
         default:
           throw new NotSupportedException();
       }
     }
 
-    internal static double ConvertTo(TimeUnit timeUnit, Milliseconds milliseconds)
+    internal static double ConvertTo(TimeUnit timeUnit, Milliseconds milliseconds, bool isMaxTimerResolutionRoundingEnabled)
     {
       switch (timeUnit)
       {
         case TimeUnit.None:
-          return milliseconds;
-        case TimeUnit.Seconds:
-          return ToSeconds(milliseconds);
         case TimeUnit.Milliseconds:
-          return milliseconds;
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Milliseconds, milliseconds) : milliseconds.Value;
+        case TimeUnit.Seconds:
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Seconds, ToSeconds(milliseconds)) : ToSeconds(milliseconds);
         case TimeUnit.Microseconds:
-          return ToMicroseconds(milliseconds);
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Microseconds, ToMicroseconds(milliseconds)) : ToMicroseconds(milliseconds);
         case TimeUnit.Nanoseconds:
-          return ToNanoseconds(milliseconds);
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Nanoseconds, ToNanoseconds(milliseconds)) : ToNanoseconds(milliseconds);
         case TimeUnit.Minutes:
-          return ToMinutes(milliseconds);
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Minutes, ToMinutes(milliseconds)) : ToMinutes(milliseconds);
         default:
           throw new NotSupportedException();
       }
     }
 
-    internal static double ConvertTo(TimeUnit timeUnit, Microseconds microseconds)
+    internal static double ConvertTo(TimeUnit timeUnit, Microseconds microseconds, bool isMaxTimerResolutionRoundingEnabled)
     {
       switch (timeUnit)
       {
         case TimeUnit.None:
-          return microseconds;
-        case TimeUnit.Seconds:
-          return ToSeconds(microseconds);
-        case TimeUnit.Milliseconds:
-          return ToMilliseconds(microseconds);
         case TimeUnit.Microseconds:
-          return microseconds;
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Microseconds, microseconds) : microseconds.Value;
+        case TimeUnit.Seconds:
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Seconds, ToSeconds(microseconds)) : ToSeconds(microseconds);
+        case TimeUnit.Milliseconds:
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Milliseconds, ToMilliseconds(microseconds)) : ToMilliseconds(microseconds);
         case TimeUnit.Nanoseconds:
-          return ToNanoseconds(microseconds);
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Nanoseconds, ToNanoseconds(microseconds)) : ToNanoseconds(microseconds);
         case TimeUnit.Minutes:
-          return ToMinutes(microseconds);
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Minutes, ToMinutes(microseconds)) : ToMinutes(microseconds);
         default:
           throw new NotSupportedException();
       }
     }
 
-    internal static double ConvertTo(TimeUnit timeUnit, Nanoseconds nanoseconds)
+    internal static double ConvertTo(TimeUnit timeUnit, Nanoseconds nanoseconds, bool isMaxTimerResolutionRoundingEnabled)
     {
       switch (timeUnit)
       {
         case TimeUnit.None:
-          return nanoseconds;
-        case TimeUnit.Seconds:
-          return ToSeconds(nanoseconds);
-        case TimeUnit.Milliseconds:
-          return ToMilliseconds(nanoseconds);
-        case TimeUnit.Microseconds:
-          return ToMicroseconds(nanoseconds);
         case TimeUnit.Nanoseconds:
-          return nanoseconds;
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Nanoseconds, nanoseconds) : nanoseconds.Value;
+        case TimeUnit.Seconds:
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Seconds, ToSeconds(nanoseconds)) : ToSeconds(nanoseconds);
+        case TimeUnit.Milliseconds:
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Milliseconds, ToMilliseconds(nanoseconds)) : ToMilliseconds(nanoseconds);
+        case TimeUnit.Microseconds:
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Microseconds, ToMicroseconds(nanoseconds)) : ToMicroseconds(nanoseconds);
         case TimeUnit.Minutes:
-          return ToMinutes(nanoseconds);
+          return isMaxTimerResolutionRoundingEnabled ? TrimDecimalsTo(TimeUnit.Minutes, ToMinutes(nanoseconds)) : ToMinutes(nanoseconds);
+        default:
+          throw new NotSupportedException();
+      }
+    }
+
+    internal static double TrimDecimalsTo(TimeUnit timeUnit, double timeValue)
+    {
+      switch (timeUnit)
+      {
+        case TimeUnit.None:
+          return timeValue == -0 ? 0 : timeValue;
+        case TimeUnit.Nanoseconds:
+          double nanoseconds = System.Math.Round(timeValue, 0);
+          return nanoseconds == -0 ? 0 : nanoseconds; ;
+        case TimeUnit.Seconds:
+          double seconds =  System.Math.Round(timeValue, 7);
+          return seconds == -0 ? 0 : seconds;
+        case TimeUnit.Milliseconds:
+          double millieseconds = System.Math.Round(timeValue, 4);
+          return millieseconds == -0 ? 0 : millieseconds;
+        case TimeUnit.Microseconds:
+          double microseconds = System.Math.Round(timeValue, 1);
+          return microseconds == -0 ? 0 : microseconds;
+        case TimeUnit.Minutes:
+          double minutes = System.Math.Round(timeValue, 9);
+          return minutes == -0 ? 0 : minutes;
         default:
           throw new NotSupportedException();
       }

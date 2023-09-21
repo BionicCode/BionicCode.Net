@@ -19,6 +19,17 @@
     {
       this.X = x;
       this.Y = y;
+      this.IsSpecialValue = false;
+      this.SpecialValueId = -1;
+    }
+
+    internal CartesianPoint(double x, double y, bool isSpecialValue, int specialValueId)
+    {
+      this.X = x;
+      this.Y = y;
+      this.IsSpecialValue = isSpecialValue;
+      this.SpecialValueId = 0;
+      this.SpecialValueId = specialValueId;
     }
 
     /// <summary>
@@ -41,6 +52,10 @@
     /// The Y value of the point. The default value is '0'.
     /// </summary>
     public double Y { get; private set; }
+
+    internal bool IsSpecialValue { get; }
+
+    internal int SpecialValueId { get; private set; }
 
     /// <inheritdoc/>
     public bool Equals(CartesianPoint other) => other.X == this.X && other.Y == this.Y;
@@ -67,7 +82,7 @@
     public string ToString(string format, IFormatProvider formatProvider) => ConvertToString(format, formatProvider);
 
     private string ConvertToString(string formatString, IFormatProvider formatProvider) 
-      => string.Format(formatProvider, $"{{1:{formatString}}}{{0}}{{2:{formatString}}}", ",", this.X, this.Y);
+      => string.Format(formatProvider, $"{{1:{formatString}}}{{0}}{{2:{formatString}}}", ";", this.X, this.Y);
 
     /// <inheritdoc/>
     /// <remarks>This method compares the <see cref="X"/> value. When the <see cref="X"/> value of the current instance is smaller the value of <paramref name="other"/> then the current instance precedes <paramref name="other"/>.</remarks>

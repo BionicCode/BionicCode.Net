@@ -42,11 +42,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="Profiling\Plotter.js" />
+	  <None Remove="Profiling\HtmlLogger.html" />
+	  <None Remove="Profiling\HtmlLogger.js" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="Profiling\Plotter.js" />
+	  <EmbeddedResource Include="Profiling\HtmlLogger.html" />
+	  <EmbeddedResource Include="Profiling\HtmlLogger.js" />
 	</ItemGroup>
 
 	<ItemGroup>

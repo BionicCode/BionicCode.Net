@@ -5,14 +5,38 @@
   "files": [
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.AccessModifier.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.AccessModifier.html",
+          "hash": "3uXxOKGs6nxvFDgIeMQMqgC1ZcZyzZu3LEZ2eJJvtC8="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/BionicCode.Utilities.Net.AppSettingsConnector.yml",
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.AppSettingsConnector.html",
-          "hash": "an4LLxbOzRD8l7PIhJXkEGCs1enF+K7VQk/lKmQ9DZA="
+          "hash": "kiKD2Tw4L+qbNq5X/5dNQOReD1vJeXnqzgEz88NxQAQ="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.AsyncProfilerOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.AsyncProfilerOptions.html",
+          "hash": "+OxFkCnbCBDyjOthVsm7a8+fvgBBriLzO3trjh/7x6k="
+        }
+      },
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -21,10 +45,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommand-1.html",
-          "hash": "EEp5aHdPep9HjgazjRnd2slOBp2MsjpZ4YhMC+HROhs="
+          "hash": "9nYkHwn3I7nNChKuXdUbRHHelyMKrHnd9vkL8f0XNUc="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -33,10 +57,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommand.html",
-          "hash": "ktYC4di44vCq49B694KAN2HXUNeEMI5OIEyAWJFls1c="
+          "hash": "EI/CBB7E7nMA8TQwttokWY+PH7Qh2MdIjLpgUgKrH30="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -45,10 +69,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommandCommon-1.html",
-          "hash": "8dP+W1rOt+x6YHg19A/sY6WlR+eCYxOS9gNUa/uvoTg="
+          "hash": "OHwDuWFGj2bDaQ8v7uW5Ri4IgQX5WQV6QdKnkAK8Az4="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -57,10 +81,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.AsyncRelayCommandCommon.html",
-          "hash": "HMrWwgGASosdoVtDE/W9c5FtN1VB/C8O9ONLXIxgFjo="
+          "hash": "TNo/y36l4CTM/vI4EsUNdxlowo23iyKyLedehwckmOQ="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -69,10 +93,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.AutoResetStream.html",
-          "hash": "VRCq8nSHrlKF5UFqrtGPaYxKwEZjBhYwFpNQ7aZXpAk="
+          "hash": "ovFxY4b4SZM+R/0gv22b9Fwb5aBnxn0pmwYu1kFkd6o="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -81,10 +105,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.BoolToStringConverter.html",
-          "hash": "nhESvBp8eJMa546EfV2ARivwz9ReSIF2D3zBuKbzyrY="
+          "hash": "XGb6u+q342j1aVkVophu6rMlb7z6eXaphueAbPUDwUM="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -93,10 +117,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.BooleanMultiValueConverter.html",
-          "hash": "QupVZc8ueVEe6YMe/AcfT8WQPennDkampKMXOsh/g3E="
+          "hash": "sq4WyzDASbkYFU8fkYfAfBjUvTDX3gpdokO1NOaSkDE="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -105,10 +129,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.CaretInfo.html",
-          "hash": "v1gES3IcPevB+2I6ZI6IdLr53kY4nboVTk6XFTkxP+0="
+          "hash": "PFb2vmzzysqqu7GXEAARR0H5FYQ0gSyJLMMo97dCuCg="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -117,10 +141,22 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.CaretVisibility.html",
-          "hash": "r/ZPyFpbmFUhz1IT4vnijrWJdjPicqRKDFRy9MStp1A="
+          "hash": "5PrXgNediqYMNo5ErANfzIMby2DfVD/vFh6mMsR/sAc="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.CartesianPoint.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.CartesianPoint.html",
+          "hash": "ibOUGmNDtvzV0J4B4+Dmql5CdIqUqlz4vIP+s0kKmso="
+        }
+      },
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -129,10 +165,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.DefaultValueInverter.html",
-          "hash": "QF7dWfVgLioRtDBYEkFgrkilJ3JyqIOjPnMD2fdly4o="
+          "hash": "j0u9d7G+Zx2nyn7kae997lCCVzJHjTfc6DDQsCAFilo="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -141,10 +177,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.Dialog.html",
-          "hash": "AOi/St6jYu9fTOfCmA4MkhtJdDLB7JQvbEPP78jeZRI="
+          "hash": "qOl+HVqD8lyy86k0jF0SA0MyWzveh/JZ8j7p3S+6K7k="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -153,10 +189,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.DialogResult.html",
-          "hash": "eJmhilCrgAXQSY1P47hjOoeeqz2QM8a4R4IzunyDrCQ="
+          "hash": "bC7z8mAFQ1A8BtixM51G0iYZ5Qu2T+ZUpILTc26QfJ4="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -165,10 +201,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.DialogViewModel.html",
-          "hash": "gHoJgncSdesuvhfowGLZcQyejqujkrowZPtPp0az7jQ="
+          "hash": "kbh/YcRGdEqGylNyDa5JkY1ylJ5eFOmm5JcN1Gvr4Ls="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -177,10 +213,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.DividerValueConverter.html",
-          "hash": "jewH6piSv3TpgpjD27tAXCpElj0S4mwLIXWwAIlpQvs="
+          "hash": "9WJFnSZxxbNK9chRAOV4oZ8FKdS6ecDH5FrJQhrfMiM="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -189,10 +225,34 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.EnumExtension.html",
-          "hash": "S1pkrG18FxbeQsV3TbSQ4Lt0PLNeCHmbV5ZH8G0zD0w="
+          "hash": "VVA81A8OzczxLAClX9oCOxTKAJsjTPVcALPA3H8qJaM="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Environment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Environment.html",
+          "hash": "snwjv+meSgVGhtrSium0vsBGoQrr3wvtm+JkGcDGve0="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.EnvironmentInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.EnvironmentInfo.html",
+          "hash": "6btlMjoT3p0yOfG7pR72bL5nwzcL7R8hyUmEJ6evCWQ="
+        }
+      },
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -201,10 +261,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.EqualsExtension.html",
-          "hash": "ok4I97/GYJ3Kjn3/8Rut91yPdlcV21vL4sKKDWuIgD8="
+          "hash": "lkQFGEYyBGNqyERJaklCcNAXru2y+Gj/8u3uz/VM1y0="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -213,10 +273,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.EventAggregator.html",
-          "hash": "4Ev2RXQBE274Ar84LthhPHlj5JOxtoXossjmBub8NOk="
+          "hash": "tEmU+aEmm/HnzlCLumT7aWn/+kf0GzFTYPgRduwkMhI="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -225,10 +285,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.Factory-1.html",
-          "hash": "DfyRnpK465s0CmwZBZWpy70/GVp2MtYKqQI+mvcl0Qs="
+          "hash": "5+Eufur03RAFPxS5SFSqtJWU3WMoohBVvuKHt2lyG74="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -237,10 +297,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.FactoryMode.html",
-          "hash": "NRSyOrMMoIx3JrPXfvKJNg2cQUReFR6MOFbAHAYMuyk="
+          "hash": "7oVgT2KDMgJTxkZHQn87lYjnIwiGKn3DBfpDFSfhSIY="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -249,10 +309,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.FileExtensions.html",
-          "hash": "fg0DzN//YYpiVgPrZpulaxF13z27g7eiEOwAHrQINF4="
+          "hash": "ox/YxV+B2S4wcsPIh1puBOp6u+ZUO/AEe0HWugBiryE="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -261,10 +321,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.FilePathTruncateConverter.html",
-          "hash": "VQlBsL20CK3WqopLgWnpBRTOjjK+goNPm3yrB6eZv0c="
+          "hash": "m3b2y2sKlm7kjtB+Az61RAfloZCUbZEWcExVFGqrNOg="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -273,10 +333,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.HelperExtensions.html",
-          "hash": "xVO6+tWJrkXofqh3HOdjdaf772aL9rsDjz5YbmEvokc="
+          "hash": "0QlzMrPM0frk1nYb+3EBKdboIHmQXygFThodRXAuTjc="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -285,10 +345,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.HelperExtensionsCommon.html",
-          "hash": "oukMmBWxJdM+7Ts5kSDwS4B/Nc8ICIKHUtnILLg4zHk="
+          "hash": "Uhrofv7cBP8Lyjbpzvwk7MCYxO+IgTIaP3rnRMb8ICM="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -297,10 +357,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.HighlightRange.html",
-          "hash": "YX+N8K7w3dIRuxvWjd90YiKtI4grMnZGGxkfek6Uf/Y="
+          "hash": "jH7RgR9lyoslTnqSJ0NEm+KJe6cQaMg55TTyLa5wUj0="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -309,10 +369,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.HighlightRangeCollection.html",
-          "hash": "t6zTnyS2+6+aLWv3qMk4dAHUhYEHyqwqJYE47E0Ny8U="
+          "hash": "euohiPLl0aPDURY/zcIVNu0p8pger/V4jLfF5vgS7cM="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -321,10 +381,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommand-1.html",
-          "hash": "/59+hc0u60dsm7qbnT7Si3NSqd/FpUveXK5KCT8c+4M="
+          "hash": "TJFUmBV5oIPp4ovnjxBqwEzf58qlb0dzYGPCSRPjvuY="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -333,10 +393,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommand.html",
-          "hash": "pNyRW+FBmnmmtoreUaXXIfeBFg+jcdM4Fd8D4KgW+sY="
+          "hash": "/HF6wdEMggYl7LQ/QU/dPNyx7hwm5zAwzyNucaZY6YU="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -345,10 +405,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommandCommon-1.html",
-          "hash": "JEQaEabfNetuBo0OsbLzggnNjeR1rrI1mpfDezWWV6I="
+          "hash": "sE2bkI87kU1sYnZM1CIfCTyv++I4V2nqt28xIF+J0F4="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -357,10 +417,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IAsyncRelayCommandCommon.html",
-          "hash": "21Haf91XOpltcAXpy+1cVasM17JnMPSuNd1pzb/cyyo="
+          "hash": "2RbxL4RwH3jqgyNo8TbIK+AeTMNqSbDzBYXdzaDjWkA="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -369,10 +429,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IDialogViewModel.html",
-          "hash": "EA812SlFk8D68DDO9x3Iurt0JKOuQZ3Q0OidgPW0W9s="
+          "hash": "yAQoHDib+u5iaMFO338GQ8fdDhI5zFE8hKtIiQMUkzk="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -381,10 +441,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IDialogViewModelProvider.html",
-          "hash": "Q8qg4wMuv7B8nv/Mrh8JykA+raZJJ8MXHpRID97pVgo="
+          "hash": "yLYUuLXA2KkKh0SwDqlYds7nSljuzLVMKWl3HsnbdJk="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -393,10 +453,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IDialogViewModelProviderSource.html",
-          "hash": "MKqD4L+PebgSlkjfAYved+HCglSUoJj/c/jmL61pu9s="
+          "hash": "e4t42rPYZDOSrMAkoXRRLS1XXyLBXCYheqYgXbR6Xqw="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -405,10 +465,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IEventAggregator.html",
-          "hash": "ugIFFJsURM3gVbxJNWzNnNRorsE+3sLqXnlv9N5P5gU="
+          "hash": "wvdF3YkOwb4PNbVvSJdXNsU6eBuHL5nwD/WeEib3UQ8="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -417,10 +477,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IFactory-1.html",
-          "hash": "efN14lhQi8xO35+rdQ0031zAWa1CeFqTqvfZjgNsWmE="
+          "hash": "ZZRnSqhwz8ioIpjM67keuIiObAhRY3JL2Of9xNR2phM="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -429,10 +489,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IInitializable.html",
-          "hash": "xXtjapDg24yeugWYQRZ8DxBwurNEBJv0erS6pfNVWTQ="
+          "hash": "KopXdiB5N+gMFKYSHZTOiUvgPVAtNED+hUbK7EfJDXQ="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -441,10 +501,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IMruManager.html",
-          "hash": "zDpMbwTWe4hoYwu8M0JVam7uUZ9mEwb2jVI0RCli1CA="
+          "hash": "bFplZMcZmjMe007k9jW89u4tgQ+O7vGBWUICToEiOPk="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -453,10 +513,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.INullObject.html",
-          "hash": "hH7YYIE8hQmbsoaSFHZL353MvYjS+XlZE91zEWLyUOQ="
+          "hash": "VKEBaz9tn3+rvBsuRzrCKx7V+9iTqkvNrQzHfhQY3ok="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -465,10 +525,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IProgressReporter.html",
-          "hash": "USHcM3EXehb3r82GcJSZw3udLohC3PeNxSvXEk2U3MU="
+          "hash": "T3cz6HvdLZZ8jM9s2rCqet2MlsoXaBFUoOgBeR9haII="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -477,10 +537,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IProgressReporterCommon.html",
-          "hash": "yXLFrgFsDT+IrIVe/VKi78PPihi2iRx/AQGrD6m/Zk8="
+          "hash": "C2/zy/q8eM1Iakn+aySZZFQEaqgVDXOiPMY34/lITlw="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -489,10 +549,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IValueInverter.html",
-          "hash": "xfFl9b9w42EwHigyJ3zmb5CZAZTRcoxBmRsETuPt1FI="
+          "hash": "vp0nUMPUC20RMtDURiJpXhH683taaH0nJZtp9RhYCVw="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -501,10 +561,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IViewModel.html",
-          "hash": "w2eN74ouUdgt6NRsdpbdzRJZ9T8C2f/MgskjOFF9Snc="
+          "hash": "ovjCi89uHvvBX8/EFmJM/ZrY1JD2BnT9X736r1D2bjM="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -513,10 +573,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IViewModelCommon.html",
-          "hash": "Bdk0X71D8+qjSRtGLex8NwnOle+X6cjxobSG4pDdEX0="
+          "hash": "CSDYIbxV3Cz4p1lqaKPskM1crlw5Cw477/WrDaK345s="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -525,10 +585,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IgnoreAttribute.html",
-          "hash": "2InxV4lu+AfZI2qEfCN1r2BF4GUmJa5mtrTiz8AvFLM="
+          "hash": "PbwdaweGvO/uEQNL5GASkIS413YqPkNZ2xx7zqTQnaY="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -537,10 +597,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IgnoreInObjectGraphAttribute.html",
-          "hash": "sC9NjsoYf75q7gnF0BTalpwI55Dl8PmPrZ9n4Yf5qaU="
+          "hash": "YiaZ2iBttQ+Ri86QmjSP64hoXUSTb6OVrDb8b/7eHfk="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -549,10 +609,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.InversionMode.html",
-          "hash": "3SAai0Ieeb/O9v6hTQvctZC+VqpF45JRKJ0Y8fDFbVQ="
+          "hash": "kNYQiVL3cJNW6nXWbWay8snD7bUvE+HsUNb7Ssr1OcA="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -561,10 +621,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.InvertBooleanConverter.html",
-          "hash": "8UGYNCS9gaLmK4J6WezOY2eskMxij5Nhz0pIHQVg/wE="
+          "hash": "D8ScF3p/6OzQdeJnx/V1PaJtNR+6BR00YcCcvgBEIAA="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -573,10 +633,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.InvertExtension.html",
-          "hash": "ZTnWS6cByNg7vIl7pu9E752cQ1u2ZTtnI8YUM4Rr+KE="
+          "hash": "kHbZdpiyBAZcfKtZ0BHHi02sgTagvt3Jn+GU3SS/1ck="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -585,10 +645,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.InvertValueConverter.html",
-          "hash": "VpMA0QArWMWXUbh035YTPYBovTqYqKXFSlqsK9udNTg="
+          "hash": "EXpYlpHLkZy98stqpYwKtf/hVh894Huz6MfvN4WkOjo="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -597,10 +657,58 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.IsGreaterThanValueConverter.html",
-          "hash": "hizLNhHziZwfAtQp+8AZQlGU3XLNZu5gvWurl7HjFLo="
+          "hash": "w6iVrJMS3u3Jx30aqCn/dKs06N1mIt+fZ+/MCwUSTQs="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Math.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Math.html",
+          "hash": "Yr9z9wPnoo6tKGZr+jMn3tKopbu9VWWwf8uH/n1k1Jg="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Microseconds.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Microseconds.html",
+          "hash": "yhN6VXFrpyuDWNdNf14ztKWFB0saFSzAwtb6UA7jV/Y="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Milliseconds.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Milliseconds.html",
+          "hash": "xwg+bwGgeO9gYggK4pyeeL0hc6usIQWFBMfucEEpX7Q="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Minutes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Minutes.html",
+          "hash": "Oc/Lqk2kvVyJPlsfaHpcqkmdfLe5YKGeByaZQXzVS74="
+        }
+      },
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -609,10 +717,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.MostRecentlyUsedFileItem.html",
-          "hash": "QTXB1Wmh1oVLXsvev7WQqb+thfv6F9SrcANj8gfh6Jo="
+          "hash": "2dXELhXrV7vMxn4kewbk6Sg1SrxnRGzgMlK8OZl88XU="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -621,10 +729,22 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.MruManager.html",
-          "hash": "cxahMaYAkRk6b2HjhoOWv3kGVhZsR54pfxCumjiza08="
+          "hash": "mRfr6SU9E0GMVdSl0o5AXrRXZ+R65Mb0tT18UKwteUM="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Nanoseconds.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Nanoseconds.html",
+          "hash": "mlSuzIC6y7sbp4yl7/NlOAGHmeveZufmGo9p9abkHss="
+        }
+      },
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -633,10 +753,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.NullObjectFactory-1.html",
-          "hash": "D7CVQGqpJ2GqRpJ8XygoXsja/gXRk29CxJbSls8IhyA="
+          "hash": "5wJDOUOIn7DdR19jZalBmVZ11bweZbGxCfQ/dLqSZm4="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -645,10 +765,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ObservablePropertyChangedCollection-1.html",
-          "hash": "x4eDA//Z5DK3nw65TXkPH/0Bdi/3ESvPuE1UfjTJZlY="
+          "hash": "Iww/tQEu1JiPHYYYkD+H+0DaE9sSL+Tt5HZ4GlSft9M="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -657,10 +777,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ObservableQueue-1.html",
-          "hash": "vDufjemNHgS7Uw6uNpPY7OAFEgHUSJeBOdgPolnNkJ0="
+          "hash": "V+C8jC163Z156cruPbPcwv/0mUyM1EMDtXyBP6XotCI="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -669,10 +789,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PasswordBoxService.html",
-          "hash": "fT9FZAThAC9Gs8xFMmPEpPm8U3SXPpB152MyhpYlD2s="
+          "hash": "BRV8SEAr5yV0WyXWb+MuDGAbGBhreNqQZX6GyTOeMR4="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -681,10 +801,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PercentageToPixelConverter.html",
-          "hash": "vYLgvGBbbkYfmArvkMBrl3kr1o3dmEfdvNjXiaxVUG0="
+          "hash": "RfeaGhFZtG9Q125LLXyuBkjh71FbJtwh4k15i1JPEVU="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -693,10 +813,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PercentageToThicknessConverter.html",
-          "hash": "kaDncO4aFf2TCEWuT8riGsztOrZIBJls1WYnP0s62ts="
+          "hash": "U+ar797oBIkObwsbaF8S+EMBvi7tGOyuMgh1OCQhv2s="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -705,10 +825,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PopupService.html",
-          "hash": "7FJAnpl1gb/fX3lN50xgiuq281BUhL5IFK1H3ePt300="
+          "hash": "KpLP+HkuLi15VdZkquIvrFILGqdpm3YjcUbl4glQ7IE="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -717,10 +837,46 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PrimitiveExtension.html",
-          "hash": "HK8bWYcNZ20ljbM3NVNwVe+xkoZG3hexeFdToaDqOL4="
+          "hash": "gpgBAKBZmMfcqS8vxLv9DGIDvVTCSR0KKA+X1a4XCmE="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfileAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfileAttribute.html",
+          "hash": "N4DOA5riNOr468jT194ysgO8fCyaTzcOtI54foSpfgo="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfiledTargetType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfiledTargetType.html",
+          "hash": "FaD2+5iUeoNR8ivD+EA6Q+aC9UE3Wh7H8TNP/r54cwE="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfiledTypeResultCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfiledTypeResultCollection.html",
+          "hash": "AOmZD3Tj3kaJT+KddKYy8uwoc1U9eKuf/8aEEuxNOew="
+        }
+      },
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -729,10 +885,22 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.Profiler.html",
-          "hash": "wzBQR2+3c9rVewkVP64imSAtsm7uKzg+Db9kZOzUCVw="
+          "hash": "4ptSdFPMNgHfjX7k1zvdAc2zBsDRLfqolSgM0NrMJF8="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerArgumentAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerArgumentAttribute.html",
+          "hash": "TtRU9jikdPrB83gGiSt19zwyEp8jtc0/Vwsyg8z5AEM="
+        }
+      },
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -741,10 +909,70 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ProfilerBatchResult.html",
-          "hash": "7Z0BJ76NvkbFO1WzjVI9K0GzhYOrypdTZKvM5WtZ5+Q="
+          "hash": "ehZMIpat4nzcY7OupZgccr92hf+DgS62r02LsBOFX/A="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerBatchResultGroup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerBatchResultGroup.html",
+          "hash": "+zOYi5W8OpaB1mVR6Eeba0w/8z1zujyrBIbiQC+IdJk="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerBatchResultGroupCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerBatchResultGroupCollection.html",
+          "hash": "kjMKE7YfP1DGFCe6vDqsj8dUtajAIkj/wCXom4XKWe8="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerBuilder.html",
+          "hash": "F3lHKimDZf2VBI6wQ0QSddpg+CiFqtW4fNc19pMib7Y="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerContext.html",
+          "hash": "8t6f/zjlQWF3PK9cUM7d+p5FmFJToGYKw78ZzzuztIY="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerFactoryAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerFactoryAttribute.html",
+          "hash": "Ie01JpgFVTaWOtk4Cex2JDc0Hs48U5dsxkjcVJcpK4s="
+        }
+      },
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -753,10 +981,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate.html",
-          "hash": "2ez6jm3BGVt2vkaZcU7n1/+a6YuIMneBsMgJLhLn2AA="
+          "hash": "hB1iobUoiafnGsxOIhWG5ueTu+TJU6p/0Lcmpzx7TII="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -765,10 +993,22 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ProfilerLoggerDelegate.html",
-          "hash": "YLOEyrwOwOCjSZQqee5bRCaB+sMSibGFzm7Enm4mXsk="
+          "hash": "f8s22aF2OAp9/Po12DxQfKJgWhAmnY4M2a4zlKp3624="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.ProfilerOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.ProfilerOptions.html",
+          "hash": "gstAzfNOPWHqQly6S8/Afnwb2MNcy2U6vBA7D4/LZVA="
+        }
+      },
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -777,10 +1017,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ProfilerResult.html",
-          "hash": "9MsRIw8mQZziHtY1pYGrBluvpgITr6LQnA4R3wjG/Mk="
+          "hash": "ie3tbUbU0NDgpsxfji+tx1I3m5CyInoJC1MdNQkFOh0="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -789,10 +1029,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ProgressChangedEventArgs.html",
-          "hash": "FMOM/IBHHOLqPlApQDJ2aA6H5MixUhUb77F0GVgBJ2c="
+          "hash": "VJ3ibM1Fd5xCkjZ+elvwdM3oG5Qc11ouz4VRxzr4ZkI="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -801,10 +1041,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ProgressChangedEventHandler.html",
-          "hash": "XfvP4d6Lx+I0iLZogpgZ5IhX4rwWiKxR+y1mpNdkmx8="
+          "hash": "XRhVMMktfTSFtUijcrcQQ5moN5A/JHDV+g5zLun7uiQ="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -813,10 +1053,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ProgressData.html",
-          "hash": "xEBXDSclGDWAn1lKYI85rt1T74aybFCjekse2V1cZ3Y="
+          "hash": "OpKrr+2alhozDwiCveYXOoW8+s50iqtO8Ps42BLz+x4="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -825,10 +1065,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PropertyValidationDelegate-1.html",
-          "hash": "vD751f9Wa84OiQzZZwPTQu6hSIiLa1Zyb+P/Co1hsig="
+          "hash": "4a9qOmcH8ZPYGs+oyGbqZDS2cn9QFW4ecPjgmJmXNLU="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -837,10 +1077,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PropertyValidationDelegateAsync-1.html",
-          "hash": "sDYqAMyyDcZX9fxXJ2iYiFUV7lmqxpeihbzvP6Cp3cM="
+          "hash": "yVsQo/9jOSJ5RYU+w+/2CvGmvbFmGW643IEP0fXHzVA="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -849,10 +1089,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PropertyValidationResult.html",
-          "hash": "U2XGF5dWgIHlCPPJy3h4ir8R2WnWoEcq4pO4gizWnEE="
+          "hash": "sKlGM8I9C2dliG8CpcplISCFZpg6Jk0HXCHUfbIaLFw="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -861,10 +1101,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PropertyValueChangedArgs-1.html",
-          "hash": "fYcUYBm1bJ5aPU7h9W2kAUiCBg0UwFvJv8pAlW2/BCk="
+          "hash": "cdfRicF3T95UfzhvC6hm6yjEWds5vc65FcE0qM4139c="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -873,10 +1113,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.PropertyValueChangedEventHandler-1.html",
-          "hash": "2+Zetc2/5IAO140rkcjttZCrdsameBLNVCvkPE8i7T8="
+          "hash": "3RA+x2coe8RSFOZkVawrah+AbkpR+AgnVOlUKIcWXXM="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -885,10 +1125,22 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ReflectionHelper.html",
-          "hash": "jeNt8xsKyzidshGcpsRQD3GVDgqw/T+cjRJsMT3erR8="
+          "hash": "EqVlNxFIABccj06wTmQgOpLNZ8/26xT5NX/tJ4V28cc="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.Seconds.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.Seconds.html",
+          "hash": "5h5N8Tkcfb36lnC4JOIdIT3GUlq4YJ7yOiNmxQNdmIc="
+        }
+      },
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -897,10 +1149,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.SelectorService.html",
-          "hash": "z9FlRV1g0VDvsJi9y9QsRhfAyhg0BrggKpPinOQ8TZ8="
+          "hash": "9hoB3i+TtmrRJ9+EJYwuyF4CmBeV5bbpXYZGaQOhSBI="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -909,10 +1161,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.SetBackingFieldDelegate-1.html",
-          "hash": "WFF8xGiIYOPEMpY3k0VjLOCQXzmc//ANyKKuHqQD4VY="
+          "hash": "0V8WB0j/dFPmivgzQflWfrZ+zINhAnSMPCaTD10HE/o="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -921,10 +1173,22 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.TextControl.html",
-          "hash": "ocB5+CPnOvDgJ04g1jaN5Jhvr/xkPtjyG6D9DJELiW8="
+          "hash": "JofL02/UbsOwVtDwkgwEEMdV5lbIF5/ZuKuDJHDxdzM="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/BionicCode.Utilities.Net.TimeUnit.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/BionicCode.Utilities.Net.TimeUnit.html",
+          "hash": "kSdVuqIRVIWCcRxbAXG+UUeIFDNIx2D24MmLW5bs9qQ="
+        }
+      },
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -933,10 +1197,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ValueChangedEventArgs-1.html",
-          "hash": "K28mt10xVqt81Aury0VITnPMGBBJHZXf4jpi76lNJAc="
+          "hash": "PK3qnHfkpOiBFWWDlYf7rHGRUVrvhJ5iwRc01B9bQRM="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -945,10 +1209,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ValueEventArgs-1.html",
-          "hash": "90yiRbIDEtCLpOtPI3e4kXRPDf4xGiUomCZC4NzPl+E="
+          "hash": "T47Av381C5zXZsqcBUKirZTiwhL3wb4MlTphiSKp15I="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -957,10 +1221,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ViewModel.html",
-          "hash": "fjT7rOG2c5Ic9/acmBuYS5MSfDPjsRm89SxUdFPjep4="
+          "hash": "z7ONofo8NYB7wBdwNX+dw63bPpqeaRyZoa7ihFil0gE="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -969,10 +1233,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.html",
-          "hash": "3Zh+U2JYWQeeoP8U2mIkVaiJsXzL17+la2/VWpCpU4w="
+          "hash": "9MwC/1QNKZRP2yVjL+3bvRI9FQTNXiPYy7S4j+i2Zms="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -981,10 +1245,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.ViewModelCommon.html",
-          "hash": "J+Q3ynCoLf4zGM5bFf5+Vm1kFd6JTgdi6E3JX1cf3Gg="
+          "hash": "oTGVJdMlvprK7BR+l9EAGunZbQqyzTGGabL8E645zLE="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -993,10 +1257,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.Win32Caret.html",
-          "hash": "YS+FGjVRwyunHggrz13LyzKHH4CsEsL9oD5PyFnzllA="
+          "hash": "1ayfoJGztm95HAKbnPxL4OOiDH8TGq3LVnlFwY3+Z6E="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -1005,10 +1269,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.WrongEventHandlerSignatureException.html",
-          "hash": "fDwtyycPivA7nWPRn7wi0Wa6WTjfQCZZHTsfHwvQ1w8="
+          "hash": "ssjIF/dzYVcKemmIyV6zhIXwC/HKZig0quSW+HRQsD8="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -1017,10 +1281,10 @@
       "output": {
         ".html": {
           "relative_path": "api/BionicCode.Utilities.Net.html",
-          "hash": "6FlfD+E4V+h0mfucnNJ2PUdoGLVJp0LO8dzRyh3uUNo="
+          "hash": "NWCW/ea03slmaxa8BALWOomy72I8IkMcXkQAYUTIWho="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -1029,10 +1293,10 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.Extensions.DependencyInjection.AssemblyFilter.html",
-          "hash": "ESfC7yqJHqn6TXjimYt9JvO3pppWstpOBwyVEMUWv/E="
+          "hash": "/SGL5izHz54rdKGj08Pjd/QiBNg8s+NdHrrtP4mrElw="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -1041,10 +1305,10 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.Extensions.DependencyInjection.FilteredExportServiceCollection.html",
-          "hash": "z13kIJ8XejxNLYYkVYQ/3qbJOx+BMr1aJwO/6gtlYpg="
+          "hash": "b36W5RTZj5C3IWcwfR5WtJRbDe9qHwvTUNRDcVGo2yI="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -1053,10 +1317,10 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.Extensions.DependencyInjection.IAssemblyFilter.html",
-          "hash": "uhyN34iFRwwaTmhEhfImn66qJmhSMADy8kAxPI8v/yg="
+          "hash": "55CHMiRj0ue/fjbVdZlbRwEHPk6m4WW2GXdkqwwv8d0="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -1065,10 +1329,10 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.Extensions.DependencyInjection.IFilteredExportServiceCollection.html",
-          "hash": "+ZsllaDHahHSAYJ0vd3LFaZdwGuIg9RC0MtVeqKXQb8="
+          "hash": "5LM8Ucd5kwjelG2ylPaIWF8Hfhn69EIAXDTDNi2HLTU="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -1077,10 +1341,10 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.Extensions.DependencyInjection.IMultiExportServiceCollection.html",
-          "hash": "jKqlCiQw8utnu4aWUjbAGTKt3UysdaBnvbmDeixu1oA="
+          "hash": "+OMbqdaO82LbdiG3EIjLDkfTlbhk9dorLNqTTgUOCn4="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -1089,10 +1353,10 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.Extensions.DependencyInjection.MultiExportServiceCollection.html",
-          "hash": "eXZnSgjUw1tBJOevT9lr6SySp0H3/vucniWSbORXEgA="
+          "hash": "rbkVP7alP5awQhqmd9fBVw9eUNAC0mnMGM7YVPJaDaY="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -1101,10 +1365,10 @@
       "output": {
         ".html": {
           "relative_path": "api/Microsoft.Extensions.DependencyInjection.html",
-          "hash": "xlPhJIZ2kUvTSM5dBZWxHtGpISdIWkalbQYaj10NCZk="
+          "hash": "abtbrrZoyXvrAJD/++KV0ZBStqzzTVQC7LHi56m3yWM="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -1113,10 +1377,10 @@
       "output": {
         ".html": {
           "relative_path": "api/index.html",
-          "hash": "qJQrYJoCfGoj7rzovWW4PkdXARk5XxDzuym8p47/qGA="
+          "hash": "M5PHuVHFOJ8T3b8rgvfD0V09ij4Opa/q6LSDPDBbOFw="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -1125,7 +1389,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "Lr33daRE5lCG2UnSXfQouQZRlkiBG9CJ8JNVnz/W26I="
+          "hash": "tMdEZd2R+NxJyuDDf0zfxr592g7bm5bqFIb0+E+aK7g="
         }
       },
       "is_incremental": false,
@@ -1137,10 +1401,10 @@
       "output": {
         ".html": {
           "relative_path": "articles/README.html",
-          "hash": "2yJ3M7EIDYqiy5/AgEjxEq7f0potDrHYbOC+FmFidJk="
+          "hash": "7PnParCyvYJQxJgeCJz4unanjlO71nKVK2KTEvo38es="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -1149,10 +1413,10 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "wjO1PhKEKd4twF7ABtpVqq4wH84ihGqxvEtTEWe90Js="
+          "hash": "+WqcJ6xgnauVANtUglseMIHSWxvA9JyXXzXdhGrwSKE="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -1195,10 +1459,10 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "c9EYrlUn+n1m+Fs4Zh2SNx2TSXswtR0FX7/2vsOZuw0="
+          "hash": "YsdmReyX59DN3YfEu3azJ/Zk0mz3gqvTxB4drr8IQrU="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -1217,25 +1481,23 @@
   "incremental_info": [
     {
       "status": {
-        "can_incremental": false,
-        "details": "Disable incremental build by force rebuild option.",
+        "can_incremental": true,
         "incrementalPhase": "build",
         "total_file_count": 0,
-        "skipped_file_count": 0,
-        "full_build_reason_code": "ForceRebuild"
+        "skipped_file_count": 0
       },
       "processors": {
         "ConceptualDocumentProcessor": {
-          "can_incremental": false,
+          "can_incremental": true,
           "incrementalPhase": "build",
           "total_file_count": 4,
-          "skipped_file_count": 0
+          "skipped_file_count": 4
         },
         "ManagedReferenceDocumentProcessor": {
-          "can_incremental": false,
+          "can_incremental": true,
           "incrementalPhase": "build",
-          "total_file_count": 92,
-          "skipped_file_count": 0
+          "total_file_count": 119,
+          "skipped_file_count": 119
         },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
@@ -1255,8 +1517,8 @@
     },
     {
       "status": {
-        "can_incremental": false,
-        "details": "Cannot support incremental post processing, the reason is: it's disabled.",
+        "can_incremental": true,
+        "details": "Can support incremental post processing.",
         "incrementalPhase": "postProcessing",
         "total_file_count": 0,
         "skipped_file_count": 0

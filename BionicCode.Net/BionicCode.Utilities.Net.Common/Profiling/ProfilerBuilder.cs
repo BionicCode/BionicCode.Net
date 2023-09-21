@@ -10,22 +10,22 @@
   using System.Threading.Tasks;
 
   /// <summary>
-  /// Class to configure the <see cref="Profiler"/> when used with annotated profiling. Call <see cref="Profiler.LogType{T}"/> to obtain an instance.
+  /// Class to configure the <see cref="Profiler"/> when used with annotated profiling. Call <see cref="Profiler.CreateProfilerBuilder{T}"/> to obtain an instance.
   /// </summary>
   public class ProfilerBuilder : IAttributeProfilerConfiguration
   {
-    private Type Type { get; }
+    private IEnumerable<Type> Type { get; }
     private bool IsWarmupEnabled { get; set; }
     private bool IsDefaultLogOutputEnabled { get; set; }
     private int Iterations { get; set; }
     private int WarmupIterations { get; set; }
     private TimeUnit BaseUnit { get; set; }
-    private Assembly TypeAssembly { get; }
+    private Dictionary<Type, Assembly> TypeAssemblyTable { get; }
     private ProfilerLoggerAsyncDelegate AsyncProfilerLogger { get; set; }
     private ProfilerLoggerDelegate ProfilerLogger { get; set; }
 
-    Type IAttributeProfilerConfiguration.Type => this.Type;
-    Assembly IAttributeProfilerConfiguration.TypeAssembly => this.TypeAssembly;
+    IEnumerable<Type> IAttributeProfilerConfiguration.Type => this.Type;
+    //Assembly IAttributeProfilerConfiguration.TypeAssembly => this.TypeAssembly;
     TimeUnit IAttributeProfilerConfiguration.BaseUnit => this.BaseUnit;
     bool IAttributeProfilerConfiguration.IsWarmupEnabled => this.IsWarmupEnabled;
     bool IAttributeProfilerConfiguration.IsDefaultLogOutputEnabled => this.IsDefaultLogOutputEnabled;
@@ -34,13 +34,28 @@
     ProfilerLoggerAsyncDelegate IAttributeProfilerConfiguration.AsyncProfilerLogger => this.AsyncProfilerLogger;
     ProfilerLoggerDelegate IAttributeProfilerConfiguration.ProfilerLogger => this.ProfilerLogger;
 
-    internal ProfilerBuilder(Type targetType)
+    Assembly IAttributeProfilerConfiguration.GetAssembly(Type type)
     {
-      this.Type = targetType;
-      this.TypeAssembly = Assembly.GetAssembly(targetType);
+      if (!this.TypeAssemblyTable.TryGetValue(type, out Assembly assembly))
+      { 
+        assembly = Assembly.GetAssembly(type);
+        this.TypeAssemblyTable.Add(type, assembly);
+      }
+
+      return assembly;
+    }
+
+    internal ProfilerBuilder(Type targetType) : this(new[] { targetType })
+    {
+    }
+
+    internal ProfilerBuilder(IEnumerable<Type> targetTypes)
+    {
+      this.Type = targetTypes;
+      this.TypeAssemblyTable = new Dictionary<Type, Assembly>();
       this.IsWarmupEnabled = true;
       this.IsDefaultLogOutputEnabled = true;
-      this.WarmupIterations = Profiler.WarmupCount;
+      this.WarmupIterations = Profiler.DefaultWarmupCount;
       this.Iterations = 1;
       this.BaseUnit = TimeUnit.Microseconds;
     }
@@ -174,10 +189,10 @@
     /// <returns>
     /// A collection of <see cref="ProfilerBatchResult"/> items where each <see cref="ProfilerBatchResult"/> holds the result of a particular profiled target to accumulate the individual <see cref="ProfilerResult"/> items for each iteration.
     /// </returns>
-    public async Task<IEnumerable<ProfilerBatchResult>> RunAsync()
+    public async Task<ProfiledTypeResultCollection> RunAsync()
     {
       var attributeProfiler = new AttributeProfiler(this);
-      IEnumerable<ProfilerBatchResult> result = await attributeProfiler.StartAsync();
+      ProfiledTypeResultCollection result = await attributeProfiler.StartAsync();
       return result;
     }
   }
