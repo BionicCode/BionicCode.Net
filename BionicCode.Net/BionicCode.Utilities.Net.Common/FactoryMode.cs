@@ -15,11 +15,11 @@ namespace BionicCode.Utilities.Net
     /// <summary>
     /// Unset
     /// </summary>
-    Default = 0, 
+    Default = 0,
     /// <summary>
     /// Create a shared instance
     /// </summary>
-    Singleton, 
+    Singleton,
     /// <summary>
     /// A new instance is created for each request
     /// </summary>

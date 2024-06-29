@@ -11,7 +11,6 @@ namespace BionicCode.Controls.Net.Wpf
   using System.Collections.ObjectModel;
   using System.ComponentModel;
   using System.Globalization;
-  using System.Linq;
   using System.Runtime.CompilerServices;
   using System.Windows;
   using System.Windows.Controls;
@@ -35,7 +34,7 @@ namespace BionicCode.Controls.Net.Wpf
     public static readonly RoutedUICommand SelectPreviousMonthViewRoutedCommand = new RoutedUICommand("Select the previous calendar month view.", nameof(Calendar.SelectPreviousMonthViewRoutedCommand), typeof(Calendar));
     public static readonly RoutedUICommand SelectTodayMonthViewRoutedCommand = new RoutedUICommand("Select the calendar month view that contains today.", nameof(Calendar.SelectPreviousMonthViewRoutedCommand), typeof(Calendar));
 
-#region SpanningRequestedRoutedEvent
+    #region SpanningRequestedRoutedEvent
 
     public static readonly RoutedEvent SpanningRequestedRoutedEvent = EventManager.RegisterRoutedEvent(
       "SpanningRequested",
@@ -49,7 +48,7 @@ namespace BionicCode.Controls.Net.Wpf
       remove => RemoveHandler(Calendar.SpanningRequestedRoutedEvent, value);
     }
 
-#endregion
+    #endregion
 
     public static readonly RoutedEvent SelectedRoutedEvent = EventManager.RegisterRoutedEvent(
       "Selected",
@@ -88,16 +87,16 @@ namespace BionicCode.Controls.Net.Wpf
     public static void SetDay(DependencyObject attachingElement, DateTime value) =>
       attachingElement.SetValue(Calendar.DayProperty, value);
 
-#region IsToday attached property
+    #region IsToday attached property
 
     public static readonly DependencyProperty IsTodayProperty = DependencyProperty.RegisterAttached(
       "IsToday", typeof(bool), typeof(Calendar), new PropertyMetadata(default(bool)));
 
-    public static void SetIsToday(DependencyObject attachingElement, bool value) =>   attachingElement.SetValue(Calendar.IsTodayProperty, value);
+    public static void SetIsToday(DependencyObject attachingElement, bool value) => attachingElement.SetValue(Calendar.IsTodayProperty, value);
 
-    public static bool GetIsToday(DependencyObject attachingElement) => (bool) attachingElement.GetValue(Calendar.IsTodayProperty);
+    public static bool GetIsToday(DependencyObject attachingElement) => (bool)attachingElement.GetValue(Calendar.IsTodayProperty);
 
-#endregion
+    #endregion
 
     public static readonly DependencyProperty DateColumnHeaderItemContainerStyleProperty =
       DependencyProperty.Register(
@@ -143,7 +142,7 @@ namespace BionicCode.Controls.Net.Wpf
       typeof(Calendar),
       new PropertyMetadata(0.2));
 
-#region FirstDayOfWeek dependency property
+    #region FirstDayOfWeek dependency property
 
     public static readonly DependencyProperty FirstDayOfWeekProperty = DependencyProperty.Register(
       "FirstDayOfWeek",
@@ -151,11 +150,11 @@ namespace BionicCode.Controls.Net.Wpf
       typeof(Calendar),
       new FrameworkPropertyMetadata(DayOfWeek.Sunday, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
-    public DayOfWeek FirstDayOfWeek { get => (DayOfWeek) GetValue(Calendar.FirstDayOfWeekProperty); set => SetValue(Calendar.FirstDayOfWeekProperty, value); }
+    public DayOfWeek FirstDayOfWeek { get => (DayOfWeek)GetValue(Calendar.FirstDayOfWeekProperty); set => SetValue(Calendar.FirstDayOfWeekProperty, value); }
 
-#endregion FirstDayOfWeek dependency property
+    #endregion FirstDayOfWeek dependency property
 
-#region CurrentMonthView read-only dependency property
+    #region CurrentMonthView read-only dependency property
     protected static readonly DependencyPropertyKey CurrentMonthViewPropertyKey = DependencyProperty.RegisterReadOnly(
       "CurrentMonthView",
       typeof(CalendarMonthView),
@@ -166,13 +165,13 @@ namespace BionicCode.Controls.Net.Wpf
 
     public CalendarMonthView CurrentMonthView
     {
-      get => (CalendarMonthView) GetValue(Calendar.CurrentMonthViewProperty);
+      get => (CalendarMonthView)GetValue(Calendar.CurrentMonthViewProperty);
       private set => SetValue(Calendar.CurrentMonthViewPropertyKey, value);
     }
 
-#endregion CurrentMonthView read-only dependency property
+    #endregion CurrentMonthView read-only dependency property
 
-#region IsNavigationBarVisible dependency property
+    #region IsNavigationBarVisible dependency property
 
     public static readonly DependencyProperty IsNavigationBarVisibleProperty = DependencyProperty.Register(
       "IsNavigationBarVisible",
@@ -180,11 +179,11 @@ namespace BionicCode.Controls.Net.Wpf
       typeof(Calendar),
       new PropertyMetadata(default));
 
-    public bool IsNavigationBarVisible { get => (bool) GetValue(Calendar.IsNavigationBarVisibleProperty); set => SetValue(Calendar.IsNavigationBarVisibleProperty, value); }
+    public bool IsNavigationBarVisible { get => (bool)GetValue(Calendar.IsNavigationBarVisibleProperty); set => SetValue(Calendar.IsNavigationBarVisibleProperty, value); }
 
-#endregion IsNavigationBarVisible dependency property
+    #endregion IsNavigationBarVisible dependency property
 
-#region IsTitleVisible dependency property
+    #region IsTitleVisible dependency property
 
     public static readonly DependencyProperty IsTitleVisibleProperty = DependencyProperty.Register(
       "IsTitleVisible",
@@ -192,11 +191,11 @@ namespace BionicCode.Controls.Net.Wpf
       typeof(Calendar),
       new PropertyMetadata(default));
 
-    public bool IsTitleVisible { get => (bool) GetValue(Calendar.IsTitleVisibleProperty); set => SetValue(Calendar.IsTitleVisibleProperty, value); }
+    public bool IsTitleVisible { get => (bool)GetValue(Calendar.IsTitleVisibleProperty); set => SetValue(Calendar.IsTitleVisibleProperty, value); }
 
-#endregion IsTitleVisible dependency property
+    #endregion IsTitleVisible dependency property
 
-#region Today read-only dependency property
+    #region Today read-only dependency property
     protected static readonly DependencyPropertyKey TodayPropertyKey = DependencyProperty.RegisterReadOnly(
       "Today",
       typeof(DateTime),
@@ -207,13 +206,13 @@ namespace BionicCode.Controls.Net.Wpf
 
     public DateTime Today
     {
-      get => (DateTime) GetValue(Calendar.TodayProperty);
+      get => (DateTime)GetValue(Calendar.TodayProperty);
       private set => SetValue(Calendar.TodayPropertyKey, value);
     }
 
-#endregion Today read-only dependency property
+    #endregion Today read-only dependency property
 
-#region Dependency properties
+    #region Dependency properties
 
     private static void OnDateColumnHeaderItemContainerStyleChanged(
       DependencyObject d,
@@ -241,7 +240,6 @@ namespace BionicCode.Controls.Net.Wpf
     //    //  Calendar.Instance.ItemContainerToItemMap.Add(eventItemContainer, eventItemContainer.Content);
     //    //  Calendar.Instance.PrepareContainerForEventItemOverride(eventItemContainer, eventItemContainer.Content);
     //    //}
-
 
     //    //if (Calendar.DateToDateItemContainerMap.TryGetValue(
     //    //  oldCalendarDate.Date,
@@ -294,9 +292,9 @@ namespace BionicCode.Controls.Net.Wpf
     //  (d as Calendar).OnSelectedItemChanged(e.OldValue, e.NewValue);
     //}
 
-#endregion
+    #endregion
 
-#region
+    #region
 
     private static double _transitionAnimationStart;
 
@@ -435,10 +433,10 @@ namespace BionicCode.Controls.Net.Wpf
       VisualStateManager.GoToState(this, "ReplacedView", false);
     }
 
-#endregion
-    
+    #endregion
 
-#region Overrides of FrameworkElement
+
+    #region Overrides of FrameworkElement
 
     private void Initialize()
     {
@@ -446,11 +444,11 @@ namespace BionicCode.Controls.Net.Wpf
       int daysInMonth = this.CalendarSource.GetDaysInMonth(DateTime.Today.Year, DateTime.Today.Month);
       var firstDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
       var events = new ObservableCollection<CalendarEvent>();
-      for (var day = 0; day < daysInMonth; day++)
+      for (int day = 0; day < daysInMonth; day++)
       {
         DateTime currentDay = firstDate.AddDays(day);
 
-        for (var count = 0; count < 2; count++)
+        for (int count = 0; count < 2; count++)
         {
           var calendarEvent = new CalendarEvent
           {
@@ -490,7 +488,7 @@ namespace BionicCode.Controls.Net.Wpf
       }
     }
 
-#endregion
+    #endregion
 
     /// <inheritdoc />
     public override void OnApplyTemplate()
@@ -536,7 +534,6 @@ namespace BionicCode.Controls.Net.Wpf
     //  {
     //    newObservableCollection.CollectionChanged += OnItemsSourceCollectionChanged;
     //  }
-
 
     //  this.ItemsHost.AddEventChildren(newValue.Cast<object>());
     //}
@@ -602,15 +599,25 @@ namespace BionicCode.Controls.Net.Wpf
       //    break;
       //}
 
-
       //RaiseEvent(new RoutedEventArgs(Selector.SelectedEvent, this));
+
+/* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
+Before:
     }
     
+    public virtual UIElement GetContainerForDateItem() => new CalendarDateItem();
+After:
+    }
+
+    public virtual UIElement GetContainerForDateItem() => new CalendarDateItem();
+*/
+    }
+
     public virtual UIElement GetContainerForDateItem() => new CalendarDateItem();
     public virtual UIElement GetContainerForWeekHeaderItem() => new WeekHeaderItem();
     public virtual UIElement GetContainerForDateColumnHeaderItem() => new CalendarDateColumnHeaderItem();
 
-#region Overrides of ItemsControl
+    #region Overrides of ItemsControl
 
     /// <inheritdoc />
     protected override DependencyObject GetContainerForItemOverride() => new CalendarEventItem();
@@ -618,7 +625,7 @@ namespace BionicCode.Controls.Net.Wpf
     /// <inheritdoc />
     protected override bool IsItemItsOwnContainerOverride(object item) => item is CalendarEventItem;
 
-#endregion
+    #endregion
 
     protected virtual bool IsDateItemItsOwnContainerOverride(object item) => item is CalendarDateItem;
     protected virtual bool IsWeekHeaderItemItsOwnContainerOverride(object item) => item is WeekHeaderItem;
@@ -692,10 +699,10 @@ namespace BionicCode.Controls.Net.Wpf
       }
     }
 
-   private void OnLoaded(object sender, RoutedEventArgs e)
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
       VisualStateManager.GoToState(this, "Normal", false);
-      
+
       if (this.TryFindVisualChildElement(out CalendarPanel hostPanel))
       {
         this.ItemsHost = hostPanel;
@@ -791,37 +798,37 @@ namespace BionicCode.Controls.Net.Wpf
 
     public Brush GridColor
     {
-      get => (Brush) GetValue(Calendar.GridColorProperty);
+      get => (Brush)GetValue(Calendar.GridColorProperty);
       set => SetValue(Calendar.GridColorProperty, value);
     }
 
     public double GridThickness
     {
-      get => (double) GetValue(Calendar.GridThicknessProperty);
+      get => (double)GetValue(Calendar.GridThicknessProperty);
       set => SetValue(Calendar.GridThicknessProperty, value);
     }
 
     public DataTemplate DateHeaderItemTemplate
     {
-      get => (DataTemplate) GetValue(Calendar.DateHeaderItemTemplateProperty);
+      get => (DataTemplate)GetValue(Calendar.DateHeaderItemTemplateProperty);
       set => SetValue(Calendar.DateHeaderItemTemplateProperty, value);
     }
 
     public Style DateHeaderItemContainerStyle
     {
-      get => (Style) GetValue(Calendar.DateHeaderItemContainerStyleProperty);
+      get => (Style)GetValue(Calendar.DateHeaderItemContainerStyleProperty);
       set => SetValue(Calendar.DateHeaderItemContainerStyleProperty, value);
     }
 
     public DataTemplateSelector DateHeaderItemTemplateSelector
     {
-      get => (DataTemplateSelector) GetValue(Calendar.DateHeaderItemTemplateSelectorProperty);
+      get => (DataTemplateSelector)GetValue(Calendar.DateHeaderItemTemplateSelectorProperty);
       set => SetValue(Calendar.DateHeaderItemTemplateSelectorProperty, value);
     }
 
     public System.Globalization.Calendar CalendarSource
     {
-      get => (System.Globalization.Calendar) GetValue(Calendar.CalendarSourceProperty);
+      get => (System.Globalization.Calendar)GetValue(Calendar.CalendarSourceProperty);
       set => SetValue(Calendar.CalendarSourceProperty, value);
     }
 
@@ -833,7 +840,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public Style DateColumnHeaderItemContainerStyle
     {
-      get => (Style) GetValue(Calendar.DateColumnHeaderItemContainerStyleProperty);
+      get => (Style)GetValue(Calendar.DateColumnHeaderItemContainerStyleProperty);
       set => SetValue(Calendar.DateColumnHeaderItemContainerStyleProperty, value);
     }
 
@@ -842,7 +849,6 @@ namespace BionicCode.Controls.Net.Wpf
     //    get => (DataTemplate) GetValue(Calendar.DateColumnHeaderItemTemplateProperty);
     //    set => SetValue(Calendar.DateColumnHeaderItemTemplateProperty, value);
     //}
-
 
     private Dictionary<UIElement, object> ItemContainerToItemMap { get; }
     private Dictionary<object, UIElement> ItemToItemContainerMap { get; }
@@ -855,19 +861,13 @@ namespace BionicCode.Controls.Net.Wpf
     private ScrollViewer ScrollHost { get; set; }
     private CalendarPanel ItemsHost { get; set; }
     public static event PropertyChangedEventHandler GlobalPropertyChanged;
-    public  event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler PropertyChanged;
 
-//#if NET5_0_OR_GREATER
-//    [NotifyPropertyChangedInvocator]
-//#endif
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-    {
-      this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
+    //#if NET5_0_OR_GREATER
+    //    [NotifyPropertyChangedInvocator]
+    //#endif
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-    protected static void OnGlobalPropertyChanged([CallerMemberName] string propertyName = null)
-    {
-      Calendar.GlobalPropertyChanged?.Invoke(typeof(Calendar), new PropertyChangedEventArgs(propertyName));
-    }
+    protected static void OnGlobalPropertyChanged([CallerMemberName] string propertyName = null) => Calendar.GlobalPropertyChanged?.Invoke(typeof(Calendar), new PropertyChangedEventArgs(propertyName));
   }
 }

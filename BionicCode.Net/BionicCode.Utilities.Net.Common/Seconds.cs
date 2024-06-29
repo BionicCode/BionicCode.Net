@@ -12,7 +12,7 @@
     {
       this.Value = value;
       this.Unit = TimeUnit.Seconds;
-    }    
+    }
 
     public Minutes ToMinutes() => new Minutes(this.Value / 60);
     public Milliseconds ToMilliseconds() => new Milliseconds(TimeValueConverter.ToMilliseconds(this));
@@ -34,13 +34,13 @@
     public override int GetHashCode()
     {
       int hashCode = -177567199;
-      hashCode = hashCode * -1521134295 + this.Value.GetHashCode();
-      hashCode = hashCode * -1521134295 + this.Unit.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.Value.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.Unit.GetHashCode();
       return hashCode;
     }
 #endif
 
-    public override bool Equals(object obj) => obj is Seconds seconds && this.Equals(seconds);
+    public override bool Equals(object obj) => obj is Seconds seconds && Equals(seconds);
 
     public double Value { get; }
     public TimeUnit Unit { get; }

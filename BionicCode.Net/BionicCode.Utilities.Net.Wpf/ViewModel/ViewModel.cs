@@ -1,17 +1,88 @@
 namespace BionicCode.Utilities.Net
 {
   using System;
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Wpf (net48)'
+Before:
   using System.Windows;
   using System.Collections;
-  using System.Collections.Generic;
+After:
+  using System.Collections;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Wpf (netstandard2.0)'
+Before:
+  using System.Windows;
+  using System.Collections;
+After:
+  using System.Collections;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Wpf (net6.0-windows)'
+Before:
+  using System.Windows;
+  using System.Collections;
+After:
+  using System.Collections;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Wpf (net472)'
+Before:
+  using System.Windows;
+  using System.Collections;
+After:
+  using System.Collections;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Wpf (netstandard2.1)'
+Before:
+  using System.Windows;
+  using System.Collections;
+After:
+  using System.Collections;
+*/
   using System.ComponentModel;
-  using System.ComponentModel.DataAnnotations;
-  using System.Linq;
-  using System.Reflection;
-  using System.Runtime.CompilerServices;
-  using System.Threading;
-  using System.Threading.Tasks;
+  using System.
+/* Unmerged change from project 'BionicCode.Utilities.Net.Wpf (net48)'
+Before:
   using JetBrains.Annotations;
+After:
+  using System.Windows;
+  using JetBrains.Annotations;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Wpf (netstandard2.0)'
+Before:
+  using JetBrains.Annotations;
+After:
+  using System.Windows;
+  using JetBrains.Annotations;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Wpf (net6.0-windows)'
+Before:
+  using JetBrains.Annotations;
+After:
+  using System.Windows;
+  using JetBrains.Annotations;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Wpf (net472)'
+Before:
+  using JetBrains.Annotations;
+After:
+  using System.Windows;
+  using JetBrains.Annotations;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Wpf (netstandard2.1)'
+Before:
+  using JetBrains.Annotations;
+After:
+  using System.Windows;
+  using JetBrains.Annotations;
+*/
+Windows;
 
   /// <summary>
   /// Base class recommended to use for view models across the application. Encapsulates implementations of <see cref="INotifyPropertyChanged"/> and <see cref="INotifyDataErrorInfo"/>.

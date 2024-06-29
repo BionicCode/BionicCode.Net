@@ -4,7 +4,7 @@
 
   internal class ChartTableRowBuilder
   {
-    internal protected ChartTableRowBuilder(ChartTable chartTable, int numberOfCells)
+    protected internal ChartTableRowBuilder(ChartTable chartTable, int numberOfCells)
     {
       this.ChartTable = chartTable;
       this.CellCount = numberOfCells;

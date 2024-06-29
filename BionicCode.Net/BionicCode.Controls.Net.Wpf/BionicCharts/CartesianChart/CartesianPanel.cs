@@ -2,10 +2,16 @@
 {
   using System;
   using System.Collections.Generic;
+  using System.Linq;
   using System.Windows;
   using System.Windows.Controls;
-  using System.Windows.Media;
+/* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
+Before:
   using System.Linq;
+After:
+  using System.Windows.Media;
+*/
+
 
   /* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
   Before:
@@ -22,10 +28,7 @@
       this.TransformedPointInfoLookupTable = new Dictionary<CartesianChartPointInfo, CartesianChartPointInfo>();
     }
 
-    protected override void ApplyDisplayMode()
-    {
-      base.ApplyDisplayMode();
-    }
+    protected override void ApplyDisplayMode() => base.ApplyDisplayMode();
 
     public override void InvalidatePlotDataOverride()
     {
@@ -54,12 +57,12 @@
 
       if (this.IsRenderedDataInvalid)
       {
-        var pointInfos = this.PlotInfos
+        IEnumerable<CartesianChartPointInfo> pointInfos = this.PlotInfos
           .Cast<CartesianChartPointInfo>();
 
         this.Items.Clear();
 
-        foreach (var originalPointInfo in pointInfos)
+        foreach (CartesianChartPointInfo originalPointInfo in pointInfos)
         {
           if (!this.TransformedPointInfoLookupTable.TryGetValue(originalPointInfo, out CartesianChartPointInfo transformedPointInfo))
           {
@@ -103,9 +106,9 @@
     private CartesianChartPointInfo TransformPointInfos(CartesianChartPointInfo originalPointInfo)
     {
       (double xZoomFactor, double yZoomFactor) = CalculateScaleFactors();
-      var yPositivAxisLimit = ((CartesianPointInfoGenerator)this.PointInfoGenerator).MaxY.Y;
-      var transformedPoint = originalPointInfo.CartesianChartPoint
-        .ToPointOnScreen(yPositivAxisLimit) 
+      double yPositivAxisLimit = ((CartesianPointInfoGenerator)this.PointInfoGenerator).MaxY.Y;
+      Point transformedPoint = originalPointInfo.CartesianChartPoint
+        .ToPointOnScreen(yPositivAxisLimit)
         .Scale(xZoomFactor, yZoomFactor);
       transformedPoint.Offset(-this.HorizontalOffset, -this.VerticalOffset);
       var transformedPointInfo = new CartesianChartPointInfo(transformedPoint, originalPointInfo.SeriesInfo);

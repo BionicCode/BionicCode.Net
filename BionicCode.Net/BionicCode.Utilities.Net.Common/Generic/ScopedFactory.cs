@@ -6,7 +6,7 @@
   {
     private bool disposedValue;
 
-    new public FactoryMode FactoryMode { get => FactoryMode.Scoped; }
+    public new FactoryMode FactoryMode => FactoryMode.Scoped;
 
     protected override TCreate CreateInstance() => this.Factory.CreateInstanceBase();
 

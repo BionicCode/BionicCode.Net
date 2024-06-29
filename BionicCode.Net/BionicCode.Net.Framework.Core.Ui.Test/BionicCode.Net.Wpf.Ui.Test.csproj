@@ -7,8 +7,4 @@
     <StartupObject></StartupObject>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="msdn.4.5.2" Version="0.1.0-alpha-1611021200" />
-  </ItemGroup>
-
 </Project>

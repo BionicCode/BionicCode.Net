@@ -11,8 +11,8 @@
     public override void Write(Utf8JsonWriter writer, ChartTableCollection value, JsonSerializerOptions options)
     {
       writer.WriteStartObject();
-        writer.WritePropertyName("tableCount");
-        JsonSerializer.Serialize(writer, value.Count, options);
+      writer.WritePropertyName("tableCount");
+      JsonSerializer.Serialize(writer, value.Count, options);
       writer.WritePropertyName("chartTables");
       JsonSerializer.Serialize(writer, value as IEnumerable<ChartTable>, options);
 

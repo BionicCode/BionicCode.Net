@@ -71,7 +71,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public bool IsSpanningSource
     {
-      get => (bool) GetValue(CalendarEventItem.IsSpanningSourceProperty);
+      get => (bool)GetValue(CalendarEventItem.IsSpanningSourceProperty);
       set => SetValue(CalendarEventItem.IsSpanningSourceProperty, value);
     }
 
@@ -87,7 +87,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public bool IsSpanningTarget
     {
-      get => (bool) GetValue(CalendarEventItem.IsSpanningTargetProperty);
+      get => (bool)GetValue(CalendarEventItem.IsSpanningTargetProperty);
       set => SetValue(CalendarEventItem.IsSpanningTargetProperty, value);
     }
 
@@ -123,10 +123,7 @@ namespace BionicCode.Controls.Net.Wpf
         new FrameworkPropertyMetadata(default(bool), CalendarEventItem.OnIsSelectedChanged));
     }
 
-    public CalendarEventItem()
-    {
-      this.Loaded += OnLoaded;
-    }
+    public CalendarEventItem() => this.Loaded += OnLoaded;
 
     public CalendarEventItem(CalendarEventItem source) : this()
     {
@@ -150,13 +147,12 @@ namespace BionicCode.Controls.Net.Wpf
 
     #endregion
 
-
     #region
 
     /// <inheritdoc />
     public ICommand Command
     {
-      get => (ICommand) GetValue(CalendarEventItem.CommandProperty);
+      get => (ICommand)GetValue(CalendarEventItem.CommandProperty);
       set => SetValue(CalendarEventItem.CommandProperty, value);
     }
 
@@ -170,7 +166,7 @@ namespace BionicCode.Controls.Net.Wpf
     /// <inheritdoc />
     public IInputElement CommandTarget
     {
-      get => (IInputElement) GetValue(CalendarEventItem.CommandTargetProperty);
+      get => (IInputElement)GetValue(CalendarEventItem.CommandTargetProperty);
       set => SetValue(CalendarEventItem.CommandTargetProperty, value);
     }
 
@@ -179,11 +175,10 @@ namespace BionicCode.Controls.Net.Wpf
     private static void OnIsSelectedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
       var this_ = d as CalendarEventItem;
-      this_.OnIsSelectedChanged((bool) e.OldValue, (bool) e.NewValue);
+      this_.OnIsSelectedChanged((bool)e.OldValue, (bool)e.NewValue);
     }
 
     public CalendarEventItem Clone() => MemberwiseClone() as CalendarEventItem;
-
 
     /// <inheritdoc />
     protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -191,34 +186,25 @@ namespace BionicCode.Controls.Net.Wpf
       base.OnPreviewMouseLeftButtonDown(e);
       HandleSelection();
       ExecuteClickCommand();
-      
+
       StartDragDropOperation();
     }
 
-    private void StartSpanOperation()
-    {
-      DragDrop.DoDragDrop(
+    private void StartSpanOperation() => DragDrop.DoDragDrop(
         this,
         new DataObject(
           DataFormats.Serializable,
           new EventItemDragDropArgs(Calendar.GetDay(this), this, DragDropEffects.Link)),
         DragDropEffects.Link);
-    }
 
-    private void StartDragDropOperation()
-    {
-      DragDrop.DoDragDrop(
+    private void StartDragDropOperation() => DragDrop.DoDragDrop(
         this,
         new DataObject(
           DataFormats.Serializable,
           new EventItemDragDropArgs(Calendar.GetDay(this), this, DragDropEffects.Move)),
         DragDropEffects.Move);
-    }
 
-    private void HandleSelection()
-    {
-      Selector.SetIsSelected(this, true);
-    }
+    private void HandleSelection() => Selector.SetIsSelected(this, true);
 
     private void HandleAdornerResizing(object sender, EventArgs e)
     {
@@ -258,7 +244,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public bool IsSelected
     {
-      get => (bool) GetValue(CalendarEventItem.IsSelectedProperty);
+      get => (bool)GetValue(CalendarEventItem.IsSelectedProperty);
       set => SetValue(CalendarEventItem.IsSelectedProperty, value);
     }
   }

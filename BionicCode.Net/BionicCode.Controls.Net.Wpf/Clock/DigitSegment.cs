@@ -7,7 +7,6 @@
 
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Converters;
 using System.Windows.Shapes;
 
 namespace BionicCode.Controls.Net.Wpf
@@ -86,7 +85,7 @@ namespace BionicCode.Controls.Net.Wpf
     protected abstract Geometry CreateGeometry();
 
     #region Overrides of Shape
-    
+
     /// <inheritdoc />
     protected override Geometry DefiningGeometry => CreateGeometry();
 
@@ -109,7 +108,7 @@ namespace BionicCode.Controls.Net.Wpf
     #region OnIsOnChanged dependency property changed handler
 
     private static void OnIsOnChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
-      (d as DigitSegment).OnIsOnChanged((bool) e.OldValue, (bool) e.NewValue);
+      (d as DigitSegment).OnIsOnChanged((bool)e.OldValue, (bool)e.NewValue);
 
     protected virtual void OnIsOnChanged(bool oldValue, bool newValue) => LightSegment(newValue);
 
@@ -118,7 +117,7 @@ namespace BionicCode.Controls.Net.Wpf
     #region OnOnColorChanged dependency property changed handler
 
     private static void OnOnColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
-      (d as DigitSegment).OnOnColorChanged((Brush) e.OldValue, (Brush) e.NewValue);
+      (d as DigitSegment).OnOnColorChanged((Brush)e.OldValue, (Brush)e.NewValue);
 
     protected virtual void OnOnColorChanged(Brush oldValue, Brush newValue)
     {
@@ -133,7 +132,7 @@ namespace BionicCode.Controls.Net.Wpf
     #region OnOffColorChanged dependency property changed handler
 
     private static void OnOffColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
-      (d as DigitSegment).OnOffColorChanged((Brush) e.OldValue, (Brush) e.NewValue);
+      (d as DigitSegment).OnOffColorChanged((Brush)e.OldValue, (Brush)e.NewValue);
 
     protected virtual void OnOffColorChanged(Brush oldValue, Brush newValue)
     {
@@ -145,11 +144,8 @@ namespace BionicCode.Controls.Net.Wpf
 
     #endregion OnOffColorChanged dependency property changed handler
 
-    protected Brush LightSegment(bool newValue)
-    {
-      return this.Fill = newValue
+    protected Brush LightSegment(bool newValue) => this.Fill = newValue
         ? this.OnColor
         : this.OffColor;
-    }
   }
 }

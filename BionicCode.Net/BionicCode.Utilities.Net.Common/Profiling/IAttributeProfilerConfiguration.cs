@@ -1,4 +1,4 @@
-﻿namespace BionicCode.Utilities.Net
+﻿namespace BionicCode.Utilities.Net.Profiling
 {
   using System;
   using System.Collections.Generic;
@@ -6,9 +6,9 @@
 
   internal interface IAttributeProfilerConfiguration
   {
+    Runtime Runtime { get; }
     Assembly GetAssembly(Type type);
-    IEnumerable<Type> Type { get; }
-    //Assembly TypeAssembly { get; }
+    IEnumerable<Type> Types { get; }
     bool IsWarmupEnabled { get; }
     bool IsDefaultLogOutputEnabled { get; }
     int Iterations { get; }

@@ -10,7 +10,6 @@
   using System.Windows.Controls;
   using System.Windows.Data;
 
-
   [TemplateVisualState(Name = TimePicker.VisualStatePickerOpen, GroupName = "PanelStates")]
   [TemplateVisualState(Name = TimePicker.VisualStatePickerClosed, GroupName = "PanelStates")]
   public class TimePicker : ContentControl
@@ -147,7 +146,7 @@
 
     #endregion HoursSource dependency property
 
-    
+
 
     #region IsOpen dependency property
 
@@ -169,7 +168,7 @@
       typeof(TimePicker),
       new PropertyMetadata(default));
 
-    public Control AnalogTimePicker { get => (Control) GetValue(TimePicker.AnalogTimePickerProperty); set => SetValue(TimePicker.AnalogTimePickerProperty, value); }
+    public Control AnalogTimePicker { get => (Control)GetValue(TimePicker.AnalogTimePickerProperty); set => SetValue(TimePicker.AnalogTimePickerProperty, value); }
 
     #endregion AnalogTimePicker dependency property
 
@@ -181,7 +180,7 @@
       typeof(TimePicker),
       new PropertyMetadata(default));
 
-    public Control LinearTimePicker { get => (Control) GetValue(TimePicker.LinearTimePickerProperty); set => SetValue(TimePicker.LinearTimePickerProperty, value); }
+    public Control LinearTimePicker { get => (Control)GetValue(TimePicker.LinearTimePickerProperty); set => SetValue(TimePicker.LinearTimePickerProperty, value); }
 
     #endregion LinearTimePicker dependency property
 
@@ -223,10 +222,7 @@
     private string TimeStringFormatPattern { get; set; }
     private bool IsInternalUpdate { get; set; }
 
-    static TimePicker()
-    {
-      FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(TimePicker), new FrameworkPropertyMetadata(typeof(TimePicker)));
-    }
+    static TimePicker() => FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(TimePicker), new FrameworkPropertyMetadata(typeof(TimePicker)));
 
     public TimePicker()
     {
@@ -285,21 +281,18 @@
       this_.SelectedTimeText = this_.FormatTime(this_.SelectedTime);
     }
 
-    private static void OnSelectedTimeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      (d as TimePicker).OnSelectedTimeChanged((TimeSpan)e.OldValue, (TimeSpan)e.NewValue);
-    }
+    private static void OnSelectedTimeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as TimePicker).OnSelectedTimeChanged((TimeSpan)e.OldValue, (TimeSpan)e.NewValue);
 
     private static void OnIsOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      var isOpen = (bool)e.NewValue;
+      bool isOpen = (bool)e.NewValue;
       (d as TimePicker).OnIsOpenChanged(isOpen);
     }
 
     private static object CoerceHours(DependencyObject d, object basevalue)
     {
       var this_ = d as TimePicker;
-      var hourValue = (int)basevalue;
+      int hourValue = (int)basevalue;
       return this_.Is24HourModeEnabled
         ? hourValue % 24
         : hourValue % 12 == 0
@@ -309,24 +302,18 @@
 
     private static object Coerce60BasedTimeValue(DependencyObject d, object basevalue)
     {
-      var hourValue = (int)basevalue;
+      int hourValue = (int)basevalue;
       return Math.Min(59, Math.Max(0, hourValue));
     }
 
-    protected virtual void OnIsOpenChanged(bool isOpen)
-    {
-      VisualStateManager.GoToState(
+    protected virtual void OnIsOpenChanged(bool isOpen) => VisualStateManager.GoToState(
         this,
         isOpen
           ? TimePicker.VisualStatePickerOpen
           : TimePicker.VisualStatePickerClosed,
         true);
-    }
 
-    protected virtual void OnTimeComponentChanged()
-    {
-      this.SelectedTime = new TimeSpan(this.SelectedHours, this.SelectedMinutes, this.SelectedSeconds);
-    }
+    protected virtual void OnTimeComponentChanged() => this.SelectedTime = new TimeSpan(this.SelectedHours, this.SelectedMinutes, this.SelectedSeconds);
 
     protected virtual void OnSelectedTimeChanged(TimeSpan oldValue, TimeSpan newValue)
     {

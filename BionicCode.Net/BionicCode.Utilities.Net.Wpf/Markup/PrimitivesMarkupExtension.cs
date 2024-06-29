@@ -36,46 +36,31 @@
     /// <summary>
     /// Initializes a new instance of <seealso cref="PrimitiveExtension"/>.
     /// </summary>
-    public PrimitiveExtension()
-    {
-      this.primitiveValue = null;
-    }
+    public PrimitiveExtension() => this.primitiveValue = null;
 
     /// <summary>
     /// Initializes a new instance of <seealso cref="PrimitiveExtension"/>.
     /// </summary>
     /// <param name="booleanValue">The value of type <see cref="bool"/>.</param>
-    public PrimitiveExtension(bool booleanValue)
-    {
-      this.primitiveValue = booleanValue;
-    }
+    public PrimitiveExtension(bool booleanValue) => this.primitiveValue = booleanValue;
 
     /// <summary>
     /// Initializes a new instance of <seealso cref="PrimitiveExtension"/>.
     /// </summary>
     /// <param name="doubleValue">The value of type <see cref="double"/>.</param>
-    public PrimitiveExtension(double doubleValue)
-    {
-      this.primitiveValue = doubleValue;
-    }
+    public PrimitiveExtension(double doubleValue) => this.primitiveValue = doubleValue;
 
     /// <summary>
     /// Initializes a new instance of <seealso cref="PrimitiveExtension"/>.
     /// </summary>
     /// <param name="stringValue">The value of type <see cref="string"/>.</param>
-    public PrimitiveExtension(string stringValue)
-    {
-      this.primitiveValue = stringValue;
-    }
+    public PrimitiveExtension(string stringValue) => this.primitiveValue = stringValue;
 
     /// <summary>
     /// Initializes a new instance of <seealso cref="PrimitiveExtension"/>.
     /// </summary>
     /// <param name="int32Value">The value of type <see cref="int"/>.</param>
-    public PrimitiveExtension(int int32Value)
-    {
-      this.primitiveValue = int32Value;
-    }
+    public PrimitiveExtension(int int32Value) => this.primitiveValue = int32Value;
 
     #endregion
 

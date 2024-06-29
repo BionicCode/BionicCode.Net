@@ -45,12 +45,9 @@ namespace BionicCode.Utilities.Net
       {
         throw new ArgumentNullException(nameof(target));
       }
-      if (targetProperty == null)
-      {
-        throw new ArgumentNullException(nameof(targetProperty));
-      }
+
       this.Target = new WeakReference<DependencyObject>(target);
-      this.TargetProperty = targetProperty;
+      this.TargetProperty = targetProperty ?? throw new ArgumentNullException(nameof(targetProperty));
       this.ResolvedSourceValueFilter = value => value;
       this.ResolvedTargetValueFilter = value => value;
     }
@@ -71,7 +68,7 @@ namespace BionicCode.Utilities.Net
 
       // Listen to data source
       Binding sourceBinding = CloneBinding(binding);
-      BindingOperations.SetBinding(
+      _ = BindingOperations.SetBinding(
         bindingTarget,
         BindingResolver.ResolvedValueProperty,
         sourceBinding);

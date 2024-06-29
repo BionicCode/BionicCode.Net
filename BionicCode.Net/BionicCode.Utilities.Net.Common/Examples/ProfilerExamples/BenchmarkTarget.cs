@@ -59,7 +59,7 @@
       }
 
       return series;
-    } 
+    }
     #endregion
   }
 }

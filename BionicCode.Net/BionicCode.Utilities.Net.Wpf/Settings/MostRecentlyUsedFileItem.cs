@@ -12,10 +12,7 @@
     /// Constructor
     /// </summary>
     /// <param name="fileInfo">The underlying <see cref="FileInfo"/> of the item.</param>
-    public MostRecentlyUsedFileItem(FileInfo fileInfo)
-    {
-      this.FileInfo = fileInfo;
-    }
+    public MostRecentlyUsedFileItem(FileInfo fileInfo) => this.FileInfo = fileInfo;
 
     #region Overrides of Object
 
@@ -27,7 +24,7 @@
     /// <inheritdoc />
     public bool Equals(MostRecentlyUsedFileItem other)
     {
-      if (object.ReferenceEquals(null, other))
+      if (other is null)
       {
         return false;
       }
@@ -46,7 +43,7 @@
     }
 
     /// <inheritdoc />
-    public override int GetHashCode() => (this.FileInfo != null ? this.FileInfo.GetHashCode() : 0);
+    public override int GetHashCode() => this.FileInfo != null ? this.FileInfo.GetHashCode() : 0;
     /// <summary>
     /// Is equal operator.
     /// </summary>

@@ -67,7 +67,6 @@
 
     #region RoutedEvents
 
-
     #region PageChangedRoutedEvents
 
     /// <summary>
@@ -81,8 +80,8 @@
     /// </summary>
     public event RoutedEventHandler PreviewPageChanged
     {
-      add { AddHandler(BionicSwipePageFrame.PreviewPageChangedRoutedEvent, value); }
-      remove { RemoveHandler(BionicSwipePageFrame.PreviewPageChangedRoutedEvent, value); }
+      add => AddHandler(BionicSwipePageFrame.PreviewPageChangedRoutedEvent, value);
+      remove => RemoveHandler(BionicSwipePageFrame.PreviewPageChangedRoutedEvent, value);
     }
 
     /// <summary>
@@ -248,7 +247,7 @@
     /// </summary>
     public BionicSwipePage SelectedPage
     {
-      get => (BionicSwipePage) GetValue(BionicSwipePageFrame.SelectedPageProperty);
+      get => (BionicSwipePage)GetValue(BionicSwipePageFrame.SelectedPageProperty);
       set => SetValue(BionicSwipePageFrame.SelectedPageProperty, value);
     }
 
@@ -260,7 +259,7 @@
 
     public int PreviousSelectedIndex
     {
-      get => (int) GetValue(BionicSwipePageFrame.PreviousSelectedIndexProperty);
+      get => (int)GetValue(BionicSwipePageFrame.PreviousSelectedIndexProperty);
       set => SetValue(BionicSwipePageFrame.PreviousSelectedIndexProperty, value);
     }
 
@@ -270,7 +269,7 @@
       typeof(BionicSwipePageFrame),
       new PropertyMetadata(default(BionicSwipePage)));
 
-    public BionicSwipePage PreviousPage { get { return (BionicSwipePage) GetValue(BionicSwipePageFrame.PreviousPageProperty); } set { SetValue(BionicSwipePageFrame.PreviousPageProperty, value); } }
+    public BionicSwipePage PreviousPage { get => (BionicSwipePage)GetValue(BionicSwipePageFrame.PreviousPageProperty); set => SetValue(BionicSwipePageFrame.PreviousPageProperty, value); }
 
     public static readonly DependencyProperty IsHeaderVisibleProperty = DependencyProperty.Register(
       "IsHeaderVisible",
@@ -280,7 +279,7 @@
 
     public bool IsHeaderVisible
     {
-      get => (bool) GetValue(BionicSwipePageFrame.IsHeaderVisibleProperty);
+      get => (bool)GetValue(BionicSwipePageFrame.IsHeaderVisibleProperty);
       set => SetValue(BionicSwipePageFrame.IsHeaderVisibleProperty, value);
     }
 
@@ -292,7 +291,7 @@
 
     public Style FrameHeaderStyle
     {
-      get => (Style) GetValue(BionicSwipePageFrame.FrameHeaderStyleProperty);
+      get => (Style)GetValue(BionicSwipePageFrame.FrameHeaderStyleProperty);
       set => SetValue(BionicSwipePageFrame.FrameHeaderStyleProperty, value);
     }
 
@@ -304,7 +303,7 @@
 
     public PageNavigationDirection NavigationDirection
     {
-      get => (PageNavigationDirection) GetValue(BionicSwipePageFrame.NavigationDirectionProperty);
+      get => (PageNavigationDirection)GetValue(BionicSwipePageFrame.NavigationDirectionProperty);
       set => SetValue(BionicSwipePageFrame.NavigationDirectionProperty, value);
     }
 
@@ -322,7 +321,7 @@
     /// </summary>
     public bool IsLoopingPagesEnabled
     {
-      get => (bool) GetValue(BionicSwipePageFrame.IsLoopingPagesEnabledProperty);
+      get => (bool)GetValue(BionicSwipePageFrame.IsLoopingPagesEnabledProperty);
       set => SetValue(BionicSwipePageFrame.IsLoopingPagesEnabledProperty, value);
     }
 
@@ -335,7 +334,7 @@
 
     private double PreviousPageTranslationStartPosition
     {
-      get => (double) GetValue(BionicSwipePageFrame.PreviousPageTranslationStartPositionProperty);
+      get => (double)GetValue(BionicSwipePageFrame.PreviousPageTranslationStartPositionProperty);
       set => SetValue(BionicSwipePageFrame.PreviousPageTranslationStartPositionProperty, value);
     }
 
@@ -347,7 +346,7 @@
 
     private double PreviousPageTranslationEndPosition
     {
-      get => (double) GetValue(BionicSwipePageFrame.PreviousPageTranslationEndPositionProperty);
+      get => (double)GetValue(BionicSwipePageFrame.PreviousPageTranslationEndPositionProperty);
       set => SetValue(BionicSwipePageFrame.PreviousPageTranslationEndPositionProperty, value);
     }
 
@@ -360,7 +359,7 @@
 
     private double SelectedPageTranslationStartPosition
     {
-      get => (double) GetValue(BionicSwipePageFrame.SelectedPageTranslationStartPositionProperty);
+      get => (double)GetValue(BionicSwipePageFrame.SelectedPageTranslationStartPositionProperty);
       set => SetValue(BionicSwipePageFrame.SelectedPageTranslationStartPositionProperty, value);
     }
 
@@ -372,7 +371,7 @@
 
     private double SelectedPageTranslationEndPosition
     {
-      get => (double) GetValue(BionicSwipePageFrame.SelectedPageTranslationEndPositionProperty);
+      get => (double)GetValue(BionicSwipePageFrame.SelectedPageTranslationEndPositionProperty);
       set => SetValue(BionicSwipePageFrame.SelectedPageTranslationEndPositionProperty, value);
     }
 
@@ -384,14 +383,14 @@
       typeof(string),
       typeof(BionicSwipePageFrame),
       new PropertyMetadata(default(string), BionicSwipePageFrame.OnTitleMemberPathChanged));
-    
+
     /// <summary>
     /// The property path to the property that holds the page title <c>String</c>. The property path is relative to the data model type. <br/><br/>
     /// E.g. The property path to the <c>PageTitle</c> property of a data model class called ExampleClass would be <c>"PageTitle"</c>. <br/>The property can be nested (e.g. <c>"NestedType.PageTitle"</c>) or reference a collection member (e.g. <c>"NestedType.Items[1].PageTitle"</c>) 
     /// </summary>
     public string TitleMemberPath
     {
-      get => (string) GetValue(BionicSwipePageFrame.TitleMemberPathProperty);
+      get => (string)GetValue(BionicSwipePageFrame.TitleMemberPathProperty);
       set => SetValue(BionicSwipePageFrame.TitleMemberPathProperty, value);
     }
 
@@ -403,7 +402,7 @@
 
     public DataTemplate TitleTemplate
     {
-      get => (DataTemplate) GetValue(BionicSwipePageFrame.TitleTemplateProperty);
+      get => (DataTemplate)GetValue(BionicSwipePageFrame.TitleTemplateProperty);
       set => SetValue(BionicSwipePageFrame.TitleTemplateProperty, value);
     }
 
@@ -415,7 +414,7 @@
 
     public DataTemplateSelector TitleDataTemplateSelector
     {
-      get => (DataTemplateSelector) GetValue(BionicSwipePageFrame.TitleDataTemplateSelectorProperty);
+      get => (DataTemplateSelector)GetValue(BionicSwipePageFrame.TitleDataTemplateSelectorProperty);
       set => SetValue(BionicSwipePageFrame.TitleDataTemplateSelectorProperty, value);
     }
 
@@ -438,11 +437,11 @@
       this.CommandBindings.Add(
         new CommandBinding(
           BionicSwipePageFrame.LoadNextPageRoutedCommand,
-          ((sender, args) => this.SelectedIndex += 1)));
+          (sender, args) => this.SelectedIndex += 1));
       this.CommandBindings.Add(
         new CommandBinding(
           BionicSwipePageFrame.LoadPreviousPageRoutedCommand,
-          ((sender, args) => this.SelectedIndex -= 1)));
+          (sender, args) => this.SelectedIndex -= 1));
       this.CommandBindings.Add(
         new CommandBinding(
           BionicSwipePageFrame.LoadPageFromItemRoutedCommand,
@@ -452,7 +451,7 @@
           BionicSwipePageFrame.LoadPageFromIndexRoutedCommand,
           (sender, args) => this.SelectedIndex = args.Parameter is int newSelectedIndex
             ? newSelectedIndex
-            : int.Parse((string) args.Parameter),
+            : int.Parse((string)args.Parameter),
           (sender, args) => args.CanExecute = args.Parameter is int || int.Parse(args.Parameter as string) is int));
 
       this.PageChanged += OnPageChanged;
@@ -480,11 +479,8 @@
 
     }
 
-    private static void OnTitleMemberPathChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      (d as BionicSwipePageFrame).UpdateFrameTitleFromTitleMemberPath();
-    }
-    
+    private static void OnTitleMemberPathChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as BionicSwipePageFrame).UpdateFrameTitleFromTitleMemberPath();
+
     /// <summary>
     /// Called when the <see cref="PageChanged"/> event is received.
     /// </summary>
@@ -507,7 +503,7 @@
 
     private static void OnTitleDataTemplateSelectorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      var _this = (d as BionicSwipePageFrame);
+      var _this = d as BionicSwipePageFrame;
       if (_this.PART_PageHeader != null)
       {
         _this.PART_PageHeader.TitleDataTemplateSelector = e.NewValue as DataTemplateSelector;
@@ -516,7 +512,7 @@
 
     private static void OnTitleTemplateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      var _this = (d as BionicSwipePageFrame);
+      var _this = d as BionicSwipePageFrame;
       if (_this.PART_PageHeader != null)
       {
         _this.PART_PageHeader.TitleTemplate = e.NewValue as DataTemplate;
@@ -530,8 +526,8 @@
       {
         return basevalue;
       }
-      
-      var originalValue = (int) basevalue;
+
+      int originalValue = (int)basevalue;
       int coercedValue = originalValue;
 
       _this.NavigationDirection = originalValue > _this.SelectedIndex
@@ -554,7 +550,7 @@
           coercedValue = 0;
         }
       }
-      else 
+      else
       {
         if (_this.NavigationDirection == PageNavigationDirection.Previous)
         {
@@ -573,13 +569,13 @@
 
     private static void OnSelectedIndexChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      var _this = (d as BionicSwipePageFrame);
-      _this.RaiseEvent(new ValueChangedRoutedEventArgs<int>(BionicSwipePageFrame.SelectedIndexChangedRoutedEvent, _this, (int) e.OldValue, (int) e.NewValue));
+      var _this = d as BionicSwipePageFrame;
+      _this.RaiseEvent(new ValueChangedRoutedEventArgs<int>(BionicSwipePageFrame.SelectedIndexChangedRoutedEvent, _this, (int)e.OldValue, (int)e.NewValue));
     }
 
     private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      var _this = (d as BionicSwipePageFrame);
+      var _this = d as BionicSwipePageFrame;
       _this.RaiseEvent(new ValueChangedRoutedEventArgs<object>(BionicSwipePageFrame.SelectedItemChangedRoutedEvent, _this, e.OldValue, e.NewValue));
     }
 
@@ -587,7 +583,7 @@
     {
       var _this = d as BionicSwipePageFrame;
 
-     _this.RaiseEvent(new ValueChangedRoutedEventArgs<object>(BionicSwipePageFrame.SelectedItemChangingRoutedEvent, _this, _this.SelectedItem, basevalue));
+      _this.RaiseEvent(new ValueChangedRoutedEventArgs<object>(BionicSwipePageFrame.SelectedItemChangingRoutedEvent, _this, _this.SelectedItem, basevalue));
 
       return basevalue;
     }
@@ -611,7 +607,7 @@
     protected virtual void OnSelectedIndexChanged(object sender, ValueChangedRoutedEventArgs<int> routedEventArgs)
     {
     }
-    
+
     protected virtual void OnSelectedItemChanged(object sender, ValueChangedRoutedEventArgs<object> routedEventArgs)
     {
       if (!this.IsInitialized)
@@ -636,7 +632,7 @@
       RaiseEvent(new RoutedEventArgs(BionicSwipePageFrame.PreviewPageChangedRoutedEvent, this));
       RaiseEvent(new RoutedEventArgs(BionicSwipePageFrame.PageChangedRoutedEvent, this));
     }
-    
+
     protected virtual void OnSelectedItemChanging(object sender, ValueChangedRoutedEventArgs<object> routedEventArgs)
     {
       if (!this.IsInitialized)
@@ -649,10 +645,7 @@
       HandleVisibilitySwipeAnimation();
     }
 
-    private static void OnSelectedPageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      (d as BionicSwipePageFrame).OnSelectedPageChanged((BionicSwipePage) e.OldValue, (BionicSwipePage) e.NewValue);
-    }
+    private static void OnSelectedPageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as BionicSwipePageFrame).OnSelectedPageChanged((BionicSwipePage)e.OldValue, (BionicSwipePage)e.NewValue);
 
     /// <summary>
     /// Called when the <see cref="SelectedPage"/> property changes.
@@ -663,24 +656,21 @@
     {
     }
 
-    private static void OnPreviousPageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      (d as BionicSwipePageFrame).OnPreviousPageChanged((BionicSwipePage) e.OldValue, (BionicSwipePage) e.NewValue);
-    }
+    private static void OnPreviousPageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as BionicSwipePageFrame).OnPreviousPageChanged((BionicSwipePage)e.OldValue, (BionicSwipePage)e.NewValue);
 
     /// <summary>
     /// Called when the <see cref="PreviousPage"/> property changes.
     /// </summary>
     /// <param name="oldValue">Old value of the <see cref="PreviousPage"/> property.</param>
     /// <param name="newValue">New value of the <see cref="PreviousPage"/> property.</param>
-    protected virtual  void OnPreviousPageChanged(BionicSwipePage oldValue, BionicSwipePage newValue)
+    protected virtual void OnPreviousPageChanged(BionicSwipePage oldValue, BionicSwipePage newValue)
     {
     }
-    
+
     private static void OnFrameHeaderStyleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      var _this = (d as BionicSwipePageFrame);
-      var style = (Style) e.NewValue;
+      var _this = d as BionicSwipePageFrame;
+      var style = (Style)e.NewValue;
       if (style == null || _this.PART_PageHeader == null)
       {
         return;
@@ -690,8 +680,8 @@
 
     private static void OnNavigationDirectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      var _this = (d as BionicSwipePageFrame);
-      _this.OnNavigationDirectionChanged((PageNavigationDirection) e.OldValue, (PageNavigationDirection) e.NewValue);
+      var _this = d as BionicSwipePageFrame;
+      _this.OnNavigationDirectionChanged((PageNavigationDirection)e.OldValue, (PageNavigationDirection)e.NewValue);
     }
 
     /// <summary> 
@@ -743,10 +733,10 @@
 
       this.PART_PageHeader.PART_PageHeaderHostPanel.ClipToBounds = true;
     }
-    
+
     private void InitializeAnimatedPageParts()
     {
-      this.AnimatedSelectedPageHost = new Rectangle {Visibility = Visibility.Collapsed, Fill = new VisualBrush()};
+      this.AnimatedSelectedPageHost = new Rectangle { Visibility = Visibility.Collapsed, Fill = new VisualBrush() };
       this.PART_PageHostPanel.Children.Add(this.AnimatedSelectedPageHost);
       var selectedPageBinding = new Binding
       {
@@ -828,19 +818,18 @@
           KeyTime.FromTimeSpan(TimeSpan.Zero)));
 
       var previousAnimatedPageHeaderTitleVisibilityAnimation =
-        new ObjectAnimationUsingKeyFrames { Duration = new Duration(TimeSpan.FromSeconds(0.3))};
+        new ObjectAnimationUsingKeyFrames { Duration = new Duration(TimeSpan.FromSeconds(0.3)) };
       previousAnimatedPageHeaderTitleVisibilityAnimation.KeyFrames.Add(
         new DiscreteObjectKeyFrame(
           Visibility.Visible,
           KeyTime.FromTimeSpan(TimeSpan.Zero)));
 
       var selectedAnimatedPageHeaderTitleVisibilityAnimation =
-        new ObjectAnimationUsingKeyFrames { Duration = new Duration(TimeSpan.FromSeconds(0.3))};
+        new ObjectAnimationUsingKeyFrames { Duration = new Duration(TimeSpan.FromSeconds(0.3)) };
       selectedAnimatedPageHeaderTitleVisibilityAnimation.KeyFrames.Add(
         new DiscreteObjectKeyFrame(
           Visibility.Hidden,
           KeyTime.FromTimeSpan(TimeSpan.Zero)));
-
 
       Storyboard.SetTarget(selectedPageVisibilityAnimation, this.PART_SelectedPageHost);
       Storyboard.SetTargetProperty(selectedPageVisibilityAnimation, new PropertyPath("Visibility"));
@@ -881,7 +870,7 @@
         EasingFunction = new ExponentialEase { EasingMode = EasingMode.EaseInOut, Exponent = 6 }
       };
 
-      var pageTitleTranslateAnimation = new DoubleAnimation(0, 
+      var pageTitleTranslateAnimation = new DoubleAnimation(0,
         this.NavigationDirection == PageNavigationDirection.Next ? this.PART_PageHeader.PART_PageHeaderHostPanel.ActualWidth * -1 : this.PART_PageHeader.PART_PageHeaderHostPanel.ActualWidth,
         new Duration(TimeSpan.FromSeconds(0.3)))
       {
@@ -905,7 +894,6 @@
         BeginTime = TimeSpan.Zero,
         EasingFunction = new ExponentialEase { EasingMode = EasingMode.EaseInOut, Exponent = 6 }
       };
-
 
       Storyboard.SetTarget(selectedAnimatedPageTranslateAnimation, this.AnimatedSelectedPageHost);
       Storyboard.SetTargetProperty(
@@ -942,16 +930,9 @@
       this.TranslateStoryboard.Freeze();
     }
 
-    private void HandleTranslateSwipeAnimation()
-    {
-      this.TranslateStoryboard?.Begin();
-    }
+    private void HandleTranslateSwipeAnimation() => this.TranslateStoryboard?.Begin();
 
-    private void HandleVisibilitySwipeAnimation()
-    {
-      this.VisibilityStoryboard.Begin();
-    }
-
+    private void HandleVisibilitySwipeAnimation() => this.VisibilityStoryboard.Begin();
 
     #region Overrides of ItemsControl
 

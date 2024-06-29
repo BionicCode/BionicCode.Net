@@ -12,7 +12,7 @@
   /// <seealso href="https://github.com/BionicCode/BionicCode.Net#passwordbox">See advanced example</seealso>
   public class PasswordBoxService : DependencyObject
   {
-  #region Command attached property
+    #region Command attached property
 
     /// <summary>
     /// Holds the <see cref="ICommand"/> which will be invoked with the <see cref="System.Windows.Controls.PasswordBox.SecurePassword"/> of type <see cref="SecureString"/> as command parameter. 
@@ -41,7 +41,7 @@
     public static ICommand GetCommand(DependencyObject attachingElement) =>
       (ICommand)attachingElement.GetValue(PasswordBoxService.CommandProperty);
 
-  #endregion
+    #endregion
     private static void OnSendPasswordCommandChanged(
       DependencyObject attachingElement,
       DependencyPropertyChangedEventArgs e)

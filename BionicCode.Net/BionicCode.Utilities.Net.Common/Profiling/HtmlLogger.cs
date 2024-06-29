@@ -1,20 +1,297 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System;
-  using System.Collections.Generic;
+  using System.Collections.Concurrent;
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard21)'
+Before:
   using System.Text;
   using System.Threading.Tasks;
   using System.Text.Json;
   using System.IO;
   using System.Reflection;
-  using System.Runtime.Caching;
+After:
+  using System.Collections.Generic;
+  using System.Collections.Specialized;
+  using System.Data;
+  using System.Diagnostics;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net472)'
+Before:
+  using System.Text;
+  using System.Threading.Tasks;
+  using System.Text.Json;
+  using System.IO;
+  using System.Reflection;
+After:
+  using System.Collections.Generic;
+  using System.Collections.Specialized;
+  using System.Data;
+  using System.Diagnostics;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net50)'
+Before:
+  using System.Text;
+  using System.Threading.Tasks;
+  using System.Text.Json;
+  using System.IO;
+  using System.Reflection;
+After:
+  using System.Collections.Generic;
+  using System.Collections.Specialized;
+  using System.Data;
+  using System.Diagnostics;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net80)'
+Before:
+  using System.Text;
+  using System.Threading.Tasks;
+  using System.Text.Json;
+  using System.IO;
+  using System.Reflection;
+After:
+  using System.Collections.Generic;
+  using System.Collections.Specialized;
+  using System.Data;
+  using System.Diagnostics;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard20)'
+Before:
+  using System.Text;
+  using System.Threading.Tasks;
+  using System.Text.Json;
+  using System.IO;
+  using System.Reflection;
+After:
+  using System.Collections.Generic;
+  using System.Collections.Specialized;
+  using System.Data;
+  using System.Diagnostics;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
+  using System.Text;
+  using System.Threading.Tasks;
+  using System.Text.Json;
+  using System.IO;
+  using System.Reflection;
+After:
+  using System.Collections.Generic;
+  using System.Collections.Specialized;
+  using System.Data;
+  using System.Diagnostics;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net60)'
+Before:
+  using System.Text;
+  using System.Threading.Tasks;
+  using System.Text.Json;
+  using System.IO;
+  using System.Reflection;
+After:
+  using System.Collections.Generic;
+  using System.Collections.Specialized;
+  using System.Data;
+  using System.Diagnostics;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net70)'
+Before:
+  using System.Text;
+  using System.Threading.Tasks;
+  using System.Text.Json;
+  using System.IO;
+  using System.Reflection;
+After:
+  using System.Collections.Generic;
+  using System.Collections.Specialized;
+  using System.Data;
+  using System.Diagnostics;
+*/
+  using System.Diagnostics;
+  using System.IO;
+  using System.Linq;
+  using System.Reflection;
+  using System.IO;
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard21)'
+Before:
   using System.Diagnostics;
   using System.Linq;
   using System.Collections.Concurrent;
   using System.Data;
+After:
+  using System.Linq;
+  using System.Reflection;
+  using System.Runtime.Caching;
+  using System.Text;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net472)'
+Before:
+  using System.Diagnostics;
+  using System.Linq;
+  using System.Collections.Concurrent;
+  using System.Data;
+After:
+  using System.Linq;
+  using System.Reflection;
+  using System.Runtime.Caching;
+  using System.Text;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net50)'
+Before:
+  using System.Diagnostics;
+  using System.Linq;
+  using System.Collections.Concurrent;
+  using System.Data;
+After:
+  using System.Linq;
+  using System.Reflection;
+  using System.Runtime.Caching;
+  using System.Text;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net80)'
+Before:
+  using System.Diagnostics;
+  using System.Linq;
+  using System.Collections.Concurrent;
+  using System.Data;
+After:
+  using System.Linq;
+  using System.Reflection;
+  using System.Runtime.Caching;
+  using System.Text;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard20)'
+Before:
+  using System.Diagnostics;
+  using System.Linq;
+  using System.Collections.Concurrent;
+  using System.Data;
+After:
+  using System.Linq;
+  using System.Reflection;
+  using System.Runtime.Caching;
+  using System.Text;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
+  using System.Diagnostics;
+  using System.Linq;
+  using System.Collections.Concurrent;
+  using System.Data;
+After:
+  using System.Linq;
+  using System.Reflection;
+  using System.Runtime.Caching;
+  using System.Text;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net60)'
+Before:
+  using System.Diagnostics;
+  using System.Linq;
+  using System.Collections.Concurrent;
+  using System.Data;
+After:
+  using System.Linq;
+  using System.Reflection;
+  using System.Runtime.Caching;
+  using System.Text;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net70)'
+Before:
+  using System.Diagnostics;
+  using System.Linq;
+  using System.Collections.Concurrent;
+  using System.Data;
+After:
+  using System.Linq;
+  using System.Reflection;
+  using System.Runtime.Caching;
+  using System.Text;
+*/
+  using System.Text;
   using System.Text.Encodings.Web;
-  using System.Collections.Specialized;
-  using System.Text.RegularExpressions;
+  using System.Text.Json;
+  using System.Threading;
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard21)'
+Before:
+  using System.Threading;
+After:
+  using System.Threading;
+  using System.Threading.Tasks;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net472)'
+Before:
+  using System.Threading;
+After:
+  using System.Threading;
+  using System.Threading.Tasks;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net50)'
+Before:
+  using System.Threading;
+After:
+  using System.Threading;
+  using System.Threading.Tasks;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net80)'
+Before:
+  using System.Threading;
+After:
+  using System.Threading;
+  using System.Threading.Tasks;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard20)'
+Before:
+  using System.Threading;
+After:
+  using System.Threading;
+  using System.Threading.Tasks;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
+  using System.Threading;
+After:
+  using System.Threading;
+  using System.Threading.Tasks;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net60)'
+Before:
+  using System.Threading;
+After:
+  using System.Threading;
+  using System.Threading.Tasks;
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net70)'
+Before:
+  using System.Threading;
+After:
+  using System.Threading;
+  using System.Threading.Tasks;
+*/
+  using System.Threading.Tasks;
 
   internal class HtmlLogger : IProfilerLogger
   {
@@ -25,27 +302,29 @@
     private readonly TimeSpan FileContentCacheExpiration = TimeSpan.FromMinutes(5);
     internal static HtmlEncoder HtmlEncoder { get; } = HtmlEncoder.Create();
 
-    //public async Task LogAsync(ProfilerBatchResult batchResult, Type profiledType)
+    //public async Task LogAsync(ProfilerBatchResult batchResult, Types profiledType)
     //  => await LogAsync(new ProfilerBatchResultGroupCollection(new[] { new ProfilerBatchResultGroup(batchResult.Context.TargetType, new[] { batchResult }) }, profiledType));
 
-    //public async Task LogAsync(ProfilerBatchResultGroup batchResultGroup, Type profiledType)
+    //public async Task LogAsync(ProfilerBatchResultGroup batchResultGroup, Types profiledType)
     //  => await LogAsync(new ProfilerBatchResultGroupCollection(new[] { batchResultGroup }, profiledType));
     //
     //public async Task LogAsync(ProfilerBatchResultGroupCollection batchResultGroups)
     //  => await LogAsync(new ProfiledTypeResultCollection(new[] { batchResultGroups }));
 
-    public async Task LogAsync(ProfiledTypeResultCollection typeResults)
+    public async Task LogAsync(ProfiledTypeResultCollection typeResults, CancellationToken cancellationToken)
     {
       var htmlTypeNavigationIndexBuilder = new StringBuilder();
       var documentBuilderInfosMap = new Dictionary<ProfilerBatchResultGroupCollection, IEnumerable<HtmlDocumentBuilderInfo>>();
       foreach (ProfilerBatchResultGroupCollection batchResultGroups in typeResults)
       {
+        cancellationToken.ThrowIfCancellationRequested();
+
         if (!batchResultGroups.Any())
         {
           continue;
         }
 
-        IEnumerable<HtmlDocumentBuilderInfo> htmlDocumentBuilderInfos = await CreateHtmlDocumentsAsync(batchResultGroups);
+        IEnumerable<HtmlDocumentBuilderInfo> htmlDocumentBuilderInfos = await CreateHtmlDocumentsAsync(batchResultGroups, cancellationToken);
         if (htmlDocumentBuilderInfos.IsEmpty())
         {
           continue;
@@ -60,6 +339,8 @@
       var htmlFilePaths = new List<string>();
       for (int typeResultGroupsIndex = 0; typeResultGroupsIndex < typeResults.Count; typeResultGroupsIndex++)
       {
+        cancellationToken.ThrowIfCancellationRequested();
+
         ProfilerBatchResultGroupCollection batchResultGroups = typeResults[typeResultGroupsIndex];
         if (!documentBuilderInfosMap.TryGetValue(batchResultGroups, out IEnumerable<HtmlDocumentBuilderInfo> documentBuilderInfos))
         {
@@ -67,7 +348,7 @@
         }
 
         _ = htmlTypeNavigationIndexBuilder.Clear();
-        string globalNavigationIndexForCurrentType = await CreateGlobalNavigationIndexAsync(htmlTypeNavigationIndexBuilder, typeResults.Count, typeResultGroupsIndex, htmlTypeNavigationIndexTemplate);
+        string globalNavigationIndexForCurrentType = await CreateGlobalNavigationIndexAsync(htmlTypeNavigationIndexBuilder, typeResults.Count, typeResultGroupsIndex, htmlTypeNavigationIndexTemplate, cancellationToken);
 
         foreach (HtmlDocumentBuilderInfo htmlDocumentBuilderInfo in documentBuilderInfos)
         {
@@ -76,8 +357,8 @@
 
           string encodedCurrentProfiledTypeSignature = HtmlLogger.HtmlEncoder.Encode(batchResultGroups.ProfiledType.ToDisplaySignatureName());
           string htmlDocument = string.Format(
-            htmlDocumentBuilderInfo.DocumentTemplate, 
-            encodedCurrentProfiledTypeSignature, 
+            htmlDocumentBuilderInfo.DocumentTemplate,
+            encodedCurrentProfiledTypeSignature,
             globalNavigationIndexForCurrentType,
             htmlDocumentBuilderInfo.MemberName,
             htmlDocumentBuilderInfo.ResultNavigationElements,
@@ -103,9 +384,9 @@
       string indexFilePath = htmlFilePaths.First();
       var startInfo = new ProcessStartInfo(indexFilePath) { UseShellExecute = true };
       _ = Process.Start(startInfo);
-    }    
+    }
 
-    private async Task<IEnumerable<HtmlDocumentBuilderInfo>> CreateHtmlDocumentsAsync(ProfilerBatchResultGroupCollection batchResultGroups)
+    private async Task<IEnumerable<HtmlDocumentBuilderInfo>> CreateHtmlDocumentsAsync(ProfilerBatchResultGroupCollection batchResultGroups, CancellationToken cancellationToken)
     {
       var filePaths = new List<string>();
       var runningTasks = new List<Task<ChartTableCollection>>();
@@ -117,9 +398,11 @@
 
       foreach (ProfilerBatchResultGroup batchResultGroup in batchResultGroups)
       {
-        Task<ChartTableCollection> task = Task.Run(() => chartDataConverter.CreateChartAsync(batchResultGroup, HtmlLogger.GraphIntervalResolution));
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var task = Task.Run(() => chartDataConverter.CreateChartAsync(batchResultGroup, HtmlLogger.GraphIntervalResolution, cancellationToken), cancellationToken);
         runningTasks.Add(task);
-        string resultHtmlTable = await CreateHtmlTableAsync(batchResultGroup);
+        string resultHtmlTable = await CreateHtmlTableAsync(batchResultGroup, cancellationToken);
 
         DateTime timeStamp = DateTime.Now;
         string htmlFileName = $"profiler_result_{timeStamp.ToString("MM-dd-yyyy_hhmmss.fffffff")}.html";
@@ -149,10 +432,12 @@
 
       for (int groupIndex = 0; groupIndex < batchResultGroups.Count; groupIndex++)
       {
+        cancellationToken.ThrowIfCancellationRequested();
+
         ProfilerBatchResultGroup resultGroup = batchResultGroups[groupIndex];
 
         _ = htmlTypeMemberNavigationIndexBuilder.Clear();
-        string globalNavigationIndexForCurrentResult = await CreateGlobalNavigationIndexAsync(htmlTypeMemberNavigationIndexBuilder, batchResultGroups.Count, groupIndex, htmlNavigationIndexTemplate);
+        string globalNavigationIndexForCurrentResult = await CreateGlobalNavigationIndexAsync(htmlTypeMemberNavigationIndexBuilder, batchResultGroups.Count, groupIndex, htmlNavigationIndexTemplate, cancellationToken);
 
         HtmlDocumentBuilderInfo htmlDocumentBuilderInfo = htmlDocumentBuilderValues[resultGroup];
         htmlDocumentBuilderInfo.ResultNavigationElements = globalNavigationIndexForCurrentResult;
@@ -166,7 +451,7 @@
       return htmlDocumentBuilderValues.Values.ToList();
     }
 
-    private async Task<string> CreateGlobalNavigationIndexAsync(StringBuilder htmlDocumentNavigationIndexBuilder, int totalResultCount, int currentResultIndex, string htmlNavigationIndexTemplate)
+    private async Task<string> CreateGlobalNavigationIndexAsync(StringBuilder htmlDocumentNavigationIndexBuilder, int totalResultCount, int currentResultIndex, string htmlNavigationIndexTemplate, CancellationToken cancellationToken)
     {
       int lineIndex = 0;
 
@@ -176,6 +461,8 @@
         string rawLine = string.Empty;
         while (lineIndex++ < currentResultIndex)
         {
+          cancellationToken.ThrowIfCancellationRequested();
+
           rawLine = await templateReader.ReadLineAsync();
           line = StringEncoder.EncodeFormatString(rawLine);
           _ = htmlDocumentNavigationIndexBuilder.AppendFormat(line, string.Empty, string.Empty);
@@ -187,6 +474,8 @@
 
         while (lineIndex++ < totalResultCount)
         {
+          cancellationToken.ThrowIfCancellationRequested();
+
           rawLine = await templateReader.ReadLineAsync();
           line = StringEncoder.EncodeFormatString(rawLine);
           _ = htmlDocumentNavigationIndexBuilder.AppendFormat(line, string.Empty, string.Empty);
@@ -240,14 +529,16 @@
       }
     }
 
-    private async Task<string> CreateHtmlTableAsync(ProfilerBatchResultGroup batchResultGroup)
+    private async Task<string> CreateHtmlTableAsync(ProfilerBatchResultGroup batchResultGroup, CancellationToken cancellationToken)
     {
       TimeUnit timeUnit = batchResultGroup.CommonBaseUnit;
-      StringBuilder htmlDocumentBuilder = new StringBuilder();
+      var htmlDocumentBuilder = new StringBuilder();
       EnvironmentInfo environmentInfo = await Environment.GetEnvironmentInfoAsync();
 
       foreach (ProfilerBatchResult batchResult in batchResultGroup)
       {
+        cancellationToken.ThrowIfCancellationRequested();
+
         _ = htmlDocumentBuilder.Append($@"
 <article id=""{batchResult.Index}"">
   
@@ -415,245 +706,6 @@
       }
 
       return htmlCode;
-    }
-  }
-
-  internal class HtmlDocumentBuilderInfo
-  {
-    public HtmlDocumentBuilderInfo()
-    {
-      this.DocumentTitle = string.Empty;
-      this.DocumentTemplate = string.Empty;
-      this.InPageNavigationElements = string.Empty;
-      this.DocumentFooterElements = string.Empty;
-      this.ResultNavigationElements = string.Empty;
-      this.ChartSection = string.Empty;
-      this.FileName = string.Empty;
-      this.MemberName = string.Empty;
-      this.ScriptCode = string.Empty;
-    }
-
-    public string ScriptCode { get; set; }
-    public string DocumentTitle { get; set; }
-    public string DocumentTemplate { get; set; }
-    public string InPageNavigationElements { get; set; }
-    public string DocumentFooterElements { get; set; }
-    public string ResultNavigationElements { get; set; }
-    public string ChartSection { get; set; }
-    public string FileName { get; set; }
-    public string MemberName { get; set; }
-  }
-
-  internal class GoogleChartsDataConverter
-  {
-    public async Task<ChartTableCollection> CreateChartAsync(ProfilerBatchResultGroup batchResultGroup, double graphIntervalResolution)
-    {
-      var chartTables = new ChartTableCollection();
-      foreach (ProfilerBatchResult batchResult in batchResultGroup)
-      {
-        if (batchResult.StandardDeviation == Microseconds.Zero)
-        {
-          continue;
-        }
-
-        var chartOptions = new ChartOptions()
-        {
-          Title = "Normal distribution",
-          LegendOptions = new LegendOptions() { Position = LegendOptions.PositionTop },
-          HorizontalAxis = new ChartAxis() { Title = $"Elapsed time [{batchResultGroup.CommonBaseUnit.ToDisplayStringValue()}]" }
-        };
-
-        var verticalChartAxis = new ChartAxis()
-        {
-          Title = $"Probability density ",
-          AxisIndex = batchResult.Index
-        };
-        chartOptions.AddVerticalAxis(verticalChartAxis);
-
-        var series = new ChartSeries()
-        {
-          SeriesIndex = batchResult.Index,
-          TargetAxisIndex = verticalChartAxis.AxisIndex,
-          Title = $"{batchResult.Context.TargetType.ToDisplayStringValue()}"
-        };
-
-        chartOptions.AddSeries(series);
-
-        ProfilerBatchResult[] resultPair = batchResult.ProfilerReferenceResult != null
-          ? new[] { batchResult, batchResult.ProfilerReferenceResult }
-          : new[] { batchResult };
-
-        var calculationTasks = new List<Task<NormalDistributionData<CartesianPoint>>>();
-        for (int resultIndex = 0; resultIndex < resultPair.Length; resultIndex++)
-        {
-          ProfilerBatchResult profilerBatchResult = resultPair[resultIndex];
-          int dataSetIndex = resultIndex;
-          var calculationTask = Task.Run(() =>
-          {
-#if NET7_0_OR_GREATER
-            IEnumerable<CartesianPoint> normalDistributionValues = Math.NormDist(TimeValueConverter.ConvertTo(batchResultGroup.CommonBaseUnit, profilerBatchResult.AverageDuration, true), TimeValueConverter.ConvertTo(batchResultGroup.CommonBaseUnit, profilerBatchResult.StandardDeviation, true), graphIntervalResolution, profilerBatchResult.Results.Select(profilerResult => TimeValueConverter.ConvertTo(batchResultGroup.CommonBaseUnit, profilerResult.ElapsedTime, true)));
-#else
-            IEnumerable<CartesianPoint> normalDistributionValues = Math.NormDist(TimeValueConverter.ConvertTo(batchResultGroup.CommonBaseUnit, profilerBatchResult.AverageDuration, true), TimeValueConverter.ConvertTo(batchResultGroup.CommonBaseUnit, profilerBatchResult.StandardDeviation, true), graphIntervalResolution, profilerBatchResult.Results.Select(profilerResult => TimeValueConverter.ConvertTo(batchResultGroup.CommonBaseUnit, profilerResult.ElapsedTime, true)));
-
-#endif
-
-            var result = new NormalDistributionData<CartesianPoint>(dataSetIndex, normalDistributionValues, TimeValueConverter.ConvertTo(batchResultGroup.CommonBaseUnit, profilerBatchResult.AverageDuration, true), TimeValueConverter.ConvertTo(batchResultGroup.CommonBaseUnit, profilerBatchResult.StandardDeviation, true), batchResultGroup.CommonBaseUnit, profilerBatchResult.Results.Count)
-            {
-              Title = series.Title,
-            };
-
-            return result;
-          });
-
-          calculationTasks.Add(calculationTask);
-        }
-
-        NormalDistributionData<CartesianPoint>[] results = await Task.WhenAll(calculationTasks);
-
-        int totalValueCount = results.Max(dataSet => dataSet.Count);
-        int metaInfoCellCount = 3;
-        int dataCellCount = results.Length;
-
-        // Data column + meta info columns
-        int totalCellCountPerEntry = 1 + metaInfoCellCount;
-
-        var chartTable = new ChartTable(resultPair.Length, metaInfoCellCount + 1)
-        {
-          Options = chartOptions
-        };
-
-        // X-axis
-        chartTable.AddColumn(new ChartTableColumn() { Label = $"Elapsed time [{batchResultGroup.CommonBaseUnit.ToDisplayStringValue()}]", Type = ColumnType.Number });
-
-        var seriesResultToRowIndexMapIndex = new SeriesResultToRowIndexMap[results.Length];
-        foreach (NormalDistributionData<CartesianPoint> dataSet in results)
-        {
-          // Y-axis
-          chartTable.AddColumn(new ChartTableColumn() { Label = dataSet.Title, Type = ColumnType.Number });
-
-          // Data annotations
-          chartTable.AddColumn(new ChartTableColumn() { Role = ColumnRole.Annotation, Type = ColumnType.String });
-          chartTable.AddColumn(new ChartTableColumn() { Role = ColumnRole.AnnotationText, Type = ColumnType.String });
-
-          // Tooltip column
-          chartTable.AddColumn(new ChartTableColumn() { Type = ColumnType.String, Role = ColumnRole.Tooltip });
-
-          seriesResultToRowIndexMapIndex[dataSet.Index] = chartTable.AddResultMapperEntry(dataSet.OriginalProfilerResultCount);
-        }
-
-        ChartTableRowBuilder tableRowBuilder = chartTable.CreateTableRowBuilder();
-
-        // In case the profiler resultsa contains multiple equal values ensure that the sigma annotations
-        // are only added once (for each of the two pots).
-        int plotHasSigma0Bit = BitVector32.CreateMask();
-        int plotHasSigma1Bit = BitVector32.CreateMask(plotHasSigma0Bit);
-        int plotHasSigma2Bit = BitVector32.CreateMask(plotHasSigma1Bit);
-        int plotHasSigma3Bit = BitVector32.CreateMask(plotHasSigma2Bit);
-        int plotHasSigma1NegativeBit = BitVector32.CreateMask(plotHasSigma3Bit);
-        int plotHasSigma2NegativeBit = BitVector32.CreateMask(plotHasSigma1NegativeBit);
-        int plotHasSigma3NegativeBit = BitVector32.CreateMask(plotHasSigma2NegativeBit);
-        var plot0HasSigmaMap = new BitVector32(0);
-        var plot1HasSigmaMap = new BitVector32(0);
-
-        for (int index = 0; index < totalValueCount; index++)
-        {
-          foreach (NormalDistributionData<CartesianPoint> dataSet in results)
-          {
-            if (dataSet.Count <= index)
-            {
-              continue;
-            }
-
-            BitVector32 plotHasSigmaMap = dataSet.Index == 0 ? plot0HasSigmaMap : plot1HasSigmaMap;
-            SeriesResultToRowIndexMap rowIndexMapper = seriesResultToRowIndexMapIndex[dataSet.Index];
-            CartesianPoint dataPoint = dataSet[index];
-            if (dataPoint.IsSpecialValue)
-            {
-              rowIndexMapper.AddResultMapperEntry(dataPoint.SpecialValueId, index);
-            }
-
-            //double roundedDataPointX = TimeValueConverter.TrimDecimalsTo(batchResults.CommonBaseUnit, dataPoint.X);
-            ChartTableRow tableRow = tableRowBuilder.CreateRow();
-
-            // Write x-axis column
-            tableRow.AppendValue(dataPoint.X);
-
-            for (int dataCellIndex = 0; dataCellIndex < dataCellCount; dataCellIndex++)
-            {
-              // Skip cells (data and meta info) that belong to a different data set
-              if (dataCellIndex != dataSet.Index)
-              {
-                for (int entryCellCount = 0; entryCellCount < totalCellCountPerEntry; entryCellCount++)
-                {
-                  tableRow.AppendValue(null);
-                }
-
-                continue;
-              }
-
-              // Write y-axis column
-              tableRow.AppendValue(dataPoint.Y);
-
-              // Write annotation and annotation text column
-              bool isDataPointMean = dataPoint.X == dataSet.Mean;
-              if (!plotHasSigmaMap[plotHasSigma0Bit] && isDataPointMean)
-              {
-                plotHasSigmaMap[plotHasSigma0Bit] = true;
-                tableRow.AppendValue($"µ = {dataPoint.X} {batchResultGroup.CommonBaseUnit.ToDisplayStringValue()}");
-                tableRow.AppendValue($"Average elapsed time: P({dataPoint.X},{dataPoint.Y})".ToString(System.Globalization.CultureInfo.CurrentUICulture));
-              }
-              else if (!plotHasSigmaMap[plotHasSigma1NegativeBit] && dataPoint.X == dataSet.Mean - dataSet.StandardDeviation)
-              {
-                plotHasSigmaMap[plotHasSigma1NegativeBit] = true;
-                tableRow.AppendValue("34.1 %");
-                tableRow.AppendValue("-1 σ. Interval µ ± 1σ contains 68.3 % of all values.");
-              }
-              else if (!plotHasSigmaMap[plotHasSigma2NegativeBit] && dataPoint.X == dataSet.Mean - 2 * dataSet.StandardDeviation)
-              {
-                plotHasSigmaMap[plotHasSigma2NegativeBit] = true;
-                tableRow.AppendValue("13.6 %");
-                tableRow.AppendValue("-2 σ. Interval µ ± 2σ contains 95.4 % of all values.");
-              }
-              else if (!plotHasSigmaMap[plotHasSigma3NegativeBit] && dataPoint.X == dataSet.Mean - 3 * dataSet.StandardDeviation)
-              {
-                plotHasSigmaMap[plotHasSigma3NegativeBit] = true;
-                tableRow.AppendValue("2.1 %");
-                tableRow.AppendValue("-3 σ. Interval µ ± 3σ contains 99.7 % of all values.");
-              }
-              else if (!plotHasSigmaMap[plotHasSigma1Bit] && dataPoint.X == dataSet.Mean + dataSet.StandardDeviation)
-              {
-                plotHasSigmaMap[plotHasSigma1Bit] = true;
-                tableRow.AppendValue("34.1 %");
-                tableRow.AppendValue("1 σ. Interval µ ± 1σ contains 68.3 % of all values.");
-              }
-              else if (!plotHasSigmaMap[plotHasSigma2Bit] && dataPoint.X == dataSet.Mean + 2 * dataSet.StandardDeviation)
-              {
-                plotHasSigmaMap[plotHasSigma2Bit] = true;
-                tableRow.AppendValue("13.6 %");
-                tableRow.AppendValue("2 σ. Interval µ ± 2σ contains 95.4 % of all values.");
-              }
-              else if (!plotHasSigmaMap[plotHasSigma3Bit] && dataPoint.X == dataSet.Mean + 3 * dataSet.StandardDeviation)
-              {
-                plotHasSigmaMap[plotHasSigma3Bit] = true;
-                tableRow.AppendValue("2.1 %");
-                tableRow.AppendValue("3 σ. Interval µ ± 3σ contains 99.7 % of all values.");
-              }
-              else
-              {
-                tableRow.AppendValue(null);
-                tableRow.AppendValue(null);
-              }
-
-              // Write tooltip column
-              tableRow.AppendValue($"{dataSet.Title}: {(isDataPointMean ? "data mean" : string.Empty)} {dataPoint.X} {batchResultGroup.CommonBaseUnit.ToDisplayStringValue()} (density {dataPoint.Y})");
-            }
-          }
-        }
-
-        chartTables.Add(chartTable);
-      }
-
-      return chartTables;
     }
   }
 }

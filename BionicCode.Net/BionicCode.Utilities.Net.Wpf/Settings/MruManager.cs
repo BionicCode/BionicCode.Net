@@ -30,7 +30,7 @@
       if (AppSettingsConnector.TryReadString(MruManager.MostRecentlyUsedKey, out string fileList))
       {
         mru = fileList.Split(
-            new[] {MruManager.MostRecentlyUsedKeyStringSeparator},
+            new[] { MruManager.MostRecentlyUsedKeyStringSeparator },
             StringSplitOptions.RemoveEmptyEntries)
           .Where(File.Exists)
           .Select(validPath => new MostRecentlyUsedFileItem(new FileInfo(validPath)));
@@ -132,7 +132,7 @@
     {
       bool isValid = count > 0 && count < 100;
       (bool IsValid, IEnumerable<string> ErrorMessages) result = (isValid,
-        isValid ? new List<string>() : new List<string>() {"Value must be between 1 and 100"});
+        isValid ? new List<string>() : new List<string>() { "Value must be between 1 and 100" });
       return result;
     }
 
@@ -146,9 +146,6 @@
     /// </summary>
     /// <param name="oldItem">The removed <see cref="MostRecentlyUsedFileItem"/> item.</param>
     /// <param name="newItem">The newly added <see cref="MostRecentlyUsedFileItem"/> item.</param>
-    protected virtual void OnFileAdded(MostRecentlyUsedFileItem oldItem, MostRecentlyUsedFileItem newItem)
-    {
-      this.FileAdded?.Invoke(this, new ValueChangedEventArgs<MostRecentlyUsedFileItem>(oldItem, newItem));
-    }
+    protected virtual void OnFileAdded(MostRecentlyUsedFileItem oldItem, MostRecentlyUsedFileItem newItem) => this.FileAdded?.Invoke(this, new ValueChangedEventArgs<MostRecentlyUsedFileItem>(oldItem, newItem));
   }
 }

@@ -29,10 +29,7 @@
     /// <summary>
     /// Constructor without any required parameters.
     /// </summary>
-    public ProfilerFactoryAttribute(params object[] argumentList)
-    {
-      this.ArgumentList = argumentList;
-    }
+    public ProfilerFactoryAttribute(params object[] argumentList) => this.ArgumentList = argumentList;
 
     public object[] ArgumentList { get; }
   }

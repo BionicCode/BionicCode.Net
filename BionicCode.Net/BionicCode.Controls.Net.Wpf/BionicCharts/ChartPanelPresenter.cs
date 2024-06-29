@@ -1,31 +1,39 @@
 ﻿namespace BionicCode.Controls.Net.Wpf
 {
+
+/* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
+Before:
   using System.Windows.Controls;
+After:
+  using System;
+*/
   using System.Windows;
+  using System.Windows
+/* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
+Before:
   using System;
     using BionicCode.Utilities.Net;
-  using System.Windows.Media;
+After:
+  using System.Windows.Controls;
   using System.Windows.Controls.Primitives;
+*/
+.Controls;
+  using System.Windows.Controls.Primitives;
+  using BionicCode.Utilities.Net;
 
   public class ChartPanelPresenter : ContentPresenter
   {
     private ChartPanel panel;
 
-    static ChartPanelPresenter()
-    {
-      ContentPresenter.ContentProperty.OverrideMetadata(typeof(ChartPanelPresenter), new FrameworkPropertyMetadata(default, OnContentChanged));
-    }
+    static ChartPanelPresenter() => ContentPresenter.ContentProperty.OverrideMetadata(typeof(ChartPanelPresenter), new FrameworkPropertyMetadata(default, OnContentChanged));
 
-    public PointInfoGenerator GetPointInfoGenerator()
-    {
-      return this.PointInfoGenerator ??= this.TemplatedParent is Chart owner
+    public PointInfoGenerator GetPointInfoGenerator() => this.PointInfoGenerator ??= this.TemplatedParent is Chart owner
         ? owner switch
         {
           CartesianChart cartesianChart => new CartesianPointInfoGenerator(cartesianChart) { PanelHost = this },
           _ => null
         }
         : null;
-    }
 
     private static void OnContentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as ChartPanelPresenter).OnContentChanged(e.OldValue, e.NewValue);
     private void OnContentChanged(object oldValue, object newValue)
@@ -50,10 +58,10 @@
     public PointInfoGenerator PointInfoGenerator { get; set; }
     public ChartPanel ChartPanel
     {
-      get => panel;
+      get => this.panel;
       set
       {
-        panel = value;
+        this.panel = value;
         this.Content = this.ChartPanel;
       }
     }

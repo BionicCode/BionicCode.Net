@@ -5,7 +5,7 @@
 
 namespace BionicCode.Utilities.Net
 {
-using System.Windows;
+  using System.Windows;
 
 #if NET || NET461_OR_GREATER
   /// <summary>

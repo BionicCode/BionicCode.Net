@@ -5,18 +5,12 @@
 
 #endregion
 
-using System.Windows;
 using System.Windows.Media;
-using System.Windows.Shapes;
-using BionicCode.Utilities.Net;
 
 namespace BionicCode.Controls.Net.Wpf
 {
   public class SeparatorDigitSegment : DigitSegment
   {
-    protected override Geometry CreateGeometry()
-    {
-      return new EllipseGeometry(this.Bounds.Location, this.Bounds.Height / 2, this.Bounds.Height  / 2);
-    }
+    protected override Geometry CreateGeometry() => new EllipseGeometry(this.Bounds.Location, this.Bounds.Height / 2, this.Bounds.Height / 2);
   }
 }

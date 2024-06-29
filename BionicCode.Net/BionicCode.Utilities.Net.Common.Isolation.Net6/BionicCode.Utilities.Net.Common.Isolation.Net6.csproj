@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BionicCode.Utilities.Net.Common\BionicCode.Utilities.Net.Common.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="robocopy &quot;$(TargetDir)\&quot; &quot;$(SolutionDir)BionicCode.Utilities.Net.Common\Profiling\ContextExecutables\Net6.0&quot; /mir /mt /z&#xD;&#xA;IF EXIST &quot;$(SolutionDir)BionicCode.Utilities.Net.Common\Profiling\ContextExecutables\Net6.0\runtime.exe&quot; del &quot;$(SolutionDir)BionicCode.Utilities.Net.Common\Profiling\ContextExecutables\Net6.0\runtime.exe&quot;&#xD;&#xA;rename &quot;$(SolutionDir)BionicCode.Utilities.Net.Common\Profiling\ContextExecutables\Net6.0\BionicCode.Utilities.Net.Common.Isolation.Net6.exe&quot; runtime.exe" />
+  </Target>
+  <Target Name="MakeMyDir" AfterTargets="Build">
+    <MakeDir Directories="$(OutDir)logs" />
+  </Target>
+
+</Project>

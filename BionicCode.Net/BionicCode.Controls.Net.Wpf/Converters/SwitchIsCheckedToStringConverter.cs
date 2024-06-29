@@ -26,8 +26,8 @@
         throw new ArgumentException("Wrong conversion type. Only conversion from bool to srting supported.", nameof(value));
       }
 
-      return (bool) value 
-        ? Resources.SwitchStateToggled 
+      return (bool)value
+        ? Resources.SwitchStateToggled
         : Resources.SwitchStateUntoggled;
     }
 
@@ -41,10 +41,7 @@
     public object ConvertBack(object value,
       Type targetType,
       object parameter,
-      CultureInfo culture)
-    {
-      throw new NotImplementedException();
-    }
+      CultureInfo culture) => throw new NotImplementedException();
 
     #endregion
   }

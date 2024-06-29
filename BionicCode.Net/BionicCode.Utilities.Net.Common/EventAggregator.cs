@@ -12,7 +12,6 @@
   using System.Reflection;
   using System.Runtime.CompilerServices;
   using System.Threading;
-  using BionicCode.Utilities.Net;
 
   /// <inheritdoc />
   public class EventAggregator : IEventAggregator
@@ -65,7 +64,7 @@
 
         List<(EventInfo EventInfo, Delegate Handler)> publishers = this.EventPublisherTable.GetOrCreateValue(eventSource);
         publishers.Add((eventInfo, eventSourceHandler));
-        
+
         eventInfo.AddEventHandler(eventSource, eventSourceHandler);
       }
 
@@ -86,7 +85,7 @@
           handlerInfo => handlerInfo.EventInfo.Name.Equals(eventName, StringComparison.Ordinal));
 
         publisherHandlerInfo.EventInfo?.RemoveEventHandler(eventSource, publisherHandlerInfo.Handler);
-        hasRemovedObservable = publisherHandlerInfos.Remove(publisherHandlerInfo); 
+        hasRemovedObservable = publisherHandlerInfos.Remove(publisherHandlerInfo);
 
         if (removeEventObservers)
         {
@@ -126,14 +125,14 @@
     /// <inheritdoc />
     public bool TryRegisterObserver(string eventName, Type eventSourceType, Delegate eventHandler)
     {
-      var fullyQualifiedEventName = CreateFullyQualifiedEventIdOfSpecificSource(eventSourceType, eventName);
+      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfSpecificSource(eventSourceType, eventName);
       return TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName);
     }
 
     /// <inheritdoc />
     public bool TryRegisterObserver(string eventName, Type eventSourceType, Delegate eventHandler, bool isMarshalEventToCurrentThreadEnabled)
     {
-      var fullyQualifiedEventName = CreateFullyQualifiedEventIdOfSpecificSource(eventSourceType, eventName);
+      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfSpecificSource(eventSourceType, eventName);
       return isMarshalEventToCurrentThreadEnabled
         ? TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName, SynchronizationContext.Current)
         : TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName);
@@ -142,27 +141,27 @@
     /// <inheritdoc />
     public bool TryRegisterObserver(string eventName, Type eventSourceType, Delegate eventHandler, SynchronizationContext synchronizationContext)
     {
-      var fullyQualifiedEventName = CreateFullyQualifiedEventIdOfSpecificSource(eventSourceType, eventName);
+      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfSpecificSource(eventSourceType, eventName);
       return TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName, synchronizationContext);
     }
 
     /// <inheritdoc />
-    public bool TryRegisterObserver<TEventArgs>(string eventName, Type eventSourceType, EventHandler<TEventArgs> eventHandler) 
-      => TryRegisterObserver(eventName, eventSourceType, (Delegate) eventHandler);
+    public bool TryRegisterObserver<TEventArgs>(string eventName, Type eventSourceType, EventHandler<TEventArgs> eventHandler)
+      => TryRegisterObserver(eventName, eventSourceType, (Delegate)eventHandler);
 
     /// <inheritdoc />
-    public bool TryRegisterObserver<TEventArgs>(string eventName, Type eventSourceType, EventHandler<TEventArgs> eventHandler, bool isMarshalEventToCurrentThreadEnabled) 
+    public bool TryRegisterObserver<TEventArgs>(string eventName, Type eventSourceType, EventHandler<TEventArgs> eventHandler, bool isMarshalEventToCurrentThreadEnabled)
       => TryRegisterObserver(eventName, eventSourceType, (Delegate)eventHandler, isMarshalEventToCurrentThreadEnabled);
 
     /// <inheritdoc />
-    public bool TryRegisterObserver<TEventArgs>(string eventName, Type eventSourceType, EventHandler<TEventArgs> eventHandler, SynchronizationContext synchronizationContext) 
+    public bool TryRegisterObserver<TEventArgs>(string eventName, Type eventSourceType, EventHandler<TEventArgs> eventHandler, SynchronizationContext synchronizationContext)
       => TryRegisterObserver(eventName, eventSourceType, (Delegate)eventHandler, synchronizationContext);
 
     /// <inheritdoc />
     public bool TryRegisterGlobalObserver(string eventName, Delegate eventHandler)
     {
       Type normalizedEventHandlerType = NormalizeEventHandlerType(eventHandler.GetType());
-      var fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, eventName);
+      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, eventName);
       return TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName);
     }
 
@@ -170,7 +169,7 @@
     public bool TryRegisterGlobalObserver(string eventName, Delegate eventHandler, bool isMarshalEventToCurrentThreadEnabled)
     {
       Type normalizedEventHandlerType = NormalizeEventHandlerType(eventHandler.GetType());
-      var fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, eventName); 
+      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, eventName);
       return isMarshalEventToCurrentThreadEnabled
          ? TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName, SynchronizationContext.Current)
          : TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName);
@@ -180,7 +179,7 @@
     public bool TryRegisterGlobalObserver(string eventName, Delegate eventHandler, SynchronizationContext synchronizationContext)
     {
       Type normalizedEventHandlerType = NormalizeEventHandlerType(eventHandler.GetType());
-      var fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, eventName);
+      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, eventName);
       return TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName, synchronizationContext);
     }
 
@@ -188,7 +187,7 @@
     public bool TryRegisterGlobalObserver<TEventArgs>(string eventName, EventHandler<TEventArgs> eventHandler)
     {
       Type normalizedEventHandlerType = NormalizeEventHandlerType<TEventArgs>(eventHandler.GetType());
-      var fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, eventName);
+      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, eventName);
       return TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName);
     }
 
@@ -196,7 +195,7 @@
     public bool TryRegisterGlobalObserver<TEventArgs>(string eventName, EventHandler<TEventArgs> eventHandler, bool isMarshalEventToCurrentThreadEnabled)
     {
       Type normalizedEventHandlerType = NormalizeEventHandlerType<TEventArgs>(eventHandler.GetType());
-      var fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, eventName);
+      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, eventName);
       return isMarshalEventToCurrentThreadEnabled
          ? TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName, SynchronizationContext.Current)
          : TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName);
@@ -206,7 +205,7 @@
     public bool TryRegisterGlobalObserver<TEventArgs>(string eventName, EventHandler<TEventArgs> eventHandler, SynchronizationContext synchronizationContext)
     {
       Type normalizedEventHandlerType = NormalizeEventHandlerType<TEventArgs>(eventHandler.GetType());
-      var fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, eventName);
+      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, eventName);
       return TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName, synchronizationContext);
     }
 
@@ -214,7 +213,7 @@
     public bool TryRegisterGlobalObserver(Delegate eventHandler)
     {
       Type normalizedEventHandlerType = NormalizeEventHandlerType(eventHandler.GetType());
-      var fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, string.Empty);
+      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, string.Empty);
       return TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName);
     }
 
@@ -222,7 +221,7 @@
     public bool TryRegisterGlobalObserver(Delegate eventHandler, bool isMarshalEventToCurrentThreadEnabled)
     {
       Type normalizedEventHandlerType = NormalizeEventHandlerType(eventHandler.GetType());
-      var fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, string.Empty);
+      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, string.Empty);
       return isMarshalEventToCurrentThreadEnabled
          ? TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName, SynchronizationContext.Current)
          : TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName);
@@ -232,7 +231,7 @@
     public bool TryRegisterGlobalObserver(Delegate eventHandler, SynchronizationContext synchronizationContext)
     {
       Type normalizedEventHandlerType = NormalizeEventHandlerType(eventHandler.GetType());
-      var fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, string.Empty);
+      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, string.Empty);
       return TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName, synchronizationContext);
     }
 
@@ -240,7 +239,7 @@
     public bool TryRegisterGlobalObserver<TEventArgs>(EventHandler<TEventArgs> eventHandler)
     {
       Type normalizedEventHandlerType = NormalizeEventHandlerType<TEventArgs>(eventHandler.GetType());
-      var fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, string.Empty);
+      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, string.Empty);
       return TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName);
     }
 
@@ -248,7 +247,7 @@
     public bool TryRegisterGlobalObserver<TEventArgs>(EventHandler<TEventArgs> eventHandler, bool isMarshalEventToCurrentThreadEnabled)
     {
       Type normalizedEventHandlerType = NormalizeEventHandlerType<TEventArgs>(eventHandler.GetType());
-      var fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, string.Empty);
+      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, string.Empty);
       return isMarshalEventToCurrentThreadEnabled
          ? TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName, SynchronizationContext.Current)
          : TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName);
@@ -258,7 +257,7 @@
     public bool TryRegisterGlobalObserver<TEventArgs>(EventHandler<TEventArgs> eventHandler, SynchronizationContext synchronizationContext)
     {
       Type normalizedEventHandlerType = NormalizeEventHandlerType<TEventArgs>(eventHandler.GetType());
-      var fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, string.Empty);
+      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, string.Empty);
       return TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName, synchronizationContext);
     }
 
@@ -276,7 +275,7 @@
       string eventName,
       Type eventSourceType,
       EventHandler<TEventArgs> eventHandler) =>
-      TryRemoveObserver(eventName, eventSourceType, (Delegate) eventHandler);
+      TryRemoveObserver(eventName, eventSourceType, (Delegate)eventHandler);
 
     /// <inheritdoc />
     public bool TryRemoveGlobalObserver(string eventName, Delegate eventHandler)
@@ -292,7 +291,7 @@
     /// <inheritdoc />
     public bool TryRemoveGlobalObserver<TEventArgs>(string eventName, EventHandler<TEventArgs> eventHandler)
     {
-      Type normalizedEventHandlerType = NormalizeEventHandlerType< TEventArgs>(eventHandler.GetType());
+      Type normalizedEventHandlerType = NormalizeEventHandlerType<TEventArgs>(eventHandler.GetType());
 
       string fullyQualifiedEventIdOfGlobalSource =
         CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, eventName);
@@ -310,7 +309,7 @@
     /// <inheritdoc />
     public bool TryRemoveGlobalObserver<TEventArgs>(EventHandler<TEventArgs> eventHandler)
     {
-      Type normalizedEventHandlerType = NormalizeEventHandlerType< TEventArgs>(eventHandler.GetType());
+      Type normalizedEventHandlerType = NormalizeEventHandlerType<TEventArgs>(eventHandler.GetType());
       return TryRemoveGlobalObserverInternal(normalizedEventHandlerType);
     }
 
@@ -337,7 +336,7 @@
       bool result = false;
       string fullyQualifiedEventIdOfSpecificSourcePrefix =
         CreateFullyQualifiedEventIdOfSpecificSource(eventSourceType, string.Empty);
-      for (var index = this.EventHandlerTable.Count - 1; index >= 0; index--)
+      for (int index = this.EventHandlerTable.Count - 1; index >= 0; index--)
       {
         KeyValuePair<string, List<Delegate>> handlersEntry = this.EventHandlerTable.ElementAt(index);
         if (handlersEntry.Key.StartsWith(fullyQualifiedEventIdOfSpecificSourcePrefix, StringComparison.Ordinal))
@@ -358,7 +357,7 @@
     {
       bool result = false;
       string fullyQualifiedEventIdSuffix = $".{eventName}";
-      for (var index = this.EventHandlerTable.Count - 1; index >= 0; index--)
+      for (int index = this.EventHandlerTable.Count - 1; index >= 0; index--)
       {
         KeyValuePair<string, List<Delegate>> handlersEntry = this.EventHandlerTable.ElementAt(index);
         if (handlersEntry.Key.EndsWith(fullyQualifiedEventIdSuffix, StringComparison.Ordinal))
@@ -409,7 +408,7 @@
       bool result = false;
       string fullyQualifiedEventIdOfGlobalSourcePrefix =
         CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, string.Empty);
-      for (var index = this.EventHandlerTable.Count - 1; index >= 0; index--)
+      for (int index = this.EventHandlerTable.Count - 1; index >= 0; index--)
       {
         KeyValuePair<string, List<Delegate>> handlersEntry = this.EventHandlerTable.ElementAt(index);
         if (handlersEntry.Key.StartsWith(fullyQualifiedEventIdOfGlobalSourcePrefix, StringComparison.Ordinal))
@@ -484,7 +483,7 @@
 
       if (eventSourceInterfaceType != null)
       {
-        var fullyQualifiedInterfaceEventIdOfSpecificEvent =
+        string fullyQualifiedInterfaceEventIdOfSpecificEvent =
           CreateFullyQualifiedEventIdOfSpecificSource(eventSourceInterfaceType, eventName);
         eventId = fullyQualifiedInterfaceEventIdOfSpecificEvent;
       }
@@ -497,11 +496,11 @@
       Type normalizedEventHandlerType,
       string eventName)
     {
-      var fullyQualifiedEventIdOfGlobalEvent =
+      string fullyQualifiedEventIdOfGlobalEvent =
         CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, eventName);
-      var fullyQualifiedEventIdOfUnknownGlobalEvent =
+      string fullyQualifiedEventIdOfUnknownGlobalEvent =
         CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, string.Empty);
-      var fullyQualifiedImplementationEventIdOfSpecificEvent =
+      string fullyQualifiedImplementationEventIdOfSpecificEvent =
         CreateFullyQualifiedEventIdOfSpecificSource(eventSource.GetType(), eventName);
 
       var eventIds = new List<string>

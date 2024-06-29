@@ -2,10 +2,10 @@
 namespace BionicCode.Utilities.Net
 {
 #if NET || NET461_OR_GREATER
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Windows;
 
   /// <summary>
   /// Set of attached behaviors for the <see cref="System.Windows.Controls.Primitives.Popup"/> control.
@@ -13,7 +13,7 @@ using System.Windows;
   /// <seealso href="https://github.com/BionicCode/BionicCode.Net#popup">See advanced example</seealso>
   public class PopupService : DependencyObject
   {
-#region IsFollowPlacementTargetPositionEnabled attached property
+    #region IsFollowPlacementTargetPositionEnabled attached property
 
     /// <summary>
     /// When set to <c>true</c>, the <see cref="System.Windows.Controls.Primitives.Popup"/> is forced to stick to the current <see cref="System.Windows.Controls.Primitives.Popup.PlacementTarget"/>. The <see cref="System.Windows.Controls.Primitives.Popup"/> will follow the <see cref="System.Windows.Controls.Primitives.Popup.PlacementTarget"/> whenever it changes it's screen coordinates.
@@ -41,7 +41,7 @@ using System.Windows;
     public static bool GetIsSticky(DependencyObject attachingElement) =>
       (bool)attachingElement.GetValue(PopupService.IsStickyProperty);
 
-#endregion
+    #endregion
 
     private static Dictionary<Window, IList<System.Windows.Controls.Primitives.Popup>> WindowToPopupsMap { get; set; }
 
@@ -151,7 +151,7 @@ using System.Windows;
     {
       if (PopupService.WindowToPopupsMap.TryGetValue(window, out IList<System.Windows.Controls.Primitives.Popup> popups))
       {
-        foreach (var popup in popups)
+        foreach (System.Windows.Controls.Primitives.Popup popup in popups)
         {
           popup.HorizontalOffset += 1;
           popup.HorizontalOffset -= 1;

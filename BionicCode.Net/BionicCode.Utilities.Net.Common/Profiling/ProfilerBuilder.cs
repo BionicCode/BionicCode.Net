@@ -2,12 +2,10 @@
 {
   using System;
   using System.Collections.Generic;
-  using System.Linq;
   using System.Reflection;
-  using System.Runtime.CompilerServices;
-  using System.Runtime.InteropServices;
-  using System.Text;
+  using System.Threading;
   using System.Threading.Tasks;
+  using BionicCode.Utilities.Net.Profiling;
 
   /// <summary>
   /// Class to configure the <see cref="Profiler"/> when used with annotated profiling. Call <see cref="Profiler.CreateProfilerBuilder{T}"/> to obtain an instance.
@@ -23,8 +21,9 @@
     private Dictionary<Type, Assembly> TypeAssemblyTable { get; }
     private ProfilerLoggerAsyncDelegate AsyncProfilerLogger { get; set; }
     private ProfilerLoggerDelegate ProfilerLogger { get; set; }
+    private Runtime Runtime { get; set; }
 
-    IEnumerable<Type> IAttributeProfilerConfiguration.Type => this.Type;
+    IEnumerable<Type> IAttributeProfilerConfiguration.Types => this.Type;
     //Assembly IAttributeProfilerConfiguration.TypeAssembly => this.TypeAssembly;
     TimeUnit IAttributeProfilerConfiguration.BaseUnit => this.BaseUnit;
     bool IAttributeProfilerConfiguration.IsWarmupEnabled => this.IsWarmupEnabled;
@@ -33,11 +32,12 @@
     int IAttributeProfilerConfiguration.WarmupIterations => this.WarmupIterations;
     ProfilerLoggerAsyncDelegate IAttributeProfilerConfiguration.AsyncProfilerLogger => this.AsyncProfilerLogger;
     ProfilerLoggerDelegate IAttributeProfilerConfiguration.ProfilerLogger => this.ProfilerLogger;
+    Runtime IAttributeProfilerConfiguration.Runtime => this.Runtime;
 
     Assembly IAttributeProfilerConfiguration.GetAssembly(Type type)
     {
       if (!this.TypeAssemblyTable.TryGetValue(type, out Assembly assembly))
-      { 
+      {
         assembly = Assembly.GetAssembly(type);
         this.TypeAssemblyTable.Add(type, assembly);
       }
@@ -58,6 +58,7 @@
       this.WarmupIterations = Profiler.DefaultWarmupCount;
       this.Iterations = 1;
       this.BaseUnit = TimeUnit.Microseconds;
+      this.Runtime = Runtime.Current;
     }
 
     /// <summary>
@@ -183,16 +184,22 @@
       return this;
     }
 
+    public ProfilerBuilder SetRuntime(Runtime runtime)
+    {
+      this.Runtime = runtime;
+      return this;
+    }
+
     /// <summary>
     /// Execute the profiler using the current configuration.
     /// </summary>
     /// <returns>
     /// A collection of <see cref="ProfilerBatchResult"/> items where each <see cref="ProfilerBatchResult"/> holds the result of a particular profiled target to accumulate the individual <see cref="ProfilerResult"/> items for each iteration.
     /// </returns>
-    public async Task<ProfiledTypeResultCollection> RunAsync()
+    public async Task<ProfiledTypeResultCollection> RunAsync(CancellationToken cancellationToken)
     {
       var attributeProfiler = new AttributeProfiler(this);
-      ProfiledTypeResultCollection result = await attributeProfiler.StartAsync();
+      ProfiledTypeResultCollection result = await attributeProfiler.StartAsync(cancellationToken);
       return result;
     }
   }

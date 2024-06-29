@@ -8,19 +8,44 @@ namespace BionicCode.Controls.Net.Wpf
 namespace BionicCode.Controls.Net.Wpf
 {
   using System;
+
+/* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
+Before:
   using System.Windows;
-  using System.Linq;
+After:
+  using System.Collections.Generic;
+*/
+  
+/* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
+Before:
   using BionicCode.Utilities.Net;
 
   /* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
+After:
+  using System.Windows;
+  /* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
+*/
+/* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
   Before:
     using System.Windows.Data;
   After:
     using System.Windows.Data;
       */
-  using System.Windows.Data;
+  using System.Collections.Generic;
+
+/* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
+Before:
   using System.Collections.Generic;
   
+  public class CartesianPointInfoGenerator : PointInfoGenerator<ICartesianSeriesInfo>
+After:
+  using System.Utilities.Net;
+
+  public class CartesianPointInfoGenerator : PointInfoGenerator<ICartesianSeriesInfo>
+*/
+  using BionicCode.Windows;
+  using BionicCode.Utilities.Net;
+
   public class CartesianPointInfoGenerator : PointInfoGenerator<ICartesianSeriesInfo>
   {
     public CartesianPointInfoGenerator(CartesianChart owner) : base(owner)
@@ -52,7 +77,7 @@ namespace BionicCode.Controls.Net.Wpf
       foreach (Point point in points)
       {
         var chartPointInfo = new CartesianChartPointInfo(point, seriesInfo);
-        var dataItem = pointToDataItemMap[point];
+        object dataItem = pointToDataItemMap[point];
         drawingInfoToDataMap.Add(chartPointInfo, dataItem);
       }
 
@@ -60,7 +85,7 @@ namespace BionicCode.Controls.Net.Wpf
       //this.PanelHost.InvalidateVisual();
     }
 
-    private void UpdateValueBoundaries(Point minX,Point maxX, Point minY, Point maxY)
+    private void UpdateValueBoundaries(Point minX, Point maxX, Point minY, Point maxY)
     {
       if (maxX.X > this.MaxX.X)
       {

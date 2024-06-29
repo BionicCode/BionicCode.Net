@@ -4,7 +4,6 @@
   #region CodeWithoutNamespace
   using System.Collections.Generic;
   using System.IO;
-  using System.Linq;
   using System.Threading.Tasks;
 
   internal class LogTimeScopedExample
@@ -13,7 +12,7 @@
     {
       const int seriesLength = 10000;
       var benchmarkTarget = new BenchmarkTarget();
-      
+
       ProfilerBatchResult result;
       using (Profiler.LogTimeScoped(LogToFileAsync, out result))
       {

@@ -1,7 +1,6 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System;
-  using System.ComponentModel;
 
   internal static class TimeValueConverter
   {
@@ -140,7 +139,7 @@
           double nanoseconds = System.Math.Round(timeValue, 0);
           return nanoseconds == -0 ? 0 : nanoseconds; ;
         case TimeUnit.Seconds:
-          double seconds =  System.Math.Round(timeValue, 7);
+          double seconds = System.Math.Round(timeValue, 7);
           return seconds == -0 ? 0 : seconds;
         case TimeUnit.Milliseconds:
           double millieseconds = System.Math.Round(timeValue, 4);

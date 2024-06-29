@@ -9,7 +9,7 @@
   public class BionicSwipePageFrameHeader : Control
   {
     public static System.Windows.ResourceKey ButtonStyleKey { get; }
-    
+
     [System.ComponentModel.TypeConverter(typeof(System.Windows.LengthConverter))]
     public static readonly DependencyProperty IconHeightProperty = DependencyProperty.Register(
       "IconHeight",
@@ -19,7 +19,7 @@
 
     [System.ComponentModel.TypeConverter(typeof(System.Windows.LengthConverter))]
 
-    public double IconHeight { get { return (double) GetValue(BionicSwipePageFrameHeader.IconHeightProperty); } set { SetValue(BionicSwipePageFrameHeader.IconHeightProperty, value); } }
+    public double IconHeight { get => (double)GetValue(BionicSwipePageFrameHeader.IconHeightProperty); set => SetValue(BionicSwipePageFrameHeader.IconHeightProperty, value); }
 
     public static readonly DependencyProperty IconWidthProperty = DependencyProperty.Register(
       "IconWidth",
@@ -28,8 +28,8 @@
       new PropertyMetadata(double.NaN));
 
     [System.ComponentModel.TypeConverter(typeof(System.Windows.LengthConverter))]
-    public double IconWidth { get { return (double) GetValue(BionicSwipePageFrameHeader.IconWidthProperty); } set { SetValue(BionicSwipePageFrameHeader.IconWidthProperty, value); } }
-    
+    public double IconWidth { get => (double)GetValue(BionicSwipePageFrameHeader.IconWidthProperty); set => SetValue(BionicSwipePageFrameHeader.IconWidthProperty, value); }
+
     public static readonly DependencyProperty TitleTemplateProperty = DependencyProperty.Register(
       "TitleTemplate",
       typeof(DataTemplate),
@@ -61,10 +61,7 @@
       BionicSwipePageFrameHeader.ButtonStyleKey = new ComponentResourceKey(typeof(BionicSwipePageFrameHeader), "ButtonStyle");
     }
 
-    public BionicSwipePageFrameHeader()
-    {
-      this.Loaded += InitializeParts;
-    }
+    public BionicSwipePageFrameHeader() => this.Loaded += InitializeParts;
 
     #region Overrides of FrameworkElement
 
@@ -80,7 +77,7 @@
 
     private static void OnTitleDataTemplateSelectorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      var _this = (d as BionicSwipePageFrameHeader);
+      var _this = d as BionicSwipePageFrameHeader;
       if (_this.PART_Title != null)
       {
         _this.PART_Title.ContentTemplateSelector = e.NewValue as DataTemplateSelector;
@@ -89,7 +86,7 @@
 
     private static void OnTitleTemplateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      var _this = (d as BionicSwipePageFrameHeader);
+      var _this = d as BionicSwipePageFrameHeader;
       if (_this.PART_Title != null)
       {
         _this.PART_Title.ContentTemplate = e.NewValue as DataTemplate;

@@ -1,10 +1,5 @@
 ﻿namespace BionicCode.Controls.Net.Wpf
 {
-  using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
-  using System.Threading.Tasks;
   using BionicCode.Utilities.Net;
 
   public class CartesianChartPoint : ViewModel, ICartesianChartPoint
@@ -132,7 +127,7 @@
     {
       unchecked
       {
-        return this.X.GetHashCode() * 397 ^ this.Y.GetHashCode();
+        return (this.X.GetHashCode() * 397) ^ this.Y.GetHashCode();
       }
     }
 

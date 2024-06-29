@@ -1,9 +1,5 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-  using System;
-  using System.Collections.Generic;
-  using System.Text;
-
   /// <summary>
   /// Eventhandler for the <see cref="IProgressReporterCommon.ProgressChanged"/> event.
   /// </summary>

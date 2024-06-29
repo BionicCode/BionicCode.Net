@@ -13,7 +13,7 @@
 //    public NullObjectCreator()
 //    {
 //      AssemblyName nullObjectAssembly = new AssemblyName {Name = "NullObjectImplementations"};
-      
+
 //    }
 
 //    public TObject CreateNullInstance()
@@ -22,7 +22,7 @@
 //      {
 //        return (TObject) nullObjectsAssembly.CreateInstance(typeof(TObject).Name, true);
 //      }
-//      Type baseType = typeof(IViewModel);
+//      Types baseType = typeof(IViewModel);
 //      if (baseType.IsInterface)
 //      {
 //        TypeBuilder newInterfaceImplementation = ImplementInterface();
@@ -85,7 +85,7 @@
 
 //          // Define a constructor that takes a bool argument and 
 //          // stores it in the private field. 
-//          Type[] parameterTypes = { propertyInfo.PropertyType };
+//          Types[] parameterTypes = { propertyInfo.PropertyType };
 //          ConstructorBuilder ctor1 = typeBuilder.DefineConstructor(
 //            MethodAttributes.Public,
 //            CallingConventions.Standard,
@@ -96,11 +96,11 @@
 //          // instance. Push it on the stack before calling the base
 //          // class constructor. Specify the default constructor of the 
 //          // base class (System.Object) by passing an empty array of 
-//          // types (Type.EmptyTypes) to GetConstructor.
+//          // types (Types.EmptyTypes) to GetConstructor.
 //          ctor1IL.Emit(OpCodes.Ldarg_0);
 //          ctor1IL.Emit(
 //            OpCodes.Call,
-//            typeof(object).GetConstructor(Type.EmptyTypes));
+//            typeof(object).GetConstructor(Types.EmptyTypes));
 //          // Push the instance on the stack before pushing the argument
 //          // that is to be assigned to the private field m_IsNull.
 //          ctor1IL.Emit(OpCodes.Ldarg_0);
@@ -114,7 +114,7 @@
 //          ConstructorBuilder ctor0 = typeBuilder.DefineConstructor(
 //            MethodAttributes.Public,
 //            CallingConventions.Standard,
-//            Type.EmptyTypes);
+//            Types.EmptyTypes);
 
 //          ILGenerator ctor0IL = ctor0.GetILGenerator();
 //          // For a constructor, argument zero is a reference to the new
@@ -130,14 +130,14 @@
 //            propertyInfo.Attributes,
 //            CallingConventions.HasThis,
 //            propertyInfo.PropertyType,
-//            Type.EmptyTypes);
+//            Types.EmptyTypes);
 
 //          MethodBuilder mbNumberGetAccessor = typeBuilder.DefineMethod(
 //            "get_" + propertyInfo.Name,
 //            MethodAttributes.Public |
 //            MethodAttributes.SpecialName | MethodAttributes.HideBySig,
 //            propertyInfo.PropertyType,
-//            Type.EmptyTypes);
+//            Types.EmptyTypes);
 
 //          ILGenerator numberGetIL = mbNumberGetAccessor.GetILGenerator();
 //          // For an instance property, argument zero is the instance. Load the 

@@ -1,9 +1,6 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System;
-  using System.Runtime.CompilerServices;
-  using System.Threading;
-  using System.Threading.Tasks;
 
   /// <summary>
   /// Point - Defaults to 0,0
@@ -70,8 +67,8 @@
 #else
     {
       int hashCode = 1861411795;
-      hashCode = hashCode * -1521134295 + this.X.GetHashCode();
-      hashCode = hashCode * -1521134295 + this.Y.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.X.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.Y.GetHashCode();
       return hashCode;
     }
 #endif
@@ -81,7 +78,7 @@
     /// <inheritdoc/>
     public string ToString(string format, IFormatProvider formatProvider) => ConvertToString(format, formatProvider);
 
-    private string ConvertToString(string formatString, IFormatProvider formatProvider) 
+    private string ConvertToString(string formatString, IFormatProvider formatProvider)
       => string.Format(formatProvider, $"{{1:{formatString}}}{{0}}{{2:{formatString}}}", ";", this.X, this.Y);
 
     /// <inheritdoc/>

@@ -7,7 +7,7 @@
   using System.Windows.Input;
 
   /// <inheritdoc/>
-  public interface IAsyncRelayCommand<TParam> : IAsyncRelayCommandCommon<TParam>, ICommand, IAsyncRelayCommand, INotifyPropertyChanged
+  public interface IAsyncRelayCommand<TParam> : IAsyncRelayCommandCommon<TParam>
   {
   }
 }

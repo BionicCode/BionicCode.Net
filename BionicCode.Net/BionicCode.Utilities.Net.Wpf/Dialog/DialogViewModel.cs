@@ -5,12 +5,12 @@
 
 namespace BionicCode.Utilities.Net
 {
-using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
+  using System;
+  using System.ComponentModel;
+  using System.Threading.Tasks;
 
 #if !NETSTANDARD
-using System.Windows.Media;
+  using System.Windows.Media;
   /// <summary>
   /// Implementation of <see cref="IDialogViewModel"/>. This abstract class implements the dialog data handling logic and is therefore preferred over a custom implementation of <see cref="IDialogViewModel"/>.
   /// </summary>
@@ -66,7 +66,7 @@ using System.Windows.Media;
 
     protected virtual bool CanExecuteSendResponseCommand(DialogResult commandParameter) => true;
 
-  #region Implementation of IDialogViewModel
+    #region Implementation of IDialogViewModel
 
     private string title;
     /// <inheritdoc />
@@ -107,14 +107,14 @@ using System.Windows.Media;
     /// <inheritdoc />
     public event EventHandler InteractionCompleted;
 
-  #endregion
+    #endregion
 
     /// <summary>
     /// Event invocator of the <see cref="InteractionCompleting"/> event. Raised before <see cref="InteractionCompleted"/> event. When overriding the member, setting the property <see cref="CancelEventArgs.Cancel"/> of the <paramref name="cancelEventArgs"/> parameter to <c>true</c> will cancel the dialog close process. 
     /// </summary>
     /// <param name="cancelEventArgs">When setting the property <see cref="CancelEventArgs.Cancel"/> of the event's <see cref="CancelEventArgs"/> to <c>true</c> will cancel the dialog close process.</param>
     /// <remarks>When the dialog close process was cancelled e.g., by overriding the <see cref="OnInteractionCompleting(CancelEventArgs)"/> method and by setting the <paramref name="cancelEventArgs"/> to <c>true</c>, a new close process can be triggered either by invoking the <see cref="OnInteractionCompleted"/> method or by invoking the <see cref="SendResponseAsyncCommand"/>.</remarks>
-    protected virtual void OnInteractionCompleting(CancelEventArgs cancelEventArgs) 
+    protected virtual void OnInteractionCompleting(CancelEventArgs cancelEventArgs)
       => this.InteractionCompleting?.Invoke(this, cancelEventArgs);
 
     /// <summary>
@@ -127,7 +127,7 @@ using System.Windows.Media;
 
       if (!cancelEventArgs.Cancel)
       {
-        this.InteractionCompleted?.Invoke(this, EventArgs.Empty); 
+        this.InteractionCompleted?.Invoke(this, EventArgs.Empty);
       }
     }
   }

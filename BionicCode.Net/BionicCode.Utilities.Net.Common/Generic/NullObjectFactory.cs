@@ -4,7 +4,6 @@
 #endregion
 
 using System;
-using System.Threading;
 
 namespace BionicCode.Utilities.Net
 {
@@ -22,7 +21,7 @@ namespace BionicCode.Utilities.Net
     /// <param name="factoryMethod">The delegate to create instances of type <typeparamref name="TObject"/>.</param>
     public NullObjectFactory(Func<TObject> factoryMethod) : this(factoryMethod, FactoryMode.Singleton)
     {
-      
+
     }
 
     /// <summary>
@@ -30,10 +29,7 @@ namespace BionicCode.Utilities.Net
     /// </summary>
     /// <param name="factoryMethod">The delegate to create instances of type <typeparamref name="TObject"/>.</param>
     /// <param name="factoryMode">The lifetime scope of the created instance.</param>
-    public NullObjectFactory(Func<TObject> factoryMethod, FactoryMode factoryMode) : base(factoryMode)
-    {
-      this.FactoryMethod = factoryMethod;
-    }
+    public NullObjectFactory(Func<TObject> factoryMethod, FactoryMode factoryMode) : base(factoryMode) => this.FactoryMethod = factoryMethod;
 
     /// <summary>
     /// Initializes the <see cref="NullObjectFactory{TObject}"/> using a <see cref="IFactory{TCreate}"/> and its <see cref="IFactory{TCreate}.FactoryMode"/> to set the <see cref="FactoryMode"/>.

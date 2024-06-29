@@ -1,18 +1,16 @@
 namespace BionicCode.Utilities.Net
 {
   using System;
-  using System.Collections;
   using System.Collections.Generic;
-  using System.Linq;
   using System.Reflection;
   using MathNet = System.Math;
 
 #if !NETSTANDARD
   using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Markup;
-using System.Windows.Media;
-using System.Windows.Controls.Primitives;
+  using System.Windows.Controls;
+  using System.Windows.Markup;
+  using System.Windows.Media;
+  using System.Windows.Controls.Primitives;
 
   /// <summary>
   /// Collection of extension methods e.g. visual tree traversal
@@ -37,7 +35,6 @@ using System.Windows.Controls.Primitives;
       resultElement = null;
 
       DependencyObject parentElement = VisualTreeHelper.GetParent(child);
-
       if (parentElement is TParent parent)
       {
         resultElement = parent;
@@ -69,9 +66,8 @@ using System.Windows.Controls.Primitives;
       resultElement = null;
 
       DependencyObject parentElement = VisualTreeHelper.GetParent(child);
-
       if (parentElement is FrameworkElement frameworkElement &&
-          frameworkElement.Name.Equals(elementName, StringComparison.OrdinalIgnoreCase))
+        frameworkElement.Name.Equals(elementName, StringComparison.OrdinalIgnoreCase))
       {
         resultElement = frameworkElement as TChild;
         return true;
@@ -106,10 +102,9 @@ using System.Windows.Controls.Primitives;
         }
       }
 
-      for (var childIndex = 0; childIndex < VisualTreeHelper.GetChildrenCount(parent); childIndex++)
+      for (int childIndex = 0; childIndex < VisualTreeHelper.GetChildrenCount(parent); childIndex++)
       {
         DependencyObject childElement = VisualTreeHelper.GetChild(parent, childIndex);
-
         if (childElement is TChild child)
         {
           resultElement = child;
@@ -145,7 +140,7 @@ using System.Windows.Controls.Primitives;
 #endif
     {
       resultElement = null;
-      
+
       if (parent is System.Windows.Controls.Primitives.Popup popup)
       {
         parent = popup.Child;
@@ -155,13 +150,11 @@ using System.Windows.Controls.Primitives;
         }
       }
 
-      for (var childIndex = 0; childIndex < VisualTreeHelper.GetChildrenCount(parent); childIndex++)
+      for (int childIndex = 0; childIndex < VisualTreeHelper.GetChildrenCount(parent); childIndex++)
       {
         DependencyObject childElement = VisualTreeHelper.GetChild(parent, childIndex);
-
-        if (childElement is FrameworkElement uiElement && uiElement.Name.Equals(
-          childElementName,
-          StringComparison.OrdinalIgnoreCase))
+        if (childElement is FrameworkElement uiElement
+          && uiElement.Name.Equals(childElementName, StringComparison.OrdinalIgnoreCase))
         {
           resultElement = uiElement as TChild;
           return true;
@@ -186,15 +179,18 @@ using System.Windows.Controls.Primitives;
     public static IEnumerable<TChildren> EnumerateVisualChildElements<TChildren>(this DependencyObject parent)
       where TChildren : DependencyObject
     {
-      for (var childIndex = 0; childIndex < VisualTreeHelper.GetChildrenCount(parent); childIndex++)
+      if (parent is System.Windows.Controls.Primitives.Popup popup)
+      {
+        parent = popup.Child;
+        if (parent == null)
+        {
+          yield break;
+        }
+      }
+
+      for (int childIndex = 0; childIndex < VisualTreeHelper.GetChildrenCount(parent); childIndex++)
       {
         DependencyObject childElement = VisualTreeHelper.GetChild(parent, childIndex);
-
-        if (childElement is System.Windows.Controls.Primitives.Popup popup)
-        {
-          childElement = popup.Child;
-        }
-
         if (childElement is TChildren element)
         {
           yield return element;
@@ -226,30 +222,54 @@ using System.Windows.Controls.Primitives;
     /// <param name="frameworkElement"></param>
     /// <param name="value"></param>
     /// <returns><c>true</c> if the assignment was succesful. Otherwise <c>false</c>.</returns>
-    public static bool TryAssignValue(this FrameworkElement frameworkElement, object value)      
+    public static bool TryAssignValue(this FrameworkElement frameworkElement, object value)
     {
+      bool isValueAssigned = false;
       switch (frameworkElement)
       {
-        case Border border: 
-          if (value is UIElement)
+        case Control control when !(control is ContentControl):
+          {
+            Type type = control.GetType();
+            string propertyName = type.GetCustomAttribute<ContentPropertyAttribute>()?.Name;
+            if (!string.IsNullOrWhiteSpace(propertyName))
+            {
+              isValueAssigned = HelperExtensions.TrySetValueToPropertyOfType(value, propertyName, control);
+            }
+
+            break;
+          }
+        case Border border:
+          if (value is UIElement || value is null)
           {
             border.Child = value as UIElement;
+            isValueAssigned = true;
+            break;
           }
-          else
+
+          throw new ArgumentException($"Invalid type. Can't assign value of type {value.GetType().FullName} to the 'Border.Child' property of type {typeof(UIElement).FullName}", nameof(value));
+        case Panel panel:
           {
-            return false;
+            Type type = panel.GetType();
+            string propertyName = type.GetCustomAttribute<ContentPropertyAttribute>()?.Name;
+            if (!string.IsNullOrWhiteSpace(propertyName))
+            {
+              if (propertyName.Equals(nameof(Panel.Children), StringComparison.OrdinalIgnoreCase))
+              {
+                if (value is UIElement || value is null)
+                {
+                  _ = panel.Children.Add(value as UIElement);
+                  isValueAssigned = true;
+                  break;
+                }
+
+                throw new ArgumentException($"Invalid type. Can't assign value of type {value.GetType().FullName} to the 'Border.Child' property of type {typeof(UIElement).FullName}", nameof(value));
+              }
+
+              isValueAssigned = HelperExtensions.TrySetValueToPropertyOfType(value, propertyName, panel);
+            }
+
+            break;
           }
-          break;
-        case Panel panel: 
-          if (value is UIElement)
-          {
-            panel.Children.Add(value as UIElement);
-          }
-          else
-          {
-            return false;
-          }
-          break;
         case TextBlock textBlock:
           textBlock.Text = value?.ToString();
           break;
@@ -257,61 +277,44 @@ using System.Windows.Controls.Primitives;
           textBox.Text = value?.ToString();
           break;
         case ContentControl contentControl:
-        {
-          Type type = contentControl.GetType();
-          string propertyName = type.GetCustomAttribute<ContentPropertyAttribute>()?.Name;
-          if (string.IsNullOrWhiteSpace(propertyName) 
-              || propertyName.Equals(nameof(contentControl.Content), StringComparison.Ordinal))
           {
-            contentControl.Content = value;
-          }
-          else
-          {
-            if (!HelperExtensions.TrySetValueToPropertyOfType(value, type, propertyName, contentControl))
+            Type type = contentControl.GetType();
+            string propertyName = type.GetCustomAttribute<ContentPropertyAttribute>()?.Name;
+            if (string.IsNullOrWhiteSpace(propertyName)
+                || propertyName.Equals(nameof(contentControl.Content), StringComparison.Ordinal))
             {
-              return false;
+              contentControl.Content = value;
+              isValueAssigned = true;
             }
+            else
+            {
+              isValueAssigned = HelperExtensions.TrySetValueToPropertyOfType(value, propertyName, contentControl);
             }
-          break;
-        }
+
+            break;
+          }
         case ContentPresenter contentPresenter:
           contentPresenter.Content = value;
+          isValueAssigned = true;
           break;
-        case Control control:
-        {
-          Type type = control.GetType();
-          string propertyName = type.GetCustomAttribute<ContentPropertyAttribute>()?.Name;
-          if (string.IsNullOrWhiteSpace(propertyName))
-          {
-            control.DataContext = value;
-          }
-          else
-          {
-            if (!HelperExtensions.TrySetValueToPropertyOfType(value, type, propertyName, control))
-            {
-              return false;
-            }
-          }
-
-          break;
-        }
         default:
-          frameworkElement.DataContext = value;
           break;
       }
-      return true;
+
+      return isValueAssigned;
     }
 
-    private static bool TrySetValueToPropertyOfType(object value, Type type, string contentPropertyName, Control control)
+    private static bool TrySetValueToPropertyOfType(object value, string propertyNameOfTargetControl, UIElement targetControl)
     {
-      PropertyInfo propertyInfo = type.GetProperty(contentPropertyName);
+      Type typeOfTargetControl = targetControl.GetType();
+      PropertyInfo propertyInfo = typeOfTargetControl.GetProperty(propertyNameOfTargetControl);
       if (propertyInfo == null
           || !propertyInfo.PropertyType.IsInstanceOfType(value))
       {
         return false;
       }
 
-      propertyInfo.SetValue(control, value);
+      propertyInfo.SetValue(targetControl, value);
       return true;
     }
 
@@ -341,19 +344,23 @@ using System.Windows.Controls.Primitives;
         {
           maxX = point;
         }
+
         if (point.X < minX.X)
         {
           minX = point;
         }
+
         if (point.Y > maxY.Y)
         {
           maxY = point;
         }
+
         if (point.Y < minY.Y)
         {
           minY = point;
         }
       }
+
       return (maxX, minX, maxY, minY);
     }
   }

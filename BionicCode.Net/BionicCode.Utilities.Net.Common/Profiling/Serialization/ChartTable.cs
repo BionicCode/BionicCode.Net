@@ -2,7 +2,6 @@
 {
   using System.Collections.Generic;
   using System.Text.Json.Serialization;
-  using JetBrains.Annotations;
 
   internal class ChartTable
   {
@@ -53,7 +52,7 @@
 
   internal class SeriesResultToRowIndexMap
   {
-    public SeriesResultToRowIndexMap(int capacity) 
+    public SeriesResultToRowIndexMap(int capacity)
       => this.ResultToRowIndexMap = new ResultMapperEntry[capacity];
 
     public void AddResultMapperEntry(int resultIndex, int rowIndex) => this.ResultToRowIndexMap[resultIndex] = new ResultMapperEntry(resultIndex, rowIndex);

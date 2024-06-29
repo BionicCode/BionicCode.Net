@@ -1,12 +1,7 @@
 ﻿namespace BionicCode.Controls.Net.Wpf
 {
   using System;
-  using System.Collections;
-  using System.Collections.Generic;
-  using System.Collections.Specialized;
-  using System.Linq;
   using System.Windows;
-  using System.Windows.Controls;
 
   /* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
   Before:
@@ -18,8 +13,6 @@
     using BionicCode.Controls.Net;
     using BionicCode.Controls.Net.Wpf;
           */
-  using System.Windows.Controls.Primitives;
-  using BionicCode.Utilities.Net;
 
   public class CartesianChart : Chart
   {
@@ -48,20 +41,42 @@
 
     public CartesianChartViewId SelectedView
     {
+
+/* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
+Before:
       get { return (CartesianChartViewId)GetValue(SelectedViewProperty); }
-      set { SetValue(SelectedViewProperty, value); }
+After:
+      get => (CartesianChartViewId)GetValue(SelectedViewProperty); }
+*/
+      get => (CartesianChartViewId)GetValue(SelectedViewProperty);
+      set => SetValue(SelectedViewProperty, value);
     }
 
     public static readonly DependencyProperty SelectedViewProperty =
         DependencyProperty.Register(
           "SelectedView",
-          typeof(CartesianChartViewId), 
-          typeof(CartesianChart), 
+          typeof(CartesianChartViewId),
+          typeof(CartesianChart),
           new FrameworkPropertyMetadata(CartesianChartViewId.Line, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnSelectedViewChanged));
 
+
+/* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
+Before:
     #endregion SelectedView
 
     
+
+    /// <summary>
+After:
+    #endregion SelectedView
+
+
+
+    /// <summary>
+*/
+    #endregion SelectedView
+
+
 
     /// <summary>
     /// Sets
@@ -83,7 +98,6 @@
 
     #endregion Dependency properties
 
-
     static CartesianChart()
     {
       //DefaultStyleKeyProperty.OverrideMetadata(
@@ -91,10 +105,7 @@
       //  new FrameworkPropertyMetadata(typeof(CartesianChart)));
     }
 
-    public CartesianChart()
-    {
-      this.DefaultSeriesSelector = new SeriesSelector();
-    }
+    public CartesianChart() => this.DefaultSeriesSelector = new SeriesSelector();
 
     private static void OnSelectedViewChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as CartesianChart).OnSelectedViewChanged((CartesianChartViewId)e.OldValue, (CartesianChartViewId)e.NewValue);
 
@@ -112,7 +123,6 @@
 
     /// <inheritdoc />
     protected override bool IsItemItsOwnContainerOverride(object item) => item is CartesianChartItem;
-
 
     /// <inheritdoc />
     //protected override void OnItemsViewChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -274,7 +284,6 @@
     //    new Point(
     //      IsAutoScaleEnabled ? MaxXValueInternal : MaxXValue,
     //      IsAutoScaleEnabled ? MaxYValueInternal : MaxYValue));
-
 
     private SeriesSelector DefaultSeriesSelector { get; }
   }

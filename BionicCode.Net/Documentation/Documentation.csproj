@@ -6,14 +6,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="docfx.console" Version="2.59.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="msdn.4.5.2" Version="0.1.0-alpha-1611021200" />
-  </ItemGroup>
-
 	<!--<PropertyGroup>
 		<BuildDocFx Condition="$(TargetFramework) != 'net6.0-windows'">false</BuildDocFx>
 	</PropertyGroup>-->

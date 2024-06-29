@@ -14,13 +14,13 @@ using System.ComponentModel;
 
 namespace BionicCode.Controls.Net.Wpf
 {
-    public interface ICalendarDate : INotifyPropertyChanged
-    {
-        string Annotation { get; set; }
-        DateTime Day { get; set; }
-        bool IsHoliday { get; set; }
-        bool IsSelected { get; set; }
-        DayOfWeek DayOfWeek { get; set; }
-        int WeekOfYear { get; set; }
-    }
+  public interface ICalendarDate : INotifyPropertyChanged
+  {
+    string Annotation { get; set; }
+    DateTime Day { get; set; }
+    bool IsHoliday { get; set; }
+    bool IsSelected { get; set; }
+    DayOfWeek DayOfWeek { get; set; }
+    int WeekOfYear { get; set; }
+  }
 }

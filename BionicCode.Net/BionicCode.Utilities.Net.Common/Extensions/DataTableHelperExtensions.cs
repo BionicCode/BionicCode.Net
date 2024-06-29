@@ -4,7 +4,6 @@
   using System.Collections.Generic;
   using System.Data;
   using System.Linq;
-  using System.Text;
 
   /// <summary>
   /// A collection of extension methods for various default types
@@ -21,7 +20,7 @@
     /// <br/><see cref="AddColumn{TData}(DataTable, string, int)"/> should be called before an overload of <see cref="AddRow(DataTable, object[])"/></remarks>
     public static void AddColumn<TData>(this DataTable source, string columnName)
     {
-      DataColumn newColumn = new DataColumn(columnName, typeof(TData));
+      var newColumn = new DataColumn(columnName, typeof(TData));
 
       source.Columns.Add(newColumn);
       int newColumnIndex = source.Columns.IndexOf(newColumn);
@@ -46,7 +45,7 @@
     /// <br/><see cref="AddColumn{TData}(DataTable, string, int)"/> should be called before an overload of <see cref="AddRow(DataTable, object[])"/></remarks>
     public static void AddColumn<TData>(this DataTable source, string columnName, int columnIndex)
     {
-      DataColumn newColumn = new DataColumn(columnName, typeof(TData));
+      var newColumn = new DataColumn(columnName, typeof(TData));
 
       source.Columns.Add(newColumn);
       newColumn.SetOrdinal(columnIndex);

@@ -7,7 +7,7 @@
   using System.Windows.Input;
 
   /// <inheritdoc/>
-  public interface IAsyncRelayCommand : IAsyncRelayCommandCommon, ICommand, INotifyPropertyChanged
+  public interface IAsyncRelayCommand : IAsyncRelayCommandCommon
   {
   }
 }

@@ -1,7 +1,6 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System;
-  using Microsoft.Win32.SafeHandles;
 
   public readonly struct Minutes : IEquatable<Minutes>, IComparable<Minutes>
   {
@@ -35,13 +34,13 @@
     public override int GetHashCode()
     {
       int hashCode = -177567199;
-      hashCode = hashCode * -1521134295 + this.Value.GetHashCode();
-      hashCode = hashCode * -1521134295 + this.Unit.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.Value.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.Unit.GetHashCode();
       return hashCode;
     }
 #endif
 
-    public override bool Equals(object obj) => obj is Minutes minutes && this.Equals(minutes);
+    public override bool Equals(object obj) => obj is Minutes minutes && Equals(minutes);
 
     public double Value { get; }
     public TimeUnit Unit { get; }

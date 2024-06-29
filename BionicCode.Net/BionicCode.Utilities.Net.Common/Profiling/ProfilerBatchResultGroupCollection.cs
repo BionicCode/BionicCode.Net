@@ -5,20 +5,15 @@
 
   public class ProfilerBatchResultGroupCollection : List<ProfilerBatchResultGroup>
   {
-    public ProfilerBatchResultGroupCollection(Type profiledType)
+    public ProfilerBatchResultGroupCollection()
     {
-      this.ProfiledType = profiledType;
     }
 
-    public ProfilerBatchResultGroupCollection(IEnumerable<ProfilerBatchResultGroup> collection, Type profiledType) : base(collection)
-    {
-      this.ProfiledType = profiledType;
-    }
+    public ProfilerBatchResultGroupCollection(Type profiledType) => this.ProfiledType = profiledType;
 
-    public ProfilerBatchResultGroupCollection(int capacity, Type profiledType) : base(capacity)
-    {
-      this.ProfiledType = profiledType;
-    }
+    public ProfilerBatchResultGroupCollection(IEnumerable<ProfilerBatchResultGroup> collection, Type profiledType) : base(collection) => this.ProfiledType = profiledType;
+
+    public ProfilerBatchResultGroupCollection(int capacity, Type profiledType) : base(capacity) => this.ProfiledType = profiledType;
 
     public Type ProfiledType { get; }
   }

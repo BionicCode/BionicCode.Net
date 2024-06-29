@@ -4,12 +4,10 @@
   using System.Collections.Generic;
   using System.Diagnostics;
   using System.IO;
-  using System.Linq;
   using System.Reflection;
   using System.Runtime.CompilerServices;
   using System.Text;
   using System.Threading.Tasks;
-  using static System.Collections.Specialized.BitVector32;
 
   /// <summary>
   /// Helper methods to measure code execution time.
@@ -188,7 +186,7 @@
     /// <para>Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <see cref="ProfilerBatchResult.Summary"/>, but marked as cancelled).
     /// <br/>A cancelled task is a <see cref="Task"/> where the <see cref="Task.Status"/> returns either <see cref="TaskStatus.Canceled"/> or <see cref="TaskStatus.Faulted"/> or an <see cref="OperationCanceledException"/> exception was thrown.</para>
     /// </remarks>
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, AsyncProfilerOptions options, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, AsyncProfilerOptions options, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
       => await LogTimeAsyncInternal(asyncAction, null, null, options.WarmupIterations, options.Iterations, -1, options.Logger, options.AsyncLogger, options.BaseUnit, sourceFileName, lineNumber);
 
     /// <summary>
@@ -209,7 +207,63 @@
     /// Use the <see cref="LogTimeAsync(Func{Task}, AsyncProfilerOptions, string, int)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
     /// </para>
     /// </remarks>
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard21)'
+Before:
     public async static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+After:
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net472)'
+Before:
+    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+After:
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net50)'
+Before:
+    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+After:
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net80)'
+Before:
+    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+After:
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard20)'
+Before:
+    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+After:
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
+    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+After:
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net60)'
+Before:
+    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+After:
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net70)'
+Before:
+    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+After:
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+*/
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
       => await LogTimeAsyncInternal(asyncAction, null, null, Profiler.DefaultWarmupCount, runCount, -1, null, null, Profiler.DefaultBaseUnit, sourceFileName, lineNumber);
 
     /// <summary>
@@ -225,7 +279,7 @@
     /// <para>Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <see cref="ProfilerBatchResult.Summary"/>, but marked as cancelled).
     /// <br/>A cancelled task is a <see cref="Task"/> where the <see cref="Task.Status"/> returns either <see cref="TaskStatus.Canceled"/> or <see cref="TaskStatus.Faulted"/> or an <see cref="OperationCanceledException"/> exception was thrown.</para>
     /// </remarks>
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, AsyncProfilerOptions options, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, AsyncProfilerOptions options, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
       => await LogTimeAsyncInternal(null, asyncAction, null, options.WarmupIterations, options.Iterations, -1, options.Logger, options.AsyncLogger, options.BaseUnit, sourceFileName, lineNumber);
 
     /// <summary>
@@ -248,7 +302,63 @@
     /// Use the <see cref="LogTimeAsync(Func{ValueTask}, AsyncProfilerOptions, string, int)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
     /// </para>
     /// </remarks>
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard21)'
+Before:
     public async static Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+After:
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net472)'
+Before:
+    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+After:
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net50)'
+Before:
+    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+After:
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net80)'
+Before:
+    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+After:
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard20)'
+Before:
+    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+After:
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
+    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+After:
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net60)'
+Before:
+    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+After:
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net70)'
+Before:
+    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+After:
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+*/
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
       => await LogTimeAsyncInternal(null, asyncAction, null, Profiler.DefaultWarmupCount, runCount, -1, null, null, Profiler.DefaultBaseUnit, sourceFileName, lineNumber);
 
     /// <summary>
@@ -289,7 +399,7 @@
     /// Use the <see cref="LogTimeAsync(Func{Task}, AsyncProfilerOptions, string, int)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
     /// </para>
     /// </remarks>
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, ProfilerLoggerDelegate logger, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1) 
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, ProfilerLoggerDelegate logger, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
       => await LogTimeAsyncInternal(asyncAction, null, null, Profiler.DefaultWarmupCount, runCount, -1, logger, null, Profiler.DefaultBaseUnit, sourceFileName, lineNumber);
 
     /// <summary>
@@ -432,10 +542,10 @@
         return ProfilerBatchResult.Empty;
       }
 
-      ProfilerBatchResult result = new ProfilerBatchResult(runCount, DateTime.Now);
+      var result = new ProfilerBatchResult(runCount, DateTime.Now);
       var assemblyOfTargetType = Assembly.GetCallingAssembly();
       string asseblyName = assemblyOfTargetType.GetName().Name;
-      var context = new ProfilerContext(asseblyName, action?.GetType().ToDisplayName() ?? asyncAction?.GetType().ToDisplayName(), ProfiledTargetType.Delegate, sourceFileName, lineNumber, null, warmupCount);
+      var context = new ProfilerContext(asseblyName, action?.GetType().ToDisplayName() ?? asyncAction?.GetType().ToDisplayName(), ProfiledTargetType.Delegate, sourceFileName, lineNumber, null, warmupCount, Runtime.Default);
       result.Context = context;
       result.BaseUnit = Profiler.DefaultBaseUnit;
 
@@ -469,7 +579,7 @@
       var result = new ProfilerBatchResult(runCount, DateTime.Now);
       var assemblyOfTargetType = Assembly.GetCallingAssembly();
       string asseblyName = assemblyOfTargetType.GetName().Name;
-      var context = new ProfilerContext(asseblyName, action?.GetType().ToDisplayName(), ProfiledTargetType.Delegate, sourceFileName, lineNumber, null, warmupCount);
+      var context = new ProfilerContext(asseblyName, action?.GetType().ToDisplayName(), ProfiledTargetType.Delegate, sourceFileName, lineNumber, null, warmupCount, Runtime.Default);
       result.Context = context;
       result.BaseUnit = Profiler.DefaultBaseUnit;
 
@@ -490,7 +600,7 @@
           stopwatch.Restart();
           action.Invoke();
           stopwatch.Stop();
-        } 
+        }
         else if (asyncAction != null)
         {
           try
@@ -586,10 +696,10 @@
     /// </para>
     /// </remarks>
     public static IDisposable LogTimeScoped(ProfilerLoggerDelegate logger, out ProfilerBatchResult result, TimeUnit baseUnit = Profiler.DefaultBaseUnit, [CallerMemberName] string scopeName = "", [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-    {            
+    {
       var assemblyOfTargetType = Assembly.GetCallingAssembly();
       string asseblyName = assemblyOfTargetType.GetName().Name;
-      var context = new ProfilerContext(asseblyName, scopeName, ProfiledTargetType.Delegate, sourceFileName, lineNumber, null, 0);
+      var context = new ProfilerContext(asseblyName, scopeName, ProfiledTargetType.Delegate, sourceFileName, lineNumber, null, 0, Runtime.Default);
       var profilerScopeProvider = new ProfilerScopeProvider(logger, context, baseUnit);
       IDisposable profilerScope = profilerScopeProvider.StartProfiling(out result);
 
@@ -635,7 +745,7 @@
     {
       var assemblyOfTargetType = Assembly.GetCallingAssembly();
       string asseblyName = assemblyOfTargetType.GetName().Name;
-      var context = new ProfilerContext(asseblyName, scopeName, ProfiledTargetType.Delegate, sourceFileName, lineNumber, null, 0);
+      var context = new ProfilerContext(asseblyName, scopeName, ProfiledTargetType.Delegate, sourceFileName, lineNumber, null, 0, Runtime.Default);
       var profilerScopeProvider = new ProfilerScopeProvider(asyncLogger, context, baseUnit);
       IDisposable profilerScope = profilerScopeProvider.StartProfiling(out result);
 

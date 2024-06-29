@@ -24,7 +24,7 @@ namespace BionicCode.Controls.Net.Wpf
           return this.ImageSourceDataTemplate;
         default:
           return this.ObjectDataTemplate;
-      } 
+      }
     }
 
     #endregion

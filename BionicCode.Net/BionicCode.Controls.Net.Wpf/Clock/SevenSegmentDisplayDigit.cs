@@ -7,12 +7,9 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using BionicCode.Utilities.Net;
 
 namespace BionicCode.Controls.Net.Wpf
@@ -22,10 +19,7 @@ namespace BionicCode.Controls.Net.Wpf
   {
     public int DisplayIndex { get; }
 
-    public SevenSegmentDisplayDigit(Int16 displayIndex)
-    {
-      this.DisplayIndex = displayIndex;
-    }
+    public SevenSegmentDisplayDigit(Int16 displayIndex) => this.DisplayIndex = displayIndex;
 
     public void ToggleSegments(BitArray word)
     {
@@ -34,24 +28,24 @@ namespace BionicCode.Controls.Net.Wpf
         .OrderBy(segment => segment.Index)
         .ToArray();
 
-      for (var segmentIndex = 0; segmentIndex < segments.Length; segmentIndex++)
+      for (int segmentIndex = 0; segmentIndex < segments.Length; segmentIndex++)
       {
         segments[segmentIndex].IsOn = word.Get(segmentIndex);
       }
     }
 
-    private double GetHorizontalOffset() => Math.Cos((90 - this.SegmentTiltAngle).ToRadians()) * (this.SegmentWidth * 2) + this.SegmentHeight / 2 + this.GapWidth / 2;
+    private double GetHorizontalOffset() => (Math.Cos((90 - this.SegmentTiltAngle).ToRadians()) * (this.SegmentWidth * 2)) + (this.SegmentHeight / 2) + (this.GapWidth / 2);
 
     protected override Size GetNaturalSize()
     {
       double horizontalOffset = GetHorizontalOffset();
       double coercedVerticalSegmentHeight = Math.Cos(this.SegmentTiltAngle.ToRadians()) * this.SegmentWidth;
-      var height = 2 * coercedVerticalSegmentHeight + 4 * this.GapWidth + this.SegmentHeight + this.Padding.Top;
-      var width = horizontalOffset + 2 * this.GapWidth + this.SegmentWidth +
-                  this.SegmentHeight / 2 + this.Padding.Left;
+      double height = (2 * coercedVerticalSegmentHeight) + (4 * this.GapWidth) + this.SegmentHeight + this.Padding.Top;
+      double width = horizontalOffset + (2 * this.GapWidth) + this.SegmentWidth +
+                  (this.SegmentHeight / 2) + this.Padding.Left;
       return new Size(width, height);
     }
-    
+
     protected override void DrawSegments(Rect bounds)
     {
       this.SegmentPanel.Children.Clear();
@@ -83,7 +77,7 @@ namespace BionicCode.Controls.Net.Wpf
         OffColor = this.SegmentOffColor
       };
       this.SegmentPanel.Children.Add(verticalTopRightSegment);
-      Canvas.SetLeft(verticalTopRightSegment, bounds.X + this.SegmentWidth + 2 * this.GapWidth);
+      Canvas.SetLeft(verticalTopRightSegment, bounds.X + this.SegmentWidth + (2 * this.GapWidth));
       Canvas.SetTop(verticalTopRightSegment, bounds.Y + this.GapWidth);
 
       var verticalBottomRightSegment = new VerticalDigitSegment()
@@ -96,8 +90,8 @@ namespace BionicCode.Controls.Net.Wpf
         OffColor = this.SegmentOffColor
       };
       this.SegmentPanel.Children.Add(verticalBottomRightSegment);
-      Canvas.SetLeft(verticalBottomRightSegment, bounds.X + this.SegmentWidth + 2 * this.GapWidth - this.SegmentHeight);
-      Canvas.SetTop(verticalBottomRightSegment, bounds.Y + coercedVerticalSegmentHeight + 3 * this.GapWidth);
+      Canvas.SetLeft(verticalBottomRightSegment, bounds.X + this.SegmentWidth + (2 * this.GapWidth) - this.SegmentHeight);
+      Canvas.SetTop(verticalBottomRightSegment, bounds.Y + coercedVerticalSegmentHeight + (3 * this.GapWidth));
 
       var verticalBottomLeftSegment = new VerticalDigitSegment()
       {
@@ -110,7 +104,7 @@ namespace BionicCode.Controls.Net.Wpf
       };
       this.SegmentPanel.Children.Add(verticalBottomLeftSegment);
       Canvas.SetLeft(verticalBottomLeftSegment, bounds.X - this.SegmentHeight);
-      Canvas.SetTop(verticalBottomLeftSegment, bounds.Y + coercedVerticalSegmentHeight + 3 * this.GapWidth);
+      Canvas.SetTop(verticalBottomLeftSegment, bounds.Y + coercedVerticalSegmentHeight + (3 * this.GapWidth));
 
       var horizontalTopSegment = new HorizontalDigitSegment()
       {
@@ -136,7 +130,7 @@ namespace BionicCode.Controls.Net.Wpf
       };
       this.SegmentPanel.Children.Add(horizontalCenterSegment);
       Canvas.SetLeft(horizontalCenterSegment, bounds.X - this.SegmentHeight + this.GapWidth);
-      Canvas.SetTop(horizontalCenterSegment, bounds.Y  + coercedVerticalSegmentHeight + 2 * this.GapWidth);
+      Canvas.SetTop(horizontalCenterSegment, bounds.Y + coercedVerticalSegmentHeight + (2 * this.GapWidth));
 
       var horizontalBottomSegment = new HorizontalDigitSegment()
       {
@@ -148,8 +142,8 @@ namespace BionicCode.Controls.Net.Wpf
         OffColor = this.SegmentOffColor
       };
       this.SegmentPanel.Children.Add(horizontalBottomSegment);
-      Canvas.SetLeft(horizontalBottomSegment, bounds.X + this.GapWidth - horizontalOffset + this.SegmentHeight / 2);
-      Canvas.SetTop(horizontalBottomSegment, bounds.Y + 2 * coercedVerticalSegmentHeight + 4 * this.GapWidth);
+      Canvas.SetLeft(horizontalBottomSegment, bounds.X + this.GapWidth - horizontalOffset + (this.SegmentHeight / 2));
+      Canvas.SetTop(horizontalBottomSegment, bounds.Y + (2 * coercedVerticalSegmentHeight) + (4 * this.GapWidth));
     }
   }
 }

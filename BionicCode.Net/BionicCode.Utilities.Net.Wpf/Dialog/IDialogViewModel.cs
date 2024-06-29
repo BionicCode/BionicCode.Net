@@ -5,12 +5,12 @@
 
 namespace BionicCode.Utilities.Net
 {
-using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
+  using System;
+  using System.ComponentModel;
+  using System.Threading.Tasks;
 
 #if NET || NET461_OR_GREATER
-using System.Windows.Media;
+  using System.Windows.Media;
   /// <summary>
   /// The DataContext and binding source for the dialog Window. Implement this interface or the derived abstract <see cref="DialogViewModel"/> to transport data from the view to the view model via binding. The <see cref="IDialogViewModel"/> will be the content of the dialog window. This means the corresponding DataTemplate can define e.g. an input form that can bind to the <see cref="IDialogViewModel"/>. Register a callback with the <see cref="ResponseCallbackAsync"/> property to process the <see cref="DialogResult"/> and the data of the <see cref="IDialogViewModel"/>.
   /// </summary>

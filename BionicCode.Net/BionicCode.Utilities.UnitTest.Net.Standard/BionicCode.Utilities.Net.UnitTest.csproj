@@ -1,10 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="F:\-Programming-\C#\GitOpenSourceRepository\BionicCode.Net\BionicCode.Net\BionicCode.Utilities.UnitTest.Net\Resources\BenchmarkTarget.cs" Link="BenchmarkTarget.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.7.0" />
@@ -23,6 +27,10 @@
   <ItemGroup>
     <ProjectReference Include="..\BionicCode.Utilities.Net.Common\BionicCode.Utilities.Net.Common.csproj" />
     <ProjectReference Include="..\BionicCode.Utilities.Net\BionicCode.Utilities.Net.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
 
 </Project>

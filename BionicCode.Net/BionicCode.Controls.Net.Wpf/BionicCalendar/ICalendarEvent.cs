@@ -14,13 +14,13 @@ using System.ComponentModel;
 
 namespace BionicCode.Controls.Net.Wpf
 {
-    public interface ICalendarEvent : INotifyPropertyChanged
-    {
-        DateTime Start { get; set; }
-        DateTime Stop { get; set; }
-        bool IsRecurring { get; set; }
-        DateTime Interval { get; set; }
-        object Id { get; set; }
-        string Summary { get; set; }
-    }
+  public interface ICalendarEvent : INotifyPropertyChanged
+  {
+    DateTime Start { get; set; }
+    DateTime Stop { get; set; }
+    bool IsRecurring { get; set; }
+    DateTime Interval { get; set; }
+    object Id { get; set; }
+    string Summary { get; set; }
+  }
 }

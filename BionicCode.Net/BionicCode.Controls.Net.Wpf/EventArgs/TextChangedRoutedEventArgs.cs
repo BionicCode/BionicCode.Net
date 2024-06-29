@@ -1,10 +1,5 @@
 ﻿namespace BionicCode.Controls.Net.Wpf
 {
-  using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
-  using System.Threading.Tasks;
   using System.Windows;
   using System.Windows.Controls;
 
@@ -14,17 +9,17 @@
     {
     }
 
-    public TextChangedRoutedEventArgs(RoutedEvent routedEvent) 
+    public TextChangedRoutedEventArgs(RoutedEvent routedEvent)
       : base(routedEvent)
     {
     }
 
-    public TextChangedRoutedEventArgs(RoutedEvent routedEvent, object source) 
+    public TextChangedRoutedEventArgs(RoutedEvent routedEvent, object source)
       : base(routedEvent, source)
     {
     }
 
-    public TextChangedRoutedEventArgs(RoutedEvent routedEvent, object source, UndoAction undoAction, string oldText, string newText, int changeIndex) 
+    public TextChangedRoutedEventArgs(RoutedEvent routedEvent, object source, UndoAction undoAction, string oldText, string newText, int changeIndex)
       : base(routedEvent, source)
     {
       this.UndoAction = undoAction;

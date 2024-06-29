@@ -12,9 +12,6 @@ namespace BionicCode.Controls.Net.Wpf
 {
   public class WeekHeaderItem : ContentControl
   {
-    static WeekHeaderItem()
-    {
-      FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(WeekHeaderItem), new FrameworkPropertyMetadata(typeof(WeekHeaderItem)));
-    }
+    static WeekHeaderItem() => FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(WeekHeaderItem), new FrameworkPropertyMetadata(typeof(WeekHeaderItem)));
   }
 }

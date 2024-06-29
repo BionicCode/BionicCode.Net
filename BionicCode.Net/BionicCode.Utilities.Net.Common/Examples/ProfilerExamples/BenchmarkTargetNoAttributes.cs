@@ -51,7 +51,7 @@
       }
 
       return series;
-    } 
+    }
     #endregion
   }
 }

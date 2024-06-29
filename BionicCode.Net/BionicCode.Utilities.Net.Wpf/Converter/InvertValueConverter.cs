@@ -5,14 +5,14 @@
   using System.Windows;
 
 #if NET || NET461_OR_GREATER
-using System.Windows.Data;
+  using System.Windows.Data;
   /// <summary>
   /// Implementation of <see cref="IValueConverter"/> that inverts <see cref="bool"/>, <see cref="Visibility"/>, <see cref="int"/>, <see cref="double"/>, <see cref="decimal"/> and <see cref="float"/>
   /// </summary>
   [ValueConversion(typeof(object), typeof(object))]
   public class InvertValueConverter : IValueConverter
   {
-  #region Implementation of IValueConverter
+    #region Implementation of IValueConverter
 
     /// <inheritdoc />
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -42,7 +42,7 @@ using System.Windows.Data;
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
       Convert(value, targetType, parameter, culture);
 
-  #endregion
+    #endregion
   }
 #endif
 }

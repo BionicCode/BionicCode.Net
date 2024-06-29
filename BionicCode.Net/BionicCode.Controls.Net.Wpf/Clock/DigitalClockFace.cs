@@ -1,16 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace BionicCode.Controls.Net.Wpf
@@ -21,7 +13,7 @@ namespace BionicCode.Controls.Net.Wpf
     {
       this.Digits = new SortedSet<ISevenSegmentDigit>(Comparer<ISevenSegmentDigit>.Create((digit1, digit2) => digit1.DisplayIndex.CompareTo(digit2.DisplayIndex)));
       this.SegmentDisplayDriver = new SegmentDisplayDriver(this) { IsPaddingEnabled = true };
-      this.ClockFaceBackgroundFrame = new Rectangle() {Fill = this.Background};
+      this.ClockFaceBackgroundFrame = new Rectangle() { Fill = this.Background };
     }
 
     #region Overrides of ClockFace
@@ -31,10 +23,10 @@ namespace BionicCode.Controls.Net.Wpf
     {
       base.OnSelectedTimeChanged(oldValue, newValue);
 
-      double concatenatedTimeValues = this.SelectedHour * Math.Pow(10, 4) 
-                                      + this.SelectedMinute * Math.Pow(10, 2) 
+      double concatenatedTimeValues = (this.SelectedHour * Math.Pow(10, 4))
+                                      + (this.SelectedMinute * Math.Pow(10, 2))
                                       + this.SelectedSecond;
-      this.SegmentDisplayDriver.SetValue((int) concatenatedTimeValues);
+      this.SegmentDisplayDriver.SetValue((int)concatenatedTimeValues);
     }
 
     #endregion
@@ -62,7 +54,7 @@ namespace BionicCode.Controls.Net.Wpf
     {
       base.ArrangeOverride(arrangeBounds);
       DrawClockFace(arrangeBounds);
-      var minimumArrangeBounds = GetNaturalSize();
+      Size minimumArrangeBounds = GetNaturalSize();
       this.ClockFaceBackgroundFrame.Width = minimumArrangeBounds.Width;
       this.ClockFaceBackgroundFrame.Height = minimumArrangeBounds.Height;
       this.ClockFaceBackgroundFrame.Fill = this.Background;
@@ -117,7 +109,7 @@ namespace BionicCode.Controls.Net.Wpf
       AddElementToClockFace(hourDigit1, digitPosition);
       this.Digits.Add(hourDigit1);
 
-      digitPosition.Offset(digitWidth + separatorMargin / 2, 0);
+      digitPosition.Offset(digitWidth + (separatorMargin / 2), 0);
       var separatorDisplayDigit0 = new SeparatorDisplayDigit();
       AddElementToClockFace(separatorDisplayDigit0, digitPosition);
 
@@ -131,7 +123,7 @@ namespace BionicCode.Controls.Net.Wpf
       AddElementToClockFace(minuteDigit1, digitPosition);
       this.Digits.Add(minuteDigit1);
 
-      digitPosition.Offset(digitWidth + separatorMargin / 2, 0);
+      digitPosition.Offset(digitWidth + (separatorMargin / 2), 0);
       var separatorDisplayDigit1 = new SeparatorDisplayDigit();
       AddElementToClockFace(separatorDisplayDigit1, digitPosition);
 

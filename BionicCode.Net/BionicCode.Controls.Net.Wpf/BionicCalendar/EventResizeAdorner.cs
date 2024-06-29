@@ -40,15 +40,9 @@ namespace BionicCode.Controls.Net.Wpf
       Selector.AddUnselectedHandler(adornedElement, OnAdornedItemUnselected);
     }
 
-    private void OnAdornedItemUnselected(object sender, RoutedEventArgs e)
-    {
-      this.Visibility = Visibility.Hidden;
-    }
+    private void OnAdornedItemUnselected(object sender, RoutedEventArgs e) => this.Visibility = Visibility.Hidden;
 
-    private void OnAdornedItemSelected(object sender, RoutedEventArgs e)
-    {
-      this.Visibility = Visibility.Visible;
-    }
+    private void OnAdornedItemSelected(object sender, RoutedEventArgs e) => this.Visibility = Visibility.Visible;
 
     private void Initialize(object sender, RoutedEventArgs e)
     {
@@ -87,7 +81,6 @@ namespace BionicCode.Controls.Net.Wpf
 
         return;
       }
-
 
       Point leavePosition = e.GetPosition(this);
 
@@ -154,7 +147,7 @@ namespace BionicCode.Controls.Net.Wpf
           this.IsResizing = Mouse.LeftButton == MouseButtonState.Pressed;
           if (this.IsResizing)
           {
-          OnResizing();
+            OnResizing();
           }
           break;
         }
@@ -297,8 +290,8 @@ namespace BionicCode.Controls.Net.Wpf
       // TopLeft hit box rectangle
       Point paddingPoint = adornedElementRect.TopLeft;
       paddingPoint.Offset(
-        -EventResizeAdorner.HitTestPadding / 2 - EventResizeAdorner.RenderRadius / 2,
-        -EventResizeAdorner.HitTestPadding / 2 - EventResizeAdorner.RenderRadius / 2);
+        (-EventResizeAdorner.HitTestPadding / 2) - (EventResizeAdorner.RenderRadius / 2),
+        (-EventResizeAdorner.HitTestPadding / 2) - (EventResizeAdorner.RenderRadius / 2));
       var cornerResizeGripHitBox = new Rect(
         paddingPoint,
         new Size(
@@ -315,8 +308,8 @@ namespace BionicCode.Controls.Net.Wpf
       // TopCenter hit box rectangle
       paddingPoint = centerPoint;
       paddingPoint.Offset(
-        -EventResizeAdorner.HitTestPadding / 2 - EventResizeAdorner.RenderRadius / 2,
-        -EventResizeAdorner.HitTestPadding / 2 - EventResizeAdorner.RenderRadius / 2);
+        (-EventResizeAdorner.HitTestPadding / 2) - (EventResizeAdorner.RenderRadius / 2),
+        (-EventResizeAdorner.HitTestPadding / 2) - (EventResizeAdorner.RenderRadius / 2));
       cornerResizeGripHitBox.Location = paddingPoint;
       //drawingContext.DrawRectangle(transparentRenderBrush, transparentRenderPen, cornerResizeGripHitBox);
       //this.HitBoxes.Add((cornerResizeGripHitBox, Cursors.SizeNS));
@@ -327,8 +320,8 @@ namespace BionicCode.Controls.Net.Wpf
 
       // TopRight hit box rectangle
       paddingPoint.Offset(
-        -EventResizeAdorner.HitTestPadding / 2 - EventResizeAdorner.RenderRadius / 2,
-        -EventResizeAdorner.HitTestPadding / 2 - EventResizeAdorner.RenderRadius / 2);
+        (-EventResizeAdorner.HitTestPadding / 2) - (EventResizeAdorner.RenderRadius / 2),
+        (-EventResizeAdorner.HitTestPadding / 2) - (EventResizeAdorner.RenderRadius / 2));
       cornerResizeGripHitBox.Location = paddingPoint;
       //drawingContext.DrawRectangle(transparentRenderBrush, transparentRenderPen, cornerResizeGripHitBox);
       //this.HitBoxes.Add((cornerResizeGripHitBox, Cursors.SizeNESW));
@@ -346,8 +339,8 @@ namespace BionicCode.Controls.Net.Wpf
       // RightCenter hit box rectangle
       paddingPoint = centerPoint;
       paddingPoint.Offset(
-        -EventResizeAdorner.HitTestPadding / 2 - EventResizeAdorner.RenderRadius / 2,
-        -EventResizeAdorner.HitTestPadding / 2 - EventResizeAdorner.RenderRadius / 2);
+        (-EventResizeAdorner.HitTestPadding / 2) - (EventResizeAdorner.RenderRadius / 2),
+        (-EventResizeAdorner.HitTestPadding / 2) - (EventResizeAdorner.RenderRadius / 2));
       cornerResizeGripHitBox.Location = paddingPoint;
       drawingContext.DrawRectangle(transparentRenderBrush, transparentRenderPen, cornerResizeGripHitBox);
       this.HitBoxes.Add((cornerResizeGripHitBox, Cursors.SizeWE));
@@ -358,8 +351,8 @@ namespace BionicCode.Controls.Net.Wpf
 
       // BottomRight hit box rectangle
       paddingPoint.Offset(
-        -EventResizeAdorner.HitTestPadding / 2 - EventResizeAdorner.RenderRadius / 2,
-        -EventResizeAdorner.HitTestPadding / 2 - EventResizeAdorner.RenderRadius / 2);
+        (-EventResizeAdorner.HitTestPadding / 2) - (EventResizeAdorner.RenderRadius / 2),
+        (-EventResizeAdorner.HitTestPadding / 2) - (EventResizeAdorner.RenderRadius / 2));
       cornerResizeGripHitBox.Location = paddingPoint;
       //drawingContext.DrawRectangle(transparentRenderBrush, transparentRenderPen, cornerResizeGripHitBox);
       this.HitBoxes.Add((cornerResizeGripHitBox, Cursors.SizeNWSE));
@@ -372,8 +365,8 @@ namespace BionicCode.Controls.Net.Wpf
       // BottomCenter hit box rectangle
       paddingPoint = centerPoint;
       paddingPoint.Offset(
-        -EventResizeAdorner.HitTestPadding / 2 - EventResizeAdorner.RenderRadius / 2,
-        -EventResizeAdorner.HitTestPadding / 2 - EventResizeAdorner.RenderRadius / 2);
+        (-EventResizeAdorner.HitTestPadding / 2) - (EventResizeAdorner.RenderRadius / 2),
+        (-EventResizeAdorner.HitTestPadding / 2) - (EventResizeAdorner.RenderRadius / 2));
       cornerResizeGripHitBox.Location = paddingPoint;
       //drawingContext.DrawRectangle(transparentRenderBrush, transparentRenderPen, cornerResizeGripHitBox);
       //this.HitBoxes.Add((cornerResizeGripHitBox, Cursors.SizeNS));
@@ -384,8 +377,8 @@ namespace BionicCode.Controls.Net.Wpf
       // BottomLeft hit box rectangle
       paddingPoint = adornedElementRect.BottomLeft;
       paddingPoint.Offset(
-        -EventResizeAdorner.HitTestPadding / 2 - EventResizeAdorner.RenderRadius / 2,
-        -EventResizeAdorner.HitTestPadding / 2 - EventResizeAdorner.RenderRadius / 2);
+        (-EventResizeAdorner.HitTestPadding / 2) - (EventResizeAdorner.RenderRadius / 2),
+        (-EventResizeAdorner.HitTestPadding / 2) - (EventResizeAdorner.RenderRadius / 2));
       cornerResizeGripHitBox.Location = paddingPoint;
       //drawingContext.DrawRectangle(transparentRenderBrush, transparentRenderPen, cornerResizeGripHitBox);
       //this.HitBoxes.Add((cornerResizeGripHitBox, Cursors.SizeNESW));
@@ -403,8 +396,8 @@ namespace BionicCode.Controls.Net.Wpf
       // LeftCenter hit box rectangle
       paddingPoint = centerPoint;
       paddingPoint.Offset(
-        -EventResizeAdorner.HitTestPadding / 2 - EventResizeAdorner.RenderRadius / 2,
-        -EventResizeAdorner.HitTestPadding / 2 - EventResizeAdorner.RenderRadius / 2);
+        (-EventResizeAdorner.HitTestPadding / 2) - (EventResizeAdorner.RenderRadius / 2),
+        (-EventResizeAdorner.HitTestPadding / 2) - (EventResizeAdorner.RenderRadius / 2));
       cornerResizeGripHitBox.Location = paddingPoint;
       drawingContext.DrawRectangle(transparentRenderBrush, transparentRenderPen, cornerResizeGripHitBox);
       this.HitBoxes.Add((cornerResizeGripHitBox, Cursors.SizeWE));

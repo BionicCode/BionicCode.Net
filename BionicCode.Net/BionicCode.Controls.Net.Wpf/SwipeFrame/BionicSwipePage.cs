@@ -18,9 +18,6 @@ namespace BionicCode.Controls.Net.Wpf
   /// </example>
   public class BionicSwipePage : ContentControl
   {
-    static BionicSwipePage()
-    {
-      FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(BionicSwipePage), new FrameworkPropertyMetadata(typeof(BionicSwipePage)));
-    }
+    static BionicSwipePage() => FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(BionicSwipePage), new FrameworkPropertyMetadata(typeof(BionicSwipePage)));
   }
 }

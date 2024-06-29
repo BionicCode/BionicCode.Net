@@ -1,7 +1,6 @@
 ﻿
 namespace BionicCode.Controls.Net.Wpf
 {
-  using System;
   using System.Collections.Generic;
   using System.Windows;
   using System.Windows.Controls;
@@ -18,7 +17,7 @@ namespace BionicCode.Controls.Net.Wpf
       this.ScrollViewerToChartPanelMap = new Dictionary<ScrollViewer, ChartPanel>();
     }
 
-    public abstract void Generate(); 
+    public abstract void Generate();
     public abstract Rect GetValueBounds();
     protected abstract ChartPanel CreateDefaultPanel();
 
@@ -82,9 +81,8 @@ namespace BionicCode.Controls.Net.Wpf
       panel.InvalidatePlotData();
     }
 
-
     public Chart Owner { get; }
-    internal protected CollectionView InternalItems { get; set; }
+    protected internal CollectionView InternalItems { get; set; }
     internal Dictionary<object, ChartPanel> ChartPanelTable { get; }
     internal Dictionary<ISeriesInfo, Dictionary<IChartPointInfo, object>> SeriesInfoToDrawingInfoDataMap { get; }
     internal Dictionary<ScrollViewer, ChartPanel> ScrollViewerToChartPanelMap { get; }

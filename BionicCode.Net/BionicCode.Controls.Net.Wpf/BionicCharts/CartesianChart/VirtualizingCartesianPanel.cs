@@ -46,7 +46,6 @@
 
 //    #endregion Dependency properties
 
-
 //    public VirtualizingCartesianPanel()
 //    {
 //      this.Children = new VisualCollection(this);

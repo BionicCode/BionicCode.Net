@@ -10,7 +10,6 @@
   using System;
   using System.Windows;
   using System.Windows.Media;
-  using System.Windows.Shapes;
   using BionicCode.Utilities.Net;
 
   public class VerticalDigitSegment : DigitSegment
@@ -27,19 +26,19 @@
     protected override Geometry CreateGeometry()
     {
       double fullAngle = this.TiltAngle + 90;
-      double miter = 90 - fullAngle / 2;
+      double miter = 90 - (fullAngle / 2);
       double topTipLength = this.Bounds.Height / 2 * Math.Tan(miter.ToRadians());
       double bottomTip2Length = this.Bounds.Height / 2 * Math.Tan((fullAngle - miter).ToRadians());
       var pathSegments = new PathSegmentCollection()
       {
         new LineSegment(new Point(this.Bounds.X + topTipLength, this.Bounds.Y), false),
         new LineSegment(new Point(this.Bounds.X + this.Bounds.Width -bottomTip2Length, this.Bounds.Y), false),
-        new LineSegment(new Point(this.Bounds.X + this.Bounds.Width, this.Bounds.Y + this.Bounds.Height / 2), false),
+        new LineSegment(new Point(this.Bounds.X + this.Bounds.Width, this.Bounds.Y + (this.Bounds.Height / 2)), false),
         new LineSegment(new Point(this.Bounds.X + this.Bounds.Width - topTipLength, this.Bounds.Y + this.Bounds.Height), false),
         new LineSegment(new Point(this.Bounds.X + bottomTip2Length, this.Bounds.Y + this.Bounds.Height), false),
-        new LineSegment(new Point(this.Bounds.X, this.Bounds.Y + this.Bounds.Height / 2), false)
+        new LineSegment(new Point(this.Bounds.X, this.Bounds.Y + (this.Bounds.Height / 2)), false)
       };
-      var pathFigure = new PathFigure(new Point(this.Bounds.X, this.Bounds.Y + this.Bounds.Height / 2), pathSegments, true);
+      var pathFigure = new PathFigure(new Point(this.Bounds.X, this.Bounds.Y + (this.Bounds.Height / 2)), pathSegments, true);
       return new PathGeometry(new[] { pathFigure });
     }
 

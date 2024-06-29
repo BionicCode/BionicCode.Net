@@ -23,7 +23,7 @@
     [JsonPropertyName("series")]
     [JsonConverter(typeof(ChartOptionsSeriesJsonConveter))]
     IList<ChartSeries> Series { get; }
-    
+
     [JsonPropertyName("title")]
     public string Title { get; set; }
 

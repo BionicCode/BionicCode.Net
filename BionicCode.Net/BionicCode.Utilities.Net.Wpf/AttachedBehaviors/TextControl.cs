@@ -2,15 +2,15 @@
 namespace BionicCode.Utilities.Net
 {
 #if NET || NET461_OR_GREATER
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Media;
+  using System;
+  using System.Collections.Generic;
+  using System.Collections.Specialized;
+  using System.Linq;
+  using System.Windows;
+  using System.Windows.Controls;
+  using System.Windows.Data;
+  using System.Windows.Documents;
+  using System.Windows.Media;
 
   /// <summary>
   /// Attached behavior that supports dynamic text highlighting for controls derived from <see cref="TextBlock"/> or <see cref="RichTextBox"/>.
@@ -18,7 +18,7 @@ using System.Windows.Media;
   /// <seealso href="https://github.com/BionicCode/BionicCode.Net#textcontrol">See advanced example</seealso>
   public class TextControl : DependencyObject
   {
-#region TextValue attached property
+    #region TextValue attached property
 
     /// <summary>
     /// Attached property to serve as alternative text property for the <see cref="RichTextBox"/> (instead of using <see cref="RichTextBox.Document"/>). Optional property to use with <see cref="TextBlock"/> (instead of <see cref="TextBlock.Text"/>). The defined <see cref="HighlightRange"/> items contained in the attached property <see cref="HighlightRangesProperty"/> collection will always be applied to <see cref="TextBlock.Text"/> and the <see cref="TextProperty"/> values. 
@@ -44,9 +44,9 @@ using System.Windows.Media;
     /// <returns>The current text value.</returns>
     public static string GetText(DependencyObject attachingElement) => (string)attachingElement.GetValue(TextControl.TextProperty);
 
-#endregion
+    #endregion
 
-#region HighlightBackgroundColor attached property
+    #region HighlightBackgroundColor attached property
     /// <summary>
     /// Attached property to define the background <see cref="Brush"/> for the highlight text, which is defined by <see cref="HighlightRange"/> items contained in the <see cref="HighlightRangesProperty"/> attached property. 
     /// </summary>
@@ -70,9 +70,9 @@ using System.Windows.Media;
     /// <returns>The <see cref="Brush"/> for the background of the highlight text ranges.</returns>
     public static Brush GetHighlightBackground(DependencyObject attachingElement) => (Brush)attachingElement.GetValue(TextControl.HighlightBackgroundProperty);
 
-#endregion
+    #endregion
 
-#region HighlightForeground attached property
+    #region HighlightForeground attached property
 
     /// <summary>
     /// Attached property to define the foreground <see cref="Brush"/> for the highlight text, which is defined by <see cref="HighlightRange"/> items contained in the <see cref="HighlightRangesProperty"/> attached property. 
@@ -97,9 +97,9 @@ using System.Windows.Media;
     /// <returns>The <see cref="Brush"/> for the foreground of the highlight text ranges.</returns>
     public static Brush GetHighlightForeground(DependencyObject attachingElement) => (Brush)attachingElement.GetValue(TextControl.HighlightForegroundProperty);
 
-#endregion
+    #endregion
 
-#region IsEnabled attached property
+    #region IsEnabled attached property
 
     /// <summary>
     /// Attached property to enable or disable the highlight attached behavior <see cref="TextControl"/>. cref="HighlightRangesProperty"/> attached property. 
@@ -124,9 +124,9 @@ using System.Windows.Media;
     /// <returns><c>true</c> if the the attached <see cref="TextControl"/> behavior is enabled or <c>false</c> if it is disabled.</returns>
     public static bool GetIsHighlightingEnabled(DependencyObject attachingElement) => (bool)attachingElement.GetValue(TextControl.IsHighlightingEnabledProperty);
 
-#endregion
+    #endregion
 
-#region HighlightRanges attached property
+    #region HighlightRanges attached property
 
     /// <summary>
     /// Attached property to define a <see cref="HighlightRangeCollection"/> of <see cref="HighlightRange"/> items. cref="HighlightRangesProperty"/> attached property. 
@@ -152,9 +152,9 @@ using System.Windows.Media;
     /// <returns>A <see cref="HighlightRangeCollection"/>.</returns>
     public static HighlightRangeCollection GetHighlightRanges(DependencyObject attachingElement) => (HighlightRangeCollection)attachingElement.GetValue(TextControl.HighlightRangesProperty);
 
-#endregion
+    #endregion
 
-#region IsInitialized attached property
+    #region IsInitialized attached property
 
     private static readonly DependencyProperty IsInitializedProperty = DependencyProperty.RegisterAttached(
       "IsInitialized",
@@ -166,7 +166,7 @@ using System.Windows.Media;
 
     private static bool GetIsInitialized(DependencyObject attachingElement) => (bool)attachingElement.GetValue(TextControl.IsInitializedProperty);
 
-#endregion
+    #endregion
 
     private static Dictionary<INotifyCollectionChanged, DependencyObject> INotifyCollectionToAttachedElementMap { get; }
 
@@ -174,7 +174,7 @@ using System.Windows.Media;
 
     private static void OnIsHighlightingEnabledChanged(DependencyObject attachingElement, DependencyPropertyChangedEventArgs e)
     {
-      if ((bool)e.OldValue && (bool)e.NewValue || TextControl.GetIsInitialized(attachingElement))
+      if (((bool)e.OldValue && (bool)e.NewValue) || TextControl.GetIsInitialized(attachingElement))
       {
         return;
       }
@@ -266,7 +266,7 @@ using System.Windows.Media;
 
       Brush highlightBackground = TextControl.GetHighlightBackground(textBox);
       Brush highlightForeground = TextControl.GetHighlightForeground(textBox);
-      var text = TextControl.GetText(textBox);
+      string text = TextControl.GetText(textBox);
       if (textBox.Document == null)
       {
         textBox.Document = new FlowDocument();
@@ -277,7 +277,7 @@ using System.Windows.Media;
       }
 
       int highlightPosition = 0;
-      List<HighlightRange> orderedHighlightRanges = highlightRanges.OrderBy(range => range.StartIndex).ToList();
+      var orderedHighlightRanges = highlightRanges.OrderBy(range => range.StartIndex).ToList();
 
       highlightPosition = TextControl.HandleLeadingNonHighlightText(textBox, orderedHighlightRanges, text);
 
@@ -289,7 +289,7 @@ using System.Windows.Media;
       foreach (HighlightRange highlightRange in orderedHighlightRanges.Where(
         highlightRange => highlightRange.StartIndex < text.Length))
       {
-        var rangeLength = 0;
+        int rangeLength = 0;
         if (highlightRange.StartIndex > highlightPosition)
         {
           highlightPosition = TextControl.HandleEnclosedNonHighlightText(
@@ -442,11 +442,11 @@ using System.Windows.Media;
 
       Brush highlightBackground = TextControl.GetHighlightBackground(textBlock);
       Brush highlightForeground = TextControl.GetHighlightForeground(textBlock);
-      var text = TextControl.GetText(textBlock);
+      string text = TextControl.GetText(textBlock);
       textBlock.Inlines.Clear();
 
       int highlightPosition = 0;
-      List<HighlightRange> orderedHighlightRanges = highlightRanges.OrderBy(range => range.StartIndex).ToList();
+      var orderedHighlightRanges = highlightRanges.OrderBy(range => range.StartIndex).ToList();
 
       highlightPosition = TextControl.HandleLeadingNonHighlightText(textBlock, orderedHighlightRanges, text);
 
@@ -458,7 +458,7 @@ using System.Windows.Media;
       foreach (HighlightRange highlightRange in orderedHighlightRanges.Where(
         highlightRange => highlightRange.StartIndex < text.Length))
       {
-        var rangeLength = 0;
+        int rangeLength = 0;
         if (highlightRange.StartIndex > highlightPosition)
         {
           highlightPosition = TextControl.HandleEnclosedNonHighlightText(

@@ -1,6 +1,5 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-  using System;
   using System.IO;
   using System.Threading;
   using System.Threading.Tasks;
@@ -40,10 +39,7 @@
     /// <summary>
     /// Default constructor. Creates an instance where the <see cref="BaseStream"/> is set to a <see cref="MemoryStream"/>.
     /// </summary>
-    public AutoResetStream()
-    {
-      this.BaseStream = new MemoryStream();
-    }
+    public AutoResetStream() => this.BaseStream = new MemoryStream();
 
     /// <summary>
     /// Constructor which accepts the <see cref="Stream"/> instance to decorate in order to extend its behavior.
@@ -151,7 +147,7 @@
       await this.BaseStream.CopyToAsync(destination, bufferSize, cancellationToken);
       Reset();
     }
-    
+
     /// <inheritdoc />
     public override int WriteTimeout { get => this.BaseStream.WriteTimeout; set => this.BaseStream.WriteTimeout = value; }
 

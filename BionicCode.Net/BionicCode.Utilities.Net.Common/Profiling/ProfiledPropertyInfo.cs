@@ -6,8 +6,8 @@
 
   internal class ProfiledPropertyInfo : ProfiledMemberInfo
   {
-    public ProfiledPropertyInfo(IEnumerable<IEnumerable<object>> argumentLists, PropertyInfo methodInfo, string sourceFilePath, int lineNumber, string assemblyName, bool isIndexer, bool isStatic) 
-      : base(argumentLists, isStatic, assemblyName, lineNumber, sourceFilePath)
+    public ProfiledPropertyInfo(IEnumerable<IEnumerable<object>> argumentLists, PropertyInfo methodInfo, string sourceFilePath, int lineNumber, string assemblyName, Runtime targetFramework, bool isIndexer, bool isStatic)
+      : base(argumentLists, isStatic, assemblyName, lineNumber, sourceFilePath, targetFramework)
     {
       this.PropertyInfo = methodInfo;
       this.IsIndexer = isIndexer;

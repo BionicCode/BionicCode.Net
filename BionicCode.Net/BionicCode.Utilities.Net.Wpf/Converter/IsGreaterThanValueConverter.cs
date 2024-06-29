@@ -6,7 +6,7 @@
   using System.Windows;
 
 #if NET || NET461_OR_GREATER
-using System.Windows.Data;
+  using System.Windows.Data;
   [ValueConversion(typeof(double), typeof(bool))]
   public class IsGreaterThanValueConverter : DependencyObject, IValueConverter
   {
@@ -18,7 +18,7 @@ using System.Windows.Data;
 
     public Comparer Comparer
     {
-      get => (Comparer) GetValue(IsGreaterThanValueConverter.ComparerProperty);
+      get => (Comparer)GetValue(IsGreaterThanValueConverter.ComparerProperty);
       set => SetValue(IsGreaterThanValueConverter.ComparerProperty, value);
     }
 
@@ -33,7 +33,7 @@ using System.Windows.Data;
       get => GetValue(IsGreaterThanValueConverter.CompareValueProperty);
       set => SetValue(IsGreaterThanValueConverter.CompareValueProperty, value);
     }
-  #region Implementation of IValueConverter
+    #region Implementation of IValueConverter
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
@@ -41,12 +41,9 @@ using System.Windows.Data;
       return this.Comparer.Compare(value, compareValue) > 0;
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-      throw new NotSupportedException();
-    }
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();
 
-  #endregion
+    #endregion
   }
 #endif
 }

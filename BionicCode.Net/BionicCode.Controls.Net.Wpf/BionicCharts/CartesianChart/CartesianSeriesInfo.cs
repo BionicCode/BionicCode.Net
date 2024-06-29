@@ -3,10 +3,16 @@
   using System;
   using System.Collections;
   using System.Collections.Generic;
-  using System.Windows;
   using System.Linq;
+
+/* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
+Before:
+  using System.Linq;
+After:
+  using System.Windows;
+*/
   using System.Windows.Media;
-    
+
   public readonly struct CartesianSeriesInfo<TData> : ISeriesInfo<TData, Point>, ICartesianSeriesInfo
   {
     public CartesianSeriesInfo(IEnumerable<TData> series, Pen pen, ICartesianDataConverter<TData> pointConverter)
@@ -17,7 +23,7 @@
       this.SeriesBoundaryPoints = new Lazy<(Point MinX, Point MaxX, Point MinY, Point MaxY)>(() => CalculateBoundaryPoints(series, pointConverter));
     }
 
-    public CartesianSeriesInfo(IEnumerable<TData> series, Brush color, double thickness, ICartesianDataConverter<TData> pointConverter) 
+    public CartesianSeriesInfo(IEnumerable<TData> series, Brush color, double thickness, ICartesianDataConverter<TData> pointConverter)
       : this(series, new Pen(color, thickness), pointConverter)
     {
     }
@@ -32,7 +38,7 @@
 
       this.Series = series;
       this.Pen = pen;
-      var cartesianDataConverter = CartesianDataConverter<TData>.Default;
+      CartesianDataConverter<TData> cartesianDataConverter = CartesianDataConverter<TData>.Default;
       this.PointConverter = cartesianDataConverter;
       this.SeriesBoundaryPoints = new Lazy<(Point MinX, Point MaxX, Point MinY, Point MaxY)>(() => CalculateBoundaryPoints(series, cartesianDataConverter));
     }

@@ -25,7 +25,7 @@
     public object InvertValue(object value)
     {
       if (value == null ||
-          value is string stringValue && (string.IsNullOrWhiteSpace(stringValue) || stringValue.Length == 1 && (stringValue.StartsWith("-") || stringValue.StartsWith("+"))))
+          (value is string stringValue && (string.IsNullOrWhiteSpace(stringValue) || (stringValue.Length == 1 && (stringValue.StartsWith("-") || stringValue.StartsWith("+"))))))
       {
         return value;
       }
@@ -96,7 +96,7 @@
       return invertedValue != null;
     }
 
-#endregion Implementation of IValueInverter
+    #endregion Implementation of IValueInverter
 
     private bool TryConvertStringToNumber(object value, out object numericValue)
     {

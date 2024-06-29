@@ -8,7 +8,6 @@
   #endregion
 
   using System;
-  using System.Threading;
 
   /// <summary>
   /// Provides a base class of <see cref="IFactory{TCreate}"/> that supports lifetime management using scopes and <see cref="FactoryMode"/>.
@@ -88,9 +87,9 @@
   ///  public string LastName { get; }
   ///  public int Id { get; }
   ///}
-/// </code>
-/// </example>
-public abstract class Factory<TObject> : IFactory<TObject>
+  /// </code>
+  /// </example>
+  public abstract class Factory<TObject> : IFactory<TObject>
   {
     /// <summary>
     /// Initializes the <c>Factory</c> to create instances using <see cref="FactoryMode.Singleton"/>. 
@@ -99,15 +98,11 @@ public abstract class Factory<TObject> : IFactory<TObject>
     {
     }
 
-
     /// <summary>
     /// Initializes instance. 
     /// </summary>
     /// <param name="factoryMode">Describes the created objects lifetime using <see cref="FactoryMode"/>.</param>
-    protected Factory(FactoryMode factoryMode)
-    {
-      this.FactoryMode = factoryMode;
-    }
+    protected Factory(FactoryMode factoryMode) => this.FactoryMode = factoryMode;
 
     /// <summary>
     /// The shared instance which <see cref="Factory{TObject}"/> returns when <see cref="FactoryMode"/>

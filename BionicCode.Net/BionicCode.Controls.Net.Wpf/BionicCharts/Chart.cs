@@ -2,24 +2,19 @@
 {
   using System;
   using System.Collections;
-  using System.Collections.Generic;
   using System.Collections.Specialized;
   using System.ComponentModel;
   using System.Globalization;
-  using System.Linq;
   using System.Windows;
   using System.Windows.Controls;
   using System.Windows.Data;
-  using System.Windows.Media;
   using BionicCode.Utilities.Net;
-    
+
   public abstract class Chart : Control
   {
     #region Depedency properties
 
     #region Items
-
-
 
     public CollectionView Items
     {
@@ -76,9 +71,9 @@
 
     public static readonly DependencyProperty SelectedItemProperty =
         DependencyProperty.Register(
-          "SelectedItem", 
-          typeof(object), 
-          typeof(Chart), 
+          "SelectedItem",
+          typeof(object),
+          typeof(Chart),
           new FrameworkPropertyMetadata(default, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnSelectedItemChanged));
 
     #endregion SelectedItem
@@ -156,7 +151,6 @@
           typeof(Chart),
           new FrameworkPropertyMetadata(DisplayMode.FitVerticalAxisToScreen, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnDisplayModeChanged));
 
-
     #endregion DisplayMode
 
     #region ItemsPanel
@@ -170,24 +164,15 @@
     public static readonly DependencyProperty ItemsPanelProperty =
         DependencyProperty.Register("ItemsPanel", typeof(ChartPanel), typeof(Chart), new PropertyMetadata(default));
 
-
     #endregion ItemsPanel
-
 
     #endregion Dependency properties
 
-
-    static Chart()
-    {
-      FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(
+    static Chart() => FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(
         typeof(Chart),
         new FrameworkPropertyMetadata(typeof(Chart)));
-    }
 
-    protected Chart()
-    {
-      this.ResourceLocator = new ResourceLocator(this);
-    }
+    protected Chart() => this.ResourceLocator = new ResourceLocator(this);
 
     private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as Chart).OnItemsSourceChanged(e.OldValue as IEnumerable, e.NewValue as IEnumerable);
     private static void OnItemsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as Chart).OnItemsChanged(e.OldValue as CollectionView, e.NewValue as CollectionView);
@@ -196,17 +181,14 @@
 
     public abstract SeriesSelector GetDefaultSeriesSelector();
 
-    protected override void OnInitialized(EventArgs e)
-    {
-      base.OnInitialized(e);
-    }
+    protected override void OnInitialized(EventArgs e) => base.OnInitialized(e);
 
     public override void OnApplyTemplate()
     {
       base.OnApplyTemplate();
       if (this.TryFindVisualChildElement(out ScrollViewer scrollViewer))
       {
-        if (scrollViewer.Content is ChartPanelPresenter chartPanelPresenter 
+        if (scrollViewer.Content is ChartPanelPresenter chartPanelPresenter
           || ((scrollViewer.Content as DependencyObject)?.TryFindVisualChildElement(out chartPanelPresenter) ?? false))
         {
           this.PointInfoGenerator = chartPanelPresenter.GetPointInfoGenerator();
@@ -250,7 +232,6 @@
 
     /// <inheritdoc />
     protected virtual bool IsItemItsOwnContainerOverride(object item) => item is CartesianChartItem;
-
 
     /// <inheritdoc />
     protected virtual void PrepareContainerForItemOverride(DependencyObject element, object item)
@@ -365,7 +346,7 @@
     /// </summary>
     /// <param name="value">Value to be stored by this GridLength 
     /// instance.</param>
-    /// <param name="unit">Type of the value to be stored by this GridLength 
+    /// <param name="unit">Types of the value to be stored by this GridLength 
     /// instance.</param>
     /// <remarks> 
     /// If the <c>type</c> parameter is <c>GridUnitType.Auto</c>, 
@@ -459,7 +440,7 @@
         return new ZoomFactor(zoomFactorUnit);
       }
 
-      var unitIndex = -1;
+      int unitIndex = -1;
       foreach (string factorUnit in Enum.GetNames(typeof(ZoomFactorUnit)))
       {
         unitIndex = zoomFactorUnitString.IndexOf(factorUnit, StringComparison.OrdinalIgnoreCase);
@@ -484,14 +465,14 @@
       return new ZoomFactor(value, unit);
     }
 
-    public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType) => destinationType == typeof(string) && value is ZoomFactor zoomFactor 
-      ? zoomFactor.ToString() 
+    public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType) => destinationType == typeof(string) && value is ZoomFactor zoomFactor
+      ? zoomFactor.ToString()
       : base.ConvertTo(context, culture, value, destinationType);
 
     public override object CreateInstance(ITypeDescriptorContext context, IDictionary propertyValues)
     {
       var unit = (ZoomFactorUnit)propertyValues[nameof(ZoomFactor.Unit)];
-      var value = (double)propertyValues[nameof(ZoomFactor.Value)];
+      double value = (double)propertyValues[nameof(ZoomFactor.Value)];
       return new ZoomFactor(value, unit);
     }
 

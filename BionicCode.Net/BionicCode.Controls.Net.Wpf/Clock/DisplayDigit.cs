@@ -5,13 +5,9 @@
 
 #endregion
 
-using System;
-using System.Collections;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using BionicCode.Utilities.Net;
 
 namespace BionicCode.Controls.Net.Wpf
 {
@@ -87,7 +83,7 @@ namespace BionicCode.Controls.Net.Wpf
       typeof(DisplayDigit),
       new PropertyMetadata(System.Windows.Media.Stretch.Uniform));
 
-    public Stretch Stretch { get => (Stretch) GetValue(DisplayDigit.StretchProperty); set => SetValue(DisplayDigit.StretchProperty, value); }
+    public Stretch Stretch { get => (Stretch)GetValue(DisplayDigit.StretchProperty); set => SetValue(DisplayDigit.StretchProperty, value); }
 
     #endregion Stretch dependency property
 
@@ -96,10 +92,7 @@ namespace BionicCode.Controls.Net.Wpf
     protected double GapWidthToSegmentWidthRatio { get; }
     protected double SegmentWidthToSegmentHeightRatio { get; }
 
-    static DisplayDigit()
-    {
-      FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(DisplayDigit), new FrameworkPropertyMetadata(typeof(DisplayDigit)));
-    }
+    static DisplayDigit() => FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(DisplayDigit), new FrameworkPropertyMetadata(typeof(DisplayDigit)));
 
     protected DisplayDigit()
     {
@@ -148,7 +141,7 @@ namespace BionicCode.Controls.Net.Wpf
       DrawSegments(new Rect(arrangeBounds));
       return base.ArrangeOverride(arrangeBounds);
     }
-    
+
     #endregion
 
     protected abstract Size GetNaturalSize();
@@ -158,7 +151,7 @@ namespace BionicCode.Controls.Net.Wpf
     #region OnSegmentWidthChanged dependency property changed handler
 
     private static void OnSegmentWidthChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
-      (d as DisplayDigit).OnSegmentWidthChanged((double) e.OldValue, (double) e.NewValue);
+      (d as DisplayDigit).OnSegmentWidthChanged((double)e.OldValue, (double)e.NewValue);
 
     protected virtual void OnSegmentWidthChanged(double oldValue, double newValue)
     {

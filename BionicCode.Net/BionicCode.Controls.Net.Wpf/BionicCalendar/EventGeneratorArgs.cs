@@ -16,15 +16,15 @@ using System.Windows.Controls;
 
 namespace BionicCode.Controls.Net.Wpf
 {
-    public class EventGeneratorArgs : EventArgs
+  public class EventGeneratorArgs : EventArgs
   {
-        #region
+    #region
 
-        public EventGeneratorArgs() : this(null, null, null, -1, -1, DateTime.MinValue)
-        {
-        }
+    public EventGeneratorArgs() : this(null, null, null, -1, -1, DateTime.MinValue)
+    {
+    }
 
-        public EventGeneratorArgs(UIElement itemContainer, Panel itemsHost, IEnumerable<object> itemsOfDates, int columnIndex, int rowIndex, DateTime itemDate)
+    public EventGeneratorArgs(UIElement itemContainer, Panel itemsHost, IEnumerable<object> itemsOfDates, int columnIndex, int rowIndex, DateTime itemDate)
     {
       this.ItemContainer = itemContainer;
       this.ItemsHost = itemsHost;

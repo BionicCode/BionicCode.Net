@@ -9,7 +9,7 @@ namespace BionicCode.Controls.Net.Wpf
 {
   using System;
   using System.Windows;
-    
+
   internal class CartesianDataConverter<TDataItem> : ICartesianDataConverter<TDataItem>
   {
     private static Lazy<CartesianDataConverter<TDataItem>> Instance = new Lazy<CartesianDataConverter<TDataItem>>(() => new CartesianDataConverter<TDataItem>());

@@ -13,19 +13,18 @@ namespace BionicCode.Controls.Net.Wpf
   using System;
   using System.Collections.Generic;
   using System.Collections.ObjectModel;
-  using System.Collections.Specialized;
   using System.Globalization;
   using System.Linq;
   using System.Windows;
   using System.Windows.Controls;
   using System.Windows.Controls.Primitives;
   using System.Windows.Media;
+  using BionicCode.Utilities.Net;
   using ColumnDefinition = System.Windows.Controls.ColumnDefinition;
   using Grid = System.Windows.Controls.Grid;
   using Panel = System.Windows.Controls.Panel;
   using RowDefinition = System.Windows.Controls.RowDefinition;
   using ScrollViewer = System.Windows.Controls.ScrollViewer;
-  using BionicCode.Utilities.Net;
 
   #endregion
 
@@ -35,9 +34,9 @@ namespace BionicCode.Controls.Net.Wpf
 
     public static ComponentResourceKey DefaultCalendarDateItemTemplateKey { get; } = new ComponentResourceKey()
     {
-      TypeInTargetAssembly = typeof(CalendarPanel), 
+      TypeInTargetAssembly = typeof(CalendarPanel),
       ResourceId = CalendarPanel.DefaultCalendarDateItemTemplateKeyId
-    }; 
+    };
 
     #region CurrentViewChangedRoutedEvent
 
@@ -46,8 +45,8 @@ namespace BionicCode.Controls.Net.Wpf
 
     public event RoutedEventHandler CurrentViewChanged
     {
-      add { AddHandler(CalendarPanel.CurrentViewChangedRoutedEvent, value); }
-      remove { RemoveHandler(CalendarPanel.CurrentViewChangedRoutedEvent, value); }
+      add => AddHandler(CalendarPanel.CurrentViewChangedRoutedEvent, value);
+      remove => RemoveHandler(CalendarPanel.CurrentViewChangedRoutedEvent, value);
     }
 
     #endregion
@@ -59,8 +58,8 @@ namespace BionicCode.Controls.Net.Wpf
 
     public event RoutedEventHandler DatesRealized
     {
-      add { AddHandler(CalendarPanel.DatesRealizedRoutedEvent, value); }
-      remove { RemoveHandler(CalendarPanel.DatesRealizedRoutedEvent, value); }
+      add => AddHandler(CalendarPanel.DatesRealizedRoutedEvent, value);
+      remove => RemoveHandler(CalendarPanel.DatesRealizedRoutedEvent, value);
     }
 
     #endregion
@@ -83,10 +82,9 @@ namespace BionicCode.Controls.Net.Wpf
       typeof(CalendarPanel),
       new FrameworkPropertyMetadata(Brushes.DimGray, FrameworkPropertyMetadataOptions.AffectsRender));
 
-
     public Brush GridColor
     {
-      get => (Brush) GetValue(CalendarPanel.GridColorProperty);
+      get => (Brush)GetValue(CalendarPanel.GridColorProperty);
       set => SetValue(CalendarPanel.GridColorProperty, value);
     }
 
@@ -98,7 +96,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public double GridThickness
     {
-      get => (double) GetValue(CalendarPanel.GridThicknessProperty);
+      get => (double)GetValue(CalendarPanel.GridThicknessProperty);
       set => SetValue(CalendarPanel.GridThicknessProperty, value);
     }
 
@@ -110,19 +108,15 @@ namespace BionicCode.Controls.Net.Wpf
       typeof(CalendarPanel),
       new PropertyMetadata(true, CalendarPanel.OnIsShowingCalendarWeekChanged));
 
-    public bool IsShowingCalendarWeek { get => (bool) GetValue(CalendarPanel.IsShowingCalendarWeekProperty); set => SetValue(CalendarPanel.IsShowingCalendarWeekProperty, value); }
+    public bool IsShowingCalendarWeek { get => (bool)GetValue(CalendarPanel.IsShowingCalendarWeekProperty); set => SetValue(CalendarPanel.IsShowingCalendarWeekProperty, value); }
 
     #endregion IsShowingCalendarWeek dependency property
 
     #region
 
-
-    static CalendarPanel()
-    {
-      FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(
+    static CalendarPanel() => FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(
         typeof(CalendarPanel),
         new FrameworkPropertyMetadata(typeof(CalendarPanel)));
-    }
 
     public CalendarPanel()
     {
@@ -133,7 +127,7 @@ namespace BionicCode.Controls.Net.Wpf
       this.InternalRecycledDateItemContainerLookupTable = new Stack<UIElement>();
       this.InternalDateItemLookupTable = new Dictionary<DateTime, CalendarDate>();
       this.InternalDateColumnHeaderItems = new List<UIElement>();
-      this.ItemsHost = new Grid() {Background = Brushes.Transparent};
+      this.ItemsHost = new Grid() { Background = Brushes.Transparent };
       this.InternalDateItemContainerLookupTable = new Dictionary<DateTime, UIElement>();
       this.InternalDateToEventItemContainersSnapshotTable = new Dictionary<DateTime, List<UIElement>>();
       this.InternalEventItemToEventItemContainerSnapshotTable = new Dictionary<object, UIElement>();
@@ -158,7 +152,7 @@ namespace BionicCode.Controls.Net.Wpf
       UnhookEventItemContainer(e, dropDate);
       if (!this.InternalDateToEventItemContainersSnapshotTable.TryGetValue(dropDate, out List<UIElement> eventItemContainersOfNewDateItemContainer))
       {
-        eventItemContainersOfNewDateItemContainer = new List<UIElement>() {e.ItemContainer};
+        eventItemContainersOfNewDateItemContainer = new List<UIElement>() { e.ItemContainer };
         this.InternalDateToEventItemContainersSnapshotTable.Add(dropDate, eventItemContainersOfNewDateItemContainer);
       }
       UIElement equallySpanningItem = eventItemContainersOfNewDateItemContainer.Find(
@@ -172,30 +166,30 @@ namespace BionicCode.Controls.Net.Wpf
       eventItemContainersOfNewDateItemContainer.Sort((item1, item2) => Calendar.GetDay(item1).CompareTo(Calendar.GetDay(item2)));
 
       Panel droppedEventItemContainerHost;
-        if (equallySpanningItem == null)
-        {
-          droppedEventItemContainerHost = new StackPanel();
-          droppedEventItemContainerHost.Children.Add(e.ItemContainer);
-          this.InternalHostPanels.Add(e.ItemContainer, droppedEventItemContainerHost);
-        }
-        else if (this.InternalHostPanels.TryGetValue(equallySpanningItem, out droppedEventItemContainerHost))
-        {
-          this.InternalHostPanels.Add(e.ItemContainer, droppedEventItemContainerHost);
-          droppedEventItemContainerHost.Children.Add(e.ItemContainer);
-          List<FrameworkElement> unsortedEventItemContainers = droppedEventItemContainerHost.Children
-            .Cast<FrameworkElement>()
-            .ToList();
-            unsortedEventItemContainers.Sort((item1, item2) => Calendar.GetDay(item1).CompareTo(Calendar.GetDay(item2)));
-            droppedEventItemContainerHost.Children.Clear();
-            unsortedEventItemContainers.ForEach(item => droppedEventItemContainerHost.Children.Add(item));
+      if (equallySpanningItem == null)
+      {
+        droppedEventItemContainerHost = new StackPanel();
+        droppedEventItemContainerHost.Children.Add(e.ItemContainer);
+        this.InternalHostPanels.Add(e.ItemContainer, droppedEventItemContainerHost);
+      }
+      else if (this.InternalHostPanels.TryGetValue(equallySpanningItem, out droppedEventItemContainerHost))
+      {
+        this.InternalHostPanels.Add(e.ItemContainer, droppedEventItemContainerHost);
+        droppedEventItemContainerHost.Children.Add(e.ItemContainer);
+        var unsortedEventItemContainers = droppedEventItemContainerHost.Children
+          .Cast<FrameworkElement>()
+          .ToList();
+        unsortedEventItemContainers.Sort((item1, item2) => Calendar.GetDay(item1).CompareTo(Calendar.GetDay(item2)));
+        droppedEventItemContainerHost.Children.Clear();
+        unsortedEventItemContainers.ForEach(item => droppedEventItemContainerHost.Children.Add(item));
       }
 
-        IEnumerable<Panel> droppedEventItemContainerHostSiblings = eventItemContainersOfNewDateItemContainer
-          .Select(itemContainer => this.InternalHostPanels[itemContainer])
-          .Distinct()
-          .OrderByDescending(Grid.GetColumnSpan);
-        double verticalContainerOffset = (this.DateColumnItemOffsetTable.TryGetValue(dropDate, out int precedingItemCount) ? precedingItemCount : 0) * e.ItemContainer.DesiredSize.Height;
-        ArrangeMovedCalendarEventItem(e.ItemContainer, droppedEventItemContainerHostSiblings, newDateItemContainer, verticalContainerOffset);
+      IEnumerable<Panel> droppedEventItemContainerHostSiblings = eventItemContainersOfNewDateItemContainer
+        .Select(itemContainer => this.InternalHostPanels[itemContainer])
+        .Distinct()
+        .OrderByDescending(Grid.GetColumnSpan);
+      double verticalContainerOffset = (this.DateColumnItemOffsetTable.TryGetValue(dropDate, out int precedingItemCount) ? precedingItemCount : 0) * e.ItemContainer.DesiredSize.Height;
+      ArrangeMovedCalendarEventItem(e.ItemContainer, droppedEventItemContainerHostSiblings, newDateItemContainer, verticalContainerOffset);
     }
 
     private void UnhookEventItemContainer(EventItemDragDropArgs e, DateTime date)
@@ -231,13 +225,13 @@ namespace BionicCode.Controls.Net.Wpf
       newDateItemContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
       double heightOffset = newDateItemContainer.DesiredSize.Height + verticalContainerOffset;
 
-      List<Panel> siblingHosts = movedEventItemHostSiblings.ToList();
-      for (var index = 0; index < siblingHosts.Count; index++)
+      var siblingHosts = movedEventItemHostSiblings.ToList();
+      for (int index = 0; index < siblingHosts.Count; index++)
       {
         Panel siblingHost = siblingHosts[index];
         if (siblingHost == movedEventItemHost)
         {
-          var itemHostMargin = new Thickness {Top = heightOffset};
+          var itemHostMargin = new Thickness { Top = heightOffset };
           movedEventItemHost.Margin = itemHostMargin;
           movedEventItemHost.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
           heightOffset = movedEventItemHost.DesiredSize.Height;
@@ -247,7 +241,7 @@ namespace BionicCode.Controls.Net.Wpf
             remainingSiblingsIndex++)
           {
             siblingHost = siblingHosts[index];
-            var siblingHostMargin = new Thickness {Top = heightOffset};
+            var siblingHostMargin = new Thickness { Top = heightOffset };
             siblingHost.Margin = siblingHostMargin;
             heightOffset = siblingHost.DesiredSize.Height;
           }
@@ -258,7 +252,7 @@ namespace BionicCode.Controls.Net.Wpf
         heightOffset += siblingHost.ActualHeight;
       }
 
-      int rowIndex = calendarIndex / this.ColumnCount + this.ContentRowOffset;
+      int rowIndex = (calendarIndex / this.ColumnCount) + this.ContentRowOffset;
       int columnIndex = calendarIndex % this.ColumnCount;
       CalendarDate currentCalendarDate = this.InternalDateItemContainerToDateItemTable[newDateItemContainer];
       var eventGeneratorArgs = new EventGeneratorArgs(
@@ -279,7 +273,7 @@ namespace BionicCode.Controls.Net.Wpf
       double verticalContainerOffset = 0)
     {
       double heightOffset = dateItemContainer.DesiredSize.Height + verticalContainerOffset;
-      List<Panel> siblingHosts = eventItemContainerHostsOfDateItem.ToList();
+      var siblingHosts = eventItemContainerHostsOfDateItem.ToList();
       foreach (Panel siblingHost in siblingHosts)
       {
         Thickness siblingHostMargin = siblingHost.Margin;
@@ -330,7 +324,6 @@ namespace BionicCode.Controls.Net.Wpf
         horizontalLineStart.Y = panelRowDefinition.Offset + panelRowDefinition.ActualHeight;
         horizontalLineEnd.Y = panelRowDefinition.Offset + panelRowDefinition.ActualHeight;
 
-
         drawingContext.DrawLine(pen, horizontalLineStart, horizontalLineEnd);
       }
 
@@ -342,16 +335,15 @@ namespace BionicCode.Controls.Net.Wpf
       }
     }
 
-
     private void SpanEventItemOnSpanningRequested(object sender, EventItemDragDropArgs eventItemDragDropArgs)
     {
       var currentDateContainer = eventItemDragDropArgs.Source as UIElement;
       CalendarDate currentDateItem = this.InternalDateItemContainerToDateItemTable[currentDateContainer];
-      
+
       DateTime newTargetCalendarDate = currentDateItem.Day.Date;
       int newDateSpan = newTargetCalendarDate.Date.Subtract(eventItemDragDropArgs.OriginalDay.Date).Days + 1;
       bool isNextDateRequireCleanup =
-        this.InternalHostPanels.TryGetValue(eventItemDragDropArgs.ItemContainer, out Panel currentEventItemHost) 
+        this.InternalHostPanels.TryGetValue(eventItemDragDropArgs.ItemContainer, out Panel currentEventItemHost)
         && Grid.GetColumnSpan(currentEventItemHost) > newDateSpan;
       bool isIncreasingSpan = !isNextDateRequireCleanup && !(this.InternalHostPanels.TryGetValue(eventItemDragDropArgs.ItemContainer, out Panel eventItemHost) && this.PreviouslySpannedPanelsTable.TryGetValue(eventItemHost, out DateTime oldTargetDate) && oldTargetDate.Equals(newTargetCalendarDate));
 
@@ -379,7 +371,7 @@ namespace BionicCode.Controls.Net.Wpf
               this.InternalHostPanels[eventItemDragDropArgs.ItemContainer] = eventItemContainerHost;
             }
 
-            List<UIElement> panelChildren = eventItemContainerHost.Children.Cast<UIElement>().ToList();
+            var panelChildren = eventItemContainerHost.Children.Cast<UIElement>().ToList();
             panelChildren.Add(eventItemDragDropArgs.ItemContainer);
             eventItemContainerHost.Children.Clear();
             panelChildren.Sort((element1, element2) => Calendar.GetDay(element1).CompareTo(Calendar.GetDay(element2)));
@@ -400,9 +392,20 @@ namespace BionicCode.Controls.Net.Wpf
                 if (originalHost.Children.Count == 0)
                 {
                   this.Children.Remove(originalHost);
+
+/* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
+Before:
                 }
                 
                 eventItemContainerHost = new StackPanel() { VerticalAlignment = VerticalAlignment.Top};
+After:
+                }
+
+                eventItemContainerHost = new StackPanel() { VerticalAlignment = VerticalAlignment.Top};
+*/
+                }
+
+                eventItemContainerHost = new StackPanel() { VerticalAlignment = VerticalAlignment.Top };
                 eventItemContainerHost.Children.Add(eventItemDragDropArgs.ItemContainer);
                 eventItemContainerHost.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
                 Grid.SetColumnSpan(eventItemContainerHost, newDateSpan);
@@ -429,7 +432,7 @@ namespace BionicCode.Controls.Net.Wpf
             this.DateColumnItemOffsetTable[newTargetCalendarDate] += 1;
           }
 
-          List<Panel> originalDateEventItemHosts = originalDateEventItems
+          var originalDateEventItemHosts = originalDateEventItems
             .Select(itemContainer => this.InternalHostPanels[itemContainer])
             .Distinct()
             .OrderByDescending(Grid.GetColumnSpan)
@@ -442,7 +445,7 @@ namespace BionicCode.Controls.Net.Wpf
 
           ArrangeMovedCalendarEventItem(eventItemDragDropArgs.ItemContainer, originalDateEventItemHosts, originalDateItemContainer, precedingItemsOffset * eventItemDragDropArgs.ItemContainer.DesiredSize.Height);
 
-          if (!object.ReferenceEquals(currentDateContainer, originalDateItemContainer) 
+          if (!object.ReferenceEquals(currentDateContainer, originalDateItemContainer)
               && this.InternalDateToEventItemContainersSnapshotTable.TryGetValue(
             newTargetCalendarDate,
             out List<UIElement> currentDateEventItems) && currentDateEventItems.Any())
@@ -488,10 +491,10 @@ namespace BionicCode.Controls.Net.Wpf
     {
       this.ItemsHost.RowDefinitions.Clear();
       this.ItemsHost.ColumnDefinitions.Clear();
-      this.ItemsHost.RowDefinitions.Add(new RowDefinition {Height = new GridLength(32, GridUnitType.Pixel)});
+      this.ItemsHost.RowDefinitions.Add(new RowDefinition { Height = new GridLength(32, GridUnitType.Pixel) });
       if (this.IsShowingCalendarWeek)
       {
-        this.ItemsHost.ColumnDefinitions.Add(new ColumnDefinition() {Width = new GridLength(32, GridUnitType.Pixel)});
+        this.ItemsHost.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(32, GridUnitType.Pixel) });
       }
       InitializeGrid(this.ItemsHost, new GridLength(1, GridUnitType.Star), this.RowCount);
     }
@@ -500,12 +503,12 @@ namespace BionicCode.Controls.Net.Wpf
     {
       for (int rowIndex = rowStartIndex; rowIndex < rowCount; rowIndex++)
       {
-        grid.RowDefinitions.Add(new RowDefinition {MinHeight = 48, Height = rowHeight});
+        grid.RowDefinitions.Add(new RowDefinition { MinHeight = 48, Height = rowHeight });
       }
 
-      for (var columnIndex = 0; columnIndex < this.ColumnCount; columnIndex++)
+      for (int columnIndex = 0; columnIndex < this.ColumnCount; columnIndex++)
       {
-        grid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)});
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
       }
     }
 
@@ -517,7 +520,7 @@ namespace BionicCode.Controls.Net.Wpf
     // TODO::Last stop
     //public UIElement GetDateItemContainerOfEventItem(FrameworkElement eventItemContainer)
 
-#region Overrides of FrameworkElement
+    #region Overrides of FrameworkElement
 
     /// <inheritdoc />
     protected override void OnInitialized(EventArgs e)
@@ -526,7 +529,7 @@ namespace BionicCode.Controls.Net.Wpf
       Initialize(null);
     }
 
-#endregion
+    #endregion
 
     public void Initialize(Calendar owner)
     {
@@ -546,7 +549,7 @@ namespace BionicCode.Controls.Net.Wpf
       CreateRootGrid();
     }
 
-#region Overrides of Grid
+    #region Overrides of Grid
 
     /// <inheritdoc />
     protected override Size MeasureOverride(Size constraint)
@@ -566,7 +569,7 @@ namespace BionicCode.Controls.Net.Wpf
         RecycleUnusedDateContainers(0, unusedWeekCountInNextView, this.PreviousScrollDirection);
       }
       else
-      { 
+      {
         RecycleUnusedDateContainers(0, this.WeekRealizationOffset, this.PreviousScrollDirection);
       }
 
@@ -582,7 +585,7 @@ namespace BionicCode.Controls.Net.Wpf
 
       if (this.IsShowingCalendarWeek)
       {
-        List<int> weekNumbers = this.InternalCalendarIndexToWeekNumberTable.Values.Distinct().ToList();
+        var weekNumbers = this.InternalCalendarIndexToWeekNumberTable.Values.Distinct().ToList();
         for (int rowIndex = 0; rowIndex < weekNumbers.Count; rowIndex++)
         {
           if (!this.InternalRowIndexToWeekNumberItemTable.TryGetValue(rowIndex + this.ContentRowOffset, out UIElement weekHeaderItemContainer))
@@ -595,13 +598,12 @@ namespace BionicCode.Controls.Net.Wpf
         }
       }
 
-
       if (!this.InternalDateColumnHeaderItems.Any())
       {
         for (int columnIndex = 0; columnIndex < this.ColumnCount; columnIndex++)
         {
           UIElement columnHeaderItem = this.Owner.GetContainerForDateColumnHeaderItem();
-          this.Owner.PrepareContainerForCalendarDateColumnHeaderItemOverride(columnHeaderItem, (DayOfWeek) (((int) this.Owner.FirstDayOfWeek + columnIndex) % 7));
+          this.Owner.PrepareContainerForCalendarDateColumnHeaderItemOverride(columnHeaderItem, (DayOfWeek)(((int)this.Owner.FirstDayOfWeek + columnIndex) % 7));
           this.InternalDateColumnHeaderItems.Add(columnHeaderItem);
           this.ItemsHost.Children.Add(columnHeaderItem);
         }
@@ -613,7 +615,7 @@ namespace BionicCode.Controls.Net.Wpf
       }
       else
       {
-        for (var columnIndex = 0; columnIndex < this.ColumnCount; columnIndex++)
+        for (int columnIndex = 0; columnIndex < this.ColumnCount; columnIndex++)
         {
           UIElement dateColumnHeaderItem = this.InternalDateColumnHeaderItems[columnIndex];
           this.Owner.PrepareContainerForCalendarDateColumnHeaderItemOverride(dateColumnHeaderItem, (DayOfWeek)(((int)this.Owner.FirstDayOfWeek + columnIndex) % 7));
@@ -622,8 +624,6 @@ namespace BionicCode.Controls.Net.Wpf
         UIElement dummyColumnHeaderItem = this.Owner.GetContainerForDateColumnHeaderItem();
         this.ItemsHost.Children.Add(dummyColumnHeaderItem);
       }
-
-
 
       this.InternalEventItems.Clear();
       this.InternalDateToEventItemContainersSnapshotTable.Clear();
@@ -674,7 +674,7 @@ namespace BionicCode.Controls.Net.Wpf
       return constraint;
     }
 
-#endregion
+    #endregion
 
     /// <inheritdoc />
     protected override Size ArrangeOverride(Size arrangeSize)
@@ -704,8 +704,8 @@ namespace BionicCode.Controls.Net.Wpf
     private Size ArrangeCalendarEventItems(Size arrangeSize)
     {
       this.InternalHostPanels.Clear();
-      
-      List<UIElement> eventItems = this.InternalEventItems.ToList();
+
+      var eventItems = this.InternalEventItems.ToList();
       var dateToEventItemContainerCacheTable = new Dictionary<DateTime, List<UIElement>>();
 
       foreach (DateTime calendarViewDate in this.CurrentCalendarView.Dates.Union(this.CurrentCalendarView.GetNext().Dates))
@@ -725,8 +725,8 @@ namespace BionicCode.Controls.Net.Wpf
           continue;
         }
 
-        var hostPanel = new StackPanel() {VerticalAlignment = VerticalAlignment.Top};
-        
+        var hostPanel = new StackPanel() { VerticalAlignment = VerticalAlignment.Top };
+
         var items = new List<object>();
         foreach (UIElement itemContainer in eventItemContainersOfCurrentDate)
         {
@@ -741,8 +741,8 @@ namespace BionicCode.Controls.Net.Wpf
 
         UIElement dateContainer = this.InternalDateItemContainerLookupTable[calendarViewDate.Date];
         int calendarIndex = this.InternalDateItemContainerToCalendarIndexTable[dateContainer];
-        int rowIndex = calendarIndex / this.ColumnCount + this.ContentRowOffset;
-        int columnIndex = calendarIndex % this.ColumnCount + this.ContentColumnOffset;
+        int rowIndex = (calendarIndex / this.ColumnCount) + this.ContentRowOffset;
+        int columnIndex = (calendarIndex % this.ColumnCount) + this.ContentColumnOffset;
         if (!dateContainer.IsMeasureValid)
         {
           dateContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
@@ -758,8 +758,8 @@ namespace BionicCode.Controls.Net.Wpf
             rowIndex,
             calendarViewDate.Date);
 
-          OnAutoGeneratingEvent(eventGeneratorArgs);
-          OnGeneratingCalendarEvents(eventGeneratorArgs);
+        OnAutoGeneratingEvent(eventGeneratorArgs);
+        OnGeneratingCalendarEvents(eventGeneratorArgs);
       }
 
       return arrangeSize;
@@ -774,7 +774,7 @@ namespace BionicCode.Controls.Net.Wpf
         OnAutoGeneratingDate(dateGeneratorArgs);
         OnGeneratingDate(dateGeneratorArgs);
       }
-    
+
       return arrangeBounds;
     }
 
@@ -787,7 +787,7 @@ namespace BionicCode.Controls.Net.Wpf
 
       if (recycleWeekCount == -1)
       {
-        for (var index = this.InternalDateItemContainerLookupTable.Count - 1; index >= 0; index--)
+        for (int index = this.InternalDateItemContainerLookupTable.Count - 1; index >= 0; index--)
         {
           DateTime recycleDate = this.InternalDateItemContainerLookupTable.Keys.ElementAt(index);
           this.InternalDateItemContainerLookupTable.Remove(recycleDate, out UIElement itemContainerToRecycle);
@@ -803,24 +803,24 @@ namespace BionicCode.Controls.Net.Wpf
       switch (scrollDirection)
       {
         case ScrollDirection.Bottom:
-        {
-          RecycleLeadingContainers(recycleWeekOffset, recycleWeekCount);
-
-          int remainingWeekCountOfCurrentView = this.CurrentCalendarView.WeekCount - recycleWeekCount;
-          if (remainingWeekCountOfCurrentView < this.RowCount)
           {
-            int missingWeeksCount = this.RowCount - remainingWeekCountOfCurrentView;
-            recycleWeekCount = this.NextCalendarView.WeekCount - missingWeeksCount;
-            RecycleTrailingContainers(0, recycleWeekCount);
-          }
-          break;
-        }
-        case ScrollDirection.Top:
-        {
-          RecycleTrailingContainers(recycleWeekOffset, recycleWeekCount);
+            RecycleLeadingContainers(recycleWeekOffset, recycleWeekCount);
 
-          break;
-        }
+            int remainingWeekCountOfCurrentView = this.CurrentCalendarView.WeekCount - recycleWeekCount;
+            if (remainingWeekCountOfCurrentView < this.RowCount)
+            {
+              int missingWeeksCount = this.RowCount - remainingWeekCountOfCurrentView;
+              recycleWeekCount = this.NextCalendarView.WeekCount - missingWeeksCount;
+              RecycleTrailingContainers(0, recycleWeekCount);
+            }
+            break;
+          }
+        case ScrollDirection.Top:
+          {
+            RecycleTrailingContainers(recycleWeekOffset, recycleWeekCount);
+
+            break;
+          }
       }
     }
 
@@ -919,8 +919,8 @@ namespace BionicCode.Controls.Net.Wpf
     private DateGeneratorArgs CreateDateGeneratorArgs(int calendarIndex, UIElement dateItemContainer)
     {
       int weekNumber = this.InternalCalendarIndexToWeekNumberTable[calendarIndex];
-      int rowIndex = calendarIndex / this.ColumnCount + this.ContentRowOffset;
-      int columnIndex = calendarIndex % this.ColumnCount + this.ContentColumnOffset;
+      int rowIndex = (calendarIndex / this.ColumnCount) + this.ContentRowOffset;
+      int columnIndex = (calendarIndex % this.ColumnCount) + this.ContentColumnOffset;
       object item = GetItemFromContainer(dateItemContainer);
       var dateGeneratorArgs = new DateGeneratorArgs(
         dateItemContainer,
@@ -965,7 +965,7 @@ namespace BionicCode.Controls.Net.Wpf
           this.InternalDateItemContainerLookupTable.Add(calendarViewDate, dateContainer);
           this.InternalDateItemContainerToDateItemTable.Add(dateContainer, dateItem);
         }
-       
+
         yield return dateContainer;
       }
     }
@@ -986,7 +986,7 @@ namespace BionicCode.Controls.Net.Wpf
         return arrangeBounds;
       }
 
-      for (var columnIndex = 0; columnIndex < this.ColumnCount; columnIndex++)
+      for (int columnIndex = 0; columnIndex < this.ColumnCount; columnIndex++)
       {
         UIElement itemContainer = this.InternalDateColumnHeaderItems[columnIndex];
         object item = GetItemFromContainer(itemContainer);
@@ -1019,15 +1019,12 @@ namespace BionicCode.Controls.Net.Wpf
       return arrangeBounds;
     }
 
-    public object GetItemFromContainer(UIElement itemContainer)
+    public object GetItemFromContainer(UIElement itemContainer) => itemContainer switch
     {
-      return itemContainer switch
-      {
-        HeaderedItemsControl headeredItemsControl => headeredItemsControl.Header,
-        ContentControl contentControl => contentControl.Content,
-        _ => (itemContainer as FrameworkElement)?.DataContext
-      };
-    }
+      HeaderedItemsControl headeredItemsControl => headeredItemsControl.Header,
+      ContentControl contentControl => contentControl.Content,
+      _ => (itemContainer as FrameworkElement)?.DataContext
+    };
 
     protected virtual void OnGeneratingDate(DateGeneratorArgs dateGeneratorArgs)
     {
@@ -1122,14 +1119,14 @@ namespace BionicCode.Controls.Net.Wpf
           calendarDay = intDay;
           break;
         case double doubleDay:
-          calendarDay = (int) doubleDay;
+          calendarDay = (int)doubleDay;
           break;
         case DateTime dateTime:
           calendarDay = dateTime.Day;
           break;
         default:
           throw new ArgumentException(
-            "Invalid type of 'Calendar.Date'. Type must be 'int'  or 'DateTime'.");
+            "Invalid type of 'Calendar.Date'. Types must be 'int'  or 'DateTime'.");
       }
 
       return calendarDay;
@@ -1152,10 +1149,10 @@ namespace BionicCode.Controls.Net.Wpf
     private int WeekRealizationOffset { get; set; }
     private CalendarMonthView NextCalendarView { get; set; }
 
-#region OnIsShowingCalendarWeekChanged dependency property changed handler
+    #region OnIsShowingCalendarWeekChanged dependency property changed handler
 
     private static void OnIsShowingCalendarWeekChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
-      (d as CalendarPanel).OnIsShowingCalendarWeekChanged((bool) e.OldValue, (bool) e.NewValue);
+      (d as CalendarPanel).OnIsShowingCalendarWeekChanged((bool)e.OldValue, (bool)e.NewValue);
 
     protected virtual void OnIsShowingCalendarWeekChanged(bool oldValue, bool newValue)
     {
@@ -1164,8 +1161,7 @@ namespace BionicCode.Controls.Net.Wpf
       InvalidateVisual();
     }
 
-#endregion OnIsShowingCalendarWeekChanged dependency property changed handler
-
+    #endregion OnIsShowingCalendarWeekChanged dependency property changed handler
 
     protected virtual void OnAutoGeneratingEvent(EventGeneratorArgs e) => this.AutoGeneratingEvent?.Invoke(this, e);
     protected virtual void OnAutoGeneratingDate(DateGeneratorArgs e) => this.AutoGeneratingDate?.Invoke(this, e);
@@ -1177,16 +1173,15 @@ namespace BionicCode.Controls.Net.Wpf
     public event EventHandler<DateGeneratorArgs> AutoGeneratingDate;
     public event EventHandler<DateColumnHeaderGeneratorArgs> AutoGeneratingDateColumnHeader;
 
-
     public int RowCount
     {
-      get => (int) GetValue(CalendarPanel.RowCountProperty);
+      get => (int)GetValue(CalendarPanel.RowCountProperty);
       set => SetValue(CalendarPanel.RowCountProperty, value);
     }
 
     public int ColumnCount
     {
-      get => (int) GetValue(CalendarPanel.ColumnCountProperty);
+      get => (int)GetValue(CalendarPanel.ColumnCountProperty);
       set => SetValue(CalendarPanel.ColumnCountProperty, value);
     }
 
@@ -1225,7 +1220,7 @@ namespace BionicCode.Controls.Net.Wpf
     private int ContentRowOffset { get; set; }
     private int ContentColumnOffset { get; set; }
 
-#region Implementation of IScrollInfo
+    #region Implementation of IScrollInfo
 
     /// <inheritdoc />
     public void LineUp() => SetVerticalOffset(this.VerticalOffset - 1);
@@ -1234,10 +1229,7 @@ namespace BionicCode.Controls.Net.Wpf
     public void LineDown() => SetVerticalOffset(this.VerticalOffset + 1);
 
     /// <inheritdoc />
-    public void LineLeft()
-    {
-      throw new NotSupportedException();
-    }
+    public void LineLeft() => throw new NotSupportedException();
 
     /// <inheritdoc />
     public void LineRight() => throw new NotSupportedException();
@@ -1301,12 +1293,12 @@ namespace BionicCode.Controls.Net.Wpf
         ? this.CurrentCalendarView.WeekCount - 1
         : this.CurrentCalendarView.WeekCount;
 
-      if (this.PreviousScrollDirection == ScrollDirection.Bottom && scrollDirection == ScrollDirection.Top && this.WeekRealizationOffset < 0 
+      if (this.PreviousScrollDirection == ScrollDirection.Bottom && scrollDirection == ScrollDirection.Top && this.WeekRealizationOffset < 0
           || scrollDirection == ScrollDirection.Top && this.WeekRealizationOffset < 0)
       {
         LoadPreviousCalendarView();
       }
-      else if (this.PreviousScrollDirection == ScrollDirection.Top && scrollDirection == ScrollDirection.Bottom && this.WeekRealizationOffset >= availableWeeks 
+      else if (this.PreviousScrollDirection == ScrollDirection.Top && scrollDirection == ScrollDirection.Bottom && this.WeekRealizationOffset >= availableWeeks
                || scrollDirection == ScrollDirection.Bottom && this.WeekRealizationOffset >= availableWeeks)
       {
         LoadNextCalendarView();
@@ -1339,7 +1331,7 @@ namespace BionicCode.Controls.Net.Wpf
     private void LoadNextCalendarView()
     {
       RecycleUnusedDateContainers(0, -1);
-      this.WeekRealizationOffset = 0; 
+      this.WeekRealizationOffset = 0;
       this.CurrentCalendarView = this.NextCalendarView;
       this.NextCalendarView = this.NextCalendarView.GetNext();
     }
@@ -1396,6 +1388,6 @@ namespace BionicCode.Controls.Net.Wpf
     private double verticalOffset;
     private ScrollViewer scrollOwner;
 
-#endregion
+    #endregion
   }
 }

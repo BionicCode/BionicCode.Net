@@ -1,6 +1,5 @@
 ﻿namespace BionicCode.Controls.Net.Wpf
 {
-  using System.Collections.Generic;
   using System.Windows;
 
   public interface ICartesianSeriesInfo : ISeriesInfo

@@ -90,7 +90,7 @@ namespace BionicCode.Controls.Net.Wpf
         byte[] bytes = BitConverter.GetBytes(this.SegmentCodeMap[decimalDigit]);
 
         yield return new BitArray(bytes);
-        
+
         value /= 10;
       }
     }

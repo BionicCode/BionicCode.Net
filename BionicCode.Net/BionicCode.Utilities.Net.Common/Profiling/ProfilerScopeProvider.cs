@@ -49,7 +49,7 @@
 
       protected virtual async void Dispose(bool disposing)
       {
-        if (!disposedValue)
+        if (!this.disposedValue)
         {
           if (disposing)
           {
@@ -80,7 +80,7 @@
 
           // TODO: free unmanaged resources (unmanaged objects) and override finalizer
           // TODO: set large fields to null
-          disposedValue = true;
+          this.disposedValue = true;
         }
       }
 
@@ -97,7 +97,7 @@
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
       }
-    } 
+    }
     #endregion
   }
 }

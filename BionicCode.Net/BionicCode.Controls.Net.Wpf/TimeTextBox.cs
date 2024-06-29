@@ -45,10 +45,9 @@
 
     #endregion
 
-
     private bool IsValidTime(string input) =>
-      TimeSpan.TryParse(input, new DateTimeFormatInfo(), out _) 
-        || (input.EndsWith(":", StringComparison.OrdinalIgnoreCase) 
+      TimeSpan.TryParse(input, new DateTimeFormatInfo(), out _)
+        || (input.EndsWith(":", StringComparison.OrdinalIgnoreCase)
       &&
       input.Count(character => character.Equals(':')) < 3);
   }

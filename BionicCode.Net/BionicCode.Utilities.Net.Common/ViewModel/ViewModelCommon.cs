@@ -1,7 +1,6 @@
 namespace BionicCode.Utilities.Net
 {
   using System;
-  using System.Windows;
   using System.Collections;
   using System.Collections.Generic;
   using System.ComponentModel;
@@ -9,8 +8,8 @@ namespace BionicCode.Utilities.Net
   using System.Linq;
   using System.Reflection;
   using System.Runtime.CompilerServices;
-  using System.Threading;
   using System.Threading.Tasks;
+  using System.Windows;
   using JetBrains.Annotations;
 
   /// <summary>
@@ -666,7 +665,7 @@ namespace BionicCode.Utilities.Net
     protected virtual bool TrySetValueSilent<TValue>(TValue value, PropertyValidationDelegate<TValue> validationDelegate, ref TValue targetBackingField, [CallerMemberName] string propertyName = null)
       => TrySetValueSilentInternal(value, validationDelegate, ref targetBackingField, new SetValueOptions(false, false, true), null, true, propertyName);
 
-    private  bool TrySetValueSilentInternal<TValue>(TValue value, PropertyValidationDelegate<TValue> validationDelegate, ref TValue targetBackingField, SetValueOptions methodConfiguration, IEqualityComparer<TValue> equalityComparer, bool isValidationEnabled, [CallerMemberName] string propertyName = null)
+    private bool TrySetValueSilentInternal<TValue>(TValue value, PropertyValidationDelegate<TValue> validationDelegate, ref TValue targetBackingField, SetValueOptions methodConfiguration, IEqualityComparer<TValue> equalityComparer, bool isValidationEnabled, [CallerMemberName] string propertyName = null)
     {
       if (isValidationEnabled && validationDelegate == null)
       {
@@ -708,7 +707,7 @@ namespace BionicCode.Utilities.Net
     /// <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c>) and the new value equals the old value, then the <see cref="INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
     /// <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="object.ReferenceEquals(object, object)"/>.
     /// <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="newValue"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
-    protected async virtual Task<bool> TrySetValueSilentAsync<TValue>(TValue newValue, TValue oldValue, Func<TValue, Task<(bool IsValid, IEnumerable<object> ErrorMessages)>> asyncValidationDelegate, SetBackingFieldDelegate<TValue> backingFieldSetterDelegate, SetValueOptions methodConfiguration, IEqualityComparer<TValue> equalityComparer, [CallerMemberName] string propertyName = "")
+    protected virtual async Task<bool> TrySetValueSilentAsync<TValue>(TValue newValue, TValue oldValue, Func<TValue, Task<(bool IsValid, IEnumerable<object> ErrorMessages)>> asyncValidationDelegate, SetBackingFieldDelegate<TValue> backingFieldSetterDelegate, SetValueOptions methodConfiguration, IEqualityComparer<TValue> equalityComparer, [CallerMemberName] string propertyName = "")
       => await TrySetValueSilentInternalAsync(newValue, oldValue, asyncValidationDelegate is null ? null : new PropertyValidationDelegateAsync<TValue>(async propertyValue => new PropertyValidationResult(await asyncValidationDelegate.Invoke(propertyValue))), backingFieldSetterDelegate, methodConfiguration, equalityComparer, propertyName);
 
     /// <summary>
@@ -732,7 +731,7 @@ namespace BionicCode.Utilities.Net
     /// <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c>) and the new value equals the old value, then the <see cref="INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
     /// <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="object.ReferenceEquals(object, object)"/>.
     /// <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="newValue"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
-    protected async virtual Task<bool> TrySetValueSilentAsync<TValue>(TValue newValue, TValue oldValue, Func<TValue, Task<(bool IsValid, IEnumerable<object> ErrorMessages)>> asyncValidationDelegate, SetBackingFieldDelegate<TValue> backingFieldSetterDelegate, SetValueOptions methodConfiguration, [CallerMemberName] string propertyName = "")
+    protected virtual async Task<bool> TrySetValueSilentAsync<TValue>(TValue newValue, TValue oldValue, Func<TValue, Task<(bool IsValid, IEnumerable<object> ErrorMessages)>> asyncValidationDelegate, SetBackingFieldDelegate<TValue> backingFieldSetterDelegate, SetValueOptions methodConfiguration, [CallerMemberName] string propertyName = "")
       => await TrySetValueSilentInternalAsync(newValue, oldValue, asyncValidationDelegate is null ? null : new PropertyValidationDelegateAsync<TValue>(async propertyValue => new PropertyValidationResult(await asyncValidationDelegate.Invoke(propertyValue))), backingFieldSetterDelegate, methodConfiguration, null, propertyName);
 
     /// <summary>
@@ -752,7 +751,7 @@ namespace BionicCode.Utilities.Net
     /// <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
     /// <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="object.ReferenceEquals(object, object)"/>.
     /// <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="newValue"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
-    protected async virtual Task<bool> TrySetValueSilentAsync<TValue>(TValue newValue, TValue oldValue, Func<TValue, Task<(bool IsValid, IEnumerable<object> ErrorMessages)>> asyncValidationDelegate, SetBackingFieldDelegate<TValue> backingFieldSetterDelegate, IEqualityComparer<TValue> equalityComparer, [CallerMemberName] string propertyName = "")
+    protected virtual async Task<bool> TrySetValueSilentAsync<TValue>(TValue newValue, TValue oldValue, Func<TValue, Task<(bool IsValid, IEnumerable<object> ErrorMessages)>> asyncValidationDelegate, SetBackingFieldDelegate<TValue> backingFieldSetterDelegate, IEqualityComparer<TValue> equalityComparer, [CallerMemberName] string propertyName = "")
       => await TrySetValueSilentInternalAsync(newValue, oldValue, asyncValidationDelegate is null ? null : new PropertyValidationDelegateAsync<TValue>(async propertyValue => new PropertyValidationResult(await asyncValidationDelegate.Invoke(propertyValue))), backingFieldSetterDelegate, new SetValueOptions(false, false, true), equalityComparer, propertyName);
 
     /// <summary>
@@ -771,7 +770,7 @@ namespace BionicCode.Utilities.Net
     /// <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
     /// <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="object.ReferenceEquals(object, object)"/>.
     /// <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="newValue"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
-    protected async virtual Task<bool> TrySetValueSilentAsync<TValue>(TValue newValue, TValue oldValue, Func<TValue, Task<(bool IsValid, IEnumerable<object> ErrorMessages)>> asyncValidationDelegate, SetBackingFieldDelegate<TValue> backingFieldSetterDelegate, [CallerMemberName] string propertyName = "")
+    protected virtual async Task<bool> TrySetValueSilentAsync<TValue>(TValue newValue, TValue oldValue, Func<TValue, Task<(bool IsValid, IEnumerable<object> ErrorMessages)>> asyncValidationDelegate, SetBackingFieldDelegate<TValue> backingFieldSetterDelegate, [CallerMemberName] string propertyName = "")
       => await TrySetValueSilentInternalAsync(newValue, oldValue, asyncValidationDelegate is null ? null : new PropertyValidationDelegateAsync<TValue>(async propertyValue => new PropertyValidationResult(await asyncValidationDelegate.Invoke(propertyValue))), backingFieldSetterDelegate, new SetValueOptions(false, false, true), null, propertyName);
 
     /// <summary>
@@ -796,7 +795,7 @@ namespace BionicCode.Utilities.Net
     /// <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c>) and the new value equals the old value, then the <see cref="INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
     /// <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="object.ReferenceEquals(object, object)"/>.
     /// <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="newValue"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
-    protected async virtual Task<bool> TrySetValueSilentAsync<TValue>(TValue newValue, TValue oldValue, PropertyValidationDelegateAsync<TValue> asyncValidationDelegate, SetBackingFieldDelegate<TValue> backingFieldSetterDelegate, SetValueOptions methodConfiguration, IEqualityComparer<TValue> equalityComparer, [CallerMemberName] string propertyName = "")
+    protected virtual async Task<bool> TrySetValueSilentAsync<TValue>(TValue newValue, TValue oldValue, PropertyValidationDelegateAsync<TValue> asyncValidationDelegate, SetBackingFieldDelegate<TValue> backingFieldSetterDelegate, SetValueOptions methodConfiguration, IEqualityComparer<TValue> equalityComparer, [CallerMemberName] string propertyName = "")
       => await TrySetValueSilentInternalAsync(newValue, oldValue, asyncValidationDelegate, backingFieldSetterDelegate, methodConfiguration, equalityComparer, propertyName);
 
     /// <summary>
@@ -820,7 +819,7 @@ namespace BionicCode.Utilities.Net
     /// <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c>) and the new value equals the old value, then the <see cref="INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
     /// <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="object.ReferenceEquals(object, object)"/>.
     /// <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="newValue"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
-    protected async virtual Task<bool> TrySetValueSilentAsync<TValue>(TValue newValue, TValue oldValue, PropertyValidationDelegateAsync<TValue> asyncValidationDelegate, SetBackingFieldDelegate<TValue> backingFieldSetterDelegate, SetValueOptions methodConfiguration, [CallerMemberName] string propertyName = "")
+    protected virtual async Task<bool> TrySetValueSilentAsync<TValue>(TValue newValue, TValue oldValue, PropertyValidationDelegateAsync<TValue> asyncValidationDelegate, SetBackingFieldDelegate<TValue> backingFieldSetterDelegate, SetValueOptions methodConfiguration, [CallerMemberName] string propertyName = "")
       => await TrySetValueSilentInternalAsync(newValue, oldValue, asyncValidationDelegate, backingFieldSetterDelegate, methodConfiguration, null, propertyName);
 
     /// <summary>
@@ -840,7 +839,7 @@ namespace BionicCode.Utilities.Net
     /// <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
     /// <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="object.ReferenceEquals(object, object)"/>.
     /// <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="newValue"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
-    protected async virtual Task<bool> TrySetValueSilentAsync<TValue>(TValue newValue, TValue oldValue, PropertyValidationDelegateAsync<TValue> asyncValidationDelegate, SetBackingFieldDelegate<TValue> backingFieldSetterDelegate, IEqualityComparer<TValue> equalityComparer, [CallerMemberName] string propertyName = "")
+    protected virtual async Task<bool> TrySetValueSilentAsync<TValue>(TValue newValue, TValue oldValue, PropertyValidationDelegateAsync<TValue> asyncValidationDelegate, SetBackingFieldDelegate<TValue> backingFieldSetterDelegate, IEqualityComparer<TValue> equalityComparer, [CallerMemberName] string propertyName = "")
       => await TrySetValueSilentInternalAsync(newValue, oldValue, asyncValidationDelegate, backingFieldSetterDelegate, new SetValueOptions(false, false, true), equalityComparer, propertyName);
 
     /// <summary>
@@ -859,7 +858,7 @@ namespace BionicCode.Utilities.Net
     /// <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
     /// <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="object.ReferenceEquals(object, object)"/>.
     /// <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="newValue"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
-    protected async virtual Task<bool> TrySetValueSilentAsync<TValue>(TValue newValue, TValue oldValue, PropertyValidationDelegateAsync<TValue> asyncValidationDelegate, SetBackingFieldDelegate<TValue> backingFieldSetterDelegate, [CallerMemberName] string propertyName = "")
+    protected virtual async Task<bool> TrySetValueSilentAsync<TValue>(TValue newValue, TValue oldValue, PropertyValidationDelegateAsync<TValue> asyncValidationDelegate, SetBackingFieldDelegate<TValue> backingFieldSetterDelegate, [CallerMemberName] string propertyName = "")
       => await TrySetValueSilentInternalAsync(newValue, oldValue, asyncValidationDelegate, backingFieldSetterDelegate, new SetValueOptions(false, false, true), null, propertyName);
 
     private async Task<bool> TrySetValueSilentInternalAsync<TValue>(TValue newValue, TValue oldValue, PropertyValidationDelegateAsync<TValue> asyncValidationDelegate, SetBackingFieldDelegate<TValue> backingFieldSetterDelegate, SetValueOptions methodConfiguration, IEqualityComparer<TValue> equalityComparer, [CallerMemberName] string propertyName = "")

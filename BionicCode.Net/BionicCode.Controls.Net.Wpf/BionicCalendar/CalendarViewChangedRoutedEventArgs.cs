@@ -15,10 +15,7 @@ namespace BionicCode.Controls.Net.Wpf
     {
     }
 
-    public CalendarViewChangedRoutedEventArgs(RoutedEvent routedEvent, object source, TData currentView) : base(routedEvent, source)
-    {
-      this.CurrentView = currentView;
-    }
+    public CalendarViewChangedRoutedEventArgs(RoutedEvent routedEvent, object source, TData currentView) : base(routedEvent, source) => this.CurrentView = currentView;
 
     public TData CurrentView { get; }
   }

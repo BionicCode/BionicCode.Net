@@ -4,7 +4,7 @@
   using System;
   using System.Globalization;
   using System.Windows;
-using System.Windows.Data;
+  using System.Windows.Data;
   /// <summary>
   /// Implementation of <see cref="IValueConverter"/> that converts a <see cref="bool"/> to a custom string representation e.g., convert <c>true</c> to <c>"Enabled"</c>.
   /// </summary>
@@ -39,7 +39,7 @@ using System.Windows.Data;
     /// <value>A string representation of <see cref="bool"/> that evaluates to <c>true</c>.</value>
     public string TrueValue
     {
-      get => (string) GetValue(BoolToStringConverter.TrueValueProperty);
+      get => (string)GetValue(BoolToStringConverter.TrueValueProperty);
       set => SetValue(BoolToStringConverter.TrueValueProperty, value);
     }
 
@@ -58,7 +58,7 @@ using System.Windows.Data;
     /// <value>A string representation of <see cref="bool"/> that evaluates to <c>false</c>.</value>
     public string FalseValue
     {
-      get => (string) GetValue(BoolToStringConverter.FalseValueProperty);
+      get => (string)GetValue(BoolToStringConverter.FalseValueProperty);
       set => SetValue(BoolToStringConverter.FalseValueProperty, value);
     }
 
@@ -77,11 +77,11 @@ using System.Windows.Data;
     /// <value>A string representation of <see cref="Nullable"/> that evaluates to <c>null</c>.</value>
     public string NullValue
     {
-      get => (string) GetValue(BoolToStringConverter.NullValueProperty);
+      get => (string)GetValue(BoolToStringConverter.NullValueProperty);
       set => SetValue(BoolToStringConverter.NullValueProperty, value);
     }
 
-  #region Implementation of IValueConverter
+    #region Implementation of IValueConverter
 
     /// <inheritdoc />
     public object Convert(
@@ -108,7 +108,7 @@ using System.Windows.Data;
       CultureInfo culture) =>
       (value as string)?.Equals(this.TrueValue, StringComparison.OrdinalIgnoreCase) ?? false;
 
-  #endregion
+    #endregion
   }
 #endif
 }

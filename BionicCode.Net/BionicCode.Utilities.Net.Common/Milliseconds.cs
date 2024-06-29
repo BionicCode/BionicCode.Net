@@ -17,8 +17,63 @@
     public Minutes ToMinutes() => new Minutes(TimeValueConverter.ToMinutes(this));
     public Seconds ToSeconds() => new Seconds(TimeValueConverter.ToSeconds(this));
     public Microseconds ToMicroseconds() => new Microseconds(TimeValueConverter.ToMicroseconds(this));
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard21)'
+Before:
     public Nanoseconds ToNanoseconds() => new Nanoseconds(TimeValueConverter.ToNanoseconds(this));
     
+    public override string ToString() => $"{this.Value} {this.Unit.ToDisplayStringValue()}";
+After:
+    public Nanoseconds ToNanoseconds() => new Nanoseconds(TimeValueConverter.ToNanoseconds(this));
+
+    public override string ToString() => $"{this.Value} {this.Unit.ToDisplayStringValue()}";
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net50)'
+Before:
+    public Nanoseconds ToNanoseconds() => new Nanoseconds(TimeValueConverter.ToNanoseconds(this));
+    
+    public override string ToString() => $"{this.Value} {this.Unit.ToDisplayStringValue()}";
+After:
+    public Nanoseconds ToNanoseconds() => new Nanoseconds(TimeValueConverter.ToNanoseconds(this));
+
+    public override string ToString() => $"{this.Value} {this.Unit.ToDisplayStringValue()}";
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net80)'
+Before:
+    public Nanoseconds ToNanoseconds() => new Nanoseconds(TimeValueConverter.ToNanoseconds(this));
+    
+    public override string ToString() => $"{this.Value} {this.Unit.ToDisplayStringValue()}";
+After:
+    public Nanoseconds ToNanoseconds() => new Nanoseconds(TimeValueConverter.ToNanoseconds(this));
+
+    public override string ToString() => $"{this.Value} {this.Unit.ToDisplayStringValue()}";
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net60)'
+Before:
+    public Nanoseconds ToNanoseconds() => new Nanoseconds(TimeValueConverter.ToNanoseconds(this));
+    
+    public override string ToString() => $"{this.Value} {this.Unit.ToDisplayStringValue()}";
+After:
+    public Nanoseconds ToNanoseconds() => new Nanoseconds(TimeValueConverter.ToNanoseconds(this));
+
+    public override string ToString() => $"{this.Value} {this.Unit.ToDisplayStringValue()}";
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net70)'
+Before:
+    public Nanoseconds ToNanoseconds() => new Nanoseconds(TimeValueConverter.ToNanoseconds(this));
+    
+    public override string ToString() => $"{this.Value} {this.Unit.ToDisplayStringValue()}";
+After:
+    public Nanoseconds ToNanoseconds() => new Nanoseconds(TimeValueConverter.ToNanoseconds(this));
+
+    public override string ToString() => $"{this.Value} {this.Unit.ToDisplayStringValue()}";
+*/
+    public Nanoseconds ToNanoseconds() => new Nanoseconds(TimeValueConverter.ToNanoseconds(this));
+
     public override string ToString() => $"{this.Value} {this.Unit.ToDisplayStringValue()}";
     public bool Equals(Milliseconds other) => this.Value.Equals(other.Value);
     public int CompareTo(Milliseconds other) => this.Value.CompareTo(other.Value);
@@ -34,13 +89,13 @@
     public override int GetHashCode()
     {
       int hashCode = -177567199;
-      hashCode = hashCode * -1521134295 + this.Value.GetHashCode();
-      hashCode = hashCode * -1521134295 + this.Unit.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.Value.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.Unit.GetHashCode();
       return hashCode;
     }
 #endif
 
-    public override bool Equals(object obj) => obj is Milliseconds milliseconds && this.Equals(milliseconds);
+    public override bool Equals(object obj) => obj is Milliseconds milliseconds && Equals(milliseconds);
 
     public double Value { get; }
     public TimeUnit Unit { get; }

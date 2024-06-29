@@ -3,11 +3,7 @@
   using System;
   using System.Collections.Generic;
   using System.Collections.ObjectModel;
-  using System.Diagnostics;
   using System.Linq;
-  using System.Reflection;
-  using System.Runtime.CompilerServices;
-  using System.Runtime.InteropServices;
   using System.Text;
   using System.Threading.Tasks;
 
@@ -148,17 +144,17 @@
     /// The stamdard deviation over all the <see cref="ProfilerResult"/> items in microseconds.
     /// </summary>
     /// <value>Stamdard deviation in microseconds.</value>
-    public Microseconds StandardDeviation 
+    public Microseconds StandardDeviation
     {
       get
-      { 
+      {
         if (!this.IsDataCalculated)
         {
           CalculateData();
         }
 
-        return  this.standardDeviation;
-      } 
+        return this.standardDeviation;
+      }
       private set => this.standardDeviation = value;
     }
 
@@ -183,7 +179,7 @@
 
         return this.variance;
       }
-      private set => this.variance = value; 
+      private set => this.variance = value;
     }
 
     /// <summary>

@@ -22,11 +22,11 @@ namespace BionicCode.Net.Wpf.Ui.Test
     #endregion CurrentDateTime dependency property
 
     private DispatcherTimer ClockTimer { get; }
-    
+
     public MainWindow()
     {
       InitializeComponent();
-      
+
       this.ClockTimer = new DispatcherTimer(
         TimeSpan.FromMilliseconds(250),
         DispatcherPriority.Render,

@@ -5,8 +5,8 @@ namespace BionicCode.Utilities.Net
   using System;
   using System.Collections.Generic;
   using System.Windows;
-  using System.Windows.Input;
   using System.Windows.Controls;
+  using System.Windows.Input;
   using System.Windows.Threading;
 
   /// <summary>
@@ -39,9 +39,9 @@ namespace BionicCode.Utilities.Net
     /// <returns><see langword="true"/> if the behavior is enabled or <see langword="false"/> if it is disabled.</returns>
     public static bool GetIsInfiniteScrollEnabled(DependencyObject attachingElement) => (bool)attachingElement.GetValue(SelectorService.IsInfiniteScrollEnabledProperty);
 
-#endregion IsInfiniteScrollEnabled attached property
+    #endregion IsInfiniteScrollEnabled attached property
 
-#region IsSelectOnScrollEnabled attached property
+    #region IsSelectOnScrollEnabled attached property
 
     /// <summary>
     /// Enable select on scroll behavior for a <see cref="System.Windows.Controls.Primitives.Selector"/>.
@@ -66,7 +66,7 @@ namespace BionicCode.Utilities.Net
     /// <returns><see langword="true"/> if the behavior is enabled or <see langword="false"/> if it is disabled.</returns>
     public static bool GetIsSelectOnScrollEnabled(DependencyObject attachingElement) => (bool)attachingElement.GetValue(SelectorService.IsSelectOnScrollEnabledProperty);
 
-#endregion IsSelectOnScrollEnabled attached property
+    #endregion IsSelectOnScrollEnabled attached property
 
     private static Dictionary<System.Windows.Controls.Primitives.Selector, ScrollViewer> ScrollViewerTable { get; }
     private static Dictionary<ScrollViewer, System.Windows.Controls.Primitives.Selector> ScrollViewerReverseTable { get; }
@@ -244,7 +244,7 @@ namespace BionicCode.Utilities.Net
         }
       }
 
-      scrollViewer.ScrollToVerticalOffset(verticalOffset - scrollViewer.ViewportHeight / 2);
+      scrollViewer.ScrollToVerticalOffset(verticalOffset - (scrollViewer.ViewportHeight / 2));
     }
   }
 #endif

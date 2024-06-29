@@ -15,8 +15,8 @@ namespace BionicCode.Controls.Net.Wpf
     using System.Windows;
       */
   using System.Windows;
-  
-  
+
+
   public interface ICartesianDataConverter<TDataItem> : ICartesianDataConverter, IDataConverter<TDataItem, Point>
   {
     Point ConvertToCartesianPoint(TDataItem dataItem);

@@ -111,7 +111,7 @@
       typeof(AnalogTimePicker),
       new PropertyMetadata(default));
 
-    public ObservableCollection<int> SelectableDays { get => (ObservableCollection<int>) GetValue(AnalogTimePicker.SelectableDaysProperty); set => SetValue(AnalogTimePicker.SelectableDaysProperty, value); }
+    public ObservableCollection<int> SelectableDays { get => (ObservableCollection<int>)GetValue(AnalogTimePicker.SelectableDaysProperty); set => SetValue(AnalogTimePicker.SelectableDaysProperty, value); }
 
     #endregion SelectableDays dependency property
 
@@ -123,7 +123,7 @@
       typeof(AnalogTimePicker),
       new PropertyMetadata(default));
 
-    public bool IsOverflowEnabled { get => (bool) GetValue(AnalogTimePicker.IsOverflowEnabledProperty); set => SetValue(AnalogTimePicker.IsOverflowEnabledProperty, value); }
+    public bool IsOverflowEnabled { get => (bool)GetValue(AnalogTimePicker.IsOverflowEnabledProperty); set => SetValue(AnalogTimePicker.IsOverflowEnabledProperty, value); }
 
     #endregion IsOverflowEnabled dependency property
 
@@ -135,15 +135,12 @@
       typeof(AnalogTimePicker),
       new PropertyMetadata(default));
 
-    public int SelectedDays { get => (int) GetValue(AnalogTimePicker.SelectedDaysProperty); set => SetValue(AnalogTimePicker.SelectedDaysProperty, value); }
+    public int SelectedDays { get => (int)GetValue(AnalogTimePicker.SelectedDaysProperty); set => SetValue(AnalogTimePicker.SelectedDaysProperty, value); }
 
     #endregion SelectedDays dependency property
     private string TimeStringFormatPattern { get; set; }
 
-    static AnalogTimePicker()
-    {
-      FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(AnalogTimePicker), new FrameworkPropertyMetadata(typeof(AnalogTimePicker)));
-    }
+    static AnalogTimePicker() => FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(AnalogTimePicker), new FrameworkPropertyMetadata(typeof(AnalogTimePicker)));
 
     public AnalogTimePicker()
     {
@@ -201,7 +198,7 @@
       this.AnalogClockFace.SelectedSecond = (steps + this.AnalogClockFace.SelectedSecond + change) % steps;
     }
 
-  
+
     #endregion
 
     private static void OnSelectedTimeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -212,16 +209,13 @@
 
     private static void OnIsOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      var isOpen = (bool)e.NewValue;
+      bool isOpen = (bool)e.NewValue;
       (d as AnalogTimePicker).OnIsOpenChanged(isOpen);
     }
 
     private string FormatTime(DateTime time) => time.TimeOfDay.ToString(this.TimeStringFormatPattern, CultureInfo.CurrentCulture);
 
-    private static void OnAnalogClockFaceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      (d as AnalogTimePicker).OnAnalogClockFaceChanged(e.OldValue as AnalogClockFace, e.NewValue as AnalogClockFace);
-    }
+    private static void OnAnalogClockFaceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as AnalogTimePicker).OnAnalogClockFaceChanged(e.OldValue as AnalogClockFace, e.NewValue as AnalogClockFace);
 
     private static void OnIsClockHandVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -248,19 +242,13 @@
       }
     }
 
-    protected virtual void OnIsOpenChanged(bool isOpen)
-    {
-      VisualStateManager.GoToState(
+    protected virtual void OnIsOpenChanged(bool isOpen) => VisualStateManager.GoToState(
         this,
         isOpen
           ? AnalogTimePicker.VisualStatePickerOpen
           : AnalogTimePicker.VisualStatePickerClosed,
         true);
-    }
 
-    private void OnSelectedAnalogClockFaceTimeChanged(object sender, RoutedEventArgs e)
-    {
-      this.SelectedTime = this.AnalogClockFace.SelectedTime;
-    }
+    private void OnSelectedAnalogClockFaceTimeChanged(object sender, RoutedEventArgs e) => this.SelectedTime = this.AnalogClockFace.SelectedTime;
   }
 }

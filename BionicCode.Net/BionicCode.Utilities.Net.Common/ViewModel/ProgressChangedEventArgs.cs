@@ -1,8 +1,6 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System;
-  using System.Collections.Generic;
-  using System.Text;
 
   /// <summary>
   /// Event args for the <see cref="ProgressChangedEventHandler"/>.

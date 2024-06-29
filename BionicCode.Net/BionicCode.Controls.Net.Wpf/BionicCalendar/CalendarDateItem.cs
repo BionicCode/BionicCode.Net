@@ -81,7 +81,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public bool IsToday
     {
-      get => (bool) GetValue(CalendarDateItem.IsTodayProperty);
+      get => (bool)GetValue(CalendarDateItem.IsTodayProperty);
       set => SetValue(CalendarDateItem.IsTodayProperty, value);
     }
 
@@ -132,7 +132,7 @@ namespace BionicCode.Controls.Net.Wpf
     /// <inheritdoc />
     public ICommand Command
     {
-      get => (ICommand) GetValue(CalendarDateItem.CommandProperty);
+      get => (ICommand)GetValue(CalendarDateItem.CommandProperty);
       set => SetValue(CalendarDateItem.CommandProperty, value);
     }
 
@@ -146,7 +146,7 @@ namespace BionicCode.Controls.Net.Wpf
     /// <inheritdoc />
     public IInputElement CommandTarget
     {
-      get => (IInputElement) GetValue(CalendarDateItem.CommandTargetProperty);
+      get => (IInputElement)GetValue(CalendarDateItem.CommandTargetProperty);
       set => SetValue(CalendarDateItem.CommandTargetProperty, value);
     }
 
@@ -155,7 +155,7 @@ namespace BionicCode.Controls.Net.Wpf
     private static void OnIsSelectedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
       var this_ = d as CalendarDateItem;
-      this_.OnIsSelectedChanged((bool) e.OldValue, (bool) e.NewValue);
+      this_.OnIsSelectedChanged((bool)e.OldValue, (bool)e.NewValue);
     }
     #region Overrides of UIElement
 
@@ -231,10 +231,7 @@ namespace BionicCode.Controls.Net.Wpf
       ExecuteClickCommand();
     }
 
-    private void HandleSelection()
-    {
-      Selector.SetIsSelected(this, true);
-    }
+    private void HandleSelection() => Selector.SetIsSelected(this, true);
 
     private void ExecuteClickCommand()
     {
@@ -278,7 +275,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public DayOfWeek DayOfWeek
     {
-      get => (DayOfWeek) GetValue(CalendarDateItem.DayOfWeekProperty);
+      get => (DayOfWeek)GetValue(CalendarDateItem.DayOfWeekProperty);
       set => SetValue(CalendarDateItem.DayOfWeekProperty, value);
     }
 
@@ -290,25 +287,25 @@ namespace BionicCode.Controls.Net.Wpf
 
     public DateTime Day
     {
-      get => (DateTime) GetValue(CalendarDateItem.DayProperty);
+      get => (DateTime)GetValue(CalendarDateItem.DayProperty);
       set => SetValue(CalendarDateItem.DayProperty, value);
     }
 
     public bool IsHoliday
     {
-      get => (bool) GetValue(CalendarDateItem.IsHolidayProperty);
+      get => (bool)GetValue(CalendarDateItem.IsHolidayProperty);
       set => SetValue(CalendarDateItem.IsHolidayProperty, value);
     }
 
     public int WeekOfYear
     {
-      get => (int) GetValue(CalendarDateItem.WeekOfYearProperty);
+      get => (int)GetValue(CalendarDateItem.WeekOfYearProperty);
       set => SetValue(CalendarDateItem.WeekOfYearProperty, value);
     }
 
     public bool IsSelected
     {
-      get => (bool) GetValue(CalendarDateItem.IsSelectedProperty);
+      get => (bool)GetValue(CalendarDateItem.IsSelectedProperty);
       set => SetValue(CalendarDateItem.IsSelectedProperty, value);
     }
   }

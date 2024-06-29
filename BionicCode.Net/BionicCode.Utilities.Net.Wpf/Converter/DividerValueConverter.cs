@@ -3,14 +3,14 @@
 #if NET || NET461_OR_GREATER
   using System;
   using System.Globalization;
-using System.Windows.Data;
+  using System.Windows.Data;
   /// <summary>
   /// An <see cref="IValueConverter"/> implementation that enables to devide a bound numeric value by a divisor value provided via the <see cref="Binding.ConverterParameter"/> property.
   /// </summary>
   [ValueConversion(typeof(double), typeof(double))]
   public class DividerValueConverter : IValueConverter
   {
-  #region Implementation of IValueConverter
+    #region Implementation of IValueConverter
 
     /// <inheritdoc/>
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -32,7 +32,7 @@ using System.Windows.Data;
         ? doubleParameter
         : parameter is int intParameter
         ? System.Convert.ToDouble(intParameter)
-        : parameter is string stringParameter && double.TryParse(stringParameter, out doubleParameter) 
+        : parameter is string stringParameter && double.TryParse(stringParameter, out doubleParameter)
           ? doubleParameter
           : 1;
       if (divisor.Equals(0))
@@ -69,7 +69,7 @@ using System.Windows.Data;
       return multiplier * multiplicant;
     }
 
-  #endregion
+    #endregion
   }
 #endif
 }

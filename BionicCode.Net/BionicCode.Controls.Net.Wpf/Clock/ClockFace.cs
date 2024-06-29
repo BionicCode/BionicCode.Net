@@ -6,10 +6,8 @@
 #endregion
 
 using System;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Markup;
 using System.Windows.Media;
 using BionicCode.Utilities.Net;
 
@@ -63,7 +61,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public FrameworkElement DateElement
     {
-      get => (FrameworkElement) GetValue(ClockFace.DateElementProperty);
+      get => (FrameworkElement)GetValue(ClockFace.DateElementProperty);
       set => SetValue(ClockFace.DateElementProperty, value);
     }
 
@@ -79,7 +77,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public double SelectedHour
     {
-      get => (double) GetValue(ClockFace.SelectedHourProperty);
+      get => (double)GetValue(ClockFace.SelectedHourProperty);
       set => SetValue(ClockFace.SelectedHourProperty, value);
     }
 
@@ -95,7 +93,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public double SelectedMinute
     {
-      get => (double) GetValue(ClockFace.SelectedMinuteProperty);
+      get => (double)GetValue(ClockFace.SelectedMinuteProperty);
       set => SetValue(ClockFace.SelectedMinuteProperty, value);
     }
 
@@ -111,7 +109,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public double SelectedSecond
     {
-      get => (double) GetValue(ClockFace.SelectedSecondProperty);
+      get => (double)GetValue(ClockFace.SelectedSecondProperty);
       set => SetValue(ClockFace.SelectedSecondProperty, value);
     }
 
@@ -130,7 +128,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public DateTime SelectedTime
     {
-      get => (DateTime) GetValue(ClockFace.SelectedTimeProperty);
+      get => (DateTime)GetValue(ClockFace.SelectedTimeProperty);
       set => SetValue(ClockFace.SelectedTimeProperty, value);
     }
 
@@ -146,7 +144,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public bool Is24HModeEnabled
     {
-      get => (bool) GetValue(ClockFace.Is24HModeEnabledProperty);
+      get => (bool)GetValue(ClockFace.Is24HModeEnabledProperty);
       set => SetValue(ClockFace.Is24HModeEnabledProperty, value);
     }
 
@@ -164,7 +162,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public bool IsDisplayDateEnabled
     {
-      get => (bool) GetValue(ClockFace.IsDisplayDateEnabledProperty);
+      get => (bool)GetValue(ClockFace.IsDisplayDateEnabledProperty);
       set => SetValue(ClockFace.IsDisplayDateEnabledProperty, value);
     }
 
@@ -187,10 +185,7 @@ namespace BionicCode.Controls.Net.Wpf
     protected bool IsUpdatingSelectedTimeComponent { get; set; }
     private bool IsUpdatingSelectedTime { get; set; }
 
-    static ClockFace()
-    {
-      FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(ClockFace), new FrameworkPropertyMetadata(typeof(ClockFace)));
-    }
+    static ClockFace() => FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(ClockFace), new FrameworkPropertyMetadata(typeof(ClockFace)));
 
     protected ClockFace()
     {
@@ -209,7 +204,7 @@ namespace BionicCode.Controls.Net.Wpf
     protected virtual Point ScaleClockFaceOverride(Size arrangeBounds)
     {
       Size requiredSize = GetNaturalSize();
-      if (requiredSize.Equals(new Size()) || requiredSize.Equals(arrangeBounds) || !IsValidArrangeSize(arrangeBounds) ||!IsValidArrangeSize(requiredSize))
+      if (requiredSize.Equals(new Size()) || requiredSize.Equals(arrangeBounds) || !IsValidArrangeSize(arrangeBounds) || !IsValidArrangeSize(requiredSize))
       {
         return new Point(1, 1);
       }
@@ -218,27 +213,27 @@ namespace BionicCode.Controls.Net.Wpf
       switch (this.Stretch)
       {
         case Stretch.UniformToFill:
-        {
-          horizontalScaleFactor = arrangeBounds.Width / requiredSize.Width;
-          verticalScaleFactor = arrangeBounds.Height / requiredSize.Height;
-          double scaleFactor = horizontalScaleFactor >= verticalScaleFactor
-            ? horizontalScaleFactor
-            : verticalScaleFactor;
-          horizontalScaleFactor = scaleFactor;
-          verticalScaleFactor = scaleFactor;
-          break;
-        }
+          {
+            horizontalScaleFactor = arrangeBounds.Width / requiredSize.Width;
+            verticalScaleFactor = arrangeBounds.Height / requiredSize.Height;
+            double scaleFactor = horizontalScaleFactor >= verticalScaleFactor
+              ? horizontalScaleFactor
+              : verticalScaleFactor;
+            horizontalScaleFactor = scaleFactor;
+            verticalScaleFactor = scaleFactor;
+            break;
+          }
         case Stretch.Uniform:
-        {
-          horizontalScaleFactor = arrangeBounds.Width / requiredSize.Width;
-          verticalScaleFactor = arrangeBounds.Height / requiredSize.Height;
-          double scaleFactor = horizontalScaleFactor <= verticalScaleFactor 
-            ? horizontalScaleFactor 
-            : verticalScaleFactor;
-          horizontalScaleFactor = scaleFactor;
-          verticalScaleFactor = scaleFactor;
-          break;
-        }
+          {
+            horizontalScaleFactor = arrangeBounds.Width / requiredSize.Width;
+            verticalScaleFactor = arrangeBounds.Height / requiredSize.Height;
+            double scaleFactor = horizontalScaleFactor <= verticalScaleFactor
+              ? horizontalScaleFactor
+              : verticalScaleFactor;
+            horizontalScaleFactor = scaleFactor;
+            verticalScaleFactor = scaleFactor;
+            break;
+          }
         case Stretch.Fill:
           horizontalScaleFactor = arrangeBounds.Width / requiredSize.Width;
           verticalScaleFactor = arrangeBounds.Height / requiredSize.Height;
@@ -267,14 +262,14 @@ namespace BionicCode.Controls.Net.Wpf
 
       this_.IsUpdatingSelectedTimeComponent = true;
 
-      var hourValue = (double) basevalue;
+      double hourValue = (double)basevalue;
       double hours = this_.Is24HModeEnabled
         ? Math.Truncate(hourValue) % 24
         : Math.Truncate(hourValue) % 12 == 0
           ? 12
           : Math.Truncate(hourValue) % 12;
       double decimalPart = hourValue - Math.Truncate(hourValue);
-      var decimalMinutes = decimalPart * 60;
+      double decimalMinutes = decimalPart * 60;
       this_.SelectedMinute = Math.Truncate(decimalMinutes);
 
       decimalPart = decimalMinutes - Math.Truncate(decimalMinutes);
@@ -295,7 +290,7 @@ namespace BionicCode.Controls.Net.Wpf
       }
 
       this_.IsUpdatingSelectedTimeComponent = true;
-      var minuteValue = (double) basevalue;
+      double minuteValue = (double)basevalue;
       double decimalHours = minuteValue / 60;
       this_.SelectedHour = this_.Is24HModeEnabled
         ? Math.Truncate(decimalHours) % 24
@@ -303,7 +298,7 @@ namespace BionicCode.Controls.Net.Wpf
           ? 12
           : Math.Truncate(decimalHours) % 12;
 
-      var decimalMinutes = minuteValue % 60;
+      double decimalMinutes = minuteValue % 60;
       var minutes = Math.Truncate(decimalMinutes);
 
       var decimalPart = decimalMinutes - Math.Truncate(decimalMinutes);
@@ -324,7 +319,7 @@ namespace BionicCode.Controls.Net.Wpf
       }
 
       this_.IsUpdatingSelectedTimeComponent = true;
-      var secondsValue = (double) basevalue;
+      double secondsValue = (double)basevalue;
       double decimalHours = secondsValue / 3600;
       this_.SelectedHour = this_.Is24HModeEnabled
         ? Math.Truncate(decimalHours) % 24
@@ -332,7 +327,7 @@ namespace BionicCode.Controls.Net.Wpf
           ? 12
           : Math.Truncate(decimalHours) % 12;
 
-      var minutePart = secondsValue % 3600;
+      double minutePart = secondsValue % 3600;
       double decimalMinutes = minutePart / 60;
       this_.SelectedMinute = Math.Truncate(decimalMinutes);
 
@@ -343,26 +338,17 @@ namespace BionicCode.Controls.Net.Wpf
       return seconds;
     }
 
-    private static void OnSelectedHourChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      (d as ClockFace).OnSelectedHourChanged((double) e.OldValue, (double) e.NewValue);
-    }
+    private static void OnSelectedHourChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as ClockFace).OnSelectedHourChanged((double)e.OldValue, (double)e.NewValue);
 
-    private static void OnSelectedMinuteChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      (d as ClockFace).OnSelectedMinuteChanged((double) e.OldValue, (double) e.NewValue);
-    }
+    private static void OnSelectedMinuteChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as ClockFace).OnSelectedMinuteChanged((double)e.OldValue, (double)e.NewValue);
 
-    private static void OnSelectedSecondChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      (d as ClockFace).OnSelectedSecondChanged((double) e.OldValue, (double) e.NewValue);
-    }
+    private static void OnSelectedSecondChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as ClockFace).OnSelectedSecondChanged((double)e.OldValue, (double)e.NewValue);
 
     private static void OnSelectedTimeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
       var this_ = d as ClockFace;
 
-      this_.OnSelectedTimeChanged((DateTime) e.OldValue, (DateTime) e.NewValue);
+      this_.OnSelectedTimeChanged((DateTime)e.OldValue, (DateTime)e.NewValue);
     }
 
     private static void OnDateElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -396,9 +382,9 @@ namespace BionicCode.Controls.Net.Wpf
         this.SelectedTime.Year,
         this.SelectedTime.Month,
         this.SelectedTime.Day,
-        (int) newValue,
-        (int) this.SelectedMinute,
-        (int) this.SelectedSecond);
+        (int)newValue,
+        (int)this.SelectedMinute,
+        (int)this.SelectedSecond);
     }
 
     protected virtual void OnSelectedMinuteChanged(double oldValue, double newValue)
@@ -412,9 +398,9 @@ namespace BionicCode.Controls.Net.Wpf
         this.SelectedTime.Year,
         this.SelectedTime.Month,
         this.SelectedTime.Day,
-        (int) this.SelectedHour,
-        (int) newValue,
-        (int) this.SelectedSecond);
+        (int)this.SelectedHour,
+        (int)newValue,
+        (int)this.SelectedSecond);
     }
 
     protected virtual void OnSelectedSecondChanged(double oldValue, double newValue)
@@ -428,9 +414,9 @@ namespace BionicCode.Controls.Net.Wpf
         this.SelectedTime.Year,
         this.SelectedTime.Month,
         this.SelectedTime.Day,
-        (int) this.SelectedHour,
-        (int) this.SelectedMinute,
-        (int) newValue);
+        (int)this.SelectedHour,
+        (int)this.SelectedMinute,
+        (int)newValue);
     }
 
     protected virtual void OnDateElementChanged(FrameworkElement oldDateElement, FrameworkElement newDateElement)
@@ -489,7 +475,7 @@ namespace BionicCode.Controls.Net.Wpf
       {
         constraint = base.MeasureOverride(constraint);
       }
-      
+
       return constraint;
     }
 

@@ -1,6 +1,7 @@
 namespace BionicCode.Utilities.Net
 {
   using System;
+  using System.Collections.Generic;
   using System.ComponentModel;
   using System.Runtime.CompilerServices;
   using System.Threading;
@@ -15,7 +16,7 @@ namespace BionicCode.Utilities.Net
   ///   <seealso cref="System.Windows.Input.ICommand" />
   /// </summary>
   /// <remarks><c>AsyncRelayCommandCommon</c> implements <see cref="System.Windows.Input.ICommand" />. In case the <see cref="AsyncRelayCommand{TParam}"/> is executed explicitly, especially with an asynchronous command handler registered, it is highly recommended to invoke the awaitable <see cref="AsyncRelayCommandCommon.ExecuteAsync()"/> or its overloads instead.</remarks>
-  public class AsyncRelayCommand<TParam> : AsyncRelayCommandCommon<TParam>, IAsyncRelayCommand, ICommand, IAsyncRelayCommand<TParam>, INotifyPropertyChanged
+  public class AsyncRelayCommand<TParam> : AsyncRelayCommandCommon<TParam>, IAsyncRelayCommand<TParam>
   {
 #if !NETSTANDARD
     private bool isCommandManagerRequerySuggestedEnabled;
@@ -33,141 +34,152 @@ namespace BionicCode.Utilities.Net
         this.isCommandManagerRequerySuggestedEnabled = value;
         if (this.IsCommandManagerRequerySuggestedEnabled)
         {
-          foreach (Delegate canExecuteChangedDelegate in this.canExecuteChangedDelegate.GetInvocationList())
-          {
-            CommandManager.RequerySuggested += (EventHandler)canExecuteChangedDelegate;
-          }
+          // CommandManager internally uses a WeakEventManager to register the event handlers
+          CommandManager.RequerySuggested += OnCommandManagerRequerySuggested;
         }
         else
         {
-          foreach (Delegate canExecuteChangedDelegate in this.canExecuteChangedDelegate.GetInvocationList())
-          {
-            CommandManager.RequerySuggested -= (EventHandler)canExecuteChangedDelegate;
-          }
+          CommandManager.RequerySuggested -= OnCommandManagerRequerySuggested;
         }
-      }
-    }
-#endif
 
-    private EventHandler canExecuteChangedDelegate;
-    /// <inheritdoc />
-#if NET
-    new public event EventHandler? CanExecuteChanged
-#else
-new public event EventHandler CanExecuteChanged
-#endif
-    {
-      add
-      {
-#if !NETSTANDARD
-        if (this.IsCommandManagerRequerySuggestedEnabled)
-        {
-          CommandManager.RequerySuggested += value;
-        }
-#endif
-        this.canExecuteChangedDelegate += value;
-      }
-      remove
-      {
-#if !NETSTANDARD
-        CommandManager.RequerySuggested -= value;
-#endif
-        this.canExecuteChangedDelegate -= value;
+        OnPropertyChanged();
       }
     }
+#endif
 
     #region Constructors
 
     /// <inheritdoc />
     public AsyncRelayCommand(Action<TParam> execute) : base(execute)
     {
+#if !NETSTANDARD
+      this.IsCommandManagerRequerySuggestedEnabled = true;
+#endif
     }
 
     /// <inheritdoc />
     public AsyncRelayCommand(Action<TParam, CancellationToken> execute) : base(execute)
     {
-    }
-
-    /// <inheritdoc />
-    public AsyncRelayCommand(Action executeNoParam) : base(executeNoParam)
-    {
-    }
-
-    /// <inheritdoc />
-    public AsyncRelayCommand(Action<CancellationToken> executeNoParam) : base(executeNoParam)
-    {
+#if !NETSTANDARD
+      this.IsCommandManagerRequerySuggestedEnabled = true;
+#endif
     }
 
     /// <inheritdoc />
     public AsyncRelayCommand(Func<TParam, CancellationToken, Task> executeAsync) : base(executeAsync)
     {
+#if !NETSTANDARD
+      this.IsCommandManagerRequerySuggestedEnabled = true;
+#endif
     }
 
     /// <inheritdoc />
     public AsyncRelayCommand(Func<TParam, Task> executeAsync) : base(executeAsync)
     {
-    }
-
-    /// <inheritdoc />
-    public AsyncRelayCommand(Func<Task> executeAsyncNoParam) : base(executeAsyncNoParam)
-    {
-    }
-
-    /// <inheritdoc />
-    public AsyncRelayCommand(Func<CancellationToken, Task> executeAsyncNoParam) : base(executeAsyncNoParam)
-    {
-    }
-
-    /// <inheritdoc />
-    public AsyncRelayCommand(Action executeNoParam, Func<bool> canExecuteNoParam) : base(executeNoParam, canExecuteNoParam)
-    {
+#if !NETSTANDARD
+      this.IsCommandManagerRequerySuggestedEnabled = true;
+#endif
     }
 
     /// <inheritdoc />
     public AsyncRelayCommand(Action<TParam> execute, Predicate<TParam> canExecute) : base(execute, canExecute)
     {
-    }
-
-    /// <inheritdoc />
-    public AsyncRelayCommand(Func<Task> executeAsyncNoParam, Func<bool> canExecuteNoParam) : base(executeAsyncNoParam, canExecuteNoParam)
-    {
+#if !NETSTANDARD
+      this.IsCommandManagerRequerySuggestedEnabled = true;
+#endif
     }
 
     /// <inheritdoc />
     public AsyncRelayCommand(Func<TParam, Task> executeAsync, Predicate<TParam> canExecute) : base(executeAsync, canExecute)
     {
+#if !NETSTANDARD
+      this.IsCommandManagerRequerySuggestedEnabled = true;
+#endif
     }
 
     /// <inheritdoc />
     public AsyncRelayCommand(Func<TParam, CancellationToken, Task> executeAsync, Predicate<TParam> canExecute) : base(executeAsync, canExecute)
     {
-    }
-
-    /// <inheritdoc />
-    public AsyncRelayCommand(Func<CancellationToken, Task> executeAsync, Func<bool> canExecute) : base(executeAsync, canExecute)
-    {
-    }
-
-    /// <inheritdoc />
-    public AsyncRelayCommand(Action<CancellationToken> executeAsync, Func<bool> canExecute) : base(executeAsync, canExecute)
-    {
+#if !NETSTANDARD
+      this.IsCommandManagerRequerySuggestedEnabled = true;
+#endif
     }
 
     /// <inheritdoc />
     public AsyncRelayCommand(Action<TParam, CancellationToken> executeAsync, Predicate<TParam> canExecute) : base(executeAsync, canExecute)
     {
+#if !NETSTANDARD
+      this.IsCommandManagerRequerySuggestedEnabled = true;
+#endif
     }
 
-    /// <inheritdoc />
-    protected AsyncRelayCommand()
+#if !NETSTANDARD
+
+    /// <summary>
+    ///   Creates a new synchronous command that supports cancellation adn accepts a command parameter of type <typeparamref name="TParam"/>.
+    /// </summary>
+    /// <param name="execute">The execute handler.</param>
+    /// <param name="canExecute">The can execute handler.</param>
+    /// <param name="isCommandManagerRequerySuggestedEnabled"><see langword="true"/> to enable the WPF framework to raise the CanExecuteChanged event via the <see cref="CommandManager.RequerySuggested"/> event. 
+    /// <br/><see langword="false"/> to only raise the <see cref="ICommand.CanExecuteChanged"/> event manually by calling <see cref="IAsyncRelayCommandCore.InvalidateCommand"/>.
+    /// <br/>The behavior can be changed anytime by setting the <see cref="IsCommandManagerRequerySuggestedEnabled"/> property.</param>
+    public AsyncRelayCommand(Action<TParam, CancellationToken> execute, Predicate<TParam> canExecute, bool isCommandManagerRequerySuggestedEnabled) : base(execute, canExecute)
     {
+      this.IsCommandManagerRequerySuggestedEnabled = isCommandManagerRequerySuggestedEnabled;
     }
+
+    /// <summary>
+    ///   Creates a new synchronous command that accepts a command parameter of type <typeparamref name="TParam"/>.
+    /// </summary>
+    /// <param name="execute">The execute handler.</param>
+    /// <param name="canExecute">The can execute handler.</param>
+    /// <param name="isCommandManagerRequerySuggestedEnabled"><see langword="true"/> to enable the WPF framework to raise the CanExecuteChanged event via the <see cref="CommandManager.RequerySuggested"/> event. 
+    /// <br/><see langword="false"/> to only raise the <see cref="ICommand.CanExecuteChanged"/> event manually by calling <see cref="IAsyncRelayCommandCore.InvalidateCommand"/>.
+    /// <br/>The behavior can be changed anytime by setting the <see cref="IsCommandManagerRequerySuggestedEnabled"/> property.</param>
+    public AsyncRelayCommand(Action<TParam> execute, Predicate<TParam> canExecute, bool isCommandManagerRequerySuggestedEnabled) : base(execute, canExecute)
+    {
+      this.IsCommandManagerRequerySuggestedEnabled = isCommandManagerRequerySuggestedEnabled;
+    }
+
+    /// <summary>
+    ///   Creates a new asynchronous command that supports cancellation and accepts a command parameter of <typeparamref name="TParam"/>.
+    /// </summary>
+    /// <param name="executeAsync">The awaitable execute handler.</param>
+    /// <param name="canExecute">The can execute handler.</param>
+    /// <param name="isCommandManagerRequerySuggestedEnabled"><see langword="true"/> to enable the WPF framework to raise the CanExecuteChanged event via the <see cref="CommandManager.RequerySuggested"/> event. 
+    /// <br/><see langword="false"/> to only raise the <see cref="ICommand.CanExecuteChanged"/> event manually by calling <see cref="IAsyncRelayCommandCore.InvalidateCommand"/>.
+    /// <br/>The behavior can be changed anytime by setting the <see cref="IsCommandManagerRequerySuggestedEnabled"/> property.</param>
+    public AsyncRelayCommand(Func<TParam, CancellationToken, Task> executeAsync, Predicate<TParam> canExecute, bool isCommandManagerRequerySuggestedEnabled) : base(executeAsync, canExecute)
+    {
+      this.IsCommandManagerRequerySuggestedEnabled = isCommandManagerRequerySuggestedEnabled;
+    }
+
+    /// <summary>
+    ///   Creates a new asynchronous command that accepts a command parameter of type <typeparamref name="TParam"/>.
+    /// </summary>
+    /// <param name="executeAsync">The awaitable execute handler.</param>
+    /// <param name="canExecute">The can execute handler.</param>
+    /// <param name="isCommandManagerRequerySuggestedEnabled"><see langword="true"/> to enable the WPF framework to raise the CanExecuteChanged event via the <see cref="CommandManager.RequerySuggested"/> event. 
+    /// <br/><see langword="false"/> to only raise the <see cref="ICommand.CanExecuteChanged"/> event manually by calling <see cref="IAsyncRelayCommandCore.InvalidateCommand"/>.
+    /// <br/>The behavior can be changed anytime by setting the <see cref="IsCommandManagerRequerySuggestedEnabled"/> property.</param>
+    public AsyncRelayCommand(Func<TParam, Task> executeAsync, Predicate<TParam> canExecute, bool isCommandManagerRequerySuggestedEnabled) : base(executeAsync, canExecute)
+    {
+      this.IsCommandManagerRequerySuggestedEnabled = isCommandManagerRequerySuggestedEnabled;
+    }
+#endif
 
     #endregion Constructors
-    ///// <summary>
-    ///// Raises the <see cref="ICommand.CanExecuteChanged"/> event.
-    ///// </summary>
-    //protected override void OnCanExecuteChanged()
-    //  => this.canExecuteChangedDelegate?.Invoke(this, EventArgs.Empty);
+
+    /// <summary>
+    /// Event invocator. Called when <see cref="IsCommandManagerRequerySuggestedEnabled"/> is <see langword="true"/> and the <see cref="CommandManager.RequerySuggested"/> is raised.
+    /// </summary>
+    /// <param name="sender"><see langword="null"/> because the source event is the static <see cref="CommandManager.RequerySuggested"/> event.</param>
+    /// <param name="e">The event args object.</param>
+#if NET
+    protected virtual void OnCommandManagerRequerySuggested(object? sender, EventArgs e)
+#else
+    protected virtual void OnCommandManagerRequerySuggested(object sender, EventArgs e)
+#endif
+      => OnCanExecuteChanged(sender, e);
   }
 }

@@ -1,5 +1,5 @@
 ﻿namespace BionicCode.Utilities.Net
-{ 
+{
   #region Info
 
   // 2020/06/15  16:03

@@ -34,33 +34,24 @@ namespace BionicCode.Controls.Net.Wpf
   ///     <MyNamespace:ClosableTabControl/>
   ///
   /// </summary>
-    public class ClosableTabControl : TabControl
-    {
-      public static readonly RoutedUICommand CloseTabRoutedCommand = new RoutedUICommand(
-        "Close TabItem and remove item from ItemsSource",
-        nameof(ClosableTabControl.CloseTabRoutedCommand),
-        typeof(ClosableTabControl));
+  public class ClosableTabControl : TabControl
+  {
+    public static readonly RoutedUICommand CloseTabRoutedCommand = new RoutedUICommand(
+      "Close TabItem and remove item from ItemsSource",
+      nameof(ClosableTabControl.CloseTabRoutedCommand),
+      typeof(ClosableTabControl));
 
-      static ClosableTabControl()
-      {
-        FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(ClosableTabControl), new FrameworkPropertyMetadata(typeof(ClosableTabControl)));
-      }
+    static ClosableTabControl() => FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(ClosableTabControl), new FrameworkPropertyMetadata(typeof(ClosableTabControl)));
 
-      public ClosableTabControl()
-      {
-        this.CommandBindings.Add(
-          new CommandBinding(ClosableTabControl.CloseTabRoutedCommand, ExecuteRemoveTab, CanExecuteRemoveTab));
-      }
+    public ClosableTabControl() => this.CommandBindings.Add(
+        new CommandBinding(ClosableTabControl.CloseTabRoutedCommand, ExecuteRemoveTab, CanExecuteRemoveTab));
 
-      private void CanExecuteRemoveTab(object sender, CanExecuteRoutedEventArgs e)
-      {
-        e.CanExecute = e.OriginalSource is FrameworkElement frameworkElement
-                       && this.Items.Contains(frameworkElement.DataContext)
+    private void CanExecuteRemoveTab(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = (e.OriginalSource is FrameworkElement frameworkElement
+                       && this.Items.Contains(frameworkElement.DataContext))
                        || this.Items.Contains(e.Source);
-      }
 
-      private void ExecuteRemoveTab(object sender, ExecutedRoutedEventArgs e)
-      {
+    private void ExecuteRemoveTab(object sender, ExecutedRoutedEventArgs e)
+    {
       object tabItemToRemove = this.ItemsSource == null
         ? e.Source
         : (e.OriginalSource as FrameworkElement).DataContext;
@@ -69,5 +60,5 @@ namespace BionicCode.Controls.Net.Wpf
       this.SelectedIndex = Math.Min(lastItemIndex, nextItemIndex);
       (this.ItemContainerGenerator.ContainerFromItem(tabItemToRemove) as UIElement).Visibility = Visibility.Collapsed;
     }
-    }
+  }
 }

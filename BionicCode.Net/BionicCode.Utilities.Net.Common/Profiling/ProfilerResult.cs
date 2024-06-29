@@ -52,9 +52,9 @@
     /// The deviation from the arithmetic mean in microseconds.
     /// </summary>
     /// <value>A positive or negative value to describe the deviation from the arithmetic mean in microseconds.</value>
-    public Microseconds Deviation => this.deviation == Microseconds.MinValue 
-      ? this.Owner is null 
-        ? throw new InvalidOperationException("The property is unset") 
+    public Microseconds Deviation => this.deviation == Microseconds.MinValue
+      ? this.Owner is null
+        ? throw new InvalidOperationException("The property is unset")
         : (this.deviation = GetDeviation())
       : this.deviation;
 
@@ -119,10 +119,10 @@
     public override int GetHashCode()
     {
       int hashCode = 208172843;
-      hashCode = hashCode * -1521134295 + this.ElapsedTime.GetHashCode();
-      hashCode = hashCode * -1521134295 + this.IsProfiledTaskCancelled.GetHashCode();
-      hashCode = hashCode * -1521134295 + this.Iteration.GetHashCode();
-      hashCode = hashCode * -1521134295 + EqualityComparer<Task>.Default.GetHashCode(this.ProfiledTask);
+      hashCode = (hashCode * -1521134295) + this.ElapsedTime.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.IsProfiledTaskCancelled.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.Iteration.GetHashCode();
+      hashCode = (hashCode * -1521134295) + EqualityComparer<Task>.Default.GetHashCode(this.ProfiledTask);
       return hashCode;
     }
 #endif

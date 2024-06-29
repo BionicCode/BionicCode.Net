@@ -1,7 +1,5 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-  using System;
-
   /// <summary>
   /// Interface to implement Abstract Factory pattern.
   /// <para>Implementers are encouraged to extend the abstract <see cref="Factory{TObject}"/> class instead of creating their own.</para>

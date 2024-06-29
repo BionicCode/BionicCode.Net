@@ -10,8 +10,8 @@
   #region Usings
 
   using System.Collections.Generic;
-  using System.ComponentModel;
   using System.Collections.Specialized;
+  using System.ComponentModel;
   #endregion
 
   /// <summary>
@@ -30,7 +30,35 @@
     /// Adds an object to the end of the <see cref="Queue{T}"/>.
     /// </summary>
     /// <param name="item">The object to add to the <see cref="Queue{T}"/>. The value can be <c>null</c> for reference types.</param>
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net50)'
+Before:
     new public void Enqueue(TItem item)
+After:
+    public new void Enqueue(TItem item)
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net80)'
+Before:
+    new public void Enqueue(TItem item)
+After:
+    public new void Enqueue(TItem item)
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net60)'
+Before:
+    new public void Enqueue(TItem item)
+After:
+    public new void Enqueue(TItem item)
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net70)'
+Before:
+    new public void Enqueue(TItem item)
+After:
+    public new void Enqueue(TItem item)
+*/
+    public new void Enqueue(TItem item)
     {
       base.Enqueue(item);
       OnPropertyChanged();
@@ -41,7 +69,7 @@
     /// Removes and returns the object at the beginning of the <see cref="Queue{T}"/>.
     /// </summary>
     /// <returns></returns>
-    new public TItem Dequeue()
+    public new TItem Dequeue()
     {
       TItem removedItem = base.Dequeue();
       OnPropertyChanged();
@@ -55,7 +83,7 @@
     /// </summary>
     /// <param name="result">The removed object.</param>
     /// <returns><c>true</c> if the object is successfully removed; <c>false</c> if the <see cref="Queue{T}"/> is empty.</returns>
-    new public bool TryDequeue(out TItem result)
+    public new bool TryDequeue(out TItem result)
     {
       if (base.TryDequeue(out result))
       {
@@ -71,7 +99,7 @@
     /// <summary>
     /// Removes all objects from the <see cref="Queue{T}"/>.
     /// </summary>
-    new public void Clear()
+    public new void Clear()
     {
       base.Clear();
       OnPropertyChanged();

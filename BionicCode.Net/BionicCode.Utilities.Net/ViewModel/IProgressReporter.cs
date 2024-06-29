@@ -5,7 +5,6 @@
   // WpfTestRange.Main
   #endregion
 
-  using System;
   using System.ComponentModel;
 
   /// <summary>

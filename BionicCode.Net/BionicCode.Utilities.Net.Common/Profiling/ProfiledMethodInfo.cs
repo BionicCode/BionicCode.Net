@@ -4,12 +4,11 @@
   using System.Collections.Generic;
   using System.Reflection;
   using System.Threading.Tasks;
-  using BionicCode.Utilities.Net;
 
   internal class ProfiledMethodInfo : ProfiledMemberInfo
   {
-    public ProfiledMethodInfo(IEnumerable<IEnumerable<object>> argumentLists, MethodInfo methodInfo, string sourceFilePath, int lineNumber, string assemblyName, bool isStatic) 
-      : base(argumentLists, isStatic,  assemblyName, lineNumber, sourceFilePath)
+    public ProfiledMethodInfo(IEnumerable<IEnumerable<object>> argumentLists, MethodInfo methodInfo, string sourceFilePath, int lineNumber, string assemblyName, Runtime targetFramework, bool isStatic)
+      : base(argumentLists, isStatic, assemblyName, lineNumber, sourceFilePath, targetFramework)
     {
       this.MethodInfo = methodInfo;
       this.IsAsyncTask = this.MethodInfo.IsAwaitableTask();

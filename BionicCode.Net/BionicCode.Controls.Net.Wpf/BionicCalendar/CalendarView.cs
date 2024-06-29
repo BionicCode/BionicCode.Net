@@ -46,7 +46,7 @@ namespace BionicCode.Controls.Net.Wpf
   public class CalendarMonthView : CalendarView, IEnumerator<CalendarWeekView>, IEnumerable<CalendarWeekView>
   {
     /// <inheritdoc />
-    public CalendarMonthView(DateTime monthStart, System.Globalization.Calendar calendar, DayOfWeek firstDayOfWeek) 
+    public CalendarMonthView(DateTime monthStart, System.Globalization.Calendar calendar, DayOfWeek firstDayOfWeek)
       : base(calendar, firstDayOfWeek)
     {
       this.Index = monthStart;
@@ -55,17 +55,17 @@ namespace BionicCode.Controls.Net.Wpf
     }
 
     public CalendarMonthView GetPrevious() =>
-      this.Index != DateTime.MinValue 
-        ? CreateCalendarViewOfMonth(this.Index.AddMonths(-1)) 
+      this.Index != DateTime.MinValue
+        ? CreateCalendarViewOfMonth(this.Index.AddMonths(-1))
         : this;
-    public CalendarMonthView GetNext() => this.Index != DateTime.MaxValue 
+    public CalendarMonthView GetNext() => this.Index != DateTime.MaxValue
       ? CreateCalendarViewOfMonth(this.Index.AddMonths(1))
       : this;
 
     private CalendarMonthView CreateCalendarViewOfMonth(DateTime monthStart)
     {
       List<DateTime> datesOfCurrentView = CreateCalendarViewOfMonthDates(monthStart);
-      var calendarView = new CalendarMonthView(monthStart, this.Calendar, this.FirstDayOfWeek) {Dates = datesOfCurrentView};
+      var calendarView = new CalendarMonthView(monthStart, this.Calendar, this.FirstDayOfWeek) { Dates = datesOfCurrentView };
 
       return calendarView;
     }
@@ -88,7 +88,7 @@ namespace BionicCode.Controls.Net.Wpf
       }
 
       int daysInCalendarView = lastDateInView.Subtract(firstDateInView).Days + 1;
-      int requiredRowCount = (int) Math.Max(5, Math.Ceiling(daysInCalendarView / 7.0));
+      int requiredRowCount = (int)Math.Max(5, Math.Ceiling(daysInCalendarView / 7.0));
       //int requiredDateCount = requiredRowCount * 7;
       int requiredDateCount = daysInCalendarView;
 
@@ -112,7 +112,7 @@ namespace BionicCode.Controls.Net.Wpf
       if (hasNext)
       {
         IEnumerable<DateTime> daysOfWeek = this.Dates.Skip(this.CurrentIndex * 7).Take(7).ToList();
-        this.Current = new CalendarWeekView(daysOfWeek.FirstOrDefault(), this.Calendar, this.FirstDayOfWeek) {Index = daysOfWeek.FirstOrDefault()};
+        this.Current = new CalendarWeekView(daysOfWeek.FirstOrDefault(), this.Calendar, this.FirstDayOfWeek) { Index = daysOfWeek.FirstOrDefault() };
         this.Current.Dates.AddRange(daysOfWeek);
       }
 
@@ -135,7 +135,7 @@ namespace BionicCode.Controls.Net.Wpf
     #endregion
 
     private int CurrentIndex { get; set; }
-    
+
     public string Name => this.Index.ToString("MMMM", CultureInfo.CurrentCulture);
     public string DisplayName => ToString();
 
@@ -169,6 +169,6 @@ namespace BionicCode.Controls.Net.Wpf
 
     #endregion
 
-    public int WeekCount => (int) Math.Ceiling(this.Dates.Count / 7.0);
+    public int WeekCount => (int)Math.Ceiling(this.Dates.Count / 7.0);
   }
 }

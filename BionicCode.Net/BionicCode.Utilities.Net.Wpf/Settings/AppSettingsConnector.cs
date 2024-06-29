@@ -4,7 +4,6 @@
   using System.Collections.Specialized;
   using System.Configuration;
 
-
   /// <summary>
   /// Exposes a basic static API to access the AppSettings file in order to manage application settings. 
   /// </summary>
@@ -77,40 +76,28 @@
     /// </summary>
     /// <param name="key">The lookup key for the <paramref name="value"/>.</param>
     /// <param name="value">The settings value to save to the file.</param>
-    public static void WriteString(string key, string value)
-    {
-      AppSettingsConnector.AddUpdateAppSettings(key, value);
-    }
+    public static void WriteString(string key, string value) => AppSettingsConnector.AddUpdateAppSettings(key, value);
 
     /// <summary>
     /// Writes a <see cref="int"/> value to the settings file which is stored using the specified lookup <paramref name="key"/>. If the <paramref name="key"/> already exists, the existing value will be overwritten.
     /// </summary>
     /// <param name="key">The lookup key for the <paramref name="value"/>.</param>
     /// <param name="value">The settings value to save to the file.</param>
-    public static void WriteInt(string key, int value)
-    {
-      AppSettingsConnector.AddUpdateAppSettings(key, value);
-    }
+    public static void WriteInt(string key, int value) => AppSettingsConnector.AddUpdateAppSettings(key, value);
 
     /// <summary>
     /// Writes a <see cref="double"/> value to the settings file which is stored using the specified lookup <paramref name="key"/>. If the <paramref name="key"/> already exists, the existing value will be overwritten.
     /// </summary>
     /// <param name="key">The lookup key for the <paramref name="value"/>.</param>
     /// <param name="value">The settings value to save to the file.</param>
-    public static void WriteDouble(string key, double value)
-    {
-      AppSettingsConnector.AddUpdateAppSettings(key, value);
-    }
+    public static void WriteDouble(string key, double value) => AppSettingsConnector.AddUpdateAppSettings(key, value);
 
     /// <summary>
     /// Writes a <see cref="bool"/> value to the settings file which is stored using the specified lookup <paramref name="key"/>. If the <paramref name="key"/> already exists, the existing value will be overwritten.
     /// </summary>
     /// <param name="key">The lookup key for the <paramref name="value"/>.</param>
     /// <param name="value">The settings value to save to the file.</param>
-    public static void WriteBool(string key, bool value)
-    {
-      AppSettingsConnector.AddUpdateAppSettings(key, value);
-    }
+    public static void WriteBool(string key, bool value) => AppSettingsConnector.AddUpdateAppSettings(key, value);
 
     private static void AddUpdateAppSettings<TValue>(string key, TValue value)
     {

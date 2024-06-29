@@ -4,7 +4,7 @@
   using System.Windows;
 
   internal class TextClickedEventArgs : EventArgs
-  { 
+  {
     public Point ClickPosition { get; }
     public TextRenderInfo TextRenderInfo { get; }
 

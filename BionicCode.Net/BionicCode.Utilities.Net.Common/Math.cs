@@ -2,7 +2,6 @@
 {
   using System;
   using System.Collections.Generic;
-  using System.Drawing;
   using System.Linq;
 
   /// <summary>
@@ -63,7 +62,7 @@
         throw new ArgumentException("Value must be less or greater than '0'.", nameof(standardDeviation));
       }
 
-      double y = (1 / (standardDeviation * System.Math.Sqrt(2 * System.Math.PI)))
+      double y = 1 / (standardDeviation * System.Math.Sqrt(2 * System.Math.PI))
         * System.Math.Exp(-0.5 * System.Math.Pow((x - mean) / standardDeviation, 2));
       var point = new CartesianPoint(x, y);
 
@@ -94,22 +93,22 @@
 
       double sigma0 = mean;
       double sigma1 = mean + standardDeviation;
-      double sigma2 = mean + 2 * standardDeviation;
-      double sigma3 = mean + 3 * standardDeviation;
+      double sigma2 = mean + (2 * standardDeviation);
+      double sigma3 = mean + (3 * standardDeviation);
       double sigma1Negative = mean - standardDeviation;
-      double sigma2Negative = mean - 2 * standardDeviation;
-      double sigma3Negative = mean - 3 * standardDeviation;
+      double sigma2Negative = mean - (2 * standardDeviation);
+      double sigma3Negative = mean - (3 * standardDeviation);
 
       var sortedEdgeCases = new List<(bool IsExistingDataSetValue, IndexedNumber IndexedNumber)>(existingDataSet.Select((value, index) => (true, new IndexedNumber(value, index)))) { (false, new IndexedNumber(sigma3Negative)), (false, new IndexedNumber(sigma2Negative)), (false, new IndexedNumber(sigma1Negative)), (false, new IndexedNumber(sigma0)), (false, new IndexedNumber(sigma1)), (false, new IndexedNumber(sigma2)), (false, new IndexedNumber(sigma3)) };
       sortedEdgeCases.Sort(Comparer<(bool IsExistingDataSetValue, IndexedNumber IndexedNumber)>.Create((item1, item2) => item1.IndexedNumber.CompareTo(item2.IndexedNumber)));
 
-      double rangeStart = System.Math.Min(sortedEdgeCases.First().IndexedNumber, mean - 5 * standardDeviation);
-      double rangeEnd = System.Math.Max(sortedEdgeCases.Last().IndexedNumber, mean + 5 * standardDeviation);
+      double rangeStart = System.Math.Min(sortedEdgeCases.First().IndexedNumber, mean - (5 * standardDeviation));
+      double rangeEnd = System.Math.Max(sortedEdgeCases.Last().IndexedNumber, mean + (5 * standardDeviation));
       double increment = standardDeviation * resolution;
       double oldX = rangeStart;
       for (double x = rangeStart; x <= rangeEnd; x += increment)
       {
-        double y = (1 / (standardDeviation * System.Math.Sqrt(2 * System.Math.PI)))
+        double y = 1 / (standardDeviation * System.Math.Sqrt(2 * System.Math.PI))
           * System.Math.Exp(-0.5 * System.Math.Pow((x - mean) / standardDeviation, 2));
         var point = new CartesianPoint(x, y);
 
@@ -146,7 +145,7 @@
       if (newX >= edgeX.IndexedNumber)
       {
         CartesianPoint result = NormDistOf(edgeX.IndexedNumber, mean, standardDeviation);
-        edgeXPoint = edgeX.IsExistingDataSetValue 
+        edgeXPoint = edgeX.IsExistingDataSetValue
           ? new CartesianPoint(result.X, result.Y, edgeX.IsExistingDataSetValue, edgeX.IndexedNumber.Index)
           : result;
 
@@ -157,7 +156,7 @@
     }
   }
 
-  internal struct IndexedNumber : IComparable<IndexedNumber>, IEquatable<IndexedNumber> 
+  internal struct IndexedNumber : IComparable<IndexedNumber>, IEquatable<IndexedNumber>
   {
     public IndexedNumber(double value, int index)
     {
@@ -179,8 +178,8 @@
     public override int GetHashCode()
     {
       int hashCode = 995152453;
-      hashCode = hashCode * -1521134295 + this.Value.GetHashCode();
-      hashCode = hashCode * -1521134295 + this.Index.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.Value.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.Index.GetHashCode();
       return hashCode;
     }
 

@@ -4,10 +4,10 @@
   using System.Globalization;
 
 #if NET || NET461_OR_GREATER
-using System.Windows.Data;
+  using System.Windows.Data;
   public class PercentageToPixelConverter : IValueConverter
   {
-  #region Implementation of IValueConverter
+    #region Implementation of IValueConverter
 
     /// <inheritdoc />
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -36,7 +36,7 @@ using System.Windows.Data;
       return pixelValue;
     }
 
-  #endregion
+    #endregion
   }
 #endif
 }

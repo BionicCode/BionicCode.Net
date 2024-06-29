@@ -9,12 +9,7 @@ namespace BionicCode.Controls.Net.Wpf
 {
   using System;
   using System.Collections.Generic;
-  using System.Collections.Specialized;
   using System.Linq;
-  using System.Text;
-  using System.Threading.Tasks;
-  using System.Windows;
-  using System.Windows.Controls;
 
   /* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
   Before:
@@ -22,7 +17,6 @@ namespace BionicCode.Controls.Net.Wpf
   After:
     using System.Windows.Data;
       */
-  using System.Windows.Data;
 
   public abstract class PointInfoGenerator<TSeriesInfo> : PointInfoGenerator where TSeriesInfo : ISeriesInfo
   {
@@ -52,7 +46,7 @@ namespace BionicCode.Controls.Net.Wpf
     }
 
     protected virtual void OnGenerated()
-    { 
+    {
     }
 
     private void GenerateSeriesInfo()
@@ -61,7 +55,7 @@ namespace BionicCode.Controls.Net.Wpf
       ResourceLocator resourceLocator = this.Owner.ResourceLocator;
       try
       {
-        var seriesInfos = seriesSelector.ProvideSeriesCollection(this.Owner.DataContext, resourceLocator, this.InternalItems)
+        IEnumerable<TSeriesInfo> seriesInfos = seriesSelector.ProvideSeriesCollection(this.Owner.DataContext, resourceLocator, this.InternalItems)
           .Cast<TSeriesInfo>();
 
         this.SeriesInfos = new List<TSeriesInfo>(seriesInfos);

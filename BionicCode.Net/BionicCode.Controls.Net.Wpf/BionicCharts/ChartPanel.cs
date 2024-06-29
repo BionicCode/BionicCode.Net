@@ -6,7 +6,7 @@
   using System.Windows.Controls;
   using System.Windows.Controls.Primitives;
   using System.Windows.Media;
-  
+
   /* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
   Before:
     using BionicCode.Utilities.Net;
@@ -53,12 +53,9 @@
       this.ScrollDelta = new Vector();
     }
 
-    protected void InvalidateScrollInfo()
-    {
-      this.ScrollOwnerInternal?.InvalidateScrollInfo();
-    }
+    protected void InvalidateScrollInfo() => this.ScrollOwnerInternal?.InvalidateScrollInfo();
 
-    public virtual void InvalidatePlotDataOverride() 
+    public virtual void InvalidatePlotDataOverride()
     {
     }
 
@@ -73,7 +70,7 @@
       //{
       //  availableSize.Width = this.Owner.DesiredSize.Width;
       //}
-      
+
 
       return this.VirtualBounds.Size;
     }
@@ -108,11 +105,11 @@
 
     private void ScrollViewport(double horizontalOffset, double verticalOffset)
     {
-      var viewport = this.ViewportBounds;
+      Rect viewport = this.ViewportBounds;
       viewport.Offset(horizontalOffset, verticalOffset);
       this.ViewportBounds = viewport;
 
-      var plotCanvas = this.PlotCanvasBounds;
+      Rect plotCanvas = this.PlotCanvasBounds;
       plotCanvas.Offset(horizontalOffset, verticalOffset);
       this.PlotCanvasBounds = viewport;
 
@@ -141,7 +138,7 @@
           //ScrollViewer.SetHorizontalScrollBarVisibility(this.Owner, ScrollBarVisibility.Visible);
           //this.ScrollOwnerInternal.InvalidateScrollInfo();
           //this.ScrollOwnerInternal.UpdateLayout();
-      //InvalidateMeasure();
+          //InvalidateMeasure();
           break;
       }
 
@@ -170,7 +167,6 @@
     public void RemovedChild(Visual visual) => this.Children.Remove(visual);
     public void ClearChildren() => this.Children.Clear();
 
-
     protected DrawingVisual CanvasVisual { get; }
     protected DrawingContext DrawingContext { get; }
     protected PointInfoGenerator PointInfoGenerator { get; set; }
@@ -197,7 +193,7 @@
     {
       get => this.scrollOwner;
       set
-      {       
+      {
         if (this.ScrollOwner != null)
         {
           //this.ScrollOwner.ScrollChanged -= OnPanelScrolled;
@@ -255,7 +251,7 @@
       InvalidateVisual();
     }
 
-    public abstract void SetVerticalOffset(double offset); 
+    public abstract void SetVerticalOffset(double offset);
     #endregion
   }
 }

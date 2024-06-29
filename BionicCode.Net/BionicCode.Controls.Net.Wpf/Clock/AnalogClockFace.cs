@@ -48,15 +48,14 @@
     #region IsCenterElementOnCircumferenceEnabled attached property
 
     public static readonly DependencyProperty IsCenterElementOnCircumferenceEnabledProperty = DependencyProperty.RegisterAttached(
-      "IsCenterElementOnCircumferenceEnabled", 
-      typeof(bool), 
-      typeof(AnalogClockFace), 
+      "IsCenterElementOnCircumferenceEnabled",
+      typeof(bool),
+      typeof(AnalogClockFace),
       new PropertyMetadata(true));
 
     public static void SetIsCenterElementOnCircumferenceEnabled(DependencyObject attachingElement, bool value) => attachingElement.SetValue(AnalogClockFace.IsCenterElementOnCircumferenceEnabledProperty, value);
 
-    public static bool GetIsCenterElementOnCircumferenceEnabled(DependencyObject attachingElement) => (bool) attachingElement.GetValue(AnalogClockFace.IsCenterElementOnCircumferenceEnabledProperty);
-
+    public static bool GetIsCenterElementOnCircumferenceEnabled(DependencyObject attachingElement) => (bool)attachingElement.GetValue(AnalogClockFace.IsCenterElementOnCircumferenceEnabledProperty);
 
     #endregion IsCenterElementOnCircumferenceEnabled attached property
 
@@ -68,7 +67,7 @@
       typeof(AnalogClockFace),
       new PropertyMetadata(true));
 
-    public bool Is15MinuteIntervalEnabled { get => (bool) GetValue(AnalogClockFace.Is15MinuteIntervalEnabledProperty); set => SetValue(AnalogClockFace.Is15MinuteIntervalEnabledProperty, value); }
+    public bool Is15MinuteIntervalEnabled { get => (bool)GetValue(AnalogClockFace.Is15MinuteIntervalEnabledProperty); set => SetValue(AnalogClockFace.Is15MinuteIntervalEnabledProperty, value); }
 
     #endregion Is15MinuteIntervalEnabled dependency property
 
@@ -80,7 +79,7 @@
       typeof(AnalogClockFace),
       new PropertyMetadata(true));
 
-    public bool Is5MinuteIntervalEnabled { get => (bool) GetValue(AnalogClockFace.Is5MinuteIntervalEnabledProperty); set => SetValue(AnalogClockFace.Is5MinuteIntervalEnabledProperty, value); }
+    public bool Is5MinuteIntervalEnabled { get => (bool)GetValue(AnalogClockFace.Is5MinuteIntervalEnabledProperty); set => SetValue(AnalogClockFace.Is5MinuteIntervalEnabledProperty, value); }
 
     #endregion Is5MinuteIntervalEnabled dependency property
 
@@ -92,7 +91,7 @@
       typeof(AnalogClockFace),
       new PropertyMetadata(default));
 
-    public bool IsShowingBig12Interval { get => (bool) GetValue(AnalogClockFace.IsShowingBig12IntervalProperty); set => SetValue(AnalogClockFace.IsShowingBig12IntervalProperty, value); }
+    public bool IsShowingBig12Interval { get => (bool)GetValue(AnalogClockFace.IsShowingBig12IntervalProperty); set => SetValue(AnalogClockFace.IsShowingBig12IntervalProperty, value); }
 
     #endregion IsShowingBig12Interval dependency property
 
@@ -104,7 +103,7 @@
       typeof(AnalogClockFace),
       new FrameworkPropertyMetadata(default, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
-    public FrameworkElement FifteenMinuteIntervalElement { get => (FrameworkElement) GetValue(AnalogClockFace.FifteenMinuteIntervalElementProperty); set => SetValue(AnalogClockFace.FifteenMinuteIntervalElementProperty, value); }
+    public FrameworkElement FifteenMinuteIntervalElement { get => (FrameworkElement)GetValue(AnalogClockFace.FifteenMinuteIntervalElementProperty); set => SetValue(AnalogClockFace.FifteenMinuteIntervalElementProperty, value); }
 
     #endregion FifteenMinuteIntervalElement dependency property
 
@@ -116,7 +115,7 @@
       typeof(AnalogClockFace),
       new FrameworkPropertyMetadata(default, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
-    public FrameworkElement FiveMinuteIntervalElement { get => (FrameworkElement) GetValue(AnalogClockFace.FiveMinuteIntervalElementProperty); set => SetValue(AnalogClockFace.FiveMinuteIntervalElementProperty, value); }
+    public FrameworkElement FiveMinuteIntervalElement { get => (FrameworkElement)GetValue(AnalogClockFace.FiveMinuteIntervalElementProperty); set => SetValue(AnalogClockFace.FiveMinuteIntervalElementProperty, value); }
 
     #endregion FiveMinuteIntervalElement dependency property
 
@@ -128,7 +127,7 @@
       typeof(AnalogClockFace),
       new FrameworkPropertyMetadata(default, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
-    public FrameworkElement MinuteIntervalElement { get => (FrameworkElement) GetValue(AnalogClockFace.MinuteIntervalElementProperty); set => SetValue(AnalogClockFace.MinuteIntervalElementProperty, value); }
+    public FrameworkElement MinuteIntervalElement { get => (FrameworkElement)GetValue(AnalogClockFace.MinuteIntervalElementProperty); set => SetValue(AnalogClockFace.MinuteIntervalElementProperty, value); }
 
     #endregion MinuteIntervalElement dependency property
 
@@ -140,7 +139,7 @@
       typeof(AnalogClockFace),
       new FrameworkPropertyMetadata(default, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
-    public FrameworkElement FifteenMinuteIntervalLabel { get => (FrameworkElement) GetValue(AnalogClockFace.FifteenMinuteIntervalLabelProperty); set => SetValue(AnalogClockFace.FifteenMinuteIntervalLabelProperty, value); }
+    public FrameworkElement FifteenMinuteIntervalLabel { get => (FrameworkElement)GetValue(AnalogClockFace.FifteenMinuteIntervalLabelProperty); set => SetValue(AnalogClockFace.FifteenMinuteIntervalLabelProperty, value); }
 
     #endregion FifteenMinuteIntervalLabel dependency property
 
@@ -152,21 +151,21 @@
       typeof(AnalogClockFace),
       new FrameworkPropertyMetadata(default, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
-    public FrameworkElement FiveMinuteIntervalLabel { get => (FrameworkElement) GetValue(AnalogClockFace.FiveMinuteIntervalLabelProperty); set => SetValue(AnalogClockFace.FiveMinuteIntervalLabelProperty, value); }
+    public FrameworkElement FiveMinuteIntervalLabel { get => (FrameworkElement)GetValue(AnalogClockFace.FiveMinuteIntervalLabelProperty); set => SetValue(AnalogClockFace.FiveMinuteIntervalLabelProperty, value); }
 
     #endregion FiveMinuteIntervalLabel dependency property
 
     #region MinuteIntervalLabel dependency property
 
- public static readonly DependencyProperty MinuteIntervalLabelProperty = DependencyProperty.Register(
-   "MinuteIntervalLabel",
-   typeof(FrameworkElement),
-   typeof(AnalogClockFace),
-   new FrameworkPropertyMetadata(
-     default(FrameworkElement),
-     FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
+    public static readonly DependencyProperty MinuteIntervalLabelProperty = DependencyProperty.Register(
+      "MinuteIntervalLabel",
+      typeof(FrameworkElement),
+      typeof(AnalogClockFace),
+      new FrameworkPropertyMetadata(
+        default(FrameworkElement),
+        FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
-    public FrameworkElement MinuteIntervalLabel { get => (FrameworkElement) GetValue(AnalogClockFace.MinuteIntervalLabelProperty); set => SetValue(AnalogClockFace.MinuteIntervalLabelProperty, value); }
+    public FrameworkElement MinuteIntervalLabel { get => (FrameworkElement)GetValue(AnalogClockFace.MinuteIntervalLabelProperty); set => SetValue(AnalogClockFace.MinuteIntervalLabelProperty, value); }
 
     #endregion MinuteIntervalLabel dependency property
 
@@ -178,7 +177,7 @@
       typeof(AnalogClockFace),
       new PropertyMetadata(true));
 
-    public bool IsDisplayIntervalLabelsEnabled { get => (bool) GetValue(AnalogClockFace.IsDisplayIntervalLabelsEnabledProperty); set => SetValue(AnalogClockFace.IsDisplayIntervalLabelsEnabledProperty, value); }
+    public bool IsDisplayIntervalLabelsEnabled { get => (bool)GetValue(AnalogClockFace.IsDisplayIntervalLabelsEnabledProperty); set => SetValue(AnalogClockFace.IsDisplayIntervalLabelsEnabledProperty, value); }
 
     #endregion IsDisplayIntervalLabelsEnabled dependency property
 
@@ -190,7 +189,7 @@
       typeof(AnalogClockFace),
       new PropertyMetadata(default));
 
-    public Func<int, object> IntervalLabelFormatter { get => (Func<int, object>) GetValue(AnalogClockFace.IntervalLabelFormatterProperty); set => SetValue(AnalogClockFace.IntervalLabelFormatterProperty, value); }
+    public Func<int, object> IntervalLabelFormatter { get => (Func<int, object>)GetValue(AnalogClockFace.IntervalLabelFormatterProperty); set => SetValue(AnalogClockFace.IntervalLabelFormatterProperty, value); }
 
     #endregion IntervalLabelFormatter dependency property
 
@@ -202,7 +201,7 @@
       typeof(AnalogClockFace),
       new FrameworkPropertyMetadata(default(FrameworkElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AnalogClockFace.OnHourHandElementChanged));
 
-    public FrameworkElement HourHandElement { get => (FrameworkElement) GetValue(AnalogClockFace.HourHandElementProperty); set => SetValue(AnalogClockFace.HourHandElementProperty, value); }
+    public FrameworkElement HourHandElement { get => (FrameworkElement)GetValue(AnalogClockFace.HourHandElementProperty); set => SetValue(AnalogClockFace.HourHandElementProperty, value); }
 
     #endregion HourHandElement dependency property
 
@@ -214,7 +213,7 @@
       typeof(AnalogClockFace),
       new FrameworkPropertyMetadata(default(FrameworkElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AnalogClockFace.OnMinuteHandElementChanged));
 
-    public FrameworkElement MinuteHandElement { get => (FrameworkElement) GetValue(AnalogClockFace.MinuteHandElementProperty); set => SetValue(AnalogClockFace.MinuteHandElementProperty, value); }
+    public FrameworkElement MinuteHandElement { get => (FrameworkElement)GetValue(AnalogClockFace.MinuteHandElementProperty); set => SetValue(AnalogClockFace.MinuteHandElementProperty, value); }
 
     #endregion MinuteHandElement dependency property
 
@@ -226,7 +225,7 @@
       typeof(AnalogClockFace),
       new FrameworkPropertyMetadata(default(FrameworkElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AnalogClockFace.OnSecondHandElementChanged));
 
-    public FrameworkElement SecondHandElement { get => (FrameworkElement) GetValue(AnalogClockFace.SecondHandElementProperty); set => SetValue(AnalogClockFace.SecondHandElementProperty, value); }
+    public FrameworkElement SecondHandElement { get => (FrameworkElement)GetValue(AnalogClockFace.SecondHandElementProperty); set => SetValue(AnalogClockFace.SecondHandElementProperty, value); }
 
     #endregion SecondHandElement dependency property
 
@@ -238,7 +237,7 @@
       typeof(AnalogClockFace),
       new PropertyMetadata(default));
 
-    public Brush MinuteSelectionArcBrush { get => (Brush) GetValue(AnalogClockFace.MinuteSelectionArcBrushProperty); set => SetValue(AnalogClockFace.MinuteSelectionArcBrushProperty, value); }
+    public Brush MinuteSelectionArcBrush { get => (Brush)GetValue(AnalogClockFace.MinuteSelectionArcBrushProperty); set => SetValue(AnalogClockFace.MinuteSelectionArcBrushProperty, value); }
 
     #endregion MinuteSelectionArcBrush dependency property
 
@@ -250,7 +249,7 @@
       typeof(AnalogClockFace),
       new PropertyMetadata(default));
 
-    public Brush TimePickerHourSelectionArcBrush { get => (Brush) GetValue(AnalogClockFace.TimePickerHourSelectionArcBrushProperty); set => SetValue(AnalogClockFace.TimePickerHourSelectionArcBrushProperty, value); }
+    public Brush TimePickerHourSelectionArcBrush { get => (Brush)GetValue(AnalogClockFace.TimePickerHourSelectionArcBrushProperty); set => SetValue(AnalogClockFace.TimePickerHourSelectionArcBrushProperty, value); }
 
     #endregion cHourSelectionArcBrush dependency property
 
@@ -262,7 +261,7 @@
       typeof(AnalogClockFace),
       new PropertyMetadata(default));
 
-    public Brush TimePickerMinuteSelectionArcBrush { get => (Brush) GetValue(AnalogClockFace.TimePickerMinuteSelectionArcBrushProperty); set => SetValue(AnalogClockFace.TimePickerMinuteSelectionArcBrushProperty, value); }
+    public Brush TimePickerMinuteSelectionArcBrush { get => (Brush)GetValue(AnalogClockFace.TimePickerMinuteSelectionArcBrushProperty); set => SetValue(AnalogClockFace.TimePickerMinuteSelectionArcBrushProperty, value); }
 
     #endregion TimePickerMinuteSelectionArcBrush dependency property
 
@@ -274,7 +273,7 @@
       typeof(AnalogClockFace),
       new PropertyMetadata(default));
 
-    public Brush TimePickerSecondSelectionArcBrush { get => (Brush) GetValue(AnalogClockFace.TimePickerSecondSelectionArcBrushProperty); set => SetValue(AnalogClockFace.TimePickerSecondSelectionArcBrushProperty, value); }
+    public Brush TimePickerSecondSelectionArcBrush { get => (Brush)GetValue(AnalogClockFace.TimePickerSecondSelectionArcBrushProperty); set => SetValue(AnalogClockFace.TimePickerSecondSelectionArcBrushProperty, value); }
 
     #endregion TimePickerSecondSelectionArcBrush dependency property
 
@@ -286,7 +285,7 @@
       typeof(AnalogClockFace),
       new PropertyMetadata(default));
 
-    public double IntervalLabelRadiusOffset { get => (double) GetValue(AnalogClockFace.IntervalLabelRadiusOffsetProperty); set => SetValue(AnalogClockFace.IntervalLabelRadiusOffsetProperty, value); }
+    public double IntervalLabelRadiusOffset { get => (double)GetValue(AnalogClockFace.IntervalLabelRadiusOffsetProperty); set => SetValue(AnalogClockFace.IntervalLabelRadiusOffsetProperty, value); }
 
     #endregion IntervalLabelRadiusOffset dependency property
 
@@ -335,7 +334,7 @@
 
     public Point Center
     {
-      get => (Point) GetValue(AnalogClockFace.CenterProperty);
+      get => (Point)GetValue(AnalogClockFace.CenterProperty);
       private set => SetValue(AnalogClockFace.CenterPropertyKey, value);
     }
 
@@ -352,7 +351,7 @@
 
     public double IntervalMarkerCenterRadius
     {
-      get => (double) GetValue(AnalogClockFace.IntervalMarkerCenterRadiusProperty);
+      get => (double)GetValue(AnalogClockFace.IntervalMarkerCenterRadiusProperty);
       private set => SetValue(AnalogClockFace.IntervalMarkerCenterRadiusPropertyKey, value);
     }
 
@@ -369,7 +368,7 @@
 
     public double IntervalMarkerMinuteCenterRadius
     {
-      get => (double) GetValue(AnalogClockFace.IntervalMarkerMinuteCenterRadiusProperty);
+      get => (double)GetValue(AnalogClockFace.IntervalMarkerMinuteCenterRadiusProperty);
       private set => SetValue(AnalogClockFace.IntervalMarkerInnerCenterRadiusPropertyKey, value);
     }
 
@@ -386,7 +385,7 @@
 
     public double IntervalMarkerSecondCenterRadius
     {
-      get => (double) GetValue(AnalogClockFace.IntervalMarkerSecondCenterRadiusProperty);
+      get => (double)GetValue(AnalogClockFace.IntervalMarkerSecondCenterRadiusProperty);
       private set => SetValue(AnalogClockFace.IntervalMarkerSecondCenterRadiusPropertyKey, value);
     }
 
@@ -400,7 +399,7 @@
       typeof(AnalogClockFace),
       new PropertyMetadata(default(double), AnalogClockFace.OnHourHandRadiusChanged));
 
-    public double HourHandRadius { get => (double) GetValue(AnalogClockFace.HourHandRadiusProperty); set => SetValue(AnalogClockFace.HourHandRadiusProperty, value); }
+    public double HourHandRadius { get => (double)GetValue(AnalogClockFace.HourHandRadiusProperty); set => SetValue(AnalogClockFace.HourHandRadiusProperty, value); }
 
     #endregion HourHandRadius dependency property
 
@@ -412,7 +411,7 @@
       typeof(AnalogClockFace),
       new PropertyMetadata(default(double), AnalogClockFace.OnMinuteHandRadiusChanged));
 
-    public double MinuteHandRadius { get => (double) GetValue(AnalogClockFace.MinuteHandRadiusProperty); set => SetValue(AnalogClockFace.MinuteHandRadiusProperty, value); }
+    public double MinuteHandRadius { get => (double)GetValue(AnalogClockFace.MinuteHandRadiusProperty); set => SetValue(AnalogClockFace.MinuteHandRadiusProperty, value); }
 
     #endregion MinuteHandRadius dependency property
 
@@ -424,7 +423,7 @@
       typeof(AnalogClockFace),
       new PropertyMetadata(default(double), AnalogClockFace.OnSecondHandRadiusChanged));
 
-    public double SecondHandRadius { get => (double) GetValue(AnalogClockFace.SecondHandRadiusProperty); set => SetValue(AnalogClockFace.SecondHandRadiusProperty, value); }
+    public double SecondHandRadius { get => (double)GetValue(AnalogClockFace.SecondHandRadiusProperty); set => SetValue(AnalogClockFace.SecondHandRadiusProperty, value); }
 
     #endregion SecondHandRadius dependency property
 
@@ -439,7 +438,7 @@
 
     public double HourHandDiameter
     {
-      get => (double) GetValue(AnalogClockFace.HourHandDiameterProperty);
+      get => (double)GetValue(AnalogClockFace.HourHandDiameterProperty);
       private set => SetValue(AnalogClockFace.HourHandDiameterPropertyKey, value);
     }
     #endregion HourHandDiameter read-only dependency property
@@ -455,7 +454,7 @@
 
     public double MinuteHandDiameter
     {
-      get => (double) GetValue(AnalogClockFace.MinuteHandDiameterProperty);
+      get => (double)GetValue(AnalogClockFace.MinuteHandDiameterProperty);
       private set => SetValue(AnalogClockFace.MinuteHandDiameterPropertyKey, value);
     }
 
@@ -486,7 +485,7 @@
       typeof(AnalogClockFace),
       new PropertyMetadata(default));
 
-    public bool IsMinuteSelectionArcEnabled { get => (bool) GetValue(AnalogClockFace.IsMinuteSelectionArcEnabledProperty); set => SetValue(AnalogClockFace.IsMinuteSelectionArcEnabledProperty, value); }
+    public bool IsMinuteSelectionArcEnabled { get => (bool)GetValue(AnalogClockFace.IsMinuteSelectionArcEnabledProperty); set => SetValue(AnalogClockFace.IsMinuteSelectionArcEnabledProperty, value); }
 
     #endregion IsMinuteSelectionArcEnabled dependency property
 
@@ -518,10 +517,7 @@
     private bool IsSecondsDragPickingEnabled { get; set; }
     private bool IsClockFaceInitialized { get; set; }
 
-    static AnalogClockFace()
-    {
-      FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(AnalogClockFace), new FrameworkPropertyMetadata(typeof(AnalogClockFace)));
-    }
+    static AnalogClockFace() => FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(AnalogClockFace), new FrameworkPropertyMetadata(typeof(AnalogClockFace)));
     public AnalogClockFace()
     {
       this.Diameter = 100;
@@ -542,15 +538,15 @@
 
       this.IntervalLabelFormatter = value => value.ToString();
     }
-    
+
     private void InitializeClockFaceCanvas()
     {
       this.ClockFaceCanvas.Width = this.Diameter;
       this.ClockFaceCanvas.Height = this.Diameter;
 
-      var widthBinding = new Binding(nameof(this.Diameter)) {Source = this};
+      var widthBinding = new Binding(nameof(this.Diameter)) { Source = this };
       this.ClockFaceCanvas.SetBinding(FrameworkElement.WidthProperty, widthBinding);
-      var heightBinding = new Binding(nameof(this.Diameter)) {Source = this};
+      var heightBinding = new Binding(nameof(this.Diameter)) { Source = this };
       this.ClockFaceCanvas.SetBinding(FrameworkElement.HeightProperty, heightBinding);
     }
 
@@ -621,7 +617,7 @@
       }
 
       Point screenPoint = e.GetPosition(this.ClockFaceCanvas);
-      var clockAngle = GetAngleFromCartesianPoint(screenPoint);
+      double clockAngle = GetAngleFromCartesianPoint(screenPoint);
       this.IsUpdatingSelectedTimeComponent = true;
       double degreeOfStep;
 
@@ -654,12 +650,12 @@
     protected override void OnPreviewMouseMove(MouseEventArgs e)
     {
       base.OnPreviewMouseMove(e);
-      if (!this.IsHourDragPickingEnabled && !IsMinuteDragPickingEnabled && !IsSecondsDragPickingEnabled)
+      if (!this.IsHourDragPickingEnabled && !this.IsMinuteDragPickingEnabled && !this.IsSecondsDragPickingEnabled)
       {
         return;
       }
       Point screenPoint = e.GetPosition(this.ClockFaceCanvas);
-      var clockAngle = GetAngleFromCartesianPoint(screenPoint);
+      double clockAngle = GetAngleFromCartesianPoint(screenPoint);
       this.IsUpdatingSelectedTimeComponent = true;
       double degreeOfStep;
 
@@ -727,7 +723,6 @@
 
     #endregion
 
-
     private static void OnDiameterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
       var this_ = d as AnalogClockFace;
@@ -770,26 +765,16 @@
       base.OnDateElementChanged(oldDateElement, newDateElement);
     }
 
+    private static void OnHourHandElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as AnalogClockFace).OnHourHandElementChanged(e.OldValue as FrameworkElement, e.NewValue as FrameworkElement);
 
-    private static void OnHourHandElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      (d as AnalogClockFace).OnHourHandElementChanged(e.OldValue as FrameworkElement, e.NewValue as FrameworkElement);
-    }
+    private static void OnMinuteHandElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as AnalogClockFace).OnMinuteHandElementChanged(e.OldValue as FrameworkElement, e.NewValue as FrameworkElement);
 
-    private static void OnMinuteHandElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      (d as AnalogClockFace).OnMinuteHandElementChanged(e.OldValue as FrameworkElement, e.NewValue as FrameworkElement);
-    }
-
-    private static void OnSecondHandElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      (d as AnalogClockFace).OnSecondHandElementChanged(e.OldValue as FrameworkElement, e.NewValue as FrameworkElement);
-    }
+    private static void OnSecondHandElementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as AnalogClockFace).OnSecondHandElementChanged(e.OldValue as FrameworkElement, e.NewValue as FrameworkElement);
 
     private static void OnHourHandRadiusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
       var this_ = d as AnalogClockFace;
-      this_.HourHandDiameter = (double) e.NewValue * 2;
+      this_.HourHandDiameter = (double)e.NewValue * 2;
       this_.IsClockFaceInitialized = false;
     }
 
@@ -807,10 +792,7 @@
       this_.IsClockFaceInitialized = false;
     }
 
-    private static void OnIsTimePickerModeEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      (d as AnalogClockFace).OnIsTimePickerModeEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
-    }
+    private static void OnIsTimePickerModeEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as AnalogClockFace).OnIsTimePickerModeEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
 
     protected virtual void OnIsTimePickerModeEnabledChanged(bool oldValue, bool newValue)
     {
@@ -849,7 +831,7 @@
 
         if (!this.IsTimePickerModeEnabled)
         {
-          OnSelectedHourChanged(this.SelectedHour, this.SelectedHour + newValue / 60);
+          OnSelectedHourChanged(this.SelectedHour, this.SelectedHour + (newValue / 60));
         }
       }
 
@@ -988,8 +970,8 @@
           Height = 8,
           Fill = Brushes.Red
         };
-        AddIntervalElementTransformToElement(intervalElement);
-        return intervalElement;
+      AddIntervalElementTransformToElement(intervalElement);
+      return intervalElement;
     }
 
     protected virtual FrameworkElement Create5MinuteIntervalVisual()
@@ -998,7 +980,9 @@
         ? CloneElement(this.FiveMinuteIntervalElement)
         : new Ellipse
         {
-          Width = 4, Height = 4, Fill = Brushes.AntiqueWhite
+          Width = 4,
+          Height = 4,
+          Fill = Brushes.AntiqueWhite
         };
       AddIntervalElementTransformToElement(intervalElement);
       return intervalElement;
@@ -1010,7 +994,9 @@
         ? CloneElement(this.MinuteIntervalElement)
         : new Ellipse
         {
-          Width = 2, Height = 2, Fill = Brushes.AntiqueWhite
+          Width = 2,
+          Height = 2,
+          Fill = Brushes.AntiqueWhite
         };
       AddIntervalElementTransformToElement(intervalElement);
       return intervalElement;
@@ -1025,7 +1011,7 @@
         return label;
       }
 
-      return new TextBlock { Text = formattedLabelValue.ToString(), Padding = new Thickness(0)};
+      return new TextBlock { Text = formattedLabelValue.ToString(), Padding = new Thickness(0) };
     }
 
     protected virtual FrameworkElement Create5MinuteIntervalLabel(int labelValue)
@@ -1043,7 +1029,7 @@
     protected virtual FrameworkElement CreateMinuteIntervalLabel(int labelValue)
     {
       object formattedLabelValue = this.IntervalLabelFormatter?.Invoke(labelValue) ?? labelValue;
-      if (this.MinuteIntervalLabel != null 
+      if (this.MinuteIntervalLabel != null
           && CloneElement(this.MinuteIntervalLabel) is FrameworkElement label && label.TryAssignValue(formattedLabelValue))
       {
         return label;
@@ -1056,8 +1042,8 @@
 
     private double GetClockAngle(double reading, int steps) => reading * 360 / steps;
 
-    private int GetStepLabel(int step) => this.Is24HModeEnabled 
-      ? step 
+    private int GetStepLabel(int step) => this.Is24HModeEnabled
+      ? step
       : step == 0 ? 12 : step / 5;
 
     private void AddIntervalElementTransformToElement(FrameworkElement intervalElement)
@@ -1199,19 +1185,19 @@
       switch (step)
       {
         case { } is15MinutesStep when is15MinutesStep % 2 == 0:
-        {
-          intervalMarker = this.Is15MinuteIntervalEnabled
-            ? Create15MinuteIntervalVisual()
-            : this.Is5MinuteIntervalEnabled
-              ? Create5MinuteIntervalVisual()
-              : CreateMinuteIntervalVisual();
-          break;
-        }
+          {
+            intervalMarker = this.Is15MinuteIntervalEnabled
+              ? Create15MinuteIntervalVisual()
+              : this.Is5MinuteIntervalEnabled
+                ? Create5MinuteIntervalVisual()
+                : CreateMinuteIntervalVisual();
+            break;
+          }
         default:
-        {
-          intervalMarker = CreateMinuteIntervalVisual();
-          break;
-        }
+          {
+            intervalMarker = CreateMinuteIntervalVisual();
+            break;
+          }
       }
 
       return intervalMarker;
@@ -1219,7 +1205,7 @@
 
     private void Draw24HMinuteIntervals()
     {
-      var steps = 60.0;
+      double steps = 60.0;
       double degreeOfStep = 360.0 / steps;
       this.IntervalMarkerMinuteCenterRadius = -1;
       for (int step = 0; step < steps; step++)
@@ -1249,7 +1235,7 @@
     {
       if (this.MinuteHandRadius != this.SecondHandRadius)
       {
-        var steps = 60.0;
+        double steps = 60.0;
         double degreeOfStep = 360.0 / steps;
         this.IntervalMarkerSecondCenterRadius = -1;
         for (int step = 0; step < steps; step++)
@@ -1273,7 +1259,7 @@
       {
         return;
       }
-      
+
       AddElementToClockFace(this.DateElement, new Point(Canvas.GetLeft(this.DateElement), Canvas.GetTop(this.DateElement)), 2);
     }
 
@@ -1284,8 +1270,8 @@
       clockFaceBackgroundPosition.Offset(deltaToMiddleRadius / 2, deltaToMiddleRadius / 2);
       var ellipse = new Ellipse()
       {
-        Height = this.Diameter - deltaToMiddleRadius, 
-        Width = this.Diameter - deltaToMiddleRadius, 
+        Height = this.Diameter - deltaToMiddleRadius,
+        Width = this.Diameter - deltaToMiddleRadius,
         Fill = this.Background
       };
       AddElementToClockFace(ellipse, clockFaceBackgroundPosition, 0);
@@ -1301,7 +1287,9 @@
       Point selectedMinuteArcPoint = cartesianMinutePointOnArc.ToScreenPoint(this.Diameter);
       var selectionArcStart = new Point(this.Radius, this.Radius - this.IntervalMarkerCenterRadius);
       var selectionArcSize = new Size(this.IntervalMarkerCenterRadius, this.IntervalMarkerCenterRadius);
-      this.SelectedMinuteArc = new Path() { Data = new PathGeometry(
+      this.SelectedMinuteArc = new Path()
+      {
+        Data = new PathGeometry(
         new List<PathFigure>()
         {
           new PathFigure(
@@ -1318,7 +1306,9 @@
                 false)
             },
             true)
-        }), Fill = this.MinuteSelectionArcBrush};
+        }),
+        Fill = this.MinuteSelectionArcBrush
+      };
       AddElementToClockFace(this.SelectedMinuteArc, new Point(), 1);
     }
 
@@ -1326,9 +1316,9 @@
     {
       RemoveElementFromClockFace(this.SelectedHourArc);
 
-      double hourValue = this.IsTimePickerModeEnabled 
-        ? this.SelectedHour 
-        : this.SelectedHour + this.SelectedMinute / 60;
+      double hourValue = this.IsTimePickerModeEnabled
+        ? this.SelectedHour
+        : this.SelectedHour + (this.SelectedMinute / 60);
       double angle = GetClockAngle(hourValue, 24);
       bool isLargeSelectionMinuteArc = angle > 180.0;
       Point cartesianHourPointOnArc = GetCartesianPointOfStep(angle, this.IntervalMarkerCenterRadius);
@@ -1698,24 +1688,24 @@
       switch (step)
       {
         case { } is15MinutesStep when is15MinutesStep % 15 == 0:
-        {
-          intervalMarker = this.Is15MinuteIntervalEnabled
-            ? Create15MinuteIntervalVisual()
-            : this.Is5MinuteIntervalEnabled
-              ? Create5MinuteIntervalVisual()
-              : CreateMinuteIntervalVisual();
-          break;
-        }
+          {
+            intervalMarker = this.Is15MinuteIntervalEnabled
+              ? Create15MinuteIntervalVisual()
+              : this.Is5MinuteIntervalEnabled
+                ? Create5MinuteIntervalVisual()
+                : CreateMinuteIntervalVisual();
+            break;
+          }
         case { } is5MinutesStep when is5MinutesStep % 5 == 0:
-        {
-          intervalMarker = Create5MinuteIntervalVisual();
-          break;
-        }
+          {
+            intervalMarker = Create5MinuteIntervalVisual();
+            break;
+          }
         default:
-        {
-          intervalMarker = CreateMinuteIntervalVisual();
-          break;
-        }
+          {
+            intervalMarker = CreateMinuteIntervalVisual();
+            break;
+          }
       }
 
       return intervalMarker;
@@ -1727,30 +1717,30 @@
       switch (step)
       {
         case { } is15MinutesStep when is15MinutesStep % 15 == 0:
-        {
-          var stepLabel = GetStepLabel(step);
-          intervalMarkerLabel = this.Is15MinuteIntervalEnabled
-            ? Create15MinuteIntervalLabel(stepLabel)
-            : this.Is5MinuteIntervalEnabled
-              ? Create5MinuteIntervalLabel(stepLabel)
-              : CreateMinuteIntervalLabel(stepLabel);
-          break;
-        }
-        case { } is5MinutesStep when is5MinutesStep % 5 == 0:
-        {
-          var stepLabel = GetStepLabel(step);
-          intervalMarkerLabel = Create5MinuteIntervalLabel(stepLabel);
-          break;
-        }
-        default:
-        {
-          if (this.Is24HModeEnabled)
           {
-            var stepLabel = GetStepLabel(step);
-            intervalMarkerLabel = CreateMinuteIntervalLabel(stepLabel);
+            int stepLabel = GetStepLabel(step);
+            intervalMarkerLabel = this.Is15MinuteIntervalEnabled
+              ? Create15MinuteIntervalLabel(stepLabel)
+              : this.Is5MinuteIntervalEnabled
+                ? Create5MinuteIntervalLabel(stepLabel)
+                : CreateMinuteIntervalLabel(stepLabel);
+            break;
           }
-          break;
-        }
+        case { } is5MinutesStep when is5MinutesStep % 5 == 0:
+          {
+            int stepLabel = GetStepLabel(step);
+            intervalMarkerLabel = Create5MinuteIntervalLabel(stepLabel);
+            break;
+          }
+        default:
+          {
+            if (this.Is24HModeEnabled)
+            {
+              int stepLabel = GetStepLabel(step);
+              intervalMarkerLabel = CreateMinuteIntervalLabel(stepLabel);
+            }
+            break;
+          }
       }
 
       return intervalMarkerLabel;
@@ -1821,7 +1811,7 @@
       // Rotate and invert degrees in order to move the 0 clock value to the top
       // (instead of the original right -> cartesian based circle)
       double rotatedDegrees = degreesOfCurrentStep - 90;
-      double invertedDegrees =  -rotatedDegrees;
+      double invertedDegrees = -rotatedDegrees;
       var arcRadiantDegree = invertedDegrees * Math.PI / 180;
 
       double x = Math.Cos(arcRadiantDegree) * radius;

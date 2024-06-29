@@ -7,7 +7,7 @@
 
   using System.Windows;
 
-  
+
 
   public class ValueChangedRoutedEventArgs<TValue> : RoutedEventArgs
   {

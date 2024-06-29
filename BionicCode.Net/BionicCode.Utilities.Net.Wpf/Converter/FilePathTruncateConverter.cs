@@ -6,7 +6,7 @@
   using System.Text;
   using System.Windows;
 #if NET || NET461_OR_GREATER
-using System.Windows.Data;
+  using System.Windows.Data;
   /// <summary>
   ///   Converter to truncate file paths exceeding a specific length by replacing a number of characters with an ellipsis.
   /// </summary>
@@ -20,7 +20,7 @@ using System.Windows.Data;
 
     public int MaxLength
     {
-      get => (int) GetValue(FilePathTruncateConverter.MaxLengthProperty);
+      get => (int)GetValue(FilePathTruncateConverter.MaxLengthProperty);
       set => SetValue(FilePathTruncateConverter.MaxLengthProperty, value);
     }
 
@@ -49,9 +49,9 @@ using System.Windows.Data;
     {
       string directory = Path.GetDirectoryName(path) ?? string.Empty;
       string fileName = Path.GetFileName(path) ?? string.Empty;
-      string[] pathSegments = directory?.Split(new[] {@"\"}, StringSplitOptions.RemoveEmptyEntries);
+      string[] pathSegments = directory?.Split(new[] { @"\" }, StringSplitOptions.RemoveEmptyEntries);
       var pathBuilder = new StringBuilder();
-      var pathSegmentIndex = 0;
+      int pathSegmentIndex = 0;
 
       if (fileName.Length >= maxLength)
       {

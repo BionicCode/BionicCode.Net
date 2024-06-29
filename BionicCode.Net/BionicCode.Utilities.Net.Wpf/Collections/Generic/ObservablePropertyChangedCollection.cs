@@ -91,10 +91,10 @@
 
     private PropertyChangedEventHandler childPropertyChanged;
 
-#region Overrides of ObservableCollection<TItem>
+    #region Overrides of ObservableCollection<TItem>
 
     /// <inheritdoc />
-#if NET    
+#if NET
     protected override event PropertyChangedEventHandler? PropertyChanged
 #else
     protected override event PropertyChangedEventHandler PropertyChanged
@@ -112,7 +112,7 @@
       }
     }
 
-#endregion
+    #endregion
 
     private void OnItemPropertyChanged(object item, PropertyChangedEventArgs e)
     {

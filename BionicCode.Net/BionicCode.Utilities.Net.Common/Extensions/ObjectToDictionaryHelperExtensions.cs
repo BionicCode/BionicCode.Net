@@ -5,7 +5,6 @@
   using System.Collections.Generic;
   using System.Linq;
   using System.Reflection;
-  using System.Text;
 
   /// <summary>
   /// A collection of extension methods for various default types
@@ -39,13 +38,13 @@
     /// <para>Use the <see cref="IgnoreInObjectGraphAttribute"/> attribute to decorate properties that should be excluded.</para></remarks>
     public static Dictionary<string, object> ToDictionary(this object instanceToConvert)
     {
-      Dictionary<string, object> resultDictionary = instanceToConvert.GetType()
+      var resultDictionary = instanceToConvert.GetType()
         .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
         .Where(propertyInfo => !IsPropertyIndexer(propertyInfo) && propertyInfo.GetCustomAttribute(typeof(IgnoreInObjectGraphAttribute)) == null)
         .ToDictionary(
           propertyInfo => propertyInfo.Name,
           propertyInfo => HelperExtensionsCommon.ConvertPropertyToDictionary(propertyInfo, instanceToConvert, isRecursive: true));
-     
+
       return resultDictionary;
     }
 
@@ -72,7 +71,63 @@
     /// <para>Use the <see cref="IgnoreInObjectGraphAttribute"/> attribute to decorate properties that should be excluded.</para></remarks>
     public static Dictionary<string, object> ToFlatDictionary(this object instanceToConvert)
     {
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard21)'
+Before:
       Dictionary<string, object> resultDictionary = instanceToConvert.GetType()
+After:
+      var resultDictionary = instanceToConvert.GetType()
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net472)'
+Before:
+      Dictionary<string, object> resultDictionary = instanceToConvert.GetType()
+After:
+      var resultDictionary = instanceToConvert.GetType()
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net50)'
+Before:
+      Dictionary<string, object> resultDictionary = instanceToConvert.GetType()
+After:
+      var resultDictionary = instanceToConvert.GetType()
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net80)'
+Before:
+      Dictionary<string, object> resultDictionary = instanceToConvert.GetType()
+After:
+      var resultDictionary = instanceToConvert.GetType()
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard20)'
+Before:
+      Dictionary<string, object> resultDictionary = instanceToConvert.GetType()
+After:
+      var resultDictionary = instanceToConvert.GetType()
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
+      Dictionary<string, object> resultDictionary = instanceToConvert.GetType()
+After:
+      var resultDictionary = instanceToConvert.GetType()
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net60)'
+Before:
+      Dictionary<string, object> resultDictionary = instanceToConvert.GetType()
+After:
+      var resultDictionary = instanceToConvert.GetType()
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net70)'
+Before:
+      Dictionary<string, object> resultDictionary = instanceToConvert.GetType()
+After:
+      var resultDictionary = instanceToConvert.GetType()
+*/
+      var resultDictionary = instanceToConvert.GetType()
         .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
         .Where(propertyInfo => !IsPropertyIndexer(propertyInfo) && propertyInfo.GetCustomAttribute(typeof(IgnoreInObjectGraphAttribute)) == null)
         .ToDictionary(
@@ -122,7 +177,63 @@
           }
           else
           {
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard21)'
+Before:
             Dictionary<string, object> dictionary = item.ToDictionary();
+After:
+            var dictionary = item.ToDictionary();
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net472)'
+Before:
+            Dictionary<string, object> dictionary = item.ToDictionary();
+After:
+            var dictionary = item.ToDictionary();
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net50)'
+Before:
+            Dictionary<string, object> dictionary = item.ToDictionary();
+After:
+            var dictionary = item.ToDictionary();
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net80)'
+Before:
+            Dictionary<string, object> dictionary = item.ToDictionary();
+After:
+            var dictionary = item.ToDictionary();
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard20)'
+Before:
+            Dictionary<string, object> dictionary = item.ToDictionary();
+After:
+            var dictionary = item.ToDictionary();
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
+            Dictionary<string, object> dictionary = item.ToDictionary();
+After:
+            var dictionary = item.ToDictionary();
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net60)'
+Before:
+            Dictionary<string, object> dictionary = item.ToDictionary();
+After:
+            var dictionary = item.ToDictionary();
+*/
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net70)'
+Before:
+            Dictionary<string, object> dictionary = item.ToDictionary();
+After:
+            var dictionary = item.ToDictionary();
+*/
+            var dictionary = item.ToDictionary();
             items.Add(index.ToString(), dictionary);
           }
 
@@ -142,7 +253,7 @@
         propertyType.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
       if (properties.Any())
       {
-        Dictionary<string, object> resultDictionary = properties.ToDictionary(
+        var resultDictionary = properties.ToDictionary(
           subtypePropertyInfo => subtypePropertyInfo.Name,
           subtypePropertyInfo => propertyValue == null
             ? null
@@ -167,7 +278,7 @@
         }
         else
         {
-          Dictionary<string, object> dictionary = item.ToDictionary();
+          var dictionary = item.ToDictionary();
           items.Add(index.ToString(), dictionary);
         }
 

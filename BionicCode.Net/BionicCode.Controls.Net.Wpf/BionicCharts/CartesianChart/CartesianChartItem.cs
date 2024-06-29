@@ -1,10 +1,5 @@
 ﻿namespace BionicCode.Controls.Net.Wpf
 {
-  using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
-  using System.Threading.Tasks;
   using System.Windows;
 
   /* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
@@ -73,7 +68,6 @@
       typeof(CartesianChartItem),
       new PropertyMetadata(default(double)));
 
-
     /// <summary>
     /// The maximum y value of a cartesian coordinate related to a series of points.
     /// </summary>
@@ -84,7 +78,6 @@
       typeof(double),
       typeof(CartesianChartItem),
       new PropertyMetadata(default(double)));
-
 
     /// <summary>
     /// The minimum x value of a cartesian coordinate related to a series of points.
@@ -97,7 +90,6 @@
       typeof(CartesianChartItem),
       new PropertyMetadata(default(double)));
 
-
     /// <summary>
     /// The minimum y value of a cartesian coordinate related to a series of points.
     /// </summary>
@@ -105,10 +97,7 @@
 
     #endregion Dependency properties
 
-    static CartesianChartItem()
-    {
-      DefaultStyleKeyProperty.OverrideMetadata(typeof(CartesianChartItem), new FrameworkPropertyMetadata(typeof(CartesianChartItem)));
-    }
+    static CartesianChartItem() => DefaultStyleKeyProperty.OverrideMetadata(typeof(CartesianChartItem), new FrameworkPropertyMetadata(typeof(CartesianChartItem)));
 
     /// <inheritdoc />
     public override string ToString() => $"P({this.X}, {this.Y}); Pmax({this.MaxX}, {this.MaxY}); Pmin({this.MinX}, {this.MinY})";

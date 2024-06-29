@@ -1,7 +1,11 @@
-﻿namespace BionicCode.Utilities.Net
+﻿
+#if NET472_OR_GREATER
+
+[assembly: System.Reflection.AssemblyVersion("2.0")]
+#endif
+namespace BionicCode.Utilities.Net
 {
   using System;
-  using System.Collections;
   using System.Collections.Generic;
   using System.Diagnostics;
   using System.Management;
@@ -49,9 +53,10 @@
 
         Environment.TaskCompletionSource = new TaskCompletionSource<EnvironmentInfo>();
 
+        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_Processor");
+
         try
         {
-          ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_Processor");
           var watcher = new ManagementOperationObserver();
           Environment.ManagementObjectSearcherTable.Add(watcher, searcher);
           watcher.ObjectReady += OnWmiProcessorQueryResultReady;
@@ -89,7 +94,14 @@
       int numberOfCores = Convert.ToInt32(e.NewObject["NumberOfCores"]);
       int numberOfLogicalCores = Convert.ToInt32(e.NewObject["NumberOfLogicalProcessors"]);
       int threadCount = Convert.ToInt32(e.NewObject["ThreadCount"]);
-      Environment.Info = new EnvironmentInfo(processorName, numberOfCores, numberOfLogicalCores, threadCount, clckSpeed, System.Environment.Is64BitProcess, System.Environment.Is64BitOperatingSystem, RuntimeEnvironment.GetSystemVersion());
+      Environment.Info = new EnvironmentInfo(processorName, 
+        numberOfCores, 
+        numberOfLogicalCores, 
+        threadCount, 
+        clckSpeed, 
+        System.Environment.Is64BitProcess, 
+        System.Environment.Is64BitOperatingSystem, 
+        RuntimeEnvironment.GetSystemVersion());
       _ = Environment.TaskCompletionSource.TrySetResult(Environment.Info);
     }
   }

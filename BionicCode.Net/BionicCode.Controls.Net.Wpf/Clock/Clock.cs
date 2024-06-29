@@ -18,7 +18,7 @@ namespace BionicCode.Controls.Net.Wpf
       typeof(Clock),
       new PropertyMetadata(default(ClockFace), Clock.OnClockFaceChanged));
 
-    public ClockFace ClockFace { get => (ClockFace) GetValue(Clock.ClockFaceProperty); set => SetValue(Clock.ClockFaceProperty, value); }
+    public ClockFace ClockFace { get => (ClockFace)GetValue(Clock.ClockFaceProperty); set => SetValue(Clock.ClockFaceProperty, value); }
 
     #endregion ClockFace dependency property
 
@@ -30,7 +30,7 @@ namespace BionicCode.Controls.Net.Wpf
       typeof(Clock),
       new PropertyMetadata(default(DateTime), Clock.OnCurrentDateTimeChanged));
 
-    public DateTime CurrentDateTime { get => (DateTime) GetValue(Clock.CurrentDateTimeProperty); set => SetValue(Clock.CurrentDateTimeProperty, value); }
+    public DateTime CurrentDateTime { get => (DateTime)GetValue(Clock.CurrentDateTimeProperty); set => SetValue(Clock.CurrentDateTimeProperty, value); }
 
     #endregion CurrentDateTime dependency property
 
@@ -42,7 +42,7 @@ namespace BionicCode.Controls.Net.Wpf
       typeof(Clock),
       new PropertyMetadata(TimeZoneInfo.Local));
 
-    public TimeZoneInfo TimeZone { get => (TimeZoneInfo) GetValue(Clock.TimeZoneProperty); set => SetValue(Clock.TimeZoneProperty, value); }
+    public TimeZoneInfo TimeZone { get => (TimeZoneInfo)GetValue(Clock.TimeZoneProperty); set => SetValue(Clock.TimeZoneProperty, value); }
 
     #endregion TimeZone dependency property
 
@@ -54,7 +54,7 @@ namespace BionicCode.Controls.Net.Wpf
       typeof(Clock),
       new PropertyMetadata(TimeSpan.FromSeconds(1)));
 
-    public TimeSpan Resolution { get => (TimeSpan) GetValue(Clock.ResolutionProperty); set => SetValue(Clock.ResolutionProperty, value); }
+    public TimeSpan Resolution { get => (TimeSpan)GetValue(Clock.ResolutionProperty); set => SetValue(Clock.ResolutionProperty, value); }
 
     #endregion Resolution dependency property
 
@@ -66,7 +66,7 @@ namespace BionicCode.Controls.Net.Wpf
       typeof(Clock),
       new PropertyMetadata(TimeSpan.FromMilliseconds(50)));
 
-    public TimeSpan Precision { get => (TimeSpan) GetValue(Clock.PrecisionProperty); set => SetValue(Clock.PrecisionProperty, value); }
+    public TimeSpan Precision { get => (TimeSpan)GetValue(Clock.PrecisionProperty); set => SetValue(Clock.PrecisionProperty, value); }
 
     #endregion Precision dependency property
 
@@ -78,7 +78,7 @@ namespace BionicCode.Controls.Net.Wpf
       typeof(Clock),
       new PropertyMetadata(System.Windows.Threading.DispatcherPriority.Send));
 
-    public DispatcherPriority DispatcherPriority { get => (DispatcherPriority) GetValue(Clock.DispatcherPriorityProperty); set => SetValue(Clock.DispatcherPriorityProperty, value); }
+    public DispatcherPriority DispatcherPriority { get => (DispatcherPriority)GetValue(Clock.DispatcherPriorityProperty); set => SetValue(Clock.DispatcherPriorityProperty, value); }
 
     #endregion DispatcherPriority dependency property
 
@@ -93,7 +93,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public Meridiem Meridiem
     {
-      get => (Meridiem) GetValue(Clock.MeridiemProperty);
+      get => (Meridiem)GetValue(Clock.MeridiemProperty);
       private set => SetValue(Clock.MeridiemPropertyKey, value);
     }
 
@@ -104,20 +104,17 @@ namespace BionicCode.Controls.Net.Wpf
     public bool IsDaylightSavingTime => this.TimeZone.IsDaylightSavingTime(this.CurrentDateTime);
 
     private DispatcherTimer Timer { get; }
-    private Binding  CurrentDateTimeBinding { get; }
+    private Binding CurrentDateTimeBinding { get; }
 
-    static Clock()
-    {
-      FrameworkElement.DefaultStyleKeyProperty
+    static Clock() => FrameworkElement.DefaultStyleKeyProperty
         .OverrideMetadata(typeof(Clock), new FrameworkPropertyMetadata(typeof(Clock)));
-    }
 
     public Clock()
     {
       this.Timer = new DispatcherTimer(this.Precision, this.DispatcherPriority, OnTimerElapsed, this.Dispatcher);
       this.CurrentDateTimeBinding = new Binding()
       {
-        Source = this, 
+        Source = this,
         Path = new PropertyPath(nameof(this.CurrentDateTime))
       };
     }
@@ -125,21 +122,18 @@ namespace BionicCode.Controls.Net.Wpf
     #region OnCurrentDateTimeChanged dependency property changed handler
 
     private static void OnCurrentDateTimeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
-      (d as Clock).OnCurrentDateTimeChanged((DateTime) e.OldValue, (DateTime) e.NewValue);
+      (d as Clock).OnCurrentDateTimeChanged((DateTime)e.OldValue, (DateTime)e.NewValue);
 
-    protected virtual void OnCurrentDateTimeChanged(DateTime oldValue, DateTime newValue)
-    {
-      this.Meridiem = newValue.TimeOfDay < new TimeSpan(11, 59, 59)
+    protected virtual void OnCurrentDateTimeChanged(DateTime oldValue, DateTime newValue) => this.Meridiem = newValue.TimeOfDay < new TimeSpan(11, 59, 59)
         ? Meridiem.AM
         : Meridiem.PM;
-    }
 
     #endregion OnCurrentDateTimeChanged dependency property changed handler
 
     #region OnClockFaceChanged dependency property changed handler
 
     private static void OnClockFaceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
-      (d as Clock).OnClockFaceChanged((ClockFace) e.OldValue, (ClockFace) e.NewValue);
+      (d as Clock).OnClockFaceChanged((ClockFace)e.OldValue, (ClockFace)e.NewValue);
 
     protected virtual void OnClockFaceChanged(ClockFace oldValue, ClockFace newValue)
     {

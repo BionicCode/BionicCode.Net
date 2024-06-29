@@ -15,7 +15,7 @@
     /// Initializes the instance with 100 iterations, and the default number of warmup iteration (defined by <see cref="Profiler.DefaultWarmupCount"/>) and with the default time unit (defined by <see cref="Profiler.DefaultBaseUnit"/>).
     /// </remarks>
     public ProfilerOptions() : this(1000, Profiler.DefaultWarmupCount, null, Profiler.DefaultBaseUnit)
-    {      
+    {
     }
 
     /// <summary>
@@ -67,5 +67,12 @@
     /// The default is defined by <see cref="Profiler.DefaultBaseUnit"/>.
     /// </value>
     public TimeUnit BaseUnit { get; set; }
+
+    /// <summary>
+    /// Defines the environment that the profiled code is executed in.
+    /// </summary>
+    /// <value>The desired runtime. The default is <see cref="Runtime.Default"/> which evaluates to the highest supported .NET version. 
+    /// <br/>See <see cref="Runtime"/> to know the currently supported runtimes.</value>
+    public Runtime Runtime { get; set; }
   }
 }

@@ -12,7 +12,7 @@ namespace BionicCode.Controls.Net.Wpf
   using System.Windows.Controls;
   using System.Windows.Documents;
   using System.Windows.Media;
-#endregion
+  #endregion
 
   /// <summary>
   /// Implement this interface to apply a custom highlight style for more complex scenarios e.g., code editors.
@@ -72,7 +72,7 @@ namespace BionicCode.Controls.Net.Wpf
     {
       unchecked
       {
-        var hash = (int) 2166136261;
+        int hash = (int)2166136261;
 
         hash = (16777619 * hash) ^ this.Start.GetHashCode();
         hash = (16777619 * hash) ^ this.End.GetHashCode();
@@ -129,7 +129,7 @@ namespace BionicCode.Controls.Net.Wpf
     {
       unchecked
       {
-        var hash = (int) 2166136261;
+        int hash = (int)2166136261;
 
         hash = (16777619 * hash) ^ this.FontFamily.GetHashCode();
         hash = (16777619 * hash) ^ this.FontStretch.GetHashCode();
@@ -157,7 +157,7 @@ namespace BionicCode.Controls.Net.Wpf
       other.Background.Equals(this.Background) &&
       other.RichTextBox.Equals(this.RichTextBox);
   }
-  
+
   /// <summary>
   /// Holds formatting attributes that should be applied to the match results.
   /// </summary>
@@ -197,7 +197,7 @@ namespace BionicCode.Controls.Net.Wpf
     {
       unchecked
       {
-        var hash = (int) 2166136261;
+        int hash = (int)2166136261;
 
         hash = (16777619 * hash) ^ this.StartIndex.GetHashCode();
         hash = (16777619 * hash) ^ this.Length.GetHashCode();
@@ -224,7 +224,7 @@ namespace BionicCode.Controls.Net.Wpf
       typeof(HighlightRichTextBox),
       new PropertyMetadata(default(bool)));
 
-    public bool IsLiveSearchEnabled { get => (bool) GetValue(HighlightRichTextBox.IsLiveSearchEnabledProperty); set => SetValue(HighlightRichTextBox.IsLiveSearchEnabledProperty, value); }
+    public bool IsLiveSearchEnabled { get => (bool)GetValue(HighlightRichTextBox.IsLiveSearchEnabledProperty); set => SetValue(HighlightRichTextBox.IsLiveSearchEnabledProperty, value); }
 
     public static readonly DependencyProperty IsAutoHighlightingEnabledProperty = DependencyProperty.Register(
       "IsAutoHighlightingEnabled",
@@ -232,7 +232,7 @@ namespace BionicCode.Controls.Net.Wpf
       typeof(HighlightRichTextBox),
       new PropertyMetadata(default(bool)));
 
-    public bool IsAutoHighlightingEnabled { get => (bool) GetValue(HighlightRichTextBox.IsAutoHighlightingEnabledProperty); set => SetValue(HighlightRichTextBox.IsAutoHighlightingEnabledProperty, value); }
+    public bool IsAutoHighlightingEnabled { get => (bool)GetValue(HighlightRichTextBox.IsAutoHighlightingEnabledProperty); set => SetValue(HighlightRichTextBox.IsAutoHighlightingEnabledProperty, value); }
 
     public static readonly DependencyProperty HighlightForegroundProperty = DependencyProperty.Register(
       "HighlightForeground",
@@ -242,7 +242,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public Brush HighlightForeground
     {
-      get => (Brush) GetValue(HighlightRichTextBox.HighlightForegroundProperty);
+      get => (Brush)GetValue(HighlightRichTextBox.HighlightForegroundProperty);
       set => SetValue(HighlightRichTextBox.HighlightForegroundProperty, value);
     }
 
@@ -254,7 +254,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public Brush HighlightBackground
     {
-      get => (Brush) GetValue(HighlightRichTextBox.HighlightBackgroundProperty);
+      get => (Brush)GetValue(HighlightRichTextBox.HighlightBackgroundProperty);
       set => SetValue(HighlightRichTextBox.HighlightBackgroundProperty, value);
     }
 
@@ -266,7 +266,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public FontFamily HighlightFontFamily
     {
-      get => (FontFamily) GetValue(HighlightRichTextBox.HighlightFontFamilyProperty);
+      get => (FontFamily)GetValue(HighlightRichTextBox.HighlightFontFamilyProperty);
       set => SetValue(HighlightRichTextBox.HighlightFontFamilyProperty, value);
     }
 
@@ -278,7 +278,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public double HighlightFontSize
     {
-      get => (double) GetValue(HighlightRichTextBox.HighlightFontSizeProperty);
+      get => (double)GetValue(HighlightRichTextBox.HighlightFontSizeProperty);
       set => SetValue(HighlightRichTextBox.HighlightFontSizeProperty, value);
     }
 
@@ -290,7 +290,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public FontStretch HighlightFontStretch
     {
-      get => (FontStretch) GetValue(HighlightRichTextBox.HighlightFontStretchProperty);
+      get => (FontStretch)GetValue(HighlightRichTextBox.HighlightFontStretchProperty);
       set => SetValue(HighlightRichTextBox.HighlightFontStretchProperty, value);
     }
 
@@ -302,7 +302,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public FontWeight HighlightFontWeight
     {
-      get => (FontWeight) GetValue(HighlightRichTextBox.HighlightFontWeightProperty);
+      get => (FontWeight)GetValue(HighlightRichTextBox.HighlightFontWeightProperty);
       set => SetValue(HighlightRichTextBox.HighlightFontWeightProperty, value);
     }
 
@@ -314,7 +314,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public FontStyle HighlightFontStyle
     {
-      get => (FontStyle) GetValue(HighlightRichTextBox.HighlightFontStyleProperty);
+      get => (FontStyle)GetValue(HighlightRichTextBox.HighlightFontStyleProperty);
       set => SetValue(HighlightRichTextBox.HighlightFontStyleProperty, value);
     }
 
@@ -326,7 +326,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public IMatchFormatter MatchFormatter
     {
-      get => (IMatchFormatter) GetValue(HighlightRichTextBox.MatchFormatterProperty);
+      get => (IMatchFormatter)GetValue(HighlightRichTextBox.MatchFormatterProperty);
       set => SetValue(HighlightRichTextBox.MatchFormatterProperty, value);
     }
 
@@ -338,7 +338,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public int TotalMatchCount
     {
-      get => (int) GetValue(HighlightRichTextBox.TotalMatchCountProperty);
+      get => (int)GetValue(HighlightRichTextBox.TotalMatchCountProperty);
       set => SetValue(HighlightRichTextBox.TotalMatchCountProperty, value);
     }
 
@@ -353,7 +353,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public ObservableCollection<MatchInfo> MatchHistory
     {
-      get => (ObservableCollection<MatchInfo>) GetValue(HighlightRichTextBox.MatchHistoryProperty);
+      get => (ObservableCollection<MatchInfo>)GetValue(HighlightRichTextBox.MatchHistoryProperty);
       private set => SetValue(HighlightRichTextBox.MatchHistoryPropertyKey, value);
     }
 
@@ -365,7 +365,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public StringComparison StringComparison
     {
-      get => (StringComparison) GetValue(HighlightRichTextBox.StringComparisonProperty);
+      get => (StringComparison)GetValue(HighlightRichTextBox.StringComparisonProperty);
       set => SetValue(HighlightRichTextBox.StringComparisonProperty, value);
     }
 
@@ -377,7 +377,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public IEnumerable<DelimiterPair> DelimiterPairs
     {
-      get => (IEnumerable<DelimiterPair>) GetValue(HighlightRichTextBox.DelimiterPairsProperty);
+      get => (IEnumerable<DelimiterPair>)GetValue(HighlightRichTextBox.DelimiterPairsProperty);
       set => SetValue(HighlightRichTextBox.DelimiterPairsProperty, value);
     }
 
@@ -389,7 +389,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     public IEnumerable<string> SearchKeys
     {
-      get => (IEnumerable<string>) GetValue(HighlightRichTextBox.SearchKeysProperty);
+      get => (IEnumerable<string>)GetValue(HighlightRichTextBox.SearchKeysProperty);
       set => SetValue(HighlightRichTextBox.SearchKeysProperty, value);
     }
 
@@ -412,25 +412,13 @@ namespace BionicCode.Controls.Net.Wpf
       this.IsAutoHighlightingEnabled = true;
     }
 
-    public void Search()
-    {
-      _ = EnumerateSearch().ToList();
-    }
+    public void Search() => _ = EnumerateSearch().ToList();
 
-    public void Search(int documentOffset)
-    {
-      _ = EnumerateSearch(documentOffset).ToList();
-    }
+    public void Search(int documentOffset) => _ = EnumerateSearch(documentOffset).ToList();
 
-    public void Search(int documentOffset, IEnumerable<DelimiterPair> delimiters)
-    {
-      _ = EnumerateSearch(documentOffset, delimiters).ToList();
-    }
+    public void Search(int documentOffset, IEnumerable<DelimiterPair> delimiters) => _ = EnumerateSearch(documentOffset, delimiters).ToList();
 
-    public void Search(int documentOffset, IEnumerable<string> searchKeys)
-    {
-      _ = EnumerateSearch(documentOffset, searchKeys).ToList();
-    }
+    public void Search(int documentOffset, IEnumerable<string> searchKeys) => _ = EnumerateSearch(documentOffset, searchKeys).ToList();
 
     public IEnumerable<MatchInfo> EnumerateSearch()
     {
@@ -453,7 +441,7 @@ namespace BionicCode.Controls.Net.Wpf
         this.IsInputHandled = true;
         this.TotalMatchCount = 0;
         this.MatchHistory.Clear();
-        var contentIndex = CreateLookupIndex(content, documentOffset);
+        Dictionary<int, (TextPointer RunPointer, string RunText)> contentIndex = CreateLookupIndex(content, documentOffset);
         foreach (MatchInfo matchInfo in FindMatchesInContent(content, contentIndex, this.DelimiterPairs, this.SearchKeys))
         {
           yield return matchInfo;
@@ -483,7 +471,7 @@ namespace BionicCode.Controls.Net.Wpf
         this.IsInputHandled = true;
         this.TotalMatchCount = 0;
         this.MatchHistory.Clear();
-        var contentIndex = CreateLookupIndex(content, documentOffset);
+        Dictionary<int, (TextPointer RunPointer, string RunText)> contentIndex = CreateLookupIndex(content, documentOffset);
         foreach (MatchInfo matchInfo in FindDelimitedToken(content, contentIndex, delimiters))
         {
           HighlightMatch(matchInfo);
@@ -516,7 +504,7 @@ namespace BionicCode.Controls.Net.Wpf
         this.IsInputHandled = true;
         this.TotalMatchCount = 0;
         this.MatchHistory.Clear();
-        var contentIndex = CreateLookupIndex(content, documentOffset);
+        Dictionary<int, (TextPointer RunPointer, string RunText)> contentIndex = CreateLookupIndex(content, documentOffset);
         foreach (MatchInfo matchInfo in FindSearchKeys(content, contentIndex, searchKeys))
         {
           HighlightMatch(matchInfo);
@@ -540,7 +528,7 @@ namespace BionicCode.Controls.Net.Wpf
       {
         return;
       }
-      
+
       if (this.IsPasteActive)
       {
         HandlePasteInput(e);
@@ -553,10 +541,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     #endregion Overrides of TextBoxBase
 
-    private static void OnDelimiterPairsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      (d as HighlightRichTextBox).OnDelimiterPairsChanged(e.NewValue as IEnumerable<DelimiterPair>, e.OldValue as IEnumerable<DelimiterPair>);
-    }
+    private static void OnDelimiterPairsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as HighlightRichTextBox).OnDelimiterPairsChanged(e.NewValue as IEnumerable<DelimiterPair>, e.OldValue as IEnumerable<DelimiterPair>);
 
     protected virtual void OnDelimiterPairsChanged(IEnumerable<DelimiterPair> newValue, IEnumerable<DelimiterPair> oldValue)
     {
@@ -581,7 +566,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     private void HandleSearchKeyCollectionsChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
-      if (this.IsLiveSearchEnabled && e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Replace)
+      if ((this.IsLiveSearchEnabled && e.Action == NotifyCollectionChangedAction.Add) || e.Action == NotifyCollectionChangedAction.Replace)
       {
         Search(0, e.NewItems.OfType<DelimiterPair>());
         Search(0, e.NewItems.OfType<string>());
@@ -592,11 +577,9 @@ namespace BionicCode.Controls.Net.Wpf
       }
     }
 
-    private void AnalyzeClipBoardOnPaste(object sender, DataObjectPastingEventArgs e)
-    {
+    private void AnalyzeClipBoardOnPaste(object sender, DataObjectPastingEventArgs e) =>
       // If clipboard content is not of type string, don't handle it
       this.IsPasteActive = e.DataObject.GetDataPresent(typeof(string));
-    }
 
     private void HandlePasteInput(TextChangedEventArgs e)
     {
@@ -643,7 +626,7 @@ namespace BionicCode.Controls.Net.Wpf
       TextPointerContext currentDocumentPositionContext =
         currentDocumentPosition.GetPointerContext(LogicalDirection.Forward);
 
-      var currentInputIndex = 0;
+      int currentInputIndex = 0;
       while (currentInputIndex < input.Length)
       {
         while (currentDocumentPositionContext != TextPointerContext.Text)
@@ -767,7 +750,7 @@ namespace BionicCode.Controls.Net.Wpf
     {
       foreach (DelimiterPair delimiterPair in delimiterPairs)
       {
-        var inputIndex = 0;
+        int inputIndex = 0;
         TextPointer matchStart = null;
         while (inputIndex < input.Length)
         {
@@ -808,7 +791,7 @@ namespace BionicCode.Controls.Net.Wpf
     {
       foreach (string searchKey in searchKeys)
       {
-        var inputIndex = 0;
+        int inputIndex = 0;
         while (inputIndex < input.Length)
         {
           int
@@ -819,8 +802,8 @@ namespace BionicCode.Controls.Net.Wpf
           }
 
           System.Windows.Documents.TextRange match = CreateFullMatch(pastedContentIndex, matchIndex, searchKey);
-            yield return new MatchInfo(matchIndex - (match.Text.Length - 1), match.Text.Length, match.Text, match);
-            inputIndex = matchIndex + searchKey.Length;
+          yield return new MatchInfo(matchIndex - (match.Text.Length - 1), match.Text.Length, match.Text, match);
+          inputIndex = matchIndex + searchKey.Length;
         }
       }
     }
@@ -925,12 +908,12 @@ namespace BionicCode.Controls.Net.Wpf
       DelimiterPair maxEndLengthDelimiter = this.DelimiterPairs.Aggregate((longestStartDelimiter, nextDelimiterPair) => nextDelimiterPair.Start.Length > longestStartDelimiter.Start.Length ? nextDelimiterPair : longestStartDelimiter);
 
       int maxDelimiterLength = Math.Max(maxStartLengthDelimiter.Start.Length, maxEndLengthDelimiter.End.Length);
-      
-      var docIndex = CreateReverseLookupIndex(maxDelimiterLength, changeOffset);
-      
+
+      Dictionary<int, (TextPointer RunPointer, string RunText)> docIndex = CreateReverseLookupIndex(maxDelimiterLength, changeOffset);
+
       foreach (DelimiterPair delimiterPair in this.DelimiterPairs)
       {
-        var requiredRuns = docIndex.Select(entry => entry.Value.RunText).Aggregate((result, nextRunText) => result.Length < maxDelimiterLength ? result + nextRunText : result);
+        string requiredRuns = docIndex.Select(entry => entry.Value.RunText).Aggregate((result, nextRunText) => result.Length < maxDelimiterLength ? result + nextRunText : result);
 
         if (this.StartMatchOffsets.TryGetValue(delimiterPair.Start, out int delimiterStartMatchIndex))
         {
@@ -993,10 +976,7 @@ namespace BionicCode.Controls.Net.Wpf
       return matchInfos.Any();
     }
 
-    private void UpdateMatchHistory(MatchInfo matchInfo)
-    {
-      this.MatchHistory.Add(matchInfo);
-    }
+    private void UpdateMatchHistory(MatchInfo matchInfo) => this.MatchHistory.Add(matchInfo);
 
     private void HighlightMatch(MatchInfo matchInfo)
     {
@@ -1060,10 +1040,7 @@ namespace BionicCode.Controls.Net.Wpf
       //}
     }
 
-    protected virtual void OnMatchFound(MatchInfo matchInfo, HighlightArgs highlightArgs)
-    {
-      this.MatchFound?.Invoke(this, new MatchFoundEventArgs(matchInfo, highlightArgs, this));
-    }
+    protected virtual void OnMatchFound(MatchInfo matchInfo, HighlightArgs highlightArgs) => this.MatchFound?.Invoke(this, new MatchFoundEventArgs(matchInfo, highlightArgs, this));
 
     public event EventHandler<MatchFoundEventArgs> MatchFound;
     internal bool IsHighlightCanceled { get; set; }

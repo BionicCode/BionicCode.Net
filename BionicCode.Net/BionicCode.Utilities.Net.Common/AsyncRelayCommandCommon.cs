@@ -17,128 +17,28 @@ namespace BionicCode.Utilities.Net
   ///   <seealso cref="System.Windows.Input.ICommand" />
   /// </summary>
   /// <remarks><c>AsyncRelayCommandCommon</c> implements <see cref="System.Windows.Input.ICommand" />. In case the <see cref="AsyncRelayCommandCommon{TParam}"/> is executed explicitly, especially with an asynchronous command handler registered, it is highly recommended to invoke the awaitable <see cref="ExecuteAsync()"/> or its overloads instead.</remarks>
-  public abstract partial class AsyncRelayCommandCommon : IAsyncRelayCommandCommon, ICommand, INotifyPropertyChanged
+  public abstract partial class AsyncRelayCommandCommon : AsyncRelayCommandCore, IAsyncRelayCommandCommon
   {
-    internal bool IsPendingCancelling { get; set; }
-    /// <summary>
-    /// The number of concurrent threads than can execute a command delegate.
-    /// </summary>
-    protected const int MaxThreads = 1;
-
-    private bool isExecuting;
-    /// <inheritdoc/>
-    public bool IsExecuting
-    {
-      get => this.isExecuting;
-      internal set
-      {
-        this.isExecuting = value;
-        OnPropertyChanged();
-      }
-    }
-
-    private bool isPendingCancelled;
-    /// <inheritdoc/>
-    public bool IsPendingCancelled
-    {
-      get => this.isPendingCancelled;
-      internal set
-      {
-        this.isPendingCancelled = value;
-        OnPropertyChanged();
-      }
-    }
-
-    private bool isCancelled;
-    /// <inheritdoc/>
-    public bool IsCancelled
-    {
-      get => this.isCancelled;
-      internal set
-      {
-        this.isCancelled = value;
-        OnPropertyChanged();
-      }
-    }
-
-    /// <inheritdoc/>
-    public bool HasPending => this.PendingCount > 0;
-
-    private int pendingCount;
-    /// <inheritdoc/>
-    public int PendingCount
-    {
-      get => this.pendingCount;
-      internal set
-      {
-        this.pendingCount = value;
-        OnPropertyChanged();
-      }
-    }
-
-    /// <inheritdoc />
-    public bool CanBeCanceled => this.CurrentCancellationToken.CanBeCanceled;
-
-    private CancellationToken currentCancellationToken;
-    /// <inheritdoc />
-    public CancellationToken CurrentCancellationToken
-    {
-      get => this.currentCancellationToken;
-      internal set
-      {
-        this.currentCancellationToken = value;
-        OnPropertyChanged();
-      }
-    }
-
-    /// <inheritdoc/>
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    private CancellationTokenSource CommandCancellationTokenSource { get; set; }
-    private CancellationTokenSource MergedCommandCancellationTokenSource { get; set; }
-    internal SemaphoreSlim SemaphoreSlim { get; }
-
-    /// <summary>
-    /// The registered parameterless async execute delegate.
-    /// </summary>
-    /// <value>
-    /// A delegate that takes no command parameter and returns a <see cref="Task"/>.</value>
-    protected Func<Task> ExecuteAsyncNoParamDelegate { get; }
-
     /// <summary>
     /// The registered parameterless async execute delegate that supports cancellation.
     /// </summary>
     /// <value>
     /// A delegate that supports cancellation, but takes no command parameter and returns a <see cref="Task"/>.</value>
-    protected Func<CancellationToken, Task> ExecuteCancellableAsyncNoParamDelegate { get; }
-
-    /// <summary>
-    /// The registered parameterless synchronous execute delegate.
-    /// </summary>
-    /// <value>
-    /// A delegate that takes no parameter and returns void.</value>
-    protected Action ExecuteNoParamDelegate { get; }
+    private readonly Func<CancellationToken, Task> executeCancellableAsyncNoParamDelegate;
 
     /// <summary>
     /// The registered parameterless synchronous execute delegate that supports cancellation.
     /// </summary>
     /// <value>
     /// A delegate that suppoprts cancellation, but takes no command parameter and returns void.</value>
-    protected Action<CancellationToken> ExecuteCancellableNoParamDelegate { get; }
+    private readonly Action<CancellationToken> executeCancellableNoParamDelegate;
 
     /// <summary>
     /// The registered parameterless CanExecute delegate.
     /// </summary>
     /// <value>
     /// <c>true</c> if the command can execute, otherwise <c>false</c>.</value>
-    protected Func<bool> CanExecuteNoParamDelegate { get; }
-
-    /// <inheritdoc />
-#if NET
-    public event EventHandler? CanExecuteChanged;
-#else
-    public event EventHandler CanExecuteChanged;
-#endif
+    private readonly Func<bool> canExecuteNoParamDelegate;
 
     #region Constructors
 
@@ -185,10 +85,15 @@ namespace BionicCode.Utilities.Net
     /// </summary>
     /// <param name="executeNoParam">The execution handler.</param>
     /// <param name="canExecuteNoParam">The execution status handler.</param>
-    protected AsyncRelayCommandCommon(Action executeNoParam, Func<bool> canExecuteNoParam) : this()
+    protected AsyncRelayCommandCommon(Action executeNoParam, Func<bool> canExecuteNoParam)
     {
-      this.ExecuteNoParamDelegate = executeNoParam ?? throw new ArgumentNullException(nameof(executeNoParam));
-      this.CanExecuteNoParamDelegate = canExecuteNoParam ?? (() => true);
+      if (executeNoParam is null)
+      {
+        throw new ArgumentNullException(nameof(executeNoParam));
+      }
+
+      this.executeCancellableNoParamDelegate = cancellationToken => executeNoParam.Invoke();
+      this.canExecuteNoParamDelegate = canExecuteNoParam ?? (() => true);
     }
 
     /// <summary>
@@ -196,10 +101,15 @@ namespace BionicCode.Utilities.Net
     /// </summary>
     /// <param name="executeAsyncNoParam">The awaitable execution handler.</param>
     /// <param name="canExecuteNoParam">The execution status handler.</param>
-    protected AsyncRelayCommandCommon(Func<Task> executeAsyncNoParam, Func<bool> canExecuteNoParam) : this()
+    protected AsyncRelayCommandCommon(Func<Task> executeAsyncNoParam, Func<bool> canExecuteNoParam)
     {
-      this.ExecuteAsyncNoParamDelegate = executeAsyncNoParam ?? throw new ArgumentNullException(nameof(executeAsyncNoParam));
-      this.CanExecuteNoParamDelegate = canExecuteNoParam ?? (() => true);
+      if (executeAsyncNoParam is null)
+      {
+        throw new ArgumentNullException(nameof(executeAsyncNoParam));
+      }
+
+      this.executeCancellableAsyncNoParamDelegate = cancellationToken => executeAsyncNoParam.Invoke();
+      this.canExecuteNoParamDelegate = canExecuteNoParam ?? (() => true);
     }
 
     /// <summary>
@@ -207,10 +117,10 @@ namespace BionicCode.Utilities.Net
     /// </summary>
     /// <param name="executeAsync">The awaitable execution handler.</param>
     /// <param name="canExecute">The can execute handler.</param>
-    protected AsyncRelayCommandCommon(Func<CancellationToken, Task> executeAsync, Func<bool> canExecute) : this()
+    protected AsyncRelayCommandCommon(Func<CancellationToken, Task> executeAsync, Func<bool> canExecute)
     {
-      this.ExecuteCancellableAsyncNoParamDelegate = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
-      this.CanExecuteNoParamDelegate = canExecute ?? (() => true);
+      this.executeCancellableAsyncNoParamDelegate = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
+      this.canExecuteNoParamDelegate = canExecute ?? (() => true);
     }
 
     /// <summary>
@@ -218,16 +128,11 @@ namespace BionicCode.Utilities.Net
     /// </summary>
     /// <param name="executeCancellable">The awaitable execution handler.</param>
     /// <param name="canExecute">The can execute handler.</param>
-    protected AsyncRelayCommandCommon(Action<CancellationToken> executeCancellable, Func<bool> canExecute) : this()
+    protected AsyncRelayCommandCommon(Action<CancellationToken> executeCancellable, Func<bool> canExecute)
     {
-      this.ExecuteCancellableNoParamDelegate = executeCancellable ?? throw new ArgumentNullException(nameof(executeCancellable));
-      this.CanExecuteNoParamDelegate = canExecute ?? (() => true);
+      this.executeCancellableNoParamDelegate = executeCancellable ?? throw new ArgumentNullException(nameof(executeCancellable));
+      this.canExecuteNoParamDelegate = canExecute ?? (() => true);
     }
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    protected AsyncRelayCommandCommon() => this.SemaphoreSlim = new SemaphoreSlim(MaxThreads, MaxThreads);
 
     #endregion Constructors
 
@@ -235,7 +140,7 @@ namespace BionicCode.Utilities.Net
     ///   Determines whether this AsyncRelayCommandCommon can execute.
     /// </summary>
     /// <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
-    public bool CanExecute() => this.CanExecuteNoParamDelegate?.Invoke() ?? true;
+    public bool CanExecute() => this.canExecuteNoParamDelegate?.Invoke() ?? true;
 
     /// <inheritdoc />
     public async Task ExecuteAsync() => await ExecuteAsync(Timeout.InfiniteTimeSpan, CancellationToken.None);
@@ -246,179 +151,40 @@ namespace BionicCode.Utilities.Net
     /// <inheritdoc />
     public async Task ExecuteAsync(TimeSpan timeout) => await ExecuteAsync(timeout, CancellationToken.None);
 
-    /// <inheritdoc />
+    /// <summary>
+    ///   Executes the AsyncRelayCommand on the current command target asynchronously.
+    /// </summary>
+    /// <param name="timeout">A <seealso cref="TimeSpan"/> to specify the timeout of the operation. 
+    /// <br/>A value of <see cref="Timeout.InfiniteTimeSpan"/> (or a <see cref="TimeSpan"/> that represents -1) will specifiy an infinite time out. 
+    /// <br/>A value of <see cref="TimeSpan.Zero"/> will cancel the operation immediately.</param>
+    /// <param name="cancellationToken">An instance of <seealso cref="CancellationToken"/> to cancel the executing command delegate.</param>
+    /// <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously. 
+    /// <br/><br/>Repeated or concurrent calls are synchronized.
+    /// </remarks>
+    /// <exception cref="OperationCanceledException">If the executing command delegate was cancelled.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="timeout>"/>.TotalMilliseconds is less than -1 or greater than <see cref="int.MaxValue"/> (or <see cref="uint.MaxValue"/> - 1 on some versions of .NET). Note that this upper bound is more restrictive than <see cref="TimeSpan.MaxValue"/>.</exception>
     public virtual async Task ExecuteAsync(TimeSpan timeout, CancellationToken cancellationToken)
     {
-      if (this.IsPendingCancelling)
-      {
-        return;
-      }
-
-      if (this.IsPendingCancelled)
-      {
-        this.IsPendingCancelled = false;
-      }
-
-      using (var reentrancyMonitor = new ReentrancyMonitor(IncrementPendingCount, DecrementPendingCount))
-      {
-        _ = await this.SemaphoreSlim.WaitAsync(timeout, reentrancyMonitor.CancellationTokenSource.Token);
-        
-        // In case we left the semaphore before it could throw the OperationCanceledException (race-comdition).
-        if (this.IsPendingCancelling || this.IsPendingCancelled)
-        {
-          throw new OperationCanceledException(reentrancyMonitor.CancellationTokenSource.Token);
-        }
-      }
-
-      this.IsExecuting = true;
+      await BeginExecuteAsyncCoreAsync(timeout, cancellationToken);
 
       try
       {
-        using (this.CommandCancellationTokenSource = new CancellationTokenSource(timeout))
+        if (this.executeCancellableAsyncNoParamDelegate != null)
         {
-          using (this.MergedCommandCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(
-            cancellationToken,
-            this.CommandCancellationTokenSource.Token))
-          {
-            this.CurrentCancellationToken = this.MergedCommandCancellationTokenSource.Token;
-
-            this.CurrentCancellationToken.ThrowIfCancellationRequested();
-
-            _ = await TryExecuteNoParamCommand();
-          }
+          this.CurrentCancellationToken.ThrowIfCancellationRequested();
+          await this.executeCancellableAsyncNoParamDelegate.Invoke(this.CurrentCancellationToken);
+        }
+        else if (this.executeCancellableNoParamDelegate != null)
+        {
+          this.CurrentCancellationToken.ThrowIfCancellationRequested();
+          this.executeCancellableNoParamDelegate.Invoke(this.CurrentCancellationToken);
         }
       }
       finally
       {
-        this.CommandCancellationTokenSource = null;
-        this.MergedCommandCancellationTokenSource = null;
-        this.IsExecuting = false;
-        this.IsCancelled = this.CurrentCancellationToken.IsCancellationRequested;
-        _ = this.SemaphoreSlim.Release();
+        EndExecuteAyncCore();
       }
     }
-
-    protected async Task<bool> TryExecuteNoParamCommand()
-    {
-      bool isSuccessfull = false;
-      if (this.ExecuteAsyncNoParamDelegate != null)
-      {
-        this.CurrentCancellationToken.ThrowIfCancellationRequested();
-        await this.ExecuteAsyncNoParamDelegate.Invoke().ConfigureAwait(false);
-        isSuccessfull = true;
-      }
-      else if (this.ExecuteNoParamDelegate != null)
-      {
-        this.CurrentCancellationToken.ThrowIfCancellationRequested();
-        this.ExecuteNoParamDelegate.Invoke();
-        isSuccessfull = true;
-      }
-      else if (this.ExecuteCancellableAsyncNoParamDelegate != null)
-      {
-        this.CurrentCancellationToken.ThrowIfCancellationRequested();
-        await this.ExecuteCancellableAsyncNoParamDelegate.Invoke(this.CurrentCancellationToken);
-        isSuccessfull = true;
-      }
-      else if (this.ExecuteCancellableNoParamDelegate != null)
-      {
-        this.CurrentCancellationToken.ThrowIfCancellationRequested();
-        this.ExecuteCancellableNoParamDelegate.Invoke(this.CurrentCancellationToken);
-        isSuccessfull = true;
-      }
-
-      return isSuccessfull;
-    }
-
-    internal void DecrementPendingCount()
-    {
-      _ = Interlocked.Decrement(ref this.pendingCount);
-      OnPropertyChanged(nameof(this.PendingCount));
-      OnPropertyChanged(nameof(this.HasPending));
-    }
-
-    internal void IncrementPendingCount()
-    {
-      _ = Interlocked.Increment(ref this.pendingCount);
-      OnPropertyChanged(nameof(this.PendingCount));
-      OnPropertyChanged(nameof(this.HasPending));
-    }
-
-    /// <inheritdoc />
-    public void CancelExecuting()
-      => this.CommandCancellationTokenSource?.Cancel();
-
-    /// <inheritdoc />
-    public void CancelExecuting(bool throwOnFirstException)
-      => this.CommandCancellationTokenSource?.Cancel(throwOnFirstException);
-
-    /// <inheritdoc />
-    public void CancelPending()
-    {
-      this.IsPendingCancelling = true;
-      while (ReentrancyMonitor.CancellationTokenSourceMap.Any())
-      {
-        System.Collections.Generic.KeyValuePair<ReentrancyMonitor, CancellationTokenSource> entry = ReentrancyMonitor.CancellationTokenSourceMap.FirstOrDefault();
-        if (entry.Key == null)
-        {
-          continue;
-        }
-
-        if (ReentrancyMonitor.CancellationTokenSourceMap.TryRemove(entry.Key, out CancellationTokenSource cancellationTokenSource))
-        {
-          cancellationTokenSource?.Cancel();
-        }
-      }
-
-      this.IsPendingCancelled = true;
-      this.IsPendingCancelling = false;
-    }
-
-    /// <inheritdoc />
-    public void CancelPending(bool throwOnFirstException)
-    {
-      this.IsPendingCancelling = true;
-      while (ReentrancyMonitor.CancellationTokenSourceMap.Any())
-      {
-        System.Collections.Generic.KeyValuePair<ReentrancyMonitor, CancellationTokenSource> entry = ReentrancyMonitor.CancellationTokenSourceMap.FirstOrDefault();
-        if (ReentrancyMonitor.CancellationTokenSourceMap.TryRemove(entry.Key, out CancellationTokenSource cancellationTokenSource))
-        {
-          cancellationTokenSource?.Cancel();
-        }
-      }
-
-      this.IsPendingCancelled = true;
-      this.IsPendingCancelling = false;
-    }
-
-    /// <inheritdoc />
-    public void CancelAll()
-    {
-      CancelPending();
-      CancelExecuting();
-    }
-
-    /// <inheritdoc />
-    public void CancelAll(bool throwOnFirstException)
-    {
-      CancelPending(throwOnFirstException);
-      CancelExecuting(throwOnFirstException);
-    }
-
-    /// <inheritdoc/>
-    public void InvalidateCommand()
-      => OnCanExecuteChanged();
-
-    /// <summary>
-    /// Raises the <see cref="ICommand.CanExecuteChanged"/> event.
-    /// </summary>
-    protected virtual void OnCanExecuteChanged()
-      => this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-
-    /// <summary>
-    /// Raises the <see cref="INotifyPropertyChanged.PropertyChanged"/> event.
-    /// </summary>
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
-      => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
     #region ICommand implementation
 #if NET

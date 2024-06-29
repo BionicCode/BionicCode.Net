@@ -18,11 +18,11 @@ namespace BionicCode.Controls.Net.Wpf
 
     protected override Size GetNaturalSize()
     {
-      var height = this.Padding.Top + this.SegmentHeight / 2 + this.SegmentWidth + 2 * this.GapWidth;
-      var width = this.Padding.Left + Math.Tan(this.SegmentTiltAngle.ToRadians()) * this.SegmentWidth;
+      double height = this.Padding.Top + (this.SegmentHeight / 2) + this.SegmentWidth + (2 * this.GapWidth);
+      var width = this.Padding.Left + (Math.Tan(this.SegmentTiltAngle.ToRadians()) * this.SegmentWidth);
       return new Size(width, height);
     }
-    
+
     protected override void DrawSegments(Rect bounds)
     {
       this.SegmentPanel.Children.Clear();
@@ -39,7 +39,7 @@ namespace BionicCode.Controls.Net.Wpf
       };
       this.SegmentPanel.Children.Add(verticalBottomRightSegment);
       Canvas.SetLeft(verticalBottomRightSegment, bounds.X);
-      Canvas.SetTop(verticalBottomRightSegment, bounds.Y + this.SegmentHeight / 2 + this.SegmentWidth / 2 +  2 * this.GapWidth);
+      Canvas.SetTop(verticalBottomRightSegment, bounds.Y + (this.SegmentHeight / 2) + (this.SegmentWidth / 2) + (2 * this.GapWidth));
 
       var horizontalBottomSegment = new SeparatorDigitSegment()
       {
@@ -52,8 +52,8 @@ namespace BionicCode.Controls.Net.Wpf
         IsOn = true
       };
       this.SegmentPanel.Children.Add(horizontalBottomSegment);
-      Canvas.SetLeft(horizontalBottomSegment, bounds.X - Math.Tan(this.SegmentTiltAngle.ToRadians()) * this.SegmentWidth);
-      Canvas.SetTop(horizontalBottomSegment, bounds.Y + this.SegmentHeight / 2 + this.SegmentWidth / 2 + this.SegmentWidth + 2 * this.GapWidth);
+      Canvas.SetLeft(horizontalBottomSegment, bounds.X - (Math.Tan(this.SegmentTiltAngle.ToRadians()) * this.SegmentWidth));
+      Canvas.SetTop(horizontalBottomSegment, bounds.Y + (this.SegmentHeight / 2) + (this.SegmentWidth / 2) + this.SegmentWidth + (2 * this.GapWidth));
     }
   }
 }

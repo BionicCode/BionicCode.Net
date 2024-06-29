@@ -5,7 +5,7 @@
   /// </summary>
   public interface IAssemblyFilter
   {
-    IFilteredExportServiceCollection AsSingleton(); 
+    IFilteredExportServiceCollection AsSingleton();
     IFilteredExportServiceCollection AsTransient();
     IFilteredExportServiceCollection AsScoped();
   }

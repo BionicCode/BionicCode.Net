@@ -5,7 +5,6 @@
   using System.Data;
   using System.Linq;
   using System.Reflection;
-  using System.Text;
 
   /// <summary>
   /// A collection of extension methods for various default types

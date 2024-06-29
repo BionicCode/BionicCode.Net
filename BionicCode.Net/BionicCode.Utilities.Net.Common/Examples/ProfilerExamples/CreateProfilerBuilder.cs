@@ -1,6 +1,7 @@
 ﻿namespace BionicCode.Utilities.Net.Examples.ProfilerExamples.CreateProfilerBuilder.A
 {
   using BionicCode.Utilities.Net.Examples.ProfilerExamples.B;
+  using System.Threading;
   #region CodeWithoutNamespace
   using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@
     {
       ProfiledTypeResultCollection results = await Profiler.CreateProfilerBuilder(typeof(BenchmarkTarget))
         .SetBaseUnit(TimeUnit.Milliseconds)
-        .RunAsync();
+        .RunAsync(CancellationToken.None);
     }
   }
   #endregion

@@ -1,11 +1,8 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System;
-  using System.Collections;
   using System.Collections.Generic;
-  using System.IO;
   using System.Linq;
-  using System.Reflection;
 
   /// <summary>
   /// A collection of extension methods for various default types
@@ -21,9 +18,9 @@
     /// <param name="source"></param>
     /// <returns><see langword="true"/> if <paramref name="source"/> is empty. Otherwise <see langword="false"/></returns>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
-    public static bool IsEmpty<TItem>(this IEnumerable<TItem> source) 
-      => source == null 
-        ? throw new ArgumentNullException(nameof(source)) 
+    public static bool IsEmpty<TItem>(this IEnumerable<TItem> source)
+      => source == null
+        ? throw new ArgumentNullException(nameof(source))
         : !source.Any();
 
     /// <summary>
@@ -35,9 +32,9 @@
     /// <param name="count">The number of elements to take.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> that contains the requested range of the original <paramref name="source"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
-    public static IEnumerable<TItem> TakeRange<TItem>(this IEnumerable<TItem> source, int startIndex, int count) 
-      => source == null 
-        ? throw new ArgumentNullException(nameof(source)) 
+    public static IEnumerable<TItem> TakeRange<TItem>(this IEnumerable<TItem> source, int startIndex, int count)
+      => source == null
+        ? throw new ArgumentNullException(nameof(source))
         : source.Skip(startIndex).Take(count);
 
 #if NETSTANDARD2_1 || NET
@@ -278,6 +275,6 @@
       return isFound;
     }
 
-#endregion
+    #endregion
   }
 }

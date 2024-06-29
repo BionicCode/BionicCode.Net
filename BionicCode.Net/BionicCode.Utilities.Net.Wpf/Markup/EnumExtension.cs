@@ -8,8 +8,8 @@ namespace BionicCode.Utilities.Net
   /// XAML extension to return the values of an enumeration.
   /// </summary>
   /// <example>Provide the enum type via constructor or by setting the <see cref="EnumType"/> property:
-  /// <code><ComboBox ItemsSource="{Enum {x:Type MyEnum}}" /></code>
-  /// <code><ComboBox ItemsSource="{Enum EnumType={x:Type MyEnum}}" /></code>
+  /// <code><ComboBox ItemsSource="{Enum {x:Types MyEnum}}" /></code>
+  /// <code><ComboBox ItemsSource="{Enum EnumType={x:Types MyEnum}}" /></code>
   /// </example>
   public class EnumExtension : MarkupExtension
   {
@@ -30,10 +30,7 @@ namespace BionicCode.Utilities.Net
     /// Constructor to initialize the <see cref="EnumType"/> property.
     /// </summary>
     /// <param name="enumType"></param>
-    public EnumExtension(Type enumType)
-    {
-      this.EnumType = enumType;
-    }
+    public EnumExtension(Type enumType) => this.EnumType = enumType;
 
     #region Overrides of MarkupExtension
 

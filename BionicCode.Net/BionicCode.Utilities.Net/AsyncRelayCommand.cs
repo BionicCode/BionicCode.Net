@@ -15,13 +15,9 @@ namespace BionicCode.Utilities.Net
   ///   <seealso cref="System.Windows.Input.ICommand" />
   /// </summary>
   /// <remarks><c>AsyncRelayCommand</c> implements <see cref="System.Windows.Input.ICommand" />. In case the <see cref="AsyncRelayCommand{TParam}"/> is executed explicitly, especially with an asynchronous command handler registered, it is highly recommended to invoke the awaitable <see cref="AsyncRelayCommandCommon.ExecuteAsync()"/> or its overloads instead.</remarks>
-  public class AsyncRelayCommand : AsyncRelayCommandCommon, IAsyncRelayCommand, ICommand, INotifyPropertyChanged
+  public class AsyncRelayCommand : AsyncRelayCommandCommon, IAsyncRelayCommand
   {
     #region Constructors
-    /// <inheritdoc />
-    protected AsyncRelayCommand()
-    {
-    }
 
     /// <inheritdoc />
     public AsyncRelayCommand(Action executeNoParam) : base(executeNoParam)

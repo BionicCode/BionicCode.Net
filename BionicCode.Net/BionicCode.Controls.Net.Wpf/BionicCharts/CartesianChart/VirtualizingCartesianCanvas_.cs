@@ -133,7 +133,7 @@
 //          double y = (double.IsNaN(canvasPosition.Y) ? 0 : canvasPosition.Y) * VirtualizingCartesianCanvas.GetYZoomFactor(this);
 //          absoluteContainerPosition = new Point(x, y);
 //        }
-        
+
 //        ScrollPositionToOffset(ref absoluteContainerPosition);
 //        internalChild.Arrange(
 //          new Rect(absoluteContainerPosition, internalChild.DesiredSize));
@@ -159,7 +159,7 @@
 //      {
 //        return this._dimension.Size;
 //      }
-      
+
 //      CalculateVirtualizationBounds();
 
 //      InvalidateExtent();
@@ -231,7 +231,7 @@
 //          startIndex--;
 //        }
 //      }
-      
+
 //      return new GeneratorPosition(0, 1);
 //    }
 
@@ -255,10 +255,10 @@
 //      // or '0' if all values are positive.
 //      relativePosition.Offset(this.OriginOffset.X, this.OriginOffset.Y);
 //      extremePoint.Offset(this.OriginOffset.X, this.OriginOffset.Y);
-      
+
 //      double xZoomFactor = this.ExtentWidth <= this.ViewportWidth ? VirtualizingCartesianCanvas.GetXZoomFactor(this) : 1.0;
 //      double yZoomFactor = this.ExtentHeight <= this.ViewportHeight ? VirtualizingCartesianCanvas.GetYZoomFactor(this) : 1.0;
-      
+
 //      // Apply ratio to make biggest x-axis data point
 //      // fit into the total panel width (ExtentWidth).
 //      double xPositionRatio = CalculatePositionRatio(totalAvailableWidth, extremePoint.X);

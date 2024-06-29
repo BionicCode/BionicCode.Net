@@ -8,11 +8,11 @@
     /// <summary>
     /// Undefined
     /// </summary>
-    None = 0, 
+    None = 0,
     /// <summary>
     /// Accepted e.g., "OK" button was clicked.
     /// </summary>
-    Accepted, 
+    Accepted,
     /// <summary>
     /// Denied e.g. "No" button was clicked
     /// </summary>

@@ -23,7 +23,7 @@ namespace BionicCode.Controls.Net.Wpf
       this.DragDropEffects = dragDropEffects;
     }
 
-    public EventItemDragDropArgs(EventItemDragDropArgs args, RoutedEvent routedEvent,UIElement source) : base(routedEvent, source)
+    public EventItemDragDropArgs(EventItemDragDropArgs args, RoutedEvent routedEvent, UIElement source) : base(routedEvent, source)
     {
       this.OriginalDay = args.OriginalDay;
       this.ItemContainer = args.ItemContainer;

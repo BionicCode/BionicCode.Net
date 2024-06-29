@@ -2,20 +2,14 @@
 {
   using System;
   using System.CodeDom;
-  using System.Collections;
   using System.Collections.Generic;
-  using System.Data.Common;
   using System.Diagnostics;
-  using System.IO;
   using System.Linq;
-  using System.Net.PeerToPeer;
   using System.Reflection;
   using System.Runtime.CompilerServices;
   using System.Text;
   using System.Threading.Tasks;
   using Microsoft.CSharp;
-  using Microsoft.VisualBasic;
-  using static System.Net.Mime.MediaTypeNames;
 
   /// <summary>
   /// A collection of extension methods for various default types
@@ -112,15 +106,15 @@
 
     internal static string ToDisplaySignatureName(this MemberInfo memberInfo, bool isQualifyMemberEnabled = false)
     {
-      Type type = memberInfo as Type;
-      PropertyInfo propertyInfo = memberInfo as PropertyInfo;
+      var type = memberInfo as Type;
+      var propertyInfo = memberInfo as PropertyInfo;
       MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
         ?? type?.GetMethod("Invoke", BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic); // MemberInfo is delegate
       MethodInfo propertyGetMethodInfo = propertyInfo?.GetGetMethod(true);
       MethodInfo propertySetMethodInfo = propertyInfo?.GetSetMethod(true);
-      ConstructorInfo constructorInfo = memberInfo as ConstructorInfo;
-      FieldInfo fieldInfo = memberInfo as FieldInfo;
-      EventInfo eventInfo = memberInfo as EventInfo;
+      var constructorInfo = memberInfo as ConstructorInfo;
+      var fieldInfo = memberInfo as FieldInfo;
+      var eventInfo = memberInfo as EventInfo;
       MethodInfo eventAddMethodInfo = eventInfo?.GetAddMethod(true);
       FieldInfo eventDeclaredFieldInfo = eventInfo?.DeclaringType.GetField(eventInfo.Name, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
@@ -166,7 +160,6 @@
           .Append("static")
           .Append(' ');
       }
-
 
       bool isAbstract = false;
       if ((methodInfo?.IsAbstract ?? false)
@@ -312,7 +305,6 @@
         _ = fullMemberNameBuilder.Append(']');
       }
 
-
       if (isProperty)
       {
         _ = fullMemberNameBuilder
@@ -373,7 +365,7 @@
             : typeInfo.IsNestedFamORAssem ? AccessModifier.ProtectedInternal
             : typeInfo.IsNestedFamANDAssem ? AccessModifier.PrivateProtected
             : !typeInfo.IsVisible ? AccessModifier.Internal
-            : throw new InvalidOperationException("Unable to identify the accessibility of the Type.");
+            : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
         case MethodBase methodBaseInfo:
           return methodBaseInfo.IsPublic ? AccessModifier.Public
             : methodBaseInfo.IsPrivate ? AccessModifier.Private
@@ -381,7 +373,7 @@
             : methodBaseInfo.IsFamily ? AccessModifier.Protected
             : methodBaseInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
             : methodBaseInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
-            : throw new InvalidOperationException("Unable to identify the accessibility of the Type.");
+            : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
         case FieldInfo fieldInfo:
           return fieldInfo.IsPublic ? AccessModifier.Public
             : fieldInfo.IsPrivate ? AccessModifier.Private
@@ -389,7 +381,7 @@
             : fieldInfo.IsFamily ? AccessModifier.Protected
             : fieldInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
             : fieldInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
-            : throw new InvalidOperationException("Unable to identify the accessibility of the Type.");
+            : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
         case EventInfo eventInfo:
           return eventInfo.GetAddMethod(true).GetAccessModifier();
         case PropertyInfo propertyInfo:
@@ -425,7 +417,7 @@
     {
       bool isMemberIndexerProperty = memberInfo is PropertyInfo propertyInfo && (propertyInfo.GetIndexParameters()?.Length ?? -1) > 0;
       string memberName = isMemberIndexerProperty
-        ? $"{memberInfo.Name}[]" 
+        ? $"{memberInfo.Name}[]"
         : memberInfo.Name;
 
       // Those member types can't be generic
@@ -656,7 +648,6 @@
       ExtensionAttribute typeExtensionAttribute = typeInfo.GetCustomAttribute<ExtensionAttribute>(false);
       return typeExtensionAttribute != null;
     }
-
 
     /// <summary>
     /// Extension method to check if a <see cref="MethodInfo"/> is the info of an extension method.

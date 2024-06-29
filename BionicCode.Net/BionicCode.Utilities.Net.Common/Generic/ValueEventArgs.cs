@@ -19,10 +19,7 @@ namespace BionicCode.Utilities.Net
     /// Constructor.
     /// </summary>
     /// <param name="value">The value to send as event args.</param>
-    public ValueEventArgs(TValue value)
-    {
-      this.Value = value;
-    }
+    public ValueEventArgs(TValue value) => this.Value = value;
 
     /// <summary>
     /// The value to send as event args.

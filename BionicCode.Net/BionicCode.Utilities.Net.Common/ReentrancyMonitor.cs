@@ -1,40 +1,100 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System;
+  using System.Collections;
   using System.Collections.Concurrent;
+  using System.Collections.Generic;
+  using System.Collections.ObjectModel;
   using System.Threading;
 
   public abstract partial class AsyncRelayCommandCommon
   {
+    internal class ReentrancyMonitorEntry
+    {
+      public int Count => this.cancellationTokenSourcesInternal.Count;
+      public ReadOnlyCollection<CancellationTokenSource> CancellationTokenSources { get; }
+      private readonly List<CancellationTokenSource> cancellationTokenSourcesInternal;
+
+      public ReentrancyMonitorEntry()
+      {
+        this.cancellationTokenSourcesInternal = new List<CancellationTokenSource>();
+        this.CancellationTokenSources = new ReadOnlyCollection<CancellationTokenSource>(this.cancellationTokenSourcesInternal);
+      }
+
+      public void Add(CancellationTokenSource cancellationTokenSource)
+        => this.cancellationTokenSourcesInternal.Add(cancellationTokenSource);
+
+      public void Remove(CancellationTokenSource cancellationTokenSource)
+        => this.cancellationTokenSourcesInternal.Remove(cancellationTokenSource);
+    }
+
     internal class ReentrancyMonitor : IDisposable
     {
-      public static ConcurrentDictionary<ReentrancyMonitor, CancellationTokenSource> CancellationTokenSourceMap { get; } = new ConcurrentDictionary<ReentrancyMonitor, CancellationTokenSource>();
-
-      public ReentrancyMonitor(Action enterAction, Action leaveAction)
+      public ReentrancyMonitor(object owner, Action enterAction, Action leaveAction)
       {
-        this.EnterAction = enterAction;
-        this.LeaveAction = leaveAction;
-        this.CancellationTokenSource = new CancellationTokenSource();
+        this.owner = owner;
+        this.enterAction = enterAction;
+        this.leaveAction = leaveAction;
         Enter();
+      }
+
+      public void Cancel()
+        => Cancel(false);
+
+      public void Cancel(bool throwOnFirstException)
+        => this.CancellationTokenSource.Cancel(throwOnFirstException);
+
+      public static void CancelAll(object monitorOwner)
+        => CancelAll(monitorOwner, false);
+
+      public static void CancelAll(object monitorOwner, bool throwOnFirstException)
+      {
+        if (ReentrancyMonitor.CancellationTokenSourceMap.TryGetValue(monitorOwner, out ReentrancyMonitorEntry reentrancyMonitorEntry))
+        {
+          foreach (CancellationTokenSource cancellationTokenSource in reentrancyMonitorEntry.CancellationTokenSources)
+          {
+            cancellationTokenSource.Cancel(throwOnFirstException);
+          }
+        }
       }
 
       private void Enter()
       {
-        _ = ReentrancyMonitor.CancellationTokenSourceMap.TryAdd(this, this.CancellationTokenSource);
-        this.EnterAction?.Invoke();
+        if (!ReentrancyMonitor.CancellationTokenSourceMap.TryGetValue(this.owner, out ReentrancyMonitorEntry reentrancyMonitorEntry))
+        {
+          reentrancyMonitorEntry = new ReentrancyMonitorEntry();
+          _ = ReentrancyMonitor.CancellationTokenSourceMap.TryAdd(this.owner, reentrancyMonitorEntry);
+        }
+
+        this.CancellationTokenSource = new CancellationTokenSource();
+        reentrancyMonitorEntry.Add(this.CancellationTokenSource);
+        this.enterAction?.Invoke();
       }
 
       private void Leave()
       {
-        _ = ReentrancyMonitor.CancellationTokenSourceMap.TryRemove(this, out _);
-        this.LeaveAction?.Invoke();
+        if (ReentrancyMonitor.CancellationTokenSourceMap.TryGetValue(this.owner, out ReentrancyMonitorEntry reentrancyMonitorEntry))
+        {
+          reentrancyMonitorEntry.Remove(this.CancellationTokenSource);
+          if (reentrancyMonitorEntry.Count == 0)
+          {
+            _ = ReentrancyMonitor.CancellationTokenSourceMap.TryRemove(this.owner, out _);
+          }
+        }
+
+        this.leaveAction?.Invoke();
       }
 
-      public CancellationTokenSource CancellationTokenSource { get; }
-      private Action EnterAction { get; }
-      private Action LeaveAction { get; }
+      private static ConcurrentDictionary<object, ReentrancyMonitorEntry> CancellationTokenSourceMap { get; } 
+        = new ConcurrentDictionary<object, ReentrancyMonitorEntry>();
 
+      public CancellationTokenSource CancellationTokenSource { get; private set; }
+
+      private readonly object owner;
+      private readonly Action enterAction;
+      private readonly Action leaveAction;
       private bool disposedValue;
+
       protected virtual void Dispose(bool disposing)
       {
         if (!this.disposedValue)
@@ -43,6 +103,7 @@
           {
             Leave();
             this.CancellationTokenSource.Dispose();
+            this.CancellationTokenSource = null;
           }
 
           // TODO: free unmanaged resources (unmanaged objects) and override finalizer

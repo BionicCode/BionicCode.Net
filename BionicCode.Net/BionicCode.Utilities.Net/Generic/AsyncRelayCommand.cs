@@ -15,13 +15,9 @@ namespace BionicCode.Utilities.Net
   ///   <seealso cref="System.Windows.Input.ICommand" />
   /// </summary>
   /// <remarks><c>AsyncRelayCommand</c> implements <see cref="System.Windows.Input.ICommand" />. In case the <see cref="AsyncRelayCommand{TParam}"/> is executed explicitly, especially with an asynchronous command handler registered, it is highly recommended to invoke the awaitable <see cref="AsyncRelayCommandCommon.ExecuteAsync()"/> or its overloads instead.</remarks>
-  public class AsyncRelayCommand<TParam> : AsyncRelayCommandCommon<TParam>, IAsyncRelayCommand, ICommand, IAsyncRelayCommand<TParam>, INotifyPropertyChanged
+  public class AsyncRelayCommand<TParam> : AsyncRelayCommandCommon<TParam>, IAsyncRelayCommand<TParam>
   {
     #region Constructors
-    /// <inheritdoc />
-    protected AsyncRelayCommand()
-    {
-    }
 
     /// <inheritdoc />
     public AsyncRelayCommand(Action<TParam> execute) : base(execute)
@@ -30,16 +26,6 @@ namespace BionicCode.Utilities.Net
 
     /// <inheritdoc />
     public AsyncRelayCommand(Action<TParam, CancellationToken> execute) : base(execute)
-    {
-    }
-
-    /// <inheritdoc />
-    public AsyncRelayCommand(Action executeNoParam) : base(executeNoParam)
-    {
-    }
-
-    /// <inheritdoc />
-    public AsyncRelayCommand(Action<CancellationToken> executeNoParam) : base(executeNoParam)
     {
     }
 
@@ -54,27 +40,7 @@ namespace BionicCode.Utilities.Net
     }
 
     /// <inheritdoc />
-    public AsyncRelayCommand(Func<Task> executeAsyncNoParam) : base(executeAsyncNoParam)
-    {
-    }
-
-    /// <inheritdoc />
-    public AsyncRelayCommand(Func<CancellationToken, Task> executeAsyncNoParam) : base(executeAsyncNoParam)
-    {
-    }
-
-    /// <inheritdoc />
-    public AsyncRelayCommand(Action executeNoParam, Func<bool> canExecuteNoParam) : base(executeNoParam, canExecuteNoParam)
-    {
-    }
-
-    /// <inheritdoc />
     public AsyncRelayCommand(Action<TParam> execute, Predicate<TParam> canExecute) : base(execute, canExecute)
-    {
-    }
-
-    /// <inheritdoc />
-    public AsyncRelayCommand(Func<Task> executeAsyncNoParam, Func<bool> canExecuteNoParam) : base(executeAsyncNoParam, canExecuteNoParam)
     {
     }
 
@@ -85,16 +51,6 @@ namespace BionicCode.Utilities.Net
 
     /// <inheritdoc />
     public AsyncRelayCommand(Func<TParam, CancellationToken, Task> executeAsync, Predicate<TParam> canExecute) : base(executeAsync, canExecute)
-    {
-    }
-
-    /// <inheritdoc />
-    public AsyncRelayCommand(Func<CancellationToken, Task> executeAsync, Func<bool> canExecute) : base(executeAsync, canExecute)
-    {
-    }
-
-    /// <inheritdoc />
-    public AsyncRelayCommand(Action<CancellationToken> executeAsync, Func<bool> canExecute) : base(executeAsync, canExecute)
     {
     }
 
