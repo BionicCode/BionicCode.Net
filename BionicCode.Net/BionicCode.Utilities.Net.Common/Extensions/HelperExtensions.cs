@@ -31,7 +31,7 @@
     /// <typeparam name="TParam">The parameter type for the predicate.</typeparam>
     /// <param name="predicate">The predicate to convert.</param>
     /// <returns>A <c>Func<typeparamref name="TParam"/>, bool></c> that returns the result of <paramref name="predicate"/>.</returns>
-    public static Func<TParam, bool> ToFunc<TParam>(this Predicate<TParam> predicate) => param => predicate.Invoke(param);
+    public static Func<TParam, bool> ToFunc<TParam>(this Predicate<TParam> predicate) => predicate.Invoke;
 
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.
@@ -129,8 +129,6 @@
       bool isInterface = type?.IsInterface ?? false;
       bool isDelegate = type?.IsDelegate() ?? false;
       bool isIndexerProperty = indexerPropertyIndexParameters.Length > 0;
-      bool propertyHasGet = propertyGetMethodInfo != null;
-      bool propertyHasSet = propertySetMethodInfo != null;
 
       var fullMemberNameBuilder = new StringBuilder();
 
@@ -351,7 +349,7 @@
     /// <returns>The <see cref="AccessModifier"/> for the current <paramref name="memberInfo"/>.</returns>
     /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref name="memberInfo"/>.</exception>
     /// <exception cref="NotSupportedException">The type provided by the <paramref name="memberInfo"/> is not supported.</exception>
-    /// <remarks>For a <see cref="PropertyInfo"/> the property accessor with the least restriction provides the access modifier for the property. This is acompiler rule.</remarks>
+    /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this MemberInfo memberInfo)
     {
       switch (memberInfo)
@@ -393,7 +391,7 @@
 
     private static AccessModifier GetPropertyAccessModifier(PropertyInfo propertyInfo)
     {
-      // Property accessor with the least restriction provides the access modifier for the property.
+      // Property accessors with the least restriction provides the access modifier for the property.
       AccessModifier propertyAccessModifier = propertyInfo.GetAccessors(true)
         .Select(accessor => accessor.GetAccessModifier())
         .Min();
@@ -409,7 +407,7 @@
     /// A readable name of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
-    /// <para>Because <see cref="Type"/> dervies from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
+    /// <para>Because <see cref="Type"/> derives from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic type parameters to construct the full type name like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
@@ -472,7 +470,7 @@
     /// A readable name of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
-    /// <para>Because <see cref="Type"/> dervies from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
+    /// <para>Because <see cref="Type"/> derives from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic type parameters to construct the full type name like <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
@@ -555,7 +553,7 @@
     public static bool IsDelegate(this Type typeInfo)
       => HelperExtensionsCommon.DelegateType.Value.IsAssignableFrom(typeInfo);
 
-    // TODO::Test if checking get() is enough to determine if a property is overriden
+    // TODO::Test if checking get() is enough to determine if a property is overridden
     public static bool IsOverride(this PropertyInfo methodInfo)
       => methodInfo.GetGetMethod(true).IsOverride();
 
@@ -573,12 +571,12 @@
         || HelperExtensionsCommon.ValueTaskType.Value.IsAssignableFrom(methodInfo.ReturnType.BaseType);
 
     /// <summary>
-    /// Checks if the provided <see cref="MethodInfo"/> belongs to an asnychronous/awaitable method.
+    /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.
     /// </summary>
     /// <param name="methodInfo">The <see cref="MethodInfo"/> to check if it belongs to an awaitable method.</param>
     /// <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
     /// <remarks>The method first checks if the return type is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned type (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate type (awaiter).
-    /// <br/>If that fails too, it checks whther there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
+    /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
     public static bool IsAwaitable(this MethodInfo methodInfo)
     {
       if (methodInfo.IsAwaitableTask() || methodInfo.IsAwaitableValueTask())
@@ -626,7 +624,7 @@
     /// <summary>
     /// Extension method to check if a <see cref="Type"/> is static.
     /// </summary>
-    /// <param name="typeInfo">The extended <see cref="Type"/> istance.</param>
+    /// <param name="typeInfo">The extended <see cref="Type"/> instance.</param>
     /// <returns><see langword="true"/> if the <paramref name="typeInfo"/> is static. Otherwise <see langword="false"/>.</returns>
     public static bool IsStatic(this Type typeInfo)
       => typeInfo.IsAbstract && typeInfo.IsSealed;
@@ -634,7 +632,7 @@
     /// <summary>
     /// Extension method that checks if the provided <see cref="Type"/> is qualified to define extension methods.
     /// </summary>
-    /// <param name="typeInfo">The extended <see cref="Type"/> istance.</param>
+    /// <param name="typeInfo">The extended <see cref="Type"/> instance.</param>
     /// <returns><see langword="true"/> if the <paramref name="typeInfo"/> is allowed to define extension methods. Otherwise <see langword="false"/>.</returns>
     /// <remarks>To be able to define extension methods a class must be static, non-generic, a top level type. 
     /// <br/>In addition this method checks if the declaring class and the method are both decorated with the <see cref="ExtensionAttribute"/> which is added by the compiler.</remarks>
@@ -652,7 +650,7 @@
     /// <summary>
     /// Extension method to check if a <see cref="MethodInfo"/> is the info of an extension method.
     /// </summary>
-    /// <param name="methodInfo">The extended <see cref="MethodInfo"/> istance to validate.</param>
+    /// <param name="methodInfo">The extended <see cref="MethodInfo"/> instance to validate.</param>
     /// <returns><see langword="true"/> if the <paramref name="methodInfo"/> is an extension method. Otherwise <see langword="false"/>.</returns>
     public static bool IsExtensionMethod(this MethodInfo methodInfo)
     {
@@ -687,7 +685,7 @@
     /// <summary>
     /// Extension method to check if a <see cref="MethodInfo"/> is the info of an extension method for a particular type.
     /// </summary>
-    /// <param name="methodInfo">The extended <see cref="MethodInfo"/> istance to validate.</param>
+    /// <param name="methodInfo">The extended <see cref="MethodInfo"/> instance to validate.</param>
     /// <param name="typeToExtend">The <see cref="Type"/> the <paramref name="methodInfo"/> is expected to extend.</param>
     /// <returns><see langword="true"/> if the <paramref name="methodInfo"/> is an extension method for <paramref name="typeToExtend"/>. Otherwise <see langword="false"/>.</returns>
     public static bool IsExtensionMethodOf(this MethodInfo methodInfo, Type typeToExtend)

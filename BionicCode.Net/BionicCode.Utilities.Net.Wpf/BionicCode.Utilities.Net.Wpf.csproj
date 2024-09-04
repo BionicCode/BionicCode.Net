@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net7.0-windows;net6.0-windows;netstandard2.0;netstandard2.1;net472;net48</TargetFrameworks>
+		<TargetFrameworks>net47;net471;net472;net48;net481;net5.0-windows;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>    
 		<UseWPF>true</UseWPF>
 		<PackageReleaseNotes>
 			- added default implementation of ViewModel.OnProgress (which is used to retrieve the IProgress&lt;ProgressData&gt; instance by calling ViewModel.CreateProgressReporterFromCurrentThread()
@@ -46,6 +46,13 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
+	  <Compile Remove="bin\**" />
+	  <EmbeddedResource Remove="bin\**" />
+	  <None Remove="bin\**" />
+	  <Page Remove="bin\**" />
+	</ItemGroup>
+	
+	<ItemGroup>
 	  <Compile Remove="Extensions\HelperExtensions.Net.cs" />
 	</ItemGroup>
 	
@@ -75,7 +82,7 @@
 	</ItemGroup>-->
 
 	<ItemGroup>
-		<PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
+		<PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 		<PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
 	</ItemGroup>

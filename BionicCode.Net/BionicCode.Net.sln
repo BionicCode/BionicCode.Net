@@ -60,7 +60,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Documentation", "Documentat
 		{F27CF0C2-77A1-475E-8080-B362C1FD6A6E} = {F27CF0C2-77A1-475E-8080-B362C1FD6A6E}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BionicCode.Utilities.Net.Common.Isolation.Net6", "BionicCode.Utilities.Net.Common.Isolation.Net6\BionicCode.Utilities.Net.Common.Isolation.Net6.csproj", "{D0AF140A-5DAD-4CEB-BBE6-B2CD9FD6115E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BionicCode.Utilities.Net.Common.Isolation.Net6", "BionicCode.Utilities.Net.Common.Isolation.Net6\BionicCode.Utilities.Net.Common.Isolation.Net6.csproj", "{D0AF140A-5DAD-4CEB-BBE6-B2CD9FD6115E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

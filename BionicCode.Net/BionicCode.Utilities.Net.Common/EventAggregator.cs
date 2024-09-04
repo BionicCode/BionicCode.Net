@@ -35,16 +35,14 @@
       {
         return false;
       }
+
       foreach (string eventName in eventNames.Distinct())
       {
         EventInfo eventInfo = eventSource.GetType()
           .GetEvent(
             eventName,
-            BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
-        if (eventInfo == null)
-        {
-          throw new ArgumentException($"The event {eventName} was not found on the event source {eventSource.GetType().Name} or on its declaring base type.");
-        }
+            BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
+          ?? throw new ArgumentException($"The event {eventName} was not found on the event source {eventSource.GetType().Name} or on its declaring base type.");
 
         Type normalizedEventHandlerType = NormalizeEventHandlerType(eventInfo.EventHandlerType);
         ICollection<string> eventIds = CreateEventIdsOfConcreteType(eventSource, normalizedEventHandlerType, eventName);
@@ -79,6 +77,7 @@
       {
         return false;
       }
+
       foreach (string eventName in eventNames)
       {
         (EventInfo EventInfo, Delegate Handler) publisherHandlerInfo = publisherHandlerInfos.FirstOrDefault(
@@ -89,13 +88,13 @@
 
         if (removeEventObservers)
         {
-          TryRemoveAllObservers(eventName, eventSource.GetType());
+          _ = TryRemoveAllObservers(eventName, eventSource.GetType());
         }
       }
 
       if (!publisherHandlerInfos.Any())
       {
-        this.EventPublisherTable.Remove(eventSource);
+        _ = this.EventPublisherTable.Remove(eventSource);
       }
 
       return hasRemovedObservable;
@@ -108,7 +107,7 @@
 
       if (this.EventPublisherTable.TryGetValue(eventSource, out List<(EventInfo EventInfo, Delegate Handler)> handlerInfo))
       {
-        this.EventPublisherTable.Remove(eventSource);
+        _ = this.EventPublisherTable.Remove(eventSource);
 
         handlerInfo.ForEach(publisherHandlerInfo => publisherHandlerInfo.EventInfo.RemoveEventHandler(eventSource, publisherHandlerInfo.Handler));
         hasRemovedObservable = true;
@@ -116,7 +115,7 @@
 
       if (removeObserversOfEvents)
       {
-        TryRemoveAllObservers(eventSource.GetType());
+        _ = TryRemoveAllObservers(eventSource.GetType());
       }
 
       return hasRemovedObservable;
@@ -266,16 +265,13 @@
     {
       string fullyQualifiedEventIdOfSpecificSource =
         CreateFullyQualifiedEventIdOfSpecificSource(eventSourceType, eventName);
-      this.EventHandlerSynchronizationContextTable.TryRemove(eventHandler, out _);
+      _ = this.EventHandlerSynchronizationContextTable.TryRemove(eventHandler, out _);
       return this.EventHandlerTable.TryRemove(fullyQualifiedEventIdOfSpecificSource, out _);
     }
 
     /// <inheritdoc />
-    public bool TryRemoveObserver<TEventArgs>(
-      string eventName,
-      Type eventSourceType,
-      EventHandler<TEventArgs> eventHandler) =>
-      TryRemoveObserver(eventName, eventSourceType, (Delegate)eventHandler);
+    public bool TryRemoveObserver<TEventArgs>(string eventName, Type eventSourceType, EventHandler<TEventArgs> eventHandler) 
+      => TryRemoveObserver(eventName, eventSourceType, (Delegate)eventHandler);
 
     /// <inheritdoc />
     public bool TryRemoveGlobalObserver(string eventName, Delegate eventHandler)
@@ -284,7 +280,7 @@
 
       string fullyQualifiedEventIdOfGlobalSource =
         CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, eventName);
-      this.EventHandlerSynchronizationContextTable.TryRemove(eventHandler, out _);
+      _ = this.EventHandlerSynchronizationContextTable.TryRemove(eventHandler, out _);
       return this.EventHandlerTable.TryRemove(fullyQualifiedEventIdOfGlobalSource, out _);
     }
 
@@ -295,7 +291,7 @@
 
       string fullyQualifiedEventIdOfGlobalSource =
         CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, eventName);
-      this.EventHandlerSynchronizationContextTable.TryRemove(eventHandler, out _);
+      _ = this.EventHandlerSynchronizationContextTable.TryRemove(eventHandler, out _);
       return this.EventHandlerTable.TryRemove(fullyQualifiedEventIdOfGlobalSource, out _);
     }
 
@@ -323,10 +319,12 @@
       {
         foreach (Delegate eventHandler in removedDelegates)
         {
-          this.EventHandlerSynchronizationContextTable.TryRemove(eventHandler, out _);
+          _ = this.EventHandlerSynchronizationContextTable.TryRemove(eventHandler, out _);
         }
+
         return true;
       }
+
       return false;
     }
 
@@ -344,7 +342,7 @@
           result |= this.EventHandlerTable.TryRemove(handlersEntry.Key, out _);
           foreach (Delegate eventHandler in handlersEntry.Value)
           {
-            this.EventHandlerSynchronizationContextTable.TryRemove(eventHandler, out _);
+            _ = this.EventHandlerSynchronizationContextTable.TryRemove(eventHandler, out _);
           }
         }
       }
@@ -362,10 +360,10 @@
         KeyValuePair<string, List<Delegate>> handlersEntry = this.EventHandlerTable.ElementAt(index);
         if (handlersEntry.Key.EndsWith(fullyQualifiedEventIdSuffix, StringComparison.Ordinal))
         {
-          result |= this.EventHandlerTable.TryRemove(handlersEntry.Key, out List<Delegate> _);
+          result |= this.EventHandlerTable.TryRemove(handlersEntry.Key, out _);
           foreach (Delegate eventHandler in handlersEntry.Value)
           {
-            this.EventHandlerSynchronizationContextTable.TryRemove(eventHandler, out _);
+            _ = this.EventHandlerSynchronizationContextTable.TryRemove(eventHandler, out _);
           }
         }
       }
@@ -393,7 +391,7 @@
       string fullyQualifiedEventName,
       SynchronizationContext synchronizationContext)
     {
-      this.EventHandlerSynchronizationContextTable.TryAdd(eventHandler, synchronizationContext);
+      _ = this.EventHandlerSynchronizationContextTable.TryAdd(eventHandler, synchronizationContext);
       if (this.EventHandlerTable.TryGetValue(fullyQualifiedEventName, out List<Delegate> handlers))
       {
         handlers.Add(eventHandler);
@@ -413,10 +411,10 @@
         KeyValuePair<string, List<Delegate>> handlersEntry = this.EventHandlerTable.ElementAt(index);
         if (handlersEntry.Key.StartsWith(fullyQualifiedEventIdOfGlobalSourcePrefix, StringComparison.Ordinal))
         {
-          result |= this.EventHandlerTable.TryRemove(handlersEntry.Key, out List<Delegate> _);
+          result |= this.EventHandlerTable.TryRemove(handlersEntry.Key, out _);
           foreach (Delegate eventHandler in handlersEntry.Value)
           {
-            this.EventHandlerSynchronizationContextTable.TryRemove(eventHandler, out _);
+            _ = this.EventHandlerSynchronizationContextTable.TryRemove(eventHandler, out _);
           }
         }
       }
@@ -442,7 +440,7 @@
           }
           else
           {
-            handler.DynamicInvoke(sender, args);
+            _ = handler.DynamicInvoke(sender, args);
           }
         }
         catch (ArgumentException e)
@@ -511,17 +509,15 @@
       return eventIds;
     }
 
-    private Type NormalizeEventHandlerType(Type eventHandlerType) =>
-      eventHandlerType == typeof(EventHandler) || eventHandlerType == typeof(Action<object, EventArgs>)
-        ? typeof(EventHandler<EventArgs>)
-        : eventHandlerType;
+    private Type NormalizeEventHandlerType(Type eventHandlerType) => eventHandlerType == typeof(EventHandler) || eventHandlerType == typeof(Action<object, EventArgs>)
+      ? typeof(EventHandler<EventArgs>)
+      : eventHandlerType;
 
-    private Type NormalizeEventHandlerType<TEventArgs>(Type eventHandlerType) =>
-      eventHandlerType == typeof(EventHandler) || eventHandlerType == typeof(Action<object, EventArgs>)
-        ? typeof(EventHandler<EventArgs>)
-        : eventHandlerType == typeof(EventHandler<TEventArgs>)
-          ? typeof(EventHandler<TEventArgs>)
-          : eventHandlerType;
+    private Type NormalizeEventHandlerType<TEventArgs>(Type eventHandlerType) => eventHandlerType == typeof(EventHandler) || eventHandlerType == typeof(Action<object, EventArgs>)
+      ? typeof(EventHandler<EventArgs>)
+      : eventHandlerType == typeof(EventHandler<TEventArgs>)
+        ? typeof(EventHandler<TEventArgs>)
+        : eventHandlerType;
 
     private string CreateFullyQualifiedEventIdOfGlobalSource(Type eventHandlerType, string eventName) => eventHandlerType.FullName.ToLowerInvariant() + "." + eventName;
 

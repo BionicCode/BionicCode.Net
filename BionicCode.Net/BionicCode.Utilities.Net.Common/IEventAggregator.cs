@@ -187,7 +187,7 @@
     /// </summary>
     /// <param name="eventSource">The event publisher instance.</param>
     /// <param name="eventNames">The names of the events to unregister.</param>
-    /// <param name="removeEventObservers">If <c>true</c> removes all event listeners of the specified events. The value is <c>false</c> by default.</param>
+    /// <param name="removeEventObservers">If <c>true</c> removes all event listenerHandlerMap of the specified events. The value is <c>false</c> by default.</param>
     /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
     bool TryRemoveObservable(
       object eventSource,
@@ -198,7 +198,7 @@
     /// Unregister the event publisher for all events.
     /// </summary>
     /// <param name="eventSource">The event publisher instance.</param>
-    /// <param name="removeEventObservers">If <c>true</c> removes all event listeners of the specified events. The value is <c>false</c> by default.</param>
+    /// <param name="removeEventObservers">If <c>true</c> removes all event listenerHandlerMap of the specified events. The value is <c>false</c> by default.</param>
     /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
     bool TryRemoveObservable(object eventSource, bool removeEventObservers = false);
 

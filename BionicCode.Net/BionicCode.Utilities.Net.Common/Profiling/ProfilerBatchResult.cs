@@ -100,7 +100,7 @@
 
       this.ResultsInternal.Add(result);
 
-      this.TotalDuration = this.TotalDuration + result.ElapsedTime;
+      this.TotalDuration += result.ElapsedTime;
       this.AverageDuration = this.TotalDuration / (double)this.ResultsInternal.Count;
 
       if (result < this.MinResult)

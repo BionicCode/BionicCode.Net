@@ -49,7 +49,7 @@
             break;
           default:
             this.Status = Status.Undefined; break;
-        };
+        }
       }
 
       public Status Status { get; private set; }

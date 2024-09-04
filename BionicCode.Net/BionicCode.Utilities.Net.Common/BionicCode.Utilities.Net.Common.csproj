@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net472;net48;net481;netstandard20;netstandard21;net50;net60;net70;net80</TargetFrameworks>
+		<TargetFrameworks>net47;net471;net472;net48;net481;netstandard20;netstandard21;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
 		<ApplicationIcon>logo.ico</ApplicationIcon>
 		<RootNamespace>BionicCode.Utilities.Net</RootNamespace>
 		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
@@ -36,11 +36,84 @@
 		<BaseOutputPath>../../Assemblies</BaseOutputPath>
 		<ProduceReferenceAssembly>True</ProduceReferenceAssembly>
 		<AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+		<EnableNETAnalyzers>True</EnableNETAnalyzers>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net48|AnyCPU'">
+	  <NoWarn>1701;1702;0090;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net481|AnyCPU'">
+	  <NoWarn>1701;1702;0090;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard20|AnyCPU'">
+	  <NoWarn>1701;1702;0090;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard21|AnyCPU'">
+	  <NoWarn>1701;1702;0090;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net50|AnyCPU'">
+	  <NoWarn>1701;1702;0090;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net60|AnyCPU'">
+	  <NoWarn>1701;1702;0090;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net70|AnyCPU'">
+	  <NoWarn>1701;1702;0090;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net80|AnyCPU'">
+	  <NoWarn>1701;1702;0090;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net48|AnyCPU'">
+	  <NoWarn>1701;1702;0090;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net481|AnyCPU'">
+	  <NoWarn>1701;1702;0090;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard20|AnyCPU'">
+	  <NoWarn>1701;1702;0090;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard21|AnyCPU'">
+	  <NoWarn>1701;1702;0090;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net50|AnyCPU'">
+	  <NoWarn>1701;1702;0090;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net60|AnyCPU'">
+	  <NoWarn>1701;1702;0090;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net70|AnyCPU'">
+	  <NoWarn>1701;1702;0090;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net80|AnyCPU'">
+	  <NoWarn>1701;1702;0090;</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Profiling\ContextExecutables\**" />
+	  <EmbeddedResource Remove="Profiling\ContextExecutables\**" />
+	  <None Remove="Profiling\ContextExecutables\**" />
+	</ItemGroup>
   
   <ItemGroup>
     <InternalsVisibleTo Include="BionicCode.Utilities.Net.Common.Isolation.Net6" />
@@ -64,18 +137,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
+	  <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
-	  <PackageReference Include="System.CodeDom" Version="8.0.0" />
 	  <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-	  <PackageReference Include="System.Runtime.Caching" Version="8.0.0" />
-    <PackageReference Include="System.Management" Version="8.0.0" />
-	  <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
-	  <PackageReference Include="System.Text.Json" Version="8.0.3" />
+	  <PackageReference Include="System.Runtime" Version="4.3.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Profiling\ContextExecutables\Net6.0\" />
+    <PackageReference Include="System.Management" Version="8.0.0" />
+    <PackageReference Include="System.Runtime.Caching" Version="8.0.0" />
+    <PackageReference Include="System.Text.Json" Version="8.0.4" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
 	</ItemGroup>
 
 	<!--<ItemGroup>

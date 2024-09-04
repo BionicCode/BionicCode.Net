@@ -14,8 +14,8 @@
     /// </summary>
     /// <param name="streamToCheck"></param>
     /// <returns></returns>
-    public static bool HasReachedEnd(this Stream streamToCheck) =>
-      streamToCheck != null && streamToCheck.Position == streamToCheck.Length;
+    public static bool HasReachedEnd(this Stream streamToCheck) 
+      => streamToCheck != null && streamToCheck.Position == streamToCheck.Length;
 
     #endregion
   }

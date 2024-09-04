@@ -16,6 +16,19 @@
       ProfiledTypeResultCollection results = await Profiler.CreateProfilerBuilder(typesToProfile)
         .SetBaseUnit(TimeUnit.Milliseconds)
         .RunAsync(CancellationToken.None);
+
+      foreach (ProfilerBatchResultGroupCollection resultGroups in results)
+      {
+        Console.WriteLine($"Profiled type: {resultGroups.ProfiledType.FullName}");
+        foreach (ProfilerBatchResultGroup resultGroup in resultGroups)
+        {
+          Console.WriteLine($"Profiled member: {resultGroup.ProfiledTargetMemberShortName}");
+          foreach (ProfilerBatchResult result in resultGroup)
+          {
+            Console.WriteLine($"Summary: {result.Summary}");
+          }
+        }
+      }
     }
   }
 

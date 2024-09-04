@@ -66,78 +66,32 @@
             <summary>
             A reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand"/> with support for async/await command delegates. 
             <br/>Enables instant creation of an ICommand without implementing the ICommand interface for each command.
-            The <see cref="T:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1"/> accepts asynchronous command handlers and supports data bindng to properties like <see cref="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon.IsExecuting"/> by implementing <see cref="T:System.ComponentModel.INotifyPropertyChanged"/>.
+            The <see cref="T:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1"/> accepts asynchronous command handlers and supports data bindng to properties like <see cref="!:IsExecuting"/> by implementing <see cref="T:System.ComponentModel.INotifyPropertyChanged"/>.
             <br/>Call and await the <see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.ExecuteAsync"/> method or one of its overloads to execute the command explicitly asynchronously.
               <seealso cref="T:System.Windows.Input.ICommand" />
             </summary>
             <remarks><c>AsyncRelayCommandCommon</c> implements <see cref="T:System.Windows.Input.ICommand" />. In case the <see cref="T:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1"/> is executed explicitly, especially with an asynchronous command handler registered, it is highly recommended to invoke the awaitable <see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.ExecuteAsync"/> or its overloads instead.</remarks>
         </member>
-        <member name="F:BionicCode.Utilities.Net.AsyncRelayCommandCommon.MaxThreads">
-            <summary>
-            The number of concurrent threads than can execute a command delegate.
-            </summary>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon.IsExecuting">
-            <inheritdoc/>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon.IsPendingCancelled">
-            <inheritdoc/>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon.IsCancelled">
-            <inheritdoc/>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon.HasPending">
-            <inheritdoc/>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon.PendingCount">
-            <inheritdoc/>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon.CanBeCanceled">
-            <inheritdoc />
-        </member>
-        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon.CurrentCancellationToken">
-            <inheritdoc />
-        </member>
-        <member name="E:BionicCode.Utilities.Net.AsyncRelayCommandCommon.PropertyChanged">
-            <inheritdoc/>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon.ExecuteAsyncNoParamDelegate">
-            <summary>
-            The registered parameterless async execute delegate.
-            </summary>
-            <value>
-            A delegate that takes no command parameter and returns a <see cref="T:System.Threading.Tasks.Task"/>.</value>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon.ExecuteCancellableAsyncNoParamDelegate">
+        <member name="F:BionicCode.Utilities.Net.AsyncRelayCommandCommon.executeCancellableAsyncNoParamDelegate">
             <summary>
             The registered parameterless async execute delegate that supports cancellation.
             </summary>
             <value>
             A delegate that supports cancellation, but takes no command parameter and returns a <see cref="T:System.Threading.Tasks.Task"/>.</value>
         </member>
-        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon.ExecuteNoParamDelegate">
-            <summary>
-            The registered parameterless synchronous execute delegate.
-            </summary>
-            <value>
-            A delegate that takes no parameter and returns void.</value>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon.ExecuteCancellableNoParamDelegate">
+        <member name="F:BionicCode.Utilities.Net.AsyncRelayCommandCommon.executeCancellableNoParamDelegate">
             <summary>
             The registered parameterless synchronous execute delegate that supports cancellation.
             </summary>
             <value>
             A delegate that suppoprts cancellation, but takes no command parameter and returns void.</value>
         </member>
-        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon.CanExecuteNoParamDelegate">
+        <member name="F:BionicCode.Utilities.Net.AsyncRelayCommandCommon.canExecuteNoParamDelegate">
             <summary>
             The registered parameterless CanExecute delegate.
             </summary>
             <value>
             <c>true</c> if the command can execute, otherwise <c>false</c>.</value>
-        </member>
-        <member name="E:BionicCode.Utilities.Net.AsyncRelayCommandCommon.CanExecuteChanged">
-            <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.#ctor(System.Action)">
             <summary>
@@ -193,11 +147,6 @@
             <param name="executeCancellable">The awaitable execution handler.</param>
             <param name="canExecute">The can execute handler.</param>
         </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.#ctor">
-            <summary>
-            Constructor
-            </summary>
-        </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.CanExecute">
             <summary>
               Determines whether this AsyncRelayCommandCommon can execute.
@@ -214,41 +163,100 @@
             <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.ExecuteAsync(System.TimeSpan,System.Threading.CancellationToken)">
+            <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+            <param name="timeout">A <seealso cref="T:System.TimeSpan"/> to specify the timeout of the operation. 
+            <br/>A value of <see cref="F:System.Threading.Timeout.InfiniteTimeSpan"/> (or a <see cref="T:System.TimeSpan"/> that represents -1) will specifiy an infinite time out. 
+            <br/>A value of <see cref="F:System.TimeSpan.Zero"/> will cancel the operation immediately.</param>
+            <param name="cancellationToken">An instance of <seealso cref="T:System.Threading.CancellationToken"/> to cancel the executing command delegate.</param>
+            <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously. 
+            <br/><br/>Repeated or concurrent calls are synchronized.
+            </remarks>
+            <exception cref="T:System.OperationCanceledException">If the executing command delegate was cancelled.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="timeout>>"/>.TotalMilliseconds is less than -1 or greater than <see cref="F:System.Int32.MaxValue"/> (or <see cref="F:System.UInt32.MaxValue"/> - 1 on some versions of .NET). Note that this upper bound is more restrictive than <see cref="F:System.TimeSpan.MaxValue"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.System#Windows#Input#ICommand#Execute(System.Object)">
             <inheritdoc />
         </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.CancelExecuting">
+        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCore.CanBeCanceled">
             <inheritdoc />
         </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.CancelExecuting(System.Boolean)">
+        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCore.CurrentCancellationToken">
             <inheritdoc />
         </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.CancelPending">
-            <inheritdoc />
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.CancelPending(System.Boolean)">
-            <inheritdoc />
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.CancelAll">
-            <inheritdoc />
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.CancelAll(System.Boolean)">
-            <inheritdoc />
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.InvalidateCommand">
+        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCore.HasPending">
             <inheritdoc/>
         </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.OnCanExecuteChanged">
+        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCore.IsCancelled">
+            <inheritdoc/>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCore.IsExecuting">
+            <inheritdoc/>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.AsyncRelayCommandCore.MaxDegreeOfParallelism">
+            <inheritdoc/>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCore.PendingCount">
+            <inheritdoc/>
+        </member>
+        <member name="E:BionicCode.Utilities.Net.AsyncRelayCommandCore.ExecutingCommandCancelled">
+            <inheritdoc />
+        </member>
+        <member name="E:BionicCode.Utilities.Net.AsyncRelayCommandCore.PendingCommandCancelled">
+            <inheritdoc />
+        </member>
+        <member name="E:BionicCode.Utilities.Net.AsyncRelayCommandCore.PropertyChanged">
+            <inheritdoc />
+        </member>
+        <member name="E:BionicCode.Utilities.Net.AsyncRelayCommandCore.CanExecuteChanged">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.CancelExecuting">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.CancelExecuting(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.CancelPending">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.CancelPending(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.CancelAll">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.CancelAll(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.InvalidateCommand">
+            <inheritdoc/>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.OnCanExecuteChanged">
             <summary>
             Raises the <see cref="E:System.Windows.Input.ICommand.CanExecuteChanged"/> event.
             </summary>
         </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.OnPropertyChanged(System.String)">
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.OnCanExecuteChanged(System.Object,System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Windows.Input.ICommand.CanExecuteChanged"/> event.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.OnPropertyChanged(System.String)">
             <summary>
             Raises the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event.
             </summary>
         </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.System#Windows#Input#ICommand#Execute(System.Object)">
-            <inheritdoc />
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.OnPendingCommandsCancelled">
+            <summary>
+            Raises the <see cref="!:IAsyncRelayCommandCommon.PendingCommandCancelled"/> event.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.OnExecutingCommandCancelled">
+            <summary>
+            Raises the <see cref="!:IAsyncRelayCommandCommon.ExecutingCommandCancelled"/> event.
+            </summary>
         </member>
         <member name="T:BionicCode.Utilities.Net.IgnoreAttribute">
             <summary>
@@ -983,7 +991,7 @@
             <returns>The <see cref="T:BionicCode.Utilities.Net.AccessModifier"/> for the current <paramref name="memberInfo"/>.</returns>
             <exception cref="T:System.InvalidOperationException">Unable to identify the accessibility of the <paramref name="memberInfo"/>.</exception>
             <exception cref="T:System.NotSupportedException">The type provided by the <paramref name="memberInfo"/> is not supported.</exception>
-            <remarks>For a <see cref="T:System.Reflection.PropertyInfo"/> the property accessor with the least restriction provides the access modifier for the property. This is acompiler rule.</remarks>
+            <remarks>For a <see cref="T:System.Reflection.PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayName(System.Reflection.MemberInfo)">
             <summary>
@@ -994,7 +1002,7 @@
             A readable name of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
             </returns>
             <remarks>
-            <para>Because <see cref="T:System.Type"/> dervies from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
+            <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
             Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
             <br/>This helper unwraps the generic type parameters to construct the full type name like <c>"Task.Run&lt;TResult&gt;"</c>.
             </remarks>
@@ -1008,32 +1016,32 @@
             A readable name of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
             </returns>
             <remarks>
-            <para>Because <see cref="T:System.Type"/> dervies from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
+            <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
             Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
             <br/>This helper unwraps the generic type parameters to construct the full type name like <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
             </remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.IsAwaitable(System.Reflection.MethodInfo)">
             <summary>
-            Checks if the provided <see cref="T:System.Reflection.MethodInfo"/> belongs to an asnychronous/awaitable method.
+            Checks if the provided <see cref="T:System.Reflection.MethodInfo"/> belongs to an asynchronous/awaitable method.
             </summary>
             <param name="methodInfo">The <see cref="T:System.Reflection.MethodInfo"/> to check if it belongs to an awaitable method.</param>
             <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
             <remarks>The method first checks if the return type is either <see cref="T:System.Threading.Tasks.Task"/> or <see cref="T:System.Threading.Tasks.ValueTask"/>. If that fails, it checks if the returned type (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate type (awaiter).
-            <br/>If that fails too, it checks whther there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
+            <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.IsStatic(System.Type)">
             <summary>
             Extension method to check if a <see cref="T:System.Type"/> is static.
             </summary>
-            <param name="typeInfo">The extended <see cref="T:System.Type"/> istance.</param>
+            <param name="typeInfo">The extended <see cref="T:System.Type"/> instance.</param>
             <returns><see langword="true"/> if the <paramref name="typeInfo"/> is static. Otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.CanDeclareExtensionMethods(System.Type)">
             <summary>
             Extension method that checks if the provided <see cref="T:System.Type"/> is qualified to define extension methods.
             </summary>
-            <param name="typeInfo">The extended <see cref="T:System.Type"/> istance.</param>
+            <param name="typeInfo">The extended <see cref="T:System.Type"/> instance.</param>
             <returns><see langword="true"/> if the <paramref name="typeInfo"/> is allowed to define extension methods. Otherwise <see langword="false"/>.</returns>
             <remarks>To be able to define extension methods a class must be static, non-generic, a top level type. 
             <br/>In addition this method checks if the declaring class and the method are both decorated with the <see cref="T:System.Runtime.CompilerServices.ExtensionAttribute"/> which is added by the compiler.</remarks>
@@ -1042,14 +1050,14 @@
             <summary>
             Extension method to check if a <see cref="T:System.Reflection.MethodInfo"/> is the info of an extension method.
             </summary>
-            <param name="methodInfo">The extended <see cref="T:System.Reflection.MethodInfo"/> istance to validate.</param>
+            <param name="methodInfo">The extended <see cref="T:System.Reflection.MethodInfo"/> instance to validate.</param>
             <returns><see langword="true"/> if the <paramref name="methodInfo"/> is an extension method. Otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.IsExtensionMethodOf(System.Reflection.MethodInfo,System.Type)">
             <summary>
             Extension method to check if a <see cref="T:System.Reflection.MethodInfo"/> is the info of an extension method for a particular type.
             </summary>
-            <param name="methodInfo">The extended <see cref="T:System.Reflection.MethodInfo"/> istance to validate.</param>
+            <param name="methodInfo">The extended <see cref="T:System.Reflection.MethodInfo"/> instance to validate.</param>
             <param name="typeToExtend">The <see cref="T:System.Type"/> the <paramref name="methodInfo"/> is expected to extend.</param>
             <returns><see langword="true"/> if the <paramref name="methodInfo"/> is an extension method for <paramref name="typeToExtend"/>. Otherwise <see langword="false"/>.</returns>
         </member>
@@ -1151,41 +1159,27 @@
             <summary>
             A reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand"/> with support for async/await command delegates. 
             <br/>Enables instant creation of an ICommand without implementing the ICommand interface for each command.
-            The <see cref="T:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1"/> accepts asynchronous command handlers and supports data bindng to properties like <see cref="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon.IsExecuting"/> by implementing <see cref="T:System.ComponentModel.INotifyPropertyChanged"/>.
+            The <see cref="T:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1"/> accepts asynchronous command handlers and supports data binding to properties like <see cref="P:BionicCode.Utilities.Net.AsyncRelayCommandCore.IsExecuting"/> by implementing <see cref="T:System.ComponentModel.INotifyPropertyChanged"/>.
             <br/>Call and await the <see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.ExecuteAsync(`0)"/> method or one of its overloads to execute the command explicitly asynchronously.
               <seealso cref="T:System.Windows.Input.ICommand" />
             </summary>
             <remarks><c>AsyncRelayCommandCommon</c> implements <see cref="T:System.Windows.Input.ICommand" />. In case the <see cref="T:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1"/> is executed explicitly, especially with an asynchronous command handler registered, it is highly recommended to invoke the awaitable <see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.ExecuteAsync"/> or its overloads instead.</remarks>
         </member>
-        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.ExecuteAsyncDelegate">
-            <summary>
-            The registered async execute delegate that accepts a parameter of <typeparamref name="TParam"/>.
-            </summary>
-            <value>
-            A delegate that takes a command parameter of <typeparamref name="TParam"/> and returns a <see cref="T:System.Threading.Tasks.Task"/>.</value>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.ExecuteCancellableAsyncDelegate">
+        <member name="F:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.executeCancellableAsyncDelegate">
             <summary>
             The registered async execute delegate that supports cancellation and accepts a parameter of <typeparamref name="TParam"/>.
             </summary>
             <value>
             A delegate that supports cancellation and takes a command parameter of <typeparamref name="TParam"/> and returns a <see cref="T:System.Threading.Tasks.Task"/>.</value>
         </member>
-        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.ExecuteDelegate">
+        <member name="F:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.executeCancellableDelegate">
             <summary>
             The registered execute delegate that accepts a parameter of <typeparamref name="TParam"/>.
             </summary>
             <value>
-            A delegate that takes no parameter and returns a <see cref="T:System.Threading.Tasks.Task"/>.</value>
+            A delegate that supports cancellation and takes a command parameter of <typeparamref name="TParam"/> and returns a <see cref="T:System.Threading.Tasks.Task"/>.</value>
         </member>
-        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.ExecuteCancellableDelegate">
-            <summary>
-            The registered execute delegate that accepts a parameter of <typeparamref name="TParam"/>.
-            </summary>
-            <value>
-            A delegate that suppoprts cancellation and takes a command parameter of <typeparamref name="TParam"/> and returns a <see cref="T:System.Threading.Tasks.Task"/>.</value>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecuteDelegate">
+        <member name="F:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.canExecuteDelegate">
             <summary>
             The registered CanExecute delegate that accepts a parameter of <typeparamref name="TParam"/>.
             </summary>
@@ -1194,126 +1188,61 @@
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Action{`0})">
             <summary>
-              Creates a new synchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecute"/> will always return <c>true</c>)
+              Creates a new synchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecute(`0)"/> will always return <c>true</c>)
               <br/> and accepts a command parameter of type <typeparamref name="TParam"/>.
             </summary>
-            <param name="execute">The awaitable execution handler.</param>
+            <param name="execute">The execute handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Action{`0,System.Threading.CancellationToken})">
             <summary>
-              Creates a new synchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecute"/> will always return <c>true</c>) 
+              Creates a new synchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecute(`0)"/> will always return <c>true</c>) 
               <br/>and accepts a command parameter of type <typeparamref name="TParam"/>
               <br/>and supports cancellation.
             </summary>
-            <param name="execute">The awaitable execution handler.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Action)">
-            <summary>
-              Creates a new parameterless synchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecute"/> will always return <c>true</c>).
-            </summary>
-            <param name="executeNoParam">The awaitable execution handler.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Action{System.Threading.CancellationToken})">
-            <summary>
-              Creates a new parameterless synchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecute"/> will always return <c>true</c>)
-              <br/>and supports cancellation.
-            </summary>
-            <param name="executeNoParam">The awaitable execution handler.</param>
+            <param name="execute">The execute handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Func{`0,System.Threading.CancellationToken,System.Threading.Tasks.Task})">
             <summary>
-              Creates a new asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecute"/> will always return <c>true</c>) 
+              Creates a new asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecute(`0)"/> will always return <c>true</c>) 
               <br/>and that accepts a command parameter of type <typeparamref name="TParam"/>
               <br/>and supports cancellation.
             </summary>
-            <param name="executeAsync">The awaitable execution handler.</param>
+            <param name="executeAsync">The awaitable execute handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Func{`0,System.Threading.Tasks.Task})">
             <summary>
-              Creates a new asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecute"/> will always return <c>true</c>) 
+              Creates a new asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecute(`0)"/> will always return <c>true</c>) 
               <br/>and that accepts a command parameter of type <typeparamref name="TParam"/>.
             </summary>
-            <param name="executeAsync">The awaitable execution handler.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Func{System.Threading.Tasks.Task})">
-            <summary>
-              Creates a new parameterless asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecute"/> will always return <c>true</c>).
-            </summary>
-            <param name="executeAsyncNoParam">The awaitable execution handler.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task})">
-            <summary>
-              Creates a new parameterless asynchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecute"/> will always return <c>true</c>)
-              <br/>and supports cancellation.
-            </summary>
-            <param name="executeAsyncNoParam">The awaitable execution handler.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Action,System.Func{System.Boolean})">
-            <summary>
-              Creates a new parameterless synchronous command.
-            </summary>
-            <param name="executeNoParam">The execution handler.</param>
-            <param name="canExecuteNoParam">The execution status handler.</param>
+            <param name="executeAsync">The awaitable execute handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Action{`0},System.Predicate{`0})">
             <summary>
               Creates a new synchronous command that accepts a command parameter of type <typeparamref name="TParam"/>.
             </summary>
-            <param name="execute">The execution handler.</param>
-            <param name="canExecute">The execution status handler.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})">
-            <summary>
-              Creates a parameterless new asynchronous command.
-            </summary>
-            <param name="executeAsyncNoParam">The awaitable execution handler.</param>
-            <param name="canExecuteNoParam">The execution status handler.</param>
+            <param name="execute">The execute handler.</param>
+            <param name="canExecute">The can execute handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Func{`0,System.Threading.Tasks.Task},System.Predicate{`0})">
             <summary>
               Creates a new asynchronous command that accepts a command parameter of type <typeparamref name="TParam"/>.
             </summary>
-            <param name="executeAsync">The awaitable execution handler.</param>
+            <param name="executeAsync">The awaitable execute handler.</param>
             <param name="canExecute">The can execute handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Func{`0,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Predicate{`0})">
             <summary>
               Creates a new asynchronous command that supports cancellation and accepts a command parameter of <typeparamref name="TParam"/>.
             </summary>
-            <param name="executeAsync">The awaitable execution handler.</param>
-            <param name="canExecute">The can execute handler.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Func{System.Boolean})">
-            <summary>
-              Creates a new parameterless asynchronous command that supports cancellation and does not take a command parameter.
-            </summary>
-            <param name="executeAsync">The awaitable execution handler.</param>
-            <param name="canExecute">The can execute handler.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Action{System.Threading.CancellationToken},System.Func{System.Boolean})">
-            <summary>
-              Creates a new parameterless synchronous command that supports cancellation.
-            </summary>
-            <param name="executeAsync">The awaitable execution handler.</param>
+            <param name="executeAsync">The awaitable execute handler.</param>
             <param name="canExecute">The can execute handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Action{`0,System.Threading.CancellationToken},System.Predicate{`0})">
             <summary>
-              Creates a new synchronous command that supports cancellation adn accepts a command parameter of type <typeparamref name="TParam"/>.
+              Creates a new synchronous command that supports cancellation and accepts a command parameter of type <typeparamref name="TParam"/>.
             </summary>
-            <param name="executeAsync">The awaitable execution handler.</param>
+            <param name="execute">The execute handler.</param>
             <param name="canExecute">The can execute handler.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor">
-            <summary>
-            Constructor.
-            </summary>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecute">
-            <summary>
-              Determines whether this AsyncRelayCommandCommon can execute.
-            </summary>
-            <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecute(`0)">
             <summary>
@@ -1323,9 +1252,6 @@
               Data used by the command. 
             </param>
             <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.ExecuteAsync(System.TimeSpan,System.Threading.CancellationToken)">
-            <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.ExecuteAsync(`0)">
             <inheritdoc />
@@ -1696,88 +1622,6 @@
             <br/>Enables instant creation of an ICommand without implementing the ICommand interface for each command.
             </summary>
         </member>
-        <member name="P:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.IsExecuting">
-            <summary>
-            A flag to signal if the asynchronous operation has completed.
-            </summary>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.CanBeCanceled">
-            <summary>
-            Returns whether the command can be cancelled.
-            </summary>
-            <value><c>true</c> if cancellation is allowed. Otherwise <c>false</c>.</value>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.IsCancelled">
-            <summary>
-            Returns whether the command's executing operation was cancelled.
-            </summary>
-            <value><c>true</c> if the last command execution was cancelled. Otherwise <c>false</c>.</value>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.IsPendingCancelled">
-            <summary>
-            Returns whether the command's pending operations were cancelled.
-            </summary>
-            <value><c>true</c> if the last command execution was cancelled. Otherwise <c>false</c>.</value>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.HasPending">
-            <summary>
-            Return whether the command has pending executions.
-            </summary>
-            <remarks>Only one command is executed at time. Sucessive command invocations are enqueued and run after the currently executing delegate has completed
-            <br/> or was cancelled.</remarks>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.PendingCount">
-            <summary>
-            Returns the number of pending command delegate executions.
-            </summary>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.CurrentCancellationToken">
-            <summary>
-            The currently used <see cref="T:System.Threading.CancellationToken"/>.
-            </summary>
-            <value>A <see cref="T:System.Threading.CancellationToken"/> instance currently in use during the command execution.</value>
-            <remarks>This property can be used to query the state of the cancellation or to register a cancellation callback by calling <see cref="M:System.Threading.CancellationToken.Register(System.Action)"/>.
-            <br/>The instance will change for each command execution.</remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.CancelAll">
-            <summary>
-            Cancels all pending and executing commands.
-            </summary>
-            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel"/> for the exception behavior of this overload.</remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.CancelAll(System.Boolean)">
-            <summary>
-            Cancels all pending and executing commands.
-            </summary>
-            <param name="throwOnFirstException">See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the effects of the parameter.</param>
-            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the exception behavior of this overload.</remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.CancelExecuting">
-            <summary>
-            Cancels the currently executing command.
-            </summary>
-            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel"/> for the exception behavior of this overload.</remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.CancelExecuting(System.Boolean)">
-            <summary>
-            Cancels the currently executing command.
-            </summary>
-            <param name="throwOnFirstException">See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the effects of the parameter.</param>
-            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the exception behavior of this overload.</remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.CancelPending">
-            <summary>
-            Cancels all pending command executions.
-            </summary>    
-            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel"/> for the exception behavior of this overload.</remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.CancelPending(System.Boolean)">
-            <summary>
-            Cancels all pending command executions.
-            </summary>    
-            <param name="throwOnFirstException">See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the effects of the parameter.</param>
-            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the exception behavior of this overload.</remarks>
-        </member>
         <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.CanExecute">
             <summary>
             Checks if the <see cref="T:System.Windows.Input.ICommand"/> can execute.
@@ -1797,7 +1641,7 @@
             <param name="cancellationToken">An instance of <seealso cref="T:System.Threading.CancellationToken"/> to cancel the executing command delegate.</param>
             <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.
             <para>Only one command is executed at time. Sucessive command invocations are enqueued and run after the currently executing delegate has completed
-            <br/> or was cancelled. Query <see cref="P:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.HasPending"/> to know if the command has pending delegate executions and <see cref="P:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.PendingCount"/> to knwo the number of pending delegate executions.</para>
+            <br/> or was cancelled. Query <see cref="P:BionicCode.Utilities.Net.IAsyncRelayCommandCore.HasPending"/> to know if the command has pending delegate executions and <see cref="!:PendingCount"/> to knwo the number of pending delegate executions.</para>
             </remarks>
             <exception cref="T:System.OperationCanceledException">If executing command delegate was cancelled.</exception>
         </member>
@@ -1810,7 +1654,7 @@
             <br/>A value of <see cref="F:System.TimeSpan.Zero"/> will cancel the operation immediately.</param>
             <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.  
             <para>Only one command is executed at time. Sucessive command invocations are enqueued and run after the currently executing delegate has completed
-            <br/> or was cancelled. Query <see cref="P:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.HasPending"/> to know if the command has pending delegate executions and <see cref="P:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.PendingCount"/> to knwo the number of pending delegate executions.</para>
+            <br/> or was cancelled. Query <see cref="P:BionicCode.Utilities.Net.IAsyncRelayCommandCore.HasPending"/> to know if the command has pending delegate executions and <see cref="!:PendingCount"/> to knwo the number of pending delegate executions.</para>
             </remarks>
             <exception cref="T:System.OperationCanceledException">If the executing command delegate was cancelled.</exception>
         </member>
@@ -1827,7 +1671,98 @@
             <exception cref="T:System.OperationCanceledException">If the executing command delegate was cancelled.</exception>
             <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="timeout>>"/>.TotalMilliseconds is less than -1 or greater than <see cref="F:System.Int32.MaxValue"/> (or <see cref="F:System.UInt32.MaxValue"/> - 1 on some versions of .NET). Note that this upper bound is more restrictive than <see cref="F:System.TimeSpan.MaxValue"/>.</exception>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCommon.InvalidateCommand">
+        <member name="T:BionicCode.Utilities.Net.IAsyncRelayCommandCore">
+            <summary>
+            Defines the shared core functionality of the different implementations.
+            </summary>
+        </member>
+        <member name="E:BionicCode.Utilities.Net.IAsyncRelayCommandCore.PendingCommandCancelled">
+            <summary>
+            Event is raised after a pending command has been cancelled.
+            </summary>
+        </member>
+        <member name="E:BionicCode.Utilities.Net.IAsyncRelayCommandCore.ExecutingCommandCancelled">
+            <summary>
+            Event is raised if the executing command handler has been cancelled.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.IAsyncRelayCommandCore.IsExecuting">
+            <summary>
+            A flag to signal if the asynchronous operation has completed.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.IAsyncRelayCommandCore.CanBeCanceled">
+            <summary>
+            Returns whether the command can be cancelled.
+            </summary>
+            <value><c>true</c> if cancellation is allowed. Otherwise <c>false</c>.</value>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.IAsyncRelayCommandCore.IsCancelled">
+            <summary>
+            Returns whether the command's executing operation was cancelled.
+            </summary>
+            <value><c>true</c> if the last command execution was cancelled. Otherwise <c>false</c>.</value>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.IAsyncRelayCommandCore.HasPending">
+            <summary>
+            Return whether the command has pending executions.
+            </summary>
+            <remarks>Only one command is executed at time. Sucessive command invocations are enqueued and run after the currently executing delegate has completed
+            <br/> or was cancelled.</remarks>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.IAsyncRelayCommandCore.PendingCount">
+            <summary>
+            Returns the number of pending command delegate executions.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.IAsyncRelayCommandCore.CurrentCancellationToken">
+            <summary>
+            The currently used <see cref="T:System.Threading.CancellationToken"/>.
+            </summary>
+            <value>A <see cref="T:System.Threading.CancellationToken"/> instance currently in use during the command execution.</value>
+            <remarks>This property can be used to query the state of the cancellation or to register a cancellation callback by calling <see cref="M:System.Threading.CancellationToken.Register(System.Action)"/>.
+            <br/>The instance will change for each command execution.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCore.CancelAll">
+            <summary>
+            Cancels all pending and executing commands.
+            </summary>
+            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel"/> for the exception behavior of this overload.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCore.CancelAll(System.Boolean)">
+            <summary>
+            Cancels all pending and executing commands.
+            </summary>
+            <param name="throwOnFirstException">See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the effects of the parameter.</param>
+            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the exception behavior of this overload.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCore.CancelExecuting">
+            <summary>
+            Cancels the currently executing command.
+            </summary>
+            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel"/> for the exception behavior of this overload.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCore.CancelExecuting(System.Boolean)">
+            <summary>
+            Cancels the currently executing command.
+            </summary>
+            <param name="throwOnFirstException">See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the effects of the parameter.</param>
+            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the exception behavior of this overload.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCore.CancelPending">
+            <summary>
+            Cancels all pending command executions.
+            </summary>    
+            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel"/> for the exception behavior of this overload.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCore.CancelPending(System.Boolean)">
+            <summary>
+            Cancels all pending command executions.
+            </summary>    
+            <param name="throwOnFirstException">See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the effects of the parameter.</param>
+            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the exception behavior of this overload.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCore.InvalidateCommand">
             <summary>
             Raises the <seealso cref="E:System.Windows.Input.ICommand.CanExecuteChanged"/> event of this particular command only.
             </summary>
@@ -2016,7 +1951,7 @@
             </summary>
             <param name="eventSource">The event publisher instance.</param>
             <param name="eventNames">The names of the events to unregister.</param>
-            <param name="removeEventObservers">If <c>true</c> removes all event listeners of the specified events. The value is <c>false</c> by default.</param>
+            <param name="removeEventObservers">If <c>true</c> removes all event listenerHandlerMap of the specified events. The value is <c>false</c> by default.</param>
             <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
         </member>
         <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRemoveObservable(System.Object,System.Boolean)">
@@ -2024,7 +1959,7 @@
             Unregister the event publisher for all events.
             </summary>
             <param name="eventSource">The event publisher instance.</param>
-            <param name="removeEventObservers">If <c>true</c> removes all event listeners of the specified events. The value is <c>false</c> by default.</param>
+            <param name="removeEventObservers">If <c>true</c> removes all event listenerHandlerMap of the specified events. The value is <c>false</c> by default.</param>
             <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
         </member>
         <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRemoveObserver(System.String,System.Type,System.Delegate)">
@@ -4469,7 +4404,7 @@
             <summary>
             Generic property setter. Sets the value of any property of the extending view model by passing in a the corresponding property backing field. Automatically raises the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event for this property.
             </summary>
-            <remarks>Equality checking is enabled by default and must be explicitly disabled if needed by passing a <see cref="T:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions"/> to the apropriate overload. To determine equality <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/> is called. <br/>This means when the new property value <paramref name="value"/> equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <remarks>Equality checking is enabled by default and must be explicitly disabled if needed by passing a <see cref="T:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions"/> to the appropriate overload. To determine equality <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/> is called. <br/>This means when the new property value <paramref name="value"/> equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/>To change the equality definition use an overload that accepts an <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> (for example <see cref="M:BionicCode.Utilities.Net.ViewModelCommon.TrySetValue``1(``0,``0@,System.Collections.Generic.IEqualityComparer{``0},System.String)"/>). 
             <para>To validate the <paramref name="value"/>, use the <see cref="M:BionicCode.Utilities.Net.ViewModelCommon.TrySetValue``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}},``0@,BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions,System.Collections.Generic.IEqualityComparer{``0},System.String)"/>  method.
             <br/>For asynchronous validation use the <see cref="M:BionicCode.Utilities.Net.ViewModelCommon.TrySetValueAsync``1(``0,``0,System.Func{``0,System.Threading.Tasks.Task{System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}}},BionicCode.Utilities.Net.SetBackingFieldDelegate{``0},BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions,System.Collections.Generic.IEqualityComparer{``0},System.String)"/> method.</para>
@@ -4484,7 +4419,7 @@
             <summary>
             Generic property setter. Sets the value of any property of the extending view model by passing in a the corresponding property backing field. Automatically raises the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event for this property.
             </summary>
-            <remarks>Equality checking is enabled by default and must be explicitly disabled if needed by passing a <see cref="T:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions"/> to the apropriate overload. To determine equality <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/> is called. <br/>This means when the new property value <paramref name="value"/> equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <remarks>Equality checking is enabled by default and must be explicitly disabled if needed by passing a <see cref="T:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions"/> to the appropriate overload. To determine equality <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/> is called. <br/>This means when the new property value <paramref name="value"/> equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/>To change the equality definition use an overload that accepts an <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> (for example <see cref="M:BionicCode.Utilities.Net.ViewModelCommon.TrySetValue``1(``0,``0@,System.Collections.Generic.IEqualityComparer{``0},System.String)"/>). 
             <para>To validate the <paramref name="value"/>, use the <see cref="M:BionicCode.Utilities.Net.ViewModelCommon.TrySetValue``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}},``0@,BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions,System.Collections.Generic.IEqualityComparer{``0},System.String)"/>  method.
             <br/>For asynchronous validation use the <see cref="M:BionicCode.Utilities.Net.ViewModelCommon.TrySetValueAsync``1(``0,``0,System.Func{``0,System.Threading.Tasks.Task{System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}}},BionicCode.Utilities.Net.SetBackingFieldDelegate{``0},BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions,System.Collections.Generic.IEqualityComparer{``0},System.String)"/> method.</para>
@@ -4500,7 +4435,7 @@
             <summary>
             Generic property setter. Sets the value of any property of the extending view model by passing in a the corresponding property backing field. Automatically raises the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event for this property.
             </summary>
-            <remarks>Equality checking is enabled by default and must be explicitly disabled if needed by passing a <see cref="T:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions"/> to the apropriate overload. To determine equality <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/> is called. <br/>This means when the new property value <paramref name="value"/> equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. If equality checking is enabled and no <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> was provided by setting the <paramref name="equalityComparer"/> parameter or the value is <c>NULL</c>, 
+            <remarks>Equality checking is enabled by default and must be explicitly disabled if needed by passing a <see cref="T:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions"/> to the appropriate overload. To determine equality <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/> is called. <br/>This means when the new property value <paramref name="value"/> equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. If equality checking is enabled and no <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> was provided by setting the <paramref name="equalityComparer"/> parameter or the value is <c>NULL</c>, 
             the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>To validate the <paramref name="value"/>, use the <see cref="M:BionicCode.Utilities.Net.ViewModelCommon.TrySetValue``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}},``0@,BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions,System.Collections.Generic.IEqualityComparer{``0},System.String)"/>  method.
             <br/>For asynchronous validation use the <see cref="M:BionicCode.Utilities.Net.ViewModelCommon.TrySetValueAsync``1(``0,``0,System.Func{``0,System.Threading.Tasks.Task{System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}}},BionicCode.Utilities.Net.SetBackingFieldDelegate{``0},BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions,System.Collections.Generic.IEqualityComparer{``0},System.String)"/> method.</para>
@@ -4517,7 +4452,7 @@
             <summary>
             Generic property setter. Sets the value of any property of the extending view model by passing in a the corresponding property backing field. Automatically raises the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event for this property.
             </summary>
-            <remarks>Equality checking is enabled by default and must be explicitly disabled if needed by passing a <see cref="T:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions"/> to the apropriate overload. To determine equality <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/> is called. <br/>This means when the new property value <paramref name="value"/> equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. If equality checking is enabled and no <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> was provided by setting the <paramref name="equalityComparer"/> parameter or the value is <c>NULL</c>, 
+            <remarks>Equality checking is enabled by default and must be explicitly disabled if needed by passing a <see cref="T:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions"/> to the appropriate overload. To determine equality <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/> is called. <br/>This means when the new property value <paramref name="value"/> equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. If equality checking is enabled and no <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> was provided by setting the <paramref name="equalityComparer"/> parameter or the value is <c>NULL</c>, 
             the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>To validate the <paramref name="value"/>, use the <see cref="M:BionicCode.Utilities.Net.ViewModelCommon.TrySetValue``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}},``0@,BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions,System.Collections.Generic.IEqualityComparer{``0},System.String)"/>  method.
             <br/>For asynchronous validation use the <see cref="M:BionicCode.Utilities.Net.ViewModelCommon.TrySetValueAsync``1(``0,``0,System.Func{``0,System.Threading.Tasks.Task{System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}}},BionicCode.Utilities.Net.SetBackingFieldDelegate{``0},BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions,System.Collections.Generic.IEqualityComparer{``0},System.String)"/> method.</para>
@@ -4585,7 +4520,7 @@
             <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
             <br/> it is recommended to set <paramref name="methodConfiguration"/> property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsThrowExceptionOnValidationErrorEnabled"/> to <c>true</c>.
             <br/>If not doing so, the binding target will clear the new value and show the last valid value instead.
-            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c> and the feature is always enabled by default) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>true</c> and the feature is always enabled by default) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>When the <paramref name="propertyName"/> value is <c>NULL</c>, the <paramref name="value"/> is validated without generating an error. This is because validation errors are always related to a particular property.</para></remarks>
         </member>
@@ -4607,7 +4542,7 @@
             <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
             <br/> it is recommended to set <paramref name="methodConfiguration"/> property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsThrowExceptionOnValidationErrorEnabled"/> to <c>true</c>.
             <br/>If not doing so, the binding target will clear the new value and show the last valid value instead.
-            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c> and the feature is always enabled by default) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>true</c> and the feature is always enabled by default) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>When the <paramref name="propertyName"/> value is <c>NULL</c>, the <paramref name="value"/> is validated without generating an error. This is because validation errors are always related to a particular property.</para></remarks>
         </member>
@@ -4630,7 +4565,7 @@
             <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
             <br/> it is recommended to set <paramref name="methodConfiguration"/> property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsThrowExceptionOnValidationErrorEnabled"/> to <c>true</c>.
             <br/>If not doing so, the binding target will clear the new value and show the last valid value instead.
-            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c> and the feature is always enabled by default) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>true</c> and the feature is always enabled by default) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/>If equality checking is enabled and no valid <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> was provided by setting the <paramref name="equalityComparer"/> parameter, the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>When the <paramref name="propertyName"/> value is <c>NULL</c>, the <paramref name="value"/> is validated without generating an error. This is because validation errors are always related to a particular property.</para></remarks>
         </member>
@@ -4653,7 +4588,7 @@
             <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
             <br/> it is recommended to set <paramref name="methodConfiguration"/> property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsThrowExceptionOnValidationErrorEnabled"/> to <c>true</c>.
             <br/>If not doing so, the binding target will clear the new value and show the last valid value instead.
-            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c> and the feature is always enabled by default) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>true</c> and the feature is always enabled by default) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/>If equality checking is enabled and no valid <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> was provided by setting the <paramref name="equalityComparer"/> parameter, the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>When the <paramref name="propertyName"/> value is <c>NULL</c>, the <paramref name="value"/> is validated without generating an error. This is because validation errors are always related to a particular property.</para></remarks>
         </member>
@@ -4665,7 +4600,7 @@
             <param name="newValue">The new value which is to be set to the property.</param>
             <param name="oldValue">The current value.</param>
             <param name="asyncValidationDelegate">The asynchronous callback that is used to validate the new value.</param>
-            <param name="backingFieldSetterDelegate">A <see cref="T:BionicCode.Utilities.Net.SetBackingFieldDelegate`1"/>. This delegate is required to set the backingfield of a property by an async method. Async methods can't define <c>ref</c> parameters.</param>
+            <param name="backingFieldSetterDelegate">A <see cref="T:BionicCode.Utilities.Net.SetBackingFieldDelegate`1"/>. This delegate is required to set the backing field of a property by an async method. Async methods can't define <c>ref</c> parameters.</param>
             <param name="propertyName">The name of the property to set. Default name is the property that called this method.
             <br/>Use <c>null</c> to validate the value without generating an error.</param>
             <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="asyncValidationDelegate"/> is <c>NULL</c>.</exception>
@@ -4683,7 +4618,7 @@
             <param name="newValue">The new value which is to be set to the property.</param>
             <param name="oldValue">The current value.</param>
             <param name="asyncValidationDelegate">The asynchronous callback that is used to validate the new value.</param>
-            <param name="backingFieldSetterDelegate">A <see cref="T:BionicCode.Utilities.Net.SetBackingFieldDelegate`1"/>. This delegate is required to set the backingfield of a property by an async method. Async methods can't define <c>ref</c> parameters.</param>
+            <param name="backingFieldSetterDelegate">A <see cref="T:BionicCode.Utilities.Net.SetBackingFieldDelegate`1"/>. This delegate is required to set the backing field of a property by an async method. Async methods can't define <c>ref</c> parameters.</param>
             <param name="methodConfiguration">A <see cref="T:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions"/> object to configure the behavior of the method.</param>
             <param name="propertyName">The name of the property to set. Default name is the property that called this method.
             <br/>Use <c>null</c> to validate the value without generating an error.</param>
@@ -4694,7 +4629,7 @@
             <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
             <br/> it is recommended to set <paramref name="methodConfiguration"/> property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsThrowExceptionOnValidationErrorEnabled"/> to <c>true</c>.
             <br/>If not doing so, the binding target will clear the new value and show the last valid value instead.
-            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>true</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="newValue"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
         </member>
@@ -4706,7 +4641,7 @@
             <param name="newValue">The new value which is to be set to the property.</param>
             <param name="oldValue">The current value.</param>
             <param name="asyncValidationDelegate">The asynchronous callback that is used to validate the new value.</param>
-            <param name="backingFieldSetterDelegate">A <see cref="T:BionicCode.Utilities.Net.SetBackingFieldDelegate`1"/>. This delegate is required to set the backingfield of a property by an async method. Async methods can't define <c>ref</c> parameters.</param>
+            <param name="backingFieldSetterDelegate">A <see cref="T:BionicCode.Utilities.Net.SetBackingFieldDelegate`1"/>. This delegate is required to set the backing field of a property by an async method. Async methods can't define <c>ref</c> parameters.</param>
             <param name="methodConfiguration">A <see cref="T:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions"/> object to configure the behavior of the method.</param>
             <param name="propertyName">The name of the property to set. Default name is the property that called this method.
             <br/>Use <c>null</c> to validate the value without generating an error.</param>
@@ -4718,7 +4653,7 @@
             <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
             <br/> it is recommended to set <paramref name="methodConfiguration"/> property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsThrowExceptionOnValidationErrorEnabled"/> to <c>true</c>.
             <br/>If not doing so, the binding target will clear the new value and show the last valid value instead.
-            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>true</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/><br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="newValue"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
         </member>
@@ -4730,7 +4665,7 @@
             <param name="newValue">The new value which is to be set to the property.</param>
             <param name="oldValue">The current value.</param>
             <param name="asyncValidationDelegate">The asynchronous callback that is used to validate the new value.</param>
-            <param name="backingFieldSetterDelegate">A <see cref="T:BionicCode.Utilities.Net.SetBackingFieldDelegate`1"/>. This delegate is required to set the backingfield of a property by an async method. Async methods can't define <c>ref</c> parameters.</param>
+            <param name="backingFieldSetterDelegate">A <see cref="T:BionicCode.Utilities.Net.SetBackingFieldDelegate`1"/>. This delegate is required to set the backing field of a property by an async method. Async methods can't define <c>ref</c> parameters.</param>
             <param name="propertyName">The name of the property to set. Default name is the property that called this method.
             <br/>Use <c>null</c> to validate the value without generating an error.</param>
             <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="asyncValidationDelegate"/> is <c>NULL</c>.</exception>
@@ -4748,7 +4683,7 @@
             <param name="newValue">The new value which is to be set to the property.</param>
             <param name="oldValue">The current value.</param>
             <param name="asyncValidationDelegate">The asynchronous callback that is used to validate the new value.</param>
-            <param name="backingFieldSetterDelegate">A <see cref="T:BionicCode.Utilities.Net.SetBackingFieldDelegate`1"/>. This delegate is required to set the backingfield of a property by an async method. Async methods can't define <c>ref</c> parameters.</param>
+            <param name="backingFieldSetterDelegate">A <see cref="T:BionicCode.Utilities.Net.SetBackingFieldDelegate`1"/>. This delegate is required to set the backing field of a property by an async method. Async methods can't define <c>ref</c> parameters.</param>
             <param name="methodConfiguration">A <see cref="T:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions"/> object to configure the behavior of the method.</param>
             <param name="propertyName">The name of the property to set. Default name is the property that called this method.
             <br/>Use <c>null</c> to validate the value without generating an error.</param>
@@ -4759,7 +4694,7 @@
             <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
             <br/> it is recommended to set <paramref name="methodConfiguration"/> property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsThrowExceptionOnValidationErrorEnabled"/> to <c>true</c>.
             <br/>If not doing so, the binding target will clear the new value and show the last valid value instead.
-            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>true</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="newValue"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
         </member>
@@ -4771,7 +4706,7 @@
             <param name="newValue">The new value which is to be set to the property.</param>
             <param name="oldValue">The current value.</param>
             <param name="asyncValidationDelegate">The asynchronous callback that is used to validate the new value.</param>
-            <param name="backingFieldSetterDelegate">A <see cref="T:BionicCode.Utilities.Net.SetBackingFieldDelegate`1"/>. This delegate is required to set the backingfield of a property by an async method. Async methods can't define <c>ref</c> parameters.</param>
+            <param name="backingFieldSetterDelegate">A <see cref="T:BionicCode.Utilities.Net.SetBackingFieldDelegate`1"/>. This delegate is required to set the backing field of a property by an async method. Async methods can't define <c>ref</c> parameters.</param>
             <param name="methodConfiguration">A <see cref="T:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions"/> object to configure the behavior of the method.</param>
             <param name="propertyName">The name of the property to set. Default name is the property that called this method.
             <br/>Use <c>null</c> to validate the value without generating an error.</param>
@@ -4783,7 +4718,7 @@
             <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
             <br/> it is recommended to set <paramref name="methodConfiguration"/> property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsThrowExceptionOnValidationErrorEnabled"/> to <c>true</c>.
             <br/>If not doing so, the binding target will clear the new value and show the last valid value instead.
-            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>true</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="newValue"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
         </member>
@@ -4862,7 +4797,7 @@
             <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
             <br/> it is recommended to set <paramref name="methodConfiguration"/> property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsThrowExceptionOnValidationErrorEnabled"/> to <c>true</c>.
             <br/>If not doing so, the binding target will clear the new value and show the last valid value instead.
-            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>true</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="value"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
         </member>
@@ -4884,7 +4819,7 @@
             <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
             <br/> it is recommended to set <paramref name="methodConfiguration"/> property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsThrowExceptionOnValidationErrorEnabled"/> to <c>true</c>.
             <br/>If not doing so, the binding target will clear the new value and show the last valid value instead.
-            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>true</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="value"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
         </member>
@@ -4942,7 +4877,7 @@
             <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
             <br/> it is recommended to set <paramref name="methodConfiguration"/> property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsThrowExceptionOnValidationErrorEnabled"/> to <c>true</c>.
             <br/>If not doing so, the binding target will clear the new value and show the last valid value instead.
-            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>true</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="value"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
         </member>
@@ -4964,7 +4899,7 @@
             <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
             <br/> it is recommended to set <paramref name="methodConfiguration"/> property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsThrowExceptionOnValidationErrorEnabled"/> to <c>true</c>.
             <br/>If not doing so, the binding target will clear the new value and show the last valid value instead.
-            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>true</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="value"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
         </member>
@@ -5023,7 +4958,7 @@
             <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
             <br/> it is recommended to set <paramref name="methodConfiguration"/> property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsThrowExceptionOnValidationErrorEnabled"/> to <c>true</c>.
             <br/>If not doing so, the binding target will clear the new value and show the last valid value instead.
-            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>true</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="newValue"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
         </member>
@@ -5046,7 +4981,7 @@
             <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
             <br/> it is recommended to set <paramref name="methodConfiguration"/> property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsThrowExceptionOnValidationErrorEnabled"/> to <c>true</c>.
             <br/>If not doing so, the binding target will clear the new value and show the last valid value instead.
-            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>true</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="newValue"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
         </member>
@@ -5107,7 +5042,7 @@
             <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
             <br/> it is recommended to set <paramref name="methodConfiguration"/> property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsThrowExceptionOnValidationErrorEnabled"/> to <c>true</c>.
             <br/>If not doing so, the binding target will clear the new value and show the last valid value instead.
-            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>true</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="newValue"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
         </member>
@@ -5130,7 +5065,7 @@
             <br/> To support visual validation error feed back and proper behavior in <c>TwoWay</c> binding scenarios where the validation mode <c>Binding.ValidatesOnExceptions</c> of the <c>System.Windows.Binding</c> is set to <c>true</c>, 
             <br/> it is recommended to set <paramref name="methodConfiguration"/> property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsThrowExceptionOnValidationErrorEnabled"/> to <c>true</c>.
             <br/>If not doing so, the binding target will clear the new value and show the last valid value instead.
-            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>trur</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
+            <br/>If equality checking is enabled by setting the <paramref name="methodConfiguration"/> parameter's property <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.SetValueOptions.IsRejectEqualValuesEnabled"/> to <c>true</c> (the parameter defaults to <c>true</c>) and the new value equals the old value, then the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event won't be raised. 
             <br/>Equality checking is enabled by default and the method will check for reference equality using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/>.
             <para>When the <paramref name="propertyName"/> value is <c>null</c>, the <paramref name="newValue"/> is validated without generating an error. Validation errors are always related to a particular property.</para></remarks>
         </member>
@@ -5202,7 +5137,7 @@
             <typeparam name="TValue"></typeparam>
             <param name="value">The value to validate.</param>
             <param name="propertyName">The name of the property to validate.</param>
-            <returns><c>true</c> if vcalidation passed or the property is not decorated with any validation attributes. Otherwise <c>false</c>.</returns>
+            <returns><c>true</c> if validation passed or the property is not decorated with any validation attributes. Otherwise <c>false</c>.</returns>
         </member>
         <member name="M:BionicCode.Utilities.Net.ViewModelCommon.ClearErrors(System.String)">
             <summary>
@@ -5257,15 +5192,15 @@
             When overridden, handles the <see cref="M:System.IProgress`1.Report(`0)"/> that is invoked by the <see cref="T:System.IProgress`1"/> instance returned from <see cref="M:BionicCode.Utilities.Net.ViewModelCommon.CreateProgressReporterFromCurrentThread"/>. Can be used as progress delegate for any <see cref="T:System.IProgress`1"/>.
             </summary>
             <param name="progress">The progress argument.</param>
-            <remarks>The default implementation provides the followwing logic: a value of <see cref="F:System.Double.NegativeInfinity"/> or <see cref="F:BionicCode.Utilities.Net.ViewModelCommon.DisableIndterminateMode"/> will automatically set the <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.IsIndeterminate"/> property to <c>false</c>. A value of <see cref="F:System.Double.PositiveInfinity"/> or <see cref="F:BionicCode.Utilities.Net.ViewModelCommon.EnableIndterminateMode"/> will automatically set the <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.IsIndeterminate"/> property to <c>true</c>.
+            <remarks>The default implementation provides the following logic: a value of <see cref="F:System.Double.NegativeInfinity"/> or <see cref="F:BionicCode.Utilities.Net.ViewModelCommon.DisableIndeterminateMode"/> will automatically set the <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.IsIndeterminate"/> property to <c>false</c>. A value of <see cref="F:System.Double.PositiveInfinity"/> or <see cref="F:BionicCode.Utilities.Net.ViewModelCommon.EnableIndeterminateMode"/> will automatically set the <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.IsIndeterminate"/> property to <c>true</c>.
             </remarks>
         </member>
-        <member name="F:BionicCode.Utilities.Net.ViewModelCommon.EnableIndterminateMode">
+        <member name="F:BionicCode.Utilities.Net.ViewModelCommon.EnableIndeterminateMode">
             <summary>
             Constant representing value of <see cref="F:System.Double.PositiveInfinity"/>. When assigned to <see cref="P:BionicCode.Utilities.Net.ProgressData.Progress"/> and when calling the default implementation of <see cref="M:BionicCode.Utilities.Net.ViewModelCommon.OnProgress(BionicCode.Utilities.Net.ProgressData)"/> the value will automatically set <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.IsIndeterminate"/> to <c>true</c>.
             </summary>
         </member>
-        <member name="F:BionicCode.Utilities.Net.ViewModelCommon.DisableIndterminateMode">
+        <member name="F:BionicCode.Utilities.Net.ViewModelCommon.DisableIndeterminateMode">
             <summary>
             Constant representing value of <see cref="F:System.Double.NegativeInfinity"/>. When assigned to <see cref="P:BionicCode.Utilities.Net.ProgressData.Progress"/> and when calling the default implementation of <see cref="M:BionicCode.Utilities.Net.ViewModelCommon.OnProgress(BionicCode.Utilities.Net.ProgressData)"/> the value will automatically set <see cref="P:BionicCode.Utilities.Net.ViewModelCommon.IsIndeterminate"/> to <c>false</c>.
             </summary>
@@ -5275,7 +5210,7 @@
             Creates a <see cref="T:System.IProgress`1"/> instance that is associated with the caller's thread.
             The registered progress callback is the virtual <c><see cref="T:BionicCode.Utilities.Net.ViewModelCommon"/>.OnProgress(ProgressData)</c> member.
             </summary>
-            <remarks>To create a <see cref="T:System.IProgress`1"/> instance that is associated with the application's primary dispatcher thread of a Windows targeting application, for example to update proerties that bind to a <c>DispatcherObject</c>, call <c>CreateProgressReporterFromUiThread</c>.</remarks>
+            <remarks>To create a <see cref="T:System.IProgress`1"/> instance that is associated with the application's primary dispatcher thread of a Windows targeting application, for example to update properties that bind to a <c>DispatcherObject</c>, call <c>CreateProgressReporterFromUiThread</c>.</remarks>
             <returns>A <see cref="T:System.IProgress`1"/> instance that posts progress to the thread <see cref="M:BionicCode.Utilities.Net.ViewModelCommon.CreateProgressReporterFromCurrentThread"/> was called from.</returns>
         </member>
         <member name="M:BionicCode.Utilities.Net.ViewModelCommon.OnProgressChanged(System.Double,System.Double)">
@@ -5317,6 +5252,165 @@
             Raised when the validation state of the view model has changed (e.g. error added or removed).
             </summary>
             <param name="propertyName"></param>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.DelegateSignatureEqualityComparer">
+            <summary>
+            Compares two delegates for equality.
+            </summary>
+            <remarks>
+            This equality comparison differs from the default implementation of <see cref="M:System.Delegate.Equals(System.Object)"/> and <see cref="M:System.MulticastDelegate.Equals(System.Object)"/>
+            in that it does not compare the delegate type. Different delegate types that reference the same target and have method signature and invocation list are considered equal.
+            <br/>
+            For example:
+            <code>
+            Action&lt;object, EventArgs&gt; action = SomeMethod;
+            EventHandler&lt;EventArgs&gt; eventHandler = SomeMethod;
+            
+            // Using the default comparison
+            bool isEqual = action.Equals(eventHandler); // FALSE
+            
+            // Using DelegateEqualityComparer comparison
+            var delegateSignatureEqualityComparer = new DelegateSignatureEqualityComparer();
+            isEqual = delegateSignatureEqualityComparer.Equals(action, eventHandler); // TRUE
+            
+            private void SomeMethod(object, EventArgs)
+            {
+            }
+            </code>
+            The two delegates do not have to be of the same type in order to be considered equal.
+            <para/>
+            Two <see cref="T:System.Delegate"/> are compared for equality as follows:
+            <list type="number">
+            <item>
+            The <see cref="P:System.Delegate.Method"/> values are compared using <see cref="M:System.Reflection.MethodInfo.Equals(System.Object)"/> to ensure one of the following conditions is true:
+              <list type="bullet">
+                <item>
+                  If the two methods being compared are both static and are the same method on the same class, the methods are considered equal and the targets are also considered equal.
+                </item>
+                <item>
+                   If the two methods being compared are instance methods and are the same method on the same object, the methods are considered equal.
+                </item>
+                <item>
+                  Otherwise, the methods are not considered to be equal and the targets are also not considered to be equal.
+                </item>
+              </list>
+            </item>
+            <item>
+            The <see cref="P:System.Delegate.Target"/> values are compared using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/> to ensure one of the following conditions is true:
+              <list type="bullet">
+                <item>
+                  If the two delegate targets being compared are both <see langword="null"/> (in case of static methods), the targets are considered equal and the targets are also considered equal.
+                </item>
+                <item>
+                  If the two delegate targets being compared are the same instance, the targets are considered equal.
+                </item>
+                <item>
+                  Otherwise, the delegate targets are not considered to be equal.
+                </item>
+              </list>
+            </item>
+            <item>
+            The invocation lists are compared to ensure all of the following conditions are satisfied:
+              <list type="bullet">
+                <item>
+                  Both invocation lists contain the same number of elements.
+                </item>
+                <item>
+                  Both invocation lists are ordered exactly the same,
+                  where both rules 1) and 2) must be satisfied. 
+                  <br/>This means every element in the invocation list of the first delegate is equal to the corresponding element in the invocation list of the second delegate.
+                </item>
+              </list>
+            </item>
+            </list> 
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.DelegateSignatureEqualityComparer.Equals(System.Delegate,System.Delegate)">
+            <summary>
+            Compares two delegates for equality.
+            </summary>
+            <remarks>
+            This equality comparison differs from the default implementation of <see cref="M:System.Delegate.Equals(System.Object)"/> and <see cref="M:System.MulticastDelegate.Equals(System.Object)"/>
+            in that it does not compare the delegate type. Different delegate types that reference the same target and have method signature and invocation list are considered equal.
+            <br/>
+            For example:
+            <code>
+            Action&lt;object, EventArgs&gt; action = SomeMethod;
+            EventHandler&lt;EventArgs&gt; eventHandler = SomeMethod;
+            
+            // Using the default comparison
+            bool isEqual = action.Equals(eventHandler); // FALSE
+            
+            // Using DelegateEqualityComparer comparison
+            var delegateSignatureEqualityComparer = new DelegateSignatureEqualityComparer();
+            isEqual = delegateSignatureEqualityComparer.Equals(action, eventHandler); // TRUE
+            
+            private void SomeMethod(object, EventArgs)
+            {
+            }
+            </code>
+            The two delegates do not have to be of the same type in order to be considered equal.
+            <para/>
+            Two <see cref="T:System.Delegate"/> are compared for equality as follows:
+            <list type="number">
+            <item>
+            The <see cref="P:System.Delegate.Method"/> values are compared using <see cref="M:System.Reflection.MethodInfo.Equals(System.Object)"/> to ensure one of the following conditions is true:
+              <list type="bullet">
+                <item>
+                  If the two methods being compared are both static and are the same method on the same class, the methods are considered equal and the targets are also considered equal.
+                </item>
+                <item>
+                   If the two methods being compared are instance methods and are the same method on the same object, the methods are considered equal.
+                </item>
+                <item>
+                  Otherwise, the methods are not considered to be equal and the targets are also not considered to be equal.
+                </item>
+              </list>
+            </item>
+            <item>
+            The <see cref="P:System.Delegate.Target"/> values are compared using <see cref="M:System.Object.ReferenceEquals(System.Object,System.Object)"/> to ensure one of the following conditions is true:
+              <list type="bullet">
+                <item>
+                  If the two delegate targets being compared are both <see langword="null"/> (in case of static methods), the targets are considered equal and the targets are also considered equal.
+                </item>
+                <item>
+                  If the two delegate targets being compared are the same instance, the targets are considered equal.
+                </item>
+                <item>
+                  Otherwise, the delegate targets are not considered to be equal.
+                </item>
+              </list>
+            </item>
+            <item>
+            The invocation lists are considered identical when all of the following conditions are satisfied:
+              <list type="bullet">
+                <item>
+                  Both invocation lists contain the same number of elements.
+                </item>
+                <item>
+                  Both invocation lists are ordered exactly the same,
+                  where both rules 1) and 2) must be satisfied. 
+                  <br/>This means every element in the invocation list of the first delegate is equal to the corresponding element in the invocation list of the second delegate.
+                </item>
+              </list>
+            </item>
+            </list> 
+            </remarks>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.WeakEventManager">
+            <summary>
+            Provides a base class for the event manager that is used in the weak event pattern. The manager adds and removes listenerHandlerMap for events (or callbacks) that also use the pattern.
+            </summary>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.WeakEventManager`2.DummyEventListenerForStaticEventHandlers">
+            <summary>
+            Event listener for static events (eventListenerHandlerMap that don't have a instance as target) used as key for storing static handlers in a table.
+            </summary>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.WeakEventManager`2.DummyEventSourceForStaticEventHandlers">
+            <summary>
+            Event listener for static events (eventListenerHandlerMap that don't have a instance as target) used as key for storing static handlers in a table.
+            </summary>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.DependencyInjection.AddFactory``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.DependencyInjection.ServiceLifetime)">
             <summary>

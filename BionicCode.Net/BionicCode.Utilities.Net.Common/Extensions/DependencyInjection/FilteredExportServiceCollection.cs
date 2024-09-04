@@ -14,25 +14,25 @@
       this.ServiceLifetime = serviceLifetime;
     }
 
-    public IFilteredExportServiceCollection WhereClassName(Predicate<string> filter)
+    public IFilteredExportServiceCollection WhereClassName(Func<string, bool> filter)
     {
       this.Source = this.Source.Where(type => filter.Invoke(type.Name));
       return this;
     }
 
-    public IFilteredExportServiceCollection WhereClassType(Predicate<Type> typeFilter)
+    public IFilteredExportServiceCollection WhereClassType(Func<Type, bool> typeFilter)
     {
-      this.Source = this.Source.Where(type => typeFilter.Invoke(type));
+      this.Source = this.Source.Where(typeFilter.Invoke);
       return this;
     }
 
-    public IFilteredExportServiceCollection WhereConstructor(Predicate<ConstructorInfo> constructorFilter)
+    public IFilteredExportServiceCollection WhereConstructor(Func<ConstructorInfo, bool> constructorFilter)
     {
       this.Source = this.Source.Where(type => type.GetConstructors(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic).Any(constructorInfo => constructorFilter.Invoke(constructorInfo)));
       return this;
     }
 
-    public IFilteredExportServiceCollection WhereClassAttribute(Predicate<Attribute> attributeFilter)
+    public IFilteredExportServiceCollection WhereClassAttribute(Func<Attribute, bool> attributeFilter)
     {
       this.Source = this.Source.Where(type => type.GetCustomAttributes().Any(attribute => attributeFilter(attribute)));
       return this;

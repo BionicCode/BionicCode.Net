@@ -31,24 +31,26 @@
     /// <inheritdoc />
     protected override void RemoveItem(int index)
     {
-      if (index < this.Count)
-      {
-        TItem item = this.Items[index];
-        if (item is INotifyPropertyChanged propertyChangedItem)
-        {
-          StopListenToItemPropertyChanged(propertyChangedItem);
-        }
-      }
+      CheckReentrancy();
 
+      TItem item = this.Items[index];
       base.RemoveItem(index);
+
+      if (item is INotifyPropertyChanged propertyChangedItem)
+      {
+        StopListenToItemPropertyChanged(propertyChangedItem);
+      }
     }
 
     /// <inheritdoc />
     protected override void ClearItems()
     {
-      this.Items.OfType<INotifyPropertyChanged>()
-        .ToList()
-        .ForEach(StopListenToItemPropertyChanged);
+      CheckReentrancy();
+
+      foreach (INotifyPropertyChanged item in this.Items.OfType<INotifyPropertyChanged>())
+      {
+        StopListenToItemPropertyChanged(item);
+      }
 
       base.ClearItems();
     }
@@ -56,17 +58,16 @@
     /// <inheritdoc />
     protected override void SetItem(int index, TItem item)
     {
-      if (index < this.Count)
-      {
-        if (this.Items[index] is INotifyPropertyChanged oldPropertyChangedItem)
-        {
-          StopListenToItemPropertyChanged(oldPropertyChangedItem);
-        }
+      CheckReentrancy();
 
-        if (item is INotifyPropertyChanged newPropertyChangedItem)
-        {
-          StartListenToItemPropertyChanged(newPropertyChangedItem);
-        }
+      if (this.Items[index] is INotifyPropertyChanged oldPropertyChangedItem)
+      {
+        StopListenToItemPropertyChanged(oldPropertyChangedItem);
+      }
+
+      if (item is INotifyPropertyChanged newPropertyChangedItem)
+      {
+        StartListenToItemPropertyChanged(newPropertyChangedItem);
       }
 
       base.SetItem(index, item);
@@ -77,48 +78,23 @@
 #if NET461_OR_GREATER || NET
       PropertyChangedEventManager.AddHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
 #else
-      propertyChangedItem.PropertyChanged += OnItemPropertyChanged;
+      // TODO::Use custom WeakEventManager for .NET Standard support
+      WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddEventHandler(propertyChangedItem, nameof(INotifyPropertyChanged.PropertyChanged), OnItemPropertyChanged);
 #endif
 
     private void StopListenToItemPropertyChanged(INotifyPropertyChanged propertyChangedItem) =>
 #if NET461_OR_GREATER || NET
       PropertyChangedEventManager.RemoveHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
 #else
-      propertyChangedItem.PropertyChanged -= OnItemPropertyChanged;
+      // TODO::Use custom WeakEventManager for .NET Standard support
+      WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.RemoveEventHandler(propertyChangedItem, nameof(INotifyPropertyChanged.PropertyChanged), OnItemPropertyChanged);
 #endif
 
     #endregion Overrides of ObservableCollection<TItem>
 
-    private PropertyChangedEventHandler childPropertyChanged;
-
-    #region Overrides of ObservableCollection<TItem>
-
-    /// <inheritdoc />
-#if NET
-    protected override event PropertyChangedEventHandler? PropertyChanged
-#else
-    protected override event PropertyChangedEventHandler PropertyChanged
-#endif
-    {
-      add
-      {
-        base.PropertyChanged += value;
-        this.childPropertyChanged = (PropertyChangedEventHandler)Delegate.Combine(this.childPropertyChanged, value);
-      }
-      remove
-      {
-        base.PropertyChanged -= value;
-        this.childPropertyChanged = (PropertyChangedEventHandler)Delegate.Remove(this.childPropertyChanged, value);
-      }
-    }
-
-    #endregion
+    public PropertyChangedEventHandler ItemPropertyChanged;
 
     private void OnItemPropertyChanged(object item, PropertyChangedEventArgs e)
-    {
-      OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, IndexOf((TItem)item), IndexOf((TItem)item)));
-
-      this.childPropertyChanged?.Invoke(item, e);
-    }
-  }
+      => this.ItemPropertyChanged?.Invoke(item, e);
+  }  
 }

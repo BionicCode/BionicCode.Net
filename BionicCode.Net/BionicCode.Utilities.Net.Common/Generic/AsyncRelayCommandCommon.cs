@@ -10,7 +10,7 @@ namespace BionicCode.Utilities.Net
   /// <summary>
   /// A reusable command that encapsulates the implementation of <see cref="ICommand"/> with support for async/await command delegates. 
   /// <br/>Enables instant creation of an ICommand without implementing the ICommand interface for each command.
-  /// The <see cref="AsyncRelayCommandCommon{TParam}"/> accepts asynchronous command handlers and supports data bindng to properties like <see cref="AsyncRelayCommandCommon.IsExecuting"/> by implementing <see cref="INotifyPropertyChanged"/>.
+  /// The <see cref="AsyncRelayCommandCommon{TParam}"/> accepts asynchronous command handlers and supports data binding to properties like <see cref="AsyncRelayCommandCore.IsExecuting"/> by implementing <see cref="INotifyPropertyChanged"/>.
   /// <br/>Call and await the <see cref="ExecuteAsync(TParam)"/> method or one of its overloads to execute the command explicitly asynchronously.
   ///   <seealso cref="System.Windows.Input.ICommand" />
   /// </summary>
@@ -28,7 +28,7 @@ namespace BionicCode.Utilities.Net
     /// The registered execute delegate that accepts a parameter of <typeparamref name="TParam"/>.
     /// </summary>
     /// <value>
-    /// A delegate that suppoprts cancellation and takes a command parameter of <typeparamref name="TParam"/> and returns a <see cref="Task"/>.</value>
+    /// A delegate that supports cancellation and takes a command parameter of <typeparamref name="TParam"/> and returns a <see cref="Task"/>.</value>
     private readonly Action<TParam, CancellationToken> executeCancellableDelegate;
 
     /// <summary>
@@ -41,7 +41,7 @@ namespace BionicCode.Utilities.Net
     #region Constructors
 
     /// <summary>
-    ///   Creates a new synchronous command that can always execute (<see cref="CanExecute()"/> will always return <c>true</c>)
+    ///   Creates a new synchronous command that can always execute (<see cref="CanExecute"/> will always return <c>true</c>)
     ///   <br/> and accepts a command parameter of type <typeparamref name="TParam"/>.
     /// </summary>
     /// <param name="execute">The execute handler.</param>
@@ -51,7 +51,7 @@ namespace BionicCode.Utilities.Net
     }
 
     /// <summary>
-    ///   Creates a new synchronous command that can always execute (<see cref="CanExecute()"/> will always return <c>true</c>) 
+    ///   Creates a new synchronous command that can always execute (<see cref="CanExecute"/> will always return <c>true</c>) 
     ///   <br/>and accepts a command parameter of type <typeparamref name="TParam"/>
     ///   <br/>and supports cancellation.
     /// </summary>
@@ -62,7 +62,7 @@ namespace BionicCode.Utilities.Net
     }
 
     /// <summary>
-    ///   Creates a new asynchronous command that can always execute (<see cref="CanExecute()"/> will always return <c>true</c>) 
+    ///   Creates a new asynchronous command that can always execute (<see cref="CanExecute"/> will always return <c>true</c>) 
     ///   <br/>and that accepts a command parameter of type <typeparamref name="TParam"/>
     ///   <br/>and supports cancellation.
     /// </summary>
@@ -73,7 +73,7 @@ namespace BionicCode.Utilities.Net
     }
 
     /// <summary>
-    ///   Creates a new asynchronous command that can always execute (<see cref="CanExecute()"/> will always return <c>true</c>) 
+    ///   Creates a new asynchronous command that can always execute (<see cref="CanExecute"/> will always return <c>true</c>) 
     ///   <br/>and that accepts a command parameter of type <typeparamref name="TParam"/>.
     /// </summary>
     /// <param name="executeAsync">The awaitable execute handler.</param>
@@ -126,12 +126,12 @@ namespace BionicCode.Utilities.Net
         throw new ArgumentNullException(nameof(executeAsync));
       }
 
-      this.executeCancellableAsyncDelegate = (commandParameter, cancellationToken) => executeAsync.Invoke(commandParameter, cancellationToken);
+      this.executeCancellableAsyncDelegate = executeAsync;
       this.canExecuteDelegate = canExecute?.ToFunc();
     }
 
     /// <summary>
-    ///   Creates a new synchronous command that supports cancellation adn accepts a command parameter of type <typeparamref name="TParam"/>.
+    ///   Creates a new synchronous command that supports cancellation and accepts a command parameter of type <typeparamref name="TParam"/>.
     /// </summary>
     /// <param name="execute">The execute handler.</param>
     /// <param name="canExecute">The can execute handler.</param>
@@ -142,7 +142,7 @@ namespace BionicCode.Utilities.Net
         throw new ArgumentNullException(nameof(execute));
       }
 
-      this.executeCancellableDelegate = (commandParameter, cancellationToken) => execute.Invoke(commandParameter, cancellationToken);
+      this.executeCancellableDelegate = execute;
       this.canExecuteDelegate = canExecute?.ToFunc();
     }
 

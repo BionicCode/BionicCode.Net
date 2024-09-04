@@ -138,8 +138,8 @@
         return this.ScopedFactory.Create();
       }
 
-      if (this.FactoryMode == FactoryMode.Singleton
-        || this.FactoryMode == FactoryMode.Scoped)
+      if (this.FactoryMode is FactoryMode.Singleton
+        || this.FactoryMode is FactoryMode.Scoped)
       {
         if (!this.IsInitialized)
         {
@@ -161,8 +161,8 @@
         return this.ScopedFactory.Create(args);
       }
 
-      if (this.FactoryMode == FactoryMode.Singleton
-        || this.FactoryMode == FactoryMode.Scoped)
+      if (this.FactoryMode is FactoryMode.Singleton
+        || this.FactoryMode is FactoryMode.Scoped)
       {
         if (!this.IsInitialized)
         {

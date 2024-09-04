@@ -1,7 +1,6 @@
 ﻿
 namespace BionicCode.Utilities.Net
 {
-#if NET || NET461_OR_GREATER
   using System;
   using System.Collections.Generic;
   using System.Linq;
@@ -30,16 +29,16 @@ namespace BionicCode.Utilities.Net
     /// </summary>
     /// <param name="attachingElement">The <see cref="System.Windows.Controls.Primitives.Popup"/> element.</param>
     /// <param name="value"><c>true</c> to enable the behavior or <c>false</c> to disable it.</param>
-    public static void SetIsSticky(DependencyObject attachingElement, bool value) =>
-      attachingElement.SetValue(PopupService.IsStickyProperty, value);
+    public static void SetIsSticky(DependencyObject attachingElement, bool value) 
+      => attachingElement.SetValue(PopupService.IsStickyProperty, value);
 
     /// <summary>
     /// Get method of the attachecd <see cref="IsStickyProperty"/> property.
     /// </summary>
     /// <param name="attachingElement">The <see cref="System.Windows.Controls.Primitives.Popup"/> element.</param>
     /// <returns><c>true</c> if the behavior is enabled or <c>false</c> if disabled.</returns>
-    public static bool GetIsSticky(DependencyObject attachingElement) =>
-      (bool)attachingElement.GetValue(PopupService.IsStickyProperty);
+    public static bool GetIsSticky(DependencyObject attachingElement) 
+      => (bool)attachingElement.GetValue(PopupService.IsStickyProperty);
 
     #endregion
 
@@ -90,12 +89,12 @@ namespace BionicCode.Utilities.Net
         PopupService.WindowToPopupsMap.Add(window, new List<System.Windows.Controls.Primitives.Popup>() { popup });
       }
 
-      WeakEventManager<Window, EventArgs>.AddHandler(
+      System.Windows.WeakEventManager<Window, EventArgs>.AddHandler(
         window,
         nameof(Window.LocationChanged),
         PopupService.UpdatePopup_OnParentWindowMoved);
 
-      WeakEventManager<Window, SizeChangedEventArgs>.AddHandler(
+      System.Windows.WeakEventManager<Window, SizeChangedEventArgs>.AddHandler(
         window,
         nameof(FrameworkElement.SizeChanged),
         PopupService.UpdatePopup_OnParentWindowSizeChanged);
@@ -114,12 +113,12 @@ namespace BionicCode.Utilities.Net
         }
       }
 
-      WeakEventManager<Window, EventArgs>.RemoveHandler(
+      System.Windows.WeakEventManager<Window, EventArgs>.RemoveHandler(
         window,
         nameof(Window.LocationChanged),
         PopupService.UpdatePopup_OnParentWindowMoved);
 
-      WeakEventManager<Window, SizeChangedEventArgs>.RemoveHandler(
+      System.Windows.WeakEventManager<Window, SizeChangedEventArgs>.RemoveHandler(
         window,
         nameof(FrameworkElement.SizeChanged),
         PopupService.UpdatePopup_OnParentWindowSizeChanged);
@@ -159,5 +158,4 @@ namespace BionicCode.Utilities.Net
       }
     }
   }
-#endif
 }

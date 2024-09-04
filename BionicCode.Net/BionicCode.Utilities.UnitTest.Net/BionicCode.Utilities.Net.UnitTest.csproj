@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Profiling\" />
+    <Folder Include="Profiling\ContextExecutables\Net6.0\" />
   </ItemGroup>
   
   <Target Name="MakeMyDir" AfterTargets="Build">

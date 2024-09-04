@@ -1,7 +1,7 @@
 ﻿
 #if NET472_OR_GREATER
 
-[assembly: System.Reflection.AssemblyVersion("2.0")]
+//[assembly: System.Reflection.AssemblyVersion("2.0")]
 #endif
 namespace BionicCode.Utilities.Net
 {
@@ -54,7 +54,7 @@ namespace BionicCode.Utilities.Net
         Environment.TaskCompletionSource = new TaskCompletionSource<EnvironmentInfo>();
 
         ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_Processor");
-
+        
         try
         {
           var watcher = new ManagementOperationObserver();
@@ -108,7 +108,7 @@ namespace BionicCode.Utilities.Net
 
   public readonly struct EnvironmentInfo : IEquatable<EnvironmentInfo>
   {
-    private static double NanosecondsPerSecond = 1E9;
+    private static readonly double NanosecondsPerSecond = 1E9;
     public static EnvironmentInfo Default { get; } = new EnvironmentInfo("Unknown", -1, System.Environment.ProcessorCount, -1, -1, System.Environment.Is64BitProcess, System.Environment.Is64BitOperatingSystem, RuntimeEnvironment.GetSystemVersion());
 
     public EnvironmentInfo(string processorName, int processorCoreCount, int processorLogicalCoreCount, int thradCount, int processorSpeed, bool is64BitProcess, bool is64BitOperatingSystem, string runtimeVersion)

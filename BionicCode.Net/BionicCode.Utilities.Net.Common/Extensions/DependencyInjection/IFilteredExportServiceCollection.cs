@@ -5,10 +5,10 @@
 
   public interface IFilteredExportServiceCollection
   {
-    IFilteredExportServiceCollection WhereClassName(Predicate<string> nameFilter);
-    IFilteredExportServiceCollection WhereClassType(Predicate<Type> typeFilter);
-    IFilteredExportServiceCollection WhereConstructor(Predicate<ConstructorInfo> constructorFilter);
-    IFilteredExportServiceCollection WhereClassAttribute(Predicate<Attribute> attributeFilter);
+    IFilteredExportServiceCollection WhereClassName(Func<string, bool> nameFilter);
+    IFilteredExportServiceCollection WhereClassType(Func<Type, bool> typeFilter);
+    IFilteredExportServiceCollection WhereConstructor(Func<ConstructorInfo, bool> constructorFilter);
+    IFilteredExportServiceCollection WhereClassAttribute(Func<Attribute, bool> attributeFilter);
     IMultiExportServiceCollection Register();
   }
 }

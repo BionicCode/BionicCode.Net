@@ -14,11 +14,11 @@
           "BionicCode.Utilities.Net.Common.Isolation.Net6.dll": {}
         }
       },
-      "JetBrains.Annotations/2023.3.0": {
+      "JetBrains.Annotations/2024.2.0": {
         "runtime": {
           "lib/netstandard2.0/JetBrains.Annotations.dll": {
             "assemblyVersion": "4242.42.42.42",
-            "fileVersion": "2023.3.0.0"
+            "fileVersion": "2024.2.0.0"
           }
         }
       },
@@ -30,6 +30,8 @@
           }
         }
       },
+      "Microsoft.NETCore.Platforms/1.1.1": {},
+      "Microsoft.NETCore.Targets/1.1.3": {},
       "System.CodeDom/8.0.0": {
         "runtime": {
           "lib/net6.0/System.CodeDom.dll": {
@@ -67,6 +69,12 @@
             "assemblyVersion": "8.0.0.0",
             "fileVersion": "8.0.23.53103"
           }
+        }
+      },
+      "System.Runtime/4.3.1": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.1",
+          "Microsoft.NETCore.Targets": "1.1.3"
         }
       },
       "System.Runtime.Caching/8.0.0": {
@@ -116,7 +124,7 @@
           }
         }
       },
-      "System.Text.Json/8.0.3": {
+      "System.Text.Json/8.0.4": {
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0",
           "System.Text.Encodings.Web": "8.0.0"
@@ -124,20 +132,21 @@
         "runtime": {
           "lib/net6.0/System.Text.Json.dll": {
             "assemblyVersion": "8.0.0.0",
-            "fileVersion": "8.0.324.11423"
+            "fileVersion": "8.0.724.31311"
           }
         }
       },
+      "System.Threading.Tasks.Extensions/4.5.4": {},
       "BionicCode.Utilities.Net.Common/2.0.0": {
         "dependencies": {
-          "JetBrains.Annotations": "2023.3.0",
+          "JetBrains.Annotations": "2024.2.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.1",
-          "System.CodeDom": "8.0.0",
           "System.ComponentModel.Annotations": "5.0.0",
           "System.Management": "8.0.0",
+          "System.Runtime": "4.3.1",
           "System.Runtime.Caching": "8.0.0",
-          "System.Text.Encodings.Web": "8.0.0",
-          "System.Text.Json": "8.0.3"
+          "System.Text.Json": "8.0.4",
+          "System.Threading.Tasks.Extensions": "4.5.4"
         },
         "runtime": {
           "BionicCode.Utilities.Net.Common.dll": {}
@@ -151,12 +160,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "JetBrains.Annotations/2023.3.0": {
+    "JetBrains.Annotations/2024.2.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-PHfnvdBUdGaTVG9bR/GEfxgTwWM0Z97Y6X3710wiljELBISipSfF5okn/vz+C2gfO+ihoEyVPjaJwn8ZalVukA==",
-      "path": "jetbrains.annotations/2023.3.0",
-      "hashPath": "jetbrains.annotations.2023.3.0.nupkg.sha512"
+      "sha512": "sha512-GNnqCFW/163p1fOehKx0CnAqjmpPrUSqrgfHM6qca+P+RN39C9rhlfZHQpJhxmQG/dkOYe/b3Z0P8b6Kv5m1qw==",
+      "path": "jetbrains.annotations/2024.2.0",
+      "hashPath": "jetbrains.annotations.2024.2.0.nupkg.sha512"
     },
     "Microsoft.Extensions.DependencyInjection.Abstractions/8.0.1": {
       "type": "package",
@@ -164,6 +173,20 @@
       "sha512": "sha512-fGLiCRLMYd00JYpClraLjJTNKLmMJPnqxMaiRzEBIIvevlzxz33mXy39Lkd48hu1G+N21S7QpaO5ZzKsI6FRuA==",
       "path": "microsoft.extensions.dependencyinjection.abstractions/8.0.1",
       "hashPath": "microsoft.extensions.dependencyinjection.abstractions.8.0.1.nupkg.sha512"
+    },
+    "Microsoft.NETCore.Platforms/1.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TMBuzAHpTenGbGgk0SMTwyEkyijY/Eae4ZGsFNYJvAr/LDn1ku3Etp3FPxChmDp5HHF3kzJuoaa08N0xjqAJfQ==",
+      "path": "microsoft.netcore.platforms/1.1.1",
+      "hashPath": "microsoft.netcore.platforms.1.1.1.nupkg.sha512"
+    },
+    "Microsoft.NETCore.Targets/1.1.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3Wrmi0kJDzClwAC+iBdUBpEKmEle8FQNsCs77fkiOIw/9oYA07bL1EZNX0kQ2OMN3xpwvl0vAtOCYY3ndDNlhQ==",
+      "path": "microsoft.netcore.targets/1.1.3",
+      "hashPath": "microsoft.netcore.targets.1.1.3.nupkg.sha512"
     },
     "System.CodeDom/8.0.0": {
       "type": "package",
@@ -193,6 +216,13 @@
       "path": "system.management/8.0.0",
       "hashPath": "system.management.8.0.0.nupkg.sha512"
     },
+    "System.Runtime/4.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-abhfv1dTK6NXOmu4bgHIONxHyEqFjW8HwXPmpY9gmll+ix9UNo4XDcmzJn6oLooftxNssVHdJC1pGT9jkSynQg==",
+      "path": "system.runtime/4.3.1",
+      "hashPath": "system.runtime.4.3.1.nupkg.sha512"
+    },
     "System.Runtime.Caching/8.0.0": {
       "type": "package",
       "serviceable": true,
@@ -221,12 +251,19 @@
       "path": "system.text.encodings.web/8.0.0",
       "hashPath": "system.text.encodings.web.8.0.0.nupkg.sha512"
     },
-    "System.Text.Json/8.0.3": {
+    "System.Text.Json/8.0.4": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-hpagS9joOwv6efWfrMmV9MjQXpiXZH72PgN067Ysfr6AWMSD1/1hEcvh/U5mUpPLezEWsOJSuVrmqDIVD958iA==",
-      "path": "system.text.json/8.0.3",
-      "hashPath": "system.text.json.8.0.3.nupkg.sha512"
+      "sha512": "sha512-bAkhgDJ88XTsqczoxEMliSrpijKZHhbJQldhAmObj/RbrN3sU5dcokuXmWJWsdQAhiMJ9bTayWsL1C9fbbCRhw==",
+      "path": "system.text.json/8.0.4",
+      "hashPath": "system.text.json.8.0.4.nupkg.sha512"
+    },
+    "System.Threading.Tasks.Extensions/4.5.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zteT+G8xuGu6mS+mzDzYXbzS7rd3K6Fjb9RiZlYlJPam2/hU7JCBZBVEcywNuR+oZ1ncTvc/cq0faRr3P01OVg==",
+      "path": "system.threading.tasks.extensions/4.5.4",
+      "hashPath": "system.threading.tasks.extensions.4.5.4.nupkg.sha512"
     },
     "BionicCode.Utilities.Net.Common/2.0.0": {
       "type": "project",
