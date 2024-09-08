@@ -7,6 +7,7 @@
   using System.Text;
   using System.Threading.Tasks;
   using BionicCode.Utilities.Net.UnitTest.ReflectionExtensionMethodsTests.Resources.Public;
+  using Generic = BionicCode.Utilities.Net.UnitTest.ReflectionExtensionMethodsTests.Resources.Public.Generic;
   using FluentAssertions;
   using Xunit;
 
@@ -16,7 +17,9 @@
     private static readonly string TestDelegateWithoutReturnValueQualifiedDisplaySignatureName = $"public delegate void {nameof(TestDelegateWithoutReturnValue)}(int a, {typeof(TestClass).FullName} b, string text);";
     private static readonly string TestDelegateWithReturnValueDisplaySignatureName = $"public delegate int {nameof(TestDelegateWithReturnValue)}(int a, {nameof(TestClass)} b, string text);";
     private static readonly string TestDelegateWithReturnValueQualifiedDisplaySignatureName = $"public delegate int {nameof(TestDelegateWithReturnValue)}(int a, {typeof(TestClass).FullName} b, string text);";
-    
+
+    private static readonly string TestMethodGenericDisplaySignatureName = $"public TValue {nameof(TestClass.PublicGenericMethodWithReturnValue)}<TValue>(TValue parameter);";
+
     private static readonly string TestClassDisplaySignatureName = $"public class {nameof(TestClass)}";
     private static readonly string TestClassWithBaseClassDisplaySignatureName = $"public class {nameof(TestClassWithBaseClass)} : {nameof(TestClassBase)}";
 
@@ -31,13 +34,13 @@
     #region Delegate
 
     [Fact]
-    public void ToDisplayName_DelegateWithoutReturnValue_MustReturnFullDelegateSignature()
+    public void ToDisplayName_DelegateWithoutReturnValue_MustReturnDelegateSignature()
     {
       _ = typeof(TestDelegateWithoutReturnValue).ToDisplaySignatureName().Should().Be(TestDelegateWithoutReturnValueDisplaySignatureName);
     }
 
     [Fact]
-    public void ToDisplayName_DelegateWithReturnValue_MustReturnFullDelegateSignature()
+    public void ToDisplayName_DelegateWithReturnValue_MustReturnDelegateSignature()
     {
       _ = typeof(TestDelegateWithReturnValue).ToDisplaySignatureName().Should().Be(TestDelegateWithReturnValueDisplaySignatureName);
     }
@@ -47,13 +50,13 @@
     #region Class
 
     [Fact]
-    public void ToDisplayName_SimpleClass_MustReturnFullClassSignature()
+    public void ToDisplayName_SimpleClass_MustReturnClassSignature()
     {
       _ = typeof(TestClass).ToDisplaySignatureName().Should().Be(TestClassDisplaySignatureName);
     }
 
     [Fact]
-    public void ToDisplayName_ClassWithBaseClass_MustReturnFullClassSignature()
+    public void ToDisplayName_ClassWithBaseClass_MustReturnClassSignature()
     {
       _ = typeof(TestClassWithBaseClass).ToDisplaySignatureName().Should().Be(TestClassWithBaseClassDisplaySignatureName);
     }
@@ -63,13 +66,13 @@
     #region Struct
 
     [Fact]
-    public void ToDisplayName_SimpleStruct_MustReturnFullStructSignature()
+    public void ToDisplayName_SimpleStruct_MustReturnStructSignature()
     {
       _ = typeof(TestStruct).ToDisplaySignatureName().Should().Be(TestStructDisplaySignatureName);
     }
 
     [Fact]
-    public void ToDisplayName_SimpleReadOnlyStruct_MustReturnFullStructSignature()
+    public void ToDisplayName_SimpleReadOnlyStruct_MustReturnStructSignature()
     {
       _ = typeof(TestReadOnlyStruct).ToDisplaySignatureName().Should().Be(TestReadOnlyStructDisplaySignatureName);
     }
@@ -79,15 +82,21 @@
     #region Field
 
     [Fact]
-    public void ToDisplayName_ReadOnlyField_MustReturnFullFieldSignature()
+    public void ToDisplayName_ReadOnlyField_MustReturnFieldSignature()
     {
       _ = typeof(TestClass).GetField("readOnlyField", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).ToDisplaySignatureName().Should().Be(TestReadOnlyFieldDisplaySignatureName);
     }
 
     [Fact]
-    public void ToDisplayName_Field_MustReturnFullFieldSignature()
+    public void ToDisplayName_Field_MustReturnFieldSignature()
     {
       _ = typeof(TestClass).GetField("field", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).ToDisplaySignatureName().Should().Be(TestFieldDisplaySignatureName);
+    }
+
+    [Fact]
+    public void ToDisplayName_GenericMethod_MustReturnMethodSignature()
+    {
+      _ = typeof(TestClass).GetMethod(nameof(TestClass.PublicGenericMethodWithReturnValue)).ToDisplaySignatureName().Should().Be(TestMethodGenericDisplaySignatureName);
     }
 
     #endregion Field
@@ -101,6 +110,16 @@
     }
 
     #endregion Enum
+
+    #region Constructor
+
+    [Fact]
+    public void ToDisplayName_ConstructorWithParameter_MustReturnConstructorSignature()
+    {
+      _ = typeof(Generic.TestClass<string, int, TestClassWithInterfaces, TestClassWithBaseClass>).GetConstructor(new[] { typeof(int) }).ToDisplaySignatureName().Should().Be(TestMethodGenericDisplaySignatureName);
+    }
+
+    #endregion Constructor
   }
 
   public class ReflectionExtensionMethodsTestToQualifiedDisplaySignatureName

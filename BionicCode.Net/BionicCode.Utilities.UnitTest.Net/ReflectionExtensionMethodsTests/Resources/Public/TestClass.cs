@@ -10,6 +10,19 @@
   {
     private readonly string readOnlyField;
     private string field;
+
+    public TestClass(int parameter)
+    { }
+
+    public int PublicMethodWithReturnValue(string parameter)
+    {
+      return 0;
+    }
+
+    public TValue PublicGenericMethodWithReturnValue<TValue>(TValue parameter)
+    {
+      return default;
+    }
   }
 
   public struct TestStruct

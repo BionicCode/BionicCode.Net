@@ -8,6 +8,7 @@
   using System.Linq;
   using System.Reflection;
   using System.Runtime.CompilerServices;
+  using System.Runtime.InteropServices;
   using System.Text;
   using System.Threading.Tasks;
   using Microsoft.CSharp;
@@ -285,10 +286,10 @@
           .Append("this")
           .Append('[');
       }
-      else if (isConstructor)
-      {
-        _ = fullMemberNameBuilder.Append(constructorInfo.ToDisplayName());
-      }
+      //else if (isConstructor)
+      //{
+      //  _ = fullMemberNameBuilder.Append(constructorInfo.ToDisplayName());
+      //}
       else
       {
         // Set actual qualified type name
@@ -297,8 +298,8 @@
           //// Prefix with class name in case type is a member
           //if (memberInfo.DeclaringType != null)
           //{
-          //  //_ = fullMemberNameBuilder.Append(memberInfo.DeclaringType.ToDisplayName())
-          //  _ = fullMemberNameBuilder.Append(memberInfo.ToFullDisplayName())
+          //  //_ = symbolNameBuilder.Append(memberInfo.DeclaringType.ToDisplayName())
+          //  _ = symbolNameBuilder.Append(memberInfo.ToFullDisplayName())
           //    .Append('.');
           //}
 
@@ -541,7 +542,7 @@
     public static string ToFullDisplayName(this MemberInfo memberInfo)
       => ToDisplayNameInternal(memberInfo, isFullyQualified: true);
     //{
-    //  StringBuilder fullMemberNameBuilder = new StringBuilder(memberInfo is Type typeInfo
+    //  StringBuilder symbolNameBuilder = new StringBuilder(memberInfo is Type typeInfo
     //    ? $"{typeInfo.Namespace}.{typeInfo.ToDisplayName()}"
     //    : $"{memberInfo.DeclaringType.Namespace}.{memberInfo.DeclaringType.ToDisplayName()}.{memberInfo.Name}");
 
@@ -554,20 +555,20 @@
     //    || memberInfo.MemberType.HasFlag(MemberTypes.Property)
     //    || memberInfo.MemberType.HasFlag(MemberTypes.Event))
     //  {
-    //    return fullMemberNameBuilder.ToString();
+    //    return symbolNameBuilder.ToString();
     //  }
 
-    //  int indexOfGenericTypeArgumentStart = fullMemberNameBuilder.ToString().IndexOf('`');
+    //  int indexOfGenericTypeArgumentStart = symbolNameBuilder.ToString().IndexOf('`');
     //  Type[] genericTypeArguments = Array.Empty<Type>();
     //  if (memberInfo is Type type)
     //  {
-    //    _ = fullMemberNameBuilder.Clear()
+    //    _ = symbolNameBuilder.Clear()
     //      .Append(type.FullName);
     //    if (!type.IsGenericType)
     //    {
-    //      fullMemberNameBuilder = BuildInheritanceSignature(fullMemberNameBuilder, type, isFullyQualified: true);
+    //      symbolNameBuilder = BuildInheritanceSignature(symbolNameBuilder, type, isFullyQualified: true);
 
-    //      return fullMemberNameBuilder.ToString();
+    //      return symbolNameBuilder.ToString();
     //    }
 
     //    indexOfGenericTypeArgumentStart = type.FullName.IndexOf('`');
@@ -577,31 +578,31 @@
     //  {
     //    if (!methodInfo.IsGenericMethod)
     //    {
-    //      return fullMemberNameBuilder.ToString();
+    //      return symbolNameBuilder.ToString();
     //    }
 
     //    genericTypeArguments = methodInfo.GetGenericArguments();
     //  }
     //  else if (memberInfo is ConstructorInfo constructorInfo)
     //  {
-    //    _ = fullMemberNameBuilder.Clear()
+    //    _ = symbolNameBuilder.Clear()
     //      .Append($"{constructorInfo.DeclaringType.Namespace}.{constructorInfo.DeclaringType.ToDisplayName()}.{constructorInfo.DeclaringType.Name}");
     //    if (!constructorInfo.DeclaringType.IsGenericType)
     //    {
-    //      return fullMemberNameBuilder.ToString();
+    //      return symbolNameBuilder.ToString();
     //    }
 
-    //    indexOfGenericTypeArgumentStart = fullMemberNameBuilder.ToString().IndexOf('`');
+    //    indexOfGenericTypeArgumentStart = symbolNameBuilder.ToString().IndexOf('`');
     //  }
 
-    //  _ = fullMemberNameBuilder.Remove(indexOfGenericTypeArgumentStart, fullMemberNameBuilder.Length - indexOfGenericTypeArgumentStart);
-    //  fullMemberNameBuilder = FinishTypeNameConstruction(fullMemberNameBuilder, genericTypeArguments);
+    //  _ = symbolNameBuilder.Remove(indexOfGenericTypeArgumentStart, symbolNameBuilder.Length - indexOfGenericTypeArgumentStart);
+    //  symbolNameBuilder = FinishTypeNameConstruction(symbolNameBuilder, genericTypeArguments);
     //  if (memberInfo is Type superclass && superclass.BaseType != null)
     //  {
-    //    fullMemberNameBuilder = BuildInheritanceSignature(fullMemberNameBuilder, superclass, isFullyQualified: true);
+    //    symbolNameBuilder = BuildInheritanceSignature(symbolNameBuilder, superclass, isFullyQualified: true);
     //  }
 
-    //  return fullMemberNameBuilder.ToString();
+    //  return symbolNameBuilder.ToString();
     //}
 
     /// <summary>
@@ -618,8 +619,8 @@
     /// </remarks>
     private static string ToDisplayNameInternal(MemberInfo memberInfo, bool isFullyQualified)
     {
-      StringBuilder fullMemberNameBuilder = new StringBuilder();
-      //StringBuilder fullMemberNameBuilder = new StringBuilder(memberInfo is Type typeInfo
+      StringBuilder symbolNameBuilder = new StringBuilder();
+      //StringBuilder symbolNameBuilder = new StringBuilder(memberInfo is Type typeInfo
       //  ? $"{typeInfo.Namespace}.{typeInfo.ToDisplayName()}"
       //  : $"{memberInfo.DeclaringType.Namespace}.{memberInfo.DeclaringType.ToDisplayName()}.{memberInfo.Name}");
 
@@ -638,19 +639,20 @@
         // For example: System.Threading.Task.Run
         default:
          symbolName = isFullyQualified 
-            ? $"{memberInfo.DeclaringType.Namespace}.{ToDisplayNameInternal(memberInfo.DeclaringType, isFullyQualified)}.{memberInfo.Name}" 
-            : memberInfo.Name;
+            ? $"{ToDisplayNameInternal(memberInfo.DeclaringType, isFullyQualified)}." 
+            : string.Empty;
           break;
       }
 
-      _ = fullMemberNameBuilder.Append(symbolName);
+      _ = symbolNameBuilder.Append(symbolName);
 
       if (memberInfo.MemberType.HasFlag(MemberTypes.Field)
         || memberInfo.MemberType.HasFlag(MemberTypes.Property)
-        || memberInfo.MemberType.HasFlag(MemberTypes.Event)
-        || memberInfo.MemberType.HasFlag(MemberTypes.Constructor))
+        || memberInfo.MemberType.HasFlag(MemberTypes.Event))
       {
-        return fullMemberNameBuilder.ToString();
+        _ = symbolNameBuilder.Append(memberInfo.Name);
+
+        return symbolNameBuilder.ToString();
       }
 
       Type[] genericTypeArguments = Array.Empty<Type>();
@@ -660,40 +662,48 @@
         {
           if (!typeDeclaration.IsEnum)
           {
-            fullMemberNameBuilder = BuildInheritanceSignature(fullMemberNameBuilder, typeDeclaration, isFullyQualified);
+            symbolNameBuilder = BuildInheritanceSignature(symbolNameBuilder, typeDeclaration, isFullyQualified);
           }
 
-          return fullMemberNameBuilder.ToString();
+          return symbolNameBuilder.ToString();
+        }
+
+        if (typeDeclaration.IsGenericType)
+        {
+          _ = symbolNameBuilder.Remove(symbolNameBuilder.Length - 2, 2);
         }
 
         genericTypeArguments = typeDeclaration.GetGenericArguments();
       }
       else if (memberInfo is MethodInfo methodInfo)
       {
+        _ = symbolNameBuilder.Append(methodInfo.Name);
+
         if (!methodInfo.IsGenericMethod)
         {
-          return fullMemberNameBuilder.ToString();
+          return symbolNameBuilder.ToString();
         }
 
         genericTypeArguments = methodInfo.GetGenericArguments();
       }
-      //else if (memberInfo is ConstructorInfo constructorInfo)
-      //{
-      //  //_ = fullMemberNameBuilder.Clear()
-      //  //  .Append($"{constructorInfo.DeclaringType.Namespace}.{constructorInfo.DeclaringType.ToDisplayName()}.{constructorInfo.DeclaringType.Name}");
-      //  if (!constructorInfo.DeclaringType.IsGenericType)
-      //  {
-      //    return fullMemberNameBuilder.ToString();
-      //  }
-      //}
-
-      fullMemberNameBuilder = FinishTypeNameConstruction(fullMemberNameBuilder, genericTypeArguments);
-      if (memberInfo is Type superclass && superclass.BaseType != null)
+      else if (memberInfo is ConstructorInfo constructorInfo)
       {
-        fullMemberNameBuilder = BuildInheritanceSignature(fullMemberNameBuilder, superclass, isFullyQualified: true);
+        _ = symbolNameBuilder.Append(constructorInfo.DeclaringType.Name);
+        if (constructorInfo.DeclaringType.IsGenericType)
+        {
+          _ = symbolNameBuilder.Remove(symbolNameBuilder.Length - 2, 2);
+        }
+
+        return symbolNameBuilder.ToString();
       }
 
-      return fullMemberNameBuilder.ToString();
+      symbolNameBuilder = FinishTypeNameConstruction(symbolNameBuilder, genericTypeArguments);
+      if (memberInfo is Type superclass && superclass.BaseType != null)
+      {
+        symbolNameBuilder = BuildInheritanceSignature(symbolNameBuilder, superclass, isFullyQualified: true);
+      }
+
+      return symbolNameBuilder.ToString();
     }
 
     private static StringBuilder FinishTypeNameConstruction(StringBuilder nameBuilder, Type[] genericTypeArguments)
