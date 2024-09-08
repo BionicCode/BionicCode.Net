@@ -21,8 +21,10 @@
 
         Debug.Assert(ManagedWeakTable.ItemsInternal.Count(entry => entry.Key == eventSourceType) < 2);
 
-        foreach (ManagedWeakTableEntry managedWeakTableEntry in entries)
+        var tableEntries = entries.ToList();
+        for (int entryIndex = 0; entryIndex < tableEntries.Count; entryIndex++)
         {
+          ManagedWeakTableEntry managedWeakTableEntry = tableEntries[entryIndex];
           if (!(managedWeakTableEntry is TEntry tableEntry))
           {
             continue;
@@ -40,7 +42,24 @@
           else
           {
             // ManagedReference was garbage collected and is therefore eligible for recycling
-            tableEntry.Recycle();
+            Debug.WriteLine("Failed to get entry because entry is expired ==> Recycle ");
+            if (tableEntry is IPurgeable purgeableEntry)
+            {
+              _ = purgeableEntry.TryPurge(isForced: true);
+            }
+            else
+            {
+              tableEntry.Recycle();
+            }
+
+            bool isRemoved = entries.Remove(managedWeakTableEntry);
+            Debug.Assert(isRemoved);
+
+            if (!entries.Any())
+            {
+              isRemoved = ManagedWeakTable.ItemsInternal.Remove(eventSourceType);
+              Debug.Assert(isRemoved);
+            }
           }
         }
       }

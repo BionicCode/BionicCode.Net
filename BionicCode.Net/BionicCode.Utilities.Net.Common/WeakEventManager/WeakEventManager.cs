@@ -10,7 +10,10 @@
   /// </summary>
   public abstract class WeakEventManager
   {
+    protected static int registeredEventHandlerCount;
+    protected static int unregisteredEventHandlerCount;
     public bool IsListening { get; private set; }
+    public bool IsPurged { get; protected set; }
     protected Delegate ProxyEventHandler { get; set; }
     protected EventInfo EventSourceEventInfo { get; set; }
     protected HashSet<WeakReference<object>> EventListeners { get; }

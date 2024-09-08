@@ -2,6 +2,6 @@
 {
   internal interface IPurgeable
   {
-    bool TryPurge();
+    bool TryPurge(bool isForced);
   }
 }

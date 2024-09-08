@@ -6,7 +6,6 @@
 
   internal abstract class ManagedWeakTableEntry : IPurgeable
   {
-    private static readonly List<WeakReference<object>> RecycledWeakReferences = new List<WeakReference<object>>();
     public WeakReference<object> EventSource { get; }
     public Type EventSourceType { get; }
     public string EventName { get; }
@@ -35,24 +34,14 @@
       this.EventName = eventName;
     }
 
-    public abstract bool TryPurge();
+    public abstract bool TryPurge(bool isForced);
 
     public virtual void Recycle()
       => RecycleInternal();
 
     protected WeakReference<object> InitializeWeakReference(object eventParticipant)
     {
-      WeakReference<object> eventTargetReference;
-      if (RecycledWeakReferences.Any())
-      {
-        eventTargetReference = RecycledWeakReferences.Last();
-        eventTargetReference.SetTarget(eventParticipant);
-      }
-      else
-      {
-        eventTargetReference = new WeakReference<object>(eventParticipant, trackResurrection: false);
-      }
-
+      WeakReference<object> eventTargetReference = ManagedWeakTable.GetOrCreateWeakReference(eventParticipant);
       return eventTargetReference;
     }
 
@@ -70,7 +59,7 @@
       }
 
       weakReference.SetTarget(null);
-      RecycledWeakReferences.Add(weakReference);
+      ManagedWeakTable.RecycleWeakReference(weakReference);
     }
   }
 }

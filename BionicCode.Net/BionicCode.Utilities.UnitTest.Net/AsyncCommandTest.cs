@@ -325,19 +325,14 @@
         .Should().BeFalse("command parameter is invalid.");
 
     [Fact]
-    public void ParameterlessCanExecuteReturnsResultOfRegisteredCanExecuteHandler()
-      => _ = this.AsyncTestCommand.CanExecute()
-        .Should().Be(CanExecuteTestCommand(null), "command was created with a CanExecute delgate, but is invoked using the parameterles CanEWxecute().");
-
-    [Fact]
     public void ParameterlessCanExecuteReturnsTrueForNonValidatingCommand()
-      => _ = this.AsyncNonValidatingTestCommand.CanExecute()
-        .Should().BeTrue("command was created withou defining a CanExecute delegate.");
+      => _ = this.AsyncNonValidatingTestCommand.CanExecute(this.InvalidCommandParameter)
+        .Should().BeTrue("command was created without defining a CanExecute delegate. Therefore the default is used which always returns TRUE.");
 
     [Fact]
     public void CanExecuteWithInvalidParameterReturnsTrueForNonValidatingCommand()
       => _ = this.AsyncNonValidatingTestCommand.CanExecute(this.InvalidCommandParameter)
-        .Should().BeTrue("command was created withou defining a CanExecute delegate.");
+        .Should().BeTrue("command was created without defining a CanExecute delegate. Therefore the default is used which always returns TRUE.");
 
     [Fact]
     public void InvalidCommandParameterReturnsCanExecuteFalseForSynchronousCommand()
@@ -536,13 +531,13 @@
     }
 
     [Fact]
-    public async Task ExecutingCommandTwoTimesAndCancelSecondPendingThenIsPendingCancelledMustBeTrue()
+    public async Task ExecutingCommandTwoTimesAndCancelSecondPendingThenIsCancelledMustBeTrue()
     {
       Task task1 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter);
       Task task2 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter)
         .ContinueWith(task =>
         {
-          _ = this.AsyncCancellableTestCommand.IsPendingCancelled.Should().BeTrue();
+          _ = this.AsyncCancellableTestCommand.IsCancelled.Should().BeTrue();
           this.AsyncCancellableTestCommand.CancelAll();
         });
       var tasks = Task.WhenAll(task1, task2);
@@ -855,11 +850,12 @@
     public async Task ExecutingCommandWithCancellationTokenMustBeCancelled()
     {
       using var cancellationTokenSource = new CancellationTokenSource();
-      Task task = this.CancellableTestCommand.ExecuteAsync(cancellationTokenSource.Token)
+      Task task = this.CancellableTestCommand.ExecuteAsync(this.ValidCommandParameter, cancellationTokenSource.Token)
         .ContinueWith(task => task.Status.Should().Be(TaskStatus.Canceled));
       _ = Task.Run(() => task);
       await Task.Delay(TimeSpan.FromMicroseconds(5));
       cancellationTokenSource.Cancel();
+      _ = this.CancellableTestCommand.IsCancelled.Should().BeTrue();
     }
 
     [Fact]

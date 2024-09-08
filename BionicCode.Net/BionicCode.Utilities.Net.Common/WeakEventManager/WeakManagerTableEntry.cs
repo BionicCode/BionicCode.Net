@@ -17,16 +17,17 @@
       base.Recycle();
     }
 
-    public override bool TryPurge()
+    public override bool TryPurge(bool isForced)
     {
       Debug.WriteLine($"TryPurge called for WeakEventManager (event source)");
 
-      if (this.IsRecycled || this.IsPurged || this.EventSource.TryGetTarget(out _))
+      if (this.IsRecycled || this.IsPurged
+        || (!isForced && this.EventSource.TryGetTarget(out _)))
       {
         return false;
       }
 
-      Debug.WriteLine($"******** Purging event source (weak event manager)... ********");
+      Debug.WriteLine($"******** Purging event source (weak event manager)...Forced: {isForced} ********");
       this.WeakEventManager.Purge();
       Recycle();
 

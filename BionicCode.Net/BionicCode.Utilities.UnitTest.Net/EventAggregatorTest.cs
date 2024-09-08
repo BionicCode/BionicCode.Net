@@ -13,7 +13,7 @@
       this.NonGenericEventInvocationCount = 0;
       this.GenericEventInvocationCount = 0;
       this.EventManager = new EventAggregator();
-      this.EventSource1 = new TestEventSource();
+      this.EventSource1 = new TestEventSource1();
       this.EventSource2 = new TestEventSource2();
 
       this.EventManager.TryRegisterObservable(this.EventSource1, new[] { nameof(this.EventSource1.TestEvent), nameof(this.EventSource1.GenericTestEvent) });
@@ -581,7 +581,7 @@
     delegate void TestEventHandler(object sender, EventArgs e);
     private int NonGenericEventInvocationCount { get; set; }
     private int GenericEventInvocationCount { get; set; }
-    private TestEventSource EventSource1 { get; }
+    private TestEventSource1 EventSource1 { get; }
     private TestEventSource2 EventSource2 { get; }
     private Type SenderType { get; set; }
 
