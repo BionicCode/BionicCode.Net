@@ -122,7 +122,7 @@
 
       ParameterInfo[] indexerPropertyIndexParameters = propertyInfo?.GetIndexParameters() ?? Array.Empty<ParameterInfo>();
 
-      var memberKind = GetKind(memberInfo);
+      SymbolKind memberKind = GetKind(memberInfo);
 
       var fullMemberNameBuilder = new StringBuilder();
 
@@ -216,10 +216,7 @@
 
       if (!memberKind.HasFlag(SymbolKind.Delegate)
         && !memberKind.HasFlag(SymbolKind.Class)
-        && (methodInfo?.IsOverride() ?? false)
-        || (propertyGetMethodInfo?.IsOverride() ?? false)
-        || (propertySetMethodInfo?.IsOverride() ?? false)
-        || (eventAddMethodInfo?.IsOverride() ?? false))
+        && memberKind.HasFlag(SymbolKind.Override))
       {
         _ = fullMemberNameBuilder
           .Append("override")
@@ -227,11 +224,11 @@
       }
 
       // Set return type
-      if (isMethod
-        || isProperty
-        || isField
-        || isDelegate
-        || isEvent)
+      if (memberKind.HasFlag(SymbolKind.Method)
+        || memberKind.HasFlag(SymbolKind.Property)
+        || memberKind.HasFlag(SymbolKind.Field)
+        || memberKind.HasFlag(SymbolKind.Delegate)
+        || memberKind.HasFlag(SymbolKind.Event))
       {
         Type returnType = fieldInfo?.FieldType
           ?? methodInfo?.ReturnType
@@ -246,13 +243,13 @@
           .Append(' ');
       }
 
-      if (isIndexerProperty)
+      if (memberKind.HasFlag(SymbolKind.IndexerProperty))
       {
         _ = fullMemberNameBuilder
           .Append("this")
           .Append('[');
       }
-      else if (isConstructor)
+      else if (memberKind.HasFlag(SymbolKind.Constructor))
       {
         _ = fullMemberNameBuilder.Append(constructorInfo.ToDisplayName());
       }
@@ -277,11 +274,11 @@
         }
       }
 
-      if (isConstructor || isMethod || isDelegate)
+      if (memberKind.HasFlag(SymbolKind.Constructor) || memberKind.HasFlag(SymbolKind.Method) || memberKind.HasFlag(SymbolKind.Delegate))
       {
         _ = fullMemberNameBuilder.Append('(');
 
-        if (isMethod && (methodInfo?.IsExtensionMethod() ?? false))
+        if (memberKind.HasFlag(SymbolKind.Method) && (methodInfo?.IsExtensionMethod() ?? false))
         {
           _ = fullMemberNameBuilder
             .Append("this")
@@ -320,12 +317,12 @@
         _ = fullMemberNameBuilder.Remove(fullMemberNameBuilder.Length - ParameterSeparator.Length, ParameterSeparator.Length);
       }
 
-      if (isIndexerProperty)
+      if (memberKind.HasFlag(SymbolKind.IndexerProperty))
       {
         _ = fullMemberNameBuilder.Append(']');
       }
 
-      if (isProperty)
+      if (memberKind.HasFlag(SymbolKind.Property))
       {
         _ = fullMemberNameBuilder
           .Append(' ')
@@ -349,12 +346,12 @@
 
         _ = fullMemberNameBuilder.Append('}');
       }
-      else if (isConstructor || isMethod || isDelegate)
+      else if (memberKind.HasFlag(SymbolKind.Constructor) || memberKind.HasFlag(SymbolKind.Method) || memberKind.HasFlag(SymbolKind.Delegate))
       {
         _ = fullMemberNameBuilder.Append(')')
           .Append(';');
       }
-      else if (isEvent || isField)
+      else if (memberKind.HasFlag(SymbolKind.Event) || memberKind.HasFlag(SymbolKind.Field))
       {
         _ = fullMemberNameBuilder.Append(';');
       }
@@ -434,7 +431,7 @@
     /// <br/>This helper unwraps the generic type parameters to construct the full type name like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
     public static string ToDisplayName(this MemberInfo memberInfo)
-      => ToDisplayNameInternal(memberInfo, isFullyQualified: false);
+      => ToDisplayNameInternal(memberInfo, isFullyQualifiedName: false);
     //{
     //  bool isMemberIndexerProperty = memberInfo is PropertyInfo propertyInfo && (propertyInfo.GetIndexParameters()?.Length ?? -1) > 0;
     //  StringBuilder memberNameBuilder = new StringBuilder(isMemberIndexerProperty
@@ -506,7 +503,7 @@
     /// <br/>This helper unwraps the generic type parameters to construct the full type name like <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
     public static string ToFullDisplayName(this MemberInfo memberInfo)
-      => ToDisplayNameInternal(memberInfo, isFullyQualified: true);
+      => ToDisplayNameInternal(memberInfo, isFullyQualifiedName: true);
     //{
     //  StringBuilder fullMemberNameBuilder = new StringBuilder(memberInfo is Type typeInfo
     //    ? $"{typeInfo.Namespace}.{typeInfo.ToDisplayName()}"
@@ -583,12 +580,26 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic type parameters to construct the full type name like <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
-    private static string ToDisplayNameInternal(MemberInfo memberInfo, bool isFullyQualified)
+    private static string ToDisplayNameInternal(MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName)
     {
       StringBuilder fullMemberNameBuilder = new StringBuilder();
-      //StringBuilder fullMemberNameBuilder = new StringBuilder(memberInfo is Type typeInfo
-      //  ? $"{typeInfo.Namespace}.{typeInfo.ToDisplayName()}"
-      //  : $"{memberInfo.DeclaringType.Namespace}.{memberInfo.DeclaringType.ToDisplayName()}.{memberInfo.Name}");
+      if (memberInfo is Type typeInfo)
+      {
+        AppendDisplayNameInternal(fullMemberNameBuilder, typeInfo, isFullyQualifiedName, isShortName);
+      }
+      else
+      {
+        _ = fullMemberNameBuilder.Append(memberInfo.DeclaringType.Namespace)
+          .AppendDisplayNameInternal(memberInfo.DeclaringType, isFullyQualifiedName, isShortName: false);
+        if (memberInfo is ConstructorInfo)
+        {          
+          _ = fullMemberNameBuilder.AppendDisplayNameInternal(memberInfo.DeclaringType, isFullyQualifiedName, isShortName: true)
+        }
+        else
+        {
+          fullMemberNameBuilder.Append(memberInfo.Name);
+        }
+      }
 
       string symbolName;
       
@@ -597,15 +608,15 @@
       {
         // For example: System.Threading.Task
         case Type type:
-          symbolName = isFullyQualified 
+          symbolName = isFullyQualifiedName 
             ? $"{type.Namespace}.{type.Name}" 
             : type.Name;
           break;
 
         // For example: System.Threading.Task.Run
         default:
-         symbolName = isFullyQualified 
-            ? $"{memberInfo.DeclaringType.Namespace}.{ToDisplayNameInternal(memberInfo.DeclaringType, isFullyQualified)}.{memberInfo.Name}" 
+         symbolName = isFullyQualifiedName 
+            ? $"{memberInfo.DeclaringType.Namespace}.{ToDisplayNameInternal(memberInfo.DeclaringType, isFullyQualifiedName)}.{memberInfo.Name}" 
             : memberInfo.Name;
           break;
       }
@@ -627,7 +638,7 @@
         {
           if (!typeDeclaration.IsEnum)
           {
-            fullMemberNameBuilder = BuildInheritanceSignature(fullMemberNameBuilder, typeDeclaration, isFullyQualified);
+            fullMemberNameBuilder = BuildInheritanceSignature(fullMemberNameBuilder, typeDeclaration, isFullyQualifiedName);
           }
 
           return fullMemberNameBuilder.ToString();
@@ -663,8 +674,150 @@
       return fullMemberNameBuilder.ToString();
     }
 
-    public static string AppendSignatureName(this StringBuilder nameBuilder, MemberInfo memberInfo, bool isFullyQualifyNameEnabled = false)
+    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, Type type, bool isFullyQualifiedName = false)
+      => AppendDisplayNameInternal(nameBuilder, type, isFullyQualifiedName, isShortName: false);
+
+    public static StringBuilder AppendShortDisplayName(this StringBuilder nameBuilder, Type type, bool isFullyQualifiedName = false)
+      => AppendDisplayNameInternal(nameBuilder, type, isFullyQualifiedName, isShortName: true);
+
+    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, Type type, bool isFullyQualifiedName, bool isShortName)
     {
+      var typeReference = new CodeTypeReference(type);
+      ReadOnlySpan<char> typeName = HelperExtensionsCommon.CodeProvider.GetTypeOutput(typeReference).AsSpan();
+      if (type.IsGenericType)
+      {
+        int startIndexOfGenericTypeParameters = typeName.IndexOf('<');
+        typeName = typeName.Slice(0, startIndexOfGenericTypeParameters);
+      }
+
+      if (!isFullyQualifiedName)
+      {
+        int startIndexOfUnqualifiedTypeName = typeName.LastIndexOf('.') + 1;
+        if (startIndexOfUnqualifiedTypeName > 0)
+        {
+          typeName = typeName.Slice(startIndexOfUnqualifiedTypeName, typeName.Length - startIndexOfUnqualifiedTypeName);
+        }
+      }
+
+      _ = nameBuilder.Append(typeName.ToArray());
+
+      if (isShortName)
+      {
+        return nameBuilder;
+      }
+
+      if (type.IsGenericType)
+      {
+        _ = nameBuilder.Append('<');
+
+        Type[] typeArguments = type.GetGenericArguments();
+        foreach (Type typeArgument in typeArguments)
+        {
+          _ = nameBuilder.AppendDisplayName(typeArgument, isFullyQualifiedName)
+            .Append(ParameterSeparator);
+        }
+
+        _ = nameBuilder.Remove(nameBuilder.Length - ParameterSeparator.Length, ParameterSeparator.Length)
+          .Append('>');
+      }
+
+      return nameBuilder;
+    }
+
+    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName)
+    {
+      if (memberInfo is MethodInfo methodInfo)
+      {
+        var method = new CodeMemberMethod();
+        if (methodInfo.IsGenericMethod)
+        {
+          int genericParameterPlaceholderIndex = methodInfo.Name.IndexOf('`');
+          method.Name = methodInfo.Name.Substring(0, genericParameterPlaceholderIndex);
+
+          var typeArguments = methodInfo.GetGenericArguments();
+          foreach (Type typeArgument in typeArguments)
+          {
+            CodeTypeParameter typeParameter = new CodeTypeParameter(typeArgument);
+            method.TypeParameters.Add(typeParameter);
+          }
+        }
+      }
+      var typeReference = new CodeTypeReference(type);
+      ReadOnlySpan<char> typeName = HelperExtensionsCommon.CodeProvider.GetTypeOutput(typeReference).AsSpan();
+      if (type.IsGenericType)
+      {
+        int startIndexOfGenericTypeParameters = typeName.IndexOf('<');
+        typeName = typeName.Slice(0, startIndexOfGenericTypeParameters);
+      }
+
+      if (!isFullyQualifiedName)
+      {
+        int startIndexOfUnqualifiedTypeName = typeName.LastIndexOf('.') + 1;
+        if (startIndexOfUnqualifiedTypeName > 0)
+        {
+          typeName = typeName.Slice(startIndexOfUnqualifiedTypeName, typeName.Length - startIndexOfUnqualifiedTypeName);
+        }
+      }
+
+      _ = nameBuilder.Append(typeName.ToArray());
+
+      if (isShortName)
+      {
+        return nameBuilder;
+      }
+
+      if (type.IsGenericType)
+      {
+        _ = nameBuilder.Append('<');
+
+        Type[] typeArguments = type.GetGenericArguments();
+        foreach (Type typeArgument in typeArguments)
+        {
+          _ = nameBuilder.AppendDisplayName(typeArgument, isFullyQualifiedName)
+            .Append(ParameterSeparator);
+        }
+
+        _ = nameBuilder.Remove(nameBuilder.Length - ParameterSeparator.Length, ParameterSeparator.Length)
+          .Append('>');
+      }
+
+      return nameBuilder;
+    }
+
+    private static CodeTypeParameter CreateCodeTypeParameter(Type typeParameter)
+    {
+      if (typeParameter.IsGenericParameter)
+      {
+        var codeTypeParameter = new CodeTypeParameter().
+}
+      else if (typeParameter.IsGenericType)
+      {
+        var codeTypeReference = new CodeTypeReference(typeParameter.ToDisplayName());
+
+        Type[] typeArguments = typeParameter.GetGenericArguments();
+        foreach (Type typeArgument in typeArguments)
+        {
+          CodeTypeReference typeParameter = CreateCodeTypeReference(typeArgument);
+          codeTypeReference.TypeArguments.Add(typeParameter);
+        }
+
+      }
+    }
+
+    private static CodeTypeReference CreateCodeTypeReference(Type typeParameter)
+    {
+       var typeReference = new CodeTypeReference(typeParameter.ToDisplayName());
+      if (typeParameter.IsGenericType)
+      {
+        Type[] typeArguments = typeParameter.GetGenericArguments();
+        foreach (Type typeArgument in typeArguments)
+        {
+          CodeTypeReference nestedTypeParameter = CreateCodeTypeReference(typeArgument);
+          typeReference.TypeArguments.Add(nestedTypeParameter);
+        }
+      }
+
+      return typeReference;
     }
 
     private static StringBuilder FinishTypeNameConstruction(StringBuilder nameBuilder, Type[] genericTypeArguments)

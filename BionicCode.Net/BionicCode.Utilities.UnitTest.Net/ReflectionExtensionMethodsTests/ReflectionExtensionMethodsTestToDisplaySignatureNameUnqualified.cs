@@ -118,7 +118,10 @@
     public void ToDisplayName_ConstructorWithParameter_MustReturnConstructorSignature()
     {
       //var s = typeof(Generic.TestClassWithBaseClass<,>).ToSignatureNameNew(false);
-      var s2 = typeof(Generic.TestClassWithBaseClass<List<List<string>>, int>).ToSignatureNameNew(false);
+      var stringBuilder = new StringBuilder().AppendDisplayName(typeof(Generic.TestClassWithBaseClass<List<Queue<Task<string>>>, int>), true);
+      var s = stringBuilder.ToString();
+      var stringBuilder2 = new StringBuilder().AppendShortDisplayName(typeof(Generic.TestClassWithBaseClass<List<Queue<Task<string>>>, int>), true);
+      var s2 = stringBuilder2.ToString();
       ConstructorInfo constructorInfo = typeof(Task<>).MakeGenericType(typeof(Func<,,>)).GetConstructor(new[] { typeof(Func<>).MakeGenericType(typeof(Func<,,>)), typeof(CancellationToken) });
       string signatureName = constructorInfo.ToSignatureName();
       //Type[] genericDefaultTypeArguments = typeof(Task<>).GetGenericArguments();
@@ -141,25 +144,25 @@
     [Fact]
     public void ToDisplayName_DelegateWithoutReturnValue_MustReturnFullDelegateSignature()
     {
-      _ = typeof(TestDelegateWithoutReturnValue).ToSignatureName(isFullyQualifyNamesEnabled: true).Should().Be(TestDelegateWithoutReturnValueDisplaySignatureName);
+      _ = typeof(TestDelegateWithoutReturnValue).ToSignatureName(isFullyQualifySymbolEnabled: true).Should().Be(TestDelegateWithoutReturnValueDisplaySignatureName);
     }
 
     [Fact]
     public void ToDisplayName_DelegateWithReturnValue_MustReturnFullDelegateSignature()
     {
-      _ = typeof(TestDelegateWithReturnValue).ToSignatureName(isFullyQualifyNamesEnabled: true).Should().Be(TestDelegateWithReturnValueDisplaySignatureName);
+      _ = typeof(TestDelegateWithReturnValue).ToSignatureName(isFullyQualifySymbolEnabled: true).Should().Be(TestDelegateWithReturnValueDisplaySignatureName);
     }
 
     [Fact]
     public void ToDisplayName_SimpleClass_MustReturnFullClassSignature()
     {
-      _ = typeof(TestClass).ToSignatureName(isFullyQualifyNamesEnabled: true).Should().Be(TestClassDisplaySignatureName);
+      _ = typeof(TestClass).ToSignatureName(isFullyQualifySymbolEnabled: true).Should().Be(TestClassDisplaySignatureName);
     }
 
     [Fact]
     public void ToDisplayName_ClassWithBaseClass_MustReturnFullClassSignature()
     {
-      _ = typeof(TestClassWithBaseClass).ToSignatureName(isFullyQualifyNamesEnabled: true).Should().Be(TestClassWithBaseClassDisplaySignatureName);
+      _ = typeof(TestClassWithBaseClass).ToSignatureName(isFullyQualifySymbolEnabled: true).Should().Be(TestClassWithBaseClassDisplaySignatureName);
     }
   }
 }
