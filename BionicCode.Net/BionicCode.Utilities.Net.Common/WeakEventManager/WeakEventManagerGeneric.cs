@@ -35,7 +35,7 @@
         }
         catch (ArgumentException e)
         {
-          string exceptionMessage = string.Format(InternalDelegateSignatureMismatchExceptionMessage, eventHandlerType.ToDisplaySignatureName(), GetType().GetMethod(nameof(OnEvent), BindingFlags.NonPublic | BindingFlags.Instance).ToDisplaySignatureName());
+          string exceptionMessage = string.Format(InternalDelegateSignatureMismatchExceptionMessage, eventHandlerType.ToSignatureName(), GetType().GetMethod(nameof(OnEvent), BindingFlags.NonPublic | BindingFlags.Instance).ToSignatureName());
 
           throw new EventHandlerMismatchException(exceptionMessage, e);
         }
@@ -49,7 +49,7 @@
         }
         catch (ArgumentException e)
         {
-          string exceptionMessage = string.Format(InternalDelegateSignatureMismatchExceptionMessage, eventHandlerType.ToDisplaySignatureName(), GetType().GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.NonPublic | BindingFlags.Instance).ToDisplaySignatureName());
+          string exceptionMessage = string.Format(InternalDelegateSignatureMismatchExceptionMessage, eventHandlerType.ToSignatureName(), GetType().GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.NonPublic | BindingFlags.Instance).ToSignatureName());
 
           throw new EventHandlerMismatchException(exceptionMessage, e);
         }
@@ -139,18 +139,18 @@
 
       if (eventDelegateMethodParameters.Length != 2)
       {
-        throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToDisplaySignatureName(), eventInfo.EventHandlerType.ToDisplaySignatureName(), $"the parameter count is {eventDelegateMethodParameters.Length} instead of 2"));
+        throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToSignatureName(), eventInfo.EventHandlerType.ToSignatureName(), $"the parameter count is {eventDelegateMethodParameters.Length} instead of 2"));
       }
 
       if (!(eventDelegateMethodParameters[0].ParameterType == typeof(TEventSource) 
         || eventDelegateMethodParameters[0].ParameterType == typeof(object)))
       {
-        throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToDisplaySignatureName(), eventInfo.EventHandlerType.ToDisplaySignatureName(), $"the parameter at index '0' is not of type {nameof(TEventSource)} or {typeof(object).FullName}"));
+        throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToSignatureName(), eventInfo.EventHandlerType.ToSignatureName(), $"the parameter at index '0' is not of type {nameof(TEventSource)} or {typeof(object).FullName}"));
       }
 
       //if (!typeof(EventArgs).IsAssignableFrom(eventDelegateMethodParameters[1].ParameterType))
       //{
-      //  throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToDisplaySignatureName(), eventInfo.EventHandlerType.ToDisplaySignatureName(), $"the parameter at index '1' is not of type or derived from type {typeof(EventArgs).FullName}"));
+      //  throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToSignatureName(), eventInfo.EventHandlerType.ToSignatureName(), $"the parameter at index '1' is not of type or derived from type {typeof(EventArgs).FullName}"));
       //}
 
       if (eventDelegateMethodParameters[1].ParameterType != typeof(TEventArgs))
@@ -166,8 +166,8 @@
       if (eventDelegateMethodParameters.Length != eventHandlerMethodParameters.Length)
       {
         throw new EventHandlerMismatchException(string.Format(HandlerDelegateSignatureMismatchExceptionMessage, 
-          eventInfo.EventHandlerType.ToDisplaySignatureName(),
-          eventHandlerMethod.ToDisplaySignatureName(),
+          eventInfo.EventHandlerType.ToSignatureName(),
+          eventHandlerMethod.ToSignatureName(),
           $"Invalid parameter count."));
       }
 
@@ -178,8 +178,8 @@
         if (!eventHandlerParameterType.IsAssignableFrom(eventDelegateParameterType))
         {
           throw new EventHandlerMismatchException(string.Format(HandlerDelegateSignatureMismatchExceptionMessage,
-            eventInfo.EventHandlerType.ToDisplaySignatureName(),
-            eventHandlerMethod.ToDisplaySignatureName(),
+            eventInfo.EventHandlerType.ToSignatureName(),
+            eventHandlerMethod.ToSignatureName(),
             $"Unable to cast parameter of type {eventDelegateParameterType.FullName} at parameter index {parameterIndex} of the event delegate to type {eventHandlerParameterType.FullName} at parameter index {parameterIndex} of the provided event handler."));
         }
       }

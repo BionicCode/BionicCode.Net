@@ -10,6 +10,7 @@
   using Generic = BionicCode.Utilities.Net.UnitTest.ReflectionExtensionMethodsTests.Resources.Public.Generic;
   using FluentAssertions;
   using Xunit;
+  using System.Threading;
 
   public class ReflectionExtensionMethodsTestToUnqualifiedDisplaySignatureName
   {
@@ -36,13 +37,13 @@
     [Fact]
     public void ToDisplayName_DelegateWithoutReturnValue_MustReturnDelegateSignature()
     {
-      _ = typeof(TestDelegateWithoutReturnValue).ToDisplaySignatureName().Should().Be(TestDelegateWithoutReturnValueDisplaySignatureName);
+      _ = typeof(TestDelegateWithoutReturnValue).ToSignatureName().Should().Be(TestDelegateWithoutReturnValueDisplaySignatureName);
     }
 
     [Fact]
     public void ToDisplayName_DelegateWithReturnValue_MustReturnDelegateSignature()
     {
-      _ = typeof(TestDelegateWithReturnValue).ToDisplaySignatureName().Should().Be(TestDelegateWithReturnValueDisplaySignatureName);
+      _ = typeof(TestDelegateWithReturnValue).ToSignatureName().Should().Be(TestDelegateWithReturnValueDisplaySignatureName);
     }
 
     #endregion Delegate
@@ -52,13 +53,13 @@
     [Fact]
     public void ToDisplayName_SimpleClass_MustReturnClassSignature()
     {
-      _ = typeof(TestClass).ToDisplaySignatureName().Should().Be(TestClassDisplaySignatureName);
+      _ = typeof(TestClass).ToSignatureName().Should().Be(TestClassDisplaySignatureName);
     }
 
     [Fact]
     public void ToDisplayName_ClassWithBaseClass_MustReturnClassSignature()
     {
-      _ = typeof(TestClassWithBaseClass).ToDisplaySignatureName().Should().Be(TestClassWithBaseClassDisplaySignatureName);
+      _ = typeof(TestClassWithBaseClass).ToSignatureName().Should().Be(TestClassWithBaseClassDisplaySignatureName);
     }
 
     #endregion Class
@@ -68,13 +69,13 @@
     [Fact]
     public void ToDisplayName_SimpleStruct_MustReturnStructSignature()
     {
-      _ = typeof(TestStruct).ToDisplaySignatureName().Should().Be(TestStructDisplaySignatureName);
+      _ = typeof(TestStruct).ToSignatureName().Should().Be(TestStructDisplaySignatureName);
     }
 
     [Fact]
     public void ToDisplayName_SimpleReadOnlyStruct_MustReturnStructSignature()
     {
-      _ = typeof(TestReadOnlyStruct).ToDisplaySignatureName().Should().Be(TestReadOnlyStructDisplaySignatureName);
+      _ = typeof(TestReadOnlyStruct).ToSignatureName().Should().Be(TestReadOnlyStructDisplaySignatureName);
     }
 
     #endregion Struct
@@ -84,19 +85,19 @@
     [Fact]
     public void ToDisplayName_ReadOnlyField_MustReturnFieldSignature()
     {
-      _ = typeof(TestClass).GetField("readOnlyField", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).ToDisplaySignatureName().Should().Be(TestReadOnlyFieldDisplaySignatureName);
+      _ = typeof(TestClass).GetField("readOnlyField", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).ToSignatureName().Should().Be(TestReadOnlyFieldDisplaySignatureName);
     }
 
     [Fact]
     public void ToDisplayName_Field_MustReturnFieldSignature()
     {
-      _ = typeof(TestClass).GetField("field", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).ToDisplaySignatureName().Should().Be(TestFieldDisplaySignatureName);
+      _ = typeof(TestClass).GetField("field", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).ToSignatureName().Should().Be(TestFieldDisplaySignatureName);
     }
 
     [Fact]
     public void ToDisplayName_GenericMethod_MustReturnMethodSignature()
     {
-      _ = typeof(TestClass).GetMethod(nameof(TestClass.PublicGenericMethodWithReturnValue)).ToDisplaySignatureName().Should().Be(TestMethodGenericDisplaySignatureName);
+      _ = typeof(TestClass).GetMethod(nameof(TestClass.PublicGenericMethodWithReturnValue)).ToSignatureName().Should().Be(TestMethodGenericDisplaySignatureName);
     }
 
     #endregion Field
@@ -106,7 +107,7 @@
     [Fact]
     public void ToDisplayName_TestEnum_MustReturnFullEnumSignature()
     {
-      _ = typeof(TestEnum).ToDisplaySignatureName().Should().Be(TestEnumDisplaySignatureName);
+      _ = typeof(TestEnum).ToSignatureName().Should().Be(TestEnumDisplaySignatureName);
     }
 
     #endregion Enum
@@ -116,7 +117,15 @@
     [Fact]
     public void ToDisplayName_ConstructorWithParameter_MustReturnConstructorSignature()
     {
-      _ = typeof(Generic.TestClass<string, int, TestClassWithInterfaces, TestClassWithBaseClass>).GetConstructor(new[] { typeof(int) }).ToDisplaySignatureName().Should().Be(TestMethodGenericDisplaySignatureName);
+      //var s = typeof(Generic.TestClassWithBaseClass<,>).ToSignatureNameNew(false);
+      var s2 = typeof(Generic.TestClassWithBaseClass<List<List<string>>, int>).ToSignatureNameNew(false);
+      ConstructorInfo constructorInfo = typeof(Task<>).MakeGenericType(typeof(Func<,,>)).GetConstructor(new[] { typeof(Func<>).MakeGenericType(typeof(Func<,,>)), typeof(CancellationToken) });
+      string signatureName = constructorInfo.ToSignatureName();
+      //Type[] genericDefaultTypeArguments = typeof(Task<>).GetGenericArguments();
+      //ConstructorInfo constructorInfo = typeof(Task<>).MakeGenericType(typeof(Func<,,>)).GetConstructor(new[] { typeof(Func<>).MakeGenericType(typeof(Func<,,>)), typeof(CancellationToken) });
+      //string signatureName = constructorInfo.ToSignatureName();
+      Console.WriteLine(signatureName); // "public Task(Func<TResult> function, CancellationToken cancellationToken);"
+      _ = typeof(Generic.TestClass<string, int, TestClassWithInterfaces, TestClassWithBaseClass>).GetConstructor(new[] { typeof(int) }).ToSignatureName().Should().Be(TestMethodGenericDisplaySignatureName);
     }
 
     #endregion Constructor
@@ -132,25 +141,25 @@
     [Fact]
     public void ToDisplayName_DelegateWithoutReturnValue_MustReturnFullDelegateSignature()
     {
-      _ = typeof(TestDelegateWithoutReturnValue).ToDisplaySignatureName(isFullyQualifySymbolEnabled: true).Should().Be(TestDelegateWithoutReturnValueDisplaySignatureName);
+      _ = typeof(TestDelegateWithoutReturnValue).ToSignatureName(isFullyQualifyNamesEnabled: true).Should().Be(TestDelegateWithoutReturnValueDisplaySignatureName);
     }
 
     [Fact]
     public void ToDisplayName_DelegateWithReturnValue_MustReturnFullDelegateSignature()
     {
-      _ = typeof(TestDelegateWithReturnValue).ToDisplaySignatureName(isFullyQualifySymbolEnabled: true).Should().Be(TestDelegateWithReturnValueDisplaySignatureName);
+      _ = typeof(TestDelegateWithReturnValue).ToSignatureName(isFullyQualifyNamesEnabled: true).Should().Be(TestDelegateWithReturnValueDisplaySignatureName);
     }
 
     [Fact]
     public void ToDisplayName_SimpleClass_MustReturnFullClassSignature()
     {
-      _ = typeof(TestClass).ToDisplaySignatureName(isFullyQualifySymbolEnabled: true).Should().Be(TestClassDisplaySignatureName);
+      _ = typeof(TestClass).ToSignatureName(isFullyQualifyNamesEnabled: true).Should().Be(TestClassDisplaySignatureName);
     }
 
     [Fact]
     public void ToDisplayName_ClassWithBaseClass_MustReturnFullClassSignature()
     {
-      _ = typeof(TestClassWithBaseClass).ToDisplaySignatureName(isFullyQualifySymbolEnabled: true).Should().Be(TestClassWithBaseClassDisplaySignatureName);
+      _ = typeof(TestClassWithBaseClass).ToSignatureName(isFullyQualifyNamesEnabled: true).Should().Be(TestClassWithBaseClassDisplaySignatureName);
     }
   }
 }

@@ -284,7 +284,7 @@
           }
         }
 
-        string fullSignatureName = CreateMemberSignatureName(memberInfo.MemberInfo);
+        string fullSignatureName = memberInfo.MemberInfo.ToSignatureName();
         bool memberIsMethod = memberInfo is ProfiledMethodInfo;
         bool memberIsConstructor = memberInfo is ProfiledConstructorInfo;
         bool memberIsProperty = memberInfo is ProfiledPropertyInfo;
@@ -394,19 +394,6 @@
       }
 
       return resultGroups;
-    }
-
-    private string CreateMemberSignatureName(MemberInfo memberInfo)
-    {
-      string fullMemberName = memberInfo.ToDisplaySignatureName();
-
-      //if (methodInfo.MethodInfo.IsHideBySig)
-      //{
-      //  _ = fullMemberNameBuilder.Append("new")
-      //    .Append(" ");
-      //}
-
-      return fullMemberName.ToString();
     }
 
     private void CreateTargetMemberDelegate(object targetInstance, ProfiledMemberInfo profiledMemberInfo, IEnumerable<object> argumentList)

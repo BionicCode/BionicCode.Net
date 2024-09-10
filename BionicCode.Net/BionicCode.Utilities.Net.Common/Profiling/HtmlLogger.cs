@@ -334,7 +334,7 @@ After:
 
         documentBuilderInfosMap.Add(batchResultGroups, htmlDocumentBuilderInfos);
         string indexPageNameOfCurrentType = htmlDocumentBuilderInfos.First().FileName;
-        _ = htmlTypeNavigationIndexBuilder.AppendLine($@"<li><a class=""dropdown-item {{0}}"" {{1}} href=""{indexPageNameOfCurrentType}"">{HtmlLogger.HtmlEncoder.Encode(batchResultGroups.ProfiledType.ToDisplaySignatureName())}</a></li>");
+        _ = htmlTypeNavigationIndexBuilder.AppendLine($@"<li><a class=""dropdown-item {{0}}"" {{1}} href=""{indexPageNameOfCurrentType}"">{HtmlLogger.HtmlEncoder.Encode(batchResultGroups.ProfiledType.ToSignatureName())}</a></li>");
       }
 
       string htmlTypeNavigationIndexTemplate = htmlTypeNavigationIndexBuilder.ToString();
@@ -357,7 +357,7 @@ After:
           string htmlFilePath = Path.Combine(Path.GetTempPath(), htmlDocumentBuilderInfo.FileName);
           htmlFilePaths.Add(htmlFilePath);
 
-          string encodedCurrentProfiledTypeSignature = HtmlLogger.HtmlEncoder.Encode(batchResultGroups.ProfiledType.ToDisplaySignatureName());
+          string encodedCurrentProfiledTypeSignature = HtmlLogger.HtmlEncoder.Encode(batchResultGroups.ProfiledType.ToSignatureName());
           string htmlDocument = string.Format(
             htmlDocumentBuilderInfo.DocumentTemplate,
             encodedCurrentProfiledTypeSignature,
