@@ -47,8 +47,8 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic type parameters to construct the full signature name like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
-    public static string ToDisplaySignatureName(this PropertyInfo propertyInfo, bool isQualifyMemberEnabled = false)
-      => ((MemberInfo)propertyInfo).ToDisplaySignatureName(isQualifyMemberEnabled);
+    public static string ToSignatureName(this PropertyInfo propertyInfo, bool isQualifyMemberEnabled = false)
+      => ((MemberInfo)propertyInfo).ToSignatureName(isQualifyMemberEnabled);
 
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.
@@ -61,8 +61,8 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic type parameters to construct the full signature name like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
-    public static string ToDisplaySignatureName(this MethodInfo methodInfo, bool isQualifyMemberEnabled = false)
-      => ((MemberInfo)methodInfo).ToDisplaySignatureName(isQualifyMemberEnabled);
+    public static string ToSignatureName(this MethodInfo methodInfo, bool isQualifyMemberEnabled = false)
+      => ((MemberInfo)methodInfo).ToSignatureName(isQualifyMemberEnabled);
 
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.
@@ -75,8 +75,8 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic type parameters to construct the full signature name like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
-    public static string ToDisplaySignatureName(this Type typeInfo)
-      => ((MemberInfo)typeInfo).ToDisplaySignatureName(false);
+    public static string ToSignatureName(this Type typeInfo, bool isQualifyMemberEnabled = false)
+      => ((MemberInfo)typeInfo).ToSignatureName(false);
 
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.
@@ -89,8 +89,8 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic type parameters to construct the full signature name like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
-    public static string ToDisplaySignatureName(this ConstructorInfo constructorInfo, bool isQualifyMemberEnabled = false)
-      => ((MemberInfo)constructorInfo).ToDisplaySignatureName(isQualifyMemberEnabled);
+    public static string ToSignatureName(this ConstructorInfo constructorInfo, bool isQualifyMemberEnabled = false)
+      => ((MemberInfo)constructorInfo).ToSignatureName(isQualifyMemberEnabled);
 
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.
@@ -103,10 +103,10 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic type parameters to construct the full signature name like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
-    public static string ToDisplaySignatureName(this FieldInfo fieldInfo, bool isQualifyMemberEnabled = false)
-      => ((MemberInfo)fieldInfo).ToDisplaySignatureName(isQualifyMemberEnabled);
+    public static string ToSignatureName(this FieldInfo fieldInfo, bool isQualifyMemberEnabled = false)
+      => ((MemberInfo)fieldInfo).ToSignatureName(isQualifyMemberEnabled);
 
-    internal static string ToDisplaySignatureName(this MemberInfo memberInfo, bool isFullyQualifySymbolEnabled = false)
+    internal static string ToSignatureName(this MemberInfo memberInfo, bool isFullyQualifySymbolEnabled = false)
     {
       var type = memberInfo as Type;
       var propertyInfo = memberInfo as PropertyInfo;
@@ -122,22 +122,7 @@
 
       ParameterInfo[] indexerPropertyIndexParameters = propertyInfo?.GetIndexParameters() ?? Array.Empty<ParameterInfo>();
 
-      bool isDelegate = type?.IsDelegate() ?? false;
-      bool isClass = !isDelegate && (type?.IsClass ?? false);
-      bool isStruct = !isDelegate && (type?.IsValueType ?? false);
-      bool isReadOnlyStruct = false;
-#if NETSTANDARD2_1_OR_GREATER || NET471_OR_GREATER || NET
-      isReadOnlyStruct  = isStruct && type.GetCustomAttribute(typeof(IsReadOnlyAttribute)) != null;
-#endif
-      bool isEnum = !isDelegate && (type?.IsEnum ?? false);
-      bool isProperty = propertyInfo != null;
-      bool isMethod = !isDelegate && !isClass && memberInfo.MemberType.HasFlag(MemberTypes.Method);
-      bool isEvent = eventInfo != null;
-      bool isConstructor = constructorInfo != null;
-      bool isField = fieldInfo != null;
-      bool isReadOnlyField = fieldInfo?.IsInitOnly ?? false;
-      bool isInterface = !isDelegate && !isClass && (type?.IsInterface ?? false);
-      bool isIndexerProperty = indexerPropertyIndexParameters.Length > 0;
+      var memberKind = GetKind(memberInfo);
 
       var fullMemberNameBuilder = new StringBuilder();
 
@@ -146,109 +131,91 @@
         .Append(accessModifier.ToDisplayStringValue())
         .Append(' ');
 
-      if (!isDelegate
-        && (methodInfo?.IsFinal ?? false)
-        || (constructorInfo?.IsFinal ?? false)
-        || (propertyGetMethodInfo?.IsFinal ?? false)
-        || (propertySetMethodInfo?.IsFinal ?? false))
+      if (!memberKind.HasFlag(SymbolKind.Delegate)
+        && memberKind.HasFlag(SymbolKind.Final))
       {
         _ = fullMemberNameBuilder
           .Append("sealed")
           .Append(' ');
       }
 
-      if (!isDelegate 
-        && (methodInfo?.IsStatic ?? false)
-        || (constructorInfo?.IsStatic ?? false)
-        || (propertyGetMethodInfo?.IsStatic ?? false)
-        || (propertySetMethodInfo?.IsStatic ?? false)
-        || (fieldInfo?.IsStatic ?? false)
-        || (eventAddMethodInfo?.IsStatic ?? false))
+      if (!memberKind.HasFlag(SymbolKind.Delegate)
+        && memberKind.HasFlag(SymbolKind.Static))
       {
         _ = fullMemberNameBuilder
           .Append("static")
           .Append(' ');
       }
 
-      bool isAbstract = false;
-      if (!isDelegate
-        && (methodInfo?.IsAbstract ?? false)
-        || (constructorInfo?.IsAbstract ?? false)
-        || (propertyGetMethodInfo?.IsAbstract ?? false)
-        || (propertySetMethodInfo?.IsAbstract ?? false)
-        || (eventAddMethodInfo?.IsAbstract ?? false))
+      bool isAbstract = memberKind.HasFlag(SymbolKind.Abstract);
+      if (!memberKind.HasFlag(SymbolKind.Delegate) && isAbstract)
       {
-        isAbstract = true;
         _ = fullMemberNameBuilder
           .Append("abstract")
           .Append(' ');
       }
 
       if (!isAbstract
-        && !isDelegate 
-        && !isClass 
-        && ((methodInfo?.IsVirtual ?? false)
-        || (constructorInfo?.IsVirtual ?? false)
-        || (propertyGetMethodInfo?.IsVirtual ?? false)
-        || (propertySetMethodInfo?.IsVirtual ?? false)
-        || (eventAddMethodInfo?.IsVirtual ?? false)))
+        && !memberKind.HasFlag(SymbolKind.Delegate)
+        && !memberKind.HasFlag(SymbolKind.Class)
+        && memberKind.HasFlag(SymbolKind.Virtual))
       {
         _ = fullMemberNameBuilder
           .Append("virtual")
           .Append(' ');
       }
 
-      if (isReadOnlyStruct || isReadOnlyField)
+      if (memberKind.HasFlag(SymbolKind.ReadOnlyStruct) || memberKind.HasFlag(SymbolKind.ReadOnlyField))
       {
         _ = fullMemberNameBuilder
           .Append("readonly")
           .Append(' ');
       }
 
-      if (isStruct && !isEnum)
+      if (memberKind.HasFlag(SymbolKind.Struct))
       {
         _ = fullMemberNameBuilder
           .Append("struct")
           .Append(' ');
       }
 
-      if (isClass)
+      if (memberKind.HasFlag(SymbolKind.Class))
       {
         _ = fullMemberNameBuilder
           .Append("class")
           .Append(' ');
       }
 
-      if (isInterface)
+      if (memberKind.HasFlag(SymbolKind.Interface))
       {
         _ = fullMemberNameBuilder
           .Append("interface")
           .Append(' ');
       }
 
-      if (isDelegate)
+      if (memberKind.HasFlag(SymbolKind.Delegate))
       {
         _ = fullMemberNameBuilder
           .Append("delegate")
           .Append(' ');
       }
 
-      if (isEvent)
+      if (memberKind.HasFlag(SymbolKind.Event))
       {
         _ = fullMemberNameBuilder
           .Append("event")
           .Append(' ');
       }
 
-      if (isEnum)
+      if (memberKind.HasFlag(SymbolKind.Enum))
       {
         _ = fullMemberNameBuilder
           .Append("enum")
           .Append(' ');
       }
 
-      if (!isDelegate
-        && !isClass
+      if (!memberKind.HasFlag(SymbolKind.Delegate)
+        && !memberKind.HasFlag(SymbolKind.Class)
         && (methodInfo?.IsOverride() ?? false)
         || (propertyGetMethodInfo?.IsOverride() ?? false)
         || (propertySetMethodInfo?.IsOverride() ?? false)
@@ -696,6 +663,10 @@
       return fullMemberNameBuilder.ToString();
     }
 
+    public static string AppendSignatureName(this StringBuilder nameBuilder, MemberInfo memberInfo, bool isFullyQualifyNameEnabled = false)
+    {
+    }
+
     private static StringBuilder FinishTypeNameConstruction(StringBuilder nameBuilder, Type[] genericTypeArguments)
     {
       if (!genericTypeArguments.Any())
@@ -962,6 +933,213 @@
     //  return null;
     //}
 
+    private static SymbolKind GetKind(this MemberInfo memberInfo)
+    {
+      var type = memberInfo as Type;
+      var propertyInfo = memberInfo as PropertyInfo;
+      MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
+        ?? type?.GetMethod("Invoke"); // MemberInfo is potentially a delegate
+      MethodInfo propertyGetMethodInfo = propertyInfo?.GetGetMethod(true);
+      MethodInfo propertySetMethodInfo = propertyInfo?.GetSetMethod(true);
+      var constructorInfo = memberInfo as ConstructorInfo;
+      var fieldInfo = memberInfo as FieldInfo;
+      var eventInfo = memberInfo as EventInfo;
+      MethodInfo eventAddMethodInfo = eventInfo?.GetAddMethod(true);
+      FieldInfo eventDeclaredFieldInfo = eventInfo?.DeclaringType.GetField(eventInfo.Name, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+      ParameterInfo[] indexerPropertyIndexParameters = propertyInfo?.GetIndexParameters() ?? Array.Empty<ParameterInfo>();
+
+      bool isDelegate = type?.IsDelegate() ?? false;
+      if (isDelegate)
+      {
+        return SymbolKind.Delegate;
+      }
+
+      bool isClass = !isDelegate && (type?.IsClass ?? false);
+      if (isClass)
+      {
+        SymbolKind classKind = SymbolKind.Class;
+        if (type.IsAbstract)
+        {
+          classKind |= SymbolKind.Abstract;
+        }
+
+        if (type.IsSealed)
+        {
+          classKind |= SymbolKind.Final;
+        }
+
+        if (type.IsStatic())
+        {
+          classKind |= SymbolKind.Static;
+        }
+
+        return classKind;
+      }
+
+      bool isEnum = !isDelegate && (type?.IsEnum ?? false);
+      if (isEnum)
+      {
+        return SymbolKind.Enum;
+      }
+
+      bool isStruct = !isDelegate && (type?.IsValueType ?? false);
+      if (isStruct)
+      {
+        SymbolKind structKind = SymbolKind.Struct;
+
+#if NETSTANDARD2_1_OR_GREATER || NET471_OR_GREATER || NET
+        bool isReadOnlyStruct  = isStruct && type.GetCustomAttribute(typeof(IsReadOnlyAttribute)) != null;
+        if (isReadOnlyStruct)
+        {
+          structKind |= SymbolKind.Final;
+        }
+#endif
+        return structKind;
+      }
+
+      bool isProperty = propertyInfo != null;
+      if (isProperty)
+      {
+        bool isIndexerProperty = indexerPropertyIndexParameters.Length > 0;
+        SymbolKind propertyKind = isIndexerProperty 
+          ? SymbolKind.IndexerProperty 
+          : SymbolKind.Property;
+
+        MethodInfo getMethod = propertyInfo.GetGetMethod();
+        if (!propertyInfo.CanWrite)
+        {
+          propertyKind |= SymbolKind.Final;
+        }
+
+        if (getMethod.IsAbstract)
+        {
+          propertyKind |= SymbolKind.Abstract;
+        }
+
+        if (getMethod.IsStatic)
+        {
+          propertyKind |= SymbolKind.Static;
+        }
+
+        if (getMethod.IsVirtual)
+        {
+          propertyKind |= SymbolKind.Virtual;
+        }
+
+        if (getMethod.IsOverride())
+        {
+          propertyKind |= SymbolKind.Override;
+        }
+
+        return propertyKind;
+      }
+
+      bool isMethod = !isDelegate && !isClass && memberInfo.MemberType.HasFlag(MemberTypes.Method);
+      if (isMethod)
+      {
+        SymbolKind methodKind = SymbolKind.Method;
+        if (methodInfo.IsFinal)
+        {
+          methodKind |= SymbolKind.Final;
+        }
+
+        if (methodInfo.IsAbstract)
+        {
+          methodKind |= SymbolKind.Abstract;
+        }
+
+        if (methodInfo.IsStatic)
+        {
+          methodKind |= SymbolKind.Static;
+        }
+
+        if (methodInfo.IsVirtual)
+        {
+          methodKind |= SymbolKind.Virtual;
+        }
+
+        if (methodInfo.IsOverride())
+        {
+          methodKind |= SymbolKind.Override;
+        }
+
+        return methodKind;
+      }
+
+      bool isEvent = eventInfo != null;
+      if (isEvent)
+      {
+        SymbolKind eventKind = SymbolKind.Event;
+        MethodInfo addHandlerMethod = eventInfo.GetAddMethod(true);
+        if (addHandlerMethod.IsFinal)
+        {
+          eventKind |= SymbolKind.Final;
+        }
+
+        if (addHandlerMethod.IsAbstract)
+        {
+          eventKind |= SymbolKind.Abstract;
+        }
+
+        if (addHandlerMethod.IsStatic)
+        {
+          eventKind |= SymbolKind.Static;
+        }
+
+        if (addHandlerMethod.IsVirtual)
+        {
+          eventKind |= SymbolKind.Virtual;
+        }
+
+        if (addHandlerMethod.IsOverride())
+        {
+          eventKind |= SymbolKind.Override;
+        }
+
+        return eventKind;
+      }
+
+      bool isConstructor = constructorInfo != null;
+      if (isConstructor)
+      {
+        SymbolKind constructorKind = SymbolKind.Constructor;
+
+        if (constructorInfo.IsStatic)
+        {
+          constructorKind |= SymbolKind.Static;
+        }
+
+        return constructorKind;
+      }
+
+      bool isField = fieldInfo != null;
+      if (isField)
+      {
+        SymbolKind fieldKind = SymbolKind.Event;
+        if (fieldInfo.IsInitOnly)
+        {
+          fieldKind |= SymbolKind.Final;
+        }
+
+        if (fieldInfo.IsStatic)
+        {
+          fieldKind |= SymbolKind.Static;
+        }
+
+        return fieldKind;
+      }
+
+      bool isInterface = !isDelegate && !isClass && (type?.IsInterface ?? false);
+      if (isInterface)
+      {
+        SymbolKind interfaceKind = SymbolKind.Interface;
+        return interfaceKind;
+      }
+
+      return SymbolKind.Undefined;
+    }
+
     public static dynamic Cast(this object obj, Type type)
         => typeof(HelperExtensionsCommon).GetMethod(nameof(HelperExtensionsCommon.Cast), BindingFlags.Static | BindingFlags.NonPublic, null, new[] { typeof(object) }, null).GetGenericMethodDefinition().MakeGenericMethod(type).Invoke(obj, null);
 
@@ -971,5 +1149,59 @@
     public static double TotalMicroseconds(this TimeSpan duration) => System.Math.Round(duration.Ticks / (double)Stopwatch.Frequency * 1E6, 1);
     public static double TotalNanoseconds(this TimeSpan duration) => System.Math.Round(duration.Ticks / (double)Stopwatch.Frequency * 1E9, 0);
 #endif
+  }
+
+  [Flags]
+  public enum SymbolKind
+  {
+    Undefined = 0,
+    Final = 1,
+    Virtual = 2,
+    Abstract = 4,
+    Static = 8,
+    Class = 16,
+    SealedClass = Final | Class,
+    AbstractClass = Abstract | Class,
+    StaticClass = Static | Class,
+    Interface = 32,
+    Delegate = 64,
+    Struct = 128,
+    ReadOnlyStruct = Final | Struct,
+    Enum = 256,
+    Method = 512,
+    VirtualMethod = Virtual | Method,
+    AbstractMethod = Abstract | Method,
+    StaticMethod = Static | Method,
+    SealedOverrideMethod = Final | Override | Method,
+    OverrideMethod = Override | Method,
+    Property = 1024,
+    ReadOnlyProperty = Final | Property,
+    AbstractProperty = Abstract | Property,
+    AbstractReadOnlyProperty = Abstract | Final | Property,
+    StaticProperty = Static | Property,
+    StaticReadOnlyProperty = Static | Final | Property,
+    VirtualProperty = Virtual | Property,
+    VirtualReadOnlyProperty = Virtual| Final | Property,
+    OverrideProperty = Override | Property,
+    OverrideReaOnlyProperty = Override | Final | Property,
+    Field = 2048,
+    ReadOnlyField = Final | Field,
+    StaticField = Static | Property,
+    StaticReadOnlyField = Static | Final | Field,
+    Event = 4096,
+    VirtualEvent = Virtual | Event,
+    AbstractEvent = Abstract | Event,
+    OverrideEvent = Override | Event,
+    Constructor = 8192,
+    StaticConstructor = Static | Constructor,
+    IndexerProperty = 16384 | Property,
+    ReadOnlyIndexerProperty = Final | IndexerProperty,
+    OverrideReadOnlyIndexerProperty = Override | Final | IndexerProperty,
+    OverrideIndexerProperty = Override| IndexerProperty,
+    StaticIndexerProperty = Static | IndexerProperty,
+    StaticReadOnlyIndexerProperty = Static | Final | IndexerProperty,
+    AbstractIndexerProperty = Abstract | IndexerProperty,
+    AbstractReadOnlyIndexerProperty = Abstract | Final | IndexerProperty,
+    Override = 32768,
   }
 }
