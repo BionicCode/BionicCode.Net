@@ -118,10 +118,15 @@
     public void ToDisplayName_ConstructorWithParameter_MustReturnConstructorSignature()
     {
       //var s = typeof(Generic.TestClassWithBaseClass<,>).ToSignatureNameNew(false);
-      var stringBuilder = new StringBuilder().AppendDisplayName(typeof(Generic.TestClassWithBaseClass<List<Queue<Task<string>>>, int>), true);
-      var s = stringBuilder.ToString();
-      var stringBuilder2 = new StringBuilder().AppendShortDisplayName(typeof(Generic.TestClassWithBaseClass<List<Queue<Task<string>>>, int>), true);
-      var s2 = stringBuilder2.ToString();
+
+      //var stringBuilder = new StringBuilder().AppendDisplayName(typeof(Generic.TestClassWithBaseClass<List<Queue<Task<string>>>, int>), true);
+      //var s = stringBuilder.ToString();
+      //var stringBuilder2 = new StringBuilder().AppendShortDisplayName(typeof(Generic.TestClassWithBaseClass<List<Queue<Task<string>>>, int>), true);
+      //var s2 = stringBuilder2.ToString();
+      Type type = typeof(Generic.TestClassWithBaseClass<List<Queue<Task<string>>>, int>);
+      //Type type = typeof(Generic.TestClassWithBaseClass<,>);
+      var stringBuilder3 = new StringBuilder().AppendSignatureNameInternal(type.GetMethod("PublicGenericMethodWithReturnValue").MakeGenericMethod(type.GetGenericArguments()), false, false);
+      var s3 = stringBuilder3.ToString();
       ConstructorInfo constructorInfo = typeof(Task<>).MakeGenericType(typeof(Func<,,>)).GetConstructor(new[] { typeof(Func<>).MakeGenericType(typeof(Func<,,>)), typeof(CancellationToken) });
       string signatureName = constructorInfo.ToSignatureName();
       //Type[] genericDefaultTypeArguments = typeof(Task<>).GetGenericArguments();

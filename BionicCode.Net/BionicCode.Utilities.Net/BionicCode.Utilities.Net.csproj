@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net47;net471;net472;net48;net481;netstandard20;netstandard21;net5.0-windows;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+    <TargetFrameworks>net47;net471;net472;net48;net481;netstandard20;netstandard21;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
     <ApplicationIcon>logo.ico</ApplicationIcon>
     <RootNamespace>BionicCode.Utilities.Net</RootNamespace>
     <AssemblyName>BionicCode.Utilities.Net</AssemblyName>
