@@ -387,12 +387,12 @@
       {
         foreach (ParameterInfo parameter in parameters)
         {
-          bool isGenericTypeDefinition;
-          if (memberKind.HasFlag(SymbolKinds.Method))
+          bool isGenericTypeDefinition = false;
+          if (memberKind.HasFlag(SymbolKinds.GenericMethod))
           {
             isGenericTypeDefinition = methodInfo.IsGenericMethodDefinition;
           }
-          else
+          else if (memberKind.HasFlag(SymbolKinds.GenericType))
           {
             isGenericTypeDefinition = type.IsGenericTypeDefinition;
           }
@@ -488,7 +488,9 @@
         }
       }
 
-      if (!memberKind.HasFlag(SymbolKinds.Class) && !memberKind.HasFlag(SymbolKinds.Struct))
+      if (!memberKind.HasFlag(SymbolKinds.Class) 
+        && !memberKind.HasFlag(SymbolKinds.Struct)
+        && !memberKind.HasFlag(SymbolKinds.Enum))
       {
         _ = signatureNameBuilder.Append(HelperExtensionsCommon.ExpressionTerminator);
       }

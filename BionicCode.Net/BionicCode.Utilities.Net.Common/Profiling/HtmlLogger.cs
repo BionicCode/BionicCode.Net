@@ -673,7 +673,7 @@ After:
 
     private async Task<string> GetEncodedJavaScriptCodeTextAsync()
     {
-      if (!(cache.Get(HtmlLogger.JavaScriptSourceFileName) is string scriptCode))
+      if (!(this.fileContentCache.Get(HtmlLogger.JavaScriptSourceFileName) is string scriptCode))
       {
         var assembly = Assembly.GetAssembly(GetType());
         string resourceName = assembly.GetManifestResourceNames().FirstOrDefault(name => name.EndsWith(HtmlLogger.JavaScriptSourceFileName, StringComparison.OrdinalIgnoreCase));
