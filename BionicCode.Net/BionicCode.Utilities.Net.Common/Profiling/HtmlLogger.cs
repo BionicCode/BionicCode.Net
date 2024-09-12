@@ -293,7 +293,7 @@ After:
 */
   using System.Threading.Tasks;
   using System.Collections.Generic;
-  using System.Runtime.Caching;
+  using Microsoft.Extensions.Caching.Memory;
 
   internal class HtmlLogger : IProfilerLogger
   {
@@ -301,8 +301,19 @@ After:
     private const string HtmlSourceFileName = @"HtmlLogger.html";
     private const int DoublePrecision = 3;
     private const double GraphIntervalResolution = 0.01;
+    private readonly MemoryCache fileContentCache;
     private readonly TimeSpan FileContentCacheExpiration = TimeSpan.FromMinutes(5);
     internal static HtmlEncoder HtmlEncoder { get; } = HtmlEncoder.Create();
+
+    public HtmlLogger()
+    {
+      var cacheOptions = new MemoryCacheOptions()
+      {
+        // Item based
+        SizeLimit = 100,
+      };
+      this.fileContentCache = new MemoryCache(cacheOptions);
+    }
 
     //public async Task LogAsync(ProfilerBatchResult batchResult, Types profiledType)
     //  => await LogAsync(new ProfilerBatchResultGroupCollection(new[] { new ProfilerBatchResultGroup(batchResult.Context.TargetType, new[] { batchResult }) }, profiledType));
@@ -315,7 +326,7 @@ After:
 
     public async Task LogAsync(ProfiledTypeResultCollection typeResults, CancellationToken cancellationToken)
     {
-      var htmlTypeNavigationIndexBuilder = new StringBuilder();
+      StringBuilder htmlTypeNavigationIndexBuilder = StringBuilderFactory.GetOrCreate();
       var documentBuilderInfosMap = new Dictionary<ProfilerBatchResultGroupCollection, IEnumerable<HtmlDocumentBuilderInfo>>();
       foreach (ProfilerBatchResultGroupCollection batchResultGroups in typeResults)
       {
@@ -386,6 +397,8 @@ After:
       string indexFilePath = htmlFilePaths.First();
       var startInfo = new ProcessStartInfo(indexFilePath) { UseShellExecute = true };
       _ = Process.Start(startInfo);
+
+      StringBuilderFactory.Recycle(htmlTypeNavigationIndexBuilder);
     }
 
     private async Task<IEnumerable<HtmlDocumentBuilderInfo>> CreateHtmlDocumentsAsync(ProfilerBatchResultGroupCollection batchResultGroups, CancellationToken cancellationToken)
@@ -393,7 +406,7 @@ After:
       var filePaths = new List<string>();
       var runningTasks = new List<Task<ChartTableCollection>>();
       var htmlDocumentBuilderValues = new Dictionary<ProfilerBatchResultGroup, HtmlDocumentBuilderInfo>();
-      var htmlTypeMemberNavigationIndexBuilder = new StringBuilder();
+      StringBuilder htmlTypeMemberNavigationIndexBuilder = StringBuilderFactory.GetOrCreate();
       var chartDataConverter = new GoogleChartsDataConverter();
 
       string scriptCode = await GetEncodedJavaScriptCodeTextAsync();
@@ -450,6 +463,8 @@ After:
         htmlDocumentBuilderInfo.ScriptCode = finalScriptCode;
       }
 
+      StringBuilderFactory.Recycle(htmlTypeMemberNavigationIndexBuilder);
+
       return htmlDocumentBuilderValues.Values.ToList();
     }
 
@@ -494,19 +509,22 @@ After:
         return string.Empty;
       }
 
-      var htmlDocumentBuilder = new StringBuilder();
+      StringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
       foreach (ProfilerBatchResult result in profilerBatchResultGroup)
       {
         _ = htmlDocumentBuilder
           .Append($@"<a class=""list-group-item list-group-item-action"" href=""#{result.Index}"">'{HtmlLogger.HtmlEncoder.Encode(result.Context.TargetTypeInfo.ToDisplayName())}' {result.Context.TargetType.ToDisplayStringValue()}</a>");
       }
 
-      return htmlDocumentBuilder.ToString();
+      string htmlDocumentContent = htmlDocumentBuilder.ToString();
+      StringBuilderFactory.Recycle(htmlDocumentBuilder);
+
+      return htmlDocumentContent;
     }
 
     private string CreateHtmlInPageFooterElements(ProfilerBatchResultGroup profilerBatchResultGroup)
     {
-      var htmlDocumentBuilder = new StringBuilder();
+      StringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
       foreach (ProfilerBatchResult result in profilerBatchResultGroup)
       {
         _ = htmlDocumentBuilder
@@ -514,7 +532,10 @@ After:
                             results</a>");
       }
 
-      return htmlDocumentBuilder.ToString();
+      string htmlDocumentContent = htmlDocumentBuilder.ToString();
+      StringBuilderFactory.Recycle(htmlDocumentBuilder);
+
+      return htmlDocumentContent;
     }
 
     private static async Task<string> ConvertToJsonAsync<TData>(TData chartTable)
@@ -534,7 +555,7 @@ After:
     private async Task<string> CreateHtmlTableAsync(ProfilerBatchResultGroup batchResultGroup, CancellationToken cancellationToken)
     {
       TimeUnit timeUnit = batchResultGroup.CommonBaseUnit;
-      var htmlDocumentBuilder = new StringBuilder();
+      StringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
       EnvironmentInfo environmentInfo = await Environment.GetEnvironmentInfoAsync();
 
       foreach (ProfilerBatchResult batchResult in batchResultGroup)
@@ -644,12 +665,14 @@ After:
         .Append("</article>");
       }
 
-      return htmlDocumentBuilder.ToString();
+      string htmlDocumentContent = htmlDocumentBuilder.ToString();
+      StringBuilderFactory.Recycle(htmlDocumentBuilder);
+
+      return htmlDocumentContent;
     }
 
     private async Task<string> GetEncodedJavaScriptCodeTextAsync()
     {
-      MemoryCache cache = MemoryCache.Default;
       if (!(cache.Get(HtmlLogger.JavaScriptSourceFileName) is string scriptCode))
       {
         var assembly = Assembly.GetAssembly(GetType());
@@ -663,14 +686,12 @@ After:
         {
           using (var streamReader = new StreamReader(resourceStream))
           {
-            var scriptCodeBuilder = new StringBuilder();
             string rawScriptCode = await streamReader.ReadToEndAsync();
             scriptCode = StringEncoder.EncodeFormatString(rawScriptCode);
-            var cachePolicy = new CacheItemPolicy
-            {
-              SlidingExpiration = this.FileContentCacheExpiration
-            };
-            cache.Set(HtmlLogger.JavaScriptSourceFileName, scriptCode, cachePolicy);
+            ICacheEntry entry = this.fileContentCache.CreateEntry(HtmlLogger.JavaScriptSourceFileName)
+              .SetValue(scriptCode)
+              .SetSize(1)
+              .SetSlidingExpiration(this.FileContentCacheExpiration);
           }
         }
       }
@@ -680,8 +701,7 @@ After:
 
     private async Task<string> GetEncodedHtmlCodeTextAsync()
     {
-      MemoryCache cache = MemoryCache.Default;
-      if (!(cache.Get(HtmlLogger.HtmlSourceFileName) is string htmlCode))
+      if (!(this.fileContentCache.Get(HtmlLogger.HtmlSourceFileName) is string htmlCode))
       {
         var assembly = Assembly.GetAssembly(GetType());
         string resourceName = assembly.GetManifestResourceNames()
@@ -695,14 +715,12 @@ After:
         {
           using (var streamReader = new StreamReader(resourceStream))
           {
-            var htmlCodeBuilder = new StringBuilder();
             string rawHtmlCode = await streamReader.ReadToEndAsync();
             htmlCode = StringEncoder.EncodeFormatString(rawHtmlCode);
-            var cachePolicy = new CacheItemPolicy
-            {
-              SlidingExpiration = this.FileContentCacheExpiration
-            };
-            cache.Set(HtmlLogger.HtmlSourceFileName, htmlCode, cachePolicy);
+            ICacheEntry entry = this.fileContentCache.CreateEntry(HtmlLogger.HtmlSourceFileName)
+              .SetValue(htmlCode)
+              .SetSize(1)
+              .SetSlidingExpiration(this.FileContentCacheExpiration);
           }
         }
       }

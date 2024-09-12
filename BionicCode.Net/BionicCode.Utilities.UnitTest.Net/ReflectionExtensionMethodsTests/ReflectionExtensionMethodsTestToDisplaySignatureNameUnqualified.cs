@@ -125,9 +125,9 @@
     [Fact]
     public void ToSignatureName_GenericMethodNew_MustBeFasterThanOld()
     {
-      Type type = typeof(Generic.TestClassWithBaseClass<List<Queue<Task<string>>>, int>);
-      MethodInfo methodInfo = type.GetMethod("PublicGenericMethodWithReturnValue").MakeGenericMethod(type.GetGenericArguments());
-
+      Type type = typeof(Generic.TestClassWithBaseClass<,>);
+      MethodInfo methodInfo = type.GetMethod("PublicGenericMethodWithReturnValue");
+      ParameterInfo[] paramas = methodInfo.GetParameters();
       string s1 = methodInfo.ToSignatureShortName();
       var stringBuilder = new StringBuilder();
       string s2 = stringBuilder.AppendSignatureName(methodInfo, false, false).ToString();

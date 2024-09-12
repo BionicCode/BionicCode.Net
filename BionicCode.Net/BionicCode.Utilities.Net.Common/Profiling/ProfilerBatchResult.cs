@@ -61,7 +61,7 @@
         return string.Empty;
       }
 
-      var summaryBuilder = new StringBuilder();
+      StringBuilder summaryBuilder = StringBuilderFactory.GetOrCreate();
       string title = $"Profile target: {this.Context.TargetName}";
       Profiler.BuildSummaryHeader(summaryBuilder, title, this.Context.TargetName, this.Context.SourceFileName, this.Context.LineNumber);
 
@@ -72,7 +72,10 @@
 
       Profiler.BuildSummaryFooter(summaryBuilder, this);
 
-      return summaryBuilder.ToString();
+      string summary = summaryBuilder.ToString();
+      StringBuilderFactory.Recycle(summaryBuilder);
+
+      return summary;
     }
 
     internal void Combine(ProfilerBatchResult batchResultToAppend)

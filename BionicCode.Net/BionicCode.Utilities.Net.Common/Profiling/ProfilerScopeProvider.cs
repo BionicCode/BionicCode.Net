@@ -66,7 +66,7 @@
             this.ScopeProvider.Result.BaseUnit = Profiler.DefaultBaseUnit;
 
             ProfilerContext context = this.ScopeProvider.Result.Context;
-            var summaryBuilder = new StringBuilder();
+            StringBuilder summaryBuilder = StringBuilderFactory.GetOrCreate();
             Profiler.BuildSummaryHeader(summaryBuilder, $"Target: scope (context: {context.TargetName})", context.TargetName, context.SourceFileName, context.LineNumber);
             Profiler.BuildSummaryEntry(summaryBuilder, iterationResult);
             Profiler.BuildSummaryFooter(summaryBuilder, this.ScopeProvider.Result);
@@ -76,6 +76,8 @@
             {
               await this.ScopeProvider.AsyncLogger.Invoke(this.ScopeProvider.Result);
             }
+
+            StringBuilderFactory.Recycle(summaryBuilder);
           }
 
           // TODO: free unmanaged resources (unmanaged objects) and override finalizer
