@@ -9,7 +9,7 @@
     where U : struct
   {
 
-    public T PublicGenericMethodWithReturnValue<V, W>(V parameter, W parameter2) where V : IList, new() where W : struct, IComparable
+    public T PublicGenericMethodWithReturnValue<V, W>(ref V parameter, W parameter2) where V : class, IList, new() where W : struct, IComparable
     {
       return default;
     }
