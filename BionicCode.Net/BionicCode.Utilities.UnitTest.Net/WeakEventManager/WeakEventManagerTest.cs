@@ -33,9 +33,9 @@
       WeakEventManager<TestEventSource1, TestEventArgs>.AddEventHandler(this.EventSource1, nameof(TestEventSource1.CustomHandlerTestEventForStaticHandlers), OnStronglyTypedEventArgsTestEventFromTestEventSource1Static);
       WeakEventManager<TestEventSource1, TestEventArgs>.AddEventHandler(null, nameof(TestEventSource1.StaticCustomHandlerTestEvent), OnStronglyTypedEventArgsTestEventFromStaticTestEventSource1Static);
 
-      WeakEventManager<TestEventSource1, TestEventArgs>.AddEventHandler(this.EventSource1, nameof(TestEventSource1.StronglyTypedCustomHandlerTestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource1);
-      WeakEventManager<TestEventSource1, TestEventArgs>.AddEventHandler(this.EventSource1, nameof(TestEventSource1.StronglyTypedCustomHandlerTestEventForStaticHandlers), OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource1Static);
-      WeakEventManager<TestEventSource1, TestEventArgs>.AddEventHandler(null, nameof(TestEventSource1.StaticStronglyTypedCustomHandlerTestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource1Static);
+      WeakEventManager<TestEventSource1, TestEventArgs>.AddEventHandler(this.EventSource1, nameof(TestEventSource1.StronglyTypedCustomHandlerTestEvent), new StronglyTypedTestEventHandler<TestEventSource1, TestEventArgs>(OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource1));
+      WeakEventManager<TestEventSource1, TestEventArgs>.AddEventHandler(this.EventSource1, nameof(TestEventSource1.StronglyTypedCustomHandlerTestEventForStaticHandlers), new StronglyTypedTestEventHandler<TestEventSource1, TestEventArgs>(OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource1Static));
+      WeakEventManager<TestEventSource1, TestEventArgs>.AddEventHandler(null, nameof(TestEventSource1.StaticStronglyTypedCustomHandlerTestEvent), new StronglyTypedTestEventHandler<TestEventSource1, TestEventArgs>(OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource1Static));
     }
 
     public void RegisterAllEventHandlersEventSource2()
@@ -52,9 +52,9 @@
       WeakEventManager<TestEventSource2, TestEventArgs>.AddEventHandler(this.EventSource2, nameof(TestEventSource2.CustomHandlerTestEventForStaticHandlers), OnStronglyTypedEventArgsTestEventFromTestEventSource2Static);
       WeakEventManager<TestEventSource2, TestEventArgs>.AddEventHandler(null, nameof(TestEventSource2.StaticCustomHandlerTestEvent), OnStronglyTypedEventArgsTestEventFromStaticTestEventSource2Static);
 
-      WeakEventManager<TestEventSource2, TestEventArgs>.AddEventHandler(this.EventSource2, nameof(TestEventSource2.StronglyTypedCustomHandlerTestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource2);
-      WeakEventManager<TestEventSource2, TestEventArgs>.AddEventHandler(this.EventSource2, nameof(TestEventSource2.StronglyTypedCustomHandlerTestEventForStaticHandlers), OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource2Static);
-      WeakEventManager<TestEventSource2, TestEventArgs>.AddEventHandler(null, nameof(TestEventSource2.StaticStronglyTypedCustomHandlerTestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource2Static);
+      WeakEventManager<TestEventSource2, TestEventArgs>.AddEventHandler(this.EventSource2, nameof(TestEventSource2.StronglyTypedCustomHandlerTestEvent), new StronglyTypedTestEventHandler<TestEventSource2, TestEventArgs>(OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource2));
+      WeakEventManager<TestEventSource2, TestEventArgs>.AddEventHandler(this.EventSource2, nameof(TestEventSource2.StronglyTypedCustomHandlerTestEventForStaticHandlers), new StronglyTypedTestEventHandler<TestEventSource2, TestEventArgs>(OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource2Static));
+      WeakEventManager<TestEventSource2, TestEventArgs>.AddEventHandler(null, nameof(TestEventSource2.StaticStronglyTypedCustomHandlerTestEvent), new StronglyTypedTestEventHandler<TestEventSource2, TestEventArgs>(OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource2Static));
     }
 
     public void UnregisterAllEventHandlersEventSource1()
@@ -72,14 +72,14 @@
       WeakEventManager<TestEventSource1, TestEventArgs>.RemoveEventHandler(this.EventSource1, nameof(TestEventSource1.CustomHandlerTestEventForStaticHandlers), OnStronglyTypedEventArgsTestEventFromTestEventSource1Static);
       WeakEventManager<TestEventSource1, TestEventArgs>.RemoveEventHandler(null, nameof(TestEventSource1.StaticCustomHandlerTestEvent), OnStronglyTypedEventArgsTestEventFromStaticTestEventSource1Static);
 
-      WeakEventManager<TestEventSource1, TestEventArgs>.RemoveEventHandler(this.EventSource1, nameof(TestEventSource1.StronglyTypedCustomHandlerTestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource1);
-      WeakEventManager<TestEventSource1, TestEventArgs>.RemoveEventHandler(this.EventSource1, nameof(TestEventSource1.StronglyTypedCustomHandlerTestEventForStaticHandlers), OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource1Static);
-      WeakEventManager<TestEventSource1, TestEventArgs>.RemoveEventHandler(null, nameof(TestEventSource1.StaticStronglyTypedCustomHandlerTestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource1Static);
+      WeakEventManager<TestEventSource1, TestEventArgs>.RemoveEventHandler(this.EventSource1, nameof(TestEventSource1.StronglyTypedCustomHandlerTestEvent), new StronglyTypedTestEventHandler<TestEventSource1, TestEventArgs>(OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource1));
+      WeakEventManager<TestEventSource1, TestEventArgs>.RemoveEventHandler(this.EventSource1, nameof(TestEventSource1.StronglyTypedCustomHandlerTestEventForStaticHandlers), new StronglyTypedTestEventHandler<TestEventSource1, TestEventArgs>(OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource1Static));
+      WeakEventManager<TestEventSource1, TestEventArgs>.RemoveEventHandler(null, nameof(TestEventSource1.StaticStronglyTypedCustomHandlerTestEvent), new StronglyTypedTestEventHandler<TestEventSource1, TestEventArgs>(OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource1Static));
 
       
       WeakEventManager<TestEventSource1, TestEventArgs>.RemoveEventHandler(this.EventSource1, nameof(TestEventSource1.GenericTestEvent), OnNonGenericTestEventFromTestEventSource1);
       WeakEventManager<TestEventSource1, TestEventArgs>.RemoveEventHandler(this.EventSource1, nameof(TestEventSource1.StronglyTypedCustomHandlerTestEvent), OnNonGenericTestEventFromTestEventSource1);
-      WeakEventManager<TestEventSource1, EventArgs>.RemoveEventHandler(this.EventSource1, nameof(TestEventSource1.TestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource1);
+      WeakEventManager<TestEventSource1, EventArgs>.RemoveEventHandler(this.EventSource1, nameof(TestEventSource1.TestEvent), new StronglyTypedTestEventHandler<TestEventSource1, TestEventArgs>(OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource1));
     }
 
     public void UnregisterAllEventHandlersEventSource2()
@@ -97,13 +97,13 @@
       WeakEventManager<TestEventSource2, TestEventArgs>.RemoveEventHandler(this.EventSource2, nameof(TestEventSource2.CustomHandlerTestEventForStaticHandlers), OnStronglyTypedEventArgsTestEventFromTestEventSource2Static);
       WeakEventManager<TestEventSource2, TestEventArgs>.RemoveEventHandler(null, nameof(TestEventSource2.StaticCustomHandlerTestEvent), OnStronglyTypedEventArgsTestEventFromStaticTestEventSource2Static);
 
-      WeakEventManager<TestEventSource2, TestEventArgs>.RemoveEventHandler(this.EventSource2, nameof(TestEventSource2.StronglyTypedCustomHandlerTestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource2);
-      WeakEventManager<TestEventSource2, TestEventArgs>.RemoveEventHandler(this.EventSource2, nameof(TestEventSource2.StronglyTypedCustomHandlerTestEventForStaticHandlers), OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource2Static);
-      WeakEventManager<TestEventSource2, TestEventArgs>.RemoveEventHandler(null, nameof(TestEventSource2.StaticStronglyTypedCustomHandlerTestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource2Static);
+      WeakEventManager<TestEventSource2, TestEventArgs>.RemoveEventHandler(this.EventSource2, nameof(TestEventSource2.StronglyTypedCustomHandlerTestEvent), new StronglyTypedTestEventHandler<TestEventSource2, TestEventArgs>(OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource2));
+      WeakEventManager<TestEventSource2, TestEventArgs>.RemoveEventHandler(this.EventSource2, nameof(TestEventSource2.StronglyTypedCustomHandlerTestEventForStaticHandlers), new StronglyTypedTestEventHandler<TestEventSource2, TestEventArgs>(OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource2Static));
+      WeakEventManager<TestEventSource2, TestEventArgs>.RemoveEventHandler(null, nameof(TestEventSource2.StaticStronglyTypedCustomHandlerTestEvent), new StronglyTypedTestEventHandler<TestEventSource2, TestEventArgs>(OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource2Static));
 
       WeakEventManager<TestEventSource2, TestEventArgs>.RemoveEventHandler(this.EventSource2, nameof(TestEventSource1.GenericTestEvent), OnNonGenericTestEventFromTestEventSource2);
       WeakEventManager<TestEventSource2, TestEventArgs>.RemoveEventHandler(this.EventSource2, nameof(TestEventSource1.StronglyTypedCustomHandlerTestEvent), OnNonGenericTestEventFromTestEventSource2);
-      WeakEventManager<TestEventSource2, EventArgs>.RemoveEventHandler(this.EventSource2, nameof(TestEventSource1.TestEvent), OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource2);
+      WeakEventManager<TestEventSource2, EventArgs>.RemoveEventHandler(this.EventSource2, nameof(TestEventSource1.TestEvent), new StronglyTypedTestEventHandler<TestEventSource2, TestEventArgs>(OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource2));
     }
 
     [Fact]

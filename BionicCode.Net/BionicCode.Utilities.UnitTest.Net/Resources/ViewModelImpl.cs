@@ -50,7 +50,7 @@
     public string ValidatingPropertyRejectInvalidValueAndPropertyNameIsNullAsync
     {
       get => this.validatingPropertyRejectInvalidValueAndPropertyNameIsNullAsync;
-      set => TrySetValueAsync(value, this.validatingPropertyRejectInvalidValueAndPropertyNameIsNullAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyRejectInvalidValueAndPropertyNameIsNullAsync = value, propertyName: null, methodConfiguration: new SetValueOptions(true, false, true));
+      set => TrySetValueAsync(value, this.validatingPropertyRejectInvalidValueAndPropertyNameIsNullAsync, this.PropertyValidationDelegateAsync, valueToValidate => this.validatingPropertyRejectInvalidValueAndPropertyNameIsNullAsync = valueToValidate, propertyName: null, methodConfiguration: new SetValueOptions(true, false, true));
     }
 
     //private string validatingPropertyRejectInvalidValueAndPropertyNameIsNull_Old;
@@ -71,7 +71,7 @@
     public string ValidatingPropertyAsync
     {
       get => this.validatingPropertyAsync;
-      set => base.TrySetValueAsync(value, this.validatingPropertyAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyAsync = value);
+      set => base.TrySetValueAsync(value, this.validatingPropertyAsync, this.PropertyValidationDelegateAsync, valueToValidate => this.validatingPropertyAsync = valueToValidate);
     }
 
     //private string validatingProperty_Old;
@@ -92,7 +92,7 @@
     public string SilentValidatingPropertyAsync
     {
       get => this.silentValidatingPropertyAsync;
-      set => base.TrySetValueSilentAsync(value, this.silentValidatingPropertyAsync, this.PropertyValidationDelegateAsync, value => this.silentValidatingPropertyAsync = value);
+      set => base.TrySetValueSilentAsync(value, this.silentValidatingPropertyAsync, this.PropertyValidationDelegateAsync, valueToValidate => this.silentValidatingPropertyAsync = valueToValidate);
     }
 
     //private string silentValidatingProperty_Old;
@@ -113,7 +113,7 @@
     public string ValidatingPropertyRejectInvalidValueAsync
     {
       get => this.validatingPropertyRejectInvalidValueAsync;
-      set => TrySetValueAsync(value, this.validatingPropertyRejectInvalidValueAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyRejectInvalidValueAsync = value, new SetValueOptions(true, false, true));
+      set => TrySetValueAsync(value, this.validatingPropertyRejectInvalidValueAsync, this.PropertyValidationDelegateAsync, valueToValidate => this.validatingPropertyRejectInvalidValueAsync = valueToValidate, new SetValueOptions(true, false, true));
     }
 
     //private string validatingPropertyRejectInvalidValue_Old;
@@ -131,20 +131,20 @@
     }
 
     public Task<bool> SetPropertyThrowExceptionOnInvalidValueUsingTrySetValueAsyncExplicitly(string value, string propertyName)
-      => TrySetValueAsync(value, this.validatingPropertyThrowExceptionOnInvalidValue, this.PropertyValidationDelegateAsync, value => this.validatingPropertyThrowExceptionOnInvalidValue = value, methodConfiguration: new SetValueOptions(false, true, false), propertyName: propertyName);
+      => TrySetValueAsync(value, this.validatingPropertyThrowExceptionOnInvalidValue, this.PropertyValidationDelegateAsync, valueToValidate => this.validatingPropertyThrowExceptionOnInvalidValue = valueToValidate, methodConfiguration: new SetValueOptions(false, true, false), propertyName: propertyName);
 
     private string validatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync;
     public string ValidatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync
     {
       get => this.validatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync;
-      set => _ = TrySetValueAsync(value, this.validatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync = value, new SetValueOptions(false, true, true));
+      set => _ = TrySetValueAsync(value, this.validatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync, this.PropertyValidationDelegateAsync, valueToValidate => this.validatingPropertyThrowExceptionOnInvalidValueButNotPropagatedByNonAwaitedAsnycExecutionAsync = valueToValidate, new SetValueOptions(false, true, true));
     }
 
     private string validatingPropertyThrowExceptionOnInvalidValuePropagatedBySynchronousExecutionAsync;
     public string ValidatingPropertyThrowExceptionOnInvalidValuePropagatedBySynchronousExecutionAsync
     {
       get => this.validatingPropertyThrowExceptionOnInvalidValuePropagatedBySynchronousExecutionAsync;
-      set => _ = TrySetValueAsync(value, this.validatingPropertyThrowExceptionOnInvalidValuePropagatedBySynchronousExecutionAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyThrowExceptionOnInvalidValuePropagatedBySynchronousExecutionAsync = value, new SetValueOptions(false, true, true))
+      set => _ = TrySetValueAsync(value, this.validatingPropertyThrowExceptionOnInvalidValuePropagatedBySynchronousExecutionAsync, this.PropertyValidationDelegateAsync, valueToValidate => this.validatingPropertyThrowExceptionOnInvalidValuePropagatedBySynchronousExecutionAsync = valueToValidate, new SetValueOptions(false, true, true))
           .ConfigureAwait(false)
           .GetAwaiter()
           .GetResult();
@@ -168,7 +168,7 @@
     public string ValidatingPropertyThrowExceptionAndRejectValueOnInvalidValueAsync
     {
       get => this.validatingPropertyThrowExceptionAndRejectValueOnInvalidValueAsync;
-      set => _ = TrySetValueAsync(value, this.validatingPropertyThrowExceptionAndRejectValueOnInvalidValueAsync, this.PropertyValidationDelegateAsync, value => this.validatingPropertyThrowExceptionAndRejectValueOnInvalidValueAsync = value, new SetValueOptions(true, true, true)).ConfigureAwait(false).GetAwaiter().GetResult();
+      set => _ = TrySetValueAsync(value, this.validatingPropertyThrowExceptionAndRejectValueOnInvalidValueAsync, this.PropertyValidationDelegateAsync, valueToValidate => this.validatingPropertyThrowExceptionAndRejectValueOnInvalidValueAsync = valueToValidate, new SetValueOptions(true, true, true)).ConfigureAwait(false).GetAwaiter().GetResult();
     }
 
     //private string validatingPropertyThrowExceptionAndRejectValueOnInvalidValue_Old;

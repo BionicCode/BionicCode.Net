@@ -14,6 +14,9 @@
     private readonly string readOnlyField;
     private string field;
 
+    public TestClass()
+    { }
+
     public TestClass(int parameter)
     { }
 

@@ -29,11 +29,13 @@
     private void FillStream()
     {
       var memStream = new MemoryStream();
-      using var streamWriter = new StreamWriter(memStream, Encoding.Default, 1024, true);
-      streamWriter.Write(this.TestText);
-      streamWriter.Flush();
+      using (var streamWriter = new StreamWriter(memStream, Encoding.Default, 1024, true))
+      {
+        streamWriter.Write(this.TestText);
+        streamWriter.Flush();
 
-      this.AutoResetStream.BaseStream = memStream;
+        this.AutoResetStream.BaseStream = memStream;
+      }
     }
 
     [Fact]
@@ -44,8 +46,8 @@
       byte[] buffer = new byte[1024];
       int bytesRead = await this.AutoResetStream.ReadAsync(buffer, 0, buffer.Length);
 
-      this.AutoResetStream.Position.Should().Be(0);
-      bytesRead.Should().Be(this.TestTextLength);
+      _ = this.AutoResetStream.Position.Should().Be(0);
+      _ = bytesRead.Should().Be(this.TestTextLength);
     }
 
     [Fact]
@@ -54,8 +56,8 @@
       byte[] buffer = Encoding.UTF8.GetBytes(this.TestText);
       await this.AutoResetStream.WriteAsync(buffer, 0, buffer.Length);
 
-      this.AutoResetStream.Position.Should().Be(0);
-      this.AutoResetStream.Length.Should().Be(this.TestTextLength);
+      _ = this.AutoResetStream.Position.Should().Be(0);
+      _ = this.AutoResetStream.Length.Should().Be(this.TestTextLength);
     }
 
     [Fact]
@@ -65,8 +67,8 @@
       byte[] buffer = new byte[1024];
       int bytesRead = this.AutoResetStream.Read(buffer, 0, buffer.Length);
 
-      this.AutoResetStream.Position.Should().Be(0);
-      bytesRead.Should().Be(this.TestTextLength);
+      _ = this.AutoResetStream.Position.Should().Be(0);
+      _ = bytesRead.Should().Be(this.TestTextLength);
     }
 
     [Fact]
@@ -75,8 +77,8 @@
       byte[] buffer = Encoding.UTF8.GetBytes(this.TestText);
       this.AutoResetStream.Write(buffer, 0, buffer.Length);
 
-      this.AutoResetStream.Position.Should().Be(0);
-      this.AutoResetStream.Length.Should().Be(this.TestTextLength);
+      _ = this.AutoResetStream.Position.Should().Be(0);
+      _ = this.AutoResetStream.Length.Should().Be(this.TestTextLength);
     }
 
     [Fact]
@@ -88,8 +90,8 @@
 
       int byteRead = this.AutoResetStream.ReadByte();
 
-      this.AutoResetStream.Position.Should().Be(0);
-      byteRead.Should().Be(firstByteInBuffer);
+      _ = this.AutoResetStream.Position.Should().Be(0);
+      _ = byteRead.Should().Be(firstByteInBuffer);
     }
 
     [Fact]
@@ -98,8 +100,8 @@
       byte[] buffer = Encoding.UTF8.GetBytes(this.TestText);
       this.AutoResetStream.WriteByte(buffer.First());
 
-      this.AutoResetStream.Position.Should().Be(0);
-      this.AutoResetStream.Length.Should().Be(1);
+      _ = this.AutoResetStream.Position.Should().Be(0);
+      _ = this.AutoResetStream.Length.Should().Be(1);
     }
 
     [Fact]
@@ -110,8 +112,8 @@
       {
         await this.AutoResetStream.CopyToAsync(destinationStream, this.TestTextLength, CancellationToken.None);
 
-        this.AutoResetStream.Position.Should().Be(0);
-        destinationStream.Length.Should().Be(this.TestTextLength);
+        _ = this.AutoResetStream.Position.Should().Be(0);
+        _ = destinationStream.Length.Should().Be(this.TestTextLength);
       }
     }
   }

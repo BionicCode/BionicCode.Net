@@ -2,7 +2,7 @@
 {
   using System;
 
-  public class TestClassWithInterfaceAndBaseClass<T> : TestClassBase<T, int>, ITestClass1<T, UInt128, TestClassWithInterface>
+  public class TestClassWithInterfaceAndBaseClass<T> : TestClassBase<T, int>, ITestClass1<T, int, TestClassWithInterface>
     where T : class
   {
   }

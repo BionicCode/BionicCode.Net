@@ -12,26 +12,58 @@
   using Xunit;
   using System.Threading;
   using System.Diagnostics;
+  using BionicCode.Utilities.Net.UnitTest.ReflectionExtensionMethodsTests.Resources.Public.Generic;
 
   public class ReflectionExtensionMethodsTestToUnqualifiedSignatureName
   {
     #region Delegate
 
     private static readonly string TestDelegateWithoutReturnValueSignatureName = $"public delegate void {nameof(TestDelegateWithoutReturnValue)}(int a, {nameof(TestClass)} b, string text);";
-    private static readonly string TestDelegateWithoutReturnValueQualifiedSignatureName = $"public delegate void {nameof(TestDelegateWithoutReturnValue)}(int a, {typeof(TestClass).FullName} b, string text);";
+    private static readonly string TestDelegateWithoutReturnValueQualifiedSignatureName = $"public delegate void {typeof(TestDelegateWithoutReturnValue).FullName}(int a, {typeof(TestClass).FullName} b, string text);";
     private static readonly string TestDelegateWithReturnValueSignatureName = $"public delegate int {nameof(TestDelegateWithReturnValue)}(int a, {nameof(TestClass)} b, string text);";
-    private static readonly string TestDelegateWithReturnValueQualifiedSignatureName = $"public delegate int {nameof(TestDelegateWithReturnValue)}(int a, {typeof(TestClass).FullName} b, string text);";
+    private static readonly string TestDelegateWithReturnValueQualifiedSignatureName = $"public delegate int {typeof(TestDelegateWithReturnValue).FullName}(int a, {typeof(TestClass).FullName} b, string text);";
+
+    private static readonly string TestGenericDelegateTypeDefinitionSignatureName = $"public delegate TReturn {typeof(Generic.TestDelegateWithReturnValue<,>).ToDisplayName()}(int a, T b, string text){System.Environment.NewLine}  where T : {nameof(TestClassBase)};";
+    private static readonly string TestGenericDelegateTypeDefinitionFullyQualifiedSignatureName = $"public delegate TReturn {typeof(Generic.TestDelegateWithReturnValue<,>).ToFullDisplayName()}(int a, T b, string text){System.Environment.NewLine}  where T : {typeof(TestClassBase).FullName};";
+
+    [Fact]
+    public void ToSignatureName_GenericDelegateTypeDefinitionWithConstraints_MustReturnDelegateSignature()
+    {
+      Type type = typeof(Generic.TestDelegateWithReturnValue<,>);
+
+      string delegateSignature = type.ToSignatureName();
+
+      _ = delegateSignature.Should().Be(TestGenericDelegateTypeDefinitionSignatureName);
+    }
+
+    [Fact]
+    public void ToSignatureName_GenericDelegateTypeDefinitionWithConstraints_MustReturnDelegateFullyQualifiedSignature()
+    {
+      Type type = typeof(Generic.TestDelegateWithReturnValue<,>);
+
+      string delegateSignature = type.ToSignatureName(isFullyQualifiedName: true);
+
+      _ = delegateSignature.Should().Be(TestGenericDelegateTypeDefinitionFullyQualifiedSignatureName);
+    }
 
     [Fact]
     public void ToSignatureName_DelegateWithoutReturnValue_MustReturnDelegateSignature()
     {
-      _ = typeof(TestDelegateWithoutReturnValue).ToSignatureName().Should().Be(TestDelegateWithoutReturnValueSignatureName);
+      Type type = typeof(TestDelegateWithoutReturnValue);
+
+      string delegateSignature = type.ToSignatureName();
+
+      _ = delegateSignature.Should().Be(TestDelegateWithoutReturnValueSignatureName);
     }
 
     [Fact]
     public void ToSignatureName_DelegateWithReturnValue_MustReturnDelegateSignature()
     {
-      _ = typeof(TestDelegateWithReturnValue).ToSignatureName().Should().Be(TestDelegateWithReturnValueSignatureName);
+      Type type = typeof(TestDelegateWithReturnValue);
+
+      string delegateSignature = type.ToSignatureName();
+      
+      _ = delegateSignature.Should().Be(TestDelegateWithReturnValueSignatureName);
     }
 
     #endregion Delegate
@@ -44,13 +76,31 @@
     [Fact]
     public void ToSignatureName_SimpleClass_MustReturnClassSignature()
     {
-      _ = typeof(TestClass).ToSignatureName().Should().Be(TestClassSignatureName);
+      Type type = typeof(TestClass);
+
+      string classSignature = type.ToSignatureName();
+
+      _ = classSignature.Should().Be(TestClassSignatureName);
     }
 
     [Fact]
     public void ToSignatureName_ClassWithBaseClass_MustReturnClassSignature()
     {
-      _ = typeof(TestClassWithBaseClass).ToSignatureName().Should().Be(TestClassWithBaseClassSignatureName);
+      Type type = typeof(TestClassWithBaseClass);
+
+      string classSignature = type.ToSignatureName();
+      
+      _ = classSignature.Should().Be(TestClassWithBaseClassSignatureName);
+    }
+
+    [Fact]
+    public void ToSignatureName_CallToSignatureShort_MustReturnFullClassSignature()
+    {
+      Type type = typeof(TestClassWithBaseClass);
+
+      string classSignature = type.ToSignatureShortName();
+
+      _ = classSignature.Should().Be(TestClassWithBaseClassSignatureName);
     }
 
     #endregion Class
@@ -63,32 +113,84 @@
     [Fact]
     public void ToSignatureName_SimpleStruct_MustReturnStructSignature()
     {
-      _ = typeof(TestStruct).ToSignatureName().Should().Be(TestStructSignatureName);
+      Type type = typeof(TestStruct);
+
+      string structSignature = type.ToSignatureName();
+
+      _ = structSignature.Should().Be(TestStructSignatureName);
+    }
+
+    [Fact]
+    public void ToSignatureName_CallToSignatureShort_MustReturnFullStructSignature()
+    {
+      Type type = typeof(TestStruct);
+
+      string structSignature = type.ToSignatureShortName();
+
+      _ = structSignature.Should().Be(TestStructSignatureName);
     }
 
     [Fact]
     public void ToSignatureName_SimpleReadOnlyStruct_MustReturnStructSignature()
     {
-      _ = typeof(TestReadOnlyStruct).ToSignatureName().Should().Be(TestReadOnlyStructSignatureName);
+      Type type = typeof(TestReadOnlyStruct);
+      
+      string structSignature = type.ToSignatureName();
+      
+      _ = structSignature.Should().Be(TestReadOnlyStructSignatureName);
     }
 
     #endregion Struct
 
     #region Field
 
-    private static readonly string TestReadOnlyFieldSignatureName = $"private readonly string readOnlyField;";
-    private static readonly string TestFieldSignatureName = $"private string field;";
+    private const string TestReadOnlyFieldSignatureName = "private readonly string {0}.readOnlyField;";
+    private const string TestReadOnlyFieldShortSignatureName = "private readonly string readOnlyField;";
+    private const string TestFieldSignatureName = "private string {0}.field;";
+    private const string TestFieldShortSignatureName = "private string field;";
 
     [Fact]
     public void ToSignatureName_ReadOnlyField_MustReturnFieldSignature()
     {
-      _ = typeof(TestClass).GetField("readOnlyField", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).ToSignatureName().Should().Be(TestReadOnlyFieldSignatureName);
+      Type type = typeof(TestClass);
+      FieldInfo fieldInfo = type.GetFieldInternal("readOnlyField");
+
+      string fieldSignature = fieldInfo.ToSignatureName();
+
+      _ = fieldSignature.Should().Be(string.Format(TestReadOnlyFieldSignatureName, type.Name));
     }
 
     [Fact]
-    public void ToSignatureName_Field_MustReturnFieldSignature()
+    public void ToSignatureName_ReadOnlyField_MustReturnShortFieldSignature()
     {
-      _ = typeof(TestClass).GetField("field", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).ToSignatureName().Should().Be(TestFieldSignatureName);
+      Type type = typeof(TestClass);
+      FieldInfo fieldInfo = type.GetFieldInternal("readOnlyField");
+
+      string fieldSignature = fieldInfo.ToSignatureShortName();
+
+      _ = fieldSignature.Should().Be(TestReadOnlyFieldShortSignatureName);
+    }
+
+    [Fact]
+    public void ToSignatureName_Field_MustReturnShortFieldSignature()
+    {
+      Type type = typeof(TestClass);
+      FieldInfo fieldInfo = type.GetFieldInternal("field");
+
+      string fieldSignature = fieldInfo.ToSignatureShortName();
+      
+      _ = fieldSignature.Should().Be(TestFieldShortSignatureName);
+    }
+
+    [Fact]
+    public void ToSignatureName_Field_MustReturnFullFieldSignature()
+    {
+      Type type = typeof(TestClass);
+      FieldInfo fieldInfo = type.GetFieldInternal("field");
+
+      string fieldSignature = fieldInfo.ToSignatureName();
+
+      _ = fieldSignature.Should().Be(string.Format(TestFieldSignatureName, type.Name));
     }
 
     #endregion Field
@@ -113,13 +215,21 @@
     [Fact]
     public void ToSignatureName_GenericMethod_MustReturnMethodSignature()
     {
-      _ = typeof(TestClass).GetMethod(nameof(TestClass.PublicGenericMethodWithReturnValue)).ToSignatureName().Should().Be(TestMethodGenericSignatureName);
+      MethodInfo methodInfo = typeof(TestClass).GetMethodInternal(nameof(TestClass.PublicGenericMethodWithReturnValue));
+
+      string methodSignature = methodInfo.ToSignatureName();
+
+      _ = methodSignature.Should().Be(TestMethodGenericSignatureName);
     }
 
     [Fact]
     public void ToSignatureName_GenericMethod_MustReturnShortMethodSignature()
     {
-      _ = typeof(TestClass).GetMethod(nameof(TestClass.PublicGenericMethodWithReturnValue)).ToSignatureShortName().Should().Be(TestMethodGenericShortSignatureName);
+      MethodInfo methodInfo = typeof(TestClass).GetMethodInternal(nameof(TestClass.PublicGenericMethodWithReturnValue));
+      
+      string methodSignature = methodInfo.ToSignatureShortName();
+      
+      _ = methodSignature.Should().Be(TestMethodGenericShortSignatureName);
     }
 
     [Fact]
@@ -137,7 +247,7 @@
       stopWatch.Start();
       _ = methodInfo.ToSignatureName();
       stopWatch.Stop();
-      _ = methodInfo.ExecutionTimeOf(methodInfo => stringBuilder.AppendSignatureName(methodInfo, false, false)).Should().BeLessThan(stopWatch.Elapsed);
+      _ = methodInfo.ExecutionTimeOf(method => stringBuilder.AppendSignatureName(method, false, false)).Should().BeLessThan(stopWatch.Elapsed);
       //var s = typeof(Generic.TestClassWithBaseClass<,>).ToSignatureNameNew(false);
 
       //var stringBuilder = new StringBuilder().AppendDisplayName(typeof(Generic.TestClassWithBaseClass<List<Queue<Task<string>>>, int>), true);
@@ -155,25 +265,34 @@
 
     #region Constructor
 
-    private static readonly string TestConstructorOfGenericClassSignatureName = "public {0}.{1}({2} {3});";
+    private static readonly string TestConstructorOfGenericClassSignatureName = "public {0}.{1}({2});";
 
     [Fact]
     public void ToSignatureName_ConstructorOfGenericClass_MustReturnConstructorSignature()
     {
       Type type = typeof(Generic.TestClass<,,,>);
-      ConstructorInfo constructorInfo = type.GetConstructors()[0];
-      ParameterInfo constructorParameter = constructorInfo.GetParameters()[0];
-      _ = constructorInfo.ToSignatureName().Should().Be(string.Format(TestConstructorOfGenericClassSignatureName, type.ToDisplayName(), type.ToDisplayName(isShortName: true ), constructorParameter.ParameterType.ToDisplayName(), constructorParameter.Name));
+      ConstructorInfo constructorInfo = type.GetConstructorInternal(Type.EmptyTypes);
+      string constructorParameters = constructorInfo.GetParameters()
+        .CreateParameterList();
+
+      string constructorSignature = constructorInfo.ToSignatureName();
+
+      _ = constructorSignature.Should()
+        .Be(string.Format(TestConstructorOfGenericClassSignatureName, type.ToDisplayName(), type.ToDisplayName(isShortName: true), constructorParameters));
     }
 
     [Fact]
     public void ToSignatureName_ConstructorOfGenericClassWithTypeArguments_MustReturnConstructorSignature()
     {
       Type type = typeof(Generic.TestClass<string, int, TestClassWithInterfaces, TestClassWithBaseClass>);
-      ConstructorInfo constructorInfo = type.GetConstructors()[0];
-      ParameterInfo constructorParameter = constructorInfo.GetParameters()[0];
-      _ = constructorInfo.ToSignatureName().Should()
-        .Be(string.Format(TestConstructorOfGenericClassSignatureName, type.ToDisplayName(), type.ToDisplayName(isShortName: true), constructorParameter.ParameterType.ToDisplayName(), constructorParameter.Name));
+      ConstructorInfo constructorInfo = type.GetConstructorInternal(typeof(int));
+      string constructorParameters = constructorInfo.GetParameters()
+        .CreateParameterList();
+
+      string constructorSignature = constructorInfo.ToSignatureName();
+
+      _ = constructorSignature.Should()
+        .Be(string.Format(TestConstructorOfGenericClassSignatureName, type.ToDisplayName(), type.ToDisplayName(isShortName: true), constructorParameters));
     }
 
     #endregion Constructor
@@ -208,6 +327,31 @@
     public void ToSignatureName_ClassWithBaseClass_MustReturnFullClassSignature()
     {
       _ = typeof(TestClassWithBaseClass).ToSignatureName(isFullyQualifiedName: true).Should().Be(TestClassWithBaseClassSignatureName);
+    }
+  }
+
+  public static class HelperExtensionMethods
+  {
+    public static FieldInfo GetFieldInternal(this Type declaringType, string memberName)
+      => declaringType.GetField(memberName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+
+    public static MethodInfo GetMethodInternal(this Type declaringType, string memberName)
+      => declaringType.GetMethod(memberName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+
+    public static ConstructorInfo GetConstructorInternal(this Type declaringType, params Type[] parameters)
+      => declaringType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static, null, parameters, null);
+
+    public static PropertyInfo GetPropertyInternal(this Type declaringType, string memberName)
+      => declaringType.GetProperty(memberName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+
+    public static EventInfo GetEventInternal(this Type declaringType, string memberName)
+      => declaringType.GetEvent(memberName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+
+    public static string CreateParameterList(this ParameterInfo[] parameters)
+    {
+      return parameters.Aggregate(string.Empty, (result, parameterInfo) => result = $"{parameterInfo.ParameterType.ToDisplayName()} {parameterInfo.Name}, ")
+        .TrimEnd()
+        .TrimEnd(',');
     }
   }
 }

@@ -19,6 +19,7 @@
   using System.Runtime.InteropServices;
   using Microsoft.CodeAnalysis.Operations;
   using System.Xml.Linq;
+  using System.Reflection.Metadata;
 
   /// <summary>
   /// A collection of extension methods for various default constraintTypes
@@ -27,6 +28,8 @@
   {
     private const string ParameterSeparator = ", ";
     private const char ExpressionTerminator = ';';
+    private const string Indentation = "  ";
+
     /// <summary>
     /// The property genericTypeParameterIdentifier of an indexer property. This genericTypeParameterIdentifier is compiler generated and equals the typeName of the <see langword="static"/>field <see cref="System.Windows.Data.Binding.IndexerName" />.
     /// </summary>
@@ -219,14 +222,18 @@
 
       SymbolKinds memberKind = GetKind(memberInfo);
 
-      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreateWith(new StringBuilder("Hello"));
 
-      IList<CustomAttributeData> symbolAttributes = memberInfo.GetCustomAttributesData();
-      if (symbolAttributes.Count > 0)
-      {        
-        _ = signatureNameBuilder.AppendCustomAttributes(symbolAttributes)
-          .AppendLine();
+      IEnumerable<CustomAttributeData> symbolAttributes = memberInfo.GetCustomAttributesData();
+
+#if !NETSTANDARD2_0
+      if (memberKind.HasFlag(SymbolKinds.Final))
+      {
+        symbolAttributes = symbolAttributes.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute));
       }
+#endif
+
+      _ = signatureNameBuilder.AppendCustomAttributes(symbolAttributes, isAppendNewLineEnabled: true);
 
       AccessModifier accessModifier = memberInfo.GetAccessModifier();
       _ = signatureNameBuilder
@@ -399,8 +406,8 @@
 
           if (isGenericTypeDefinition)
           {
-            IList<CustomAttributeData> attributes = parameter.GetCustomAttributesData();
-            _ = signatureNameBuilder.AppendCustomAttributes(attributes);
+            IEnumerable<CustomAttributeData> attributes = parameter.GetCustomAttributesData();
+            _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false);
           }
 
           if (parameter.IsRef())
@@ -472,20 +479,16 @@
       if (memberKind.HasFlag(SymbolKinds.Generic))
       {
         Type[] genericTypeParameterDefinitions = Type.EmptyTypes;
-        if (memberKind.HasFlag(SymbolKinds.GenericType) && type.ContainsGenericParameters)
+        if (memberKind.HasFlag(SymbolKinds.GenericType) && type.IsGenericTypeDefinition)
         {
           genericTypeParameterDefinitions = type.GetGenericTypeDefinition().GetGenericArguments();
         }
-        else if (memberKind.HasFlag(SymbolKinds.GenericMethod) && methodInfo.ContainsGenericParameters)
+        else if (memberKind.HasFlag(SymbolKinds.GenericMethod) && methodInfo.IsGenericMethodDefinition)
         {
           genericTypeParameterDefinitions = methodInfo.GetGenericMethodDefinition().GetGenericArguments();
         }
 
-        for (int genericTypeArgumentIndex = 0; genericTypeArgumentIndex < genericTypeParameterDefinitions.Length; genericTypeArgumentIndex++)
-        {
-          Type genericTypeParameterDefinition = genericTypeParameterDefinitions[genericTypeArgumentIndex];
-          _ = signatureNameBuilder.AppendGenericTypeConstraints(genericTypeParameterDefinition, isFullyQualifiedName);
-        }
+        _ = signatureNameBuilder.AppendGenericTypeConstraints(genericTypeParameterDefinitions, isFullyQualifiedName);
       }
 
       if (!memberKind.HasFlag(SymbolKinds.Class) 
@@ -501,71 +504,79 @@
       return fullMemberName;
     }
 
-    private static StringBuilder AppendCustomAttributes(this StringBuilder nameBuilder, IList<CustomAttributeData> attributes)
+    private static StringBuilder AppendCustomAttributes(this StringBuilder nameBuilder, IEnumerable<CustomAttributeData> attributes, bool isAppendNewLineEnabled)
     {
-      if (attributes.Count > 0)
+      bool hasAttribute = false;
+      foreach (CustomAttributeData attribute in attributes)
       {
-        foreach (CustomAttributeData attribute in attributes)
+        hasAttribute = true;
+
+        _ = nameBuilder.Append('[')
+          .Append(attribute.AttributeType.Name)
+          .Append('(');
+        foreach (CustomAttributeTypedArgument constructorPositionalArgument in attribute.ConstructorArguments)
         {
-          _ = nameBuilder.Append('[')
-            .Append(attribute.AttributeType.Name)
-            .Append('(');
-          foreach (CustomAttributeTypedArgument constructorPositionalArgument in attribute.ConstructorArguments)
+          if (constructorPositionalArgument.ArgumentType == typeof(string))
           {
-            if (constructorPositionalArgument.ArgumentType == typeof(string))
-            {
-              _ = nameBuilder.Append('"')
-                .Append(constructorPositionalArgument.Value)
-                .Append('"')
-                .Append(HelperExtensionsCommon.ParameterSeparator);
-            }
-            else if (constructorPositionalArgument.ArgumentType == typeof(char))
-            {
-              _ = nameBuilder.Append('\'')
-                .Append(constructorPositionalArgument.Value)
-                .Append('\'')
-                .Append(HelperExtensionsCommon.ParameterSeparator);
-            }
-            else
-            {
-              _ = nameBuilder.Append(constructorPositionalArgument.Value)
-                .Append(HelperExtensionsCommon.ParameterSeparator);
-            }
+            _ = nameBuilder.Append('"')
+              .Append(constructorPositionalArgument.Value)
+              .Append('"')
+              .Append(HelperExtensionsCommon.ParameterSeparator);
           }
-
-          foreach (CustomAttributeNamedArgument constructorNamedArgument in attribute.NamedArguments)
+          else if (constructorPositionalArgument.ArgumentType == typeof(char))
           {
-            _ = nameBuilder.Append(constructorNamedArgument.MemberName)
-              .Append(" = ");
-
-            if (constructorNamedArgument.TypedValue.ArgumentType == typeof(string))
-            {
-              _ = nameBuilder.Append('"')
-                .Append(constructorNamedArgument.TypedValue.Value)
-                .Append('"')
-                .Append(HelperExtensionsCommon.ParameterSeparator);
-            }
-            else if (constructorNamedArgument.TypedValue.ArgumentType == typeof(char))
-            {
-              _ = nameBuilder.Append('\'')
-                .Append(constructorNamedArgument.TypedValue.Value)
-                .Append('\'')
-                .Append(HelperExtensionsCommon.ParameterSeparator);
-            }
-            else
-            {
-              _ = nameBuilder.Append(constructorNamedArgument.TypedValue.Value)
-                .Append(HelperExtensionsCommon.ParameterSeparator);
-            }
+            _ = nameBuilder.Append('\'')
+              .Append(constructorPositionalArgument.Value)
+              .Append('\'')
+              .Append(HelperExtensionsCommon.ParameterSeparator);
+          }
+          else
+          {
+            _ = nameBuilder.Append(constructorPositionalArgument.Value)
+              .Append(HelperExtensionsCommon.ParameterSeparator);
           }
         }
 
+        foreach (CustomAttributeNamedArgument constructorNamedArgument in attribute.NamedArguments)
+        {
+          _ = nameBuilder.Append(constructorNamedArgument.MemberName)
+            .Append(" = ");
+
+          if (constructorNamedArgument.TypedValue.ArgumentType == typeof(string))
+          {
+            _ = nameBuilder.Append('"')
+              .Append(constructorNamedArgument.TypedValue.Value)
+              .Append('"')
+              .Append(HelperExtensionsCommon.ParameterSeparator);
+          }
+          else if (constructorNamedArgument.TypedValue.ArgumentType == typeof(char))
+          {
+            _ = nameBuilder.Append('\'')
+              .Append(constructorNamedArgument.TypedValue.Value)
+              .Append('\'')
+              .Append(HelperExtensionsCommon.ParameterSeparator);
+          }
+          else
+          {
+            _ = nameBuilder.Append(constructorNamedArgument.TypedValue.Value)
+              .Append(HelperExtensionsCommon.ParameterSeparator);
+          }
+        }
+      }
+
+      if (hasAttribute)
+      {
         // Remove trailing comma and whitespace
         _ = nameBuilder.Remove(nameBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length);
 
         _ = nameBuilder.Append(')')
           .Append(']')
           .Append(' ');
+
+        if (isAppendNewLineEnabled)
+        {
+          _ = nameBuilder.AppendLine();
+        }
       }
 
       return nameBuilder;
@@ -1162,54 +1173,58 @@
       return nameBuilder;
     }
 
-    private static StringBuilder AppendGenericTypeConstraints(this StringBuilder constraintBuilder, Type genericTypeDefinition, bool isFullyQualified)
+    private static StringBuilder AppendGenericTypeConstraints(this StringBuilder constraintBuilder, Type[] genericTypeDefinitions, bool isFullyQualified)
     {
-      Type[] constraints = genericTypeDefinition.GetGenericParameterConstraints();
-      if ((genericTypeDefinition.GenericParameterAttributes & GenericParameterAttributes.SpecialConstraintMask) == GenericParameterAttributes.None && constraints.Length == 0)
+      for (int genericTypeArgumentIndex = 0; genericTypeArgumentIndex < genericTypeDefinitions.Length; genericTypeArgumentIndex++)
       {
-        return constraintBuilder;
-      }
-
-      _ = constraintBuilder.AppendLine()
-        .Append(' ')
-        .Append(' ')
-        .Append(' ')
-        .Append(' ')
-        .Append("where")
-        .Append(' ')
-        .Append(genericTypeDefinition.Name)
-        .Append(" : ");
-
-      if ((genericTypeDefinition.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0)
-      {
-        _ = constraintBuilder.Append("class")
-          .Append(HelperExtensionsCommon.ParameterSeparator);
-      }
-
-      if ((genericTypeDefinition.GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) != 0)
-      {
-        _ = constraintBuilder.Append("struct")
-          .Append(HelperExtensionsCommon.ParameterSeparator);
-      }
-
-      foreach (Type constraint in constraints)
-      {
-        if (constraint == typeof(object) || constraint == typeof(ValueType))
+        Type genericTypeDefinition = genericTypeDefinitions[genericTypeArgumentIndex];
+        Type[] constraints = genericTypeDefinition.GetGenericParameterConstraints();
+        if ((genericTypeDefinition.GenericParameterAttributes & GenericParameterAttributes.SpecialConstraintMask) == GenericParameterAttributes.None
+          && constraints.Length == 0)
         {
           continue;
         }
 
-        _ = constraintBuilder.AppendDisplayNameInternal(constraint, isFullyQualified, isShortName: false)
-          .Append(HelperExtensionsCommon.ParameterSeparator);
+        _ = constraintBuilder.AppendLine()
+          .Append(HelperExtensionsCommon.Indentation)
+          .Append("where")
+          .Append(' ')
+          .Append(genericTypeDefinition.Name)
+          .Append(" : ");
+
+        if ((genericTypeDefinition.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0)
+        {
+          _ = constraintBuilder.Append("class")
+            .Append(HelperExtensionsCommon.ParameterSeparator);
+        }
+
+        if ((genericTypeDefinition.GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) != 0)
+        {
+          _ = constraintBuilder.Append("struct")
+            .Append(HelperExtensionsCommon.ParameterSeparator);
+        }
+
+        foreach (Type constraint in constraints)
+        {
+          if (constraint == typeof(object) || constraint == typeof(ValueType))
+          {
+            continue;
+          }
+
+          _ = constraintBuilder.AppendDisplayNameInternal(constraint, isFullyQualified, isShortName: false)
+            .Append(HelperExtensionsCommon.ParameterSeparator);
+        }
+
+        if (!genericTypeDefinition.IsValueType && (genericTypeDefinition.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0)
+        {
+          _ = constraintBuilder.Append("new()")
+            .Append(HelperExtensionsCommon.ParameterSeparator);
+        }
+
+        _ = constraintBuilder.Remove(constraintBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length);
       }
 
-      if (!genericTypeDefinition.IsValueType && (genericTypeDefinition.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0)
-      {
-        _ = constraintBuilder.Append("new()")
-          .Append(HelperExtensionsCommon.ParameterSeparator);
-      }
-
-      return constraintBuilder.Remove(constraintBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length);
+      return constraintBuilder;
     }
 
     private static StringBuilder AppendInheritanceSignature(this StringBuilder memberNameBuilder, Type type, bool isFullyQualified)
@@ -1316,6 +1331,18 @@
 
       return false;
     }
+
+#if NETSTANDARD2_0 || NETFRAMEWORK
+    public static StringBuilder Append(this StringBuilder baseStringBuilder, StringBuilder stringBuilder)
+    {
+      char[] tempArray = new char[stringBuilder.Length];
+      stringBuilder.CopyTo(0, tempArray, 0, stringBuilder.Length);
+      return baseStringBuilder.Append(tempArray);
+    }
+
+    public static StringBuilder Append(this StringBuilder baseStringBuilder, ReadOnlySpan<char> span) 
+      => baseStringBuilder.Append(span.ToArray());
+#endif
 
     /// <summary>
     /// Extension method to check if a <see cref="Type"/> is static.

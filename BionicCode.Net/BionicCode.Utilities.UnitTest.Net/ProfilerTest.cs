@@ -207,9 +207,9 @@
         .EnableDefaultLogOutput()
         .SetBaseUnit(TimeUnit.Microseconds);
 
-      ProfiledTypeResultCollection result = await profilerBuilder.RunAsync(CancellationToken.None);
+      ProfiledTypeResultCollection profilerResult = await profilerBuilder.RunAsync(CancellationToken.None);
 
-      _ = result.First().First().First().IterationCount.Should().Be(iterations);
+      _ = profilerResult.First().First().First().IterationCount.Should().Be(iterations);
     }
   }
 }
