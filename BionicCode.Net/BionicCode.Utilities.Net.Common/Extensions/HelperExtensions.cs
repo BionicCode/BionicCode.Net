@@ -208,21 +208,20 @@
     internal static string ToSignatureNameInternal(this MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName)
     {
       var type = memberInfo as Type;
-      var propertyInfo = memberInfo as PropertyInfo;
       MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
         ?? type?.GetMethod("Invoke"); // MemberInfo is potentially a delegate
+      var propertyInfo = memberInfo as PropertyInfo;
       MethodInfo propertyGetMethodInfo = propertyInfo?.GetGetMethod(true);
       MethodInfo propertySetMethodInfo = propertyInfo?.GetSetMethod(true);
       var constructorInfo = memberInfo as ConstructorInfo;
       var fieldInfo = memberInfo as FieldInfo;
       var eventInfo = memberInfo as EventInfo;
-      //FieldInfo eventDeclaredFieldInfo = eventInfo?.DeclaringType.GetField(eventInfo.Name, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
       ParameterInfo[] indexerPropertyIndexParameters = propertyInfo?.GetIndexParameters() ?? Array.Empty<ParameterInfo>();
 
       SymbolKinds memberKind = GetKind(memberInfo);
 
-      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreateWith(new StringBuilder("Hello"));
+      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
       IEnumerable<CustomAttributeData> symbolAttributes = memberInfo.GetCustomAttributesData();
 
@@ -1332,17 +1331,25 @@
       return false;
     }
 
-#if NETSTANDARD2_0 || NETFRAMEWORK
-    public static StringBuilder Append(this StringBuilder baseStringBuilder, StringBuilder stringBuilder)
+    public static StringBuilder AppendStringBuilder(this StringBuilder stringBuilder, StringBuilder value)
     {
-      char[] tempArray = new char[stringBuilder.Length];
-      stringBuilder.CopyTo(0, tempArray, 0, stringBuilder.Length);
-      return baseStringBuilder.Append(tempArray);
+#if NETSTANDARD2_0 || NETFRAMEWORK
+      char[] tempArray = new char[value.Length];
+      value.CopyTo(0, tempArray, 0, value.Length);
+      return stringBuilder.Append(tempArray);
+#else
+      return stringBuilder.Append(value);
+#endif
     }
 
-    public static StringBuilder Append(this StringBuilder baseStringBuilder, ReadOnlySpan<char> span) 
-      => baseStringBuilder.Append(span.ToArray());
+    public static StringBuilder AppendReadOnlySpan(this StringBuilder stringBuilder, ReadOnlySpan<char> value)
+    {
+#if NETSTANDARD2_0 || NETFRAMEWORK
+      return stringBuilder.Append(value.ToArray());
+#else
+      return stringBuilder.Append(value);
 #endif
+    }
 
     /// <summary>
     /// Extension method to check if a <see cref="Type"/> is static.

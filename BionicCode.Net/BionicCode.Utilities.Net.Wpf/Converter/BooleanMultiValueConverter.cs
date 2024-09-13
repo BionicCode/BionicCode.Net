@@ -1,6 +1,6 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-#if NET || NET461_OR_GREATER
+#if !NETSTANDARD
   using System;
   using System.Globalization;
   using System.Linq;
@@ -24,7 +24,8 @@
     /// <param name="culture"></param>
     /// <returns></returns>
     /// <exception cref="NotSupportedException">Back conversion is not supported.</exception>
-    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) =>
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) 
+      =>
       throw new NotSupportedException();
 
     #endregion

@@ -57,11 +57,7 @@
       => GetOrCreate().Append(content);
 #else
     public static StringBuilder GetOrCreateWith(StringBuilder content)
-    {
-      char[] tempArray = new char[content.Length];
-      content.CopyTo(0,  tempArray, 0, content.Length);
-      return GetOrCreateInternal(-1).Append(content);
-    }
+      => GetOrCreate().AppendStringBuilder(content);
 #endif
 
     public static void Recycle(StringBuilder stringBuilder)

@@ -2,7 +2,7 @@
 {
   using System;
   using System.Globalization;
-#if NET || NET461_OR_GREATER
+#if !NETSTANDARD
   using System.Windows.Data;
   /// <summary>
   /// Implementation of <see cref="IValueConverter"/> that inverts a bool value.

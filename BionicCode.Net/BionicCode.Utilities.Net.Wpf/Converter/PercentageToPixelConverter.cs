@@ -3,7 +3,7 @@
   using System;
   using System.Globalization;
 
-#if NET || NET461_OR_GREATER
+#if !NETSTANDARD
   using System.Windows.Data;
   public class PercentageToPixelConverter : IValueConverter
   {

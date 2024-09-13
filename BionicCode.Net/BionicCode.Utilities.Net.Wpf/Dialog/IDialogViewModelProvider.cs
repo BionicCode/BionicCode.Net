@@ -7,7 +7,7 @@ namespace BionicCode.Utilities.Net
 {
   using System.Windows;
 
-#if NET || NET461_OR_GREATER
+#if !NETSTANDARD
   /// <summary>
   /// The binding source for the current dialog view and the attached property <see cref="Dialog.DialogDataContextProperty"/>.
   /// </summary>

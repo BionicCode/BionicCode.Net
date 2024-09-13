@@ -5,7 +5,7 @@
   using System.IO;
   using System.Text;
   using System.Windows;
-#if NET || NET461_OR_GREATER
+#if !NETSTANDARD
   using System.Windows.Data;
   /// <summary>
   ///   Converter to truncate file paths exceeding a specific length by replacing a number of characters with an ellipsis.

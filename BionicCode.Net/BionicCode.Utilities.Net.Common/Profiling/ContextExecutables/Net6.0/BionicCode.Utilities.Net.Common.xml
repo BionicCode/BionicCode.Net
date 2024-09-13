@@ -702,7 +702,7 @@
             A collection of extension methods for various default types
             </summary>
             <summary>
-            A collection of extension methods for various default types
+            A collection of extension methods for various default constraintTypes
             </summary>
             <summary>
             A collection of extension methods for various default types
@@ -904,128 +904,102 @@
         </member>
         <member name="F:BionicCode.Utilities.Net.HelperExtensionsCommon.IndexerName">
             <summary>
-            The property name of an indexer property. This name is compiler generated and equals the value of the <see langword="static"/>field <see cref="!:System.Windows.Data.Binding.IndexerName" />.
+            The property genericTypeParameterIdentifier of an indexer property. This genericTypeParameterIdentifier is compiler generated and equals the typeName of the <see langword="static"/>field <see cref="!:System.Windows.Data.Binding.IndexerName" />.
             </summary>
-            <value>The generated property name of an indexer is <c>Item</c>.</value>
+            <typeName>The generated property genericTypeParameterIdentifier of an indexer is <c>Item</c>.</typeName>
             <remarks>This field exists to enable writing of cross-platform compatible reflection code without the requirement to import the PresentationFramework.dll.</remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFunc``1(System.Predicate{``0})">
             <summary>
             Converts a <see cref="T:System.Predicate`1"/> to a <see cref="T:System.Func`2"/>.
             </summary>
-            <typeparam name="TParam">The parameter type for the predicate.</typeparam>
-            <param name="predicate">The predicate to convert.</param>
-            <returns>A <c>Func<typeparamref name="TParam"/>, bool></c> that returns the result of <paramref name="predicate"/>.</returns>
+            <typeparam genericTypeParameterIdentifier="TParam">The parameter type for the predicate.</typeparam>
+            <param genericTypeParameterIdentifier="predicate">The predicate to convert.</param>
+            <returns>A <c>Func<typeparamref genericTypeParameterIdentifier="TParam"/>, bool></c> that returns the result of <paramref genericTypeParameterIdentifier="predicate"/>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName(System.Reflection.PropertyInfo,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.MemberInfo,System.Boolean)">
             <summary>
-            Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
             </summary>
-            <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
-            <param name="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
+            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
             <returns>
-            A readable name of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
             </returns>
             <remarks>
             Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic type parameters to construct the full signature name like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
             </remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName(System.Reflection.MethodInfo,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Reflection.MemberInfo,System.Boolean)">
             <summary>
-            Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
             </summary>
-            <param name="methodInfo">The <see cref="T:System.Reflection.MethodInfo"/> to extend.</param>
+            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
+            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
             <returns>
-            A readable name of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
             </returns>
             <remarks>
             Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic type parameters to construct the full signature name like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
-            </remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName(System.Type)">
-            <summary>
-            Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.
-            </summary>
-            <param name="typeInfo">The <see cref="T:System.Type"/> to extend.</param>
-            <returns>
-            A readable name of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
-            </returns>
-            <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic type parameters to construct the full signature name like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
-            </remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName(System.Reflection.ConstructorInfo,System.Boolean)">
-            <summary>
-            Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.
-            </summary>
-            <param name="constructorInfo">The <see cref="T:System.Reflection.ConstructorInfo"/> to extend.</param>
-            <returns>
-            A readable name of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
-            </returns>
-            <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic type parameters to construct the full signature name like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
-            </remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplaySignatureName(System.Reflection.FieldInfo,System.Boolean)">
-            <summary>
-            Extension method to convert generic and non-generic member names to a readable full signature display name without the namespace.
-            </summary>
-            <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> to extend.</param>
-            <returns>
-            A readable name of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
-            </returns>
-            <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic type parameters to construct the full signature name like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
             </remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetAccessModifier(System.Reflection.MemberInfo)">
             <summary>
-            Gets the access modifier for <see cref="T:System.Reflection.MemberInfo"/> objects like <see cref="T:System.Type"/>, <see cref="T:System.Reflection.MethodInfo"/>, <see cref="T:System.Reflection.ConstructorInfo"/>, <see cref="T:System.Reflection.PropertyInfo"/>, <see cref="T:System.Reflection.EventInfo"/> or <see cref="T:System.Reflection.FieldInfo"/>.
+            Gets the access modifier for <see cref="T:System.Reflection.MemberInfo"/> attributes like <see cref="T:System.Type"/>, <see cref="T:System.Reflection.MethodInfo"/>, <see cref="T:System.Reflection.ConstructorInfo"/>, <see cref="T:System.Reflection.PropertyInfo"/>, <see cref="T:System.Reflection.EventInfo"/> or <see cref="T:System.Reflection.FieldInfo"/>.
             </summary>
-            <param name="memberInfo"></param>
-            <returns>The <see cref="T:BionicCode.Utilities.Net.AccessModifier"/> for the current <paramref name="memberInfo"/>.</returns>
-            <exception cref="T:System.InvalidOperationException">Unable to identify the accessibility of the <paramref name="memberInfo"/>.</exception>
-            <exception cref="T:System.NotSupportedException">The type provided by the <paramref name="memberInfo"/> is not supported.</exception>
+            <param genericTypeParameterIdentifier="type"></param>
+            <returns>The <see cref="T:BionicCode.Utilities.Net.AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="type"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="type"/>.</exception>
+            <exception cref="T:System.NotSupportedException">The type provided by the <paramref genericTypeParameterIdentifier="type"/> is not supported.</exception>
             <remarks>For a <see cref="T:System.Reflection.PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayName(System.Reflection.MemberInfo)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayName(System.Reflection.MemberInfo,System.Boolean)">
             <summary>
-            Extension method to convert generic and non-generic member names to a readable display name without the namespace.
+            Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the namespace.
             </summary>
-            <param name="memberInfo">The <see cref="T:System.Reflection.MemberInfo"/> to extend.</param>
             <returns>
-            A readable name of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
             </returns>
             <remarks>
             <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
             Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic type parameters to construct the full type name like <c>"Task.Run&lt;TResult&gt;"</c>.
+            <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
             </remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.MemberInfo)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.MemberInfo,System.Boolean)">
             <summary>
-            Extension method to convert generic and non-generic type names to a readable display name including the namespace.
+            Extension method to convert generic and non-generic type names to a readable display genericTypeParameterIdentifier including the namespace.
             </summary>
-            <param name="memberInfo">The <see cref="T:System.Type"/> to extend.</param>
             <returns>
-            A readable name of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
+            A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
             </returns>
             <remarks>
             <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
             Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic type parameters to construct the full type name like <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
+            <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayNameInternal(System.Reflection.MemberInfo,System.Boolean,System.Boolean)">
+            <summary>
+            Extension method to convert generic and non-generic type names to a readable display genericTypeParameterIdentifier including the namespace.
+            </summary>
+            <param genericTypeParameterIdentifier="memberInfo">The <see cref="T:System.Type"/> to extend.</param>
+            <returns>
+            A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
             </remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.IsAwaitable(System.Reflection.MethodInfo)">
             <summary>
             Checks if the provided <see cref="T:System.Reflection.MethodInfo"/> belongs to an asynchronous/awaitable method.
             </summary>
-            <param name="methodInfo">The <see cref="T:System.Reflection.MethodInfo"/> to check if it belongs to an awaitable method.</param>
+            <param genericTypeParameterIdentifier="methodInfo">The <see cref="T:System.Reflection.MethodInfo"/> to check if it belongs to an awaitable method.</param>
             <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
             <remarks>The method first checks if the return type is either <see cref="T:System.Threading.Tasks.Task"/> or <see cref="T:System.Threading.Tasks.ValueTask"/>. If that fails, it checks if the returned type (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate type (awaiter).
             <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
@@ -1034,15 +1008,21 @@
             <summary>
             Extension method to check if a <see cref="T:System.Type"/> is static.
             </summary>
-            <param name="typeInfo">The extended <see cref="T:System.Type"/> instance.</param>
-            <returns><see langword="true"/> if the <paramref name="typeInfo"/> is static. Otherwise <see langword="false"/>.</returns>
+            <param genericTypeParameterIdentifier="typeInfo">The extended <see cref="T:System.Type"/> instance.</param>
+            <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="typeInfo"/> is static. Otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.IsRef(System.Reflection.ParameterInfo)">
+            <summary>
+            Extension method to check if a <see cref="T:System.Reflection.ParameterInfo"/> represents a <see langword="ref"/> parameter.
+            </summary>
+            <returns><see langword="true"/> if the <paramref name="parameterInfo"/> represents a <see langword="ref"/> parameter. Otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.CanDeclareExtensionMethods(System.Type)">
             <summary>
             Extension method that checks if the provided <see cref="T:System.Type"/> is qualified to define extension methods.
             </summary>
-            <param name="typeInfo">The extended <see cref="T:System.Type"/> instance.</param>
-            <returns><see langword="true"/> if the <paramref name="typeInfo"/> is allowed to define extension methods. Otherwise <see langword="false"/>.</returns>
+            <param genericTypeParameterIdentifier="typeInfo">The extended <see cref="T:System.Type"/> instance.</param>
+            <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="typeInfo"/> is allowed to define extension methods. Otherwise <see langword="false"/>.</returns>
             <remarks>To be able to define extension methods a class must be static, non-generic, a top level type. 
             <br/>In addition this method checks if the declaring class and the method are both decorated with the <see cref="T:System.Runtime.CompilerServices.ExtensionAttribute"/> which is added by the compiler.</remarks>
         </member>
@@ -1050,16 +1030,16 @@
             <summary>
             Extension method to check if a <see cref="T:System.Reflection.MethodInfo"/> is the info of an extension method.
             </summary>
-            <param name="methodInfo">The extended <see cref="T:System.Reflection.MethodInfo"/> instance to validate.</param>
-            <returns><see langword="true"/> if the <paramref name="methodInfo"/> is an extension method. Otherwise <see langword="false"/>.</returns>
+            <param genericTypeParameterIdentifier="methodInfo">The extended <see cref="T:System.Reflection.MethodInfo"/> instance to validate.</param>
+            <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="methodInfo"/> is an extension method. Otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.IsExtensionMethodOf(System.Reflection.MethodInfo,System.Type)">
             <summary>
             Extension method to check if a <see cref="T:System.Reflection.MethodInfo"/> is the info of an extension method for a particular type.
             </summary>
-            <param name="methodInfo">The extended <see cref="T:System.Reflection.MethodInfo"/> instance to validate.</param>
-            <param name="typeToExtend">The <see cref="T:System.Type"/> the <paramref name="methodInfo"/> is expected to extend.</param>
-            <returns><see langword="true"/> if the <paramref name="methodInfo"/> is an extension method for <paramref name="typeToExtend"/>. Otherwise <see langword="false"/>.</returns>
+            <param genericTypeParameterIdentifier="methodInfo">The extended <see cref="T:System.Reflection.MethodInfo"/> instance to validate.</param>
+            <param genericTypeParameterIdentifier="typeToExtend">The <see cref="T:System.Type"/> the <paramref genericTypeParameterIdentifier="methodInfo"/> is expected to extend.</param>
+            <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="methodInfo"/> is an extension method for <paramref genericTypeParameterIdentifier="typeToExtend"/>. Otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDataTable``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>

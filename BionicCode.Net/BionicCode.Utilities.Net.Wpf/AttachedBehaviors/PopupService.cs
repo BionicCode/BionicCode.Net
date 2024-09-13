@@ -6,6 +6,7 @@ namespace BionicCode.Utilities.Net
   using System.Linq;
   using System.Windows;
 
+#if !NETSTANDARD
   /// <summary>
   /// Set of attached behaviors for the <see cref="System.Windows.Controls.Primitives.Popup"/> control.
   /// </summary>
@@ -158,4 +159,5 @@ namespace BionicCode.Utilities.Net
       }
     }
   }
+  #endif
 }

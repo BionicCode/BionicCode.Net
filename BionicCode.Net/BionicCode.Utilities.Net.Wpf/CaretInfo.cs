@@ -1,6 +1,6 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-#if NET || NET461_OR_GREATER
+#if !NETSTANDARD
   using System.Windows;
 
   /// <summary>

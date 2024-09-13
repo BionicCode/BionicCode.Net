@@ -1,5 +1,6 @@
 ﻿namespace BionicCode.Utilities.Net
 {
+#if !NETSTANDARD
   using System;
   using System.Security;
   using System.Windows;
@@ -74,4 +75,5 @@
       sendCommand?.Execute(commandParameter);
     }
   }
+#endif
 }
