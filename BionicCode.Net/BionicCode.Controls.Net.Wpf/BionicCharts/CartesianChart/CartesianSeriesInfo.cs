@@ -4,13 +4,14 @@
   using System.Collections;
   using System.Collections.Generic;
   using System.Linq;
-
-/* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
-Before:
-  using System.Linq;
-After:
   using System.Windows;
-*/
+
+  /* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
+  Before:
+    using System.Linq;
+  After:
+    using System.Windows;
+  */
   using System.Windows.Media;
 
   public readonly struct CartesianSeriesInfo<TData> : ISeriesInfo<TData, Point>, ICartesianSeriesInfo

@@ -4,6 +4,8 @@
   using System.Collections.ObjectModel;
   using System.Threading.Tasks;
   using System.Windows;
+  using BionicCode.Utilities.Net;
+  using Math = System.Math;
 
   class CartesianChartViewModel : ViewModel
   {
@@ -21,7 +23,7 @@
       set => TrySetValue(value, ref this.chartPoints);
     }
 
-    public IAsyncRelayCommand AsyncRelayTestCommand => new AsyncRelayCommand<string>(ExecuteCommandTest);
+    public IAsyncRelayCommand<string> AsyncRelayTestCommand => new AsyncRelayCommand<string>(ExecuteCommandTest);
     public IAsyncRelayCommand<string> SynchronousRelayTestCommand => new AsyncRelayCommand<string>(ExecuteCommandTestSynchronously);
 
     private void ExecuteCommandTestSynchronously(string obj)
@@ -32,7 +34,7 @@
 
     private async Task ExecuteCommandTest(string arg)
     {
-      await this.SynchronousRelayTestCommand.ExecuteAsync();
+      await this.SynchronousRelayTestCommand.ExecuteAsync(string.Empty);
       await this.SynchronousRelayTestCommand.ExecuteAsync("123");
       throw new InvalidCastException("AsyncRelayTestCommandHandler");
     }

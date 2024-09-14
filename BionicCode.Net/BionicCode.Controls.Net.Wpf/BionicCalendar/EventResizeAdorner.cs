@@ -13,6 +13,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using BionicCode.Utilities.Net;
+using Math = System.Math;
 
 namespace BionicCode.Controls.Net.Wpf
 {
@@ -154,7 +155,7 @@ namespace BionicCode.Controls.Net.Wpf
       }
 
       if (!this.IsResizing
-          || !this.AdornedElement.TryFindVisualParentElement(out CalendarPanel calendarPanel))
+          || !this.AdornedElement.TryFindVisualParentElement(out CalendarPanel _))
       {
         this.Cursor = this.DefaultCursor;
         return;
@@ -190,7 +191,7 @@ namespace BionicCode.Controls.Net.Wpf
     ///// <inheritdoc />
     protected override Size MeasureOverride(Size constraint)
     {
-      base.MeasureOverride(constraint);
+      _ = base.MeasureOverride(constraint);
       if (this.IsResizing)
       {
         //(this.AdornedElement as FrameworkElement).Height = constraint.Height;
@@ -224,15 +225,19 @@ namespace BionicCode.Controls.Net.Wpf
 
       var transparentRenderBrush = new SolidColorBrush(Colors.Transparent);
       transparentRenderBrush.Freeze();
-      var renderBrush = new SolidColorBrush(Colors.DimGray);
-      renderBrush.Opacity = 0.5;
+      var renderBrush = new SolidColorBrush(Colors.DimGray)
+      {
+        Opacity = 0.5
+      };
       renderBrush.Freeze();
       var transparentRenderPen = new Pen(new SolidColorBrush(Colors.Transparent), 1);
       transparentRenderPen.Freeze();
       var renderPen = new Pen(new SolidColorBrush(Colors.DimGray), 1);
       renderPen.Freeze();
-      var dashedRenderPen = new Pen(new SolidColorBrush(Colors.DimGray), 0.5);
-      dashedRenderPen.DashStyle = DashStyles.Dot;
+      var dashedRenderPen = new Pen(new SolidColorBrush(Colors.DimGray), 0.5)
+      {
+        DashStyle = DashStyles.Dot
+      };
       dashedRenderPen.Freeze();
 
       var adornedElementRect = new Rect(
@@ -248,16 +253,20 @@ namespace BionicCode.Controls.Net.Wpf
       var horizontalResizeGripHitBox = new Rect(
         new Size(
           Math.Max(0, adornedElementRect.Width - EventResizeAdorner.HitTestPadding),
-          Math.Max(0, adornedElementRect.Height - EventResizeAdorner.HitTestPadding)));
-      horizontalResizeGripHitBox.Height = EventResizeAdorner.HitTestPadding;
+          Math.Max(0, adornedElementRect.Height - EventResizeAdorner.HitTestPadding)))
+      {
+        Height = EventResizeAdorner.HitTestPadding
+      };
       horizontalResizeGripHitBox.Offset(
         EventResizeAdorner.HitTestPadding / 2,
         -EventResizeAdorner.HitTestPadding);
       var verticalResizeGripHitBox = new Rect(
         new Size(
           Math.Max(0, adornedElementRect.Width - EventResizeAdorner.HitTestPadding),
-          Math.Max(0, adornedElementRect.Height - EventResizeAdorner.HitTestPadding)));
-      verticalResizeGripHitBox.Width = EventResizeAdorner.HitTestPadding;
+          Math.Max(0, adornedElementRect.Height - EventResizeAdorner.HitTestPadding)))
+      {
+        Width = EventResizeAdorner.HitTestPadding
+      };
       verticalResizeGripHitBox.Offset(-EventResizeAdorner.HitTestPadding, EventResizeAdorner.HitTestPadding / 2);
 
       /* Visible resize grip lines.

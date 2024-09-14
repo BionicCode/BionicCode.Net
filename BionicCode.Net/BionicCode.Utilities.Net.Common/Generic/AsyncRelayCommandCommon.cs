@@ -192,16 +192,16 @@ namespace BionicCode.Utilities.Net
 
     #region ICommand implementation
 #if NET
-    bool ICommand.CanExecute(object? parameter) => parameter == null
-        ? CanExecute(default)
-        : CanExecute((TParam)parameter);
+    /// <inheritdoc />
+    bool ICommand.CanExecute(object? parameter) => CanExecute((TParam)parameter);
+    /// <inheritdoc />
+    async void ICommand.Execute(object? parameter) => await ExecuteAsync((TParam)parameter, CancellationToken.None);
 #else
-    bool ICommand.CanExecute(object parameter) => parameter == null
-        ? CanExecute(default)
-        : CanExecute((TParam)parameter);
-#endif
+    /// <inheritdoc />
+    bool ICommand.CanExecute(object parameter) => CanExecute((TParam)parameter);
     /// <inheritdoc />
     async void ICommand.Execute(object parameter) => await ExecuteAsync((TParam)parameter, CancellationToken.None);
+#endif
 
     #endregion ICommand implementation
   }

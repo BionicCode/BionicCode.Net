@@ -66,7 +66,7 @@
             <summary>
             A reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand"/> with support for async/await command delegates. 
             <br/>Enables instant creation of an ICommand without implementing the ICommand interface for each command.
-            The <see cref="T:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1"/> accepts asynchronous command handlers and supports data bindng to properties like <see cref="!:IsExecuting"/> by implementing <see cref="T:System.ComponentModel.INotifyPropertyChanged"/>.
+            The <see cref="T:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1"/> accepts asynchronous command handlers and supports data binding to properties like <see cref="!:IsExecuting"/> by implementing <see cref="T:System.ComponentModel.INotifyPropertyChanged"/>.
             <br/>Call and await the <see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.ExecuteAsync"/> method or one of its overloads to execute the command explicitly asynchronously.
               <seealso cref="T:System.Windows.Input.ICommand" />
             </summary>
@@ -175,6 +175,9 @@
             </remarks>
             <exception cref="T:System.OperationCanceledException">If the executing command delegate was cancelled.</exception>
             <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="timeout>>"/>.TotalMilliseconds is less than -1 or greater than <see cref="F:System.Int32.MaxValue"/> (or <see cref="F:System.UInt32.MaxValue"/> - 1 on some versions of .NET). Note that this upper bound is more restrictive than <see cref="F:System.TimeSpan.MaxValue"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.System#Windows#Input#ICommand#CanExecute(System.Object)">
+            <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.System#Windows#Input#ICommand#Execute(System.Object)">
             <inheritdoc />
@@ -1243,6 +1246,9 @@
             <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.ExecuteAsync(`0,System.TimeSpan,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.System#Windows#Input#ICommand#CanExecute(System.Object)">
             <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.System#Windows#Input#ICommand#Execute(System.Object)">

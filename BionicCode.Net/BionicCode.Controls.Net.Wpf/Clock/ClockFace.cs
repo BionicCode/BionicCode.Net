@@ -264,16 +264,16 @@ namespace BionicCode.Controls.Net.Wpf
 
       double hourValue = (double)basevalue;
       double hours = this_.Is24HModeEnabled
-        ? Math.Truncate(hourValue) % 24
-        : Math.Truncate(hourValue) % 12 == 0
+        ? System.Math.Truncate(hourValue) % 24
+        : System.Math.Truncate(hourValue) % 12 == 0
           ? 12
-          : Math.Truncate(hourValue) % 12;
-      double decimalPart = hourValue - Math.Truncate(hourValue);
+          : System.Math.Truncate(hourValue) % 12;
+      double decimalPart = hourValue - System.Math.Truncate(hourValue);
       double decimalMinutes = decimalPart * 60;
-      this_.SelectedMinute = Math.Truncate(decimalMinutes);
+      this_.SelectedMinute = System.Math.Truncate(decimalMinutes);
 
-      decimalPart = decimalMinutes - Math.Truncate(decimalMinutes);
-      var decimalSeconds = Math.Truncate(decimalPart * 60);
+      decimalPart = decimalMinutes - System.Math.Truncate(decimalMinutes);
+      double decimalSeconds = System.Math.Truncate(decimalPart * 60);
       this_.SelectedSecond = decimalSeconds;
 
       this_.IsUpdatingSelectedTimeComponent = false;
@@ -293,16 +293,16 @@ namespace BionicCode.Controls.Net.Wpf
       double minuteValue = (double)basevalue;
       double decimalHours = minuteValue / 60;
       this_.SelectedHour = this_.Is24HModeEnabled
-        ? Math.Truncate(decimalHours) % 24
-        : Math.Truncate(decimalHours) % 12 == 0
+        ? System.Math.Truncate(decimalHours) % 24
+        : System.Math.Truncate(decimalHours) % 12 == 0
           ? 12
-          : Math.Truncate(decimalHours) % 12;
+          : System.Math.Truncate(decimalHours) % 12;
 
       double decimalMinutes = minuteValue % 60;
-      var minutes = Math.Truncate(decimalMinutes);
+      double minutes = System.Math.Truncate(decimalMinutes);
 
-      var decimalPart = decimalMinutes - Math.Truncate(decimalMinutes);
-      double decimalSeconds = Math.Truncate(decimalPart * 60);
+      double decimalPart = decimalMinutes - System.Math.Truncate(decimalMinutes);
+      double decimalSeconds = System.Math.Truncate(decimalPart * 60);
       this_.SelectedSecond = decimalSeconds;
 
       this_.IsUpdatingSelectedTimeComponent = false;
@@ -322,17 +322,17 @@ namespace BionicCode.Controls.Net.Wpf
       double secondsValue = (double)basevalue;
       double decimalHours = secondsValue / 3600;
       this_.SelectedHour = this_.Is24HModeEnabled
-        ? Math.Truncate(decimalHours) % 24
-        : Math.Truncate(decimalHours) % 12 == 0
+        ? System.Math.Truncate(decimalHours) % 24
+        : System.Math.Truncate(decimalHours) % 12 == 0
           ? 12
-          : Math.Truncate(decimalHours) % 12;
+          : System.Math.Truncate(decimalHours) % 12;
 
       double minutePart = secondsValue % 3600;
       double decimalMinutes = minutePart / 60;
-      this_.SelectedMinute = Math.Truncate(decimalMinutes);
+      this_.SelectedMinute = System.Math.Truncate(decimalMinutes);
 
       double decimalSeconds = minutePart % 60;
-      var seconds = Math.Truncate(decimalSeconds);
+      double seconds = System.Math.Truncate(decimalSeconds);
 
       this_.IsUpdatingSelectedTimeComponent = false;
       return seconds;
@@ -423,12 +423,12 @@ namespace BionicCode.Controls.Net.Wpf
     {
     }
 
-    protected virtual void OnClockFaceLoaded() =>
-      RaiseEvent(new RoutedEventArgs(ClockFace.ClockFaceLoadedRoutedEvent, this));
+    protected virtual void OnClockFaceLoaded() 
+      => RaiseEvent(new RoutedEventArgs(ClockFace.ClockFaceLoadedRoutedEvent, this));
 
     public void AddCartesianElementToClockFace(
       FrameworkElement clockElement,
-      Point cartesianPoint,
+      CartesianPoint cartesianPoint,
       double yMax,
       int zIndex = 1)
     {
@@ -441,7 +441,7 @@ namespace BionicCode.Controls.Net.Wpf
       Canvas.SetLeft(clockElement, screenPoint.X);
       Canvas.SetTop(clockElement, screenPoint.Y);
       Panel.SetZIndex(clockElement, zIndex);
-      this.ClockFaceCanvas.Children.Add(clockElement);
+      _ = this.ClockFaceCanvas.Children.Add(clockElement);
     }
 
     public void RemoveElementFromClockFace(FrameworkElement clockElement) => this.ClockFaceCanvas.Children.Remove(clockElement);
@@ -452,12 +452,12 @@ namespace BionicCode.Controls.Net.Wpf
     public override void OnApplyTemplate()
     {
       base.OnApplyTemplate();
-      var hostPanel = GetTemplateChild("PART_HostPanel") as Panel;
-      if (hostPanel == null)
+      if (GetTemplateChild("PART_HostPanel") is not Panel hostPanel)
       {
         throw new InvalidOperationException("Template part 'PART_HostPanel' of type 'Panel' not found");
       }
-      hostPanel.Children.Add(this.ClockFaceCanvas);
+
+      _ = hostPanel.Children.Add(this.ClockFaceCanvas);
     }
 
     #endregion

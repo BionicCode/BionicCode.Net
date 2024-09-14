@@ -10,6 +10,7 @@
   using System.Windows.Input;
   using System.Windows.Media;
   using BionicCode.Utilities.Net;
+  using Math = System.Math;
 
   /// <summary>
   /// </summary>
@@ -228,7 +229,7 @@
 
     private static object CoerceTabSize(DependencyObject d, object baseValue) => Math.Max(0, (int)baseValue);
 
-    private static object CoerceCaretPosition(DependencyObject d, object baseValue) => Math.Max(0, (int)baseValue);
+    private static object CoerceCaretPosition(DependencyObject d, object baseValue) => System.Math.Max(0, (int)baseValue);
 
     private static void OnTextRangeItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as HighlightTextBox).OnTextRangeItemsSourceChanged(e.OldValue as IEnumerable<TextRange>, e.NewValue as IEnumerable<TextRange>);
 
@@ -479,7 +480,7 @@
 
     protected void SetCaretPositionInternal(int caretPosition) => SetCurrentValue(HighlightTextBox.CaretPositionProperty, caretPosition);
 
-    private async Task DeleteCharactersAtAsync(int characterCount, TextDirecetion textDirecetion) => await this.TextEngine.RemoveTextAtCurrentCaretPositionAsync(characterCount, textDirecetion);
+    private async Task DeleteCharactersAtAsync(int characterCount, TextDirecetion textDirection) => await this.TextEngine.RemoveTextAtCurrentCaretPositionAsync(characterCount, textDirection);
 
     protected virtual async Task HandleTextInputAsync(string input)
     {
