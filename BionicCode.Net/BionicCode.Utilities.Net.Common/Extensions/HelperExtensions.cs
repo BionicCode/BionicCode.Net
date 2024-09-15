@@ -260,6 +260,8 @@
         .Append(' ');
 
       if (memberKind.HasFlag(SymbolKinds.Method) && methodInfo.IsAwaitable())
+        // TODO::insert 'async' method modifier
+
 
       if (!memberKind.HasFlag(SymbolKinds.Delegate)
         && !memberKind.HasFlag(SymbolKinds.Struct)
@@ -1913,14 +1915,17 @@
 
   internal sealed class TypeData : MemberInfoData
   {
+    private bool? canDeclareExtensionMethod;
+    private bool? isDelegate;
+    private bool? isAwaitable;
     private IEnumerable<CustomAttributeData> attributeData;
 
-    public TypeData(RuntimeTypeHandle handle) => this.Handle = handle;
+    public TypeData(Type type) => this.Handle = type.TypeHandle;
 
     public RuntimeTypeHandle Handle { get; }
-    public bool IsDelegate { get; set; }
-    public bool IsAwaitable { get; set; }
-    public bool CanDeclareExtensionMethod { get; set; }
+    public bool IsDelegate => (bool)(this.isDelegate ?? (this.isDelegate = Type.GetTypeFromHandle(this.Handle).IsDelegate()));
+    public bool IsAwaitable => (bool)(this.isAwaitable ?? (this.isAwaitable = Type.GetTypeFromHandle(this.Handle).IsAwaitable()));
+    public bool CanDeclareExtensionMethod => (bool)(this.canDeclareExtensionMethod ?? (this.canDeclareExtensionMethod = Type.GetTypeFromHandle(this.Handle).CanDeclareExtensionMethods()));
     public override IEnumerable<CustomAttributeData> AttributeData 
       => this.attributeData ?? (this.attributeData = Type.GetTypeFromHandle(this.Handle).GetCustomAttributesData());
   }
@@ -2000,6 +2005,25 @@
     public ParameterInfo ParameterInfo { get; }
     public override IEnumerable<CustomAttributeData> AttributeData
       => this.attributeData ?? (this.attributeData = this.ParameterInfo.GetCustomAttributesData());
+  }
+
+  internal sealed class PropertyData : MemberInfoData
+  {
+    private IEnumerable<CustomAttributeData> attributeData;
+
+    public PropertyData(PropertyInfo propertyInfo)
+    {
+      this.DeclaringTypeHandle = propertyInfo.DeclaringType.TypeHandle;
+      this.PropertyTypeData = new TypeData(propertyInfo.PropertyType);
+    }
+
+    public RuntimeTypeHandle DeclaringTypeHandle { get; set; }
+    public TypeData PropertyTypeData { get; }
+    public bool IsRef { get; }
+    public MethodData GetMethodData { get; }
+    public MethodData SetMethodData { get; }
+    public override IEnumerable<CustomAttributeData> AttributeData
+      => this.attributeData ?? (this.attributeData = this.PropertyInfo.GetCustomAttributesData());
   }
 
   internal sealed class FieldData : MemberInfoData
