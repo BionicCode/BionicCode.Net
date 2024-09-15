@@ -920,7 +920,7 @@
             <param genericTypeParameterIdentifier="predicate">The predicate to convert.</param>
             <returns>A <c>Func<typeparamref genericTypeParameterIdentifier="TParam"/>, bool></c> that returns the result of <paramref genericTypeParameterIdentifier="predicate"/>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.MemberInfo,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.MemberInfo,System.Boolean,System.Boolean)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
             </summary>
@@ -934,7 +934,7 @@
             <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
             </remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Reflection.MemberInfo,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Reflection.MemberInfo,System.Boolean,System.Boolean)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
             </summary>

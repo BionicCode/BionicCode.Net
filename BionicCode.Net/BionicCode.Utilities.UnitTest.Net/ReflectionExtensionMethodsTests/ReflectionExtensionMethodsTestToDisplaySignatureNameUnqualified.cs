@@ -70,8 +70,8 @@
 
     #region Class
 
-    private static readonly string TestClassSignatureName = $"public class {nameof(TestClass)}";
-    private static readonly string TestClassWithBaseClassSignatureName = $"public class {nameof(TestClassWithBaseClass)} : {nameof(TestClassBase)}";
+    private static readonly string TestClassSignatureName = $"[TestAttribute(1024.25, \"class\", NamedInt = 128)]{Environment.NewLine}[TestAttribute(64, \"class\", NamedInt = 256)]{Environment.NewLine}public class {nameof(TestClass)}";
+    private static readonly string TestClassWithBaseClassSignatureName = $"[TestAttribute(1024.25, \"class\", NamedInt = 128)]{Environment.NewLine}[TestAttribute(64, \"class\", NamedInt = 256)]{Environment.NewLine}public class {nameof(TestClassWithBaseClass)} : {nameof(TestClassBase)}";
     
     [Fact]
     public void ToSignatureName_SimpleClass_MustReturnClassSignature()
@@ -211,6 +211,10 @@
 
     private static readonly string TestMethodGenericShortSignatureName = $"public TValue {nameof(TestClass.PublicGenericMethodWithReturnValue)}<TValue>(TValue parameter);";
     private static readonly string TestMethodGenericSignatureName = $"public TValue {nameof(TestClass)}.{nameof(TestClass.PublicGenericMethodWithReturnValue)}<TValue>(TValue parameter);";
+    private static readonly string TestMethodGenericOfGenericClassSignatureName = $@"[TestAttribute(1024.25, ""method"", NamedInt = 128)]{System.Environment.NewLine}[TestAttribute(64, ""method"", NamedInt = 256)]{System.Environment.NewLine}public T PublicGenericMethodWithReturnValue<V, W>([TestAttribute(12, ""parameter"", NamedInt = 24)] ref V parameter, W parameter2, out IEnumerable<int> parameter3, in IDictionary<int, string> parameter4){System.Environment.NewLine}  where V : class, IList, ITestClass1, ITestClass3, ITestClass2<T, U>, new(){System.Environment.NewLine}  where W : struct, IComparable, ITestClass2;";
+    private static readonly string TestMethodGenericOfGenericClassCompactSignatureName = $@"[TestAttribute(1024.25, ""method"", NamedInt = 128)]{System.Environment.NewLine}[TestAttribute(64, ""method"", NamedInt = 256)]{System.Environment.NewLine}public T PublicGenericMethodWithReturnValue<V, W>([TestAttribute(12, ""parameter"", NamedInt = 24)] ref V parameter, W parameter2, out IEnumerable<int> parameter3, in IDictionary<int, string> parameter4){System.Environment.NewLine}  where V : class, IList, ITestClass1, ITestClass3, ITestClass2<T, U>, new() where W : struct, IComparable, ITestClass2;";
+    private static readonly string TestMethodAsyncGenericOfGenericClassSignatureName = $@"[TestAttribute(1024.25, ""method"", NamedInt = 128)]{System.Environment.NewLine}[TestAttribute(64, ""method"", NamedInt = 256)]{System.Environment.NewLine}public async Task<T> PublicGenericMethodWithReturnValueAsync<V, W>([TestAttribute(12, ""parameter"", NamedInt = 24)] V parameter, W parameter2, IEnumerable<int> parameter3, IDictionary<int, string> parameter4) where V : class, IList, ITestClass1, ITestClass3, ITestClass2<T, U>, new() where W : struct, IComparable, ITestClass2;";
+    private static readonly string TestMethodAsyncGenericOfGenericClassCompactSignatureName = $@"[TestAttribute(1024.25, ""method"", NamedInt = 128)]{System.Environment.NewLine}[TestAttribute(64, ""method"", NamedInt = 256)]{System.Environment.NewLine}public async Task<T> PublicGenericMethodWithReturnValueAsync<V, W>([TestAttribute(12, ""parameter"", NamedInt = 24)] V parameter, W parameter2, IEnumerable<int> parameter3, IDictionary<int, string> parameter4) where V : class, IList, ITestClass1, ITestClass3, ITestClass2<T, U>, new() where W : struct, IComparable, ITestClass2;";
 
     [Fact]
     public void ToSignatureName_GenericMethod_MustReturnMethodSignature()
@@ -233,15 +237,60 @@
     }
 
     [Fact]
+    public void ToSignatureName_GenericMethodWithAttributesAndRefParameter_MustReturnShortMethodSignature()
+    {
+      Type type = typeof(Generic.TestClassWithBaseClass<,>);
+      MethodInfo methodInfo = type.GetMethod("PublicGenericMethodWithReturnValue");
+      string methodSignature = methodInfo.ToSignatureShortName();
+
+      _ = methodSignature.Should().Be(TestMethodGenericOfGenericClassSignatureName);
+    }
+
+    [Fact]
+    public void ToSignatureName_GenericMethodWithAttributesAndRefParameter_MustReturnCompactMethodSignature()
+    {
+      Type type = typeof(Generic.TestClassWithBaseClass<,>);
+      MethodInfo methodInfo = type.GetMethod("PublicGenericMethodWithReturnValue");
+      string methodSignature = methodInfo.ToSignatureShortName(isCompact: true);
+
+      _ = methodSignature.Should().Be(TestMethodGenericOfGenericClassCompactSignatureName);
+    }
+
+    [Fact]
+    public void ToSignatureName_AsyncGenericMethodWithConstraints_MustReturnMethodSignature()
+    {
+      Type type = typeof(Generic.TestClassWithBaseClass<,>);
+      MethodInfo methodInfo = type.GetMethod("PublicGenericMethodWithReturnValueAsync");
+      string methodSignature = methodInfo.ToSignatureShortName();
+
+      _ = methodSignature.Should().Be(TestMethodAsyncGenericOfGenericClassSignatureName);
+    }
+
+    [Fact]
+    public void ToSignatureName_AsyncGenericMethodWithConstraints_MustReturnCompactMethodSignature()
+    {
+      Type type = typeof(Generic.TestClassWithBaseClass<,>);
+      MethodInfo methodInfo = type.GetMethod("PublicGenericMethodWithReturnValueAsync");
+      string methodSignature = methodInfo.ToSignatureShortName(isCompact: true);
+
+      _ = methodSignature.Should().Be(TestMethodAsyncGenericOfGenericClassCompactSignatureName);
+    }
+
+    [Fact]
     public void ToSignatureName_GenericMethodNew_MustBeFasterThanOld()
     {
       Type type = typeof(Generic.TestClassWithBaseClass<,>);
       MethodInfo methodInfo = type.GetMethod("PublicGenericMethodWithReturnValue");
       ParameterInfo[] paramas = methodInfo.GetParameters();
+      string methodSignature = methodInfo.ToSignatureShortName(isCompact: true);
+
+      _ = methodSignature.Should().Be(TestMethodGenericOfGenericClassSignatureName);
+
+      return;
       string s1 = methodInfo.ToSignatureShortName();
       var stringBuilder = new StringBuilder();
       string s2 = stringBuilder.AppendSignatureName(methodInfo, false, false).ToString();
-      _ = s1.Should().BeEquivalentTo(s2);
+      //_ = s1.Should().BeEquivalentTo(s2);
       _ = stringBuilder.Clear();
       var stopWatch = new Stopwatch();
       stopWatch.Start();

@@ -13,36 +13,15 @@
   </Window.DataContext>
   <Window.Resources>
   </Window.Resources>
-  <Grid Margin="0,0,0,0"
-             Background="Transparent">
-    <Grid.RowDefinitions>
+  <!--<Grid Margin="0,0,0,0"
+             Background="Transparent">-->
+    <!--<Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition />
-    </Grid.RowDefinitions>
+    </Grid.RowDefinitions>-->
+    <StackPanel>
       <TextBox Margin="0,12" Height="200"/>
       <!--<wpf:HighlightTextBox Grid.Row="1" Background="White" Height="200" />-->
-    <StackPanel>
-    </StackPanel>
-    <!--<wpf:Calendar  DockPanel.Dock="Top" VerticalContentAlignment="Stretch"
-                   FirstDayOfWeek="Monday" />-->
-
-
-    <!--<bionicCharts:CartesianChart x:Name="CartesianChart" VirtualizingPanel.VirtualizationMode="Recycling"
-                                ItemsSource="{Binding ChartPoints}" Height="700" Width="700" VirtualizingPanel.CacheLengthUnit="Page" VirtualizingPanel.CacheLength="1,1"  bionicCharts:VirtualizingCartesianCanvas.XZoomFactor="3" bionicCharts:VirtualizingCartesianCanvas.YZoomFactor="1"   Background="CadetBlue">-->
-    <!--<bionicCharts:CartesianChart x:Name="CartesianChart"
-                                 ItemsSource="{Binding ChartPoints}"
-                                 Height="700"
-                                 Width="700"
-                                 Background="CadetBlue"
-                                 >-->
-      <!--<bionicCharts:CartesianChart.Items>
-        <bionicCharts:CartesianChartItem X="100" Y="20">
-          <Ellipse Height="10" Width="10" StrokeThickness="2" Stroke="Black"/>
-        </bionicCharts:CartesianChartItem>
-      </bionicCharts:CartesianChart.Items>
-
-    </bionicCharts:CartesianChart>-->
-
 
     <wpf:Clock DockPanel.Dock="Top">
       <wpf:Clock.ClockFace>
@@ -76,5 +55,26 @@
     <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedSeconds}"/>
     <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedMeridiem}"/>
   </StackPanel>-->
-  </Grid>
+    </StackPanel>
+    <!--<wpf:Calendar  DockPanel.Dock="Top" VerticalContentAlignment="Stretch"
+                   FirstDayOfWeek="Monday" />-->
+
+
+    <!--<bionicCharts:CartesianChart x:Name="CartesianChart" VirtualizingPanel.VirtualizationMode="Recycling"
+                                ItemsSource="{Binding ChartPoints}" Height="700" Width="700" VirtualizingPanel.CacheLengthUnit="Page" VirtualizingPanel.CacheLength="1,1"  bionicCharts:VirtualizingCartesianCanvas.XZoomFactor="3" bionicCharts:VirtualizingCartesianCanvas.YZoomFactor="1"   Background="CadetBlue">-->
+    <!--<bionicCharts:CartesianChart x:Name="CartesianChart"
+                                 ItemsSource="{Binding ChartPoints}"
+                                 Height="700"
+                                 Width="700"
+                                 Background="CadetBlue"
+                                 >-->
+      <!--<bionicCharts:CartesianChart.Items>
+        <bionicCharts:CartesianChartItem X="100" Y="20">
+          <Ellipse Height="10" Width="10" StrokeThickness="2" Stroke="Black"/>
+        </bionicCharts:CartesianChartItem>
+      </bionicCharts:CartesianChart.Items>
+
+    </bionicCharts:CartesianChart>-->
+
+  <!--</Grid>-->
 </Window>

@@ -20,6 +20,9 @@
   using Microsoft.CodeAnalysis.Operations;
   using System.Xml.Linq;
   using System.Reflection.Metadata;
+  using System.Globalization;
+  using Microsoft.Extensions.Caching.Memory;
+  using Microsoft.Extensions.Logging;
 
   /// <summary>
   /// A collection of extension methods for various default constraintTypes
@@ -30,6 +33,14 @@
     private const char ExpressionTerminator = ';';
     private const string Indentation = "  ";
 
+    private static readonly Type ValueTaskType = typeof(ValueTask);
+    private static readonly Type TaskType = typeof(Task); 
+    private static readonly Type AsyncStateMachineAttributeType = typeof(AsyncStateMachineAttribute);
+    private static readonly Type ExtensionAttributeType = typeof(ExtensionAttribute);
+#if !NETSTANDARD2_0
+    private static readonly Type IsReadOnlyAttributeType = typeof(IsReadOnlyAttribute);
+#endif
+
     /// <summary>
     /// The property genericTypeParameterIdentifier of an indexer property. This genericTypeParameterIdentifier is compiler generated and equals the typeName of the <see langword="static"/>field <see cref="System.Windows.Data.Binding.IndexerName" />.
     /// </summary>
@@ -37,7 +48,16 @@
     /// <remarks>This field exists to enable writing of cross-platform compatible reflection code without the requirement to import the PresentationFramework.dll.</remarks>
     public static readonly string IndexerName = "Item";
 
-    private static CSharpCodeProvider CodeProvider { get; } = new CSharpCodeProvider();
+    private static readonly CSharpCodeProvider CodeProvider = new CSharpCodeProvider();
+    private static readonly Dictionary<MemberInfoDataCacheKey, MemberInfoData> MemberInfoDataCache = new Dictionary<MemberInfoDataCacheKey, MemberInfoData>();
+    private static readonly HashSet<string> IgnorableParameterAttributes = new HashSet<string>
+    {
+      nameof(InAttribute),
+      nameof(OutAttribute),
+#if !NETSTANDARD2_0
+      nameof(IsReadOnlyAttribute),
+#endif
+    };
 
     /// <summary>
     /// Converts a <see cref="Predicate{T}"/> to a <see cref="Func{T, TResult}"/>.
@@ -187,8 +207,8 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
-    public static string ToSignatureName(this MemberInfo memberInfo, bool isFullyQualifiedName = false)
-      => memberInfo.ToSignatureNameInternal(isFullyQualifiedName, isShortName: false);
+    public static string ToSignatureName(this MemberInfo memberInfo, bool isFullyQualifiedName = false, bool isCompact = false)
+      => memberInfo.ToSignatureNameInternal(isFullyQualifiedName, isShortName: false, isCompact);
 
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
@@ -202,10 +222,10 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
-    public static string ToSignatureShortName(this MemberInfo memberInfo, bool isFullyQualifiedName = false)
-      => memberInfo.ToSignatureNameInternal(isFullyQualifiedName, isShortName: true);
+    public static string ToSignatureShortName(this MemberInfo memberInfo, bool isFullyQualifiedName = false, bool isCompact = false)
+      => memberInfo.ToSignatureNameInternal(isFullyQualifiedName, isShortName: true, isCompact);
 
-    internal static string ToSignatureNameInternal(this MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName)
+    internal static string ToSignatureNameInternal(this MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName, bool isCompact)
     {
       var type = memberInfo as Type;
       MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
@@ -238,6 +258,8 @@
       _ = signatureNameBuilder
         .Append(accessModifier.ToDisplayStringValue())
         .Append(' ');
+
+      if (memberKind.HasFlag(SymbolKinds.Method) && methodInfo.IsAwaitable())
 
       if (!memberKind.HasFlag(SymbolKinds.Delegate)
         && !memberKind.HasFlag(SymbolKinds.Struct)
@@ -487,7 +509,7 @@
           genericTypeParameterDefinitions = methodInfo.GetGenericMethodDefinition().GetGenericArguments();
         }
 
-        _ = signatureNameBuilder.AppendGenericTypeConstraints(genericTypeParameterDefinitions, isFullyQualifiedName);
+        _ = signatureNameBuilder.AppendGenericTypeConstraints(genericTypeParameterDefinitions, isFullyQualifiedName, isCompact);
       }
 
       if (!memberKind.HasFlag(SymbolKinds.Class) 
@@ -505,80 +527,115 @@
 
     private static StringBuilder AppendCustomAttributes(this StringBuilder nameBuilder, IEnumerable<CustomAttributeData> attributes, bool isAppendNewLineEnabled)
     {
-      bool hasAttribute = false;
       foreach (CustomAttributeData attribute in attributes)
       {
-        hasAttribute = true;
+        bool hasAttributeArguments = false;
+
+        if (HelperExtensionsCommon.IgnorableParameterAttributes.Contains(attribute.AttributeType.Name))
+        {
+          continue;
+        }
 
         _ = nameBuilder.Append('[')
           .Append(attribute.AttributeType.Name)
           .Append('(');
         foreach (CustomAttributeTypedArgument constructorPositionalArgument in attribute.ConstructorArguments)
         {
+          hasAttributeArguments = true;
+
           if (constructorPositionalArgument.ArgumentType == typeof(string))
           {
             _ = nameBuilder.Append('"')
-              .Append(constructorPositionalArgument.Value)
+              .Append((string)constructorPositionalArgument.Value)
               .Append('"')
               .Append(HelperExtensionsCommon.ParameterSeparator);
           }
           else if (constructorPositionalArgument.ArgumentType == typeof(char))
           {
             _ = nameBuilder.Append('\'')
-              .Append(constructorPositionalArgument.Value)
+              .Append((char)constructorPositionalArgument.Value)
               .Append('\'')
               .Append(HelperExtensionsCommon.ParameterSeparator);
           }
           else
           {
-            _ = nameBuilder.Append(constructorPositionalArgument.Value)
+            _ = nameBuilder.AppendPrimitiveType(constructorPositionalArgument.Value)
               .Append(HelperExtensionsCommon.ParameterSeparator);
           }
         }
 
         foreach (CustomAttributeNamedArgument constructorNamedArgument in attribute.NamedArguments)
         {
+          hasAttributeArguments = true;
+
           _ = nameBuilder.Append(constructorNamedArgument.MemberName)
             .Append(" = ");
 
           if (constructorNamedArgument.TypedValue.ArgumentType == typeof(string))
           {
             _ = nameBuilder.Append('"')
-              .Append(constructorNamedArgument.TypedValue.Value)
+              .Append((string)constructorNamedArgument.TypedValue.Value)
               .Append('"')
               .Append(HelperExtensionsCommon.ParameterSeparator);
           }
           else if (constructorNamedArgument.TypedValue.ArgumentType == typeof(char))
           {
             _ = nameBuilder.Append('\'')
-              .Append(constructorNamedArgument.TypedValue.Value)
+              .Append((char)constructorNamedArgument.TypedValue.Value)
               .Append('\'')
               .Append(HelperExtensionsCommon.ParameterSeparator);
           }
           else
           {
-            _ = nameBuilder.Append(constructorNamedArgument.TypedValue.Value)
+            _ = nameBuilder.AppendPrimitiveType(constructorNamedArgument.TypedValue.Value)
               .Append(HelperExtensionsCommon.ParameterSeparator);
           }
         }
-      }
 
-      if (hasAttribute)
-      {
-        // Remove trailing comma and whitespace
-        _ = nameBuilder.Remove(nameBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length);
-
-        _ = nameBuilder.Append(')')
-          .Append(']')
-          .Append(' ');
+        if (!hasAttributeArguments)
+        {
+          // Remove trailing opening parenthesis
+          _ = nameBuilder.Remove(nameBuilder.Length - 1, 1)
+            .Append(']');
+        }
+        else
+        {
+          // Remove trailing comma and whitespace
+          _ = nameBuilder.Remove(nameBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length)
+            .Append(')')
+            .Append(']');
+        }
 
         if (isAppendNewLineEnabled)
         {
           _ = nameBuilder.AppendLine();
         }
+        else
+        {
+          // Remove trailing comma and whitespace
+          _ = nameBuilder.Append(' ');
+        }
       }
 
       return nameBuilder;
+    }
+
+    private static StringBuilder AppendPrimitiveType(this StringBuilder stringBuilder, object value)
+    {
+      if (!value.GetType().IsPrimitive)
+      {
+        throw new ArgumentException("Only primitive typeArguments allowed)");
+      }
+
+      switch (value)
+      {
+        case int intValue:
+          return stringBuilder.Append(intValue);
+        case double doubleValue:
+          return stringBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}", doubleValue);
+        default:
+          throw new NotImplementedException();
+      }
     }
 
     /// <summary>
@@ -1172,8 +1229,9 @@
       return nameBuilder;
     }
 
-    private static StringBuilder AppendGenericTypeConstraints(this StringBuilder constraintBuilder, Type[] genericTypeDefinitions, bool isFullyQualified)
+    private static StringBuilder AppendGenericTypeConstraints(this StringBuilder constraintBuilder, Type[] genericTypeDefinitions, bool isFullyQualified, bool isCompact)
     {
+      bool hasSingleNewLine = false;
       for (int genericTypeArgumentIndex = 0; genericTypeArgumentIndex < genericTypeDefinitions.Length; genericTypeArgumentIndex++)
       {
         Type genericTypeDefinition = genericTypeDefinitions[genericTypeArgumentIndex];
@@ -1184,9 +1242,26 @@
           continue;
         }
 
-        _ = constraintBuilder.AppendLine()
-          .Append(HelperExtensionsCommon.Indentation)
-          .Append("where")
+        if (isCompact)
+        {
+          if (!hasSingleNewLine)
+          {
+            _ = constraintBuilder.AppendLine()
+            .Append(HelperExtensionsCommon.Indentation);
+            hasSingleNewLine = true;
+          }
+          else
+          {
+            _ = constraintBuilder.Append(' ');
+          }
+        }
+        else
+        {
+          _ = constraintBuilder.AppendLine()
+            .Append(HelperExtensionsCommon.Indentation);
+        }
+
+        _ = constraintBuilder.Append("where")
           .Append(' ')
           .Append(genericTypeDefinition.Name)
           .Append(" : ");
@@ -1259,78 +1334,6 @@
       return memberNameBuilder;
     }
 
-    private static Lazy<Type> DelegateType { get; } = new Lazy<Type>(() => typeof(Delegate));
-    public static bool IsDelegate(this Type typeInfo)
-      => HelperExtensionsCommon.DelegateType.Value.IsAssignableFrom(typeInfo);
-
-    // TODO::Test if checking get() is enough to determine if a property is overridden
-    public static bool IsOverride(this PropertyInfo methodInfo)
-      => methodInfo.GetGetMethod(true).IsOverride();
-
-    public static bool IsOverride(this MethodInfo methodInfo)
-      => !methodInfo.Equals(methodInfo.GetBaseDefinition());
-
-    private static Lazy<Type> TaskType { get; } = new Lazy<Type>(() => typeof(Task));
-    public static bool IsAwaitableTask(this MethodInfo methodInfo)
-      => HelperExtensionsCommon.TaskType.Value.IsAssignableFrom(methodInfo.ReturnType)
-        || HelperExtensionsCommon.TaskType.Value.IsAssignableFrom(methodInfo.ReturnType.BaseType);
-
-    private static Lazy<Type> ValueTaskType { get; } = new Lazy<Type>(() => typeof(ValueTask));
-    public static bool IsAwaitableValueTask(this MethodInfo methodInfo)
-      => HelperExtensionsCommon.ValueTaskType.Value.IsAssignableFrom(methodInfo.ReturnType)
-        || HelperExtensionsCommon.ValueTaskType.Value.IsAssignableFrom(methodInfo.ReturnType.BaseType);
-
-    /// <summary>
-    /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.
-    /// </summary>
-    /// <param genericTypeParameterIdentifier="methodInfo">The <see cref="MethodInfo"/> to check if it belongs to an awaitable method.</param>
-    /// <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
-    /// <remarks>The method first checks if the return type is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned type (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate type (awaiter).
-    /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
-    public static bool IsAwaitable(this MethodInfo methodInfo)
-    {
-      if (methodInfo.IsAwaitableTask() || methodInfo.IsAwaitableValueTask())
-      {
-        return true;
-      }
-
-      if (methodInfo.ReturnType.GetMethod(nameof(Task.GetAwaiter)) != null)
-      {
-        return true;
-      }
-
-      // The return type of the method is not directly returning an awaitable type.
-      // So, search for an extension method named "GetAwaiter" for the return type of the currently validated method that effectively converts the type into an awaitable object.
-      // By compiler convention the "GetAwaiter" method must return an awaiter object that implements the INotifyComplete interface
-      foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-      {
-        foreach (System.Reflection.TypeInfo typeInfo in assembly.GetExportedTypes())
-        {
-          if (!typeInfo.CanDeclareExtensionMethods())
-          {
-            continue;
-          }
-
-          MethodInfo extensionMethodInfo = typeInfo.GetMethod(nameof(Task.GetAwaiter), BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { methodInfo.ReturnType }, null);
-          if (extensionMethodInfo == null
-            || !extensionMethodInfo.IsExtensionMethodOf(methodInfo.ReturnType))
-          {
-            return false;
-          }
-
-          if (extensionMethodInfo.ReturnType.GetProperty("IsCompleted") != null
-            && extensionMethodInfo.ReturnType.GetInterface(nameof(INotifyCompletion)) != null
-            && extensionMethodInfo.ReturnType.GetMethod("GetResult") is MethodInfo getResultMethodInfo
-            && getResultMethodInfo.GetParameters().Length == 0)
-          {
-            return true;
-          }
-        }
-      }
-
-      return false;
-    }
-
     public static StringBuilder AppendStringBuilder(this StringBuilder stringBuilder, StringBuilder value)
     {
 #if NETSTANDARD2_0 || NETFRAMEWORK
@@ -1351,6 +1354,89 @@
 #endif
     }
 
+    private static Lazy<Type> DelegateType { get; } = new Lazy<Type>(() => typeof(Delegate));
+    public static bool IsDelegate(this Type typeInfo)
+      => HelperExtensionsCommon.DelegateType.Value.IsAssignableFrom(typeInfo);
+
+    // TODO::Test if checking get() is enough to determine if a property is overridden
+    public static bool IsOverride(this PropertyInfo methodInfo)
+      => methodInfo.GetGetMethod(true).IsOverride();
+
+    public static bool IsOverride(this MethodInfo methodInfo)
+      => !methodInfo.Equals(methodInfo.GetBaseDefinition());
+
+    /// <summary>
+    /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="methodInfo">The <see cref="MethodInfo"/> to check if it belongs to an awaitable method.</param>
+    /// <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
+    /// <remarks>The method first checks if the return type is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned type (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate type (awaiter).
+    /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
+    public static bool IsAwaitable(this MethodInfo methodInfo)
+      => IsAwaitable(methodInfo.ReturnType);
+
+    /// <summary>
+    /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="methodInfo">The <see cref="MethodInfo"/> to check if it belongs to an awaitable method.</param>
+    /// <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
+    /// <remarks>The method first checks if the return type is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned type (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate type (awaiter).
+    /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
+    public static bool IsAwaitable(this Type type)
+    {
+      if (IsAwaitableTask(type) || IsAwaitableValueTask(type))
+      {
+        return true;
+      }
+
+      if (type.GetMethod(nameof(Task.GetAwaiter)) != null)
+      {
+        return true;
+      }
+
+      // The return type of the method is not directly returning an awaitable type.
+      // So, search for an extension method named "GetAwaiter" for the return type of the currently validated method that effectively converts the type into an awaitable object.
+      // By compiler convention the "GetAwaiter" method must return an awaiter object that implements the INotifyComplete interface
+      foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+      {
+        foreach (System.Reflection.TypeInfo typeInfo in assembly.GetExportedTypes())
+        {
+          if (!typeInfo.CanDeclareExtensionMethods())
+          {
+            continue;
+          }
+
+          MethodInfo extensionMethodInfo = typeInfo.GetMethod(nameof(Task.GetAwaiter), BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { type }, null);
+          if (extensionMethodInfo == null
+            || !extensionMethodInfo.IsExtensionMethodOf(type))
+          {
+            return false;
+          }
+
+          if (extensionMethodInfo.ReturnType.GetProperty("IsCompleted") != null
+            && extensionMethodInfo.ReturnType.GetInterface(nameof(INotifyCompletion)) != null
+            && extensionMethodInfo.ReturnType.GetMethod("GetResult") is MethodInfo getResultMethodInfo
+            && getResultMethodInfo.GetParameters().Length == 0)
+          {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    private static bool IsAwaitableTask(Type type)
+      => HelperExtensionsCommon.TaskType.IsAssignableFrom(type)
+        || HelperExtensionsCommon.TaskType.IsAssignableFrom(type.BaseType);
+
+    private static bool IsAwaitableValueTask(Type type)
+      => HelperExtensionsCommon.ValueTaskType.IsAssignableFrom(type)
+        || HelperExtensionsCommon.ValueTaskType.IsAssignableFrom(type.BaseType);
+
+    public static bool IsMarkedAsync(this MethodInfo methodInfo)
+      => methodInfo.GetCustomAttribute(HelperExtensionsCommon.AsyncStateMachineAttributeType) != null
+
     /// <summary>
     /// Extension method to check if a <see cref="Type"/> is static.
     /// </summary>
@@ -1364,7 +1450,7 @@
     /// </summary>
     /// <returns><see langword="true"/> if the <paramref name="parameterInfo"/> represents a <see langword="ref"/> parameter. Otherwise <see langword="false"/>.</returns>
     public static bool IsRef(this ParameterInfo parameterInfo)
-      => parameterInfo.ParameterType.IsByRef && !parameterInfo.IsOut;
+      => parameterInfo.ParameterType.IsByRef && !parameterInfo.IsOut && !parameterInfo.IsIn;
 
     /// <summary>
     /// Extension method that checks if the provided <see cref="Type"/> is qualified to define extension methods.
@@ -1404,7 +1490,7 @@
         return false;
       }
 
-      ExtensionAttribute methodExtensionAttribute = methodInfo.GetCustomAttribute<ExtensionAttribute>(false);
+      Attribute methodExtensionAttribute = methodInfo.GetCustomAttribute(HelperExtensionsCommon.ExtensionAttributeType, false);
       if (methodExtensionAttribute == null)
       {
         return false;
@@ -1455,7 +1541,7 @@
 
 #if !NETSTANDARD2_0
     private static bool IsReadOnlyStruct(Type type)
-      => type.IsValueType && type.GetCustomAttribute(typeof(IsReadOnlyAttribute)) != null;
+      => type.IsValueType && type.GetCustomAttribute(HelperExtensionsCommon.IsReadOnlyAttributeType) != null;
 #endif
 
     //public static object GetAwaiter(this object obj)
@@ -1504,6 +1590,19 @@
 
     internal static SymbolKinds GetKind(this MemberInfo memberInfo)
     {
+      MemberInfoDataCacheKey key = CreateMemberInfoDataCacheKey(memberInfo);
+      if (HelperExtensionsCommon.MemberInfoDataCache.TryGetValue(key, out MemberInfoData cacheEntry))
+      {
+        if (cacheEntry.Kind != SymbolKinds.Undefined)
+        {
+          return cacheEntry.Kind;
+        }
+      }
+      else
+      {
+        cacheEntry = CreateMemberInfoDataCacheEntry(key);
+      }
+
       var type = memberInfo as Type;
       var propertyInfo = memberInfo as PropertyInfo;
       MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
@@ -1527,6 +1626,7 @@
           delegateKind |= SymbolKinds.Generic;
         }
 
+        cacheEntry.Kind = delegateKind;
         return delegateKind;
       }
 
@@ -1554,13 +1654,17 @@
           classKind |= SymbolKinds.Generic;
         }
 
+        cacheEntry.Kind = classKind;
         return classKind;
       }
 
       bool isEnum = !isDelegate && (type?.IsEnum ?? false);
       if (isEnum)
       {
-        return SymbolKinds.Enum;
+        SymbolKinds enumKind = SymbolKinds.Enum;
+        cacheEntry.Kind = enumKind;
+        
+        return enumKind;
       }
 
       bool isStruct = !isDelegate && (type?.IsValueType ?? false);
@@ -1580,6 +1684,7 @@
           structKind |= SymbolKinds.Final;
         }
 #endif
+        cacheEntry.Kind = structKind;
         return structKind;
       }
 
@@ -1617,6 +1722,7 @@
           propertyKind |= SymbolKinds.Override;
         }
 
+        cacheEntry.Kind = propertyKind;
         return propertyKind;
       }
 
@@ -1654,6 +1760,7 @@
           methodKind |= SymbolKinds.Generic;
         }
 
+        cacheEntry.Kind = methodKind;
         return methodKind;
       }
 
@@ -1687,6 +1794,7 @@
           eventKind |= SymbolKinds.Override;
         }
 
+        cacheEntry.Kind = eventKind;
         return eventKind;
       }
 
@@ -1700,6 +1808,7 @@
           constructorKind |= SymbolKinds.Static;
         }
 
+        cacheEntry.Kind = constructorKind;
         return constructorKind;
       }
 
@@ -1717,6 +1826,7 @@
           fieldKind |= SymbolKinds.Static;
         }
 
+        cacheEntry.Kind = fieldKind;
         return fieldKind;
       }
 
@@ -1724,12 +1834,55 @@
       if (isInterface)
       {
         SymbolKinds interfaceKind = SymbolKinds.Interface;
+        cacheEntry.Kind = interfaceKind;
         return interfaceKind;
       }
 
       return SymbolKinds.Undefined;
     }
 
+    private static MemberInfoData CreateMemberInfoDataCacheEntry(MemberInfo memberInfo, MemberInfoDataCacheKey key)
+    {
+      MemberInfoData entry;
+      switch (memberInfo)
+      {
+        case Type type:
+          entry = new TypeData()
+          {
+            Handle = type.TypeHandle,
+            Name = type.Name,
+            DeclaringTypeHandle = type.TypeHandle,
+          };
+          break;
+        case MethodInfo method:
+          entry = new MethodData()
+          {
+            Handle = method.MethodHandle,
+            Name = method.Name,
+            DeclaringTypeHandle = method.DeclaringType.TypeHandle,
+          };
+          break;
+        case FieldInfo field:
+          entry = new FieldData()
+          {
+            Handle = field.FieldHandle,
+            Name = field.Name,
+            DeclaringTypeHandle = field.DeclaringType.TypeHandle,
+          };
+          break;
+        case PropertyInfo property:
+          entry = new MethodData()
+          {
+            Name = property.Name,
+            DeclaringTypeHandle = property.DeclaringType.TypeHandle,
+          };
+          break;
+      }
+      HelperExtensionsCommon.MemberInfoDataCache.Add(key, entry);
+      return entry;
+    }
+
+    private static MemberInfoDataCacheKey CreateMemberInfoDataCacheKey(MemberInfo memberInfo) => throw new NotImplementedException();
     public static dynamic Cast(this object obj, Type type)
         => typeof(HelperExtensionsCommon).GetMethod(nameof(HelperExtensionsCommon.Cast), BindingFlags.Static | BindingFlags.NonPublic, null, new[] { typeof(object) }, null).GetGenericMethodDefinition().MakeGenericMethod(type).Invoke(obj, null);
 
@@ -1739,5 +1892,154 @@
     public static double TotalMicroseconds(this TimeSpan duration) => System.Math.Round(duration.Ticks / (double)Stopwatch.Frequency * 1E6, 1);
     public static double TotalNanoseconds(this TimeSpan duration) => System.Math.Round(duration.Ticks / (double)Stopwatch.Frequency * 1E9, 0);
 #endif
+  }
+
+  internal abstract class MemberInfoData
+  {
+    protected MemberInfoData()
+    {
+      this.Kind = SymbolKinds.Undefined;
+      this.Signature = Array.Empty<char>();
+      this.Name = string.Empty;
+    }
+
+    public bool IsOverride { get; set; }
+    public bool IsStatic { get; set; }
+    public abstract IEnumerable<CustomAttributeData> AttributeData { get; }
+    public char[] Signature { get; set; }
+    public SymbolKinds Kind { get; set; }
+    public string Name { get; set; }
+  }
+
+  internal sealed class TypeData : MemberInfoData
+  {
+    private IEnumerable<CustomAttributeData> attributeData;
+
+    public TypeData(RuntimeTypeHandle handle) => this.Handle = handle;
+
+    public RuntimeTypeHandle Handle { get; }
+    public bool IsDelegate { get; set; }
+    public bool IsAwaitable { get; set; }
+    public bool CanDeclareExtensionMethod { get; set; }
+    public override IEnumerable<CustomAttributeData> AttributeData 
+      => this.attributeData ?? (this.attributeData = Type.GetTypeFromHandle(this.Handle).GetCustomAttributesData());
+  }
+
+  internal sealed class MethodData : MemberInfoData
+  {
+    private bool? isAwaitable;
+    private bool? isAsync;
+    private bool? isExtensionMethod;
+    private IEnumerable<ParameterData> parameters;
+    private IEnumerable<CustomAttributeData> attributeData;
+    private IEnumerable<RuntimeTypeHandle> genericTypeArgumentHandles;
+
+    public MethodData(MethodInfo methodInfo)
+    {
+      this.Handle = methodInfo.MethodHandle;
+      this.DeclaringTypeHandle = methodInfo.DeclaringType.TypeHandle;
+    }
+
+    public RuntimeMethodHandle Handle { get; set; }
+    public RuntimeTypeHandle DeclaringTypeHandle { get; set; }
+    public IEnumerable<ParameterData> Parameters => this.parameters ?? (this.parameters = MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle).GetParameters().Select(parameterInfo => new ParameterData(parameterInfo)));
+    public IEnumerable<Type> GenericTypeArguments
+    {
+      get
+      {
+        if (this.genericTypeArgumentHandles == null)
+        {
+          Type[] typeArguments = MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle).GetGenericArguments();
+          this.genericTypeArgumentHandles = typeArguments.Select(type => type.TypeHandle);
+
+          return typeArguments;
+        }
+
+        return this.genericTypeArgumentHandles.Select(Type.GetTypeFromHandle);
+      }
+    }
+
+    public bool IsExtensionMethod => (bool)(this.isExtensionMethod ?? (this.isExtensionMethod = (MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle) as MethodInfo).IsExtensionMethod()));
+    public bool IsAsync => (bool)(this.isAsync ?? (this.isAsync = (MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle) as MethodInfo).IsMarkedAsync()));
+    public bool IsAwaitable => (bool)(this.isAwaitable ?? (this.isAwaitable = (MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle) as MethodInfo).IsAwaitable()));
+    public override IEnumerable<CustomAttributeData> AttributeData
+      => this.attributeData ?? (this.attributeData = MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle).GetCustomAttributesData());
+  }
+
+  internal sealed class ConstructorData : MemberInfoData
+  {
+    private IEnumerable<ParameterData> parameters;
+    private IEnumerable<CustomAttributeData> attributeData;
+
+    public ConstructorData(ConstructorInfo constructorInfo)
+    {
+      this.Handle = constructorInfo.MethodHandle;
+      this.DeclaringTypeHandle = constructorInfo.DeclaringType.TypeHandle;
+    }
+
+    public RuntimeMethodHandle Handle { get; set; }
+    public RuntimeTypeHandle DeclaringTypeHandle { get; set; }
+    public IEnumerable<ParameterData> Parameters => this.parameters ?? (this.parameters = MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle).GetParameters().Select(parameterInfo => new ParameterData(parameterInfo)));
+    public override IEnumerable<CustomAttributeData> AttributeData
+      => this.attributeData ?? (this.attributeData = MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle).GetCustomAttributesData());
+  }
+
+  internal sealed class ParameterData : MemberInfoData
+  {
+    private IEnumerable<CustomAttributeData> attributeData;
+
+    public ParameterData(ParameterInfo parameterInfo)
+    {
+      this.IsRef = parameterInfo.IsRef();
+      this.DeclaringTypeHandle = parameterInfo.Member.DeclaringType.TypeHandle;
+      this.ParameterInfo = parameterInfo;
+    }
+
+    public RuntimeTypeHandle DeclaringTypeHandle { get; set; }
+    public bool IsRef { get; }
+    public ParameterInfo ParameterInfo { get; }
+    public override IEnumerable<CustomAttributeData> AttributeData
+      => this.attributeData ?? (this.attributeData = this.ParameterInfo.GetCustomAttributesData());
+  }
+
+  internal sealed class FieldData : MemberInfoData
+  {
+    private IEnumerable<CustomAttributeData> attributeData;
+    public RuntimeFieldHandle Handle { get; set; }
+    public RuntimeTypeHandle DeclaringTypeHandle { get; set; }
+    public override IEnumerable<CustomAttributeData> AttributeData
+      => this.attributeData ?? (this.attributeData = FieldInfo.GetFieldFromHandle(this.Handle).GetCustomAttributesData());
+  }
+
+  internal readonly struct MemberInfoDataCacheKey : IEquatable<MemberInfoDataCacheKey>
+  {
+    public MemberInfoDataCacheKey(string name, Type[] arguments, RuntimeTypeHandle declaringTypeHandle)
+    {
+      this.Name = name;
+      this.Arguments = arguments;
+      this.DeclaringTypeHandle = declaringTypeHandle;
+    }
+
+    public string Name { get; }
+    public Type[] Arguments { get; }
+    public RuntimeTypeHandle DeclaringTypeHandle { get; }
+
+    public bool Equals(MemberInfoDataCacheKey other) => other.Name.Equals(this.Name, StringComparison.Ordinal) 
+      && other.Arguments.SequenceEqual(this.Arguments) 
+      && other.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle);
+
+    public override bool Equals(object obj) => obj is MemberInfoDataCacheKey key && Equals(key);
+
+    public override int GetHashCode()
+    {
+      int hashCode = 1248511333;
+      hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(this.Name);
+      hashCode = hashCode * -1521134295 + EqualityComparer<Type[]>.Default.GetHashCode(this.Arguments);
+      hashCode = hashCode * -1521134295 + this.DeclaringTypeHandle.GetHashCode();
+      return hashCode;
+    }
+
+    public static bool operator ==(MemberInfoDataCacheKey left, MemberInfoDataCacheKey right) => left.Equals(right);
+    public static bool operator !=(MemberInfoDataCacheKey left, MemberInfoDataCacheKey right) => !(left == right);
   }
 }

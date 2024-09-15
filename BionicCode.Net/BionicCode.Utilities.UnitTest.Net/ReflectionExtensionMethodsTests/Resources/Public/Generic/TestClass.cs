@@ -3,8 +3,8 @@
   using System.Text.Json.Serialization;
   using BionicCode.Utilities.Net.UnitTest.ReflectionExtensionMethodsTests.Resources.Public;
 
-  //[JsonStringEnumMemberNameAttribute("Example")]
-  //[System.Windows.Markup.ContentProperty("Content")]
+  [TestAttribute(1024.25, "class", NamedInt = 128)]
+  [TestAttribute(64.0, "class", NamedInt = 256)]
   public class TestClass<T, U, I, V> 
     where T : class 
     where U : struct

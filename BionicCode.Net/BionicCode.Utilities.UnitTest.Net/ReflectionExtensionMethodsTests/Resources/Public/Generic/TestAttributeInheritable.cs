@@ -3,11 +3,11 @@
   using System;
   using System.Runtime.CompilerServices;
 
-  [System.AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-  sealed class TestAttribute : Attribute
+  [System.AttributeUsage(AttributeTargets.All, Inherited = true, AllowMultiple = true)]
+  sealed class TestAttributeInheritable : Attribute
   {
     // This is a positional argument
-    public TestAttribute(double numericPositionalParameter, [CallerMemberName] string positionalString = null)
+    public TestAttributeInheritable(double numericPositionalParameter, [CallerMemberName] string positionalString = null)
     {
       this.PositionalString = positionalString;
       this.TestClassPositionalParameter = numericPositionalParameter;
@@ -17,7 +17,7 @@
     }
 
     // This is a positional argument
-    public TestAttribute(string positionalString)
+    public TestAttributeInheritable(string positionalString)
     {
       this.PositionalString = positionalString;
 
@@ -27,7 +27,7 @@
     public double TestClassPositionalParameter { get; }
 
     public string PositionalString { get; }
-       
+
     // This is a named argument
     public int NamedInt { get; set; }
   }
