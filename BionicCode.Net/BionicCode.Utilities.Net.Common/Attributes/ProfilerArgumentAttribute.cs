@@ -10,8 +10,8 @@
   /// To start profiling create a configurator by calling <see cref="Profiler.CreateProfilerBuilder{T}"/>. This returns a <see cref="ProfilerBuilder"/> for a particular <see cref="Type"/> that allows the configuration of the profiling session.
   /// <br/>Finalize the step by calling <see cref="ProfilerBuilder.RunAsync"/> to start the profiling for the current type.
   /// <para>
-  /// A member can be decorated with multiple <see cref="ProfilerArgumentAttribute"/> attributes. This is useful to emulate real-world usage where the input is dynamic and may impact the perfomance of the profiled member. 
-  /// <br/>Each <see cref="ProfilerArgumentAttribute"/> results in an profiling iteration. If the configured iterations of the <see cref="ProfilerBuilder"/> exceed the number of <see cref="ProfilerArgumentAttribute"/> attributes, then the profiler will alterante between the argument lists.
+  /// A member can be decorated with multiple <see cref="ProfilerArgumentAttribute"/> symbolAttributes. This is useful to emulate real-world usage where the input is dynamic and may impact the perfomance of the profiled member. 
+  /// <br/>Each <see cref="ProfilerArgumentAttribute"/> results in an profiling iteration. If the configured iterations of the <see cref="ProfilerBuilder"/> exceed the number of <see cref="ProfilerArgumentAttribute"/> symbolAttributes, then the profiler will alterante between the argument lists.
   /// <br/>The default number of iterations is <c>1</c> and can be customized by calling <see cref="ProfilerBuilder.SetIterations(int)"/>.
   /// </para>
   /// </remarks>

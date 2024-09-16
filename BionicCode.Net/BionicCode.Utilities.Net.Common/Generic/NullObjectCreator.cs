@@ -127,7 +127,7 @@
 
 //          typeBuilder.DefineProperty(
 //            propertyInfo.Name,
-//            propertyInfo.Attributes,
+//            propertyInfo.symbolAttributes,
 //            CallingConventions.HasThis,
 //            propertyInfo.PropertyType,
 //            Types.EmptyTypes);

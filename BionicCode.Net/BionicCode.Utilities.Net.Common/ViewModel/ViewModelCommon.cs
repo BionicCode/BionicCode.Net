@@ -954,12 +954,12 @@ namespace BionicCode.Utilities.Net
     }
 
     /// <summary>
-    /// Validates the value of a particular property against decorating validation attributes.
+    /// Validates the value of a particular property against decorating validation symbolAttributes.
     /// </summary>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="value">The value to validate.</param>
     /// <param name="propertyName">The name of the property to validate.</param>
-    /// <returns><c>true</c> if validation passed or the property is not decorated with any validation attributes. Otherwise <c>false</c>.</returns>
+    /// <returns><c>true</c> if validation passed or the property is not decorated with any validation symbolAttributes. Otherwise <c>false</c>.</returns>
     protected virtual bool IsPropertyAttributeValid<TValue>(
     TValue value,
     string propertyName)
@@ -974,13 +974,13 @@ namespace BionicCode.Utilities.Net
       // The result flag
       bool isValueValid = true;
 
-      // Check if property is decorated with validation attributes
+      // Check if property is decorated with validation symbolAttributes
       // using reflection
       IEnumerable<Attribute> validationAttributes = GetType()
         .GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
         ?.GetCustomAttributes(typeof(ValidationAttribute)) ?? new List<Attribute>();
 
-      // Validate using attributes if present
+      // Validate using symbolAttributes if present
       if (validationAttributes.Any())
       {
         var validationContext = new ValidationContext(this, null, null) { MemberName = propertyName };

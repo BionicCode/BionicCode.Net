@@ -11,5 +11,6 @@
   [TestAttribute(64.0, "class", NamedInt = 256)]
   public class TestClassWithBaseClass : TestClassBase
   {
+    public override event EventHandler TestEvent;
   }
 }

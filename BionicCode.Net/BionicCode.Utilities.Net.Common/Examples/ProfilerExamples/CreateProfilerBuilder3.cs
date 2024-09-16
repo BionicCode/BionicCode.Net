@@ -11,7 +11,7 @@
     public static async Task Main(string[] args)
     {
       // Define a list of Types objects that should be profiled.
-      // The members of these types must be decorated with the required attributes.
+      // The members of these types must be decorated with the required symbolAttributes.
       Type[] typesToProfile = new[] { typeof(BenchmarkTarget) };
       ProfiledTypeResultCollection results = await Profiler.CreateProfilerBuilder(typesToProfile)
         .SetBaseUnit(TimeUnit.Milliseconds)

@@ -3,7 +3,7 @@
   using System;
 
   [Flags]
-  internal enum SymbolKinds
+  internal enum SymbolAttributes
   {
     Undefined = 0,
     Final = 1,
@@ -72,5 +72,10 @@
     Member = 131072,
     Type = 262144,
     GenericType = Generic | Type,
+    Parameter = 524288,
+    InParameter = 1048576 | Parameter,
+    OutParameter = 2097152 | Parameter,
+    RefParameter = 4194304 | Parameter,
+    OptionalParameter = 8388608 | Parameter,
   }
 }
