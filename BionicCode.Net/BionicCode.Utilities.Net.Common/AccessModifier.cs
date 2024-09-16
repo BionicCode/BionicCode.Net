@@ -24,10 +24,11 @@
 
   public enum AccessModifier
   {
+    Undefined = 0,
     /// <summary>
     /// Should be interpreted as <see langword="internal"/> per language default.
     /// </summary>
-    Default = 0,
+    Default,
     /// <summary>
     /// Represents the <see langword="public"/> modifier.
     /// </summary>

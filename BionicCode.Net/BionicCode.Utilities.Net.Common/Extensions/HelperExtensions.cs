@@ -36,7 +36,8 @@
     private static readonly Type ValueTaskType = typeof(ValueTask);
     private static readonly Type TaskType = typeof(Task); 
     private static readonly Type AsyncStateMachineAttributeType = typeof(AsyncStateMachineAttribute);
-    private static readonly Type ExtensionAttributeType = typeof(ExtensionAttribute);
+    private static readonly Type ExtensionAttributeType = typeof(ExtensionAttribute); 
+    private static readonly Type DelegateType = typeof(Delegate);
 #if !NETSTANDARD2_0
     private static readonly Type IsReadOnlyAttributeType = typeof(IsReadOnlyAttribute);
 #endif
@@ -49,7 +50,7 @@
     public static readonly string IndexerName = "Item";
 
     private static readonly CSharpCodeProvider CodeProvider = new CSharpCodeProvider();
-    private static readonly Dictionary<MemberInfoDataCacheKey, MemberInfoData> MemberInfoDataCache = new Dictionary<MemberInfoDataCacheKey, MemberInfoData>();
+    private static readonly Dictionary<SymbolInfoDataCacheKey, SymbolInfoData> MemberInfoDataCache = new Dictionary<SymbolInfoDataCacheKey, SymbolInfoData>();
     private static readonly HashSet<string> IgnorableParameterAttributes = new HashSet<string>
     {
       nameof(InAttribute),
@@ -68,7 +69,7 @@
     public static Func<TParam, bool> ToFunc<TParam>(this Predicate<TParam> predicate) => predicate.Invoke;
 
     ///// <summary>
-    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     ///// </summary>
     ///// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
     ///// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
@@ -83,7 +84,7 @@
     //  => propertyInfo.ToSignatureNameInternal(isFullyQualifiedName, isShortName: false);
 
     ///// <summary>
-    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     ///// </summary>
     ///// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
     ///// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
@@ -98,7 +99,7 @@
     //  => propertyInfo.ToSignatureNameInternal(isFullyQualifiedName, isShortName: true);
 
     ///// <summary>
-    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     ///// </summary>
     ///// <param genericTypeParameterIdentifier="methodInfo">The <see cref="MethodInfo"/> to extend.</param>
     ///// <returns>
@@ -112,7 +113,7 @@
     //  => methodInfo.ToSignatureNameInternal(isFullyQualifiedName, isShortName: false);
 
     ///// <summary>
-    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     ///// </summary>
     ///// <param genericTypeParameterIdentifier="methodInfo">The <see cref="MethodInfo"/> to extend.</param>
     ///// <returns>
@@ -126,7 +127,7 @@
     //  => methodInfo.ToSignatureNameInternal(isFullyQualifiedName, isShortName: true);
 
     ///// <summary>
-    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     ///// </summary>
     ///// <param genericTypeParameterIdentifier="typeInfo">The <see cref="Type"/> to extend.</param>
     ///// <returns>
@@ -140,7 +141,7 @@
     //  => typeInfo.ToSignatureNameInternal(isFullyQualifiedName, isShortName: false);
 
     ///// <summary>
-    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     ///// </summary>
     ///// <param genericTypeParameterIdentifier="constructorInfo">The <see cref="ConstructorInfo"/> to extend.</param>
     ///// <returns>
@@ -154,7 +155,7 @@
     //  => constructorInfo.ToSignatureNameInternal(isFullyQualifiedName, isShortName: false);
 
     ///// <summary>
-    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     ///// </summary>
     ///// <param genericTypeParameterIdentifier="constructorInfo">The <see cref="ConstructorInfo"/> to extend.</param>
     ///// <returns>
@@ -168,7 +169,7 @@
     //  => constructorInfo.ToSignatureNameInternal(isFullyQualifiedName, isShortName: true);
 
     ///// <summary>
-    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     ///// </summary>
     ///// <param genericTypeParameterIdentifier="fieldInfo">The <see cref="FieldInfo"/> to extend.</param>
     ///// <returns>
@@ -182,7 +183,7 @@
     //  => fieldInfo.ToSignatureNameInternal(isFullyQualifiedName, isShortName: false);
 
     ///// <summary>
-    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    ///// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     ///// </summary>
     ///// <param genericTypeParameterIdentifier="fieldInfo">The <see cref="FieldInfo"/> to extend.</param>
     ///// <returns>
@@ -211,7 +212,7 @@
       => memberInfo.ToSignatureNameInternal(isFullyQualifiedName, isShortName: false, isCompact);
 
     /// <summary>
-    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
     /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
     /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
@@ -648,57 +649,151 @@
     /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="type"/>.</exception>
     /// <exception cref="NotSupportedException">The type provided by the <paramref genericTypeParameterIdentifier="type"/> is not supported.</exception>
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
-    public static AccessModifier GetAccessModifier(this MemberInfo memberInfo)
+    public static AccessModifier GetAccessModifier(this Type type)
     {
-      switch (memberInfo)
-      {
-        case Type typeInfo:
-          return typeInfo.IsPublic ? AccessModifier.Public
-            : typeInfo.IsNestedPrivate ? AccessModifier.Private
-            : typeInfo.IsNestedAssembly ? AccessModifier.Internal
-            : typeInfo.IsNestedFamily ? AccessModifier.Protected
-            : typeInfo.IsNestedPublic ? AccessModifier.Public
-            : typeInfo.IsNestedFamORAssem ? AccessModifier.ProtectedInternal
-            : typeInfo.IsNestedFamANDAssem ? AccessModifier.PrivateProtected
-            : !typeInfo.IsVisible ? AccessModifier.Internal
-            : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
-        case MethodBase methodBaseInfo:
-          return methodBaseInfo.IsPublic ? AccessModifier.Public
-            : methodBaseInfo.IsPrivate ? AccessModifier.Private
-            : methodBaseInfo.IsAssembly ? AccessModifier.Internal
-            : methodBaseInfo.IsFamily ? AccessModifier.Protected
-            : methodBaseInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
-            : methodBaseInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
-            : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
-        case FieldInfo fieldInfo:
-          return fieldInfo.IsPublic ? AccessModifier.Public
-            : fieldInfo.IsPrivate ? AccessModifier.Private
-            : fieldInfo.IsAssembly ? AccessModifier.Internal
-            : fieldInfo.IsFamily ? AccessModifier.Protected
-            : fieldInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
-            : fieldInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
-            : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
-        case EventInfo eventInfo:
-          return eventInfo.GetAddMethod(true).GetAccessModifier();
-        case PropertyInfo propertyInfo:
-          return GetPropertyAccessModifier(propertyInfo);
-        default:
-          throw new NotSupportedException("The provided MemberInfo is not supported");
-      }
-    }
-
-    private static AccessModifier GetPropertyAccessModifier(PropertyInfo propertyInfo)
-    {
-      // Property accessors with the least restriction provides the access modifier for the property.
-      AccessModifier propertyAccessModifier = propertyInfo.GetAccessors(true)
-        .Select(accessor => accessor.GetAccessModifier())
-        .Min();
-
-      return propertyAccessModifier;
+      TypeData entry = GetMemberInfoDataCacheEntry<TypeData>(type);
+      return entry.AccessModifier;
     }
 
     /// <summary>
-    /// Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the namespace.
+    /// Gets the access modifier for <see cref="MemberInfo"/> attributes like <see cref="Type"/>, <see cref="MethodInfo"/>, <see cref="ConstructorInfo"/>, <see cref="PropertyInfo"/>, <see cref="EventInfo"/> or <see cref="FieldInfo"/>.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="type"></param>
+    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="type"/>.</returns>
+    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="type"/>.</exception>
+    /// <exception cref="NotSupportedException">The type provided by the <paramref genericTypeParameterIdentifier="type"/> is not supported.</exception>
+    /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
+    public static AccessModifier GetAccessModifier(this MethodInfo method)
+    {
+      MethodData entry = GetMemberInfoDataCacheEntry<MethodData>(method);
+      return entry.AccessModifier;
+    }
+
+    /// <summary>
+    /// Gets the access modifier for <see cref="MemberInfo"/> attributes like <see cref="Type"/>, <see cref="MethodInfo"/>, <see cref="ConstructorInfo"/>, <see cref="PropertyInfo"/>, <see cref="EventInfo"/> or <see cref="FieldInfo"/>.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="type"></param>
+    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="type"/>.</returns>
+    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="type"/>.</exception>
+    /// <exception cref="NotSupportedException">The type provided by the <paramref genericTypeParameterIdentifier="type"/> is not supported.</exception>
+    /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
+    public static AccessModifier GetAccessModifier(this ConstructorInfo constructor)
+    {
+      ConstructorData entry = GetMemberInfoDataCacheEntry<ConstructorData>(constructor);
+      return entry.AccessModifier;
+    }
+
+    /// <summary>
+    /// Gets the access modifier for <see cref="MemberInfo"/> attributes like <see cref="Type"/>, <see cref="MethodInfo"/>, <see cref="ConstructorInfo"/>, <see cref="PropertyInfo"/>, <see cref="EventInfo"/> or <see cref="FieldInfo"/>.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="type"></param>
+    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="type"/>.</returns>
+    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="type"/>.</exception>
+    /// <exception cref="NotSupportedException">The type provided by the <paramref genericTypeParameterIdentifier="type"/> is not supported.</exception>
+    /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
+    public static AccessModifier GetAccessModifier(this PropertyInfo property)
+    {
+      PropertyData entry = GetMemberInfoDataCacheEntry<PropertyData>(property);
+      return entry.AccessModifier;
+    }
+
+    /// <summary>
+    /// Gets the access modifier for <see cref="MemberInfo"/> attributes like <see cref="Type"/>, <see cref="MethodInfo"/>, <see cref="ConstructorInfo"/>, <see cref="PropertyInfo"/>, <see cref="EventInfo"/> or <see cref="FieldInfo"/>.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="type"></param>
+    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="type"/>.</returns>
+    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="type"/>.</exception>
+    /// <exception cref="NotSupportedException">The type provided by the <paramref genericTypeParameterIdentifier="type"/> is not supported.</exception>
+    /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
+    public static AccessModifier GetAccessModifier(this EventInfo eventInfo)
+    {
+      EventData entry = GetMemberInfoDataCacheEntry<EventData>(eventInfo);
+      return entry.AccessModifier;
+    }
+
+    /// <summary>
+    /// Gets the access modifier for <see cref="MemberInfo"/> attributes like <see cref="Type"/>, <see cref="MethodInfo"/>, <see cref="ConstructorInfo"/>, <see cref="PropertyInfo"/>, <see cref="EventInfo"/> or <see cref="FieldInfo"/>.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="type"></param>
+    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="type"/>.</returns>
+    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="type"/>.</exception>
+    /// <exception cref="NotSupportedException">The type provided by the <paramref genericTypeParameterIdentifier="type"/> is not supported.</exception>
+    /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
+    public static AccessModifier GetAccessModifier(this FieldInfo field)
+    {
+      FieldData entry = GetMemberInfoDataCacheEntry<FieldData>(field);
+      return entry.AccessModifier;
+    }
+
+    internal static AccessModifier GetAccessModifierInternal(PropertyData propertyData) 
+      => GetPropertyAccessModifier(propertyData.GetMethodData, propertyData.SetMethodData).PropertyModifier;
+
+    internal static AccessModifier GetAccessModifierInternal(EventData eventData) 
+      => GetAccessModifierInternal(eventData.AddMethodData);
+
+    internal static AccessModifier GetAccessModifierInternal(FieldData fieldData)
+    {
+      FieldInfo fieldInfo = fieldData.GetFieldInfo();
+      return fieldInfo.IsPublic ? AccessModifier.Public
+        : fieldInfo.IsPrivate ? AccessModifier.Private
+        : fieldInfo.IsAssembly ? AccessModifier.Internal
+        : fieldInfo.IsFamily ? AccessModifier.Protected
+        : fieldInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
+        : fieldInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
+        : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
+    }
+
+    internal static AccessModifier GetAccessModifierInternal(MethodData methodData)
+    {
+      MethodInfo methodInfo = methodData.GetMethodInfo();
+      return methodInfo.IsPublic ? AccessModifier.Public
+        : methodInfo.IsPrivate ? AccessModifier.Private
+        : methodInfo.IsAssembly ? AccessModifier.Internal
+        : methodInfo.IsFamily ? AccessModifier.Protected
+        : methodInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
+        : methodInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
+        : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
+    }
+
+    internal static AccessModifier GetAccessModifierInternal(ConstructorData constructorData)
+    {
+      ConstructorInfo methodInfo = constructorData.GetConstructorInfo();
+      return methodInfo.IsPublic ? AccessModifier.Public
+        : methodInfo.IsPrivate ? AccessModifier.Private
+        : methodInfo.IsAssembly ? AccessModifier.Internal
+        : methodInfo.IsFamily ? AccessModifier.Protected
+        : methodInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
+        : methodInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
+        : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
+    }
+
+    internal static AccessModifier GetAccessModifierInternal(TypeData typeData)
+    {
+      Type typeInfo = typeData.GetType();
+      return typeInfo.IsPublic ? AccessModifier.Public
+        : typeInfo.IsNestedPrivate ? AccessModifier.Private
+        : typeInfo.IsNestedAssembly ? AccessModifier.Internal
+        : typeInfo.IsNestedFamily ? AccessModifier.Protected
+        : typeInfo.IsNestedPublic ? AccessModifier.Public
+        : typeInfo.IsNestedFamORAssem ? AccessModifier.ProtectedInternal
+        : typeInfo.IsNestedFamANDAssem ? AccessModifier.PrivateProtected
+        : !typeInfo.IsVisible ? AccessModifier.Internal
+        : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
+    }
+
+    internal static (AccessModifier PropertyModifier, AccessModifier GetMethodModifier, AccessModifier SetMethodModifier) GetPropertyAccessModifier(MethodData getMethodData, MethodData setMethodData)
+    {
+      AccessModifier getMethodModifier = getMethodData.AccessModifier;
+      AccessModifier setMethodModifier = setMethodData.AccessModifier;
+
+      // Property accessors with the least restriction provides the access modifier for the property.
+      AccessModifier propertyAccessModifier = (AccessModifier)System.Math.Min((int)getMethodModifier, (int)setMethodModifier);
+
+      return (propertyAccessModifier, getMethodModifier, setMethodModifier);
+    }
+
+    /// <summary>
+    /// Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
     /// <returns>
     /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
@@ -769,7 +864,7 @@
     //}
 
     /// <summary>
-    /// Extension method to convert generic and non-generic type names to a readable display genericTypeParameterIdentifier including the namespace.
+    /// Extension method to convert generic and non-generic type names to a readable display genericTypeParameterIdentifier including the symbolNamespace.
     /// </summary>
     /// <returns>
     /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
@@ -846,7 +941,7 @@
     //}
 
     /// <summary>
-    /// Extension method to convert generic and non-generic type names to a readable display genericTypeParameterIdentifier including the namespace.
+    /// Extension method to convert generic and non-generic type names to a readable display genericTypeParameterIdentifier including the symbolNamespace.
     /// </summary>
     /// <param genericTypeParameterIdentifier="memberInfo">The <see cref="Type"/> to extend.</param>
     /// <returns>
@@ -1356,16 +1451,38 @@
 #endif
     }
 
-    private static Lazy<Type> DelegateType { get; } = new Lazy<Type>(() => typeof(Delegate));
+    // TODO::Test if checking get() is enough to determine if a property is overridden
     public static bool IsDelegate(this Type typeInfo)
-      => HelperExtensionsCommon.DelegateType.Value.IsAssignableFrom(typeInfo);
+    {
+      TypeData typeData = GetMemberInfoDataCacheEntry<TypeData>(typeInfo);
+      return typeData.IsDelegate;
+    }
+
+    internal static bool IsDelegateInternal(this Type typeInfo)
+      => HelperExtensionsCommon.DelegateType.IsAssignableFrom(typeInfo);
 
     // TODO::Test if checking get() is enough to determine if a property is overridden
-    public static bool IsOverride(this PropertyInfo methodInfo)
-      => methodInfo.GetGetMethod(true).IsOverride();
+    public static bool IsOverride(this PropertyInfo propertyInfo)
+    {
+      SymbolInfoDataCacheKey cacheKey = CreateMemberInfoDataCacheKey(propertyInfo);
+      MemberInfoData memberInfoData = GetMemberInfoDataCacheEntry<MemberInfoData>(cacheKey, propertyInfo);
+      return memberInfoData.IsOverride;
+    }
+
+    internal static bool IsOverrideInternal(this PropertyInfo propertyInfo)
+      => propertyInfo.CanRead ? propertyInfo.GetGetMethod(true).IsOverride() : propertyInfo.GetSetMethod().IsOverride();
 
     public static bool IsOverride(this MethodInfo methodInfo)
-      => !methodInfo.Equals(methodInfo.GetBaseDefinition());
+    {
+      MethodData methodData = GetMemberInfoDataCacheEntry<MethodData>(methodInfo);
+      return methodData.IsOverride;
+    }
+
+    internal static bool IsOverrideInternal(MethodData methodData)
+    {
+      MethodInfo methodInfo = methodData.GetMethodInfo();
+      return !methodInfo.Equals(methodInfo.GetBaseDefinition());
+    }
 
     /// <summary>
     /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.
@@ -1375,7 +1492,20 @@
     /// <remarks>The method first checks if the return type is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned type (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate type (awaiter).
     /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
     public static bool IsAwaitable(this MethodInfo methodInfo)
-      => IsAwaitable(methodInfo.ReturnType);
+    {
+      MethodData methodData = GetMemberInfoDataCacheEntry<MethodData>(methodInfo);
+      return methodData.IsAwaitable;
+    }
+
+    /// <summary>
+    /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="methodInfo">The <see cref="MethodInfo"/> to check if it belongs to an awaitable method.</param>
+    /// <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
+    /// <remarks>The method first checks if the return type is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned type (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate type (awaiter).
+    /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
+    internal static bool IsAwaitableInternal(MethodData methodData)
+      => IsAwaitableInternal(methodData.ReturnTypeData);
 
     /// <summary>
     /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.
@@ -1386,6 +1516,20 @@
     /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
     public static bool IsAwaitable(this Type type)
     {
+      TypeData typeData = GetMemberInfoDataCacheEntry<TypeData>(type);
+      return typeData.IsAwaitable;
+    }
+
+    /// <summary>
+    /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="methodInfo">The <see cref="MethodInfo"/> to check if it belongs to an awaitable method.</param>
+    /// <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
+    /// <remarks>The method first checks if the return type is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned type (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate type (awaiter).
+    /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
+    internal static bool IsAwaitableInternal(TypeData typeData)
+    {
+      Type type = typeData.GetType();
       if (IsAwaitableTask(type) || IsAwaitableValueTask(type))
       {
         return true;
@@ -1437,7 +1581,13 @@
         || HelperExtensionsCommon.ValueTaskType.IsAssignableFrom(type.BaseType);
 
     public static bool IsMarkedAsync(this MethodInfo methodInfo)
-      => methodInfo.GetCustomAttribute(HelperExtensionsCommon.AsyncStateMachineAttributeType) != null
+    {
+      MethodData methodData = GetMemberInfoDataCacheEntry<MethodData>(methodInfo);
+      return methodData.IsAsync;
+    }
+
+    internal static bool IsMarkedAsyncInternal(MethodData methodData)
+      => methodData.GetMethodInfo().GetCustomAttribute(HelperExtensionsCommon.AsyncStateMachineAttributeType) != null;
 
     /// <summary>
     /// Extension method to check if a <see cref="Type"/> is static.
@@ -1445,14 +1595,26 @@
     /// <param genericTypeParameterIdentifier="typeInfo">The extended <see cref="Type"/> instance.</param>
     /// <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="typeInfo"/> is static. Otherwise <see langword="false"/>.</returns>
     public static bool IsStatic(this Type typeInfo)
-      => typeInfo.IsAbstract && typeInfo.IsSealed;
+    {
+      TypeData typeData = GetMemberInfoDataCacheEntry<TypeData>(typeInfo);
+      return typeData.IsStatic;
+    }
+
+    internal static bool IsStaticInternal(TypeData typeData) 
+      => typeData.IsAbstract && typeData.IsSealed;
 
     /// <summary>
     /// Extension method to check if a <see cref="ParameterInfo"/> represents a <see langword="ref"/> parameter.
     /// </summary>
     /// <returns><see langword="true"/> if the <paramref name="parameterInfo"/> represents a <see langword="ref"/> parameter. Otherwise <see langword="false"/>.</returns>
     public static bool IsRef(this ParameterInfo parameterInfo)
-      => parameterInfo.ParameterType.IsByRef && !parameterInfo.IsOut && !parameterInfo.IsIn;
+    {
+      ParameterData typeData = GetMemberInfoDataCacheEntry<ParameterData>(parameterInfo);
+      return typeData.IsRef;
+    }
+
+    internal static bool IsRefInternal(ParameterData parameterData)
+      => parameterData.IsByRef && !parameterData.ParameterInfo.IsOut && !parameterData.ParameterInfo.IsIn;
 
     /// <summary>
     /// Extension method that checks if the provided <see cref="Type"/> is qualified to define extension methods.
@@ -1463,12 +1625,19 @@
     /// <br/>In addition this method checks if the declaring class and the method are both decorated with the <see cref="ExtensionAttribute"/> which is added by the compiler.</remarks>
     public static bool CanDeclareExtensionMethods(this Type typeInfo)
     {
-      if (!typeInfo.IsStatic() || typeInfo.IsNested || typeInfo.IsGenericType)
+      TypeData typeData = GetMemberInfoDataCacheEntry<TypeData>(typeInfo);
+      return typeData.CanDeclareExtensionMethod;
+    }
+
+    internal static bool CanDeclareExtensionMethodsInternal(TypeData typeData)
+    {
+      Type typeInfo = typeData.GetType();
+      if (!typeData.IsStatic || typeInfo.IsNested || typeInfo.IsGenericType)
       {
         return false;
       }
 
-      ExtensionAttribute typeExtensionAttribute = typeInfo.GetCustomAttribute<ExtensionAttribute>(false);
+      Attribute typeExtensionAttribute = typeInfo.GetCustomAttribute(HelperExtensionsCommon.ExtensionAttributeType, false);
       return typeExtensionAttribute != null;
     }
 
@@ -1506,6 +1675,38 @@
 
       return true;
     }
+    internal static bool IsExtensionMethodInternal(MethodData methodData)
+    {
+      // Check if the declaring class satisfies the constraints to declare extension methods
+      TypeData declaringTypeData = methodData.DeclaringTypeData;
+      if (!declaringTypeData.CanDeclareExtensionMethod)
+      {
+        return false;
+      }
+
+      /* Check if the method satisfies the constraints to act as an extension methods */
+
+      if (!methodData.IsStatic)
+      {
+        return false;
+      }
+
+      MethodInfo methodInfo = methodData.GetMethodInfo(); 
+      Attribute methodExtensionAttribute = methodInfo.GetCustomAttribute(HelperExtensionsCommon.ExtensionAttributeType, false);
+      if (methodExtensionAttribute == null)
+      {
+        return false;
+      }
+
+      // Must have at least the 'this' parameter
+      ParameterData[] parameterInfoData = methodData.Parameters;
+      if (parameterInfoData.Length < 1)
+      {
+        return false;
+      }
+
+      return true;
+    }
 
     /// <summary>
     /// Extension method to check if a <see cref="MethodInfo"/> is the info of an extension method for a particular type.
@@ -1523,7 +1724,7 @@
 
       /* Check if the method satisfies the constraints to act as an extension methods */
 
-      if (!methodInfo.IsExtensionMethod())
+      if (!methodInfo.IsExtensionMethodInternal())
       {
         return false;
       }
@@ -1542,7 +1743,13 @@
     }
 
 #if !NETSTANDARD2_0
-    private static bool IsReadOnlyStruct(Type type)
+    public static bool IsReadOnlyStruct(Type type)
+    {
+      TypeData typeData = GetMemberInfoDataCacheEntry<TypeData>(type);
+      return typeData.IsReadOnlyStruct;
+    }
+
+    internal static bool IsReadOnlyStructInternal(Type type)
       => type.IsValueType && type.GetCustomAttribute(HelperExtensionsCommon.IsReadOnlyAttributeType) != null;
 #endif
 
@@ -1590,37 +1797,16 @@
     //  return null;
     //}
 
-    internal static SymbolKinds GetKind(this MemberInfo memberInfo)
+    //internal static SymbolKinds GetKind(this MemberInfo memberInfo)
+    //{
+    //  SymbolInfoData cacheEntry = GetMemberInfoDataCacheEntry<SymbolInfoData>(memberInfo);
+    //  return cacheEntry.Kind;
+    //}
+
+    internal static SymbolKinds GetKindInternal(TypeData typeData)
     {
-      MemberInfoDataCacheKey key = CreateMemberInfoDataCacheKey(memberInfo);
-      if (HelperExtensionsCommon.MemberInfoDataCache.TryGetValue(key, out MemberInfoData cacheEntry))
-      {
-        if (cacheEntry.Kind != SymbolKinds.Undefined)
-        {
-          return cacheEntry.Kind;
-        }
-      }
-      else
-      {
-        cacheEntry = CreateMemberInfoDataCacheEntry(key);
-      }
-
-      var type = memberInfo as Type;
-      var propertyInfo = memberInfo as PropertyInfo;
-      MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
-        ?? type?.GetMethod("Invoke"); // MemberInfo is potentially a delegate
-      MethodInfo propertyGetMethodInfo = propertyInfo?.GetGetMethod(true);
-      MethodInfo propertySetMethodInfo = propertyInfo?.GetSetMethod(true);
-      var constructorInfo = memberInfo as ConstructorInfo;
-      var fieldInfo = memberInfo as FieldInfo;
-      var eventInfo = memberInfo as EventInfo;
-      MethodInfo eventAddMethodInfo = eventInfo?.GetAddMethod(true);
-      FieldInfo eventDeclaredFieldInfo = eventInfo?.DeclaringType.GetField(eventInfo.Name, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-      ParameterInfo[] indexerPropertyIndexParameters = propertyInfo?.GetIndexParameters() ?? Array.Empty<ParameterInfo>();
-
-      bool isDelegate = type?.IsDelegate() ?? false;
-      if (isDelegate)
+      Type type =  typeData.GetType();
+      if (typeData.IsDelegate)
       {
         SymbolKinds delegateKind = SymbolKinds.Delegate;
         if (type.IsGenericType)
@@ -1628,12 +1814,10 @@
           delegateKind |= SymbolKinds.Generic;
         }
 
-        cacheEntry.Kind = delegateKind;
         return delegateKind;
       }
 
-      bool isClass = !isDelegate && (type?.IsClass ?? false);
-      if (isClass)
+      if (type.IsClass)
       {
         SymbolKinds classKind = SymbolKinds.Class;
         if (type.IsAbstract)
@@ -1646,7 +1830,7 @@
           classKind |= SymbolKinds.Final;
         }
 
-        if (type.IsStatic())
+        if (typeData.IsStatic)
         {
           classKind |= SymbolKinds.Static;
         }
@@ -1656,21 +1840,22 @@
           classKind |= SymbolKinds.Generic;
         }
 
-        cacheEntry.Kind = classKind;
         return classKind;
       }
 
-      bool isEnum = !isDelegate && (type?.IsEnum ?? false);
-      if (isEnum)
+      if (type.IsInterface)
+      {
+        SymbolKinds interfaceKind = SymbolKinds.Interface;
+        return interfaceKind;
+      }
+
+      if (type.IsEnum)
       {
         SymbolKinds enumKind = SymbolKinds.Enum;
-        cacheEntry.Kind = enumKind;
-        
         return enumKind;
       }
 
-      bool isStruct = !isDelegate && (type?.IsValueType ?? false);
-      if (isStruct)
+      if (type.IsValueType)
       {
         SymbolKinds structKind = SymbolKinds.Struct;
 
@@ -1680,173 +1865,171 @@
         }
 
 #if !NETSTANDARD2_0
-        bool isReadOnlyStruct = isStruct && IsReadOnlyStruct(type);
+        bool isReadOnlyStruct = typeData.IsReadOnlyStruct;
         if (isReadOnlyStruct)
         {
           structKind |= SymbolKinds.Final;
         }
 #endif
-        cacheEntry.Kind = structKind;
         return structKind;
-      }
-
-      bool isProperty = propertyInfo != null;
-      if (isProperty)
-      {
-        bool isIndexerProperty = indexerPropertyIndexParameters.Length > 0;
-        SymbolKinds propertyKind = isIndexerProperty 
-          ? SymbolKinds.IndexerProperty 
-          : SymbolKinds.Property;
-
-        MethodInfo getMethod = propertyInfo.GetGetMethod();
-        if (!propertyInfo.CanWrite)
-        {
-          propertyKind |= SymbolKinds.Final;
-        }
-
-        if (getMethod.IsAbstract)
-        {
-          propertyKind |= SymbolKinds.Abstract;
-        }
-
-        if (getMethod.IsStatic)
-        {
-          propertyKind |= SymbolKinds.Static;
-        }
-
-        if (getMethod.IsVirtual)
-        {
-          propertyKind |= SymbolKinds.Virtual;
-        }
-
-        if (getMethod.IsOverride())
-        {
-          propertyKind |= SymbolKinds.Override;
-        }
-
-        cacheEntry.Kind = propertyKind;
-        return propertyKind;
-      }
-
-      bool isMethod = !isDelegate && !isClass && memberInfo.MemberType.HasFlag(MemberTypes.Method);
-      if (isMethod)
-      {
-        SymbolKinds methodKind = SymbolKinds.Method;
-        if (methodInfo.IsFinal)
-        {
-          methodKind |= SymbolKinds.Final;
-        }
-
-        if (methodInfo.IsAbstract)
-        {
-          methodKind |= SymbolKinds.Abstract;
-        }
-
-        if (methodInfo.IsStatic)
-        {
-          methodKind |= SymbolKinds.Static;
-        }
-
-        if (methodInfo.IsVirtual)
-        {
-          methodKind |= SymbolKinds.Virtual;
-        }
-
-        if (methodInfo.IsOverride())
-        {
-          methodKind |= SymbolKinds.Override;
-        }
-
-        if (methodInfo.IsGenericMethod)
-        {
-          methodKind |= SymbolKinds.Generic;
-        }
-
-        cacheEntry.Kind = methodKind;
-        return methodKind;
-      }
-
-      bool isEvent = eventInfo != null;
-      if (isEvent)
-      {
-        SymbolKinds eventKind = SymbolKinds.Event;
-        MethodInfo addHandlerMethod = eventInfo.GetAddMethod(true);
-        if (addHandlerMethod.IsFinal)
-        {
-          eventKind |= SymbolKinds.Final;
-        }
-
-        if (addHandlerMethod.IsAbstract)
-        {
-          eventKind |= SymbolKinds.Abstract;
-        }
-
-        if (addHandlerMethod.IsStatic)
-        {
-          eventKind |= SymbolKinds.Static;
-        }
-
-        if (addHandlerMethod.IsVirtual)
-        {
-          eventKind |= SymbolKinds.Virtual;
-        }
-
-        if (addHandlerMethod.IsOverride())
-        {
-          eventKind |= SymbolKinds.Override;
-        }
-
-        cacheEntry.Kind = eventKind;
-        return eventKind;
-      }
-
-      bool isConstructor = constructorInfo != null;
-      if (isConstructor)
-      {
-        SymbolKinds constructorKind = SymbolKinds.Constructor;
-
-        if (constructorInfo.IsStatic)
-        {
-          constructorKind |= SymbolKinds.Static;
-        }
-
-        cacheEntry.Kind = constructorKind;
-        return constructorKind;
-      }
-
-      bool isField = fieldInfo != null;
-      if (isField)
-      {
-        SymbolKinds fieldKind = SymbolKinds.Field;
-        if (fieldInfo.IsInitOnly)
-        {
-          fieldKind |= SymbolKinds.Final;
-        }
-
-        if (fieldInfo.IsStatic)
-        {
-          fieldKind |= SymbolKinds.Static;
-        }
-
-        cacheEntry.Kind = fieldKind;
-        return fieldKind;
-      }
-
-      bool isInterface = !isDelegate && !isClass && (type?.IsInterface ?? false);
-      if (isInterface)
-      {
-        SymbolKinds interfaceKind = SymbolKinds.Interface;
-        cacheEntry.Kind = interfaceKind;
-        return interfaceKind;
       }
 
       return SymbolKinds.Undefined;
     }
 
-    private static MemberInfoData CreateMemberInfoDataCacheEntry(MemberInfo memberInfo, MemberInfoDataCacheKey key)
+    internal static SymbolKinds GetKindInternal(PropertyData propertyData)
+    {
+      PropertyInfo propertyInfo = propertyData.PropertyInfo;
+      SymbolKinds propertyKind = propertyData.IsIndexer
+        ? SymbolKinds.IndexerProperty
+        : SymbolKinds.Property;
+
+      MethodData accessorData = propertyData.GetMethodData ?? propertyData.SetMethodData;
+      MethodInfo accessorMethodInfo = accessorData.GetMethodInfo();
+      if (!propertyInfo.CanWrite)
+      {
+        propertyKind |= SymbolKinds.Final;
+      }
+
+      if (accessorMethodInfo.IsAbstract)
+      {
+        propertyKind |= SymbolKinds.Abstract;
+      }
+
+      if (accessorMethodInfo.IsStatic)
+      {
+        propertyKind |= SymbolKinds.Static;
+      }
+
+      if (accessorMethodInfo.IsVirtual)
+      {
+        propertyKind |= SymbolKinds.Virtual;
+      }
+
+      if (propertyData.IsOverride)
+      {
+        propertyKind |= SymbolKinds.Override;
+      }
+
+      return propertyKind;
+    }
+
+    internal static SymbolKinds GetKindInternal(FieldData fieldData)
+    {
+      FieldInfo fieldInfo = fieldData.GetFieldInfo();
+      SymbolKinds fieldKind = SymbolKinds.Field;
+      if (fieldInfo.IsInitOnly)
+      {
+        fieldKind |= SymbolKinds.Final;
+      }
+
+      if (fieldInfo.IsStatic)
+      {
+        fieldKind |= SymbolKinds.Static;
+      }
+
+      return fieldKind;
+    }
+
+    internal static SymbolKinds GetKindInternal(MethodData methodData)
+    {
+      MethodInfo methodInfo = methodData.GetMethodInfo();
+      SymbolKinds methodKind = SymbolKinds.Method;
+      if (methodInfo.IsFinal)
+      {
+        methodKind |= SymbolKinds.Final;
+      }
+
+      if (methodInfo.IsAbstract)
+      {
+        methodKind |= SymbolKinds.Abstract;
+      }
+
+      if (methodInfo.IsStatic)
+      {
+        methodKind |= SymbolKinds.Static;
+      }
+
+      if (methodInfo.IsVirtual)
+      {
+        methodKind |= SymbolKinds.Virtual;
+      }
+
+      if (methodData.IsOverride)
+      {
+        methodKind |= SymbolKinds.Override;
+      }
+
+      if (methodInfo.IsGenericMethod)
+      {
+        methodKind |= SymbolKinds.Generic;
+      }
+
+      return methodKind;
+    }
+
+    internal static SymbolKinds GetKindInternal(ConstructorData constructorData)
+    {
+      ConstructorInfo constructorInfo = constructorData.GetConstructorInfo();
+      SymbolKinds constructorKind = SymbolKinds.Constructor;
+
+      if (constructorInfo.IsStatic)
+      {
+        constructorKind |= SymbolKinds.Static;
+      }
+
+      return constructorKind;
+    }
+
+    internal static SymbolKinds GetKindInternal(EventData eventData)
+    {
+      MethodData eventAddMethodInfo = eventData.AddMethod;
+      SymbolKinds eventKind = SymbolKinds.Event;
+      MethodInfo addHandlerMethod = eventAddMethodInfo.GetMethodInfo();
+      if (addHandlerMethod.IsFinal)
+      {
+        eventKind |= SymbolKinds.Final;
+      }
+
+      if (addHandlerMethod.IsAbstract)
+      {
+        eventKind |= SymbolKinds.Abstract;
+      }
+
+      if (addHandlerMethod.IsStatic)
+      {
+        eventKind |= SymbolKinds.Static;
+      }
+
+      if (addHandlerMethod.IsVirtual)
+      {
+        eventKind |= SymbolKinds.Virtual;
+      }
+
+      if (addHandlerMethod.IsOverride())
+      {
+        eventKind |= SymbolKinds.Override;
+      }
+
+      return eventKind;
+    }
+
+
+    internal static TEntry GetMemberInfoDataCacheEntry<TEntry>(object symbolInfo) where TEntry : SymbolInfoData
+    {
+      SymbolInfoDataCacheKey cacheKey = CreateMemberInfoDataCacheKey(symbolInfo);
+      if (!HelperExtensionsCommon.MemberInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
+      {
+        symbolInfoData = CreateMemberInfoDataCacheEntry(symbolInfo, cacheKey);
+      }
+
+      return (TEntry)symbolInfoData;
+    }
+
+    private static SymbolInfoData CreateMemberInfoDataCacheEntry(object symbolInfo, SymbolInfoDataCacheKey key)
     {
       MemberInfoData entry;
-      switch (memberInfo)
+      switch (symbolInfo)
       {
         case Type type:
           entry = new TypeData()
@@ -1884,7 +2067,8 @@
       return entry;
     }
 
-    private static MemberInfoDataCacheKey CreateMemberInfoDataCacheKey(MemberInfo memberInfo) => throw new NotImplementedException();
+    private static SymbolInfoDataCacheKey CreateMemberInfoDataCacheKey(object symbolInfo) => throw new NotImplementedException();
+
     public static dynamic Cast(this object obj, Type type)
         => typeof(HelperExtensionsCommon).GetMethod(nameof(HelperExtensionsCommon.Cast), BindingFlags.Static | BindingFlags.NonPublic, null, new[] { typeof(object) }, null).GetGenericMethodDefinition().MakeGenericMethod(type).Invoke(obj, null);
 
@@ -1896,83 +2080,205 @@
 #endif
   }
 
-  internal abstract class MemberInfoData
+  internal abstract class SymbolInfoData
   {
-    protected MemberInfoData()
+    protected SymbolInfoData(string name, char[] symbolNamespace)
     {
-      this.Kind = SymbolKinds.Undefined;
-      this.Signature = Array.Empty<char>();
-      this.Name = string.Empty;
+      this.Name = name;
+      this.Namespace = symbolNamespace;
     }
 
-    public bool IsOverride { get; set; }
-    public bool IsStatic { get; set; }
-    public abstract IEnumerable<CustomAttributeData> AttributeData { get; }
-    public char[] Signature { get; set; }
-    public SymbolKinds Kind { get; set; }
-    public string Name { get; set; }
+    public abstract bool IsStatic { get; }
+    public abstract HashSet<CustomAttributeData> AttributeData { get; }
+    public abstract SymbolKinds Kind { get; }
+    public string Name { get; }
+    public char[] Namespace { get; }
+    public abstract AccessModifier AccessModifier { get; }
+    public abstract char[] FullyQualifiedSignature { get; }
+    public abstract char[] Signature { get; }
   }
 
-  internal sealed class TypeData : MemberInfoData
+  internal abstract class MemberInfoData : SymbolInfoData
   {
-    private bool? canDeclareExtensionMethod;
-    private bool? isDelegate;
-    private bool? isAwaitable;
-    private IEnumerable<CustomAttributeData> attributeData;
+    private HashSet<CustomAttributeData> attributeData;
 
-    public TypeData(Type type) => this.Handle = type.TypeHandle;
+    protected MemberInfoData(MemberInfo memberInfo) : base (memberInfo.Name, memberInfo.DeclaringType.Namespace.ToCharArray())
+    {
+      this.DeclaringTypeHandle = memberInfo.DeclaringType.TypeHandle;
+    }
+
+    public Type GetDeclaringType()
+      => Type.GetTypeFromHandle(this.DeclaringTypeHandle);
+
+    protected abstract MemberInfo GetMemberInfo();
+
+    public abstract bool IsOverride { get; }
+    public RuntimeTypeHandle DeclaringTypeHandle { get; }
+
+    public override HashSet<CustomAttributeData> AttributeData
+      => this.attributeData ?? (this.attributeData = new HashSet<CustomAttributeData>(GetMemberInfo().GetCustomAttributesData()));
+  }
+
+  internal sealed class TypeData : SymbolInfoData
+  {
+    private HashSet<CustomAttributeData> attributeData;
+    private SymbolKinds kind;
+    private AccessModifier accessModifier;
+    private bool? canDeclareExtensionMethod;
+    private bool? isAwaitable;
+    private char[] signature;
+    private char[] fullyQualifiedSignature;
+    private bool? isStatic;
+
+    public TypeData(Type type) : base(type.Name, type.Namespace.ToCharArray())
+    {
+      this.Handle = type.TypeHandle;
+    }
+
+    new public Type GetType()
+      => Type.GetTypeFromHandle(this.Handle);
 
     public RuntimeTypeHandle Handle { get; }
-    public bool IsDelegate => (bool)(this.isDelegate ?? (this.isDelegate = Type.GetTypeFromHandle(this.Handle).IsDelegate()));
-    public bool IsAwaitable => (bool)(this.isAwaitable ?? (this.isAwaitable = Type.GetTypeFromHandle(this.Handle).IsAwaitable()));
-    public bool CanDeclareExtensionMethod => (bool)(this.canDeclareExtensionMethod ?? (this.canDeclareExtensionMethod = Type.GetTypeFromHandle(this.Handle).CanDeclareExtensionMethods()));
-    public override IEnumerable<CustomAttributeData> AttributeData 
-      => this.attributeData ?? (this.attributeData = Type.GetTypeFromHandle(this.Handle).GetCustomAttributesData());
+    public bool IsAwaitable 
+      => (bool)(this.isAwaitable ?? (this.isAwaitable = HelperExtensionsCommon.IsAwaitableInternal(this)));
+
+    public bool CanDeclareExtensionMethod 
+      => (bool)(this.canDeclareExtensionMethod ?? (this.canDeclareExtensionMethod = HelperExtensionsCommon.CanDeclareExtensionMethodsInternal(this)));
+
+    public override HashSet<CustomAttributeData> AttributeData
+      => this.attributeData ?? (this.attributeData = new HashSet<CustomAttributeData>(GetType().GetCustomAttributesData()));
+
+    public override AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined 
+      ? (this.accessModifier = HelperExtensionsCommon.GetAccessModifierInternal(this))
+      : this.accessModifier;
+
+    public override char[] Signature 
+      => this.signature ?? (this.signature = GetType().ToSignatureShortName().ToCharArray());
+
+    public override char[] FullyQualifiedSignature 
+      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = GetType().ToSignatureShortName(isFullyQualifiedName: true).ToCharArray());
+
+    public override bool IsStatic 
+      => (bool)(this.isStatic ?? (this.isStatic = HelperExtensionsCommon.IsStaticInternal(this)));
+
+    public override SymbolKinds Kind => this.kind is SymbolKinds.Undefined 
+      ? (this.kind = HelperExtensionsCommon.GetKindInternal(this)) 
+      : this.kind;
+
+    public bool IsAbstract { get; internal set; }
+    public bool IsSealed { get; internal set; }
   }
 
   internal sealed class MethodData : MemberInfoData
   {
+    private SymbolKinds kind;
+    private AccessModifier accessModifier;
     private bool? isAwaitable;
     private bool? isAsync;
     private bool? isExtensionMethod;
-    private IEnumerable<ParameterData> parameters;
-    private IEnumerable<CustomAttributeData> attributeData;
-    private IEnumerable<RuntimeTypeHandle> genericTypeArgumentHandles;
+    private ParameterData[] parameters;
+    private TypeData[] genericTypeArguments;
+    private bool? isOverride;
+    private bool? isStatic;
+    private char[] signature;
+    private char[] fullyQualifiedSignature;
+    private TypeData declaringTypeData;
+    private MethodData returnTypeData;
 
-    public MethodData(MethodInfo methodInfo)
+    public MethodData(MethodInfo methodInfo) : base(methodInfo)
     {
       this.Handle = methodInfo.MethodHandle;
-      this.DeclaringTypeHandle = methodInfo.DeclaringType.TypeHandle;
     }
 
-    public RuntimeMethodHandle Handle { get; set; }
-    public RuntimeTypeHandle DeclaringTypeHandle { get; set; }
-    public IEnumerable<ParameterData> Parameters => this.parameters ?? (this.parameters = MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle).GetParameters().Select(parameterInfo => new ParameterData(parameterInfo)));
-    public IEnumerable<Type> GenericTypeArguments
+    public MethodInfo GetMethodInfo()
+      => (MethodInfo)MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle);
+
+    protected override MemberInfo GetMemberInfo() 
+      => GetMethodInfo();
+
+    public RuntimeMethodHandle Handle { get; }
+    public ParameterData[] Parameters 
+      => this.parameters ?? (this.parameters = GetMethodInfo().GetParameters().Select(parameterInfo => new ParameterData(parameterInfo)).ToArray());
+
+    public TypeData[] GenericTypeArguments
     {
       get
       {
-        if (this.genericTypeArgumentHandles == null)
+        if (this.genericTypeArguments == null)
         {
-          Type[] typeArguments = MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle).GetGenericArguments();
-          this.genericTypeArgumentHandles = typeArguments.Select(type => type.TypeHandle);
-
-          return typeArguments;
+          Type[] typeArguments = GetMethodInfo().GetGenericArguments();
+          this.genericTypeArguments = typeArguments.Select(type => new TypeData(type)).ToArray();
         }
 
-        return this.genericTypeArgumentHandles.Select(Type.GetTypeFromHandle);
+        return this.genericTypeArguments;
       }
     }
 
-    public bool IsExtensionMethod => (bool)(this.isExtensionMethod ?? (this.isExtensionMethod = (MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle) as MethodInfo).IsExtensionMethod()));
-    public bool IsAsync => (bool)(this.isAsync ?? (this.isAsync = (MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle) as MethodInfo).IsMarkedAsync()));
-    public bool IsAwaitable => (bool)(this.isAwaitable ?? (this.isAwaitable = (MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle) as MethodInfo).IsAwaitable()));
-    public override IEnumerable<CustomAttributeData> AttributeData
-      => this.attributeData ?? (this.attributeData = MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle).GetCustomAttributesData());
+    public override AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
+      ? (this.accessModifier = HelperExtensionsCommon.GetAccessModifierInternal(this))
+      : this.accessModifier;
+
+    public bool IsExtensionMethod 
+      => (bool)(this.isExtensionMethod ?? (this.isExtensionMethod = HelperExtensionsCommon.IsExtensionMethodInternal(this)));
+
+    public bool IsAsync 
+      => (bool)(this.isAsync ?? (this.isAsync = HelperExtensionsCommon.IsMarkedAsyncInternal(this)));
+
+    public bool IsAwaitable 
+      => (bool)(this.isAwaitable ?? (this.isAwaitable = HelperExtensionsCommon.IsAwaitableInternal(this)));
+
+    public override bool IsOverride 
+      => (bool)(this.isOverride ?? (this.isOverride = HelperExtensionsCommon.IsOverrideInternal(this)));
+
+    public override bool IsStatic 
+      => (bool)(this.isStatic ?? (this.isStatic = GetMethodInfo().IsStatic));
+
+    public override SymbolKinds Kind => this.kind is SymbolKinds.Undefined
+      ? (this.kind = HelperExtensionsCommon.GetKindInternal(this))
+      : this.kind;
+
+    public override char[] Signature => this.signature ?? (this.signature = GetType().ToSignatureShortName().ToCharArray());
+
+    public override char[] FullyQualifiedSignature => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = GetType().ToSignatureShortName(isFullyQualifiedName: true).ToCharArray());
+
+    public TypeData DeclaringTypeData 
+      => this.declaringTypeData ?? (this.declaringTypeData = HelperExtensionsCommon.GetMemberInfoDataCacheEntry<TypeData>(GetDeclaringType()));
+
+    public MethodData ReturnTypeData 
+      => this.returnTypeData ?? (this.returnTypeData = HelperExtensionsCommon.GetMemberInfoDataCacheEntry<MethodData>(GetMethodInfo().ReturnType));
+  }
+
+  internal sealed class EventData : MemberInfoData
+  {
+    private readonly EventInfo eventInfo;
+    private AccessModifier accessModifier;
+    private bool? isStatic;
+
+    public EventData(EventInfo eventInfo) : base(eventInfo)
+    {
+      this.eventInfo = eventInfo;
+    }
+
+    public EventInfo GetEventInfo()
+      => this.eventInfo;
+
+    public override AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
+      ? (this.accessModifier = HelperExtensionsCommon.GetAccessModifierInternal(GetEventInfo()))
+      : this.accessModifier;
+
+    public MethodData AddMethodData { get; }
+    public MethodData RemoveMethodData { get; }
+
+    public override bool IsStatic => isStatic;
+    public override SymbolKinds Kind { get; }
+
+    public override char[] FullyQualifiedSignature { get; }
+    public override char[] Signature { get; }
   }
 
   internal sealed class ConstructorData : MemberInfoData
   {
+    private AccessModifier accessModifier;
     private IEnumerable<ParameterData> parameters;
     private IEnumerable<CustomAttributeData> attributeData;
 
@@ -1982,11 +2288,22 @@
       this.DeclaringTypeHandle = constructorInfo.DeclaringType.TypeHandle;
     }
 
+    public ConstructorInfo GetConstructorInfo()
+      => (ConstructorInfo)MethodInfo.GetMethodFromHandle(this.Handle);
+
+    public Type GetDeclaringType()
+      => (Type)Type.GetTypeFromHandle(this.DeclaringTypeHandle);
+
     public RuntimeMethodHandle Handle { get; set; }
     public RuntimeTypeHandle DeclaringTypeHandle { get; set; }
     public IEnumerable<ParameterData> Parameters => this.parameters ?? (this.parameters = MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle).GetParameters().Select(parameterInfo => new ParameterData(parameterInfo)));
+    
     public override IEnumerable<CustomAttributeData> AttributeData
       => this.attributeData ?? (this.attributeData = MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle).GetCustomAttributesData());
+
+    public override AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
+      ? (this.accessModifier = HelperExtensionsCommon.GetAccessModifierInternal(MethodInfo.GetMethodFromHandle(this.Handle)))
+      : this.accessModifier;
   }
 
   internal sealed class ParameterData : MemberInfoData
@@ -2000,26 +2317,94 @@
       this.ParameterInfo = parameterInfo;
     }
 
+    public Type GetDeclaringType()
+      => (Type)Type.GetTypeFromHandle(this.DeclaringTypeHandle);
+
     public RuntimeTypeHandle DeclaringTypeHandle { get; set; }
     public bool IsRef { get; }
     public ParameterInfo ParameterInfo { get; }
     public override IEnumerable<CustomAttributeData> AttributeData
       => this.attributeData ?? (this.attributeData = this.ParameterInfo.GetCustomAttributesData());
+
+    public bool IsByRef { get; internal set; }
   }
 
   internal sealed class PropertyData : MemberInfoData
   {
+    private AccessModifier? propertyAccessModifier;
+    private AccessModifier? setAccessorAccessModifier;
+    private AccessModifier? getAccessorAccessModifier;
+    private ParameterData[] indexerParameters;
     private IEnumerable<CustomAttributeData> attributeData;
+    private readonly TypeData propertyTypeData;
 
     public PropertyData(PropertyInfo propertyInfo)
     {
       this.DeclaringTypeHandle = propertyInfo.DeclaringType.TypeHandle;
-      this.PropertyTypeData = new TypeData(propertyInfo.PropertyType);
+      this.CanRead = propertyInfo.CanRead;
+      this.CanWrite = propertyInfo.CanWrite;
+      this.PropertyInfo = propertyInfo;
+    }
+
+    public Type GetDeclaringType()
+      => (Type)Type.GetTypeFromHandle(this.DeclaringTypeHandle);
+
+    private void GetAccessors()
+    {
+      (AccessModifier propertyModifier, AccessModifier getMethodModifier, AccessModifier setMethodModifier) = HelperExtensionsCommon.GetPropertyAccessModifier(this.PropertyInfo);
+      this.propertyAccessModifier = propertyModifier;
+      this.setAccessorAccessModifier = setMethodModifier;
+      this.getAccessorAccessModifier = getMethodModifier;
+    }
+
+    public bool IsIndexer => this.IndexerParameters.Length > 0;
+    public ParameterData[] IndexerParameters => this.indexerParameters ?? (this.indexerParameters = this.PropertyInfo.GetIndexParameters().Select(parameterInfo => new ParameterData(parameterInfo)).ToArray());
+
+    public override AccessModifier AccessModifier
+    {
+      get
+      {
+        if (this.propertyAccessModifier is null)
+        {
+          GetAccessors();
+        }
+
+        return this.propertyAccessModifier.Value;
+      }
+    }
+
+    public AccessModifier SetAccessorAccessModifier
+    {
+      get
+      {
+        if (this.setAccessorAccessModifier is null)
+        {
+          GetAccessors();
+        }
+        
+        return this.setAccessorAccessModifier.Value;
+      }
+    }
+
+    public AccessModifier GetAccessorAccessModifier
+    {
+      get
+      {
+        if (this.getAccessorAccessModifier is null)
+        {
+          GetAccessors();
+        }
+
+        return this.getAccessorAccessModifier.Value;
+      }
     }
 
     public RuntimeTypeHandle DeclaringTypeHandle { get; set; }
-    public TypeData PropertyTypeData { get; }
+    public TypeData PropertyTypeData => propertyTypeData; 
+    public PropertyInfo PropertyInfo { get; }
     public bool IsRef { get; }
+    public bool CanWrite { get; }
+    public bool CanRead { get; }
     public MethodData GetMethodData { get; }
     public MethodData SetMethodData { get; }
     public override IEnumerable<CustomAttributeData> AttributeData
@@ -2029,15 +2414,19 @@
   internal sealed class FieldData : MemberInfoData
   {
     private IEnumerable<CustomAttributeData> attributeData;
+
+    public FieldInfo GetFieldInfo()
+      => (FieldInfo)FieldInfo.GetFieldFromHandle(this.Handle);
+
     public RuntimeFieldHandle Handle { get; set; }
     public RuntimeTypeHandle DeclaringTypeHandle { get; set; }
     public override IEnumerable<CustomAttributeData> AttributeData
       => this.attributeData ?? (this.attributeData = FieldInfo.GetFieldFromHandle(this.Handle).GetCustomAttributesData());
   }
 
-  internal readonly struct MemberInfoDataCacheKey : IEquatable<MemberInfoDataCacheKey>
+  internal readonly struct SymbolInfoDataCacheKey : IEquatable<SymbolInfoDataCacheKey>
   {
-    public MemberInfoDataCacheKey(string name, Type[] arguments, RuntimeTypeHandle declaringTypeHandle)
+    public SymbolInfoDataCacheKey(string name, Type[] arguments, RuntimeTypeHandle declaringTypeHandle)
     {
       this.Name = name;
       this.Arguments = arguments;
@@ -2048,11 +2437,11 @@
     public Type[] Arguments { get; }
     public RuntimeTypeHandle DeclaringTypeHandle { get; }
 
-    public bool Equals(MemberInfoDataCacheKey other) => other.Name.Equals(this.Name, StringComparison.Ordinal) 
+    public bool Equals(SymbolInfoDataCacheKey other) => other.Name.Equals(this.Name, StringComparison.Ordinal) 
       && other.Arguments.SequenceEqual(this.Arguments) 
       && other.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle);
 
-    public override bool Equals(object obj) => obj is MemberInfoDataCacheKey key && Equals(key);
+    public override bool Equals(object obj) => obj is SymbolInfoDataCacheKey key && Equals(key);
 
     public override int GetHashCode()
     {
@@ -2063,7 +2452,7 @@
       return hashCode;
     }
 
-    public static bool operator ==(MemberInfoDataCacheKey left, MemberInfoDataCacheKey right) => left.Equals(right);
-    public static bool operator !=(MemberInfoDataCacheKey left, MemberInfoDataCacheKey right) => !(left == right);
+    public static bool operator ==(SymbolInfoDataCacheKey left, SymbolInfoDataCacheKey right) => left.Equals(right);
+    public static bool operator !=(SymbolInfoDataCacheKey left, SymbolInfoDataCacheKey right) => !(left == right);
   }
 }
