@@ -20,6 +20,10 @@
     public TestClass(int parameter)
     { }
 
+    public void PublicVoidMethod(string parameter)
+    {
+    }
+
     public int PublicMethodWithReturnValue(string parameter)
     {
       return 0;
