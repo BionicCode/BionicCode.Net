@@ -538,7 +538,7 @@
 #if !NETSTANDARD2_0
       if (symbolAttributes.HasFlag(SymbolAttributes.Final))
       {
-        customAttributes = customAttributes.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute));
+        customAttributes = customAttributes.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute)).ToHashSet();
       }
 #endif
 
@@ -648,7 +648,7 @@
     internal static string ToSignatureNameInternal(this EventData eventData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
     {
       SymbolAttributes symbolAttributes = eventData.SymbolAttributes;
-      IEnumerable<CustomAttributeData> customAttributes = eventData.AttributeData;
+      HashSet<CustomAttributeData> customAttributes = eventData.AttributeData;
       StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate()
         .AppendCustomAttributes(customAttributes, isAppendNewLineEnabled: true);
 
@@ -725,13 +725,13 @@
       }
 
       SymbolAttributes symbolAttributes = typeData.SymbolAttributes;
-      IEnumerable<CustomAttributeData> customAttributesData = typeData.AttributeData;
+      HashSet<CustomAttributeData> customAttributesData = typeData.AttributeData;
       StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
 #if !NETSTANDARD2_0
       if (symbolAttributes.HasFlag(SymbolAttributes.Final))
       {
-        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute));
+        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute)).ToHashSet();
       }
 #endif
 
@@ -889,13 +889,13 @@
       }
 
       SymbolAttributes symbolAttributes = methodData.SymbolAttributes;
-      IEnumerable<CustomAttributeData> symbolCustomAttributes = methodData.AttributeData;
+      HashSet<CustomAttributeData> symbolCustomAttributes = methodData.AttributeData;
       StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
 #if !NETSTANDARD2_0
       if (symbolAttributes.HasFlag(SymbolAttributes.Final))
       {
-        symbolCustomAttributes = symbolCustomAttributes.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute));
+        symbolCustomAttributes = symbolCustomAttributes.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute)).ToHashSet();
       }
 #endif
 
