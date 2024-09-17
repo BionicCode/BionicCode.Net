@@ -13,6 +13,7 @@
   {
     private readonly string readOnlyField;
     private string field;
+    public virtual event EventHandler Event;
 
     public TestClass(int parameter)
     { }

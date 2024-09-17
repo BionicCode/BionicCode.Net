@@ -8,5 +8,7 @@
     where T : class
     where U : struct
   {
+    public virtual void SomeVirtualVoidBaseMethod()
+    { }
   }
 }

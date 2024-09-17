@@ -9,7 +9,7 @@
 
   [TestAttribute(1024.25, "class", NamedInt = 128)]
   [TestAttribute(64.0, "class", NamedInt = 256)]
-  public class TestClassWithBaseClass<T, U> : TestClassBase<T, U>
+  public abstract class TestClassWithBaseClass<T, U> : TestClassBase<T, U>
     where T : class
     where U : struct
   {
@@ -27,5 +27,7 @@
     {
       return default;
     }
+
+    public abstract override void SomeVirtualVoidBaseMethod() ;
   }
 }

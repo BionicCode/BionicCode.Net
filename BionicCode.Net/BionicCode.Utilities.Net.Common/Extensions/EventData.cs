@@ -13,6 +13,7 @@
     private MethodData removeMethodData;
     private AccessModifier accessModifier;
     private bool? isStatic;
+    private TypeData eventHandlerTypeData;
 
     public EventData(EventInfo eventInfo) : base(eventInfo)
     {
@@ -34,6 +35,9 @@
 
     public MethodData RemoveMethodData
       => this.removeMethodData ?? (this.removeMethodData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<MethodData>(GetEventInfo().RemoveMethod));
+
+    public TypeData EventHandlerTypeData
+      => this.eventHandlerTypeData ?? (this.eventHandlerTypeData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>(GetEventInfo().EventHandlerType));
 
     public override bool IsStatic
       => (bool)(this.isStatic ?? (this.isStatic = this.AddMethodData.IsStatic));

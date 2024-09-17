@@ -243,11 +243,9 @@
 
       ParameterInfo[] indexerPropertyIndexParameters = propertyInfo?.GetIndexParameters() ?? Array.Empty<ParameterInfo>();
 
-      SymbolAttributes memberAttributes = GetAttributes(memberInfo);
-
+      SymbolAttributes symbolAttributes = propertyData.SymbolAttributes;
+      IEnumerable<CustomAttributeData> customAttributes = propertyData.AttributeData;
       StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
-
-      IEnumerable<CustomAttributeData> symbolAttributes = memberInfo.GetCustomAttributesData();
 
 #if !NETSTANDARD2_0
       if (memberAttributes.HasFlag(SymbolAttributes.Final))
@@ -258,7 +256,7 @@
 
       _ = signatureNameBuilder.AppendCustomAttributes(symbolAttributes, isAppendNewLineEnabled: true);
 
-      AccessModifier accessModifier = memberInfo.GetAccessModifier();
+      AccessModifier accessModifier = propertyData.AccessModifier;
       _ = signatureNameBuilder
         .Append(accessModifier.ToDisplayStringValue())
         .Append(' ');
@@ -531,6 +529,194 @@
       return fullMemberName;
     }
 
+    internal static string ToSignatureNameInternal(this PropertyData propertyData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    {
+      SymbolAttributes symbolAttributes = propertyData.SymbolAttributes;
+      HashSet<CustomAttributeData> customAttributes = propertyData.AttributeData;
+      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+
+#if !NETSTANDARD2_0
+      if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+      {
+        customAttributes = customAttributes.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute));
+      }
+#endif
+
+      _ = signatureNameBuilder.AppendCustomAttributes(customAttributes, isAppendNewLineEnabled: true);
+
+      AccessModifier accessModifier = propertyData.AccessModifier;
+      _ = signatureNameBuilder
+        .Append(accessModifier.ToDisplayStringValue())
+        .Append(' ');
+
+      if (symbolAttributes.HasFlag(SymbolAttributes.Static))
+      {
+        _ = signatureNameBuilder
+          .Append("static")
+          .Append(' ');
+      }
+
+      bool isAbstract = symbolAttributes.HasFlag(SymbolAttributes.Abstract);
+      if (!symbolAttributes.HasFlag(SymbolAttributes.Delegate) && isAbstract)
+      {
+        _ = signatureNameBuilder
+          .Append("abstract")
+          .Append(' ');
+      }
+      else if (symbolAttributes.HasFlag(SymbolAttributes.Virtual))
+      {
+        _ = signatureNameBuilder
+          .Append("virtual")
+          .Append(' ');
+      }
+
+      if (symbolAttributes.HasFlag(SymbolAttributes.Override))
+      {
+        _ = signatureNameBuilder
+          .Append("override")
+          .Append(' ');
+      }
+
+      // Set return type
+      _ = signatureNameBuilder.AppendDisplayNameInternal(propertyData.PropertyTypeData, isFullyQualifiedName, isShortName: false)
+        .Append(' ');
+
+      if (!isShortName)
+      {
+        _ = signatureNameBuilder.AppendDisplayNameInternal(propertyData.DeclaringTypeData, isFullyQualifiedName, isShortName: false)
+          .Append('.');
+      }
+
+      // Member name
+      if (symbolAttributes.HasFlag(SymbolAttributes.IndexerProperty))
+      {
+        _ = signatureNameBuilder.Append("this")
+          .Append('[');
+
+        ParameterData[] parameters = propertyData.IndexerParameters;
+        if (parameters.Any())
+        {
+          foreach (ParameterData parameter in parameters)
+          {
+            HashSet<CustomAttributeData> attributes = parameter.AttributeData;
+            _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false)
+              .AppendDisplayNameInternal(parameter.ParameterTypeData, isFullyQualifiedName, isShortName: false)
+              .Append(' ')
+              .Append(parameter.Name)
+              .Append(HelperExtensionsCommon.ParameterSeparator);
+          }
+
+          // Remove trailing comma and whitespace
+          _ = signatureNameBuilder.Remove(signatureNameBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length)
+            .Append(']');
+        }
+      }
+      else
+      {
+        _ = signatureNameBuilder.AppendDisplayNameInternal(propertyData, isFullyQualifiedName: false, isShortName: false);
+      }
+
+      _ = signatureNameBuilder
+        .Append(' ')
+        .Append('{')
+        .Append(' ');
+
+      if (propertyData.CanRead)
+      {
+        _ = signatureNameBuilder
+          .Append("get")
+          .Append(HelperExtensionsCommon.ExpressionTerminator)
+          .Append(' ');
+      }
+
+      if (propertyData.CanWrite)
+      {
+        _ = signatureNameBuilder
+          .Append("set")
+          .Append(HelperExtensionsCommon.ExpressionTerminator)
+          .Append(' ');
+      }
+
+      _ = signatureNameBuilder.Append('}');
+
+      string fullMemberName = signatureNameBuilder.ToString();
+      StringBuilderFactory.Recycle(signatureNameBuilder);
+
+      return fullMemberName;
+    }
+
+    internal static string ToSignatureNameInternal(this EventData eventData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    {
+      SymbolAttributes symbolAttributes = eventData.SymbolAttributes;
+      IEnumerable<CustomAttributeData> customAttributes = eventData.AttributeData;
+      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate()
+        .AppendCustomAttributes(customAttributes, isAppendNewLineEnabled: true);
+
+      AccessModifier accessModifier = eventData.AccessModifier;
+      _ = signatureNameBuilder
+        .Append(accessModifier.ToDisplayStringValue())
+        .Append(' ');
+
+      if (symbolAttributes.HasFlag(SymbolAttributes.Static))
+      {
+        _ = signatureNameBuilder
+          .Append("static")
+          .Append(' ');
+      }
+
+      bool isAbstract = symbolAttributes.HasFlag(SymbolAttributes.Abstract);
+      if (isAbstract)
+      {
+        _ = signatureNameBuilder
+          .Append("abstract")
+          .Append(' ');
+      }
+      else if (symbolAttributes.HasFlag(SymbolAttributes.Virtual))
+      {
+        _ = signatureNameBuilder
+          .Append("virtual")
+          .Append(' ');
+      }
+
+      if (symbolAttributes.HasFlag(SymbolAttributes.Override))
+      {
+        _ = signatureNameBuilder
+          .Append("override")
+          .Append(' ');
+      }
+
+      if (symbolAttributes.HasFlag(SymbolAttributes.Event))
+      {
+        _ = signatureNameBuilder
+          .Append("event")
+          .Append(' ');
+      }
+
+      if (symbolAttributes.HasFlag(SymbolAttributes.Enum))
+      {
+        _ = signatureNameBuilder
+          .Append("enum")
+          .Append(' ');
+      }
+
+      _ = signatureNameBuilder.AppendDisplayNameInternal(eventData.EventHandlerTypeData, isFullyQualifiedName, isShortName: true)
+        .Append(' ');
+
+      if (!isShortName)
+      {
+        _ = signatureNameBuilder.AppendDisplayNameInternal(eventData.DeclaringTypeData, isFullyQualifiedName, isShortName: false)
+          .Append('.');
+      }
+
+      _ = signatureNameBuilder.AppendDisplayNameInternal(eventData, isFullyQualifiedName: isFullyQualifiedName && symbolAttributes.HasFlag(SymbolAttributes.Type), isShortName: false)
+        .Append(HelperExtensionsCommon.ExpressionTerminator);
+
+      string fullMemberName = signatureNameBuilder.ToString();
+      StringBuilderFactory.Recycle(signatureNameBuilder);
+
+      return fullMemberName;
+    }
+
     internal static string ToSignatureNameInternal(this TypeData typeData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
     {
       if (typeData.IsGenericType && !typeData.IsGenericTypeDefinition)
@@ -616,14 +802,6 @@
         {
           _ = signatureNameBuilder
             .Append("enum")
-            .Append(' ');
-        }
-
-        if (!symbolAttributes.HasFlag(SymbolAttributes.Class)
-          && symbolAttributes.HasFlag(SymbolAttributes.Override))
-        {
-          _ = signatureNameBuilder
-            .Append("override")
             .Append(' ');
         }
       }
@@ -728,10 +906,10 @@
         .Append(accessModifier.ToDisplayStringValue())
         .Append(' ');
 
-      if (methodData.IsAsync)
+      if (methodData.IsStatic)
       {
         _ = signatureNameBuilder
-          .Append("await")
+          .Append("static")
           .Append(' ');
       }
 
@@ -742,13 +920,6 @@
           .Append(' ');
       }
 
-      if (methodData.IsStatic)
-      {
-        _ = signatureNameBuilder
-          .Append("static")
-          .Append(' ');
-      }
-
       bool isAbstract = symbolAttributes.HasFlag(SymbolAttributes.Abstract);
       if (isAbstract)
       {
@@ -756,9 +927,7 @@
           .Append("abstract")
           .Append(' ');
       }
-
-      bool isVirtual = symbolAttributes.HasFlag(SymbolAttributes.Virtual);
-      if (isVirtual)
+      else if (symbolAttributes.HasFlag(SymbolAttributes.Virtual))
       {
         _ = signatureNameBuilder
           .Append("virtual")
@@ -772,19 +941,25 @@
           .Append(' ');
       }
 
+      if (methodData.IsAsync)
+      {
+        _ = signatureNameBuilder
+          .Append("async")
+          .Append(' ');
+      }
+
       _ = signatureNameBuilder.AppendDisplayNameInternal(methodData.ReturnTypeData, isFullyQualifiedName, isShortName: true)
         .Append(' ');
 
       if (!isShortName)
       {
-        _ = signatureNameBuilder.AppendDisplayNameInternal(methodData.DeclaringTypeData, isFullyQualifiedName, isShortName: true)
+        _ = signatureNameBuilder.AppendDisplayNameInternal(methodData.DeclaringTypeData, isFullyQualifiedName, isShortName: false)
           .Append('.');
       }
 
       // Member name
-      _ = signatureNameBuilder.AppendDisplayNameInternal(methodData, isFullyQualifiedName: false, isShortName: false);
-
-      _ = signatureNameBuilder.Append('(');
+      _ = signatureNameBuilder.AppendDisplayNameInternal(methodData, isFullyQualifiedName: false, isShortName: false)
+        .Append('(');
 
       if (methodData.IsExtensionMethod)
       {
@@ -933,7 +1108,6 @@
         }
         else
         {
-          // Remove trailing comma and whitespace
           _ = nameBuilder.Append(' ');
         }
       }
