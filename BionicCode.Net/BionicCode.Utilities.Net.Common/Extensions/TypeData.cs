@@ -29,6 +29,10 @@
     private TypeData genericTypeDefinitionData;
     private TypeData baseTypeData;
     private TypeData[] interfacesData;
+#if !NETFRAMEWORK && !NETSTANDARD2_0
+    private bool? isByRefLike;
+#endif
+
 
     public TypeData(Type type) : base(type.Name)
     {
@@ -111,6 +115,11 @@
 
     public bool IsByRef
       => (bool)(this.isByRef ?? (this.isByRef = GetType().IsByRef));
+
+#if !NETFRAMEWORK && !NETSTANDARD2_0
+    public bool IsByRefLike
+      => (bool)(this.isByRefLike ?? (this.isByRefLike = GetType().IsByRefLike));
+#endif
 
     public bool IsDelegate
       => (bool)(this.isDelegate ?? (this.isDelegate = GetType().IsDelegateInternal()));

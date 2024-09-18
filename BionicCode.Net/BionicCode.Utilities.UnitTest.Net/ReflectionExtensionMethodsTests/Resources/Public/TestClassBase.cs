@@ -2,7 +2,7 @@
 {
   using System;
 
-  public class TestClassBase
+  public abstract class TestClassBase
   {
     public virtual event EventHandler TestEvent;
   }

@@ -52,6 +52,7 @@
     public override char[] FullyQualifiedSignature
       => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = GetType().ToSignatureShortName(isFullyQualifiedName: true).ToCharArray());
 
-    public bool IsOverride => (bool)(this.isOverride ?? (this.isOverride = this.AddMethodData.IsOverride));
+    public bool IsOverride 
+      => (bool)(this.isOverride ?? (this.isOverride = this.AddMethodData.IsOverride));
   }
 }

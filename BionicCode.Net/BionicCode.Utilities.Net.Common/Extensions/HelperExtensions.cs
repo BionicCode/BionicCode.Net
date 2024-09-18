@@ -50,6 +50,7 @@
     /// <remarks>This field exists to enable writing of cross-platform compatible reflection code without the requirement to import the PresentationFramework.dll.</remarks>
     public static readonly string IndexerName = "Item";
 
+    private static readonly AccessModifierComparer AccessModifierComparer = new AccessModifierComparer();
     private static readonly CSharpCodeProvider CodeProvider = new CSharpCodeProvider();
     private static readonly Dictionary<SymbolInfoDataCacheKey, SymbolInfoData> MemberInfoDataCache = new Dictionary<SymbolInfoDataCacheKey, SymbolInfoData>();
     private static readonly HashSet<string> IgnorableParameterAttributes = new HashSet<string>
@@ -623,6 +624,13 @@
 
       if (propertyData.CanRead)
       {
+        if (HelperExtensionsCommon.AccessModifierComparer.Compare(propertyData.GetAccessorAccessModifier, propertyData.AccessModifier) < 0)
+        {
+          _ = signatureNameBuilder
+            .Append(propertyData.GetAccessorAccessModifier)
+            .Append(' ');
+        }
+
         _ = signatureNameBuilder
           .Append("get")
           .Append(HelperExtensionsCommon.ExpressionTerminator)
@@ -631,6 +639,13 @@
 
       if (propertyData.CanWrite)
       {
+        if (HelperExtensionsCommon.AccessModifierComparer.Compare(propertyData.SetAccessorAccessModifier, propertyData.AccessModifier) < 0)
+        {
+          _ = signatureNameBuilder
+            .Append(propertyData.SetAccessorAccessModifier)
+            .Append(' ');
+        }
+
         _ = signatureNameBuilder
           .Append("set")
           .Append(HelperExtensionsCommon.ExpressionTerminator)
@@ -663,9 +678,7 @@
           .Append("static")
           .Append(' ');
       }
-
-      bool isAbstract = symbolAttributes.HasFlag(SymbolAttributes.Abstract);
-      if (isAbstract)
+      else if (symbolAttributes.HasFlag(SymbolAttributes.Abstract))
       {
         _ = signatureNameBuilder
           .Append("abstract")
@@ -685,21 +698,10 @@
           .Append(' ');
       }
 
-      if (symbolAttributes.HasFlag(SymbolAttributes.Event))
-      {
-        _ = signatureNameBuilder
-          .Append("event")
-          .Append(' ');
-      }
-
-      if (symbolAttributes.HasFlag(SymbolAttributes.Enum))
-      {
-        _ = signatureNameBuilder
-          .Append("enum")
-          .Append(' ');
-      }
-
-      _ = signatureNameBuilder.AppendDisplayNameInternal(eventData.EventHandlerTypeData, isFullyQualifiedName, isShortName: true)
+      _ = signatureNameBuilder
+        .Append("event")
+        .Append(' ')
+        .AppendDisplayNameInternal(eventData.EventHandlerTypeData, isFullyQualifiedName, isShortName: true)
         .Append(' ');
 
       if (!isShortName)
@@ -708,7 +710,67 @@
           .Append('.');
       }
 
-      _ = signatureNameBuilder.AppendDisplayNameInternal(eventData, isFullyQualifiedName: isFullyQualifiedName && symbolAttributes.HasFlag(SymbolAttributes.Type), isShortName: false)
+      _ = signatureNameBuilder.AppendDisplayNameInternal(eventData, isFullyQualifiedName: false, isShortName: false)
+        .Append(HelperExtensionsCommon.ExpressionTerminator);
+
+      string fullMemberName = signatureNameBuilder.ToString();
+      StringBuilderFactory.Recycle(signatureNameBuilder);
+
+      return fullMemberName;
+    }
+
+    internal static string ToSignatureNameInternal(this FieldData fieldData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    {
+      SymbolAttributes symbolAttributes = fieldData.SymbolAttributes;
+      HashSet<CustomAttributeData> customAttributes = fieldData.AttributeData;
+      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate()
+        .AppendCustomAttributes(customAttributes, isAppendNewLineEnabled: true);
+
+      AccessModifier accessModifier = fieldData.AccessModifier;
+      _ = signatureNameBuilder
+        .Append(accessModifier.ToDisplayStringValue())
+        .Append(' ');
+
+      if (symbolAttributes.HasFlag(SymbolAttributes.ConstantField))
+      {
+        _ = signatureNameBuilder
+          .Append("const")
+          .Append(' ');
+      }
+      else
+      {
+        if (symbolAttributes.HasFlag(SymbolAttributes.Static))
+        {
+          _ = signatureNameBuilder
+            .Append("static")
+            .Append(' ');
+        }
+
+        if (symbolAttributes.HasFlag(SymbolAttributes.ReadOnlyField))
+        {
+          _ = signatureNameBuilder
+            .Append("readonly")
+            .Append(' ');
+        }
+
+        if (fieldData.IsRef)
+        {
+          _ = signatureNameBuilder
+            .Append("ref")
+            .Append(' ');
+        }
+      }
+
+      _ = signatureNameBuilder.AppendDisplayNameInternal(fieldData.FieldTypeData, isFullyQualifiedName, isShortName: true)
+        .Append(' ');
+
+      if (!isShortName)
+      {
+        _ = signatureNameBuilder.AppendDisplayNameInternal(fieldData.DeclaringTypeData, isFullyQualifiedName, isShortName: false)
+          .Append('.');
+      }
+
+      _ = signatureNameBuilder.AppendDisplayNameInternal(fieldData, isFullyQualifiedName: false, isShortName: false)
         .Append(HelperExtensionsCommon.ExpressionTerminator);
 
       string fullMemberName = signatureNameBuilder.ToString();
@@ -748,63 +810,62 @@
           .Append("delegate")
           .Append(' ');
       }
-      else
+      else if (symbolAttributes.HasFlag(SymbolAttributes.Struct))
       {
-        if (!symbolAttributes.HasFlag(SymbolAttributes.Struct)
-          && symbolAttributes.HasFlag(SymbolAttributes.Final))
+        if (symbolAttributes.HasFlag(SymbolAttributes.ReadOnlyStruct))
+        {
+          _ = signatureNameBuilder
+            .Append("readonly")
+            .Append(' ');
+        }
+        else if (symbolAttributes.HasFlag(SymbolAttributes.RefStruct))
+        {
+          _ = signatureNameBuilder
+            .Append("ref")
+            .Append(' ');
+        }
+
+        _ = signatureNameBuilder
+          .Append("struct")
+          .Append(' ');
+      }
+      else if (symbolAttributes.HasFlag(SymbolAttributes.Class))
+      {
+        if (symbolAttributes.HasFlag(SymbolAttributes.Abstract))
+        {
+          _ = signatureNameBuilder
+            .Append("abstract")
+            .Append(' ');
+        }
+        else if (symbolAttributes.HasFlag(SymbolAttributes.Static))
+        {
+          _ = signatureNameBuilder
+            .Append("static")
+            .Append(' ');
+        }
+        else if (symbolAttributes.HasFlag(SymbolAttributes.Final))
         {
           _ = signatureNameBuilder
             .Append("sealed")
             .Append(' ');
         }
 
-        if (symbolAttributes.HasFlag(SymbolAttributes.Static))
-        {
-          _ = signatureNameBuilder
-            .Append("static")
-            .Append(' ');
-        }
-
-        if (symbolAttributes.HasFlag(SymbolAttributes.Struct))
-        {
-          if (symbolAttributes.HasFlag(SymbolAttributes.ReadOnlyStruct))
-          {
-            _ = signatureNameBuilder
-              .Append("readonly")
-              .Append(' ');
-          }
-
-          _ = signatureNameBuilder
-            .Append("struct")
-            .Append(' ');
-        }
-        else if (symbolAttributes.HasFlag(SymbolAttributes.Class))
-        {
-          bool isAbstract = symbolAttributes.HasFlag(SymbolAttributes.Abstract);
-          if (!symbolAttributes.HasFlag(SymbolAttributes.Delegate) && isAbstract)
-          {
-            _ = signatureNameBuilder
-              .Append("abstract")
-              .Append(' ');
-          }
-
-          _ = signatureNameBuilder
-            .Append("class")
-            .Append(' ');
-        }
-        else if (symbolAttributes.HasFlag(SymbolAttributes.Interface))
-        {
-          _ = signatureNameBuilder
-            .Append("interface")
-            .Append(' ');
-        }
-        else if (symbolAttributes.HasFlag(SymbolAttributes.Enum))
-        {
-          _ = signatureNameBuilder
-            .Append("enum")
-            .Append(' ');
-        }
+        _ = signatureNameBuilder
+          .Append("class")
+          .Append(' ');
       }
+      else if (symbolAttributes.HasFlag(SymbolAttributes.Interface))
+      {
+        _ = signatureNameBuilder
+          .Append("interface")
+          .Append(' ');
+      }
+      else if (symbolAttributes.HasFlag(SymbolAttributes.Enum))
+      {
+        _ = signatureNameBuilder
+          .Append("enum")
+          .Append(' ');
+      }      
 
       MethodData delegateInvocatorData = null;
       TypeData delegateReturnTypeData = null;
@@ -2141,11 +2202,42 @@
     internal static bool IsOverrideInternal(this PropertyInfo propertyInfo)
       => propertyInfo.CanRead ? propertyInfo.GetGetMethod(true).IsOverride() : propertyInfo.GetSetMethod().IsOverride();
 
+    public static bool IsConst(this FieldInfo fieldInfo)
+    {
+      FieldData methodData = GetSymbolInfoDataCacheEntry<FieldData>(fieldInfo);
+      return methodData.SymbolAttributes.HasFlag(SymbolAttributes.Constant);
+    }
+
+    internal static bool IsConstInternal(FieldData fieldData)
+      => fieldData.GetFieldInfo().IsLiteral;
+
     public static bool IsOverride(this MethodInfo methodInfo)
     {
       MethodData methodData = GetSymbolInfoDataCacheEntry<MethodData>(methodInfo);
       return methodData.IsOverride;
     }
+
+#if NET
+    public static bool IsInitOnly(this PropertyInfo propertyInfo)
+    {
+      PropertyData propertyData = GetSymbolInfoDataCacheEntry<PropertyData>(propertyInfo);
+      return propertyData.SymbolAttributes.HasFlag(SymbolAttributes.InitProperty);
+    }
+
+    internal static bool IsInitOnlyInternal(PropertyData propertyData)
+    {
+      if (propertyData.CanWrite)
+      {
+        Type[] requiredModifiers = propertyData.SetMethodData.GetMethodInfo().ReturnParameter.GetRequiredCustomModifiers();
+        if (requiredModifiers.Length > 0)
+        {
+          return requiredModifiers.FirstOrDefault(type => type == typeof(IsExternalInit)) != default;
+        }
+      }
+
+      return false;
+    }
+#endif
 
     internal static bool IsOverrideInternal(MethodData methodData)
     {
@@ -2499,7 +2591,7 @@
       if (IsDelegateInternal(type))
       {
         SymbolAttributes delegateAttributes = SymbolAttributes.Delegate;
-        if (type.IsGenericType)
+        if (typeData.IsGenericType)
         {
           delegateAttributes |= SymbolAttributes.Generic;
         }
@@ -2515,7 +2607,7 @@
           classAttributes |= SymbolAttributes.Abstract;
         }
 
-        if (type.IsSealed)
+        if (typeData.IsSealed)
         {
           classAttributes |= SymbolAttributes.Final;
         }
@@ -2525,7 +2617,7 @@
           classAttributes |= SymbolAttributes.Static;
         }
 
-        if (type.IsGenericType)
+        if (typeData.IsGenericType)
         {
           classAttributes |= SymbolAttributes.Generic;
         }
@@ -2549,10 +2641,17 @@
       {
         SymbolAttributes structAttributes = SymbolAttributes.Struct;
 
-        if (type.IsGenericType)
+        if (typeData.IsGenericType)
         {
           structAttributes |= SymbolAttributes.Generic;
         }
+
+#if !NETFRAMEWORK && !NETSTANDARD2_0
+        if (typeData.IsByRefLike)
+        {
+          structAttributes |= SymbolAttributes.ByReference;
+        }
+#endif
 
 #if !NETSTANDARD2_0
         bool isReadOnlyStruct = IsReadOnlyStructInternal(type);
@@ -2576,17 +2675,24 @@
 
       MethodData accessorData = propertyData.GetMethodData ?? propertyData.SetMethodData;
       MethodInfo accessorMethodInfo = accessorData.GetMethodInfo();
-      if (!propertyInfo.CanWrite)
+      if (!propertyData.CanWrite)
       {
         propertyAttributes |= SymbolAttributes.Final;
       }
+
+#if NET
+      if (IsInitOnlyInternal(propertyData))
+      {
+        propertyAttributes |= SymbolAttributes.Init;
+      }
+#endif
 
       if (accessorMethodInfo.IsAbstract)
       {
         propertyAttributes |= SymbolAttributes.Abstract;
       }
 
-      if (accessorMethodInfo.IsStatic)
+      if (propertyData.IsStatic)
       {
         propertyAttributes |= SymbolAttributes.Static;
       }
@@ -2613,9 +2719,19 @@
         fieldAttributes |= SymbolAttributes.Final;
       }
 
-      if (fieldInfo.IsStatic)
+      if (fieldData.IsRef)
+      {
+        fieldAttributes |= SymbolAttributes.ByReference;
+      }
+
+      if (fieldData.IsStatic)
       {
         fieldAttributes |= SymbolAttributes.Static;
+      }
+
+      if (IsConstInternal(fieldData))
+      {
+        fieldAttributes |= SymbolAttributes.Constant;
       }
 
       return fieldAttributes;
@@ -2661,7 +2777,7 @@
         methodAttributes |= SymbolAttributes.Abstract;
       }
 
-      if (methodInfo.IsStatic)
+      if (methodData.IsStatic)
       {
         methodAttributes |= SymbolAttributes.Static;
       }
@@ -2676,7 +2792,7 @@
         methodAttributes |= SymbolAttributes.Override;
       }
 
-      if (methodInfo.IsGenericMethod)
+      if (methodData.IsGenericMethod)
       {
         methodAttributes |= SymbolAttributes.Generic;
       }
@@ -2689,7 +2805,7 @@
       ConstructorInfo constructorInfo = constructorData.GetConstructorInfo();
       SymbolAttributes constructorAttributes = SymbolAttributes.Constructor;
 
-      if (constructorInfo.IsStatic)
+      if (constructorData.IsStatic)
       {
         constructorAttributes |= SymbolAttributes.Static;
       }
@@ -2699,9 +2815,9 @@
 
     internal static SymbolAttributes GetAttributesInternal(EventData eventData)
     {
-      MethodData eventAddMethodInfo = eventData.AddMethodData;
+      MethodData eventAddMethodData = eventData.AddMethodData;
       SymbolAttributes eventAttributes = SymbolAttributes.Event;
-      MethodInfo addHandlerMethod = eventAddMethodInfo.GetMethodInfo();
+      MethodInfo addHandlerMethod = eventAddMethodData.GetMethodInfo();
       if (addHandlerMethod.IsFinal)
       {
         eventAttributes |= SymbolAttributes.Final;
@@ -2712,7 +2828,7 @@
         eventAttributes |= SymbolAttributes.Abstract;
       }
 
-      if (addHandlerMethod.IsStatic)
+      if (eventAddMethodData.IsStatic)
       {
         eventAttributes |= SymbolAttributes.Static;
       }
@@ -2722,7 +2838,7 @@
         eventAttributes |= SymbolAttributes.Virtual;
       }
 
-      if (addHandlerMethod.IsOverride())
+      if (eventAddMethodData.IsOverride)
       {
         eventAttributes |= SymbolAttributes.Override;
       }

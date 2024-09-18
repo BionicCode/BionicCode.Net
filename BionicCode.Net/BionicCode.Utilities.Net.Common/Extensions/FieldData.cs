@@ -10,6 +10,8 @@
     private SymbolAttributes symbolAttributes;
     private AccessModifier accessModifier;
     private bool? isStatic;
+    private TypeData fieldTypeData;
+    private bool? isRef;
 
     public FieldData(FieldInfo fieldInfo) : base(fieldInfo)
     {
@@ -39,5 +41,11 @@
       => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = GetType().ToSignatureShortName(isFullyQualifiedName: true).ToCharArray());
 
     public override bool IsStatic => (bool)(this.isStatic ?? (this.isStatic = GetFieldInfo().IsStatic));
+
+    public TypeData FieldTypeData
+      => this.fieldTypeData ?? (this.fieldTypeData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>(this.GetFieldInfo().FieldType));
+
+    public bool IsRef
+      => (bool)(this.isRef ?? (this.isRef = this.FieldTypeData.IsByRef));
   }
 }

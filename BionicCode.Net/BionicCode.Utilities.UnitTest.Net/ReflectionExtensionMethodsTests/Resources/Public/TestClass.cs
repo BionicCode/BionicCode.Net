@@ -12,8 +12,13 @@
   public class TestClass
   {
     private readonly string readOnlyField;
-    private string field;
+    private int field;
     public virtual event EventHandler Event;
+
+    public bool HasValue
+    {
+      get => true;
+    }
 
     public TestClass(int parameter)
     { }
@@ -23,14 +28,27 @@
       return 0;
     }
 
+    public ref readonly int PublicMethodWithReadOnlyRefReturnValue(ref int parameter)
+    {
+      ref int value = ref field;
+      return ref field;
+    }
+
     public TValue PublicGenericMethodWithReturnValue<TValue>(TValue parameter)
     {
       return default;
     }
   }
 
-  public struct TestStruct
+  public readonly struct TestStruct
   {
+
+#if NET
+    public readonly bool HasValue
+    {
+      get => true;
+    }
+#endif
   }
 
   public readonly struct TestReadOnlyStruct
