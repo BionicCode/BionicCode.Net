@@ -20,7 +20,7 @@
       get => true;
     }
 
-    public TestClass(int parameter)
+    public TestClass(in int parameter)
     { }
 
     public int PublicMethodWithReturnValue(string parameter)
@@ -61,4 +61,35 @@
     TestValue,
   }
 
+  public ref struct TestRefStruct
+  {
+    public const int Constant = 1;
+#if NET7_0_OR_GREATER
+    public readonly ref int readonlyRefInteger;
+    public ref int refInteger;
+    public readonly bool InitOnlyBoolean { get; init; }
+    public bool ReadOnlySetBoolean { get => true; private readonly set => _ = value; }
+    public readonly bool ReadOnlyBoolean { get; }
+
+    public readonly bool HasValue
+    {
+      get => true;
+    }
+
+    public ref readonly int GetNumber()
+    {
+      int i = 9;
+      ref int j = ref i;
+      return ref this.refInteger;
+    }
+#endif
+    public int integer;
+    public readonly int readonlyInteger;
+    public bool Boolean { get; }
+
+    public void GetNumber2()
+    {
+    }
+  }
 }
+

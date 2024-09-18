@@ -2,6 +2,7 @@
 {
   using System.Linq;
   using System.Reflection;
+  using System.Runtime.CompilerServices;
   using Microsoft.CodeAnalysis;
 
   internal sealed class PropertyData : MemberInfoData
@@ -21,6 +22,7 @@
     private bool? isSealed;
     private bool? canWrite;
     private bool? canRead;
+    private bool? isSetMethodReadOnly;
 
     public PropertyData(PropertyInfo propertyInfo) : base(propertyInfo)
     {
@@ -118,6 +120,11 @@
 
     public override bool IsStatic 
       => (bool)(this.isStatic ?? (this.isStatic = this.CanRead ? this.GetMethodData.IsStatic : this.SetMethodData.IsStatic));
+
+#if !NETSTANDARD2_0
+    public bool IsSetMethodReadOnly
+      => (bool)(this.isSetMethodReadOnly ?? (this.isSetMethodReadOnly = this.CanWrite && this.SetMethodData.AttributeData.Any(data => data.AttributeType == typeof(IsReadOnlyAttribute));
+#endif
 
     public bool IsOverride
       => (bool)(this.isOverride ?? (this.isOverride = this.CanRead ? this.GetMethodData.IsOverride : this.SetMethodData.IsOverride));

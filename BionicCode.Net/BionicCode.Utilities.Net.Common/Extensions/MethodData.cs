@@ -3,6 +3,7 @@
   using System;
   using System.Linq;
   using System.Reflection;
+  using System.Runtime.CompilerServices;
   using Microsoft.CodeAnalysis;
 
   internal sealed class MethodData : MemberInfoData
@@ -23,6 +24,8 @@
     private bool? isGenericMethod;
     private bool? isGenericTypeMethod;
     private MethodData genericMethodDefinitionData;
+    private bool? isReturnValueReadOnly;
+    private bool? isReturnValueByRef;
 
     public MethodData(MethodInfo methodInfo) : base(methodInfo)
     {
@@ -93,6 +96,14 @@
 
     public bool IsSealed
       => (bool)(this.isSealed ?? (this.isSealed = GetMethodInfo().IsFinal));
+
+#if !NETSTANDARD2_0
+    public bool IsReturnValueReadOnly
+      => (bool)(this.isReturnValueReadOnly ?? (this.isReturnValueReadOnly = GetMethodInfo().ReturnParameter.GetCustomAttribute(typeof(IsReadOnlyAttribute)) != null));
+#endif
+
+    public bool IsReturnValueByRef
+      => (bool)(this.isReturnValueByRef ?? (this.isReturnValueByRef = this.ReturnTypeData.IsByRef));
 
     public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
       ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))

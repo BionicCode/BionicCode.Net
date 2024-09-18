@@ -228,26 +228,346 @@
     public static string ToSignatureShortName(this MemberInfo memberInfo, bool isFullyQualifiedName = false, bool isCompact = false)
       => memberInfo.ToSignatureNameInternal(isFullyQualifiedName, isShortName: true, isCompact);
 
-    internal static string ToSignatureNameInternal(this MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    #region REMOVE AFTER BENCHMARK COMPARISON!!!
+    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, Type type, bool isFullyQualifiedName, bool isShortName)
     {
-      // TODO::Create type specific overloads to eliminate type switching and use cached reflection data
+      var typeReference = new CodeTypeReference(type);
+      ReadOnlySpan<char> typeName = HelperExtensionsCommon.CodeProvider.GetTypeOutput(typeReference).AsSpan();
+      if (type.IsGenericType)
+      {
+        int startIndexOfGenericTypeParameters = typeName.IndexOf('<');
+        typeName = typeName.Slice(0, startIndexOfGenericTypeParameters);
+      }
 
+      if (!isFullyQualifiedName)
+      {
+        int startIndexOfUnqualifiedTypeName = typeName.LastIndexOf('.') + 1;
+        if (startIndexOfUnqualifiedTypeName > 0)
+        {
+          typeName = typeName.Slice(startIndexOfUnqualifiedTypeName, typeName.Length - startIndexOfUnqualifiedTypeName);
+        }
+      }
+
+      _ = nameBuilder.Append(typeName.ToArray());
+
+      if (isShortName)
+      {
+        return nameBuilder;
+      }
+
+      if (type.IsGenericType)
+      {
+        _ = nameBuilder.Append('<');
+
+        Type[] typeArguments = type.GetGenericArguments();
+        foreach (Type typeArgument in typeArguments)
+        {
+          _ = nameBuilder.AppendDisplayNameInternal(typeArgument, isFullyQualifiedName, isShortName)
+            .Append(ParameterSeparator);
+        }
+
+        _ = nameBuilder.Remove(nameBuilder.Length - ParameterSeparator.Length, ParameterSeparator.Length)
+          .Append('>');
+      }
+
+      return nameBuilder;
+    }
+
+    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName)
+    {
+      if (memberInfo is Type type)
+      {
+        return nameBuilder.AppendDisplayNameInternal(type, isFullyQualifiedName, isShortName);
+      }
+
+      if (isFullyQualifiedName)
+      {
+        _ = nameBuilder.AppendDisplayNameInternal(memberInfo.DeclaringType, isFullyQualifiedName, isShortName)
+          .Append('.');
+      }
+
+      if (memberInfo.MemberType.HasFlag(MemberTypes.Constructor))
+      {
+        if (memberInfo.DeclaringType.IsGenericType)
+        {
+          int genericTypeArgumentPlaceholderIndex = memberInfo.DeclaringType.Name.IndexOf('`');
+          return nameBuilder.Append(memberInfo.DeclaringType.Name, 0, genericTypeArgumentPlaceholderIndex);
+        }
+        else
+        {
+          return nameBuilder.Append(memberInfo.DeclaringType.Name);
+        }
+      }
+      else
+      {
+        return nameBuilder.Append(memberInfo.Name);
+      }
+    }
+    private static SymbolAttributes GetKind(this MemberInfo memberInfo)
+    {
       var type = memberInfo as Type;
+      var propertyInfo = memberInfo as PropertyInfo;
       MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
         ?? type?.GetMethod("Invoke"); // MemberInfo is potentially a delegate
-      var propertyInfo = memberInfo as PropertyInfo;
       MethodInfo propertyGetMethodInfo = propertyInfo?.GetGetMethod(true);
       MethodInfo propertySetMethodInfo = propertyInfo?.GetSetMethod(true);
       var constructorInfo = memberInfo as ConstructorInfo;
       var fieldInfo = memberInfo as FieldInfo;
       var eventInfo = memberInfo as EventInfo;
+      MethodInfo eventAddMethodInfo = eventInfo?.GetAddMethod(true);
+      FieldInfo eventDeclaredFieldInfo = eventInfo?.DeclaringType.GetField(eventInfo.Name, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
       ParameterInfo[] indexerPropertyIndexParameters = propertyInfo?.GetIndexParameters() ?? Array.Empty<ParameterInfo>();
 
-      SymbolAttributes symbolAttributes = propertyData.SymbolAttributes;
-      IEnumerable<CustomAttributeData> customAttributes = propertyData.AttributeData;
-      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+      bool isDelegate = type?.IsDelegate() ?? false;
+      if (isDelegate)
+      {
+        return SymbolAttributes.Delegate;
+      }
 
+      bool isClass = !isDelegate && (type?.IsClass ?? false);
+      if (isClass)
+      {
+        SymbolAttributes classKind = SymbolAttributes.Class;
+        if (type.IsAbstract)
+        {
+          classKind |= SymbolAttributes.Abstract;
+        }
+
+        if (type.IsSealed)
+        {
+          classKind |= SymbolAttributes.Final;
+        }
+
+        if (type.IsStatic())
+        {
+          classKind |= SymbolAttributes.Static;
+        }
+
+        return classKind;
+      }
+
+      bool isEnum = !isDelegate && (type?.IsEnum ?? false);
+      if (isEnum)
+      {
+        return SymbolAttributes.Enum;
+      }
+
+      bool isStruct = !isDelegate && (type?.IsValueType ?? false);
+      if (isStruct)
+      {
+        SymbolAttributes structKind = SymbolAttributes.Struct;
+
+#if NETSTANDARD2_1_OR_GREATER || NET471_OR_GREATER || NET
+        bool isReadOnlyStruct = isStruct && type.GetCustomAttribute(typeof(IsReadOnlyAttribute)) != null;
+        if (isReadOnlyStruct)
+        {
+          structKind |= SymbolAttributes.Final;
+        }
+#endif
+        return structKind;
+      }
+
+      bool isProperty = propertyInfo != null;
+      if (isProperty)
+      {
+        bool isIndexerProperty = indexerPropertyIndexParameters.Length > 0;
+        SymbolAttributes propertyKind = isIndexerProperty
+          ? SymbolAttributes.IndexerProperty
+          : SymbolAttributes.Property;
+
+        MethodInfo getMethod = propertyInfo.GetGetMethod();
+        if (!propertyInfo.CanWrite)
+        {
+          propertyKind |= SymbolAttributes.Final;
+        }
+
+        if (getMethod.IsAbstract)
+        {
+          propertyKind |= SymbolAttributes.Abstract;
+        }
+
+        if (getMethod.IsStatic)
+        {
+          propertyKind |= SymbolAttributes.Static;
+        }
+
+        if (getMethod.IsVirtual)
+        {
+          propertyKind |= SymbolAttributes.Virtual;
+        }
+
+        if (getMethod.IsOverride())
+        {
+          propertyKind |= SymbolAttributes.Override;
+        }
+
+        return propertyKind;
+      }
+
+      bool isMethod = !isDelegate && !isClass && memberInfo.MemberType.HasFlag(MemberTypes.Method);
+      if (isMethod)
+      {
+        SymbolAttributes methodKind = SymbolAttributes.Method;
+        if (methodInfo.IsFinal)
+        {
+          methodKind |= SymbolAttributes.Final;
+        }
+
+        if (methodInfo.IsAbstract)
+        {
+          methodKind |= SymbolAttributes.Abstract;
+        }
+
+        if (methodInfo.IsStatic)
+        {
+          methodKind |= SymbolAttributes.Static;
+        }
+
+        if (methodInfo.IsVirtual)
+        {
+          methodKind |= SymbolAttributes.Virtual;
+        }
+
+        if (methodInfo.IsOverride())
+        {
+          methodKind |= SymbolAttributes.Override;
+        }
+
+        return methodKind;
+      }
+
+      bool isEvent = eventInfo != null;
+      if (isEvent)
+      {
+        SymbolAttributes eventKind = SymbolAttributes.Event;
+        MethodInfo addHandlerMethod = eventInfo.GetAddMethod(true);
+        if (addHandlerMethod.IsFinal)
+        {
+          eventKind |= SymbolAttributes.Final;
+        }
+
+        if (addHandlerMethod.IsAbstract)
+        {
+          eventKind |= SymbolAttributes.Abstract;
+        }
+
+        if (addHandlerMethod.IsStatic)
+        {
+          eventKind |= SymbolAttributes.Static;
+        }
+
+        if (addHandlerMethod.IsVirtual)
+        {
+          eventKind |= SymbolAttributes.Virtual;
+        }
+
+        if (addHandlerMethod.IsOverride())
+        {
+          eventKind |= SymbolAttributes.Override;
+        }
+
+        return eventKind;
+      }
+
+      bool isConstructor = constructorInfo != null;
+      if (isConstructor)
+      {
+        SymbolAttributes constructorKind = SymbolAttributes.Constructor;
+
+        if (constructorInfo.IsStatic)
+        {
+          constructorKind |= SymbolAttributes.Static;
+        }
+
+        return constructorKind;
+      }
+
+      bool isField = fieldInfo != null;
+      if (isField)
+      {
+        SymbolAttributes fieldKind = SymbolAttributes.Event;
+        if (fieldInfo.IsInitOnly)
+        {
+          fieldKind |= SymbolAttributes.Final;
+        }
+
+        if (fieldInfo.IsStatic)
+        {
+          fieldKind |= SymbolAttributes.Static;
+        }
+
+        return fieldKind;
+      }
+
+      bool isInterface = !isDelegate && !isClass && (type?.IsInterface ?? false);
+      if (isInterface)
+      {
+        SymbolAttributes interfaceKind = SymbolAttributes.Interface;
+        return interfaceKind;
+      }
+
+      return SymbolAttributes.Undefined;
+    }
+    internal static string ToSignatureNameInternal(this MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    {
+      var fieldInfo = memberInfo as FieldInfo;
+      var eventInfo = memberInfo as EventInfo;
+      var propertyInfo = memberInfo as PropertyInfo;
+      AccessModifier GetAccessModifier()
+      {
+        switch (memberInfo)
+        {
+          case Type typeInfo:
+            return typeInfo.IsPublic ? AccessModifier.Public
+              : typeInfo.IsNestedPrivate ? AccessModifier.Private
+              : typeInfo.IsNestedAssembly ? AccessModifier.Internal
+              : typeInfo.IsNestedFamily ? AccessModifier.Protected
+              : typeInfo.IsNestedPublic ? AccessModifier.Public
+              : typeInfo.IsNestedFamORAssem ? AccessModifier.ProtectedInternal
+              : typeInfo.IsNestedFamANDAssem ? AccessModifier.PrivateProtected
+              : !typeInfo.IsVisible ? AccessModifier.Internal
+              : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
+          case MethodBase methodBaseInfo:
+            return methodBaseInfo.IsPublic ? AccessModifier.Public
+              : methodBaseInfo.IsPrivate ? AccessModifier.Private
+              : methodBaseInfo.IsAssembly ? AccessModifier.Internal
+              : methodBaseInfo.IsFamily ? AccessModifier.Protected
+              : methodBaseInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
+              : methodBaseInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
+              : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
+          case FieldInfo _:
+            return fieldInfo.IsPublic ? AccessModifier.Public
+              : fieldInfo.IsPrivate ? AccessModifier.Private
+              : fieldInfo.IsAssembly ? AccessModifier.Internal
+              : fieldInfo.IsFamily ? AccessModifier.Protected
+              : fieldInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
+              : fieldInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
+              : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
+          case EventInfo _:
+            return eventInfo.GetAddMethod(true).GetAccessModifier();
+          case PropertyInfo _:
+            return propertyInfo.GetAccessors(true)
+        .Select(accessor => accessor.GetAccessModifier())
+        .Min();
+          default:
+            throw new NotSupportedException("The provided MemberInfo is not supported");
+        }
+      }
+      // TODO::Create type specific overloads to eliminate type switching and use cached reflection data
+
+      var type = memberInfo as Type;
+      MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
+        ?? type?.GetMethod("Invoke"); // MemberInfo is potentially a delegate
+      MethodInfo propertyGetMethodInfo = propertyInfo?.GetGetMethod(true);
+      MethodInfo propertySetMethodInfo = propertyInfo?.GetSetMethod(true);
+      var constructorInfo = memberInfo as ConstructorInfo;
+
+      ParameterInfo[] indexerPropertyIndexParameters = propertyInfo?.GetIndexParameters() ?? Array.Empty<ParameterInfo>();
+
+      SymbolAttributes memberAttributes = memberInfo.GetKind();
+      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+      IEnumerable<CustomAttributeData> symbolAttributes = memberInfo.GetCustomAttributesData();
 #if !NETSTANDARD2_0
       if (memberAttributes.HasFlag(SymbolAttributes.Final))
       {
@@ -257,13 +577,10 @@
 
       _ = signatureNameBuilder.AppendCustomAttributes(symbolAttributes, isAppendNewLineEnabled: true);
 
-      AccessModifier accessModifier = propertyData.AccessModifier;
+      AccessModifier accessModifier = GetAccessModifier();
       _ = signatureNameBuilder
         .Append(accessModifier.ToDisplayStringValue())
         .Append(' ');
-
-      if (memberAttributes.HasFlag(SymbolAttributes.Method) && methodInfo.IsAwaitable())
-        // TODO::insert 'async' method modifier
 
 
       if (!memberAttributes.HasFlag(SymbolAttributes.Delegate)
@@ -302,7 +619,7 @@
           .Append(' ');
       }
 
-      if (memberAttributes.HasFlag(SymbolAttributes.ReadOnlyStruct) 
+      if (memberAttributes.HasFlag(SymbolAttributes.ReadOnlyStruct)
         || memberAttributes.HasFlag(SymbolAttributes.ReadOnlyField))
       {
         _ = signatureNameBuilder
@@ -393,8 +710,8 @@
         _ = signatureNameBuilder.AppendDisplayNameInternal(memberInfo, isFullyQualifiedName: isFullyQualifiedName && memberAttributes.HasFlag(SymbolAttributes.Type), isShortName: false);
       }
 
-      if (memberAttributes.HasFlag(SymbolAttributes.Constructor) 
-        || memberAttributes.HasFlag(SymbolAttributes.Method) 
+      if (memberAttributes.HasFlag(SymbolAttributes.Constructor)
+        || memberAttributes.HasFlag(SymbolAttributes.Method)
         || memberAttributes.HasFlag(SymbolAttributes.Delegate))
       {
         _ = signatureNameBuilder.Append('(');
@@ -517,7 +834,7 @@
         _ = signatureNameBuilder.AppendGenericTypeConstraints(genericTypeParameterDefinitions, isFullyQualifiedName, isCompact);
       }
 
-      if (!memberAttributes.HasFlag(SymbolAttributes.Class) 
+      if (!memberAttributes.HasFlag(SymbolAttributes.Class)
         && !memberAttributes.HasFlag(SymbolAttributes.Struct)
         && !memberAttributes.HasFlag(SymbolAttributes.Enum))
       {
@@ -529,21 +846,123 @@
 
       return fullMemberName;
     }
+    private static StringBuilder AppendInheritanceSignature(this StringBuilder memberNameBuilder, Type typeData, bool isFullyQualified)
+    {
+      bool isDelegate = HelperExtensionsCommon.DelegateType.IsAssignableFrom(typeData);
+      if (isDelegate)
+      {
+        return memberNameBuilder;
+      }
+
+      bool isSubclass = typeData.BaseType != typeof(object);
+      Type[] interfaces = typeData.GetInterfaces();
+      bool hasInterfaces = interfaces.Length > 0;
+      if (isSubclass || hasInterfaces)
+      {
+        _ = memberNameBuilder.Append(" : ");
+      }
+
+      if (isSubclass)
+      {
+        _ = memberNameBuilder.Append(isFullyQualified ? typeData.BaseType.FullName : typeData.BaseType.Name)
+          .Append(HelperExtensionsCommon.ParameterSeparator);
+      }
+
+      foreach (Type interfaceData in interfaces)
+      {
+        _ = memberNameBuilder.Append(isFullyQualified ? interfaceData.FullName : interfaceData.Name)
+          .Append(HelperExtensionsCommon.ParameterSeparator);
+      }
+
+      if (isSubclass || hasInterfaces)
+      {
+        _ = memberNameBuilder.Remove(memberNameBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length);
+      }
+
+      return memberNameBuilder;
+    }
+    private static StringBuilder AppendGenericTypeConstraints(this StringBuilder constraintBuilder, Type[] genericTypeDefinitionsData, bool isFullyQualified, bool isCompact)
+    {
+      bool hasSingleNewLine = false;
+      for (int genericTypeArgumentIndex = 0; genericTypeArgumentIndex < genericTypeDefinitionsData.Length; genericTypeArgumentIndex++)
+      {
+        Type genericTypeDefinitionData = genericTypeDefinitionsData[genericTypeArgumentIndex];
+        Type[] constraints = genericTypeDefinitionData.GetGenericParameterConstraints();
+        if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.SpecialConstraintMask) == GenericParameterAttributes.None
+          && constraints.Length == 0)
+        {
+          continue;
+        }
+
+        if (isCompact)
+        {
+          if (!hasSingleNewLine)
+          {
+            _ = constraintBuilder.AppendLine()
+            .Append(HelperExtensionsCommon.Indentation);
+            hasSingleNewLine = true;
+          }
+          else
+          {
+            _ = constraintBuilder.Append(' ');
+          }
+        }
+        else
+        {
+          _ = constraintBuilder.AppendLine()
+            .Append(HelperExtensionsCommon.Indentation);
+        }
+
+        _ = constraintBuilder.Append("where")
+          .Append(' ')
+          .Append(genericTypeDefinitionData.Name)
+          .Append(" : ");
+
+        if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0)
+        {
+          _ = constraintBuilder.Append("class")
+            .Append(HelperExtensionsCommon.ParameterSeparator);
+        }
+
+        if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) != 0)
+        {
+          _ = constraintBuilder.Append("struct")
+            .Append(HelperExtensionsCommon.ParameterSeparator);
+        }
+
+        foreach (Type constraint in constraints)
+        {
+          _ = constraintBuilder.AppendDisplayNameInternal(constraint, isFullyQualified, isShortName: false)
+            .Append(HelperExtensionsCommon.ParameterSeparator);
+        }
+
+        if (!genericTypeDefinitionData.IsValueType && (genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0)
+        {
+          _ = constraintBuilder.Append("new()")
+            .Append(HelperExtensionsCommon.ParameterSeparator);
+        }
+
+        _ = constraintBuilder.Remove(constraintBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length);
+      }
+
+      return constraintBuilder;
+    }
+    #endregion REMOVE AFTER BENCHMARK COMPARISON!!!
 
     internal static string ToSignatureNameInternal(this PropertyData propertyData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
     {
       SymbolAttributes symbolAttributes = propertyData.SymbolAttributes;
-      HashSet<CustomAttributeData> customAttributes = propertyData.AttributeData;
+      HashSet<CustomAttributeData> customAttributesData = propertyData.AttributeData;
       StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
 #if !NETSTANDARD2_0
       if (symbolAttributes.HasFlag(SymbolAttributes.Final))
       {
-        customAttributes = customAttributes.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute)).ToHashSet();
+        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute)).ToHashSet();
       }
 #endif
 
-      _ = signatureNameBuilder.AppendCustomAttributes(customAttributes, isAppendNewLineEnabled: true);
+      _ = signatureNameBuilder.AppendCustomAttributes(customAttributesData, isAppendNewLineEnabled: true);
 
       AccessModifier accessModifier = propertyData.AccessModifier;
       _ = signatureNameBuilder
@@ -646,6 +1065,15 @@
             .Append(' ');
         }
 
+#if !NETSTANDARD2_0
+        if (propertyData.IsSetMethodReadOnly)
+        {
+          _ = signatureNameBuilder
+            .Append("readonly")
+            .Append(' ');
+        }
+#endif
+
         _ = signatureNameBuilder
           .Append("set")
           .Append(HelperExtensionsCommon.ExpressionTerminator)
@@ -663,9 +1091,17 @@
     internal static string ToSignatureNameInternal(this EventData eventData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
     {
       SymbolAttributes symbolAttributes = eventData.SymbolAttributes;
-      HashSet<CustomAttributeData> customAttributes = eventData.AttributeData;
+      HashSet<CustomAttributeData> customAttributesData = eventData.AttributeData;
+
+#if !NETSTANDARD2_0
+      if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+      {
+        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
+      }
+#endif
+
       StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate()
-        .AppendCustomAttributes(customAttributes, isAppendNewLineEnabled: true);
+        .AppendCustomAttributes(customAttributesData, isAppendNewLineEnabled: true);
 
       AccessModifier accessModifier = eventData.AccessModifier;
       _ = signatureNameBuilder
@@ -722,9 +1158,17 @@
     internal static string ToSignatureNameInternal(this FieldData fieldData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
     {
       SymbolAttributes symbolAttributes = fieldData.SymbolAttributes;
-      HashSet<CustomAttributeData> customAttributes = fieldData.AttributeData;
+      HashSet<CustomAttributeData> customAttributesData = fieldData.AttributeData;
+
+#if !NETSTANDARD2_0
+      if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+      {
+        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
+      }
+#endif
+
       StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate()
-        .AppendCustomAttributes(customAttributes, isAppendNewLineEnabled: true);
+        .AppendCustomAttributes(customAttributesData, isAppendNewLineEnabled: true);
 
       AccessModifier accessModifier = fieldData.AccessModifier;
       _ = signatureNameBuilder
@@ -793,7 +1237,7 @@
 #if !NETSTANDARD2_0
       if (symbolAttributes.HasFlag(SymbolAttributes.Final))
       {
-        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute)).ToHashSet();
+        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
       }
 #endif
 
@@ -950,17 +1394,17 @@
       }
 
       SymbolAttributes symbolAttributes = methodData.SymbolAttributes;
-      HashSet<CustomAttributeData> symbolCustomAttributes = methodData.AttributeData;
+      HashSet<CustomAttributeData> symbolCustomAttributesData = methodData.AttributeData;
       StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
 #if !NETSTANDARD2_0
       if (symbolAttributes.HasFlag(SymbolAttributes.Final))
       {
-        symbolCustomAttributes = symbolCustomAttributes.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute)).ToHashSet();
+        symbolCustomAttributesData = symbolCustomAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
       }
 #endif
 
-      _ = signatureNameBuilder.AppendCustomAttributes(symbolCustomAttributes, isAppendNewLineEnabled: true);
+      _ = signatureNameBuilder.AppendCustomAttributes(symbolCustomAttributesData, isAppendNewLineEnabled: true);
 
       AccessModifier accessModifier = methodData.AccessModifier;
       _ = signatureNameBuilder
@@ -1008,6 +1452,22 @@
           .Append("async")
           .Append(' ');
       }
+
+      if (methodData.IsReturnValueByRef)
+      {
+        _ = signatureNameBuilder
+          .Append("ref")
+          .Append(' ');
+      }
+
+#if !NETSTANDARD2_0
+      if (methodData.IsReturnValueReadOnly)
+      {
+        _ = signatureNameBuilder
+          .Append("readonly")
+          .Append(' ');
+      }
+#endif
 
       _ = signatureNameBuilder.AppendDisplayNameInternal(methodData.ReturnTypeData, isFullyQualifiedName, isShortName: true)
         .Append(' ');
@@ -1071,6 +1531,87 @@
             .Append(' ')
             .AppendGenericTypeConstraints(genericTypeParameterDefinitions, isFullyQualifiedName, isCompact);
         }
+      }
+
+      _ = signatureNameBuilder.Append(HelperExtensionsCommon.ExpressionTerminator);
+
+      string fullMemberName = signatureNameBuilder.ToString();
+      StringBuilderFactory.Recycle(signatureNameBuilder);
+
+      return fullMemberName;
+    }
+
+    internal static string ToSignatureNameInternal(ConstructorData constructorData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    {
+      SymbolAttributes symbolAttributes = constructorData.SymbolAttributes;
+      HashSet<CustomAttributeData> symbolCustomAttributesData = constructorData.AttributeData;
+      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+
+#if !NETSTANDARD2_0
+      if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+      {
+        symbolCustomAttributesData = symbolCustomAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
+      }
+#endif
+
+      _ = signatureNameBuilder.AppendCustomAttributes(symbolCustomAttributesData, isAppendNewLineEnabled: true);
+
+      AccessModifier accessModifier = constructorData.AccessModifier;
+      if (accessModifier is AccessModifier.Undefined)
+      {
+        _ = signatureNameBuilder
+        .Append(accessModifier.ToDisplayStringValue())
+        .Append(' ');
+      }
+
+      if (constructorData.IsStatic)
+      {
+        _ = signatureNameBuilder
+          .Append("static")
+          .Append(' ');
+      }
+
+      if (!isShortName)
+      {
+        _ = signatureNameBuilder.AppendDisplayNameInternal(constructorData.DeclaringTypeData, isFullyQualifiedName, isShortName: false)
+          .Append('.');
+      }
+
+      // Member name
+      _ = signatureNameBuilder.AppendDisplayNameInternal(constructorData, isFullyQualifiedName: false, isShortName: false)
+        .Append('(');
+
+      ParameterData[] parameters = constructorData.Parameters;
+      if (parameters.Length > 0)
+      {
+        foreach (ParameterData parameterData in parameters)
+        {
+          HashSet<CustomAttributeData> attributes = parameterData.AttributeData;
+          _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false);
+
+          if (parameterData.IsRef)
+          {
+            _ = signatureNameBuilder.Append("ref ");
+          }
+          else if (parameterData.IsIn)
+          {
+            _ = signatureNameBuilder.Append("in ");
+          }
+          else if (parameterData.IsOut)
+          {
+            _ = signatureNameBuilder.Append("out ");
+          }
+
+          _ = signatureNameBuilder
+            .AppendDisplayNameInternal(parameterData.ParameterTypeData, isFullyQualifiedName, isShortName: false)
+            .Append(' ')
+            .Append(parameterData.Name)
+            .Append(HelperExtensionsCommon.ParameterSeparator);
+        }
+
+        // Remove trailing comma and whitespace
+        _ = signatureNameBuilder.Remove(signatureNameBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length)
+          .Append(')');
       }
 
       _ = signatureNameBuilder.Append(HelperExtensionsCommon.ExpressionTerminator);
@@ -1310,13 +1851,14 @@
 
     internal static AccessModifier GetAccessModifierInternal(ConstructorData constructorData)
     {
-      ConstructorInfo methodInfo = constructorData.GetConstructorInfo();
-      return methodInfo.IsPublic ? AccessModifier.Public
-        : methodInfo.IsPrivate ? AccessModifier.Private
-        : methodInfo.IsAssembly ? AccessModifier.Internal
-        : methodInfo.IsFamily ? AccessModifier.Protected
-        : methodInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
-        : methodInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
+      ConstructorInfo constructorInfo = constructorData.GetConstructorInfo();
+      return constructorInfo.IsPublic ? AccessModifier.Public
+        : constructorInfo.IsPrivate ? AccessModifier.Private
+        : constructorInfo.IsAssembly ? AccessModifier.Internal
+        : constructorInfo.IsFamily ? AccessModifier.Protected
+        : constructorInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
+        : constructorInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
+        : constructorInfo.IsStatic ? AccessModifier.Undefined
         : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
     }
 
@@ -2579,11 +3121,8 @@
     //  return null;
     //}
 
-    //internal static SymbolAttributes GetAttributes(this MemberInfo memberInfo)
-    //{
-    //  SymbolInfoData cacheEntry = GetMemberInfoDataCacheEntry<SymbolInfoData>(memberInfo);
-    //  return cacheEntry.SymbolAttributes;
-    //}
+    
+
 
     internal static SymbolAttributes GetAttributesInternal(TypeData typeData)
     {
@@ -2802,7 +3341,6 @@
 
     internal static SymbolAttributes GetAttributesInternal(ConstructorData constructorData)
     {
-      ConstructorInfo constructorInfo = constructorData.GetConstructorInfo();
       SymbolAttributes constructorAttributes = SymbolAttributes.Constructor;
 
       if (constructorData.IsStatic)
