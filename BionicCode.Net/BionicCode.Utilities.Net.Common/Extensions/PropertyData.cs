@@ -22,7 +22,10 @@
     private bool? isSealed;
     private bool? canWrite;
     private bool? canRead;
+
+#if !NETSTANDARD2_0
     private bool? isSetMethodReadOnly;
+#endif
 
     public PropertyData(PropertyInfo propertyInfo) : base(propertyInfo)
     {
@@ -113,17 +116,17 @@
       : this.symbolAttributes;
 
     public override char[] Signature
-      => this.signature ?? (this.signature = GetType().ToSignatureShortName().ToCharArray());
+      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false).ToCharArray());
 
     public override char[] FullyQualifiedSignature
-      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = GetType().ToSignatureShortName(isFullyQualifiedName: true).ToCharArray());
+      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false).ToCharArray());
 
     public override bool IsStatic 
       => (bool)(this.isStatic ?? (this.isStatic = this.CanRead ? this.GetMethodData.IsStatic : this.SetMethodData.IsStatic));
 
 #if !NETSTANDARD2_0
     public bool IsSetMethodReadOnly
-      => (bool)(this.isSetMethodReadOnly ?? (this.isSetMethodReadOnly = this.CanWrite && this.SetMethodData.AttributeData.Any(data => data.AttributeType == typeof(IsReadOnlyAttribute));
+      => (bool)(this.isSetMethodReadOnly ?? (this.isSetMethodReadOnly = this.CanWrite && this.SetMethodData.AttributeData.Any(data => data.AttributeType == typeof(IsReadOnlyAttribute))));
 #endif
 
     public bool IsOverride

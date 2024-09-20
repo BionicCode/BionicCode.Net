@@ -47,10 +47,10 @@
       : this.symbolAttributes;
 
     public override char[] Signature
-      => this.signature ?? (this.signature = GetType().ToSignatureShortName().ToCharArray());
+      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false).ToCharArray());
 
     public override char[] FullyQualifiedSignature
-      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = GetType().ToSignatureShortName(isFullyQualifiedName: true).ToCharArray());
+      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false).ToCharArray());
 
     public bool IsOverride 
       => (bool)(this.isOverride ?? (this.isOverride = this.AddMethodData.IsOverride));

@@ -11,8 +11,8 @@
       : base(argumentLists, isStatic, assemblyName, lineNumber, sourceFilePath, targetFramework)
     {
       this.MethodInfo = methodInfo;
-      this.IsAsyncTask = this.MethodInfo.IsAwaitableTask();
-      this.IsAsyncValueTask = !this.IsAsyncTask && this.MethodInfo.IsAwaitableValueTask();
+      this.IsAsyncTask = this.MethodInfo.IsAwaitable();
+      this.IsAsyncValueTask = !this.IsAsyncTask && this.MethodInfo.IsAwaitable();
       this.IsGeneric = this.MethodInfo.IsGenericMethod;
       this.MethodName = this.MethodInfo.Name;
       this.MethodReturnTypeName = this.MethodInfo.ReturnType.Name;

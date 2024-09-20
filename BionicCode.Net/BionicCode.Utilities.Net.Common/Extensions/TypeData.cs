@@ -94,11 +94,11 @@
       ? (this.accessModifier = HelperExtensionsCommon.GetAccessModifierInternal(this))
       : this.accessModifier;
 
-    public override char[] Signature 
-      => this.signature ?? (this.signature = GetType().ToSignatureShortName().ToCharArray());
+    public override char[] Signature
+      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false).ToCharArray());
 
-    public override char[] FullyQualifiedSignature 
-      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = GetType().ToSignatureShortName(isFullyQualifiedName: true).ToCharArray());
+    public override char[] FullyQualifiedSignature
+      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false).ToCharArray());
 
     public bool IsStatic 
       => (bool)(this.isStatic ?? (this.isStatic = HelperExtensionsCommon.IsStaticInternal(this)));

@@ -12,8 +12,21 @@
       this.Arguments = arguments;
       this.DeclaringTypeHandle = declaringTypeHandle;
       this.Handle = handle;
+
+      int hashCode = 1248511333;
+      hashCode = hashCode * -1521134295 + this.Name.GetHashCode();
+
+      foreach (object argument in arguments)
+      {
+        hashCode = hashCode * -1521134295 + argument.GetHashCode();
+      }
+
+      hashCode = hashCode * -1521134295 + this.DeclaringTypeHandle.GetHashCode();
+      hashCode = hashCode * -1521134295 + this.Handle.GetHashCode();
+      this.hashCode = hashCode;
     }
 
+    private readonly int? hashCode;
     public string Name { get; }
     public object[] Arguments { get; }
     public RuntimeTypeHandle DeclaringTypeHandle { get; }
@@ -27,14 +40,7 @@
     public override bool Equals(object obj) => obj is SymbolInfoDataCacheKey key && Equals(key);
 
     public override int GetHashCode()
-    {
-      int hashCode = 1248511333;
-      hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(this.Name);
-      hashCode = hashCode * -1521134295 + EqualityComparer<object[]>.Default.GetHashCode(this.Arguments);
-      hashCode = hashCode * -1521134295 + this.DeclaringTypeHandle.GetHashCode();
-      hashCode = hashCode * -1521134295 + this.Handle.GetHashCode();
-      return hashCode;
-    }
+      => this.hashCode.Value;
 
     public static bool operator ==(SymbolInfoDataCacheKey left, SymbolInfoDataCacheKey right) => left.Equals(right);
     public static bool operator !=(SymbolInfoDataCacheKey left, SymbolInfoDataCacheKey right) => !(left == right);

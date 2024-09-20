@@ -60,9 +60,9 @@
       : this.symbolAttributes;
 
     public override char[] Signature
-      => this.signature ?? (this.signature = GetType().ToSignatureShortName().ToCharArray());
+      => this.signature ?? (this.signature = GetParameterInfo().Name.ToCharArray());
 
     public override char[] FullyQualifiedSignature
-      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = GetType().ToSignatureShortName(isFullyQualifiedName: true).ToCharArray());
+      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = GetParameterInfo().Name.ToCharArray());
   }
 }

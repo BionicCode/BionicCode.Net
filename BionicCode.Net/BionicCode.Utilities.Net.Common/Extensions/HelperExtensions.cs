@@ -213,6 +213,25 @@
     public static string ToSignatureName(this MemberInfo memberInfo, bool isFullyQualifiedName = false, bool isCompact = false)
       => memberInfo.ToSignatureNameInternal(isFullyQualifiedName, isShortName: false, isCompact);
 
+
+    /// <summary>
+    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
+    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <returns>
+    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// </returns>
+    /// <remarks>
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+    /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// </remarks>
+    public static string ToSignatureName(this MethodInfo methodInfo, bool isFullyQualifiedName = false, bool isCompact = false)
+    {
+      MethodData methodData = GetSymbolInfoDataCacheEntry<MethodData>(methodInfo);
+      return ToSignatureNameInternal(methodData, isFullyQualifiedName, isShortName: false, isCompact);
+    }
+
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
@@ -225,10 +244,315 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
-    public static string ToSignatureShortName(this MemberInfo memberInfo, bool isFullyQualifiedName = false, bool isCompact = false)
-      => memberInfo.ToSignatureNameInternal(isFullyQualifiedName, isShortName: true, isCompact);
+    public static string ToSignatureShortName(this MethodInfo methodInfo, bool isFullyQualifiedName = false, bool isCompact = false)
+    {
+      MethodData methodData = GetSymbolInfoDataCacheEntry<MethodData>(methodInfo);
+      Debug.WriteLine($"MethodData object received");      
 
+      var result = new string(methodData.Signature);
+
+
+      Debug.WriteLine($"Signature generated");
+
+      return result;
+    }
+    
+    /// <summary>
+    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
+    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <returns>
+    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// </returns>
+    /// <remarks>
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+    /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// </remarks>
+    public static string ToSignatureShortName(this Type type, bool isFullyQualifiedName = false, bool isCompact = false)
+    {
+      TypeData typeData = GetSymbolInfoDataCacheEntry<TypeData>(type);
+      return new string(typeData.Signature);
+    }
+
+    /// <summary>
+    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
+    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <returns>
+    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// </returns>
+    /// <remarks>
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+    /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// </remarks>
+    public static string ToSignatureShortName(this FieldInfo fieldInfo, bool isFullyQualifiedName = false, bool isCompact = false)
+    {
+      FieldData fieldData = GetSymbolInfoDataCacheEntry<FieldData>(fieldInfo);
+      return new string(fieldData.Signature);
+    }
+
+    /// <summary>
+    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
+    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <returns>
+    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// </returns>
+    /// <remarks>
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+    /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// </remarks>
+    public static string ToSignatureShortName(this PropertyInfo propertyInfo, bool isFullyQualifiedName = false, bool isCompact = false)
+    {
+      PropertyData propertyData = GetSymbolInfoDataCacheEntry<PropertyData>(propertyInfo);
+      return new string(propertyData.Signature);
+    }
     #region REMOVE AFTER BENCHMARK COMPARISON!!!
+
+    public static StringBuilder AppendSignatureName(this StringBuilder nameBuilder, MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName)
+    {
+      SyntaxNode syntaxGraph = null;
+      bool isTerminationRequested = false;
+      if (memberInfo is MethodInfo methodInfo)
+      {
+        syntaxGraph = CreateMethodGraph(methodInfo, isFullyQualifiedName);
+        isTerminationRequested = true;
+      }
+
+      if (syntaxGraph != null)
+      {
+        _ = nameBuilder.Append(syntaxGraph.ToString());
+        if (isTerminationRequested)
+        {
+          _ = nameBuilder.Append(HelperExtensionsCommon.ExpressionTerminator);
+        }
+      }
+
+      return nameBuilder;
+    }
+
+    private static SyntaxNode CreateMethodGraph(MethodInfo methodInfo, bool isFullyQualifiedName)
+    {
+      TypeSyntax returnType = SyntaxFactory.ParseTypeName(ToDisplayNameInternal(methodInfo.ReturnType, isFullyQualifiedName, isShortName: false));
+      string methodName = ToDisplayNameInternal(methodInfo, isFullyQualifiedName, isShortName: false);
+      MethodDeclarationSyntax methodGraph = SyntaxFactory.MethodDeclaration(returnType, methodName)
+        .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+
+      ParameterInfo[] parameters = methodInfo.GetParameters();
+      foreach (ParameterInfo parameter in parameters)
+      {
+        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.Name))
+          .WithType(SyntaxFactory.IdentifierName(ToDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isShortName: false)));
+
+        if (parameter.IsRef())
+        {
+          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.RefKeyword));
+        }
+        else if (parameter.IsIn)
+        {
+          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.InKeyword));
+        }
+        else if (parameter.IsOut)
+        {
+          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.OutKeyword));
+        }
+        //IList<CustomAttributeData> parameterAttributes = parameter.GetCustomAttributesData();
+        //foreach(CustomAttributeData parameterAttribute in parameterAttributes)
+        //{
+        //  AttributeArgumentListSyntax argumentList = SyntaxFactory.AttributeArgumentList();
+
+        //  IList<CustomAttributeTypedArgument> arguments = parameterAttribute.ConstructorArguments;
+        //  foreach (CustomAttributeTypedArgument argument in arguments)
+        //  {
+        //    var argumentSyntax = SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression)
+        //  }
+        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.Name, isFullyQualifiedName, isShortName: false)));
+        //  parameterSyntax = parameterSyntax.AddAttributeLists(attributeSyntax);
+        //}
+        methodGraph = methodGraph.AddParameterListParameters(parameterSyntax);
+      }
+
+      if (methodInfo.IsGenericMethod)
+      {
+        Type[] typeArguments = methodInfo.GetGenericArguments();
+        for (int typeArgumentIndex = 0; typeArgumentIndex < typeArguments.Length; typeArgumentIndex++)
+        {
+          Type typeArgument = typeArguments[typeArgumentIndex];
+          //TypeParameterSyntax typeParameter = CreateMethodTypeParameter(typeArgument, isFullyQualifiedName);
+          //methodGraph = methodGraph.AddTypeParameterListParameters(typeParameter);
+
+          if (methodInfo.IsGenericMethodDefinition)
+          {
+            SeparatedSyntaxList<TypeParameterConstraintSyntax> constraints = SyntaxFactory.SeparatedList<TypeParameterConstraintSyntax>();
+            if ((typeArgument.GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) != 0)
+            {
+              constraints = constraints.Add(SyntaxFactory.ClassOrStructConstraint(SyntaxKind.StructConstraint));
+            }
+
+            if ((typeArgument.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0)
+            {
+              constraints = constraints.Add(SyntaxFactory.ClassOrStructConstraint(SyntaxKind.ClassConstraint));
+            }
+
+            Type[] constraintTypes = typeArgument.GetGenericParameterConstraints();
+            foreach (Type constraintType in constraintTypes)
+            {
+              if (constraintType == typeof(object) || constraintType == typeof(ValueType))
+              {
+                continue;
+              }
+
+              string constraintName = ToDisplayNameInternal(constraintType, isFullyQualifiedName, isShortName: false);
+              TypeConstraintSyntax constraintSyntax = SyntaxFactory.TypeConstraint(SyntaxFactory.IdentifierName(constraintName));
+              constraints = constraints.Add(constraintSyntax);
+            }
+
+            if (!typeArgument.IsValueType && (typeArgument.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0)
+            {
+              constraints = constraints.Add(SyntaxFactory.ConstructorConstraint());
+            }
+
+            string genericTypeParameterName = ToDisplayNameInternal(typeArgument, isFullyQualifiedName, isShortName: false);
+            methodGraph = methodGraph.AddConstraintClauses(SyntaxFactory.TypeParameterConstraintClause(SyntaxFactory.IdentifierName(genericTypeParameterName), constraints));
+          }
+        }
+      }
+
+      methodGraph = methodGraph.NormalizeWhitespace();
+      return methodGraph;
+    }
+
+    private static SyntaxNode CreateDelegateGraph(MethodInfo methodInfo, bool isFullyQualifiedName)
+    {
+      TypeSyntax returnType = SyntaxFactory.ParseTypeName(ToDisplayNameInternal(methodInfo.ReturnType, isFullyQualifiedName, isShortName: false));
+      string methodName = ToDisplayNameInternal(methodInfo, isFullyQualifiedName, isShortName: true);
+      MethodDeclarationSyntax methodGraph = SyntaxFactory.MethodDeclaration(returnType, methodName)
+        .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+
+      ParameterInfo[] parameters = methodInfo.GetParameters();
+      foreach (ParameterInfo parameter in parameters)
+      {
+        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.Name))
+          .WithType(SyntaxFactory.IdentifierName(ToDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isShortName: false)));
+
+        if (parameter.IsRef())
+        {
+          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.RefKeyword));
+        }
+        else if (parameter.IsIn)
+        {
+          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.InKeyword));
+        }
+        else if (parameter.IsOut)
+        {
+          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.OutKeyword));
+        }
+        //IList<CustomAttributeData> parameterAttributes = parameter.GetCustomAttributesData();
+        //foreach(CustomAttributeData parameterAttribute in parameterAttributes)
+        //{
+        //  AttributeArgumentListSyntax argumentList = SyntaxFactory.AttributeArgumentList();
+
+        //  IList<CustomAttributeTypedArgument> arguments = parameterAttribute.ConstructorArguments;
+        //  foreach (CustomAttributeTypedArgument argument in arguments)
+        //  {
+        //    var argumentSyntax = SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression)
+        //  }
+        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.Name, isFullyQualifiedName, isShortName: false)));
+        //  parameterSyntax = parameterSyntax.AddAttributeLists(attributeSyntax);
+        //}
+        methodGraph = methodGraph.AddParameterListParameters(parameterSyntax);
+      }
+
+      if (methodInfo.IsGenericMethod)
+      {
+        Type[] typeArguments = methodInfo.GetGenericArguments();
+        for (int typeArgumentIndex = 0; typeArgumentIndex < typeArguments.Length; typeArgumentIndex++)
+        {
+          Type typeArgument = typeArguments[typeArgumentIndex];
+          TypeParameterSyntax typeParameter = CreateMethodTypeParameter(typeArgument, isFullyQualifiedName);
+          methodGraph = methodGraph.AddTypeParameterListParameters(typeParameter);
+
+          if (methodInfo.IsGenericMethodDefinition)
+          {
+            SeparatedSyntaxList<TypeParameterConstraintSyntax> constraints = SyntaxFactory.SeparatedList<TypeParameterConstraintSyntax>();
+            if ((typeArgument.GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) != 0)
+            {
+              constraints = constraints.Add(SyntaxFactory.ClassOrStructConstraint(SyntaxKind.StructConstraint));
+            }
+
+            if ((typeArgument.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0)
+            {
+              constraints = constraints.Add(SyntaxFactory.ClassOrStructConstraint(SyntaxKind.ClassConstraint));
+            }
+
+            if (!typeArgument.IsValueType && (typeArgument.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0)
+            {
+              constraints = constraints.Add(SyntaxFactory.ConstructorConstraint());
+            }
+
+            Type[] constraintTypes = typeArgument.GetGenericParameterConstraints();
+            foreach (Type constraintType in constraintTypes)
+            {
+              if (constraintType == typeof(object) || constraintType == typeof(ValueType))
+              {
+                continue;
+              }
+
+              string constraintName = ToDisplayNameInternal(constraintType, isFullyQualifiedName, isShortName: false);
+              TypeConstraintSyntax constraintSyntax = SyntaxFactory.TypeConstraint(SyntaxFactory.IdentifierName(constraintName));
+              constraints = constraints.Add(constraintSyntax);
+            }
+
+            string genericTypeParameterName = ToDisplayNameInternal(typeArgument, isFullyQualifiedName, isShortName: false);
+            methodGraph = methodGraph.AddConstraintClauses(SyntaxFactory.TypeParameterConstraintClause(SyntaxFactory.IdentifierName(genericTypeParameterName), constraints));
+          }
+        }
+      }
+
+      methodGraph = methodGraph.NormalizeWhitespace(indentation: " ", elasticTrivia: true);
+      return methodGraph;
+    }
+
+    private static TypeParameterSyntax CreateMethodTypeParameter(Type type, bool isFullyQualifiedName)
+    {
+      IEnumerable<Attribute> attributes = type.GetCustomAttributes();
+      AttributeListSyntax attributeSyntaxList = SyntaxFactory.AttributeList();
+      foreach (Attribute attribute in attributes)
+      {
+        string attributeName = ToDisplayNameInternal(attribute.GetType(), isFullyQualifiedName, isShortName: false);
+        AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.IdentifierName(attributeName));
+        attributeSyntaxList = attributeSyntaxList.AddAttributes(attributeSyntax);
+      }
+
+      SyntaxKind variance = SyntaxKind.None;
+      if (type.IsGenericParameter)
+      {
+        if ((type.GenericParameterAttributes & GenericParameterAttributes.Covariant) != 0)
+        {
+          variance = SyntaxKind.OutKeyword;
+        }
+        else if ((type.GenericParameterAttributes & GenericParameterAttributes.Contravariant) != 0)
+        {
+          variance = SyntaxKind.InKeyword;
+        }
+      }
+
+      string typeParameterName = ToDisplayNameInternal(type, isFullyQualifiedName, isShortName: false);
+      return SyntaxFactory.TypeParameter(new SyntaxList<AttributeListSyntax>() { attributeSyntaxList }, SyntaxFactory.Token(variance), SyntaxFactory.Identifier(typeParameterName));
+    }
+
+    private static string ToDisplayNameInternal(MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName)
+    {
+      string symbolName = new StringBuilder()
+        .AppendDisplayNameInternal(memberInfo, isFullyQualifiedName, isShortName)
+        .ToString();
+
+      return symbolName;
+    }
+
     private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, Type type, bool isFullyQualifiedName, bool isShortName)
     {
       var typeReference = new CodeTypeReference(type);
@@ -273,7 +597,7 @@
       return nameBuilder;
     }
 
-    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName)
+  private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName)
     {
       if (memberInfo is Type type)
       {
@@ -949,7 +1273,7 @@
     }
     #endregion REMOVE AFTER BENCHMARK COMPARISON!!!
 
-    internal static string ToSignatureNameInternal(this PropertyData propertyData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static string ToSignatureNameInternal(PropertyData propertyData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
     {
       SymbolAttributes symbolAttributes = propertyData.SymbolAttributes;
       HashSet<CustomAttributeData> customAttributesData = propertyData.AttributeData;
@@ -1088,7 +1412,7 @@
       return fullMemberName;
     }
 
-    internal static string ToSignatureNameInternal(this EventData eventData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static string ToSignatureNameInternal(EventData eventData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
     {
       SymbolAttributes symbolAttributes = eventData.SymbolAttributes;
       HashSet<CustomAttributeData> customAttributesData = eventData.AttributeData;
@@ -1155,7 +1479,7 @@
       return fullMemberName;
     }
 
-    internal static string ToSignatureNameInternal(this FieldData fieldData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static string ToSignatureNameInternal(FieldData fieldData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
     {
       SymbolAttributes symbolAttributes = fieldData.SymbolAttributes;
       HashSet<CustomAttributeData> customAttributesData = fieldData.AttributeData;
@@ -1223,7 +1547,7 @@
       return fullMemberName;
     }
 
-    internal static string ToSignatureNameInternal(this TypeData typeData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static string ToSignatureNameInternal(TypeData typeData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
     {
       if (typeData.IsGenericType && !typeData.IsGenericTypeDefinition)
       {
@@ -1388,6 +1712,7 @@
 
     internal static string ToSignatureNameInternal(MethodData methodData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
     {
+      Debug.WriteLine($"Generating method signature");
       if (methodData.IsGenericMethod && !methodData.IsGenericMethodDefinition)
       {
         methodData = methodData.GenericMethodDefinitionData;
@@ -2301,238 +2626,6 @@
       return nameBuilder;
     }
 
-    //public static StringBuilder AppendSignatureName(this StringBuilder nameBuilder, MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName)
-    //{
-    //  SyntaxNode syntaxGraph = null;
-    //  bool isTerminationRequested = false;
-    //  if (memberInfo is MethodInfo methodInfo)
-    //  {
-    //    syntaxGraph = CreateMethodGraph(methodInfo, isFullyQualifiedName);
-    //    isTerminationRequested = true;
-    //  }
-
-    //  if (syntaxGraph != null)
-    //  {
-    //    _ = nameBuilder.Append(syntaxGraph.ToString());
-    //    if (isTerminationRequested)
-    //    {
-    //      _ = nameBuilder.Append(HelperExtensionsCommon.ExpressionTerminator);
-    //    }
-    //  }
-
-    //  return nameBuilder;
-    //}
-
-    //private static SyntaxNode CreateMethodGraph(MethodInfo methodInfo, bool isFullyQualifiedName)
-    //{
-    //  TypeSyntax returnType = SyntaxFactory.ParseTypeName(ToDisplayNameInternal(methodInfo.ReturnType, isFullyQualifiedName, isShortName: false));
-    //  string methodName = ToDisplayNameInternal(methodInfo, isFullyQualifiedName, isShortName: false);
-    //  MethodDeclarationSyntax methodGraph = SyntaxFactory.MethodDeclaration(returnType, methodName)
-    //    .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-
-    //  ParameterInfo[] parameters = methodInfo.GetParameters();
-    //  foreach (ParameterInfo parameter in parameters)
-    //  {
-    //    ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.Name))
-    //      .WithType(SyntaxFactory.IdentifierName(ToDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isShortName: false)));
-
-    //    if (parameter.IsRef())
-    //    {
-    //      parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.RefKeyword));
-    //    }
-    //    else if (parameter.IsIn)
-    //    {
-    //      parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.InKeyword));
-    //    }
-    //    else if (parameter.IsOut)
-    //    {
-    //      parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.OutKeyword));
-    //    }
-    //    //IList<CustomAttributeData> parameterAttributes = parameter.GetCustomAttributesData();
-    //    //foreach(CustomAttributeData parameterAttribute in parameterAttributes)
-    //    //{
-    //    //  AttributeArgumentListSyntax argumentList = SyntaxFactory.AttributeArgumentList();
-
-    //    //  IList<CustomAttributeTypedArgument> arguments = parameterAttribute.ConstructorArguments;
-    //    //  foreach (CustomAttributeTypedArgument argument in arguments)
-    //    //  {
-    //    //    var argumentSyntax = SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression)
-    //    //  }
-    //    //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.Name, isFullyQualifiedName, isShortName: false)));
-    //    //  parameterSyntax = parameterSyntax.AddAttributeLists(attributeSyntax);
-    //    //}
-    //    methodGraph = methodGraph.AddParameterListParameters(parameterSyntax);
-    //  }
-
-    //  if (methodInfo.IsGenericMethod)
-    //  {
-    //    Type[] typeArguments = methodInfo.GetGenericArguments();
-    //    for (int typeArgumentIndex = 0; typeArgumentIndex < typeArguments.Length; typeArgumentIndex++)
-    //    {
-    //      Type typeArgument = typeArguments[typeArgumentIndex];
-    //      //TypeParameterSyntax typeParameter = CreateMethodTypeParameter(typeArgument, isFullyQualifiedName);
-    //      //methodGraph = methodGraph.AddTypeParameterListParameters(typeParameter);
-
-    //      if (methodInfo.IsGenericMethodDefinition)
-    //      {
-    //        SeparatedSyntaxList<TypeParameterConstraintSyntax> constraints = SyntaxFactory.SeparatedList<TypeParameterConstraintSyntax>();
-    //        if ((typeArgument.GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) != 0)
-    //        {
-    //          constraints = constraints.Add(SyntaxFactory.ClassOrStructConstraint(SyntaxKind.StructConstraint));
-    //        }
-
-    //        if ((typeArgument.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0)
-    //        {
-    //          constraints = constraints.Add(SyntaxFactory.ClassOrStructConstraint(SyntaxKind.ClassConstraint));
-    //        }
-
-    //        Type[] constraintTypes = typeArgument.GetGenericParameterConstraints();
-    //        foreach (Type constraintType in constraintTypes)
-    //        {
-    //          if (constraintType == typeof(object) || constraintType == typeof(ValueType))
-    //          {
-    //            continue;
-    //          }
-
-    //          string constraintName = ToDisplayNameInternal(constraintType, isFullyQualifiedName, isShortName: false);
-    //          TypeConstraintSyntax constraintSyntax = SyntaxFactory.TypeConstraint(SyntaxFactory.IdentifierName(constraintName));
-    //          constraints = constraints.Add(constraintSyntax);
-    //        }
-
-    //        if (!typeArgument.IsValueType && (typeArgument.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0)
-    //        {
-    //          constraints = constraints.Add(SyntaxFactory.ConstructorConstraint());
-    //        }
-
-    //        string genericTypeParameterName = ToDisplayNameInternal(typeArgument, isFullyQualifiedName, isShortName: false);
-    //        methodGraph = methodGraph.AddConstraintClauses(SyntaxFactory.TypeParameterConstraintClause(SyntaxFactory.IdentifierName(genericTypeParameterName), constraints));
-    //      }
-    //    }
-    //  }
-
-    //  methodGraph = methodGraph.NormalizeWhitespace();
-    //  return methodGraph;
-    //}
-
-    //private static SyntaxNode CreateDelegateGraph(MethodInfo methodInfo, bool isFullyQualifiedName)
-    //{
-    //  TypeSyntax returnType = SyntaxFactory.ParseTypeName(ToDisplayNameInternal(methodInfo.ReturnType, isFullyQualifiedName, isShortName: false));
-    //  string methodName = ToDisplayNameInternal(methodInfo, isFullyQualifiedName, isShortName: true);
-    //  MethodDeclarationSyntax methodGraph = SyntaxFactory.MethodDeclaration(returnType, methodName)
-    //    .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-
-    //  ParameterInfo[] parameters = methodInfo.GetParameters();
-    //  foreach (ParameterInfo parameter in parameters)
-    //  {
-    //    ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.Name))
-    //      .WithType(SyntaxFactory.IdentifierName(ToDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isShortName: false)));
-
-    //    if (parameter.IsRef())
-    //    {
-    //      parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.RefKeyword));
-    //    }
-    //    else if (parameter.IsIn)
-    //    {
-    //      parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.InKeyword));
-    //    }
-    //    else if (parameter.IsOut)
-    //    {
-    //      parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.OutKeyword));
-    //    }
-    //    //IList<CustomAttributeData> parameterAttributes = parameter.GetCustomAttributesData();
-    //    //foreach(CustomAttributeData parameterAttribute in parameterAttributes)
-    //    //{
-    //    //  AttributeArgumentListSyntax argumentList = SyntaxFactory.AttributeArgumentList();
-
-    //    //  IList<CustomAttributeTypedArgument> arguments = parameterAttribute.ConstructorArguments;
-    //    //  foreach (CustomAttributeTypedArgument argument in arguments)
-    //    //  {
-    //    //    var argumentSyntax = SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression)
-    //    //  }
-    //    //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.Name, isFullyQualifiedName, isShortName: false)));
-    //    //  parameterSyntax = parameterSyntax.AddAttributeLists(attributeSyntax);
-    //    //}
-    //    methodGraph = methodGraph.AddParameterListParameters(parameterSyntax);
-    //  }
-
-    //  if (methodInfo.IsGenericMethod)
-    //  {
-    //    Type[] typeArguments = methodInfo.GetGenericArguments();
-    //    for (int typeArgumentIndex = 0; typeArgumentIndex < typeArguments.Length; typeArgumentIndex++)
-    //    {
-    //      Type typeArgument = typeArguments[typeArgumentIndex];
-    //      TypeParameterSyntax typeParameter = CreateMethodTypeParameter(typeArgument, isFullyQualifiedName);
-    //      methodGraph = methodGraph.AddTypeParameterListParameters(typeParameter);
-
-    //      if (methodInfo.IsGenericMethodDefinition)
-    //      {
-    //        SeparatedSyntaxList<TypeParameterConstraintSyntax> constraints = SyntaxFactory.SeparatedList<TypeParameterConstraintSyntax>();
-    //        if ((typeArgument.GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) != 0)
-    //        {
-    //          constraints = constraints.Add(SyntaxFactory.ClassOrStructConstraint(SyntaxKind.StructConstraint));
-    //        }
-
-    //        if ((typeArgument.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0)
-    //        {
-    //          constraints = constraints.Add(SyntaxFactory.ClassOrStructConstraint(SyntaxKind.ClassConstraint));
-    //        }
-
-    //        if (!typeArgument.IsValueType && (typeArgument.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0)
-    //        {
-    //          constraints = constraints.Add(SyntaxFactory.ConstructorConstraint());
-    //        }
-
-    //        Type[] constraintTypes = typeArgument.GetGenericParameterConstraints();
-    //        foreach (Type constraintType in constraintTypes)
-    //        {
-    //          if (constraintType == typeof(object) || constraintType == typeof(ValueType))
-    //          {
-    //            continue;
-    //          }
-
-    //          string constraintName = ToDisplayNameInternal(constraintType, isFullyQualifiedName, isShortName: false);
-    //          TypeConstraintSyntax constraintSyntax = SyntaxFactory.TypeConstraint(SyntaxFactory.IdentifierName(constraintName));
-    //          constraints = constraints.Add(constraintSyntax);
-    //        }
-
-    //        string genericTypeParameterName = ToDisplayNameInternal(typeArgument, isFullyQualifiedName, isShortName: false);
-    //        methodGraph = methodGraph.AddConstraintClauses(SyntaxFactory.TypeParameterConstraintClause(SyntaxFactory.IdentifierName(genericTypeParameterName), constraints));
-    //      }
-    //    }
-    //  }
-
-    //  methodGraph = methodGraph.NormalizeWhitespace(indentation: " ", elasticTrivia: true);
-    //  return methodGraph;
-    //}
-
-    //private static TypeParameterSyntax CreateMethodTypeParameter(Type type, bool isFullyQualifiedName)
-    //{
-    //  IEnumerable<Attribute> attributes = type.GetCustomAttributes();
-    //  AttributeListSyntax attributeSyntaxList = SyntaxFactory.AttributeList();
-    //  foreach (Attribute attribute in attributes)
-    //  {
-    //    string attributeName = ToDisplayNameInternal(attribute.GetType(), isFullyQualifiedName, isShortName: false);
-    //    AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.IdentifierName(attributeName));
-    //    attributeSyntaxList = attributeSyntaxList.AddAttributes(attributeSyntax);
-    //  }
-
-    //  SyntaxKind variance = SyntaxKind.None;
-    //  if (type.IsGenericParameter)
-    //  {
-    //    if ((type.GenericParameterAttributes & GenericParameterAttributes.Covariant) != 0)
-    //    {
-    //      variance = SyntaxKind.OutKeyword;
-    //    }
-    //    else if ((type.GenericParameterAttributes & GenericParameterAttributes.Contravariant) != 0)
-    //    {
-    //      variance = SyntaxKind.InKeyword;
-    //    }
-    //  }
-
-    //  string typeParameterName = ToDisplayNameInternal(type, isFullyQualifiedName, isShortName: false);
-    //  return SyntaxFactory.TypeParameter(new SyntaxList<AttributeListSyntax>() { attributeSyntaxList }, SyntaxFactory.Token(variance), SyntaxFactory.Identifier(typeParameterName));
-    //}
-
     private static StringBuilder AppendGenericTypeArguments(this StringBuilder nameBuilder, MethodData methodData, bool isFullyQualified)
     {
       if (!methodData.IsGenericMethod)
@@ -3387,6 +3480,10 @@
     internal static TEntry GetSymbolInfoDataCacheEntry<TEntry>(object symbolInfo) where TEntry : SymbolInfoData
     {
       SymbolInfoDataCacheKey cacheKey = CreateSymbolInfoDataCacheKey(symbolInfo);
+      SymbolInfoDataCacheKey cacheKey2 = CreateSymbolInfoDataCacheKey(symbolInfo);
+
+      var ise = cacheKey.Equals(cacheKey2);
+      var ishe = cacheKey.GetHashCode() == cacheKey2.GetHashCode();
       if (!HelperExtensionsCommon.MemberInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
       {
         symbolInfoData = CreateMemberInfoDataCacheEntry(symbolInfo, cacheKey);

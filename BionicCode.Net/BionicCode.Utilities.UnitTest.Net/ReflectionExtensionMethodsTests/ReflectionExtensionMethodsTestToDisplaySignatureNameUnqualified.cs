@@ -13,6 +13,7 @@
   using System.Threading;
   using System.Diagnostics;
   using BionicCode.Utilities.Net.UnitTest.ReflectionExtensionMethodsTests.Resources.Public.Generic;
+  using System.IO;
 
   public class ReflectionExtensionMethodsTestToUnqualifiedSignatureName
   {
@@ -281,33 +282,75 @@
     {
       Type type = typeof(Generic.TestClassWithBaseClass<,>);
       MethodInfo methodInfo = type.GetMethod("PublicGenericMethodWithReturnValue");
-      ParameterInfo[] paramas = methodInfo.GetParameters();
-      string methodSignature = methodInfo.ToSignatureShortName(isCompact: true);
+      //ParameterInfo[] paramas = methodInfo.GetParameters();
+      //string methodSignature = methodInfo.ToSignatureShortName(isCompact: true);
 
-      _ = methodSignature.Should().Be(TestMethodGenericOfGenericClassSignatureName);
+      //_ = methodSignature.Should().Be(TestMethodGenericOfGenericClassSignatureName);
 
-      return;
-      string s1 = methodInfo.ToSignatureShortName();
-      var stringBuilder = new StringBuilder();
-      string s2 = stringBuilder.AppendSignatureName(methodInfo, false, false).ToString();
-      //_ = s1.Should().BeEquivalentTo(s2);
-      _ = stringBuilder.Clear();
-      var stopWatch = new Stopwatch();
-      stopWatch.Start();
-      _ = methodInfo.ToSignatureName();
-      stopWatch.Stop();
-      _ = methodInfo.ExecutionTimeOf(method => stringBuilder.AppendSignatureName(method, false, false)).Should().BeLessThan(stopWatch.Elapsed);
-      //var s = typeof(Generic.TestClassWithBaseClass<,>).ToSignatureNameNew(false);
+      //return;
+      using (FileStream file = File.OpenWrite(@"C:\Users\Mobil\Downloads\benchmark_results.txt"))
+      using (StreamWriter fileWriter = new StreamWriter(file))
+      {
+        var stopWatch = new Stopwatch();
+        int warmupCount = 40;
+        string s1;
+        for (int count = 0; count < warmupCount; count++)
+        {
+          s1 = methodInfo.ToSignatureNameInternal(false, true, false);
+        }
 
-      //var stringBuilder = new StringBuilder().AppendDisplayName(typeof(Generic.TestClassWithBaseClass<List<Queue<Task<string>>>, int>), true);
-      //var s = stringBuilder.ToString();
-      //var stringBuilder2 = new StringBuilder().AppendShortDisplayName(typeof(Generic.TestClassWithBaseClass<List<Queue<Task<string>>>, int>), true);
-      //var s2 = stringBuilder2.ToString();
-      //Type type = typeof(Generic.TestClassWithBaseClass<,>);
-      //var stringBuilder3 = new StringBuilder().AppendSignatureName(methodInfo, false, false);
-      //var s3 = stringBuilder3.ToString();
-      //ConstructorInfo constructorInfo = typeof(Task<>).MakeGenericType(typeof(Func<,,>)).GetConstructor(new[] { typeof(Func<>).MakeGenericType(typeof(Func<,,>)), typeof(CancellationToken) });
-      //string signatureName = constructorInfo.ToSignatureName();
+        stopWatch.Restart();
+        s1 = methodInfo.ToSignatureNameInternal(false, true, false);
+        stopWatch.Stop();
+        fileWriter.WriteLine($"ToSignatureShortName (old): {stopWatch.Elapsed} ms; {s1}");
+
+        var stringBuilder = new StringBuilder();
+        string s2;
+        for (int count = 0; count < warmupCount; count++)
+        {
+          s2 = stringBuilder.AppendSignatureName(methodInfo, false, false).ToString();
+          _ = stringBuilder.Clear();
+        }
+
+        stopWatch.Restart();
+        s2 = stringBuilder.AppendSignatureName(methodInfo, false, false).ToString();
+        stopWatch.Stop();
+        fileWriter.WriteLine($"AppendSignatureName (compiler API): {stopWatch.Elapsed} ms; {s2}");
+        _ = stringBuilder.Clear();
+
+        string s3;
+        //for (int count = 0; count < warmupCount; count++)
+        //{
+        //  s3 = methodInfo.ToSignatureShortName();
+        //}
+
+        stopWatch.Restart();
+        s3 = methodInfo.ToSignatureShortName();
+        stopWatch.Stop();
+        fileWriter.WriteLine($"ToSignatureName (reflection caching): {stopWatch.Elapsed} ms; {s3}");
+      }
+      ProcessStartInfo psi = new ProcessStartInfo(@"C:\Users\Mobil\Downloads\benchmark_results.txt");
+      psi.Verb = "open";
+      psi.UseShellExecute = true;
+      Process.Start(psi);
+        //return;
+        ////_ = s1.Should().BeEquivalentTo(s2);
+        //_ = stringBuilder.Clear();
+        //stopWatch.Start();
+        //_ = methodInfo.ToSignatureName();
+        //stopWatch.Stop();
+        //_ = methodInfo.ExecutionTimeOf(method => stringBuilder.AppendSignatureName(method, false, false)).Should().BeLessThan(stopWatch.Elapsed);
+        ////var s = typeof(Generic.TestClassWithBaseClass<,>).ToSignatureNameNew(false);
+
+        ////var stringBuilder = new StringBuilder().AppendDisplayName(typeof(Generic.TestClassWithBaseClass<List<Queue<Task<string>>>, int>), true);
+        ////var s = stringBuilder.ToString();
+        ////var stringBuilder2 = new StringBuilder().AppendShortDisplayName(typeof(Generic.TestClassWithBaseClass<List<Queue<Task<string>>>, int>), true);
+        ////var s2 = stringBuilder2.ToString();
+        ////Type type = typeof(Generic.TestClassWithBaseClass<,>);
+        ////var stringBuilder3 = new StringBuilder().AppendSignatureName(methodInfo, false, false);
+        ////var s3 = stringBuilder3.ToString();
+        ////ConstructorInfo constructorInfo = typeof(Task<>).MakeGenericType(typeof(Func<,,>)).GetConstructor(new[] { typeof(Func<>).MakeGenericType(typeof(Func<,,>)), typeof(CancellationToken) });
+        ////string signatureName = constructorInfo.ToSignatureName();
     }
 
     #endregion Method
