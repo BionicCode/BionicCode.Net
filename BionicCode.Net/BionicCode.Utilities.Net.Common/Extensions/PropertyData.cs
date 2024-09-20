@@ -7,8 +7,8 @@
 
   internal sealed class PropertyData : MemberInfoData
   {
-    private char[] signature;
-    private char[] fullyQualifiedSignature;
+    private string signature;
+    private string fullyQualifiedSignature;
     private SymbolAttributes symbolAttributes;
     private AccessModifier? propertyAccessModifier;
     private AccessModifier? setAccessorAccessModifier;
@@ -115,11 +115,11 @@
       ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
       : this.symbolAttributes;
 
-    public override char[] Signature
-      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false).ToCharArray());
+    public override string Signature
+      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false));
 
-    public override char[] FullyQualifiedSignature
-      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false).ToCharArray());
+    public override string FullyQualifiedSignature
+      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false));
 
     public override bool IsStatic 
       => (bool)(this.isStatic ?? (this.isStatic = this.CanRead ? this.GetMethodData.IsStatic : this.SetMethodData.IsStatic));

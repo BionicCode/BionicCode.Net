@@ -6,8 +6,8 @@
 
   internal sealed class ParameterData : SymbolInfoData
   {
-    private char[] signature;
-    private char[] fullyQualifiedSignature;
+    private string signature;
+    private string fullyQualifiedSignature;
     private SymbolAttributes symbolAttributes;
     private HashSet<CustomAttributeData> attributeData;
     private bool? isRef;
@@ -59,10 +59,10 @@
       ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
       : this.symbolAttributes;
 
-    public override char[] Signature
-      => this.signature ?? (this.signature = GetParameterInfo().Name.ToCharArray());
+    public override string Signature
+      => this.signature ?? (this.signature = GetParameterInfo().Name;
 
-    public override char[] FullyQualifiedSignature
-      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = GetParameterInfo().Name.ToCharArray());
+    public override string FullyQualifiedSignature
+      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = GetParameterInfo().Name);
   }
 }

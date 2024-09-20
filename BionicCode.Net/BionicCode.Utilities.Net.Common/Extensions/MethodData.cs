@@ -18,14 +18,17 @@
     private TypeData[] genericTypeArguments;
     private bool? isOverride;
     private bool? isStatic;
-    private char[] signature;
-    private char[] fullyQualifiedSignature;
+    private string signature;
+    private string fullyQualifiedSignature;
     private TypeData returnTypeData;
     private bool? isGenericMethod;
     private bool? isGenericTypeMethod;
     private MethodData genericMethodDefinitionData;
-    private bool? isReturnValueReadOnly;
     private bool? isReturnValueByRef;
+
+#if !NETSTANDARD2_0
+    private bool? isReturnValueReadOnly;
+#endif
 
     public MethodData(MethodInfo methodInfo) : base(methodInfo)
     {
@@ -109,11 +112,11 @@
       ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
       : this.symbolAttributes;
 
-    public override char[] Signature
-      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false).ToCharArray());
+    public override string Signature
+      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false));
 
-    public override char[] FullyQualifiedSignature 
-      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false).ToCharArray());
+    public override string FullyQualifiedSignature 
+      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false));
 
     public TypeData ReturnTypeData 
       => this.returnTypeData ?? (this.returnTypeData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>(GetMethodInfo().ReturnType));

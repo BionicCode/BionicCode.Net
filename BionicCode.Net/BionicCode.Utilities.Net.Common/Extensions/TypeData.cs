@@ -12,8 +12,8 @@
     private AccessModifier accessModifier;
     private bool? canDeclareExtensionMethod;
     private bool? isAwaitable;
-    private char[] signature;
-    private char[] fullyQualifiedSignature;
+    private string signature;
+    private string fullyQualifiedSignature;
     private bool? isStatic;
     private bool? isAbstract;
     private bool? isSealed;
@@ -32,7 +32,6 @@
 #if !NETFRAMEWORK && !NETSTANDARD2_0
     private bool? isByRefLike;
 #endif
-
 
     public TypeData(Type type) : base(type.Name)
     {
@@ -94,11 +93,11 @@
       ? (this.accessModifier = HelperExtensionsCommon.GetAccessModifierInternal(this))
       : this.accessModifier;
 
-    public override char[] Signature
-      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false).ToCharArray());
+    public override string Signature
+      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false));
 
-    public override char[] FullyQualifiedSignature
-      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false).ToCharArray());
+    public override string FullyQualifiedSignature
+      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false));
 
     public bool IsStatic 
       => (bool)(this.isStatic ?? (this.isStatic = HelperExtensionsCommon.IsStaticInternal(this)));

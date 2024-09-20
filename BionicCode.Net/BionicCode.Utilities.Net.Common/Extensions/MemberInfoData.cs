@@ -12,7 +12,7 @@
     protected MemberInfoData(MemberInfo memberInfo) : base(memberInfo.Name)
     {
       this.DeclaringTypeHandle = memberInfo.DeclaringType.TypeHandle;
-      this.Namespace = memberInfo.DeclaringType.Namespace.ToCharArray();
+      this.Namespace = memberInfo.DeclaringType.Namespace;
     }
 
     public Type GetDeclaringType()
@@ -22,7 +22,7 @@
     public RuntimeTypeHandle DeclaringTypeHandle { get; }
     public abstract bool IsStatic { get; }
     public abstract AccessModifier AccessModifier { get; }
-    public char[] Namespace { get; }
+    public string Namespace { get; }
 
     public override HashSet<CustomAttributeData> AttributeData
       => this.attributeData ?? (this.attributeData = new HashSet<CustomAttributeData>(GetMemberInfo().GetCustomAttributesData()));
