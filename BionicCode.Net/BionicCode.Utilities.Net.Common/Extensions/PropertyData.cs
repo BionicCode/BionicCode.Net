@@ -1,5 +1,6 @@
 ﻿namespace BionicCode.Utilities.Net
 {
+  using System;
   using System.Linq;
   using System.Reflection;
   using System.Runtime.CompilerServices;
@@ -22,6 +23,8 @@
     private bool? isSealed;
     private bool? canWrite;
     private bool? canRead;
+    private Func<object, object[], object> getInvocator;
+    private Action<object, object, object[]> setInvocator;
 
 #if !NETSTANDARD2_0
     private bool? isSetMethodReadOnly;
@@ -38,6 +41,26 @@
     protected override MemberInfo GetMemberInfo() 
       => GetPropertyInfo();
 
+    public object Get(object target, object[] indexerPropertyIndex = null)
+    {
+      if (this.getInvocator is null)
+      {
+        this.getInvocator = (invocationTarget, indexerIndex) => GetPropertyInfo().GetValue(invocationTarget, indexerIndex);
+      }
+
+      return this.getInvocator.Invoke(target, indexerPropertyIndex);
+    }
+
+    public void Set(object target, object value, object[] indexerPropertyIndex = null)
+    {
+      if (this.setInvocator is null)
+      {
+        this.setInvocator = (invocationTarget, propertyValue, indexerIndex) => GetPropertyInfo().SetValue(invocationTarget, propertyValue, indexerIndex);
+      }
+
+      this.setInvocator.Invoke(target, value, indexerPropertyIndex);
+    }
+
     private void GetAccessors()
     {
       (AccessModifier propertyModifier, AccessModifier getMethodModifier, AccessModifier setMethodModifier) = HelperExtensionsCommon.GetPropertyAccessModifier(this.GetMethodData, this.SetMethodData);
@@ -50,14 +73,7 @@
       => this.IndexerParameters.Length > 0;
 
     public ParameterData[] IndexerParameters 
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-      => this.indexerParameters ?? (this.indexerParameters = this.PropertyInfo.GetIndexParameters().Select(HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<ParameterData>).ToArray());
-After:
-      => this.indexerParameters ?? (this.indexerParameters = this.PropertyInfo.GetIndexParameters().Select(Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<ParameterData>).ToArray());
-*/
-      => this.indexerParameters ?? (this.indexerParameters = this.PropertyInfo.GetIndexParameters().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<ParameterData>).ToArray());
+      => this.indexerParameters ?? (this.indexerParameters = this.PropertyInfo.GetIndexParameters().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
 
     public override AccessModifier AccessModifier
     {
@@ -99,14 +115,7 @@ After:
     }
 
     public TypeData PropertyTypeData 
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-      => this.propertyTypeData ?? (this.propertyTypeData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>(GetPropertyInfo().PropertyType)); 
-After:
-      => this.propertyTypeData ?? (this.propertyTypeData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>(GetPropertyInfo().PropertyType)); 
-*/
-      => this.propertyTypeData ?? (this.propertyTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>(GetPropertyInfo().PropertyType)); 
+      => this.propertyTypeData ?? (this.propertyTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetPropertyInfo().PropertyType)); 
 
     public PropertyInfo PropertyInfo { get; }
 
@@ -120,24 +129,10 @@ After:
       => (bool)(this.canRead ?? (this.canRead = GetPropertyInfo().CanRead)); 
 
     public MethodData GetMethodData 
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-      => this.getMethodData ?? (this.getMethodData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<MethodData>(GetPropertyInfo().GetMethod));
-After:
-      => this.getMethodData ?? (this.getMethodData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<MethodData>(GetPropertyInfo().GetMethod));
-*/
-      => this.getMethodData ?? (this.getMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<MethodData>(GetPropertyInfo().GetMethod));
+      => this.getMethodData ?? (this.getMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetPropertyInfo().GetGetMethod(true)));
 
     public MethodData SetMethodData 
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-      => this.setMethodData ?? (this.setMethodData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<MethodData>(GetPropertyInfo().SetMethod));
-After:
-      => this.setMethodData ?? (this.setMethodData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<MethodData>(GetPropertyInfo().SetMethod));
-*/
-      => this.setMethodData ?? (this.setMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<MethodData>(GetPropertyInfo().SetMethod));
+      => this.setMethodData ?? (this.setMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetPropertyInfo().GetSetMethod(true)));
 
     public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
       ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))

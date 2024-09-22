@@ -12,6 +12,8 @@
     private bool? isStatic;
     private TypeData fieldTypeData;
     private bool? isRef;
+    private Func<object, object> getInvocator;
+    private Action<object, object> setInvocator;
 
     public FieldData(FieldInfo fieldInfo) : base(fieldInfo)
     {
@@ -23,6 +25,26 @@
 
     protected override MemberInfo GetMemberInfo()
       => GetFieldInfo();
+
+    public object Get(object target)
+    {
+      if (this.getInvocator is null)
+      {
+        this.getInvocator = invocationTarget => GetFieldInfo().GetValue(invocationTarget);
+      }
+
+      return this.getInvocator.Invoke(target);
+    }
+
+    public void Set(object target, object value)
+    {
+      if (this.setInvocator is null)
+      {
+        this.setInvocator = (invocationTarget, fieldValue) => GetFieldInfo().SetValue(invocationTarget, fieldValue);
+      }
+
+      this.setInvocator.Invoke(target, value);
+    }
 
     public RuntimeFieldHandle Handle { get; set; }
 
@@ -43,14 +65,7 @@
     public override bool IsStatic => (bool)(this.isStatic ?? (this.isStatic = GetFieldInfo().IsStatic));
 
     public TypeData FieldTypeData
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-      => this.fieldTypeData ?? (this.fieldTypeData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>(this.GetFieldInfo().FieldType));
-After:
-      => this.fieldTypeData ?? (this.fieldTypeData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>(this.GetFieldInfo().FieldType));
-*/
-      => this.fieldTypeData ?? (this.fieldTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>(this.GetFieldInfo().FieldType));
+      => this.fieldTypeData ?? (this.fieldTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(this.GetFieldInfo().FieldType));
 
     public bool IsRef
       => (bool)(this.isRef ?? (this.isRef = this.FieldTypeData.IsByRef));

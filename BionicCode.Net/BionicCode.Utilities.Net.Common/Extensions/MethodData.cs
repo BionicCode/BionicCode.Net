@@ -25,6 +25,7 @@
     private bool? isGenericTypeMethod;
     private MethodData genericMethodDefinitionData;
     private bool? isReturnValueByRef;
+    private Func<object, object[], object> invocator;
 
 #if !NETSTANDARD2_0
     private bool? isReturnValueReadOnly;
@@ -41,6 +42,16 @@
     protected override MemberInfo GetMemberInfo() 
       => GetMethodInfo();
 
+    public object Invoke(object target, params object[] arguments)
+    {
+      if (this.invocator is null)
+      {
+        this.invocator = (invocationTarget, invocationArguments) => GetMethodInfo().Invoke(invocationTarget, invocationArguments);
+      }
+
+      return this.invocator.Invoke(target, arguments);
+    }
+
     public RuntimeMethodHandle Handle { get; }
 
     public MethodData GenericMethodDefinitionData
@@ -54,16 +65,7 @@
         else
         {
           MethodInfo genericMethodDefinitionMethodInfo = GetMethodInfo().GetGenericMethodDefinition();
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-          this.genericMethodDefinitionData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<MethodData>(genericMethodDefinitionMethodInfo);
-        }
-After:
-          this.genericMethodDefinitionData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<MethodData>(genericMethodDefinitionMethodInfo);
-        }
-*/
-          this.genericMethodDefinitionData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<MethodData>(genericMethodDefinitionMethodInfo);
+          this.genericMethodDefinitionData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(genericMethodDefinitionMethodInfo);
         }
 
         return this.genericMethodDefinitionData;
@@ -71,14 +73,7 @@ After:
     }
 
     public ParameterData[] Parameters 
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-      => this.parameters ?? (this.parameters = GetMethodInfo().GetParameters().Select(HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<ParameterData>).ToArray());
-After:
-      => this.parameters ?? (this.parameters = GetMethodInfo().GetParameters().Select(Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<ParameterData>).ToArray());
-*/
-      => this.parameters ?? (this.parameters = GetMethodInfo().GetParameters().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<ParameterData>).ToArray());
+      => this.parameters ?? (this.parameters = GetMethodInfo().GetParameters().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
 
     public TypeData[] GenericTypeArguments 
     {
@@ -87,16 +82,7 @@ After:
         if (this.genericTypeArguments is null)
         {
           Type[] typeArguments = GetMethodInfo().GetGenericArguments();
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-          this.genericTypeArguments = typeArguments.Select(HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>).ToArray();
-        }
-After:
-          this.genericTypeArguments = typeArguments.Select(Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>).ToArray();
-        }
-*/
-          this.genericTypeArguments = typeArguments.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>).ToArray();
+          this.genericTypeArguments = typeArguments.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
         }
 
         return this.genericTypeArguments;
@@ -144,14 +130,7 @@ After:
       => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false));
 
     public TypeData ReturnTypeData 
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-      => this.returnTypeData ?? (this.returnTypeData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>(GetMethodInfo().ReturnType));
-After:
-      => this.returnTypeData ?? (this.returnTypeData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>(GetMethodInfo().ReturnType));
-*/
-      => this.returnTypeData ?? (this.returnTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>(GetMethodInfo().ReturnType));
+      => this.returnTypeData ?? (this.returnTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetMethodInfo().ReturnType));
 
     public bool IsGenericMethod
       => (bool)(this.isGenericMethod ?? (this.isGenericMethod = GetMethodInfo().IsGenericMethod));

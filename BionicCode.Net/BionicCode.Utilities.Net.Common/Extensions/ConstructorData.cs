@@ -13,6 +13,7 @@
     private AccessModifier accessModifier;
     private ParameterData[] parameters;
     private bool? isStatic;
+    private Func<object, object[], object> invocator;
 
     public ConstructorData(ConstructorInfo constructorInfo) : base(constructorInfo)
     {
@@ -25,6 +26,16 @@
     protected override MemberInfo GetMemberInfo() 
       => GetConstructorInfo();
 
+    public object Invoke(object target, params object[] arguments)
+    {
+      if (this.invocator is null)
+      {
+        this.invocator = (invocationTarget, invocationArguments) => GetConstructorInfo().Invoke(invocationTarget, invocationArguments);
+      }
+
+      return this.invocator.Invoke(target, arguments);
+    }
+
     public RuntimeMethodHandle Handle { get; set; }
     public RuntimeTypeHandle DeclaringTypeHandle { get; set; }
 
@@ -33,14 +44,7 @@
       : this.accessModifier;
 
     public ParameterData[] Parameters
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-      => this.parameters ?? (this.parameters = GetConstructorInfo().GetParameters().Select(HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<ParameterData>).ToArray());
-After:
-      => this.parameters ?? (this.parameters = GetConstructorInfo().GetParameters().Select(Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<ParameterData>).ToArray());
-*/
-      => this.parameters ?? (this.parameters = GetConstructorInfo().GetParameters().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<ParameterData>).ToArray());
+      => this.parameters ?? (this.parameters = GetConstructorInfo().GetParameters().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
 
     public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
       ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))

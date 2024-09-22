@@ -7,6 +7,7 @@
 
   internal  class TypeData : SymbolInfoData
   {
+    private readonly Dictionary<string, MemberInfo> memberNameMap;
     private HashSet<CustomAttributeData> attributeData;
     private SymbolAttributes symbolAttributes;
     private AccessModifier accessModifier;
@@ -29,6 +30,12 @@
     private TypeData genericTypeDefinitionData;
     private TypeData baseTypeData;
     private TypeData[] interfacesData;
+    private PropertyData[] propertiesData;
+    private MethodData[] methodsData;
+    private FieldData[] fieldsData;
+    private EventData[] eventsData;
+    private ConstructorData[] constructorsData;
+
 #if !NETFRAMEWORK && !NETSTANDARD2_0
     private bool? isByRefLike;
 #endif
@@ -36,20 +43,81 @@
     public TypeData(Type type) : base(type.Name)
     {
       this.Handle = type.TypeHandle;
-      this.Namespace = type.Namespace.ToCharArray();
+      this.Namespace = type.Namespace;
+      this.memberNameMap = new Dictionary<string, MemberInfo>();
     }
 
     new public Type GetType()
       => Type.GetTypeFromHandle(this.Handle);
 
+    public TypeData GetInterface(string interfaceName)
+    {
+      ISymbolInfoDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(interfaceName, this.Namespace, this.Handle);
+      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out TypeData propertyData))
+      {
+        return propertyData;
+      }
+
+      throw new ArgumentException($"Unable to find a property named '{interfaceName}' on type '{GetType().FullName}'.", nameof(interfaceName));
+    }
+
     public PropertyData GetProperty(string propertyName)
-    { 
-      if (SymbolReflectionInfoCache.TryGetSymbolInfoDataCacheEntry())
-      GetType().GetProperty()
+    {
+      ISymbolInfoDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(propertyName, this.Namespace, this.Handle);
+      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out PropertyData propertyData))
+      {
+        return propertyData;
+      }
+
+      throw new ArgumentException($"Unable to find a property named '{propertyName}' on type '{GetType().FullName}'.", nameof(propertyName));
+    }
+
+    public MethodData GetMethod(string methodName)
+    {
+      ISymbolInfoDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(methodName, this.Namespace, this.Handle);
+      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out MethodData methodData))
+      {
+        return methodData;
+      }
+
+      throw new ArgumentException($"Unable to find a method named '{methodName}' on type '{GetType().FullName}'.", nameof(methodName));
+    }
+
+    public FieldData GetField(string fieldName)
+    {
+      ISymbolInfoDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(fieldName, this.Namespace, this.Handle);
+      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out FieldData methodData))
+      {
+        return methodData;
+      }
+
+      throw new ArgumentException($"Unable to find a field named '{fieldName}' on type '{GetType().FullName}'.", nameof(fieldName));
+    }
+
+    public EventData GetEvent(string eventName)
+    {
+      ISymbolInfoDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(eventName, this.Namespace, this.Handle);
+      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out EventData methodData))
+      {
+        return methodData;
+      }
+
+      throw new ArgumentException($"Unable to find an event named '{eventName}' on type '{GetType().FullName}'.", nameof(eventName));
+    }
+
+    public ConstructorData GetConstructor(string constructorName)
+    {
+      ISymbolInfoDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(constructorName, this.Namespace, this.Handle);
+      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out ConstructorData methodData))
+      {
+        return methodData;
+      }
+
+      throw new ArgumentException($"Unable to find a constructor named '{constructorName}' on type '{GetType().FullName}'.", nameof(constructorName));
     }
 
     public RuntimeTypeHandle Handle { get; }
-    public char[] Namespace { get; }
+    public string Namespace { get; }
 
     public bool IsAwaitable 
       => (bool)(this.isAwaitable ?? (this.isAwaitable = HelperExtensionsCommon.IsAwaitableInternal(this)));
@@ -68,16 +136,7 @@
         else
         {
           Type genericTypeDefinitionType = GetType().GetGenericTypeDefinition();
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-          this.genericTypeDefinitionData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>(genericTypeDefinitionType);
-        }
-After:
-          this.genericTypeDefinitionData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>(genericTypeDefinitionType);
-        }
-*/
-          this.genericTypeDefinitionData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>(genericTypeDefinitionType);
+          this.genericTypeDefinitionData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(genericTypeDefinitionType);
         }
 
         return this.genericTypeDefinitionData;
@@ -91,16 +150,7 @@ After:
         if (this.genericTypeArguments is null)
         {
           Type[] typeArguments = GetType().GetGenericArguments();
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-          this.genericTypeArguments = typeArguments.Select(HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>).ToArray();
-        }
-After:
-          this.genericTypeArguments = typeArguments.Select(Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>).ToArray();
-        }
-*/
-          this.genericTypeArguments = typeArguments.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>).ToArray();
+          this.genericTypeArguments = typeArguments.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
         }
 
         return this.genericTypeArguments;
@@ -170,16 +220,7 @@ After:
         Type baseType = GetType().BaseType;
         if (this.baseTypeData is null && this.IsSubclass)
         {
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-          this.baseTypeData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>(baseType);
-        }
-After:
-          this.baseTypeData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>(baseType);
-        }
-*/
-          this.baseTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>(baseType);
+          this.baseTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(baseType);
         }
 
         return this.baseTypeData;
@@ -196,25 +237,24 @@ After:
       => (GenericParameterAttributes)(this.genericParameterAttributes ?? (this.genericParameterAttributes = GetType().GenericParameterAttributes));
 
     public TypeData[] GenericParameterConstraintsData
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-      => this.genericParameterConstraintsData ?? (this.genericParameterConstraintsData = GetType().GetGenericParameterConstraints().Where(constraint => constraint != typeof(object) && constraint != typeof(ValueType)).Select(HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>).ToArray());
-After:
-      => this.genericParameterConstraintsData ?? (this.genericParameterConstraintsData = GetType().GetGenericParameterConstraints().Where(constraint => constraint != typeof(object) && constraint != typeof(ValueType)).Select(Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>).ToArray());
-*/
-      => this.genericParameterConstraintsData ?? (this.genericParameterConstraintsData = GetType().GetGenericParameterConstraints().Where(constraint => constraint != typeof(object) && constraint != typeof(ValueType)).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>).ToArray());
+      => this.genericParameterConstraintsData ?? (this.genericParameterConstraintsData = GetType().GetGenericParameterConstraints().Where(constraint => constraint != typeof(object) && constraint != typeof(ValueType)).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
 
     public TypeData[] InterfacesData
+      => this.interfacesData ?? (this.interfacesData = GetType().GetInterfaces().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
 
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-      => this.interfacesData ?? (this.interfacesData = GetType().GetInterfaces().Select(HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>).ToArray());
-  }
-After:
-      => this.interfacesData ?? (this.interfacesData = GetType().GetInterfaces().Select(Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>).ToArray());
-  }
-*/
-      => this.interfacesData ?? (this.interfacesData = GetType().GetInterfaces().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>).ToArray());
+    public PropertyData[] PropertiesData
+      => this.propertiesData ?? (this.propertiesData = GetType().GetProperties(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
+
+    public MethodData[] MethodsData
+      => this.methodsData ?? (this.methodsData = GetType().GetMethods(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
+
+    public FieldData[] FieldsData
+      => this.fieldsData ?? (this.fieldsData = GetType().GetFields(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
+
+    public EventData[] EventsData
+      => this.eventsData ?? (this.eventsData = GetType().GetEvents(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
+
+    public ConstructorData[] ConstructorsData
+      => this.constructorsData ?? (this.constructorsData = GetType().GetConstructors(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
   }
 }

@@ -513,7 +513,7 @@
       hasProfiledInstanceMethods = false;
       instanceProviderMethodInfo = null;
       bool hasHighPriorityInstanceProvider = false;
-      SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>(typeToProfile)
+      TypeData typeToProfileData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeToProfile);
       foreach (MethodInfo methodInfo in typeToProfile.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
       {
         cancellationToken.ThrowIfCancellationRequested();
