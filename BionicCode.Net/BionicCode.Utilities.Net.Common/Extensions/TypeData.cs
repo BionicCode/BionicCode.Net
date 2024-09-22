@@ -42,6 +42,12 @@
     new public Type GetType()
       => Type.GetTypeFromHandle(this.Handle);
 
+    public PropertyData GetProperty(string propertyName)
+    { 
+      if (SymbolReflectionInfoCache.TryGetSymbolInfoDataCacheEntry())
+      GetType().GetProperty()
+    }
+
     public RuntimeTypeHandle Handle { get; }
     public char[] Namespace { get; }
 
@@ -62,7 +68,16 @@
         else
         {
           Type genericTypeDefinitionType = GetType().GetGenericTypeDefinition();
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
           this.genericTypeDefinitionData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>(genericTypeDefinitionType);
+        }
+After:
+          this.genericTypeDefinitionData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>(genericTypeDefinitionType);
+        }
+*/
+          this.genericTypeDefinitionData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>(genericTypeDefinitionType);
         }
 
         return this.genericTypeDefinitionData;
@@ -76,7 +91,16 @@
         if (this.genericTypeArguments is null)
         {
           Type[] typeArguments = GetType().GetGenericArguments();
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
           this.genericTypeArguments = typeArguments.Select(HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>).ToArray();
+        }
+After:
+          this.genericTypeArguments = typeArguments.Select(Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>).ToArray();
+        }
+*/
+          this.genericTypeArguments = typeArguments.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>).ToArray();
         }
 
         return this.genericTypeArguments;
@@ -146,7 +170,16 @@
         Type baseType = GetType().BaseType;
         if (this.baseTypeData is null && this.IsSubclass)
         {
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
           this.baseTypeData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>(baseType);
+        }
+After:
+          this.baseTypeData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>(baseType);
+        }
+*/
+          this.baseTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>(baseType);
         }
 
         return this.baseTypeData;
@@ -163,9 +196,25 @@
       => (GenericParameterAttributes)(this.genericParameterAttributes ?? (this.genericParameterAttributes = GetType().GenericParameterAttributes));
 
     public TypeData[] GenericParameterConstraintsData
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
       => this.genericParameterConstraintsData ?? (this.genericParameterConstraintsData = GetType().GetGenericParameterConstraints().Where(constraint => constraint != typeof(object) && constraint != typeof(ValueType)).Select(HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>).ToArray());
+After:
+      => this.genericParameterConstraintsData ?? (this.genericParameterConstraintsData = GetType().GetGenericParameterConstraints().Where(constraint => constraint != typeof(object) && constraint != typeof(ValueType)).Select(Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>).ToArray());
+*/
+      => this.genericParameterConstraintsData ?? (this.genericParameterConstraintsData = GetType().GetGenericParameterConstraints().Where(constraint => constraint != typeof(object) && constraint != typeof(ValueType)).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>).ToArray());
 
     public TypeData[] InterfacesData
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
       => this.interfacesData ?? (this.interfacesData = GetType().GetInterfaces().Select(HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>).ToArray());
+  }
+After:
+      => this.interfacesData ?? (this.interfacesData = GetType().GetInterfaces().Select(Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>).ToArray());
+  }
+*/
+      => this.interfacesData ?? (this.interfacesData = GetType().GetInterfaces().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>).ToArray());
   }
 }

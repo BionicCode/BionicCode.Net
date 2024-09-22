@@ -33,7 +33,14 @@
       : this.accessModifier;
 
     public ParameterData[] Parameters
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
       => this.parameters ?? (this.parameters = GetConstructorInfo().GetParameters().Select(HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<ParameterData>).ToArray());
+After:
+      => this.parameters ?? (this.parameters = GetConstructorInfo().GetParameters().Select(Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<ParameterData>).ToArray());
+*/
+      => this.parameters ?? (this.parameters = GetConstructorInfo().GetParameters().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<ParameterData>).ToArray());
 
     public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
       ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))

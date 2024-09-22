@@ -44,10 +44,24 @@
     public ParameterInfo ParameterInfo { get; }
 
     public TypeData ParameterTypeData
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
       => this.parameterTypeData ?? (this.parameterTypeData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>(GetParameterInfo().ParameterType));
+After:
+      => this.parameterTypeData ?? (this.parameterTypeData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>(GetParameterInfo().ParameterType));
+*/
+      => this.parameterTypeData ?? (this.parameterTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>(GetParameterInfo().ParameterType));
 
     public TypeData DeclaringTypeData
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
       => this.declaringTypeData ?? (this.declaringTypeData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>(GetDeclaringType()));
+After:
+      => this.declaringTypeData ?? (this.declaringTypeData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>(GetDeclaringType()));
+*/
+      => this.declaringTypeData ?? (this.declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>(GetDeclaringType()));
 
     public override HashSet<CustomAttributeData> AttributeData
       => this.attributeData ?? (this.attributeData = new HashSet<CustomAttributeData>(GetParameterInfo().GetCustomAttributesData()));

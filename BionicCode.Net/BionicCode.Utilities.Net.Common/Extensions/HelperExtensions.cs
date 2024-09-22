@@ -52,7 +52,6 @@
 
     private static readonly AccessModifierComparer AccessModifierComparer = new AccessModifierComparer();
     private static readonly CSharpCodeProvider CodeProvider = new CSharpCodeProvider();
-    private static readonly Dictionary<SymbolInfoDataCacheKey, SymbolInfoData> MemberInfoDataCache = new Dictionary<SymbolInfoDataCacheKey, SymbolInfoData>();
     private static readonly HashSet<string> IgnorableParameterAttributes = new HashSet<string>
     {
       nameof(InAttribute),
@@ -84,8 +83,8 @@
     /// </remarks>
     public static string ToSignatureName(this MethodInfo methodInfo)
     {
-      MethodData methodData = GetSymbolInfoDataCacheEntry<MethodData>(methodInfo);
-      return new string(methodData.FullyQualifiedSignature);
+      MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+      return methodData.FullyQualifiedSignature;
     }
 
     /// <summary>
@@ -102,8 +101,8 @@
     /// </remarks>
     public static string ToSignatureName(this Type type)
     {
-      TypeData typeData = GetSymbolInfoDataCacheEntry<TypeData>(type);
-      return new string(typeData.FullyQualifiedSignature);
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+      return typeData.FullyQualifiedSignature;
     }
 
     /// <summary>
@@ -120,8 +119,8 @@
     /// </remarks>
     public static string ToSignatureName(this FieldInfo fieldInfo)
     {
-      FieldData fieldData = GetSymbolInfoDataCacheEntry<FieldData>(fieldInfo);
-      return new string(fieldData.FullyQualifiedSignature);
+      FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+      return fieldData.FullyQualifiedSignature;
     }
 
     /// <summary>
@@ -138,8 +137,8 @@
     /// </remarks>
     public static string ToSignatureName(this PropertyInfo propertyInfo)
     {
-      PropertyData propertyData = GetSymbolInfoDataCacheEntry<PropertyData>(propertyInfo);
-      return new string(propertyData.FullyQualifiedSignature);
+      PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+      return propertyData.FullyQualifiedSignature;
     }
 
     /// <summary>
@@ -156,8 +155,8 @@
     /// </remarks>
     public static string ToSignatureName(this ConstructorInfo constructorInfo)
     {
-      ConstructorData constructorData = GetSymbolInfoDataCacheEntry<ConstructorData>(constructorInfo);
-      return new string(constructorData.FullyQualifiedSignature);
+      ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+      return constructorData.FullyQualifiedSignature;
     }
 
     /// <summary>
@@ -174,8 +173,8 @@
     /// </remarks>
     public static string ToSignatureName(this EventInfo eventInfo)
     {
-      EventData eventData = GetSymbolInfoDataCacheEntry<EventData>(eventInfo);
-      return new string(eventData.FullyQualifiedSignature);
+      EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+      return eventData.FullyQualifiedSignature;
     }
 
     /// <summary>
@@ -192,8 +191,8 @@
     /// </remarks>
     public static string ToSignatureShortName(this MethodInfo methodInfo)
     {
-      MethodData methodData = GetSymbolInfoDataCacheEntry<MethodData>(methodInfo);
-      return new string(methodData.Signature);
+      MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+      return methodData.Signature;
     }
     
     /// <summary>
@@ -210,8 +209,8 @@
     /// </remarks>
     public static string ToSignatureShortName(this Type type)
     {
-      TypeData typeData = GetSymbolInfoDataCacheEntry<TypeData>(type);
-      return new string(typeData.Signature);
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+      return typeData.Signature;
     }
 
     /// <summary>
@@ -228,8 +227,8 @@
     /// </remarks>
     public static string ToSignatureShortName(this FieldInfo fieldInfo)
     {
-      FieldData fieldData = GetSymbolInfoDataCacheEntry<FieldData>(fieldInfo);
-      return new string(fieldData.Signature);
+      FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+      return fieldData.Signature;
     }
 
     /// <summary>
@@ -246,8 +245,8 @@
     /// </remarks>
     public static string ToSignatureShortName(this PropertyInfo propertyInfo)
     {
-      PropertyData propertyData = GetSymbolInfoDataCacheEntry<PropertyData>(propertyInfo);
-      return new string(propertyData.Signature);
+      PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+      return propertyData.Signature;
     }
 
     /// <summary>
@@ -264,8 +263,8 @@
     /// </remarks>
     public static string ToSignatureShortName(this ConstructorInfo constructorInfo)
     {
-      ConstructorData constructorData = GetSymbolInfoDataCacheEntry<ConstructorData>(constructorInfo);
-      return new string(constructorData.Signature);
+      ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+      return constructorData.Signature;
     }
 
     /// <summary>
@@ -282,8 +281,8 @@
     /// </remarks>
     public static string ToSignatureShortName(this EventInfo eventInfo)
     {
-      EventData eventData = GetSymbolInfoDataCacheEntry<EventData>(eventInfo);
-      return new string(eventData.Signature);
+      EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+      return eventData.Signature;
     }
 
     #region REMOVE AFTER BENCHMARK COMPARISON!!!
@@ -1373,11 +1372,20 @@
             .Append(' ');
         }
 #endif
-
-        _ = signatureNameBuilder
+        if (propertyData.SymbolAttributes.HasFlag(SymbolAttributes.InitProperty))
+        {
+          _ = signatureNameBuilder
+            .Append("init")
+            .Append(HelperExtensionsCommon.ExpressionTerminator)
+            .Append(' ');
+        }
+        else
+        {
+          _ = signatureNameBuilder
           .Append("set")
           .Append(HelperExtensionsCommon.ExpressionTerminator)
           .Append(' ');
+        }
       }
 
       _ = signatureNameBuilder.Append('}');
@@ -1617,7 +1625,7 @@
       // Set return type
       if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))
       {
-        delegateInvocatorData = GetSymbolInfoDataCacheEntry<MethodData>(typeData.GetType().GetMethod("Invoke"));
+        delegateInvocatorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeData.GetType().GetMethod("Invoke"));
         delegateReturnTypeData = delegateInvocatorData.ReturnTypeData;
         _ = signatureNameBuilder.AppendDisplayNameInternal(delegateReturnTypeData, isFullyQualifiedName, isShortName: false)
           .Append(' ');
@@ -2046,7 +2054,7 @@
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this Type type)
     {
-      TypeData entry = GetSymbolInfoDataCacheEntry<TypeData>(type);
+      TypeData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return entry.AccessModifier;
     }
 
@@ -2060,7 +2068,7 @@
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this MethodInfo method)
     {
-      MethodData entry = GetSymbolInfoDataCacheEntry<MethodData>(method);
+      MethodData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(method);
       return entry.AccessModifier;
     }
 
@@ -2074,7 +2082,7 @@
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this ConstructorInfo constructor)
     {
-      ConstructorData entry = GetSymbolInfoDataCacheEntry<ConstructorData>(constructor);
+      ConstructorData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructor);
       return entry.AccessModifier;
     }
 
@@ -2088,7 +2096,7 @@
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this PropertyInfo property)
     {
-      PropertyData entry = GetSymbolInfoDataCacheEntry<PropertyData>(property);
+      PropertyData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(property);
       return entry.AccessModifier;
     }
 
@@ -2102,7 +2110,7 @@
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this EventInfo eventInfo)
     {
-      EventData entry = GetSymbolInfoDataCacheEntry<EventData>(eventInfo);
+      EventData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
       return entry.AccessModifier;
     }
 
@@ -2116,7 +2124,7 @@
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this FieldInfo field)
     {
-      FieldData entry = GetSymbolInfoDataCacheEntry<FieldData>(field);
+      FieldData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(field);
       return entry.AccessModifier;
     }
 
@@ -2201,7 +2209,7 @@
     /// </remarks>
     public static string ToDisplayName(this Type type, bool isShortName = false)
     {
-      TypeData typeData = GetSymbolInfoDataCacheEntry<TypeData>(type);
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return ToDisplayNameInternal(typeData, isFullyQualifiedName: false, isShortName);
     }
 
@@ -2218,7 +2226,7 @@
     /// </remarks>
     public static string ToDisplayName(this MethodInfo methodInfo, bool isShortName = false)
     {
-      MethodData methodData = GetSymbolInfoDataCacheEntry<MethodData>(methodInfo);
+      MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
       return ToDisplayNameInternal(methodData, isFullyQualifiedName: false, isShortName);
     }
 
@@ -2235,7 +2243,7 @@
     /// </remarks>
     public static string ToDisplayName(this ConstructorInfo constructorInfo, bool isShortName = false)
     {
-      ConstructorData constructorData = GetSymbolInfoDataCacheEntry<ConstructorData>(constructorInfo);
+      ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
       return ToDisplayNameInternal(constructorData, isFullyQualifiedName: false, isShortName);
     }
 
@@ -2252,7 +2260,7 @@
     /// </remarks>
     public static string ToDisplayName(this PropertyInfo propertyInfo, bool isShortName = false)
     {
-      PropertyData propertyData = GetSymbolInfoDataCacheEntry<PropertyData>(propertyInfo);
+      PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
       return ToDisplayNameInternal(propertyData, isFullyQualifiedName: false, isShortName);
     }
 
@@ -2269,7 +2277,7 @@
     /// </remarks>
     public static string ToDisplayName(this FieldInfo fieldInfo, bool isShortName = false)
     {
-      FieldData fieldData = GetSymbolInfoDataCacheEntry<FieldData>(fieldInfo);
+      FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
       return ToDisplayNameInternal(fieldData, isFullyQualifiedName: false, isShortName);
     }
 
@@ -2286,7 +2294,7 @@
     /// </remarks>
     public static string ToDisplayName(this ParameterInfo parameterInfo)
     {
-      ParameterData parameterData = GetSymbolInfoDataCacheEntry<ParameterData>(parameterInfo);
+      ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
       return ToDisplayNameInternal(parameterData, isFullyQualifiedName: false, isShortName: true);
     }
 
@@ -2303,7 +2311,7 @@
     /// </remarks>
     public static string ToDisplayName(this EventInfo eventInfo, bool isShortName = false)
     {
-      EventData eventData = GetSymbolInfoDataCacheEntry<EventData>(eventInfo);
+      EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
       return ToDisplayNameInternal(eventData, isFullyQualifiedName: false, isShortName);
     }
 
@@ -2320,7 +2328,7 @@
     /// </remarks>
     public static string ToFullDisplayName(this Type type, bool isShortName = false)
     {
-      TypeData typeData = GetSymbolInfoDataCacheEntry<TypeData>(type);
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return ToDisplayNameInternal(typeData, isFullyQualifiedName: true, isShortName);
     }
 
@@ -2337,7 +2345,7 @@
     /// </remarks>
     public static string ToFullDisplayName(this MethodInfo methodInfo, bool isShortName = false)
     {
-      MethodData methodData = GetSymbolInfoDataCacheEntry<MethodData>(methodInfo);
+      MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
       return ToDisplayNameInternal(methodData, isFullyQualifiedName: true, isShortName);
     }
 
@@ -2354,7 +2362,7 @@
     /// </remarks>
     public static string ToFullDisplayName(this ConstructorInfo constructorInfo, bool isShortName = false)
     {
-      ConstructorData constructorData = GetSymbolInfoDataCacheEntry<ConstructorData>(constructorInfo);
+      ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
       return ToDisplayNameInternal(constructorData, isFullyQualifiedName: true, isShortName);
     }
 
@@ -2371,7 +2379,7 @@
     /// </remarks>
     public static string ToFullDisplayName(this PropertyInfo propertyInfo, bool isShortName = false)
     {
-      PropertyData propertyData = GetSymbolInfoDataCacheEntry<PropertyData>(propertyInfo);
+      PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
       return ToDisplayNameInternal(propertyData, isFullyQualifiedName: true, isShortName);
     }
 
@@ -2388,7 +2396,7 @@
     /// </remarks>
     public static string ToFullDisplayName(this FieldInfo fieldInfo, bool isShortName = false)
     {
-      FieldData fieldData = GetSymbolInfoDataCacheEntry<FieldData>(fieldInfo);
+      FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
       return ToDisplayNameInternal(fieldData, isFullyQualifiedName: true, isShortName);
     }
 
@@ -2405,7 +2413,7 @@
     /// </remarks>
     public static string ToFullDisplayName(this EventInfo eventInfo, bool isShortName = false)
     {
-      EventData eventData = GetSymbolInfoDataCacheEntry<EventData>(eventInfo);
+      EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
       return ToDisplayNameInternal(eventData, isFullyQualifiedName: true, isShortName);
     }
 
@@ -2448,85 +2456,85 @@
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, Type type, bool isShortName = false)
     {
-      TypeData typeData = GetSymbolInfoDataCacheEntry<TypeData>(type);
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return AppendDisplayNameInternal(nameBuilder, typeData, isFullyQualifiedName: false, isShortName);
     }
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, MethodInfo methodInfo, bool isShortName = false)
     {
-      MethodData methodData = GetSymbolInfoDataCacheEntry<MethodData>(methodInfo);
+      MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
       return AppendDisplayNameInternal(nameBuilder, methodData, isFullyQualifiedName: false, isShortName);
     }
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, EventInfo eventInfo, bool isShortName = false)
     {
-      EventData eventData = GetSymbolInfoDataCacheEntry<EventData>(eventInfo);
+      EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
       return AppendDisplayNameInternal(nameBuilder, eventData, isFullyQualifiedName: false, isShortName);
     }
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, ConstructorInfo constructorInfo, bool isShortName = false)
     {
-      ConstructorData constructorData = GetSymbolInfoDataCacheEntry<ConstructorData>(constructorInfo);
+      ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
       return AppendDisplayNameInternal(nameBuilder, constructorData, isFullyQualifiedName: false, isShortName);
     }
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, PropertyInfo propertyInfo, bool isShortName = false)
     {
-      PropertyData propertyData = GetSymbolInfoDataCacheEntry<PropertyData>(propertyInfo);
+      PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
       return AppendDisplayNameInternal(nameBuilder, propertyData, isFullyQualifiedName: false, isShortName);
     }
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, ParameterInfo parameterInfo)
     {
-      ParameterData parameterData = GetSymbolInfoDataCacheEntry<ParameterData>(parameterInfo);
+      ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
       return AppendDisplayNameInternal(nameBuilder, parameterData);
     }
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, FieldInfo fieldInfo, bool isShortName = false)
     {
-      FieldData fieldData = GetSymbolInfoDataCacheEntry<FieldData>(fieldInfo);
+      FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
       return AppendDisplayNameInternal(nameBuilder, fieldData, isFullyQualifiedName: false, isShortName);
     }
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, Type type, bool isShortName = false)
     {
-      TypeData typeData = GetSymbolInfoDataCacheEntry<TypeData>(type);
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return AppendDisplayNameInternal(nameBuilder, typeData, isFullyQualifiedName: true, isShortName);
     }
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, MethodInfo methodInfo, bool isShortName = false)
     {
-      MethodData methodData = GetSymbolInfoDataCacheEntry<MethodData>(methodInfo);
+      MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
       return AppendDisplayNameInternal(nameBuilder, methodData, isFullyQualifiedName: true, isShortName);
     }
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, EventInfo eventInfo, bool isShortName = false)
     {
-      EventData eventData = GetSymbolInfoDataCacheEntry<EventData>(eventInfo);
+      EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
       return AppendDisplayNameInternal(nameBuilder, eventData, isFullyQualifiedName: true, isShortName);
     }
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, ConstructorInfo constructorInfo, bool isShortName = false)
     {
-      ConstructorData constructorData = GetSymbolInfoDataCacheEntry<ConstructorData>(constructorInfo);
+      ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
       return AppendDisplayNameInternal(nameBuilder, constructorData, isFullyQualifiedName: true, isShortName);
     }
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, PropertyInfo propertyInfo, bool isShortName = false)
     {
-      PropertyData propertyData = GetSymbolInfoDataCacheEntry<PropertyData>(propertyInfo);
+      PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
       return AppendDisplayNameInternal(nameBuilder, propertyData, isFullyQualifiedName: true, isShortName);
     }
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, ParameterInfo parameterInfo)
     {
-      ParameterData parameterData = GetSymbolInfoDataCacheEntry<ParameterData>(parameterInfo);
+      ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
       return AppendDisplayNameInternal(nameBuilder, parameterData);
     }
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, FieldInfo fieldInfo, bool isShortName = false)
     {
-      FieldData fieldData = GetSymbolInfoDataCacheEntry<FieldData>(fieldInfo);
+      FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
       return AppendDisplayNameInternal(nameBuilder, fieldData, isFullyQualifiedName: true, isShortName);
     }
 
@@ -2535,7 +2543,7 @@
       Type type = typeData.GetType();
       if (typeData.IsByRef)
       {
-        typeData = GetSymbolInfoDataCacheEntry<TypeData>(type.GetElementType());
+        typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type.GetElementType());
         type = typeData.GetType();
       }
 
@@ -2796,7 +2804,7 @@
     // TODO::Test if checking get() is enough to determine if a property is overridden
     public static bool IsDelegate(this Type typeInfo)
     {
-      TypeData typeData = GetSymbolInfoDataCacheEntry<TypeData>(typeInfo);
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeInfo);
       return typeData.SymbolAttributes.HasFlag(SymbolAttributes.Delegate);
     }
 
@@ -2806,7 +2814,7 @@
     // TODO::Test if checking get() is enough to determine if a property is overridden
     public static bool IsOverride(this PropertyInfo propertyInfo)
     {
-      PropertyData memberInfoData = GetSymbolInfoDataCacheEntry<PropertyData>(propertyInfo);
+      PropertyData memberInfoData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
       return memberInfoData.IsOverride;
     }
 
@@ -2815,7 +2823,7 @@
 
     public static bool IsConst(this FieldInfo fieldInfo)
     {
-      FieldData methodData = GetSymbolInfoDataCacheEntry<FieldData>(fieldInfo);
+      FieldData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
       return methodData.SymbolAttributes.HasFlag(SymbolAttributes.Constant);
     }
 
@@ -2824,14 +2832,14 @@
 
     public static bool IsOverride(this MethodInfo methodInfo)
     {
-      MethodData methodData = GetSymbolInfoDataCacheEntry<MethodData>(methodInfo);
+      MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
       return methodData.IsOverride;
     }
 
 #if NET
     public static bool IsInitOnly(this PropertyInfo propertyInfo)
     {
-      PropertyData propertyData = GetSymbolInfoDataCacheEntry<PropertyData>(propertyInfo);
+      PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
       return propertyData.SymbolAttributes.HasFlag(SymbolAttributes.InitProperty);
     }
 
@@ -2865,7 +2873,7 @@
     /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
     public static bool IsAwaitable(this MethodInfo methodInfo)
     {
-      MethodData methodData = GetSymbolInfoDataCacheEntry<MethodData>(methodInfo);
+      MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
       return methodData.IsAwaitable;
     }
 
@@ -2888,7 +2896,7 @@
     /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
     public static bool IsAwaitable(this Type type)
     {
-      TypeData typeData = GetSymbolInfoDataCacheEntry<TypeData>(type);
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return typeData.IsAwaitable;
     }
 
@@ -2954,7 +2962,7 @@
 
     public static bool IsMarkedAsync(this MethodInfo methodInfo)
     {
-      MethodData methodData = GetSymbolInfoDataCacheEntry<MethodData>(methodInfo);
+      MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
       return methodData.IsAsync;
     }
 
@@ -2968,7 +2976,7 @@
     /// <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="typeInfo"/> is static. Otherwise <see langword="false"/>.</returns>
     public static bool IsStatic(this Type typeInfo)
     {
-      TypeData typeData = GetSymbolInfoDataCacheEntry<TypeData>(typeInfo);
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeInfo);
       return typeData.IsStatic;
     }
 
@@ -2981,7 +2989,7 @@
     /// <returns><see langword="true"/> if the <paramref name="parameterInfo"/> represents a <see langword="ref"/> parameter. Otherwise <see langword="false"/>.</returns>
     public static bool IsRef(this ParameterInfo parameterInfo)
     {
-      ParameterData typeData = GetSymbolInfoDataCacheEntry<ParameterData>(parameterInfo);
+      ParameterData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
       return typeData.IsRef;
     }
 
@@ -2997,7 +3005,7 @@
     /// <br/>In addition this method checks if the declaring class and the method are both decorated with the <see cref="ExtensionAttribute"/> which is added by the compiler.</remarks>
     public static bool CanDeclareExtensionMethods(this Type typeInfo)
     {
-      TypeData typeData = GetSymbolInfoDataCacheEntry<TypeData>(typeInfo);
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeInfo);
       return typeData.CanDeclareExtensionMethod;
     }
 
@@ -3032,7 +3040,7 @@
     /// <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="methodInfo"/> is an extension method. Otherwise <see langword="false"/>.</returns>
     public static bool IsExtensionMethod(this MethodInfo methodInfo)
     {
-      MethodData methodData = GetSymbolInfoDataCacheEntry<MethodData>(methodInfo);
+      MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
       return methodData.IsExtensionMethod;
     }
 
@@ -3138,7 +3146,7 @@
 #if !NETSTANDARD2_0
     public static bool IsReadOnlyStruct(Type type)
     {
-      TypeData typeData = GetSymbolInfoDataCacheEntry<TypeData>(type);
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return typeData.SymbolAttributes.HasFlag(SymbolAttributes.ReadOnlyStruct);
     }
 
@@ -3189,9 +3197,6 @@
 
     //  return null;
     //}
-
-    
-
 
     internal static SymbolAttributes GetAttributesInternal(TypeData typeData)
     {
@@ -3453,93 +3458,30 @@
       return eventAttributes;
     }
 
-    internal static TEntry GetSymbolInfoDataCacheEntry<TEntry>(object symbolInfo) where TEntry : SymbolInfoData
-    {
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
       SymbolInfoDataCacheKey cacheKey = CreateSymbolInfoDataCacheKey(symbolInfo);
-      if (!HelperExtensionsCommon.MemberInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
+      if (!HelperExtensionsCommon.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
       {
         symbolInfoData = CreateMemberInfoDataCacheEntry(symbolInfo, cacheKey);
       }
-
-      // TODO::Remove after testing
-#if DEBUG
-      else
+After:
+      SymbolInfoDataCacheKey cacheKey = Net.SymbolReflectionInfoCache.CreateSymbolInfoDataCacheKey(symbolInfo);
+      if (!Net.SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
       {
-        Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfo.GetType()}");
+        symbolInfoData = Net.SymbolReflectionInfoCache.CreateMemberInfoDataCacheEntry(symbolInfo, cacheKey);
       }
-#endif
+*/
 
-      return (TEntry)symbolInfoData;
-    }
-
-    // TODO::Test performance with 'in' parameter to pass the struct (key) by reference
-    private static SymbolInfoData CreateMemberInfoDataCacheEntry(object symbolInfo, SymbolInfoDataCacheKey key)
-    {
-      SymbolInfoData entry;
-      switch (symbolInfo)
-      {
-        case Type type:
-          entry = new TypeData(type);
-          break;
-        case MethodInfo method:
-          entry = new MethodData(method);
-          break;
-        case ConstructorInfo constructor:
-          entry = new ConstructorData(constructor);
-          break;
-        case FieldInfo field:
-          entry = new FieldData(field);
-          break;
-        case PropertyInfo property:
-          entry = new PropertyData(property);
-          break;
-        case EventInfo eventInfo:
-          entry = new EventData(eventInfo);
-          break;
-        case ParameterInfo parameter:
-          entry = new ParameterData(parameter);
-          break;
-        default:
-          throw new NotImplementedException();
-      }
-
-      HelperExtensionsCommon.MemberInfoDataCache.Add(key, entry);
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
+      HelperExtensionsCommon.SymbolInfoDataCache.Add(key, entry);
       return entry;
-    }
-
-    private static SymbolInfoDataCacheKey CreateSymbolInfoDataCacheKey(object symbolInfo)
-    {
-      SymbolInfoDataCacheKey key;
-      switch (symbolInfo)
-      {
-        case Type type:
-          key = new SymbolInfoDataCacheKey(type.Name, default, type.TypeHandle, Type.EmptyTypes);
-          break;
-        case MethodInfo method:
-          key = new SymbolInfoDataCacheKey(method.Name, method.DeclaringType.TypeHandle, method.MethodHandle, method.GetParameters());
-          break;
-        case ConstructorInfo constructor:
-          key = new SymbolInfoDataCacheKey(constructor.Name, constructor.DeclaringType.TypeHandle, constructor.MethodHandle, constructor.GetParameters());
-          break;
-        case FieldInfo field:
-          key = new SymbolInfoDataCacheKey(field.Name, field.DeclaringType.TypeHandle, field.FieldHandle, field.FieldType, field.DeclaringType);
-          break;
-        case PropertyInfo property:
-          key = new SymbolInfoDataCacheKey(property.Name, property.DeclaringType.TypeHandle, property.GetGetMethod()?.MethodHandle ?? property.GetSetMethod().MethodHandle, property.PropertyType, property.DeclaringType);
-          break;
-        case EventInfo eventInfo:
-          key = new SymbolInfoDataCacheKey(eventInfo.Name, eventInfo.DeclaringType.TypeHandle, eventInfo.AddMethod.MethodHandle, eventInfo.EventHandlerType, eventInfo.DeclaringType);
-          break;
-        case ParameterInfo parameter:
-          key = new SymbolInfoDataCacheKey(parameter.Name, parameter.Member.DeclaringType.TypeHandle, parameter.ParameterType.TypeHandle, parameter.ParameterType, parameter.Member.DeclaringType);
-          break;
-        default:
-          throw new NotImplementedException();
-      }
-
-      return key;
-    }
-
+After:
+      Net.SymbolReflectionInfoCache.SymbolInfoDataCache.Add(key, entry);
+      return entry;
+*/
     public static dynamic Cast(this object obj, Type type)
         => typeof(HelperExtensionsCommon).GetMethod(nameof(HelperExtensionsCommon.Cast), BindingFlags.Static | BindingFlags.NonPublic, null, new[] { typeof(object) }, null).GetGenericMethodDefinition().MakeGenericMethod(type).Invoke(obj, null);
 

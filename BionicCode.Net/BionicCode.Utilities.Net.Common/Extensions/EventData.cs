@@ -31,13 +31,34 @@
       : this.accessModifier;
 
     public MethodData AddMethodData 
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
       => this.addMethodData ?? (this.addMethodData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<MethodData>(this.GetEventInfo().AddMethod));
+After:
+      => this.addMethodData ?? (this.addMethodData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<MethodData>(this.GetEventInfo().AddMethod));
+*/
+      => this.addMethodData ?? (this.addMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<MethodData>(this.GetEventInfo().AddMethod));
 
     public MethodData RemoveMethodData
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
       => this.removeMethodData ?? (this.removeMethodData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<MethodData>(GetEventInfo().RemoveMethod));
+After:
+      => this.removeMethodData ?? (this.removeMethodData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<MethodData>(GetEventInfo().RemoveMethod));
+*/
+      => this.removeMethodData ?? (this.removeMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<MethodData>(GetEventInfo().RemoveMethod));
 
     public TypeData EventHandlerTypeData
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
       => this.eventHandlerTypeData ?? (this.eventHandlerTypeData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>(GetEventInfo().EventHandlerType));
+After:
+      => this.eventHandlerTypeData ?? (this.eventHandlerTypeData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>(GetEventInfo().EventHandlerType));
+*/
+      => this.eventHandlerTypeData ?? (this.eventHandlerTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>(GetEventInfo().EventHandlerType));
 
     public override bool IsStatic
       => (bool)(this.isStatic ?? (this.isStatic = this.AddMethodData.IsStatic));

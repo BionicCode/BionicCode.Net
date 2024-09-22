@@ -508,11 +508,12 @@
       }
     }
 
-    private void GetTargetMethods(Type typeToProfile, bool isFindInstanceProviderEnabled, IList<ProfiledMemberInfo> targetMembers, CancellationToken cancellationToken, out bool hasProfiledInstanceMethods, out InstanceProviderInfo instanceProviderMethodInfo)
+    private void GetTargetMethods(Type typeToProfile, bool isFindInstanceProviderEnabled, in IList<ProfiledMemberInfo> targetMembers, CancellationToken cancellationToken, out bool hasProfiledInstanceMethods, out InstanceProviderInfo instanceProviderMethodInfo)
     {
       hasProfiledInstanceMethods = false;
       instanceProviderMethodInfo = null;
       bool hasHighPriorityInstanceProvider = false;
+      SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>(typeToProfile)
       foreach (MethodInfo methodInfo in typeToProfile.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
       {
         cancellationToken.ThrowIfCancellationRequested();

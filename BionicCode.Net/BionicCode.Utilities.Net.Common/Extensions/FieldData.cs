@@ -43,7 +43,14 @@
     public override bool IsStatic => (bool)(this.isStatic ?? (this.isStatic = GetFieldInfo().IsStatic));
 
     public TypeData FieldTypeData
+
+/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
+Before:
       => this.fieldTypeData ?? (this.fieldTypeData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>(this.GetFieldInfo().FieldType));
+After:
+      => this.fieldTypeData ?? (this.fieldTypeData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>(this.GetFieldInfo().FieldType));
+*/
+      => this.fieldTypeData ?? (this.fieldTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>(this.GetFieldInfo().FieldType));
 
     public bool IsRef
       => (bool)(this.isRef ?? (this.isRef = this.FieldTypeData.IsByRef));
