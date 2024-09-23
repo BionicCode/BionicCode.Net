@@ -18,6 +18,6 @@
     public bool IsIndexer { get; }
     public Action SetDelegate { get; set; }
     public Action GetDelegate { get; set; }
-    public override MemberInfo MemberInfo => this.PropertyInfo;
+    public override MemberInfo MemberInfoData => this.PropertyInfo;
   }
 }

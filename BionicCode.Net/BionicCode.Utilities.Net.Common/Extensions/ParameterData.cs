@@ -6,6 +6,8 @@
 
   internal sealed class ParameterData : SymbolInfoData
   {
+    private string displayName;
+    private string fullyQualifiedDisplayName;
     private string signature;
     private string fullyQualifiedSignature;
     private SymbolAttributes symbolAttributes;
@@ -44,24 +46,10 @@
     public ParameterInfo ParameterInfo { get; }
 
     public TypeData ParameterTypeData
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-      => this.parameterTypeData ?? (this.parameterTypeData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>(GetParameterInfo().ParameterType));
-After:
-      => this.parameterTypeData ?? (this.parameterTypeData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>(GetParameterInfo().ParameterType));
-*/
-      => this.parameterTypeData ?? (this.parameterTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>(GetParameterInfo().ParameterType));
+      => this.parameterTypeData ?? (this.parameterTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetParameterInfo().ParameterType));
 
     public TypeData DeclaringTypeData
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-      => this.declaringTypeData ?? (this.declaringTypeData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>(GetDeclaringType()));
-After:
-      => this.declaringTypeData ?? (this.declaringTypeData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>(GetDeclaringType()));
-*/
-      => this.declaringTypeData ?? (this.declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>(GetDeclaringType()));
+      => this.declaringTypeData ?? (this.declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetDeclaringType()));
 
     public override HashSet<CustomAttributeData> AttributeData
       => this.attributeData ?? (this.attributeData = new HashSet<CustomAttributeData>(GetParameterInfo().GetCustomAttributesData()));
@@ -74,9 +62,15 @@ After:
       : this.symbolAttributes;
 
     public override string Signature
-      => this.signature ?? (this.signature = GetParameterInfo().Name;
+      => this.signature ?? (this.signature = GetParameterInfo().Name);
 
     public override string FullyQualifiedSignature
       => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = GetParameterInfo().Name);
+
+    public override string DisplayName
+      => this.displayName ?? (this.displayName = GetParameterInfo().Name);
+
+    public override string FullyQualifiedDisplayName 
+      => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = GetParameterInfo().Name);
   }
 }

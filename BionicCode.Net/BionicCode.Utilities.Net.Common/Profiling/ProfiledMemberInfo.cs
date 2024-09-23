@@ -9,11 +9,13 @@
     public int LineNumber { get; }
     public string SourceFilePath { get; }
     public Runtime TargetFramework { get; }
-    public IEnumerable<IEnumerable<object>> ArgumentLists { get; }
+    public IList<IEnumerable<object>> ArgumentLists { get; }
     public bool IsStatic { get; }
-    public abstract MemberInfo MemberInfo { get; }
+    public abstract MemberInfoData MemberInfoData { get; }
+    public abstract string Name { get; }
+    public abstract string Signature { get; }
 
-    protected ProfiledMemberInfo(IEnumerable<IEnumerable<object>> argumentLists, bool isStatic, string assemblyName, int lineNumber, string sourceFilePath, Runtime targetFramework)
+    protected ProfiledMemberInfo(IList<IEnumerable<object>> argumentLists, bool isStatic, string assemblyName, int lineNumber, string sourceFilePath, Runtime targetFramework)
     {
       this.ArgumentLists = argumentLists;
       this.IsStatic = isStatic;

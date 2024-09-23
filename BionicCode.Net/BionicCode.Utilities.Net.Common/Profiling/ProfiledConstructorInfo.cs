@@ -12,6 +12,6 @@
     public ConstructorInfo ConstructorInfo { get; }
     public string ConstructorName => this.ConstructorInfo.DeclaringType.Name;
     public Action ConstructorDelegate { get; set; }
-    public override MemberInfo MemberInfo => this.ConstructorInfo;
+    public override MemberInfo MemberInfoData => this.ConstructorInfo;
   }
 }

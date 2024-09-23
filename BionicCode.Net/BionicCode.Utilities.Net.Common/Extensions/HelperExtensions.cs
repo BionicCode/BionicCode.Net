@@ -35,6 +35,7 @@
     private const string Indentation = "  ";
 
     private static readonly Type ValueTaskType = typeof(ValueTask);
+    private static readonly Type ValueTaskGenericType = typeof(ValueTask<>);
     private static readonly Type TaskType = typeof(Task); 
     private static readonly Type AsyncStateMachineAttributeType = typeof(AsyncStateMachineAttribute);
     private static readonly Type ExtensionAttributeType = typeof(ExtensionAttribute); 
@@ -2952,13 +2953,13 @@
       return false;
     }
 
-    private static bool IsAwaitableTask(Type type)
+    internal static bool IsAwaitableTask(Type type)
       => HelperExtensionsCommon.TaskType.IsAssignableFrom(type)
         || HelperExtensionsCommon.TaskType.IsAssignableFrom(type.BaseType);
 
-    private static bool IsAwaitableValueTask(Type type)
-      => HelperExtensionsCommon.ValueTaskType.IsAssignableFrom(type)
-        || HelperExtensionsCommon.ValueTaskType.IsAssignableFrom(type.BaseType);
+    internal static bool IsAwaitableValueTask(Type type)
+      => HelperExtensionsCommon.ValueTaskType == type
+        || (type.IsGenericType && HelperExtensionsCommon.ValueTaskGenericType == type.GetGenericTypeDefinition());
 
     public static bool IsMarkedAsync(this MethodInfo methodInfo)
     {

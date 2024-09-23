@@ -6,7 +6,7 @@
 
   internal abstract class MemberInfoData : SymbolInfoData
   {
-    private HashSet<CustomAttributeData> attributeData;
+    private IList<CustomAttributeData> attributeData;
     private TypeData declaringTypeData;
 
     protected MemberInfoData(MemberInfo memberInfo) : base(memberInfo.Name)
@@ -24,19 +24,10 @@
     public abstract AccessModifier AccessModifier { get; }
     public string Namespace { get; }
 
-    public override HashSet<CustomAttributeData> AttributeData
+    public override IList<CustomAttributeData> AttributeData
       => this.attributeData ?? (this.attributeData = new HashSet<CustomAttributeData>(GetMemberInfo().GetCustomAttributesData()));
 
     public TypeData DeclaringTypeData
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-      => this.declaringTypeData ?? (this.declaringTypeData = HelperExtensionsCommon.GetSymbolInfoDataCacheEntry<TypeData>(GetDeclaringType()));
-  }
-After:
-      => this.declaringTypeData ?? (this.declaringTypeData = Net.SymbolReflectionInfoCache.GetSymbolInfoDataCacheEntry<TypeData>(GetDeclaringType()));
-  }
-*/
-      => this.declaringTypeData ?? (this.declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry<TypeData>(GetDeclaringType()));
+      => this.declaringTypeData ?? (this.declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetDeclaringType()));
   }
 }

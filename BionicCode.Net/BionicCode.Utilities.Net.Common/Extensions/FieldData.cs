@@ -5,6 +5,8 @@
 
   internal sealed class FieldData : MemberInfoData
   {
+    private string displayName;
+    private string fullyQualifiedDisplayName;
     private string signature;
     private string fullyQualifiedSignature;
     private SymbolAttributes symbolAttributes;
@@ -61,6 +63,12 @@
 
     public override string FullyQualifiedSignature
       => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false));
+
+    public override string DisplayName
+      => this.displayName ?? (this.displayName = GetType().ToDisplayName());
+
+    public override string FullyQualifiedDisplayName
+      => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = GetType().ToFullDisplayName());
 
     public override bool IsStatic => (bool)(this.isStatic ?? (this.isStatic = GetFieldInfo().IsStatic));
 

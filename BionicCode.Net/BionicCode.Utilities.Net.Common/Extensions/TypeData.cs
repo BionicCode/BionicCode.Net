@@ -7,8 +7,8 @@
 
   internal  class TypeData : SymbolInfoData
   {
-    private readonly Dictionary<string, MemberInfo> memberNameMap;
-    private HashSet<CustomAttributeData> attributeData;
+    private string displayName;
+    private string fullyQualifiedDisplayName;
     private SymbolAttributes symbolAttributes;
     private AccessModifier accessModifier;
     private bool? canDeclareExtensionMethod;
@@ -35,6 +35,7 @@
     private FieldData[] fieldsData;
     private EventData[] eventsData;
     private ConstructorData[] constructorsData;
+    private IList<CustomAttributeData> attributeData;
 
 #if !NETFRAMEWORK && !NETSTANDARD2_0
     private bool? isByRefLike;
@@ -44,22 +45,10 @@
     {
       this.Handle = type.TypeHandle;
       this.Namespace = type.Namespace;
-      this.memberNameMap = new Dictionary<string, MemberInfo>();
     }
 
     new public Type GetType()
       => Type.GetTypeFromHandle(this.Handle);
-
-    public TypeData GetInterface(string interfaceName)
-    {
-      ISymbolInfoDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(interfaceName, this.Namespace, this.Handle);
-      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out TypeData propertyData))
-      {
-        return propertyData;
-      }
-
-      throw new ArgumentException($"Unable to find a property named '{interfaceName}' on type '{GetType().FullName}'.", nameof(interfaceName));
-    }
 
     public PropertyData GetProperty(string propertyName)
     {
@@ -69,7 +58,7 @@
         return propertyData;
       }
 
-      throw new ArgumentException($"Unable to find a property named '{propertyName}' on type '{GetType().FullName}'.", nameof(propertyName));
+      throw new ArgumentException($"Unable to find a property named '{propertyName}' on type '{this.Namespace}.{this.Name}'.", nameof(propertyName));
     }
 
     public MethodData GetMethod(string methodName)
@@ -80,7 +69,7 @@
         return methodData;
       }
 
-      throw new ArgumentException($"Unable to find a method named '{methodName}' on type '{GetType().FullName}'.", nameof(methodName));
+      throw new ArgumentException($"Unable to find a method named '{methodName}' on type '{this.Namespace}.{this.Name}'.", nameof(methodName));
     }
 
     public FieldData GetField(string fieldName)
@@ -91,7 +80,7 @@
         return methodData;
       }
 
-      throw new ArgumentException($"Unable to find a field named '{fieldName}' on type '{GetType().FullName}'.", nameof(fieldName));
+      throw new ArgumentException($"Unable to find a field named '{fieldName}' on type '{this.Namespace}.{this.Name}'.", nameof(fieldName));
     }
 
     public EventData GetEvent(string eventName)
@@ -102,7 +91,7 @@
         return methodData;
       }
 
-      throw new ArgumentException($"Unable to find an event named '{eventName}' on type '{GetType().FullName}'.", nameof(eventName));
+      throw new ArgumentException($"Unable to find an event named '{eventName}' on type '{this.Namespace}.{this.Name}'.", nameof(eventName));
     }
 
     public ConstructorData GetConstructor(string constructorName)
@@ -113,7 +102,7 @@
         return methodData;
       }
 
-      throw new ArgumentException($"Unable to find a constructor named '{constructorName}' on type '{GetType().FullName}'.", nameof(constructorName));
+      throw new ArgumentException($"Unable to find a constructor named '{constructorName}' on type '{this.Namespace}.{this.Name}'.", nameof(constructorName));
     }
 
     public RuntimeTypeHandle Handle { get; }
@@ -160,8 +149,8 @@
     public bool CanDeclareExtensionMethod 
       => (bool)(this.canDeclareExtensionMethod ?? (this.canDeclareExtensionMethod = HelperExtensionsCommon.CanDeclareExtensionMethodsInternal(this)));
 
-    public override HashSet<CustomAttributeData> AttributeData
-      => this.attributeData ?? (this.attributeData = new HashSet<CustomAttributeData>(GetType().GetCustomAttributesData()));
+    public override IList<CustomAttributeData> AttributeData
+      => this.attributeData ?? (this.attributeData = GetType().GetCustomAttributesData());
 
     public AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined 
       ? (this.accessModifier = HelperExtensionsCommon.GetAccessModifierInternal(this))
@@ -172,6 +161,12 @@
 
     public override string FullyQualifiedSignature
       => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false));
+
+    public override string DisplayName 
+      => this.displayName ?? (this.displayName = GetType().ToDisplayName());
+
+    public override string FullyQualifiedDisplayName 
+      => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = GetType().ToFullDisplayName());
 
     public bool IsStatic 
       => (bool)(this.isStatic ?? (this.isStatic = HelperExtensionsCommon.IsStaticInternal(this)));

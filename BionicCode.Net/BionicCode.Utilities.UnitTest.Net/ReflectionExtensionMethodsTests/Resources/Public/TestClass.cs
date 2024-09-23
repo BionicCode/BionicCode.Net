@@ -23,8 +23,10 @@
     public TestClass(in int parameter)
     { }
 
-    public int PublicMethodWithReturnValue(string parameter)
+    public async Task<int> PublicMethodWithReturnValue(string parameter)
     {
+      Task result = await Task.WhenAny(PublicMethodWithReturnValue("hello"), new Task(() => { }));
+      Func<Task> func = () => Task.WhenAny(PublicMethodWithReturnValue("hello"));
       return 0;
     }
 
