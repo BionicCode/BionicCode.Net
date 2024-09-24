@@ -36,6 +36,7 @@
     private EventData[] eventsData;
     private ConstructorData[] constructorsData;
     private IList<CustomAttributeData> attributeData;
+    private string assemblyName;
 
 #if !NETFRAMEWORK && !NETSTANDARD2_0
     private bool? isByRefLike;
@@ -167,6 +168,9 @@
 
     public override string FullyQualifiedDisplayName 
       => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = GetType().ToFullDisplayName());
+
+    public override string AssemblyName
+      => this.assemblyName ?? (this.assemblyName = GetType().Assembly.GetName().Name);
 
     public bool IsStatic 
       => (bool)(this.isStatic ?? (this.isStatic = HelperExtensionsCommon.IsStaticInternal(this)));

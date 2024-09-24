@@ -16,6 +16,7 @@
     private bool? isRef;
     private Func<object, object> getInvocator;
     private Action<object, object> setInvocator;
+    private string assemblyName;
 
     public FieldData(FieldInfo fieldInfo) : base(fieldInfo)
     {
@@ -69,6 +70,9 @@
 
     public override string FullyQualifiedDisplayName
       => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = GetType().ToFullDisplayName());
+
+    public override string AssemblyName
+      => this.assemblyName ?? (this.assemblyName = this.DeclaringTypeData.AssemblyName);
 
     public override bool IsStatic => (bool)(this.isStatic ?? (this.isStatic = GetFieldInfo().IsStatic));
 

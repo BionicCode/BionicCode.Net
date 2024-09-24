@@ -18,7 +18,7 @@
     /// The default value used by the <see cref="Profiler"/> to execute warmup iterations (to initilaize the JIT compiler).
     /// </summary>
     /// <remarks>Use the appropriate overloads of the profiler methods or define a <see cref="ProfilerOptions"/> object to change the default behavior.</remarks>
-    public const int DefaultWarmupCount = 4;
+    public const int DefaultWarmupCount = 10;
 
     /// <summary>
     /// The default base unit that all results are transformed to.
@@ -39,25 +39,7 @@
     /// </remarks>
     public const int DefaultIterationCount = 1000;
 
-    /// <summary>
-    /// Measures the execution time of a method using a default warmup iteration count of '4' to warmup the JIT compiler.
-    /// </summary>
-    /// <param name="action">The code to measure execution time.</param>
-    /// <param name="options">The options object to customize the behavior of the <see cref="Profiler"/>.</param>
-    /// <returns>The result containing the average execution time of all iterations as <see cref="TimeSpan"/>.</returns>
-    /// <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-    /// <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when the value of <see cref="ProfilerOptions.Iterations"/> or <see cref="ProfilerOptions.WarmupIterations"/> is not between '0' and 'ulong.MaxValue'.</exception>
-    /// <remarks>
-    /// The results are calculated using the default time base defined by <see cref="DefaultBaseUnit"/>.
-    /// <para>
-    /// Use the <see cref="LogTime(Action, int, ProfilerLoggerDelegate, TimeUnit, string, int)"/> and provide an instance of the <see cref="ProfilerLoggerDelegate"/>  to enable logging.
-    /// <br/>Or use the <see cref="LogTimeAsync(Action, int, ProfilerLoggerAsyncDelegate, string, int)"/> overload and provide a <see cref="ProfilerLoggerAsyncDelegate"/> delegate to enable asynchronous logging (for example, use asnchronous API to write the results to a file).
-    /// </para>
-    /// </remarks>
-    public static ProfilerBatchResult LogTime(Action action, ProfilerOptions options, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-      => LogTimeInternal(action, options.WarmupIterations, options.Iterations, -1, options.Logger, options.BaseUnit, sourceFileName, lineNumber);
-
+    // Shipped
     /// <summary>
     /// Measures the execution time of a method using a default warmup iteration count of '4' to warmup the JIT compiler.
     /// </summary>
@@ -69,8 +51,8 @@
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the value of<paramref name="runCount"/> is not between '0' and 'ulong.MaxValue'.</exception>
     /// <remarks>
     /// <para>
-    /// Use the <see cref="LogTime(Action, int, ProfilerLoggerDelegate, TimeUnit, string, int)"/> and provide an instance of the <see cref="ProfilerLoggerDelegate"/>  to enable logging.
-    /// <br/>Or use the <see cref="LogTimeAsync(Action, int, ProfilerLoggerAsyncDelegate, string, int)"/> overload and provide a <see cref="ProfilerLoggerAsyncDelegate"/> delegate to enable asynchronous logging (for example, use asnchronous API to write the results to a file).
+    /// Use the <see cref="LogTime(Action, int, ProfilerLogger, TimeUnit, string, int)"/> and provide an instance of the <see cref="ProfilerLogger"/>  to enable logging.
+    /// <br/>Or use the <see cref="LogTimeAsync(Action, int, ProfilerLoggerAsync, string, int)"/> overload and provide a <see cref="ProfilerLoggerAsync"/> delegate to enable asynchronous logging (for example, use asnchronous API to write the results to a file).
     /// </para>
     /// <para>
     /// The results are calculated using the default time base defined by <see cref="DefaultBaseUnit"/>.
@@ -89,7 +71,7 @@
     /// <param name="baseUnit">The optional time unit that theresults should be converted to. The default is <see cref="TimeUnit.Milliseconds"/>. </param>
     /// <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
     /// <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-    /// <param name="logger">A delegate of type <see cref="ProfilerLoggerDelegate"/> which can be used to automatically print the <see cref="ProfilerBatchResult.Summary" /> to a destination (e.g. file) in the following formatting:
+    /// <param name="logger">A delegate of type <see cref="ProfilerLogger"/> which can be used to automatically print the <see cref="ProfilerBatchResult.Summary" /> to a destination (e.g. file) in the following formatting:
     /// 
     /// <br/>
     /// <code>
@@ -111,16 +93,97 @@
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the value of<paramref name="runCount"/> is not between '0' and 'ulong.MaxValue'.</exception>
     /// <remarks>
     /// <para>
-    /// Provide an instance of the <see cref="ProfilerLoggerDelegate"/> delegate for the <paramref name="logger"/> parameter to control the output target or customize the formatting.
-    /// <br/> Use the <see cref="LogTimeAsync(Action, AsyncProfilerOptions, string, int)"/> or <see cref="LogTimeAsync(Action, int, ProfilerLoggerAsyncDelegate, string, int)"/> overload to enable asynchronous logging.
+    /// Provide an instance of the <see cref="ProfilerLogger"/> delegate for the <paramref name="logger"/> parameter to control the output invocationTarget or customize the formatting.
+    /// <br/> Use the <see cref="LogTimeAsync(Action, AsyncProfilerOptions, string, int)"/> or <see cref="LogTimeAsync(Action, int, ProfilerLoggerAsync, string, int)"/> overload to enable asynchronous logging.
     /// </para>
     /// <para>
     /// The results are calculated using the default time base defined by <see cref="DefaultBaseUnit"/>.
     /// Use the <see cref="LogTime(Action, ProfilerOptions, string, int)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
     /// </para>
     /// </remarks>
-    public static ProfilerBatchResult LogTime(Action action, int runCount, ProfilerLoggerDelegate logger, TimeUnit baseUnit = Profiler.DefaultBaseUnit, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+    public static ProfilerBatchResult LogTime(Action action, int runCount, ProfilerLogger logger, TimeUnit baseUnit = Profiler.DefaultBaseUnit, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
       => LogTimeInternal(action, Profiler.DefaultWarmupCount, runCount, -1, logger, baseUnit, sourceFileName, lineNumber);
+
+    /// <summary>
+    /// Measures the execution time of a method using a default warmup iteration count of '4' to warmup the JIT compiler.
+    /// </summary>
+    /// <param name="asyncAction">A delegate that executes the asynchronous code to measure execution time.</param>
+    /// <param name="runCount">Number of iterations the <paramref name="asyncAction"/> should be executed.</param>
+    /// <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
+    /// <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when the value of <paramref name="runCount"/> is not between '0' and 'ulong.MaxValue'.</exception>
+    /// <returns>A <see cref="Task"/> holding the average execution time of all <paramref name="runCount"/> number of iterations as <see cref="TimeSpan"/>.</returns> 
+    /// <remarks>
+    /// <para>Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <see cref="ProfilerBatchResult.Summary"/>, but marked as cancelled).
+    /// <br/>A cancelled task is a <see cref="Task"/> where the <see cref="Task.Status"/> returns either <see cref="TaskStatus.Canceled"/> or <see cref="TaskStatus.Faulted"/> or an <see cref="OperationCanceledException"/> exception was thrown.</para>
+    /// Use the <see cref="LogTimeAsync(Func{Task}, int, ProfilerLoggerAsync, string, int)"/> or <see cref="LogTimeAsync(Func{Task}, AsyncProfilerOptions, string, int)"/> overload and provide an instance of the <see cref="ProfilerLoggerAsync"/> to enable asynchronous logging.
+    /// <para>
+    /// The results are calculated using the default time base defined by <see cref="DefaultBaseUnit"/>.
+    /// Use the <see cref="LogTimeAsync(Func{Task}, AsyncProfilerOptions, string, int)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
+    /// </para>
+    /// </remarks>
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+      => await LogTimeAsyncInternal(asyncAction, null, null, Profiler.DefaultWarmupCount, runCount, -1, null, null, Profiler.DefaultBaseUnit, sourceFileName, lineNumber);
+
+    /// <summary>
+    /// Measures the execution time of a method using a default warmup iteration count of '4' to warmup the JIT compiler.
+    /// </summary>
+    /// <param name="asyncAction">A delegate that executes the asynchronous code to measure execution time.</param>
+    /// <param name="runCount">Number of iterations the <paramref name="asyncAction"/> should be executed.</param>
+    /// <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
+    /// <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
+    /// <param name="logger">A delegate of type <see cref="ProfilerLogger"/> which can be used to automatically print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
+    /// 
+    /// <br/>
+    /// <code>
+    ///           ╭───────────────┬────────────────────────────┬────────────────╮
+    ///           | Iteration #   │ Duration [ms]              │ Is cancelled   |
+    ///           ┝━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥
+    ///           │ 1             │                     1.0512 │ False          |
+    ///           │ 2             │                     1.0020 │ False          │
+    ///           │ 3             │                     0.8732 │ False          │
+    ///           │ 4             │                     0.0258 │ True (ignored) │
+    ///           │ 5             │                     0.9943 │ False          │
+    /// ╭═════════╧═══════════════╪════════════════════════════┼────────────────┤
+    /// │ Total:    -             │                     3.9207 │                │
+    /// │ Min:      3             │                     0.8732 │                │
+    /// │ Max:      1             │                     1.0512 │                │
+    /// │ Average:  -             │                     0.9802 │                │
+    /// ╰─────────────────────────┴────────────────────────────┴────────────────╯
+    /// </code></param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when the value of <paramref name="runCount"/> is not between '0' and 'ulong.MaxValue'.</exception>
+    /// <returns>A <see cref="Task"/> holding the <see cref="ProfilerBatchResult"/> result which contains neta data like average execution time or a formatted report (<see cref="ProfilerBatchResult.Summary"/>) of all <paramref name="runCount"/> number of iterations.</returns>
+    /// <remarks>
+    /// <para>
+    /// Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <see cref="ProfilerBatchResult.Summary"/>, but marked as cancelled).
+    /// <br/>A cancelled task is a <see cref="Task"/> where the <see cref="Task.Status"/> returns either <see cref="TaskStatus.Canceled"/> or <see cref="TaskStatus.Faulted"/> or an <see cref="OperationCanceledException"/> exception was thrown.
+    /// </para>
+    /// <para>
+    /// The results are calculated using the default time base defined by <see cref="DefaultBaseUnit"/>.
+    /// Use the <see cref="LogTimeAsync(Func{Task}, AsyncProfilerOptions, string, int)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
+    /// </para>
+    /// </remarks>
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, ProfilerLogger logger, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+      => await LogTimeAsyncInternal(asyncAction, null, null, Profiler.DefaultWarmupCount, runCount, -1, logger, null, Profiler.DefaultBaseUnit, sourceFileName, lineNumber);
+
+    /// <summary>
+    /// Measures the execution time of a method using a default warmup iteration count of '4' to warmup the JIT compiler.
+    /// </summary>
+    /// <param name="action">The code to measure execution time.</param>
+    /// <param name="options">The options object to customize the behavior of the <see cref="Profiler"/>.</param>
+    /// <returns>The result containing the average execution time of all iterations as <see cref="TimeSpan"/>.</returns>
+    /// <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
+    /// <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when the value of <see cref="ProfilerOptions.Iterations"/> or <see cref="ProfilerOptions.WarmupIterations"/> is not between '0' and 'ulong.MaxValue'.</exception>
+    /// <remarks>
+    /// The results are calculated using the default time base defined by <see cref="DefaultBaseUnit"/>.
+    /// <para>
+    /// Use the <see cref="LogTime(Action, int, ProfilerLogger, TimeUnit, string, int)"/> and provide an instance of the <see cref="ProfilerLogger"/>  to enable logging.
+    /// <br/>Or use the <see cref="LogTimeAsync(Action, int, ProfilerLoggerAsync, string, int)"/> overload and provide a <see cref="ProfilerLoggerAsync"/> delegate to enable asynchronous logging (for example, use asnchronous API to write the results to a file).
+    /// </para>
+    /// </remarks>
+    public static ProfilerBatchResult LogTime(Action action, ProfilerOptions options, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+      => LogTimeInternal(action, options.WarmupIterations, options.Iterations, -1, options.Logger, options.BaseUnit, sourceFileName, lineNumber);
 
     /// <summary>
     /// Measures the execution time of a method using a default warump iteration cvount of '4' to warmup the JIT compiler.
@@ -143,7 +206,7 @@
     /// <param name="runCount">Number of iterations the <paramref name="action"/> should be executed.</param>
     /// <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
     /// <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-    /// <param name="asyncLogger">A delegate of type <see cref="ProfilerLoggerAsyncDelegate"/> which can be used to automatically print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
+    /// <param name="asyncLogger">A delegate of type <see cref="ProfilerLoggerAsync"/> which can be used to automatically print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
     /// 
     /// <br/>
     /// <code>
@@ -164,13 +227,13 @@
     /// </code></param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the value of<paramref name="runCount"/> is not between '0' and 'ulong.MaxValue'.</exception>
     /// <remarks>
-    /// Provide an instance of the <see cref="ProfilerLoggerAsyncDelegate"/> delegate for the <paramref name="asyncLogger"/> parameter to control the output target or customize the formatting.   
+    /// Provide an instance of the <see cref="ProfilerLoggerAsync"/> delegate for the <paramref name="asyncLogger"/> parameter to control the output invocationTarget or customize the formatting.   
     /// <para>
     /// The results are calculated using the default time base defined by <see cref="DefaultBaseUnit"/>.
     /// Use the <see cref="LogTimeAsync(Action, AsyncProfilerOptions, string, int)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
     /// </para>
     /// </remarks>
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Action action, int runCount, ProfilerLoggerAsyncDelegate asyncLogger, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Action action, int runCount, ProfilerLoggerAsync asyncLogger, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
       => await LogTimeAsyncInternal(null, null, action, Profiler.DefaultWarmupCount, runCount, -1, null, asyncLogger, Profiler.DefaultBaseUnit, sourceFileName, lineNumber);
 
     /// <summary>
@@ -188,83 +251,6 @@
     /// </remarks>
     public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, AsyncProfilerOptions options, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
       => await LogTimeAsyncInternal(asyncAction, null, null, options.WarmupIterations, options.Iterations, -1, options.Logger, options.AsyncLogger, options.BaseUnit, sourceFileName, lineNumber);
-
-    /// <summary>
-    /// Measures the execution time of a method using a default warmup iteration count of '4' to warmup the JIT compiler.
-    /// </summary>
-    /// <param name="asyncAction">A delegate that executes the asynchronous code to measure execution time.</param>
-    /// <param name="runCount">Number of iterations the <paramref name="asyncAction"/> should be executed.</param>
-    /// <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-    /// <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when the value of <paramref name="runCount"/> is not between '0' and 'ulong.MaxValue'.</exception>
-    /// <returns>A <see cref="Task"/> holding the average execution time of all <paramref name="runCount"/> number of iterations as <see cref="TimeSpan"/>.</returns> 
-    /// <remarks>
-    /// <para>Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <see cref="ProfilerBatchResult.Summary"/>, but marked as cancelled).
-    /// <br/>A cancelled task is a <see cref="Task"/> where the <see cref="Task.Status"/> returns either <see cref="TaskStatus.Canceled"/> or <see cref="TaskStatus.Faulted"/> or an <see cref="OperationCanceledException"/> exception was thrown.</para>
-    /// Use the <see cref="LogTimeAsync(Func{Task}, int, ProfilerLoggerAsyncDelegate, string, int)"/> or <see cref="LogTimeAsync(Func{Task}, AsyncProfilerOptions, string, int)"/> overload and provide an instance of the <see cref="ProfilerLoggerAsyncDelegate"/> to enable asynchronous logging.
-    /// <para>
-    /// The results are calculated using the default time base defined by <see cref="DefaultBaseUnit"/>.
-    /// Use the <see cref="LogTimeAsync(Func{Task}, AsyncProfilerOptions, string, int)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
-    /// </para>
-    /// </remarks>
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard21)'
-Before:
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-After:
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net472)'
-Before:
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-After:
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net50)'
-Before:
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-After:
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net80)'
-Before:
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-After:
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard20)'
-Before:
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-After:
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-After:
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net60)'
-Before:
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-After:
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net70)'
-Before:
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-After:
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-*/
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-      => await LogTimeAsyncInternal(asyncAction, null, null, Profiler.DefaultWarmupCount, runCount, -1, null, null, Profiler.DefaultBaseUnit, sourceFileName, lineNumber);
 
     /// <summary>
     /// Measures the execution time of a method using a default warmup iteration count of '4' to warmup the JIT compiler.
@@ -296,68 +282,12 @@ After:
     /// Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <see cref="ProfilerBatchResult.Summary"/>, but marked as cancelled).
     /// <br/>A cancelled task is a <see cref="Task"/> where the <see cref="Task.Status"/> returns either <see cref="TaskStatus.Canceled"/> or <see cref="TaskStatus.Faulted"/> or an <see cref="OperationCanceledException"/> exception was thrown.
     /// </para>
-    /// Use the <see cref="LogTimeAsync(Func{ValueTask}, int, ProfilerLoggerAsyncDelegate, string, int)"/> or <see cref="LogTimeAsync(Func{ValueTask}, AsyncProfilerOptions, string, int)"/> overload and provide an instance of the <see cref="ProfilerLoggerAsyncDelegate"/> delegate to enable logging.
+    /// Use the <see cref="LogTimeAsync(Func{ValueTask}, int, ProfilerLoggerAsync, string, int)"/> or <see cref="LogTimeAsync(Func{ValueTask}, AsyncProfilerOptions, string, int)"/> overload and provide an instance of the <see cref="ProfilerLoggerAsync"/> delegate to enable logging.
     /// <para>
     /// The results are calculated using the default time base defined by <see cref="DefaultBaseUnit"/>.
     /// Use the <see cref="LogTimeAsync(Func{ValueTask}, AsyncProfilerOptions, string, int)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
     /// </para>
     /// </remarks>
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard21)'
-Before:
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-After:
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net472)'
-Before:
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-After:
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net50)'
-Before:
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-After:
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net80)'
-Before:
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-After:
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard20)'
-Before:
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-After:
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-After:
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net60)'
-Before:
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-After:
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net70)'
-Before:
-    public async static Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-After:
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-*/
     public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
       => await LogTimeAsyncInternal(null, asyncAction, null, Profiler.DefaultWarmupCount, runCount, -1, null, null, Profiler.DefaultBaseUnit, sourceFileName, lineNumber);
 
@@ -368,48 +298,7 @@ After:
     /// <param name="runCount">Number of iterations the <paramref name="asyncAction"/> should be executed.</param>
     /// <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
     /// <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-    /// <param name="logger">A delegate of type <see cref="ProfilerLoggerDelegate"/> which can be used to automatically print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
-    /// 
-    /// <br/>
-    /// <code>
-    ///           ╭───────────────┬────────────────────────────┬────────────────╮
-    ///           | Iteration #   │ Duration [ms]              │ Is cancelled   |
-    ///           ┝━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥
-    ///           │ 1             │                     1.0512 │ False          |
-    ///           │ 2             │                     1.0020 │ False          │
-    ///           │ 3             │                     0.8732 │ False          │
-    ///           │ 4             │                     0.0258 │ True (ignored) │
-    ///           │ 5             │                     0.9943 │ False          │
-    /// ╭═════════╧═══════════════╪════════════════════════════┼────────────────┤
-    /// │ Total:    -             │                     3.9207 │                │
-    /// │ Min:      3             │                     0.8732 │                │
-    /// │ Max:      1             │                     1.0512 │                │
-    /// │ Average:  -             │                     0.9802 │                │
-    /// ╰─────────────────────────┴────────────────────────────┴────────────────╯
-    /// </code></param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when the value of <paramref name="runCount"/> is not between '0' and 'ulong.MaxValue'.</exception>
-    /// <returns>A <see cref="Task"/> holding the <see cref="ProfilerBatchResult"/> result which contains neta data like average execution time or a formatted report (<see cref="ProfilerBatchResult.Summary"/>) of all <paramref name="runCount"/> number of iterations.</returns>
-    /// <remarks>
-    /// <para>
-    /// Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <see cref="ProfilerBatchResult.Summary"/>, but marked as cancelled).
-    /// <br/>A cancelled task is a <see cref="Task"/> where the <see cref="Task.Status"/> returns either <see cref="TaskStatus.Canceled"/> or <see cref="TaskStatus.Faulted"/> or an <see cref="OperationCanceledException"/> exception was thrown.
-    /// </para>
-    /// <para>
-    /// The results are calculated using the default time base defined by <see cref="DefaultBaseUnit"/>.
-    /// Use the <see cref="LogTimeAsync(Func{Task}, AsyncProfilerOptions, string, int)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
-    /// </para>
-    /// </remarks>
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, ProfilerLoggerDelegate logger, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
-      => await LogTimeAsyncInternal(asyncAction, null, null, Profiler.DefaultWarmupCount, runCount, -1, logger, null, Profiler.DefaultBaseUnit, sourceFileName, lineNumber);
-
-    /// <summary>
-    /// Measures the execution time of a method using a default warmup iteration count of '4' to warmup the JIT compiler.
-    /// </summary>
-    /// <param name="asyncAction">A delegate that executes the asynchronous code to measure execution time.</param>
-    /// <param name="runCount">Number of iterations the <paramref name="asyncAction"/> should be executed.</param>
-    /// <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-    /// <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-    /// <param name="logger">A delegate of type <see cref="ProfilerLoggerDelegate"/> which can be used to automatically print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
+    /// <param name="logger">A delegate of type <see cref="ProfilerLogger"/> which can be used to automatically print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
     /// 
     /// <br/>
     /// <code>
@@ -440,7 +329,7 @@ After:
     /// Use the <see cref="LogTimeAsync(Func{ValueTask}, AsyncProfilerOptions, string, int)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
     /// </para>
     /// </remarks>
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, ProfilerLoggerDelegate logger, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, ProfilerLogger logger, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
       => await LogTimeAsyncInternal(null, asyncAction, null, Profiler.DefaultWarmupCount, runCount, -1, logger, null, Profiler.DefaultBaseUnit, sourceFileName, lineNumber);
 
     /// <summary>
@@ -450,7 +339,7 @@ After:
     /// <param name="runCount">Number of iterations the <paramref name="asyncAction"/> should be executed.</param>
     /// <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
     /// <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-    /// <param name="asyncLogger">An asynchronous delegate of type <see cref="ProfilerLoggerAsyncDelegate"/> which can be used to automatically let the <see cref="LogTimeAsync(Func{Task}, int, int, ProfilerLoggerAsyncDelegate, TimeUnit, string, int)"/> print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
+    /// <param name="asyncLogger">An asynchronous delegate of type <see cref="ProfilerLoggerAsync"/> which can be used to automatically let the <see cref="LogTimeAsync(Func{Task}, int, int, ProfilerLoggerAsync, TimeUnit, string, int)"/> print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
     /// 
     /// <br/>
     /// <code>
@@ -481,7 +370,7 @@ After:
     /// Use the <see cref="LogTimeAsync(Func{Task}, AsyncProfilerOptions, string, int)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
     /// </para>
     /// </remarks>
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, ProfilerLoggerAsyncDelegate asyncLogger, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<Task> asyncAction, int runCount, ProfilerLoggerAsync asyncLogger, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
       => await LogTimeAsyncInternal(asyncAction, null, null, Profiler.DefaultWarmupCount, runCount, -1, null, asyncLogger, Profiler.DefaultBaseUnit, sourceFileName, lineNumber);
 
     /// <summary>
@@ -491,7 +380,7 @@ After:
     /// <param name="runCount">Number of iterations the <paramref name="asyncAction"/> should be executed.</param>
     /// <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
     /// <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-    /// <param name="asyncLogger">An asynchronous delegate of type <see cref="ProfilerLoggerAsyncDelegate"/> which can be used to automatically let the <see cref="LogTimeAsync(Func{Task}, int, ProfilerLoggerAsyncDelegate, TimeUnit, string, int)"/> print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
+    /// <param name="asyncLogger">An asynchronous delegate of type <see cref="ProfilerLoggerAsync"/> which can be used to automatically let the <see cref="LogTimeAsync(Func{Task}, int, ProfilerLoggerAsync, TimeUnit, string, int)"/> print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
     /// 
     /// <br/>
     /// <code>
@@ -522,10 +411,13 @@ After:
     /// Use the <see cref="LogTimeAsync(Func{ValueTask}, AsyncProfilerOptions, string, int)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
     /// </para>
     /// </remarks>
-    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, ProfilerLoggerAsyncDelegate asyncLogger, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+    public static async Task<ProfilerBatchResult> LogTimeAsync(Func<ValueTask> asyncAction, int runCount, ProfilerLoggerAsync asyncLogger, [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
       => await LogTimeAsyncInternal(null, asyncAction, null, Profiler.DefaultWarmupCount, runCount, -1, null, asyncLogger, Profiler.DefaultBaseUnit, sourceFileName, lineNumber);
 
-    internal static async Task<ProfilerBatchResult> LogTimeAsyncInternal(Func<Task> asyncAction, Func<ValueTask> asyncValueTaskAction, Action action, int warmupCount, int runCount, int argumentListIndex, ProfilerLoggerDelegate logger, ProfilerLoggerAsyncDelegate asyncLogger, TimeUnit baseUnit, string sourceFileName, int lineNumber)
+    internal static async Task<ProfilerBatchResult> LogTimeAsyncInternal(Func<Task> asyncAction, Func<ValueTask> asyncValueTaskAction, Action action, int warmupCount, int runCount, int argumentListIndex, ProfilerLogger logger, ProfilerLoggerAsync asyncLogger, TimeUnit baseUnit, string sourceFileName, int lineNumber)
+      => LogTimeAsyncInternal(new MethodInvokeInfo())
+    internal static async Task<ProfilerBatchResult> LogTimeAsyncInternal<TResult>(Func<ValueTask<TResult>> asyncValueTaskAction, Action action, int warmupCount, int runCount, int argumentListIndex, ProfilerLogger logger, ProfilerLoggerAsync asyncLogger, TimeUnit baseUnit, string sourceFileName, int lineNumber)
+    internal static async Task<ProfilerBatchResult> LogTimeAsyncInternal(MethodInvokeInfo methodInvokeInfo, int warmupCount, int runCount, ProfilerLogger logger, ProfilerLoggerAsync asyncLogger, string sourceFileName, int lineNumber)
     {
       if (runCount < 0)
       {
@@ -543,23 +435,21 @@ After:
       }
 
       var result = new ProfilerBatchResult(runCount, DateTime.Now);
-      var assemblyOfTargetType = Assembly.GetCallingAssembly();
-      string asseblyName = assemblyOfTargetType.GetName().Name;
-      var context = new ProfilerContext(asseblyName, action?.GetType().ToDisplayName() ?? asyncAction?.GetType().ToDisplayName(), ProfiledTargetType.Delegate, sourceFileName, lineNumber, null, warmupCount, Runtime.Default);
+      var context = new ProfilerContext(methodInvokeInfo.AssemblyName, methodInvokeInfo.Signature, methodInvokeInfo.ProfiledTargetType, sourceFileName, lineNumber, null, warmupCount, methodInvokeInfo.Runtime);
       result.Context = context;
-      result.BaseUnit = Profiler.DefaultBaseUnit;
+      result.BaseUnit = methodInvokeInfo.BaseUnit;
 
-      await LogAverageTimeInternalAsync(asyncAction, asyncValueTaskAction, action, warmupCount, runCount, argumentListIndex, result, baseUnit);
-      logger?.Invoke(result);
+      await LogAverageTimeInternalAsync(methodInvokeInfo, warmupCount, runCount, result);
+      logger?.Invoke(result, result.Summary);
       if (asyncLogger != null)
       {
-        await asyncLogger.Invoke(result);
+        await asyncLogger.Invoke(result, result.Summary);
       }
 
       return result;
     }
 
-    internal static ProfilerBatchResult LogTimeInternal(Action action, int warmupCount, int runCount, int argumentListIndex, ProfilerLoggerDelegate logger, TimeUnit baseUnit, string sourceFileName, int lineNumber)
+    internal static ProfilerBatchResult LogTimeInternal(MethodInvokeInfo methodInvokeInfo, int warmupCount, int runCount, int argumentListIndex, ProfilerLogger logger, string sourceFileName, int lineNumber)
     {
       if (runCount < 0)
       {
@@ -577,57 +467,71 @@ After:
       }
 
       var result = new ProfilerBatchResult(runCount, DateTime.Now);
-      var assemblyOfTargetType = Assembly.GetCallingAssembly();
-      string asseblyName = assemblyOfTargetType.GetName().Name;
-      var context = new ProfilerContext(asseblyName, action?.GetType().ToDisplayName(), ProfiledTargetType.Delegate, sourceFileName, lineNumber, null, warmupCount, Runtime.Default);
+      var context = new ProfilerContext(methodInvokeInfo.AssemblyName, methodInvokeInfo.Signature, methodInvokeInfo.ProfiledTargetType, sourceFileName, lineNumber, null, warmupCount, methodInvokeInfo.Runtime);
       result.Context = context;
-      result.BaseUnit = Profiler.DefaultBaseUnit;
+      result.BaseUnit = methodInvokeInfo.BaseUnit;
 
-      LogAverageTimeInternal(action, warmupCount, runCount, argumentListIndex, result, baseUnit);
-      logger?.Invoke(result);
+      LogAverageTimeInternal(methodInvokeInfo, warmupCount, runCount, result);
+      logger?.Invoke(result, result.Summary);
 
       return result;
     }
 
-    private static async Task LogAverageTimeInternalAsync(Func<Task> asyncAction, Func<ValueTask> asyncValueTaskAction, Action action, int warmupCount, int runCount, int argumentListIndex, ProfilerBatchResult result, TimeUnit baseUnit)
+    private static async Task LogAverageTimeInternalAsync(MethodInvokeInfo methodInvokeInfo, int warmupCount, int runCount, ProfilerBatchResult result)
     {
       var stopwatch = new Stopwatch();
-      Task profiledTask = null;
+      object invocationTarget = methodInvokeInfo.Target;
+      object[] arguments = methodInvokeInfo.Arguments;
+      bool isTaskCancelled = false;
       for (int iterationCounter = 1 - warmupCount; iterationCounter <= runCount; iterationCounter++)
       {
-        if (action != null)
+        if (methodInvokeInfo.SynchronousInvocator != null)
         {
           stopwatch.Restart();
-          action.Invoke();
+          _ = methodInvokeInfo.SynchronousInvocator.Invoke(invocationTarget, arguments);
           stopwatch.Stop();
         }
-        else if (asyncAction != null)
+        else if (methodInvokeInfo.AsynchronousTaskInvocator != null)
         {
           try
           {
             stopwatch.Restart();
-            profiledTask = asyncAction.Invoke();
-            await profiledTask;
+            await methodInvokeInfo.AsynchronousTaskInvocator.Invoke(invocationTarget, arguments);
             stopwatch.Stop();
           }
           catch (OperationCanceledException)
           {
             stopwatch.Stop();
+            isTaskCancelled = true;
           }
         }
-        else if (asyncValueTaskAction != null)
+        else if (methodInvokeInfo.AsynchronousValueTaskInvocator != null)
         {
           try
           {
             stopwatch.Restart();
-            ValueTask profiledValueTask = asyncValueTaskAction.Invoke();
-            await profiledValueTask;
+            await methodInvokeInfo.AsynchronousValueTaskInvocator.Invoke(invocationTarget, arguments);
             stopwatch.Stop();
-            profiledTask = profiledValueTask.AsTask();
           }
           catch (OperationCanceledException)
           {
             stopwatch.Stop();
+            isTaskCancelled = true;
+          }
+        }
+        else if (methodInvokeInfo.AsynchronousGenericValueTaskInvocator != null)
+        {
+          try
+          {
+            stopwatch.Restart();
+            dynamic profiledValueTask = methodInvokeInfo.AsynchronousGenericValueTaskInvocator.Invoke(invocationTarget, arguments);
+            await profiledValueTask;
+            stopwatch.Stop();
+          }
+          catch (OperationCanceledException)
+          {
+            stopwatch.Stop();
+            isTaskCancelled = true;
           }
         }
 
@@ -636,26 +540,28 @@ After:
           continue;
         }
 
-        var iterationResult = new ProfilerResult(iterationCounter, profiledTask, stopwatch.Elapsed, baseUnit, result, argumentListIndex);
+        var iterationResult = new ProfilerResult(iterationCounter, isTaskCancelled, stopwatch.Elapsed, methodInvokeInfo.BaseUnit, result, methodInvokeInfo.ArgumentListIndex);
         result.AddResult(iterationResult);
       }
     }
 
-    private static void LogAverageTimeInternal(Action action, int warmupCount, int runCount, int argumentListIndex, ProfilerBatchResult result, TimeUnit baseUnit)
+    private static void LogAverageTimeInternal(MethodInvokeInfo methodInvokeInfo, int warmupCount, int runCount, ProfilerBatchResult result)
     {
       var stopwatch = new Stopwatch();
+      object invocationTarget = methodInvokeInfo.Target;
+      object[] arguments = methodInvokeInfo.Arguments;
       for (int iterationCounter = 1 - warmupCount; iterationCounter <= runCount; iterationCounter++)
       {
         stopwatch.Restart();
-        action.Invoke();
+        _ = methodInvokeInfo.SynchronousInvocator.Invoke(invocationTarget, arguments);
         stopwatch.Stop();
-        var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, baseUnit, result, argumentListIndex);
 
         if (iterationCounter < 1)
         {
           continue;
         }
 
+        var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, methodInvokeInfo.BaseUnit, result, methodInvokeInfo.ArgumentListIndex);
         result.AddResult(iterationResult);
       }
     }
@@ -663,7 +569,7 @@ After:
     /// <summary>
     /// Measures the execution time of a using block i.e. the scope of the <see cref="IDisposable"/>'s lifetime.
     /// </summary>
-    /// <param name="logger">A delegate of type <see cref="ProfilerLoggerDelegate"/> which can be used to automatically let this method print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
+    /// <param name="logger">A delegate of type <see cref="ProfilerLogger"/> which can be used to automatically let this method print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
     /// 
     /// <br/>
     /// <code>
@@ -692,10 +598,10 @@ After:
     /// Time is measured during the lifetime of the <see cref="IDisposable"/> instance: from time of creation to the final <see cref="IDisposable.Dispose"/> call.
     /// <br/>It's recommended to use the <see cref="IDisposable"/> managed by a using-statement or using-expression.
     /// <para>
-    /// API docs: <see href="https://sampoh.de/github/docs/bioniccode.net/api/BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerLoggerDelegate_BionicCode_Utilities_Net_ProfilerBatchResult__">IDisposable LogTimeScoped(ProfilerLoggerDelegate logger, out ProfilerBatchResult result)</see>
+    /// API docs: <see href="https://sampoh.de/github/docs/bioniccode.net/api/BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerLoggerDelegate_BionicCode_Utilities_Net_ProfilerBatchResult__">IDisposable LogTimeScoped(ProfilerLogger logger, out ProfilerBatchResult result)</see>
     /// </para>
     /// </remarks>
-    public static IDisposable LogTimeScoped(ProfilerLoggerDelegate logger, out ProfilerBatchResult result, TimeUnit baseUnit = Profiler.DefaultBaseUnit, [CallerMemberName] string scopeName = "", [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+    public static IDisposable LogTimeScoped(ProfilerLogger logger, out ProfilerBatchResult result, TimeUnit baseUnit = Profiler.DefaultBaseUnit, [CallerMemberName] string scopeName = "", [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
     {
       var assemblyOfTargetType = Assembly.GetCallingAssembly();
       string asseblyName = assemblyOfTargetType.GetName().Name;
@@ -709,7 +615,7 @@ After:
     /// <summary>
     /// Measures the execution time of a using block i.e. the scope of the <see cref="IDisposable"/>'s lifetime.
     /// </summary>
-    /// <param name="asyncLogger">An asynchronous delegate of type <see cref="ProfilerLoggerAsyncDelegate"/> which can be used to automatically print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
+    /// <param name="asyncLogger">An asynchronous delegate of type <see cref="ProfilerLoggerAsync"/> which can be used to automatically print the <see cref="ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
     /// 
     /// <br/>
     /// <code>
@@ -738,10 +644,10 @@ After:
     /// Time is measured during the lifetime of the <see cref="IDisposable"/> instance: from time of creation to the final <see cref="IDisposable.Dispose"/> call.
     /// <br/>It's recommended to use the <see cref="IDisposable"/> managed by a using-statement or using-expression.
     /// <para>
-    /// API docs: <see href="https://sampoh.de/github/docs/bioniccode.net/api/BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerLoggerAsyncDelegate_BionicCode_Utilities_Net_ProfilerBatchResult__">IDisposable LogTimeScoped(ProfilerLoggerAsyncDelegate, out ProfilerBatchResult)</see>
+    /// API docs: <see href="https://sampoh.de/github/docs/bioniccode.net/api/BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerLoggerAsync_BionicCode_Utilities_Net_ProfilerBatchResult__">IDisposable LogTimeScoped(ProfilerLoggerAsync, out ProfilerBatchResult)</see>
     /// </para>
     /// </remarks>
-    public static IDisposable LogTimeScoped(ProfilerLoggerAsyncDelegate asyncLogger, out ProfilerBatchResult result, TimeUnit baseUnit = Profiler.DefaultBaseUnit, [CallerMemberName] string scopeName = "", [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+    public static IDisposable LogTimeScoped(ProfilerLoggerAsync asyncLogger, out ProfilerBatchResult result, TimeUnit baseUnit = Profiler.DefaultBaseUnit, [CallerMemberName] string scopeName = "", [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
     {
       var assemblyOfTargetType = Assembly.GetCallingAssembly();
       string asseblyName = assemblyOfTargetType.GetName().Name;

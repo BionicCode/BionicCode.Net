@@ -301,7 +301,7 @@
             {
               if (method.IsAwaitableTask)
               {
-                invocationInfo = new MethodInvokeInfo(profiledInstance, argumentList, method.Signature, asynchronousTaskInvocator: method.MethodData.GetAwaitableTaskInvocator());
+                invocationInfo = new MethodInvokeInfo(profiledInstance, argumentList, method.Signature, asynchronousTaskInvocator: method.MethodData.GetAwaitableTaskInvocator(), this.Configuration.Runtime, ProfiledTargetType.Method, method.);
               }
               else if (method.IsAwaitableValueTask)
               {

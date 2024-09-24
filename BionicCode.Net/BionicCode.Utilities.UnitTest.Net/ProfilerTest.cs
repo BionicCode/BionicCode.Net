@@ -31,7 +31,7 @@
 
     private Action CreateNoTimeConsumingOperation() => () => { };
 
-    private ProfilerLoggerDelegate CreateLogger() => LogProfiling;
+    private ProfilerLogger CreateLogger() => LogProfiling;
 
     private void LogProfiling(ProfilerBatchResult result)
     {
@@ -72,7 +72,7 @@
     [Fact]
     public async Task LogTimeScoped_ExecutionTimeWithLogger_MustBeEqualToMeasuredTime()
     {
-      ProfilerLoggerDelegate logger = CreateLogger();
+      ProfilerLogger logger = CreateLogger();
       Func<Task> operationToProfile = CreateAsyncTimeConsumingOperation(this.ShortDuration);
       ProfilerBatchResult result;
 
@@ -87,7 +87,7 @@
     [Fact]
     public void LogTimeScoped_Logger_LoggerResultMustBeEqualToReturnedProfilerResult()
     {
-      ProfilerLoggerDelegate logger = CreateLogger();
+      ProfilerLogger logger = CreateLogger();
       Action operationToProfile = CreateNoTimeConsumingOperation();
       ProfilerBatchResult result;
 
@@ -102,7 +102,7 @@
     [Fact]
     public void LogTimeScoped_Logger_LoggerResultSummaryMustBeEqualToReturnedProfilerResultSummary()
     {
-      ProfilerLoggerDelegate logger = CreateLogger();
+      ProfilerLogger logger = CreateLogger();
       Action operationToProfile = CreateNoTimeConsumingOperation();
       ProfilerBatchResult result;
 
@@ -117,7 +117,7 @@
     [Fact]
     public void LogTimeScoped_Logger_LoggerResultSummaryMustNotBeEmpty()
     {
-      ProfilerLoggerDelegate logger = CreateLogger();
+      ProfilerLogger logger = CreateLogger();
       Action operationToProfile = CreateNoTimeConsumingOperation();
       ProfilerBatchResult result;
 
@@ -132,7 +132,7 @@
     [Fact]
     public async Task LogTimeAsync_ExecutionTimeWithLogger_MustBeEqualToMeasuredTime()
     {
-      ProfilerLoggerDelegate logger = CreateLogger();
+      ProfilerLogger logger = CreateLogger();
       Func<Task> operationToProfile = CreateAsyncTimeConsumingOperation(this.ShortDuration);
 
       ProfilerBatchResult result = await Profiler.LogTimeAsync(operationToProfile, 10, logger);
@@ -143,7 +143,7 @@
     [Fact]
     public void LogTime_ExecutionTimeWithLogger_MustBeEqualToMeasuredTime()
     {
-      ProfilerLoggerDelegate logger = CreateLogger();
+      ProfilerLogger logger = CreateLogger();
       Action operationToProfile = CreateTimeConsumingOperation(this.ShortDuration);
 
       ProfilerBatchResult result = Profiler.LogTime(operationToProfile, 1, logger);
@@ -156,7 +156,7 @@
     [InlineData(5)]
     public async Task LogTimeAsync_IterationsWithLogger_IterationCountMustBeEqualToReference(int iterationCount)
     {
-      ProfilerLoggerDelegate logger = CreateLogger();
+      ProfilerLogger logger = CreateLogger();
       Func<Task> operationToProfile = CreateAsyncNoTimeConsumingOperation();
 
       ProfilerBatchResult result = await Profiler.LogTimeAsync(operationToProfile, iterationCount, logger);
@@ -169,7 +169,7 @@
     [InlineData(5)]
     public void LogTime_IterationsWithLogger_IterationCountMustBeEqualToReference(int iterationCount)
     {
-      ProfilerLoggerDelegate logger = CreateLogger();
+      ProfilerLogger logger = CreateLogger();
       Action operationToProfile = CreateNoTimeConsumingOperation();
 
       ProfilerBatchResult result = Profiler.LogTime(operationToProfile, iterationCount, logger);
@@ -182,7 +182,7 @@
     [InlineData(5)]
     public void LogTime_AverageTimeWithLogger_MustBeEqualToReference(int iterationCount)
     {
-      ProfilerLoggerDelegate logger = CreateLogger();
+      ProfilerLogger logger = CreateLogger();
       Action operationToProfile = CreateTimeConsumingOperation(this.ShortDuration);
 
       ProfilerBatchResult result = Profiler.LogTime(operationToProfile, iterationCount, logger);
@@ -193,7 +193,7 @@
     [Fact]
     public async Task LogTime_Atrributes_MustBeEqualToReference()
     {
-      ProfilerLoggerDelegate logger = CreateLogger();
+      ProfilerLogger logger = CreateLogger();
       const int iterations = 20;
       var targetTypes = new List<Type>
       {

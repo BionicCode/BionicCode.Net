@@ -27,6 +27,7 @@
     private bool? canRead;
     private Func<object, object[], object> getInvocator;
     private Action<object, object, object[]> setInvocator;
+    private string assemblyName;
 
 #if !NETSTANDARD2_0
     private bool? isSetMethodReadOnly;
@@ -147,10 +148,13 @@
       => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false));
 
     public override string DisplayName
-      => this.displayName ?? (this.displayName = GetType().ToDisplayName());
+      => this.displayName ?? (this.displayName = GetPropertyInfo().ToDisplayName());
 
     public override string FullyQualifiedDisplayName 
-      => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = GetType().ToFullDisplayName());
+      => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = GetPropertyInfo().ToFullDisplayName());
+
+    public override string AssemblyName
+      => this.assemblyName ?? (this.assemblyName = this.DeclaringTypeData.AssemblyName);
 
     public override bool IsStatic 
       => (bool)(this.isStatic ?? (this.isStatic = this.CanRead ? this.GetMethodData.IsStatic : this.SetMethodData.IsStatic));

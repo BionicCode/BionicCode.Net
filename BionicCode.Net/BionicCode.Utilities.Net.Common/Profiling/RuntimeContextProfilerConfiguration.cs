@@ -27,7 +27,7 @@
     public int WarmupIterations { get; }
     public TimeUnit BaseUnit { get; }
     public ProfilerLoggerAsyncDelegate AsyncProfilerLogger { get; }
-    public ProfilerLoggerDelegate ProfilerLogger { get; }
+    public ProfilerLogger ProfilerLogger { get; }
 
     public Assembly GetAssembly(Type type) => throw new NotImplementedException();
   }

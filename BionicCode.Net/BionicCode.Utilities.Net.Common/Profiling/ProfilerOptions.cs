@@ -25,7 +25,7 @@
     /// <param name="warmupIterations">The number of warmup iterations.</param>
     /// <param name="logger">A synchronous logging delegate.</param>
     /// <param name="baseUnit">The desired base unit.</param>
-    public ProfilerOptions(int iterations, int warmupIterations, ProfilerLoggerDelegate logger, TimeUnit baseUnit)
+    public ProfilerOptions(int iterations, int warmupIterations, ProfilerLogger logger, TimeUnit baseUnit)
     {
       this.Iterations = iterations;
       this.WarmupIterations = warmupIterations;
@@ -55,7 +55,7 @@
     /// <remarks>
     /// Use the async API of the <see cref="Profiler"/> if you need to define an async delegate.
     /// </remarks>
-    public ProfilerLoggerDelegate Logger { get; set; }
+    public ProfilerLogger Logger { get; set; }
 
     /// <summary>
     /// The default base unit that all results are transformed to.

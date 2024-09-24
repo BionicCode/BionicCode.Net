@@ -1252,13 +1252,13 @@
     internal static string ToSignatureNameInternal(PropertyData propertyData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
     {
       SymbolAttributes symbolAttributes = propertyData.SymbolAttributes;
-      HashSet<CustomAttributeData> customAttributesData = propertyData.AttributeData;
+      IEnumerable<CustomAttributeData> customAttributesData = propertyData.AttributeData;
       StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
 #if !NETSTANDARD2_0
       if (symbolAttributes.HasFlag(SymbolAttributes.Final))
       {
-        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute)).ToHashSet();
+        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute));
       }
 #endif
 
@@ -1318,7 +1318,7 @@
         {
           foreach (ParameterData parameter in parameters)
           {
-            HashSet<CustomAttributeData> attributes = parameter.AttributeData;
+            IList<CustomAttributeData> attributes = parameter.AttributeData;
             _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false)
               .AppendDisplayNameInternal(parameter.ParameterTypeData, isFullyQualifiedName, isShortName: false)
               .Append(' ')
@@ -1400,12 +1400,12 @@
     internal static string ToSignatureNameInternal(EventData eventData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
     {
       SymbolAttributes symbolAttributes = eventData.SymbolAttributes;
-      HashSet<CustomAttributeData> customAttributesData = eventData.AttributeData;
+      IEnumerable<CustomAttributeData> customAttributesData = eventData.AttributeData;
 
 #if !NETSTANDARD2_0
       if (symbolAttributes.HasFlag(SymbolAttributes.Final))
       {
-        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
+        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType);
       }
 #endif
 
@@ -1467,7 +1467,7 @@
     internal static string ToSignatureNameInternal(FieldData fieldData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
     {
       SymbolAttributes symbolAttributes = fieldData.SymbolAttributes;
-      HashSet<CustomAttributeData> customAttributesData = fieldData.AttributeData;
+      IEnumerable<CustomAttributeData> customAttributesData = fieldData.AttributeData;
 
 #if !NETSTANDARD2_0
       if (symbolAttributes.HasFlag(SymbolAttributes.Final))
@@ -1540,7 +1540,7 @@
       }
 
       SymbolAttributes symbolAttributes = typeData.SymbolAttributes;
-      HashSet<CustomAttributeData> customAttributesData = typeData.AttributeData;
+      IEnumerable<CustomAttributeData> customAttributesData = typeData.AttributeData;
       StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
 #if !NETSTANDARD2_0
@@ -1644,7 +1644,7 @@
         {
           foreach (ParameterData parameterData in parameters)
           {
-            HashSet<CustomAttributeData> attributes = parameterData.AttributeData;
+            IList<CustomAttributeData> attributes = parameterData.AttributeData;
             _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false);
 
             if (parameterData.IsRef)
@@ -1704,13 +1704,13 @@
       }
 
       SymbolAttributes symbolAttributes = methodData.SymbolAttributes;
-      HashSet<CustomAttributeData> symbolCustomAttributesData = methodData.AttributeData;
+      IEnumerable<CustomAttributeData> symbolCustomAttributesData = methodData.AttributeData;
       StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
 #if !NETSTANDARD2_0
       if (symbolAttributes.HasFlag(SymbolAttributes.Final))
       {
-        symbolCustomAttributesData = symbolCustomAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
+        symbolCustomAttributesData = symbolCustomAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType);
       }
 #endif
 
@@ -1804,7 +1804,7 @@
       {
         foreach (ParameterData parameterData in parameters)
         {
-          HashSet<CustomAttributeData> attributes = parameterData.AttributeData;
+          IList<CustomAttributeData> attributes = parameterData.AttributeData;
           _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false);
 
           if (parameterData.IsRef)
@@ -1854,13 +1854,13 @@
     internal static string ToSignatureNameInternal(ConstructorData constructorData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
     {
       SymbolAttributes symbolAttributes = constructorData.SymbolAttributes;
-      HashSet<CustomAttributeData> symbolCustomAttributesData = constructorData.AttributeData;
+      IEnumerable<CustomAttributeData> symbolCustomAttributesData = constructorData.AttributeData;
       StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
 #if !NETSTANDARD2_0
       if (symbolAttributes.HasFlag(SymbolAttributes.Final))
       {
-        symbolCustomAttributesData = symbolCustomAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
+        symbolCustomAttributesData = symbolCustomAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType);
       }
 #endif
 
@@ -1896,7 +1896,7 @@
       {
         foreach (ParameterData parameterData in parameters)
         {
-          HashSet<CustomAttributeData> attributes = parameterData.AttributeData;
+          IList<CustomAttributeData> attributes = parameterData.AttributeData;
           _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false);
 
           if (parameterData.IsRef)

@@ -15,6 +15,6 @@
     int WarmupIterations { get; }
     TimeUnit BaseUnit { get; }
     ProfilerLoggerAsyncDelegate AsyncProfilerLogger { get; }
-    ProfilerLoggerDelegate ProfilerLogger { get; }
+    ProfilerLogger ProfilerLogger { get; }
   }
 }

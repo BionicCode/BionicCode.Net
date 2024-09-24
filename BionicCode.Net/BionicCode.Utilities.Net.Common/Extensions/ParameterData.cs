@@ -11,11 +11,13 @@
     private string signature;
     private string fullyQualifiedSignature;
     private SymbolAttributes symbolAttributes;
-    private HashSet<CustomAttributeData> attributeData;
+    private IList<CustomAttributeData> attributeData;
     private bool? isRef;
     private bool? isByRef;
     private TypeData parameterTypeData;
     private TypeData declaringTypeData;
+    private MemberInfoData member;
+    private string assemblyName;
 
     public ParameterData(ParameterInfo parameterInfo) : base(parameterInfo.Name)
     {
@@ -45,14 +47,43 @@
 
     public ParameterInfo ParameterInfo { get; }
 
+    public MemberInfoData Member
+    {
+      get
+      {
+        MemberInfo member = GetParameterInfo().Member;
+        if (this.member is null)
+        {
+          if (member is ConstructorInfo constructorInfo)
+          {
+            this.member = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+          }
+          else if (member is PropertyInfo propertyInfo)
+          {
+            this.member = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+          }
+          else if (member is MethodInfo methodInfo)
+          {
+            this.member = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+          }
+          else
+          {
+            throw new NotImplementedException();
+          }
+        }
+
+        return this.member;
+      }
+    }
+
     public TypeData ParameterTypeData
       => this.parameterTypeData ?? (this.parameterTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetParameterInfo().ParameterType));
 
     public TypeData DeclaringTypeData
       => this.declaringTypeData ?? (this.declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetDeclaringType()));
 
-    public override HashSet<CustomAttributeData> AttributeData
-      => this.attributeData ?? (this.attributeData = new HashSet<CustomAttributeData>(GetParameterInfo().GetCustomAttributesData()));
+    public override IList<CustomAttributeData> AttributeData
+      => this.attributeData ?? (this.attributeData = new List<CustomAttributeData>(GetParameterInfo().GetCustomAttributesData()));
 
     public bool IsByRef 
       => (bool)(this.isByRef ?? (this.isByRef = this.ParameterTypeData.GetType().IsByRef));
@@ -72,5 +103,8 @@
 
     public override string FullyQualifiedDisplayName 
       => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = GetParameterInfo().Name);
+
+    public override string AssemblyName
+      => this.assemblyName ?? (this.assemblyName = this.Member.AssemblyName);
   }
 }

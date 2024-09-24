@@ -16,6 +16,7 @@
     private ParameterData[] parameters;
     private bool? isStatic;
     private Func<object, object[], object> invocator;
+    private string assemblyName;
 
     public ConstructorData(ConstructorInfo constructorInfo) : base(constructorInfo)
     {
@@ -63,6 +64,9 @@
 
     public override string FullyQualifiedDisplayName 
       => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = GetType().ToFullDisplayName());
+
+    public override string AssemblyName
+      => this.assemblyName ?? (this.assemblyName = this.DeclaringTypeData.AssemblyName);
 
     public override bool IsStatic => (bool)(this.isStatic ?? (this.isStatic = GetConstructorInfo().IsStatic));
   }

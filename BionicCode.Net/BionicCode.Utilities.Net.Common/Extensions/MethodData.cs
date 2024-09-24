@@ -1,7 +1,9 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System;
+  using System.Collections.Generic;
   using System.Linq;
+  using System.Linq.Expressions;
   using System.Reflection;
   using System.Runtime.CompilerServices;
   using System.Threading.Tasks;
@@ -35,6 +37,7 @@
     private Func<object, object[], Task> awaitableTaskInvocator;
     private Func<object, object[], dynamic> awaitableGenericValueTaskInvocator;
     private Func<object, object[], ValueTask> awaitableValueTaskInvocator;
+    private string assemblyName;
 
 #if !NETSTANDARD2_0
     private bool? isReturnValueReadOnly;
@@ -155,6 +158,30 @@
       if (this.awaitableTaskInvocator is null)
       {
         InitializeAwaitableTaskInvocator();
+      }
+
+      return this.awaitableTaskInvocator;
+    }
+
+    public Func<object, object[], Task> GetAwaitableTaskInvocatorFromExpressionTree()
+    {
+      if (!this.IsAwaitableTask)
+      {
+        throw new InvalidOperationException($"Method does not return an awaitable 'ValueTask'. Call {nameof(this.IsAwaitableTask)} to ensure the method is awaitable and returns a 'ValueTask'.");
+      }
+
+      if (this.awaitableTaskInvocator is null)
+      {
+        List<ParameterExpression> parameterExpressions = new List<ParameterExpression>();
+        foreach (ParameterData parameter in this.Parameters)
+        {
+          ParameterExpression parameterExpression = Expression.Parameter(parameter.ParameterTypeData.GetType(), parameter.Name);
+          parameterExpressions.Add(parameterExpression);
+        }
+
+        MethodCallExpression expressionBody = Expression.Call(Expression.Parameter(typeof(object), "invocationTarget"), GetMethodInfo(), parameterExpressions);
+        Expression<Func<object, object[], Task>> lambdaExpression = Expression.Lambda<Func<object, object[], Task>>(expressionBody, parameterExpressions);
+        this.awaitableTaskInvocator = lambdaExpression.Compile();
       }
 
       return this.awaitableTaskInvocator;
@@ -339,10 +366,13 @@
       => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false));
 
     public override string DisplayName
-      => this.displayName ?? (this.displayName = GetType().ToDisplayName());
+      => this.displayName ?? (this.displayName = GetMethodInfo().ToDisplayName());
 
     public override string FullyQualifiedDisplayName
-      => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = GetType().ToFullDisplayName());
+      => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = GetMethodInfo().ToFullDisplayName());
+
+    public override string AssemblyName
+      => this.assemblyName ?? (this.assemblyName = this.DeclaringTypeData.AssemblyName);
 
     public TypeData ReturnTypeData 
       => this.returnTypeData ?? (this.returnTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetMethodInfo().ReturnType));

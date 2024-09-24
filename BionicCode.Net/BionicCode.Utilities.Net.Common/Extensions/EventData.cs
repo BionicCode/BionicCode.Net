@@ -19,6 +19,7 @@
     private bool? isStatic;
     private TypeData eventHandlerTypeData;
     private Func<object, object[], object> invocator;
+    private string assemblyName;
 
     public EventData(EventInfo eventInfo) : base(eventInfo)
     {
@@ -75,6 +76,9 @@
 
     public override string FullyQualifiedDisplayName 
       => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = GetType().ToFullDisplayName());
+
+    public override string AssemblyName
+      => this.assemblyName ?? (this.assemblyName = this.DeclaringTypeData.AssemblyName);
 
     public bool IsOverride 
       => (bool)(this.isOverride ?? (this.isOverride = this.AddMethodData.IsOverride));

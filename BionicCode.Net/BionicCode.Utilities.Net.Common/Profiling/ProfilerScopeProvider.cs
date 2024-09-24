@@ -6,11 +6,11 @@
 
   internal class ProfilerScopeProvider
   {
-    public ProfilerLoggerDelegate Logger { get; }
+    public ProfilerLogger Logger { get; }
     public ProfilerLoggerAsyncDelegate AsyncLogger { get; }
     public ProfilerBatchResult Result { get; }
 
-    internal ProfilerScopeProvider(ProfilerLoggerDelegate logger, ProfilerContext profilerContext, TimeUnit baseUnit)
+    internal ProfilerScopeProvider(ProfilerLogger logger, ProfilerContext profilerContext, TimeUnit baseUnit)
     {
       this.Logger = logger;
       this.Result = new ProfilerBatchResult(1, DateTime.Now) { Context = profilerContext, BaseUnit = baseUnit };

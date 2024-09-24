@@ -20,7 +20,7 @@
     private TimeUnit BaseUnit { get; set; }
     private Dictionary<Type, Assembly> TypeAssemblyTable { get; }
     private ProfilerLoggerAsyncDelegate AsyncProfilerLogger { get; set; }
-    private ProfilerLoggerDelegate ProfilerLogger { get; set; }
+    private ProfilerLogger ProfilerLogger { get; set; }
     private Runtime Runtime { get; set; }
 
     IEnumerable<Type> IAttributeProfilerConfiguration.Types => this.Type;
@@ -31,7 +31,7 @@
     int IAttributeProfilerConfiguration.Iterations => this.Iterations;
     int IAttributeProfilerConfiguration.WarmupIterations => this.WarmupIterations;
     ProfilerLoggerAsyncDelegate IAttributeProfilerConfiguration.AsyncProfilerLogger => this.AsyncProfilerLogger;
-    ProfilerLoggerDelegate IAttributeProfilerConfiguration.ProfilerLogger => this.ProfilerLogger;
+    ProfilerLogger IAttributeProfilerConfiguration.ProfilerLogger => this.ProfilerLogger;
     Runtime IAttributeProfilerConfiguration.Runtime => this.Runtime;
 
     Assembly IAttributeProfilerConfiguration.GetAssembly(Type type)
@@ -94,7 +94,7 @@
     /// <returns>
     /// The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.
     /// </returns>
-    public ProfilerBuilder SetLogger(ProfilerLoggerDelegate profilerLogger)
+    public ProfilerBuilder SetLogger(ProfilerLogger profilerLogger)
     {
       this.ProfilerLogger = profilerLogger;
       return this;

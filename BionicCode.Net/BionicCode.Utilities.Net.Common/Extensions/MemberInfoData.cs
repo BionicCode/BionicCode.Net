@@ -15,7 +15,7 @@
       this.Namespace = memberInfo.DeclaringType.Namespace;
     }
 
-    public Type GetDeclaringType()
+    private Type GetDeclaringType()
       => Type.GetTypeFromHandle(this.DeclaringTypeHandle);
 
     protected abstract MemberInfo GetMemberInfo();
@@ -25,7 +25,7 @@
     public string Namespace { get; }
 
     public override IList<CustomAttributeData> AttributeData
-      => this.attributeData ?? (this.attributeData = new HashSet<CustomAttributeData>(GetMemberInfo().GetCustomAttributesData()));
+      => this.attributeData ?? (this.attributeData = new List<CustomAttributeData>(GetMemberInfo().GetCustomAttributesData()));
 
     public TypeData DeclaringTypeData
       => this.declaringTypeData ?? (this.declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetDeclaringType()));
