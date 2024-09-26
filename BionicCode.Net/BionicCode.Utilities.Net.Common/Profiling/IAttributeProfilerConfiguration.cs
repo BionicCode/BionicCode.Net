@@ -3,6 +3,7 @@
   using System;
   using System.Collections.Generic;
   using System.Reflection;
+  using System.Threading.Tasks;
 
   internal interface IAttributeProfilerConfiguration
   {
@@ -14,7 +15,7 @@
     int Iterations { get; }
     int WarmupIterations { get; }
     TimeUnit BaseUnit { get; }
-    ProfilerLoggerAsyncDelegate AsyncProfilerLogger { get; }
-    ProfilerLogger ProfilerLogger { get; }
+    Func<ProfilerBatchResult, string, Task> AsyncProfilerLogger { get; }
+    Action<ProfilerBatchResult, string> ProfilerLogger { get; }
   }
 }

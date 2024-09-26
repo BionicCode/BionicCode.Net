@@ -9,6 +9,7 @@
     Delegate,
     Property,
     PropertyGet,
-    PropertySet
+    PropertySet,
+    Scope,
   }
 }

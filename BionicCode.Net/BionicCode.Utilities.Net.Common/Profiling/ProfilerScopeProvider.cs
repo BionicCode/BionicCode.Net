@@ -3,26 +3,35 @@
   using System;
   using System.Diagnostics;
   using System.Text;
+  using System.Threading.Tasks;
 
   internal class ProfilerScopeProvider
   {
-    public ProfilerLogger Logger { get; }
-    public ProfilerLoggerAsyncDelegate AsyncLogger { get; }
+    public Action<ProfilerBatchResult, string> Logger { get; }
+    public Func<ProfilerBatchResult, string, Task> AsyncLogger { get; }
     public ProfilerBatchResult Result { get; }
 
-    internal ProfilerScopeProvider(ProfilerLogger logger, ProfilerContext profilerContext, TimeUnit baseUnit)
+    internal ProfilerScopeProvider(Action<ProfilerBatchResult, string> logger, ProfilerContext profilerContext, TimeUnit baseUnit)
     {
       this.Logger = logger;
       this.Result = new ProfilerBatchResult(1, DateTime.Now) { Context = profilerContext, BaseUnit = baseUnit };
     }
 
-    internal ProfilerScopeProvider(ProfilerLoggerAsyncDelegate logger, ProfilerContext profilerContext, TimeUnit baseUnit)
+    internal ProfilerScopeProvider(Func<ProfilerBatchResult, string, Task> asyncLogger, ProfilerContext profilerContext, TimeUnit baseUnit)
     {
-      this.AsyncLogger = logger;
+      this.AsyncLogger = asyncLogger;
       this.Result = new ProfilerBatchResult(1, DateTime.Now) { Context = profilerContext, BaseUnit = baseUnit };
     }
 
-    public IDisposable StartProfiling(out ProfilerBatchResult profilerBatchResult)
+    internal IDisposable StartProfiling(out ProfilerBatchResult profilerBatchResult)
+    {
+      profilerBatchResult = this.Result;
+      var scope = new ProfilerScope(this);
+
+      return scope;
+    }
+
+    internal IAsyncDisposable StartProfilingAsync(out ProfilerBatchResult profilerBatchResult)
     {
       profilerBatchResult = this.Result;
       var scope = new ProfilerScope(this);
@@ -32,9 +41,9 @@
 
     #region ProfilerScope class
 
-    private class ProfilerScope : IDisposable
+    private class ProfilerScope : IDisposable, IAsyncDisposable
     {
-      private bool disposedValue;
+      public bool IsDisposed { get; private set; }
       private Stopwatch Stopwatch { get; }
       private ProfilerScopeProvider ScopeProvider { get; }
 
@@ -49,7 +58,7 @@
 
       protected virtual async void Dispose(bool disposing)
       {
-        if (!this.disposedValue)
+        if (!this.IsDisposed)
         {
           if (disposing)
           {
@@ -65,24 +74,47 @@
             this.ScopeProvider.Result.MaxResult = iterationResult;
             this.ScopeProvider.Result.BaseUnit = Profiler.DefaultBaseUnit;
 
-            ProfilerContext context = this.ScopeProvider.Result.Context;
-            StringBuilder summaryBuilder = StringBuilderFactory.GetOrCreate();
-            Profiler.BuildSummaryHeader(summaryBuilder, $"Target: scope (context: {context.TargetName})", context.TargetName, context.SourceFileName, context.LineNumber);
-            Profiler.BuildSummaryEntry(summaryBuilder, iterationResult);
-            Profiler.BuildSummaryFooter(summaryBuilder, this.ScopeProvider.Result);
-
-            this.ScopeProvider.Logger?.Invoke(this.ScopeProvider.Result);
+            this.ScopeProvider.Logger?.Invoke(this.ScopeProvider.Result, this.ScopeProvider.Result.Summary);
             if (this.ScopeProvider.AsyncLogger != null)
             {
-              await this.ScopeProvider.AsyncLogger.Invoke(this.ScopeProvider.Result);
+              await this.ScopeProvider.AsyncLogger.Invoke(this.ScopeProvider.Result, this.ScopeProvider.Result.Summary);
             }
-
-            StringBuilderFactory.Recycle(summaryBuilder);
           }
 
           // TODO: free unmanaged resources (unmanaged objects) and override finalizer
           // TODO: set large fields to null
-          this.disposedValue = true;
+          this.IsDisposed = true;
+        }
+      }
+
+      protected virtual async Task DisposeAsync(bool disposing)
+      {
+        if (!this.IsDisposed)
+        {
+          if (disposing)
+          {
+            this.Stopwatch.Stop();
+
+            var iterationResult = new ProfilerResult(1, this.Stopwatch.Elapsed, this.ScopeProvider.Result.BaseUnit, this.ScopeProvider.Result, -1);
+
+            this.ScopeProvider.Result.AddResult(iterationResult);
+            this.ScopeProvider.Result.IterationCount = 1;
+            this.ScopeProvider.Result.TotalDuration = this.Stopwatch.Elapsed;
+            this.ScopeProvider.Result.AverageDuration = this.Stopwatch.Elapsed;
+            this.ScopeProvider.Result.MinResult = iterationResult;
+            this.ScopeProvider.Result.MaxResult = iterationResult;
+            this.ScopeProvider.Result.BaseUnit = Profiler.DefaultBaseUnit;
+
+            this.ScopeProvider.Logger?.Invoke(this.ScopeProvider.Result, this.ScopeProvider.Result.Summary);
+            if (this.ScopeProvider.AsyncLogger != null)
+            {
+              await this.ScopeProvider.AsyncLogger.Invoke(this.ScopeProvider.Result, this.ScopeProvider.Result.Summary);
+            }
+          }
+
+          // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+          // TODO: set large fields to null
+          this.IsDisposed = true;
         }
       }
 
@@ -97,6 +129,14 @@
       {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+      }
+
+      public async ValueTask DisposeAsync()
+      {
+        await DisposeAsync(disposing: true);
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: false);
         GC.SuppressFinalize(this);
       }
     }

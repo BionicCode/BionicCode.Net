@@ -294,41 +294,39 @@
           cancellationToken.ThrowIfCancellationRequested();
 
           object[] argumentList = memberInfo.ArgumentLists[argumentListIndex].ToArray();
-          MethodInvokeInfo invocationInfo;
+          ProfilerTargetInvokeInfo invocationInfo;
           if (memberInfo is ProfiledMethodInfo method)
           {
             if (method.IsAwaitable)
             {
               if (method.IsAwaitableTask)
               {
-                invocationInfo = new MethodInvokeInfo(profiledInstance, argumentList, method.Signature, asynchronousTaskInvocator: method.MethodData.GetAwaitableTaskInvocator(), this.Configuration.Runtime, ProfiledTargetType.Method, method.);
+                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, argumentList, argumentListIndex, method.Signature, method.DisplayName, method.Namespace, method.AssemblyName, method.MethodData.GetAwaitableTaskInvocator(), ProfiledTargetType.Method);
               }
               else if (method.IsAwaitableValueTask)
               {
-                invocationInfo = new MethodInvokeInfo(profiledInstance, argumentList, method.Signature, asynchronousValueTaskInvocator: method.MethodData.GetAwaitableValueTaskInvocator());
+                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, argumentList, argumentListIndex, method.Signature, method.DisplayName, method.Namespace, method.AssemblyName, method.MethodData.GetAwaitableValueTaskInvocator(), ProfiledTargetType.Method);
               }
-              else if (method.IsAwaitableGenericValueTask)
+              else
               {
-                invocationInfo = new MethodInvokeInfo(profiledInstance, argumentList, method.Signature, asynchronousGenericValueTaskInvocator: method.MethodData.GetAwaitableGenericValueTaskInvocator());
+                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, method.Signature, method.DisplayName, method.Namespace, method.AssemblyName, argumentList, argumentListIndex, method.MethodData.GetAwaitableGenericValueTaskInvocator(), ProfiledTargetType.Method);
               }
             }
             else
             {
-              invocationInfo = new MethodInvokeInfo(profiledInstance, argumentList, method.Signature, synchronousInvocator: method.MethodData.GetInvocator());
+              invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, argumentList, argumentListIndex, method.Signature, method.DisplayName, method.Namespace, method.AssemblyName, method.MethodData.GetInvocator(), ProfiledTargetType.Method);
+
             }
 
+            var context = new ProfilerContext(invocationInfo, method.SourceFilePath, method.LineNumber, this.Configuration.WarmupIterations, this.Configuration.Iterations, method.TargetFramework, this.Configuration.BaseUnit, this.Configuration.ProfilerLogger, this.Configuration.AsyncProfilerLogger);
             ProfilerBatchResult result = method.IsAwaitable
-              ? await Profiler.LogTimeAsyncInternal(invocationInfo, this.Configuration.WarmupIterations, this.Configuration.Iterations, argumentListIndex, this.Configuration.ProfilerLogger, this.Configuration.AsyncProfilerLogger, this.Configuration.BaseUnit, method.SourceFilePath, method.LineNumber)
-              : Profiler.LogTimeInternal(invocationInfo, this.Configuration.WarmupIterations, this.Configuration.Iterations, argumentListIndex, this.Configuration.ProfilerLogger, this.Configuration.BaseUnit, method.SourceFilePath, method.LineNumber);
+              ? await Profiler.LogTimeAsyncInternal(context)
+              : Profiler.LogTimeInternal(invocationInfo, this.Configuration.WarmupIterations, this.Configuration.Iterations, this.Configuration.ProfilerLogger, method.SourceFilePath, method.LineNumber);
             ProfiledTargetType targetType = method.MethodName.StartsWith("set_", StringComparison.Ordinal) && method.MethodInfo.GetParameters().Length == 1
               ? ProfiledTargetType.PropertySet
               : method.MethodName.StartsWith("get_", StringComparison.Ordinal) && method.MethodInfo.GetParameters().Length == 0
                 ? ProfiledTargetType.PropertyGet
                 : ProfiledTargetType.Method;
-
-            var context = new ProfilerContext(method.AssemblyName, fullSignatureName, targetType, method.SourceFilePath, method.LineNumber, memberInfo.MemberInfoData, this.Configuration.WarmupIterations, memberInfo.TargetFramework);
-            result.Context = context;
-            result.BaseUnit = this.Configuration.BaseUnit;
 
             if (memberResultGroup.IsEmpty())
             {

@@ -18,9 +18,9 @@
     private int Iterations { get; set; }
     private int WarmupIterations { get; set; }
     private TimeUnit BaseUnit { get; set; }
-    private Dictionary<Type, Assembly> TypeAssemblyTable { get; }
-    private ProfilerLoggerAsyncDelegate AsyncProfilerLogger { get; set; }
-    private ProfilerLogger ProfilerLogger { get; set; }
+    //private Dictionary<Type, Assembly> TypeAssemblyTable { get; }
+    private Func<ProfilerBatchResult, string, Task> AsyncProfilerLogger { get; set; }
+    private Action<ProfilerBatchResult, string> ProfilerLogger { get; set; }
     private Runtime Runtime { get; set; }
 
     IEnumerable<Type> IAttributeProfilerConfiguration.Types => this.Type;
@@ -30,20 +30,9 @@
     bool IAttributeProfilerConfiguration.IsDefaultLogOutputEnabled => this.IsDefaultLogOutputEnabled;
     int IAttributeProfilerConfiguration.Iterations => this.Iterations;
     int IAttributeProfilerConfiguration.WarmupIterations => this.WarmupIterations;
-    ProfilerLoggerAsyncDelegate IAttributeProfilerConfiguration.AsyncProfilerLogger => this.AsyncProfilerLogger;
-    ProfilerLogger IAttributeProfilerConfiguration.ProfilerLogger => this.ProfilerLogger;
+    Func<ProfilerBatchResult, string, Task> IAttributeProfilerConfiguration.AsyncProfilerLogger => this.AsyncProfilerLogger;
+    Action<ProfilerBatchResult, string> IAttributeProfilerConfiguration.ProfilerLogger => this.ProfilerLogger;
     Runtime IAttributeProfilerConfiguration.Runtime => this.Runtime;
-
-    Assembly IAttributeProfilerConfiguration.GetAssembly(Type type)
-    {
-      if (!this.TypeAssemblyTable.TryGetValue(type, out Assembly assembly))
-      {
-        assembly = Assembly.GetAssembly(type);
-        this.TypeAssemblyTable.Add(type, assembly);
-      }
-
-      return assembly;
-    }
 
     internal ProfilerBuilder(Type targetType) : this(new[] { targetType })
     {
@@ -52,11 +41,10 @@
     internal ProfilerBuilder(IEnumerable<Type> targetTypes)
     {
       this.Type = targetTypes;
-      this.TypeAssemblyTable = new Dictionary<Type, Assembly>();
       this.IsWarmupEnabled = true;
       this.IsDefaultLogOutputEnabled = true;
       this.WarmupIterations = Profiler.DefaultWarmupCount;
-      this.Iterations = 1;
+      this.Iterations = Profiler.DefaultIterationsCount;
       this.BaseUnit = TimeUnit.Microseconds;
       this.Runtime = Runtime.Current;
     }
@@ -70,6 +58,11 @@
     /// </returns>
     public ProfilerBuilder SetIterations(int iterations)
     {
+      if (iterations < 0)
+      {
+        throw new ArgumentOutOfRangeException(ExceptionMessages.GetArgumentExceptionMessage_ProfilerRunCount(), nameof(iterations));
+      }
+
       this.Iterations = iterations;
       return this;
     }
@@ -94,7 +87,7 @@
     /// <returns>
     /// The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.
     /// </returns>
-    public ProfilerBuilder SetLogger(ProfilerLogger profilerLogger)
+    public ProfilerBuilder SetLogger(ProfilerLoggerDelegate profilerLogger)
     {
       this.ProfilerLogger = profilerLogger;
       return this;
@@ -123,9 +116,8 @@
     /// <remarks>When running code the first time there is always the incurrence of the JIT to compile the code. 
     /// <br/>For this reason it is recommended to execute the code at least once in order to avoid the JIT to impact the profiling.
     /// </remarks>
-    public ProfilerBuilder EnableWarmup(int warmupIterations = 4)
+    public ProfilerBuilder EnableWarmup()
     {
-      this.WarmupIterations = warmupIterations;
       this.IsWarmupEnabled = true;
       return this;
     }
@@ -180,6 +172,11 @@
     /// </remarks>
     public ProfilerBuilder SetWarmupIterations(int warmupIterations)
     {
+      if (warmupIterations < 0)
+      {
+        throw new ArgumentOutOfRangeException(ExceptionMessages.GetArgumentExceptionMessage_ProfilerWarmupCount(), nameof(warmupIterations));
+      }
+
       this.WarmupIterations = warmupIterations;
       return this;
     }

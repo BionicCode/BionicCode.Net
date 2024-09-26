@@ -3,17 +3,17 @@
   using System;
   using System.Threading.Tasks;
 
-  internal readonly struct MethodInvokeInfo
+  internal readonly struct ProfilerTargetInvokeInfo
   {
-    public MethodInvokeInfo(object target,
+    public ProfilerTargetInvokeInfo(object target,
       object[] arguments,
       int argumentListIndex,
-      string signature,
+      string targetSignature,
+      string targetDisplayName,
+      string targetNamespace,
+      string targetAssemblyName,
       Func<object, object[], object> synchronousInvocator,
-      Runtime runtime,
-      ProfiledTargetType profiledTargetType,
-      string assemblyName,
-      TimeUnit baseUnit)
+      ProfiledTargetType profiledTargetType)
     {
       this.SynchronousInvocator = synchronousInvocator;
       this.AsynchronousTaskInvocator = null;
@@ -22,22 +22,22 @@
       this.Arguments = arguments;
       this.ArgumentListIndex = argumentListIndex;
       this.Target = target;
-      this.Signature = signature;
-      this.Runtime = runtime;
       this.ProfiledTargetType = profiledTargetType;
-      this.AssemblyName = assemblyName;
-      this.BaseUnit = baseUnit;
+      this.Signature = targetSignature;
+      this.AssemblyName = targetAssemblyName;
+      this.DisplayName = targetDisplayName;
+      this.Namespace = targetNamespace;
     }
 
-    public MethodInvokeInfo(object target,
+    public ProfilerTargetInvokeInfo(object target,
       object[] arguments,
       int argumentListIndex,
-      string signature,
+      string targetSignature,
+      string targetDisplayName,
+      string targetNamespace,
+      string targetAssemblyName,
       Func<object, object[], Task> asynchronousTaskInvocator,
-      Runtime runtime,
-      ProfiledTargetType profiledTargetType,
-      string assemblyName,
-      TimeUnit baseUnit)
+      ProfiledTargetType profiledTargetType)
     {
       this.SynchronousInvocator = null;
       this.AsynchronousTaskInvocator = asynchronousTaskInvocator;
@@ -46,22 +46,22 @@
       this.Arguments = arguments;
       this.ArgumentListIndex = argumentListIndex;
       this.Target = target;
-      this.Signature = signature;
-      this.Runtime = runtime;
       this.ProfiledTargetType = profiledTargetType;
-      this.AssemblyName = assemblyName;
-      this.BaseUnit = baseUnit;
+      this.Signature = targetSignature;
+      this.AssemblyName = targetAssemblyName;
+      this.DisplayName = targetDisplayName;
+      this.Namespace = targetNamespace;
     }
 
-    public MethodInvokeInfo(object target,
+    public ProfilerTargetInvokeInfo(object target,
       object[] arguments,
       int argumentListIndex,
-      string signature,
+      string targetSignature,
+      string targetDisplayName,
+      string targetNamespace,
+      string targetAssemblyName,
       Func<object, object[], ValueTask> asynchronousValueTaskInvocator,
-      Runtime runtime,
-      ProfiledTargetType profiledTargetType,
-      string assemblyName,
-      TimeUnit baseUnit)
+      ProfiledTargetType profiledTargetType)
     {
       this.SynchronousInvocator = null;
       this.AsynchronousTaskInvocator = null;
@@ -70,22 +70,22 @@
       this.Arguments = arguments;
       this.ArgumentListIndex = argumentListIndex;
       this.Target = target;
-      this.Signature = signature;
-      this.Runtime = runtime;
       this.ProfiledTargetType = profiledTargetType;
-      this.AssemblyName = assemblyName;
-      this.BaseUnit = baseUnit;
+      this.Signature = targetSignature;
+      this.AssemblyName = targetAssemblyName;
+      this.DisplayName = targetDisplayName;
+      this.Namespace = targetNamespace;
     }
 
-    public MethodInvokeInfo(object target,
-      string signature,
+    public ProfilerTargetInvokeInfo(object target, 
+      string targetSignature,
+      string targetDisplayName,
+      string targetNamespace,
+      string targetAssemblyName,
       object[] arguments,
       int argumentListIndex,
       Func<object, object[], dynamic> asynchronousGenericValueTaskInvocator,
-      Runtime runtime,
-      ProfiledTargetType profiledTargetType,
-      string assemblyName,
-      TimeUnit baseUnit)
+      ProfiledTargetType profiledTargetType)
     {
       this.SynchronousInvocator = null;
       this.AsynchronousTaskInvocator = null;
@@ -94,11 +94,30 @@
       this.Arguments = arguments;
       this.ArgumentListIndex = argumentListIndex;
       this.Target = target;
-      this.Signature = signature;
-      this.Runtime = runtime;
       this.ProfiledTargetType = profiledTargetType;
-      this.AssemblyName = assemblyName;
-      this.BaseUnit = baseUnit;
+      this.Signature = targetSignature;
+      this.AssemblyName = targetAssemblyName;
+      this.DisplayName = targetDisplayName;
+      this.Namespace = targetNamespace;
+    }
+
+    public ProfilerTargetInvokeInfo(string targetSignature,
+      string targetDisplayName,
+      string targetNamespace,
+      string targetAssemblyName)
+    {
+      this.SynchronousInvocator = null;
+      this.AsynchronousTaskInvocator = null;
+      this.AsynchronousValueTaskInvocator = null;
+      this.AsynchronousGenericValueTaskInvocator = null;
+      this.Arguments = Array.Empty<object>();
+      this.ArgumentListIndex = -1;
+      this.Target = null;
+      this.ProfiledTargetType = ProfiledTargetType.Scope;
+      this.Signature = targetSignature;
+      this.AssemblyName = targetAssemblyName;
+      this.DisplayName = targetDisplayName;
+      this.Namespace = targetNamespace;
     }
 
     public Func<object, object[], object> SynchronousInvocator { get; }
@@ -109,9 +128,9 @@
     public int ArgumentListIndex { get; }
     public object Target { get; }
     public string Signature { get; }
+    public string DisplayName { get; }
+    public string Namespace { get; }
     public string AssemblyName { get; }
-    public Runtime Runtime { get; }
     public ProfiledTargetType ProfiledTargetType { get; }
-    public TimeUnit BaseUnit { get; }
   }
 }

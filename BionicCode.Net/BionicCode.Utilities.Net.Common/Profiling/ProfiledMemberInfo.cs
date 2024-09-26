@@ -13,6 +13,8 @@
     public bool IsStatic { get; }
     public abstract MemberInfoData MemberInfoData { get; }
     public abstract string Name { get; }
+    public abstract string DisplayName { get; }
+    public abstract string Namespace { get; }
     public abstract string Signature { get; }
 
     protected ProfiledMemberInfo(IList<IEnumerable<object>> argumentLists, bool isStatic, string assemblyName, int lineNumber, string sourceFilePath, Runtime targetFramework)
