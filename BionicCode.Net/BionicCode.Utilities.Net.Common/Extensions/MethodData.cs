@@ -64,11 +64,11 @@
       return this.invocator.Invoke(target, arguments);
     }
 
-    public Task InvokeAwaitableTaskAsync(object target, params object[] arguments)
+    public async Task InvokeAwaitableTaskAsync(object target, params object[] arguments)
     {
       if (!this.IsAwaitableTask)
       {
-        throw new InvalidOperationException($"Method does not return an awaitable 'Task'. Call {nameof(this.IsAwaitableTask)} to ensure the method is awaitable returns a 'Task'.");
+        throw new InvalidOperationException($"Method does not return an awaitable 'Task' or 'Task<T>' object. Call {nameof(this.IsAwaitableTask)} to ensure the method is awaitable returns a 'Task' or 'Task<T>'.");
       }
 
       if (this.awaitableTaskInvocator is null)
@@ -76,14 +76,37 @@
         InitializeAwaitableTaskInvocator();
       }
 
-      return this.awaitableTaskInvocator.Invoke(target, arguments);
+      await this.awaitableTaskInvocator.Invoke(target, arguments);
+    }
+
+    public async Task<object> InvokeAwaitableTaskWithResultAsync(object target, params object[] arguments)
+    {
+      if (!this.IsAwaitableTask)
+      {
+        throw new InvalidOperationException($"Method does not return an awaitable 'Task' or 'Task<T>' object. Call {nameof(this.IsAwaitableTask)} to ensure the method is awaitable returns a 'Task' or 'Task<T>'.");
+      }
+
+      if (this.awaitableTaskInvocator is null)
+      {
+        InitializeAwaitableTaskInvocator();
+      }
+
+      Task task = this.awaitableTaskInvocator.Invoke(target, arguments);
+      await task;
+      object result = null;
+      if (this.ReturnTypeData.IsGenericType)
+      {
+        result = PropertyData.TaskResultPropertyData.Get(task);
+      }
+
+      return result;
     }
 
     public async Task InvokeAwaitableValueTaskAsync(object target, params object[] arguments)
     {
       if (!this.IsAwaitableValueTask)
       {
-        throw new InvalidOperationException($"Method does not return an awaitable 'ValueTask'. Call {nameof(this.IsAwaitableValueTask)} to ensure the method is awaitable and returns a 'ValueTask'.");
+        throw new InvalidOperationException($"Method does not return an awaitable 'ValueTask' or 'ValueTask<T>' object. Call {nameof(this.IsAwaitableValueTask)} or {nameof(this.IsAwaitableGenericValueTask)} to ensure the method is awaitable and returns a 'ValueTask' or 'ValueTask<T>'.");
       }
 
       if (this.ReturnTypeData.IsGenericType)
@@ -106,14 +129,42 @@
       }
     }
 
-    public Func<object, object[], object> GetInvocator()
+    public async Task<object> InvokeAwaitableValueTaskWithResultAsync(object target, params object[] arguments)
     {
-      if (!this.IsAwaitableGenericValueTask)
+      if (!this.IsAwaitableValueTask)
       {
-        throw new InvalidOperationException($"Method does not return an awaitable 'ValueTask'. Call {nameof(this.IsAwaitableGenericValueTask)} to ensure the method is awaitable and returns a 'ValueTask'.");
+        throw new InvalidOperationException($"Method does not return an awaitable 'ValueTask' or 'ValueTask<T>' object. Call {nameof(this.IsAwaitableValueTask)} or {nameof(this.IsAwaitableGenericValueTask)} to ensure the method is awaitable and returns a 'ValueTask' or 'ValueTask<T>'.");
       }
 
-      if (this.awaitableGenericValueTaskInvocator is null)
+      if (this.ReturnTypeData.IsGenericType)
+      {
+        if (this.awaitableGenericValueTaskInvocator is null)
+        {
+          InitializeAwaitableGenericValueTaskInvocator();
+        }
+
+        dynamic task = this.awaitableGenericValueTaskInvocator.Invoke(target, arguments);
+        await task;
+        object result = PropertyData.ValueTaskResultPropertyData.Get(task);
+
+        return result;
+      }
+      else
+      {
+        if (this.awaitableValueTaskInvocator is null)
+        {
+          InitializeAwaitableValueTaskInvocator();
+        }
+
+        await this.awaitableValueTaskInvocator.Invoke(target, arguments);
+
+        return null;
+      }
+    }
+
+    public Func<object, object[], object> GetInvocator()
+    {
+      if (this.invocator is null)
       {
         InitializeInvocator();
       }
@@ -125,7 +176,7 @@
     {
       if (!this.IsAwaitableGenericValueTask)
       {
-        throw new InvalidOperationException($"Method does not return an awaitable 'ValueTask'. Call {nameof(this.IsAwaitableGenericValueTask)} to ensure the method is awaitable and returns a 'ValueTask'.");
+        throw new InvalidOperationException($"Method does not return an awaitable 'ValueTask<T>' object. Call {nameof(this.IsAwaitableGenericValueTask)} to ensure the method is awaitable and returns a 'ValueTask<T>'.");
       }
 
       if (this.awaitableGenericValueTaskInvocator is null)
@@ -140,10 +191,13 @@
     {
       if (!this.IsAwaitableValueTask)
       {
-        throw new InvalidOperationException($"Method does not return an awaitable 'ValueTask'. Call {nameof(this.IsAwaitableValueTask)} to ensure the method is awaitable and returns a 'ValueTask'.");
+        throw new InvalidOperationException($"Method does not return an awaitable 'ValueTask' object. Call {nameof(this.IsAwaitableValueTask)} to ensure the method is awaitable and returns a 'ValueTask'.");
       }
 
-      InitializeAwaitableValueTaskInvocator();
+      if (this.awaitableValueTaskInvocator is null)
+      {
+        InitializeAwaitableValueTaskInvocator();
+      }
 
       return this.awaitableValueTaskInvocator;
     }
@@ -152,7 +206,7 @@
     {
       if (!this.IsAwaitableTask)
       {
-        throw new InvalidOperationException($"Method does not return an awaitable 'ValueTask'. Call {nameof(this.IsAwaitableTask)} to ensure the method is awaitable and returns a 'ValueTask'.");
+        throw new InvalidOperationException($"Method does not return an awaitable 'Task' object. Call {nameof(this.IsAwaitableTask)} to ensure the method is awaitable and returns a 'Task'.");
       }
 
       if (this.awaitableTaskInvocator is null)
@@ -167,7 +221,7 @@
     {
       if (!this.IsAwaitableTask)
       {
-        throw new InvalidOperationException($"Method does not return an awaitable 'ValueTask'. Call {nameof(this.IsAwaitableTask)} to ensure the method is awaitable and returns a 'ValueTask'.");
+        throw new InvalidOperationException($"Method does not return an awaitable 'Task' object. Call {nameof(this.IsAwaitableTask)} to ensure the method is awaitable and returns a 'Task'.");
       }
 
       if (this.awaitableTaskInvocator is null)
@@ -187,37 +241,17 @@
       return this.awaitableTaskInvocator;
     }
 
-    private void InitializeInvocator()
-    {
-      if (this.awaitableTaskInvocator is null)
-      {
-        this.invocator = (invocationTarget, invocationArguments) => GetMethodInfo().Invoke(invocationTarget, invocationArguments);
-      }
-    }
+    private void InitializeInvocator() => this.invocator = (invocationTarget, invocationArguments) 
+      => GetMethodInfo().Invoke(invocationTarget, invocationArguments);
 
     private void InitializeAwaitableTaskInvocator()
-    {
-      if (this.awaitableTaskInvocator is null)
-      {
-        this.awaitableTaskInvocator = (invocationTarget, invocationArguments) => (Task)GetMethodInfo().Invoke(invocationTarget, invocationArguments);
-      }
-    }
+      => this.awaitableTaskInvocator = (invocationTarget, invocationArguments) => (Task)GetMethodInfo().Invoke(invocationTarget, invocationArguments);
 
     private void InitializeAwaitableValueTaskInvocator()
-    {
-      if (this.awaitableValueTaskInvocator is null)
-      {
-        this.awaitableValueTaskInvocator = (invocationTarget, invocationArguments) => (ValueTask)GetMethodInfo().Invoke(invocationTarget, invocationArguments);
-      }
-    }
+      => this.awaitableValueTaskInvocator = (invocationTarget, invocationArguments) => (ValueTask)GetMethodInfo().Invoke(invocationTarget, invocationArguments);
 
     private void InitializeAwaitableGenericValueTaskInvocator()
-    {
-      if (this.awaitableGenericValueTaskInvocator is null)
-      {
-        this.awaitableGenericValueTaskInvocator = (invocationTarget, invocationArguments) => GetMethodInfo().Invoke(invocationTarget, invocationArguments);
-      }
-    }
+      => this.awaitableGenericValueTaskInvocator = (invocationTarget, invocationArguments) => GetMethodInfo().Invoke(invocationTarget, invocationArguments);
 
     public RuntimeMethodHandle Handle { get; }
 

@@ -29,7 +29,7 @@
     protected override MemberInfo GetMemberInfo()
       => GetFieldInfo();
 
-    public object Get(object target)
+    public object GetValue(object target)
     {
       if (this.getInvocator is null)
       {
@@ -39,7 +39,7 @@
       return this.getInvocator.Invoke(target);
     }
 
-    public void Set(object target, object value)
+    public void SetValue(object target, object value)
     {
       if (this.setInvocator is null)
       {

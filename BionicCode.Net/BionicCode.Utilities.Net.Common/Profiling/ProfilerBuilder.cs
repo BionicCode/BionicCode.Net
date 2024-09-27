@@ -12,7 +12,7 @@
   /// </summary>
   public class ProfilerBuilder : IAttributeProfilerConfiguration
   {
-    private IEnumerable<Type> Type { get; }
+    private IEnumerable<TypeData> TypeData { get; }
     private bool IsWarmupEnabled { get; set; }
     private bool IsDefaultLogOutputEnabled { get; set; }
     private int Iterations { get; set; }
@@ -23,7 +23,7 @@
     private Action<ProfilerBatchResult, string> ProfilerLogger { get; set; }
     private Runtime Runtime { get; set; }
 
-    IEnumerable<Type> IAttributeProfilerConfiguration.Types => this.Type;
+    IEnumerable<TypeData> IAttributeProfilerConfiguration.TypeData => this.TypeData;
     //Assembly IAttributeProfilerConfiguration.TypeAssembly => this.TypeAssembly;
     TimeUnit IAttributeProfilerConfiguration.BaseUnit => this.BaseUnit;
     bool IAttributeProfilerConfiguration.IsWarmupEnabled => this.IsWarmupEnabled;
@@ -34,13 +34,13 @@
     Action<ProfilerBatchResult, string> IAttributeProfilerConfiguration.ProfilerLogger => this.ProfilerLogger;
     Runtime IAttributeProfilerConfiguration.Runtime => this.Runtime;
 
-    internal ProfilerBuilder(Type targetType) : this(new[] { targetType })
+    internal ProfilerBuilder(TypeData targetType) : this(new[] { targetType })
     {
     }
 
-    internal ProfilerBuilder(IEnumerable<Type> targetTypes)
+    internal ProfilerBuilder(IEnumerable<TypeData> targetTypes)
     {
-      this.Type = targetTypes;
+      this.TypeData = targetTypes;
       this.IsWarmupEnabled = true;
       this.IsDefaultLogOutputEnabled = true;
       this.WarmupIterations = Profiler.DefaultWarmupCount;

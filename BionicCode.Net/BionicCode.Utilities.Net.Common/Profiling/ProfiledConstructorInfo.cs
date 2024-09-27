@@ -6,12 +6,11 @@
 
   internal class ProfiledConstructorInfo : ProfiledMemberInfo
   {
-    public ProfiledConstructorInfo(IEnumerable<IEnumerable<object>> argumentLists, ConstructorInfo constructorInfo, string sourceFilePath, int lineNumber, string assemblyName, Runtime targetFramework, bool isStatic)
-      : base(argumentLists, isStatic, assemblyName, lineNumber, sourceFilePath, targetFramework) => this.ConstructorInfo = constructorInfo;
+    public ProfiledConstructorInfo(IList<IEnumerable<object>> argumentLists, ConstructorData constructorData, string sourceFilePath, int lineNumber, string assemblyName, Runtime targetFramework, bool isStatic)
+      : base(argumentLists, isStatic, assemblyName, lineNumber, sourceFilePath, targetFramework) 
+      => this.ConstructorData = constructorData;
 
-    public ConstructorInfo ConstructorInfo { get; }
-    public string ConstructorName => this.ConstructorInfo.DeclaringType.Name;
-    public Action ConstructorDelegate { get; set; }
-    public override MemberInfo MemberInfoData => this.ConstructorInfo;
+    public ConstructorData ConstructorData { get; }
+    public override MemberInfoData MemberInfoData => this.ConstructorData;
   }
 }

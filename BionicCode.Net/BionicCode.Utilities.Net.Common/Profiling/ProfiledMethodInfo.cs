@@ -15,11 +15,7 @@
     }
 
     public MethodData MethodData { get; }
-    public override string Name => this.MethodData.Name;
-    public override string DisplayName => this.MethodData.DisplayName;
-    public override string Namespace => this.MethodData.Namespace;
-    public override string Signature => this.MethodData.Signature;
-    public string MethodReturnTypeName => this.MethodData.ReturnTypeData.Name;
+    public string MethodReturnTypeDisplayName => this.MethodData.ReturnTypeData.DisplayName;
     public bool IsAwaitable => this.MethodData.IsAwaitable;
 
     public bool IsAwaitableTask => this.MethodData.IsAwaitableTask;

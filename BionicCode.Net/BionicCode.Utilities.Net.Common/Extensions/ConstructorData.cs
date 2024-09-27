@@ -15,7 +15,7 @@
     private AccessModifier accessModifier;
     private ParameterData[] parameters;
     private bool? isStatic;
-    private Func<object, object[], object> invocator;
+    private Func<object[], object> invocator;
     private string assemblyName;
 
     public ConstructorData(ConstructorInfo constructorInfo) : base(constructorInfo)
@@ -29,15 +29,28 @@
     protected override MemberInfo GetMemberInfo() 
       => GetConstructorInfo();
 
-    public object Invoke(object target, params object[] arguments)
+    public object Invoke(params object[] arguments)
     {
       if (this.invocator is null)
       {
-        this.invocator = (invocationTarget, invocationArguments) => GetConstructorInfo().Invoke(invocationTarget, invocationArguments);
+        InitializeInvocator();
       }
 
-      return this.invocator.Invoke(target, arguments);
+      return this.invocator.Invoke(arguments);
     }
+
+    public Func<object[], object> GetInvocator()
+    {
+      if (this.invocator is null)
+      {
+        InitializeInvocator();
+      }
+
+      return this.invocator;
+    }
+
+    private void InitializeInvocator()
+      => this.invocator = invocationArguments => GetConstructorInfo().Invoke(invocationArguments);
 
     public RuntimeMethodHandle Handle { get; set; }
     public RuntimeTypeHandle DeclaringTypeHandle { get; set; }

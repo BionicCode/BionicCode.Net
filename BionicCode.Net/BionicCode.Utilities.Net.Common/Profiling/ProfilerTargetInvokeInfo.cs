@@ -5,6 +5,18 @@
 
   internal readonly struct ProfilerTargetInvokeInfo
   {
+    /// <summary>
+    /// Use for property set()
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="arguments"></param>
+    /// <param name="argumentListIndex"></param>
+    /// <param name="targetSignature"></param>
+    /// <param name="targetDisplayName"></param>
+    /// <param name="targetNamespace"></param>
+    /// <param name="targetAssemblyName"></param>
+    /// <param name="propertySetInvocator"></param>
+    /// <param name="profiledTargetType"></param>
     public ProfilerTargetInvokeInfo(object target,
       object[] arguments,
       int argumentListIndex,
@@ -12,13 +24,14 @@
       string targetDisplayName,
       string targetNamespace,
       string targetAssemblyName,
-      Func<object, object[], object> synchronousInvocator,
+      Action<object, object, object[]> propertySetInvocator,
       ProfiledTargetType profiledTargetType)
     {
-      this.SynchronousInvocator = synchronousInvocator;
-      this.AsynchronousTaskInvocator = null;
-      this.AsynchronousValueTaskInvocator = null;
-      this.AsynchronousGenericValueTaskInvocator = null;
+      this.PropertySetInvocator = propertySetInvocator;
+      this.SynchronousMethodInvocator = null;
+      this.AsynchronousTaskMethodInvocator = null;
+      this.AsynchronousValueTaskMethodInvocator = null;
+      this.AsynchronousGenericValueTaskMethodInvocator = null;
       this.Arguments = arguments;
       this.ArgumentListIndex = argumentListIndex;
       this.Target = target;
@@ -36,13 +49,14 @@
       string targetDisplayName,
       string targetNamespace,
       string targetAssemblyName,
-      Func<object, object[], Task> asynchronousTaskInvocator,
+      Func<object, object[], object> synchronousMethodInvocator,
       ProfiledTargetType profiledTargetType)
     {
-      this.SynchronousInvocator = null;
-      this.AsynchronousTaskInvocator = asynchronousTaskInvocator;
-      this.AsynchronousValueTaskInvocator = null;
-      this.AsynchronousGenericValueTaskInvocator = null;
+      this.PropertySetInvocator = null;
+      this.SynchronousMethodInvocator = synchronousMethodInvocator;
+      this.AsynchronousTaskMethodInvocator = null;
+      this.AsynchronousValueTaskMethodInvocator = null;
+      this.AsynchronousGenericValueTaskMethodInvocator = null;
       this.Arguments = arguments;
       this.ArgumentListIndex = argumentListIndex;
       this.Target = target;
@@ -60,13 +74,39 @@
       string targetDisplayName,
       string targetNamespace,
       string targetAssemblyName,
-      Func<object, object[], ValueTask> asynchronousValueTaskInvocator,
+      Func<object, object[], Task> asynchronousTaskMethodInvocator,
       ProfiledTargetType profiledTargetType)
     {
-      this.SynchronousInvocator = null;
-      this.AsynchronousTaskInvocator = null;
-      this.AsynchronousValueTaskInvocator = asynchronousValueTaskInvocator;
-      this.AsynchronousGenericValueTaskInvocator = null;
+      this.PropertySetInvocator = null;
+      this.SynchronousMethodInvocator = null;
+      this.AsynchronousTaskMethodInvocator = asynchronousTaskMethodInvocator;
+      this.AsynchronousValueTaskMethodInvocator = null;
+      this.AsynchronousGenericValueTaskMethodInvocator = null;
+      this.Arguments = arguments;
+      this.ArgumentListIndex = argumentListIndex;
+      this.Target = target;
+      this.ProfiledTargetType = profiledTargetType;
+      this.Signature = targetSignature;
+      this.AssemblyName = targetAssemblyName;
+      this.DisplayName = targetDisplayName;
+      this.Namespace = targetNamespace;
+    }
+
+    public ProfilerTargetInvokeInfo(object target,
+      object[] arguments,
+      int argumentListIndex,
+      string targetSignature,
+      string targetDisplayName,
+      string targetNamespace,
+      string targetAssemblyName,
+      Func<object, object[], ValueTask> asynchronousValueTaskMethodInvocator,
+      ProfiledTargetType profiledTargetType)
+    {
+      this.PropertySetInvocator = null;
+      this.SynchronousMethodInvocator = null;
+      this.AsynchronousTaskMethodInvocator = null;
+      this.AsynchronousValueTaskMethodInvocator = asynchronousValueTaskMethodInvocator;
+      this.AsynchronousGenericValueTaskMethodInvocator = null;
       this.Arguments = arguments;
       this.ArgumentListIndex = argumentListIndex;
       this.Target = target;
@@ -84,13 +124,14 @@
       string targetAssemblyName,
       object[] arguments,
       int argumentListIndex,
-      Func<object, object[], dynamic> asynchronousGenericValueTaskInvocator,
+      Func<object, object[], dynamic> asynchronousGenericValueTaskMethodInvocator,
       ProfiledTargetType profiledTargetType)
     {
-      this.SynchronousInvocator = null;
-      this.AsynchronousTaskInvocator = null;
-      this.AsynchronousValueTaskInvocator = null;
-      this.AsynchronousGenericValueTaskInvocator = asynchronousGenericValueTaskInvocator;
+      this.PropertySetInvocator = null;
+      this.SynchronousMethodInvocator = null;
+      this.AsynchronousTaskMethodInvocator = null;
+      this.AsynchronousValueTaskMethodInvocator = null;
+      this.AsynchronousGenericValueTaskMethodInvocator = asynchronousGenericValueTaskMethodInvocator;
       this.Arguments = arguments;
       this.ArgumentListIndex = argumentListIndex;
       this.Target = target;
@@ -106,10 +147,11 @@
       string targetNamespace,
       string targetAssemblyName)
     {
-      this.SynchronousInvocator = null;
-      this.AsynchronousTaskInvocator = null;
-      this.AsynchronousValueTaskInvocator = null;
-      this.AsynchronousGenericValueTaskInvocator = null;
+      this.PropertySetInvocator = null;
+      this.SynchronousMethodInvocator = null;
+      this.AsynchronousTaskMethodInvocator = null;
+      this.AsynchronousValueTaskMethodInvocator = null;
+      this.AsynchronousGenericValueTaskMethodInvocator = null;
       this.Arguments = Array.Empty<object>();
       this.ArgumentListIndex = -1;
       this.Target = null;
@@ -120,10 +162,11 @@
       this.Namespace = targetNamespace;
     }
 
-    public Func<object, object[], object> SynchronousInvocator { get; }
-    public Func<object, object[], Task> AsynchronousTaskInvocator { get; }
-    public Func<object, object[], ValueTask> AsynchronousValueTaskInvocator { get; }
-    public Func<object, object[], dynamic> AsynchronousGenericValueTaskInvocator { get; }
+    public Action<object, object, object[]> PropertySetInvocator { get; }
+    public Func<object, object[], object> SynchronousMethodInvocator { get; }
+    public Func<object, object[], Task> AsynchronousTaskMethodInvocator { get; }
+    public Func<object, object[], ValueTask> AsynchronousValueTaskMethodInvocator { get; }
+    public Func<object, object[], dynamic> AsynchronousGenericValueTaskMethodInvocator { get; }
     public object[] Arguments { get; }
     public int ArgumentListIndex { get; }
     public object Target { get; }

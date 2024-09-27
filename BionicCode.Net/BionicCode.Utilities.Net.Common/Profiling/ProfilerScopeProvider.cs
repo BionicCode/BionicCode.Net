@@ -11,16 +11,16 @@
     public Func<ProfilerBatchResult, string, Task> AsyncLogger { get; }
     public ProfilerBatchResult Result { get; }
 
-    internal ProfilerScopeProvider(Action<ProfilerBatchResult, string> logger, ProfilerContext profilerContext, TimeUnit baseUnit)
+    internal ProfilerScopeProvider(Action<ProfilerBatchResult, string> logger, ProfilerContext profilerContext)
     {
       this.Logger = logger;
-      this.Result = new ProfilerBatchResult(1, DateTime.Now) { Context = profilerContext, BaseUnit = baseUnit };
+      this.Result = new ProfilerBatchResult(DateTime.Now, profilerContext);
     }
 
-    internal ProfilerScopeProvider(Func<ProfilerBatchResult, string, Task> asyncLogger, ProfilerContext profilerContext, TimeUnit baseUnit)
+    internal ProfilerScopeProvider(Func<ProfilerBatchResult, string, Task> asyncLogger, ProfilerContext profilerContext)
     {
       this.AsyncLogger = asyncLogger;
-      this.Result = new ProfilerBatchResult(1, DateTime.Now) { Context = profilerContext, BaseUnit = baseUnit };
+      this.Result = new ProfilerBatchResult(DateTime.Now, profilerContext);
     }
 
     internal IDisposable StartProfiling(out ProfilerBatchResult profilerBatchResult)
@@ -67,12 +67,10 @@
             var iterationResult = new ProfilerResult(1, this.Stopwatch.Elapsed, this.ScopeProvider.Result.BaseUnit, this.ScopeProvider.Result, -1);
 
             this.ScopeProvider.Result.AddResult(iterationResult);
-            this.ScopeProvider.Result.IterationCount = 1;
             this.ScopeProvider.Result.TotalDuration = this.Stopwatch.Elapsed;
             this.ScopeProvider.Result.AverageDuration = this.Stopwatch.Elapsed;
             this.ScopeProvider.Result.MinResult = iterationResult;
             this.ScopeProvider.Result.MaxResult = iterationResult;
-            this.ScopeProvider.Result.BaseUnit = Profiler.DefaultBaseUnit;
 
             this.ScopeProvider.Logger?.Invoke(this.ScopeProvider.Result, this.ScopeProvider.Result.Summary);
             if (this.ScopeProvider.AsyncLogger != null)
@@ -98,12 +96,10 @@
             var iterationResult = new ProfilerResult(1, this.Stopwatch.Elapsed, this.ScopeProvider.Result.BaseUnit, this.ScopeProvider.Result, -1);
 
             this.ScopeProvider.Result.AddResult(iterationResult);
-            this.ScopeProvider.Result.IterationCount = 1;
             this.ScopeProvider.Result.TotalDuration = this.Stopwatch.Elapsed;
             this.ScopeProvider.Result.AverageDuration = this.Stopwatch.Elapsed;
             this.ScopeProvider.Result.MinResult = iterationResult;
             this.ScopeProvider.Result.MaxResult = iterationResult;
-            this.ScopeProvider.Result.BaseUnit = Profiler.DefaultBaseUnit;
 
             this.ScopeProvider.Logger?.Invoke(this.ScopeProvider.Result, this.ScopeProvider.Result.Summary);
             if (this.ScopeProvider.AsyncLogger != null)

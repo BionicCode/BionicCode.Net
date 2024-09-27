@@ -4,6 +4,7 @@
   using System.Collections.Generic;
   using System.Diagnostics;
   using System.IO;
+  using System.Linq;
   using System.Reflection;
   using System.Runtime.CompilerServices;
   using System.Text;
@@ -436,7 +437,7 @@
       return result;
     }
 
-    internal static ProfilerBatchResult LogTimeInternal(ProfilerContext context, Action<ProfilerBatchResult, string> logger, string sourceFileName, int lineNumber)
+    internal static ProfilerBatchResult LogTimeInternal(ProfilerContext context)
     {
       if (context.IterationCount < 1)
       {
@@ -444,32 +445,32 @@
       }
 
       ProfilerBatchResult result = LogAverageTimeInternal(context);
-      logger?.Invoke(result, result.Summary);
+      context.Logger?.Invoke(result, result.Summary);
 
       return result;
     }
 
-    private static async Task LogAverageTimeInternalAsync(ProfilerContext context, int warmupCount, int runCount, )
+    private static async Task<ProfilerBatchResult> LogAverageTimeInternalAsync(ProfilerContext context)
     {
       ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
       var stopwatch = new Stopwatch();
       object invocationTarget = context.MethodInvokeInfo.Target;
       object[] arguments = context.MethodInvokeInfo.Arguments;
       bool isTaskCancelled = false;
-      for (int iterationCounter = 1 - warmupCount; iterationCounter <= runCount; iterationCounter++)
+      for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
       {
-        if (context.MethodInvokeInfo.SynchronousInvocator != null)
+        if (context.MethodInvokeInfo.SynchronousMethodInvocator != null)
         {
           stopwatch.Restart();
-          _ = context.MethodInvokeInfo.SynchronousInvocator.Invoke(invocationTarget, arguments);
+          _ = context.MethodInvokeInfo.SynchronousMethodInvocator.Invoke(invocationTarget, arguments);
           stopwatch.Stop();
         }
-        else if (context.MethodInvokeInfo.AsynchronousTaskInvocator != null)
+        else if (context.MethodInvokeInfo.AsynchronousTaskMethodInvocator != null)
         {
           try
           {
             stopwatch.Restart();
-            await context.MethodInvokeInfo.AsynchronousTaskInvocator.Invoke(invocationTarget, arguments);
+            await context.MethodInvokeInfo.AsynchronousTaskMethodInvocator.Invoke(invocationTarget, arguments);
             stopwatch.Stop();
           }
           catch (OperationCanceledException)
@@ -478,12 +479,12 @@
             isTaskCancelled = true;
           }
         }
-        else if (context.MethodInvokeInfo.AsynchronousValueTaskInvocator != null)
+        else if (context.MethodInvokeInfo.AsynchronousValueTaskMethodInvocator != null)
         {
           try
           {
             stopwatch.Restart();
-            await context.MethodInvokeInfo.AsynchronousValueTaskInvocator.Invoke(invocationTarget, arguments);
+            await context.MethodInvokeInfo.AsynchronousValueTaskMethodInvocator.Invoke(invocationTarget, arguments);
             stopwatch.Stop();
           }
           catch (OperationCanceledException)
@@ -492,12 +493,12 @@
             isTaskCancelled = true;
           }
         }
-        else if (context.MethodInvokeInfo.AsynchronousGenericValueTaskInvocator != null)
+        else if (context.MethodInvokeInfo.AsynchronousGenericValueTaskMethodInvocator != null)
         {
           try
           {
             stopwatch.Restart();
-            dynamic profiledValueTask = context.MethodInvokeInfo.AsynchronousGenericValueTaskInvocator.Invoke(invocationTarget, arguments);
+            dynamic profiledValueTask = context.MethodInvokeInfo.AsynchronousGenericValueTaskMethodInvocator.Invoke(invocationTarget, arguments);
             await profiledValueTask;
             stopwatch.Stop();
           }
@@ -516,17 +517,20 @@
         var iterationResult = new ProfilerResult(iterationCounter, isTaskCancelled, stopwatch.Elapsed, context.BaseUnit, result, context.MethodInvokeInfo.ArgumentListIndex);
         result.AddResult(iterationResult);
       }
+
+      return result;
     }
 
-    private static void LogAverageTimeInternal(ProfilerContext context, int warmupCount, int runCount, ProfilerBatchResult result)
+    private static ProfilerBatchResult LogAverageTimeInternal(ProfilerContext context)
     {
+      ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
       var stopwatch = new Stopwatch();
       object invocationTarget = context.MethodInvokeInfo.Target;
       object[] arguments = context.MethodInvokeInfo.Arguments;
-      for (int iterationCounter = 1 - warmupCount; iterationCounter <= runCount; iterationCounter++)
+      for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
       {
         stopwatch.Restart();
-        _ = context.MethodInvokeInfo.SynchronousInvocator.Invoke(invocationTarget, arguments);
+        _ = context.MethodInvokeInfo.SynchronousMethodInvocator.Invoke(invocationTarget, arguments);
         stopwatch.Stop();
 
         if (iterationCounter < 1)
@@ -537,6 +541,8 @@
         var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, context.BaseUnit, result, context.MethodInvokeInfo.ArgumentListIndex);
         result.AddResult(iterationResult);
       }
+
+      return result;
     }
 
     /// <summary>
@@ -579,8 +585,8 @@
       var assemblyOfTargetType = Assembly.GetCallingAssembly();
       string assemblyName = assemblyOfTargetType.GetName().Name;
       var profilerTargetInfo = new ProfilerTargetInvokeInfo(scopeName, scopeName, string.Empty, assemblyName);
-      var context = new ProfilerContext(profilerTargetInfo, sourceFileName, lineNumber, 0, Runtime.Current, baseUnit, logger, null);
-      var profilerScopeProvider = new ProfilerScopeProvider(logger, context, baseUnit);
+      var context = new ProfilerContext(profilerTargetInfo, sourceFileName, lineNumber, -1, -1, Runtime.Current, baseUnit, logger, null);
+      var profilerScopeProvider = new ProfilerScopeProvider(logger, context);
       IDisposable profilerScope = profilerScopeProvider.StartProfiling(out result);
 
       return profilerScope;
@@ -626,8 +632,8 @@
       var assemblyOfTargetType = Assembly.GetCallingAssembly();
       string assemblyName = assemblyOfTargetType.GetName().Name;
       var profilerTargetInfo = new ProfilerTargetInvokeInfo(scopeName, scopeName, string.Empty, assemblyName);
-      var context = new ProfilerContext(profilerTargetInfo, sourceFileName, lineNumber, 0, Runtime.Current, baseUnit, null, asyncLogger);
-      var profilerScopeProvider = new ProfilerScopeProvider(asyncLogger: asyncLogger, context, baseUnit);
+      var context = new ProfilerContext(profilerTargetInfo, sourceFileName, lineNumber, -1, -1, Runtime.Current, baseUnit, null, asyncLogger);
+      var profilerScopeProvider = new ProfilerScopeProvider(asyncLogger, context);
       IAsyncDisposable profilerScope = profilerScopeProvider.StartProfilingAsync(out result);
 
       return profilerScope;
@@ -657,10 +663,13 @@
     /// The builder instance which configures and starts the attribute based profiling.</returns>
     /// <remarks>
     /// The member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
-    /// <br/>Use the <see cref="ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The memeber can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
+    /// <br/>Use the <see cref="ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
     /// </remarks>
     public static ProfilerBuilder CreateProfilerBuilder<TTarget>()
-      => new ProfilerBuilder(typeof(TTarget));
+    {
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(TTarget));
+      return new ProfilerBuilder(typeData);
+    }
 
     /// <summary>
     /// Creates the builder object which configures and starts the attribute based profiling.
@@ -670,10 +679,13 @@
     /// The builder instance which configures and starts the attribute based profiling.</returns>
     /// <remarks>
     /// The member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
-    /// <br/>Use the <see cref="ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The memeber can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
+    /// <br/>Use the <see cref="ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
     /// </remarks>
     public static ProfilerBuilder CreateProfilerBuilder(Type targetType)
-      => new ProfilerBuilder(targetType);
+    {
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(targetType);
+      return new ProfilerBuilder(typeData);
+    }
 
     /// <summary>
     /// Creates the builder object which configures and starts the attribute based profiling.
@@ -683,10 +695,13 @@
     /// The builder instance which configures and starts the attribute based profiling.</returns>
     /// <remarks>
     /// The member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
-    /// <br/>Use the <see cref="ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The memeber can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
+    /// <br/>Use the <see cref="ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
     /// </remarks>
     public static ProfilerBuilder CreateProfilerBuilder(params Type[] targetTypes)
-      => new ProfilerBuilder(targetTypes);
+    {
+      IEnumerable<TypeData> typeData = targetTypes.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
+      return new ProfilerBuilder(typeData);
+    }
 
     /// <summary>
     /// Creates the builder object which configures and starts the attribute based profiling.
@@ -696,10 +711,13 @@
     /// The builder instance which configures and starts the attribute based profiling.</returns>
     /// <remarks>
     /// The member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
-    /// <br/>Use the <see cref="ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The memeber can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
+    /// <br/>Use the <see cref="ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
     /// </remarks>
     public static ProfilerBuilder CreateProfilerBuilder(IEnumerable<Type> targetTypes)
-      => new ProfilerBuilder(targetTypes);
+    {
+      IEnumerable<TypeData> typeData = targetTypes.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
+      return new ProfilerBuilder(typeData);
+    }
 
     internal static void BuildSummaryHeader(StringBuilder outputBuilder, string title, string callerName, string sourceFileName, int lineNumber)
     {

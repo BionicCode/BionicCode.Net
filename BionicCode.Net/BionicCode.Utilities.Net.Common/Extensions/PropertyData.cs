@@ -4,10 +4,13 @@
   using System.Linq;
   using System.Reflection;
   using System.Runtime.CompilerServices;
+  using System.Threading.Tasks;
   using Microsoft.CodeAnalysis;
 
   internal sealed class PropertyData : MemberInfoData
   {
+    private static PropertyData _TaskResultPropertyData;
+    private static PropertyData _ValueTaskResultPropertyData;
     private string displayName;
     private string fullyQualifiedDisplayName;
     private string signature;
@@ -48,7 +51,7 @@
     {
       if (this.getInvocator is null)
       {
-        this.getInvocator = (invocationTarget, indexerIndex) => GetPropertyInfo().GetValue(invocationTarget, indexerIndex);
+        InitializeGetInvocator();
       }
 
       return this.getInvocator.Invoke(target, indexerPropertyIndex);
@@ -58,11 +61,37 @@
     {
       if (this.setInvocator is null)
       {
-        this.setInvocator = (invocationTarget, propertyValue, indexerIndex) => GetPropertyInfo().SetValue(invocationTarget, propertyValue, indexerIndex);
+        InitializeSetInvocator();
       }
 
       this.setInvocator.Invoke(target, value, indexerPropertyIndex);
     }
+
+    public Func<object, object[], object> GetGetInvocator()
+    {
+      if (this.getInvocator is null)
+      {
+        InitializeGetInvocator();
+      }
+
+      return this.getInvocator;
+    }
+
+    public Action<object, object, object[]> GetSetInvocator()
+    {
+      if (this.setInvocator is null)
+      {
+        InitializeSetInvocator();
+      }
+
+      return this.setInvocator;
+    }
+
+    private void InitializeGetInvocator()
+      => this.getInvocator = (invocationTarget, indexerIndex) => GetPropertyInfo().GetValue(invocationTarget, indexerIndex);
+
+    private void InitializeSetInvocator()
+      => this.setInvocator = (invocationTarget, propertyValue, indexerIndex) => GetPropertyInfo().SetValue(invocationTarget, propertyValue, indexerIndex);
 
     private void GetAccessors()
     {
@@ -121,6 +150,12 @@
       => this.propertyTypeData ?? (this.propertyTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetPropertyInfo().PropertyType)); 
 
     public PropertyInfo PropertyInfo { get; }
+
+    public static PropertyData TaskResultPropertyData
+      => PropertyData._TaskResultPropertyData ?? (PropertyData._TaskResultPropertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(Task<>).GetProperty(nameof(Task<object>.Result))));
+
+    public static PropertyData ValueTaskResultPropertyData
+      => PropertyData._ValueTaskResultPropertyData ?? (PropertyData._ValueTaskResultPropertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(ValueTask<>).GetProperty(nameof(ValueTask<object>.Result))));
 
     public bool IsSealed
       => (bool)(this.isSealed ?? (this.isSealed = this.CanRead ? this.GetMethodData.IsSealed : this.SetMethodData.IsSealed));

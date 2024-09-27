@@ -53,9 +53,7 @@
     /// </summary>
     /// <value>A positive or negative value to describe the deviation from the arithmetic mean in microseconds.</value>
     public Microseconds Deviation => this.deviation == Microseconds.MinValue
-      ? this.Owner is null
-        ? throw new InvalidOperationException("The property is unset")
-        : (this.deviation = GetDeviation())
+      ? (this.deviation = GetDeviation())
       : this.deviation;
 
     /// <summary>
@@ -67,7 +65,7 @@
     /// <summary>
     /// The base unit used to calculate the values for <see cref="DeviationConverted"/> and <see cref="ElapsedTimeConverted"/>.
     /// </summary>
-    public TimeUnit BaseUnit { get; internal set; }
+    public TimeUnit BaseUnit { get; }
 
     /// <summary>
     /// In case the benchmarked operation is an async method, <see cref="IsProfiledTaskCancelled"/> indicates whether the <see langword="async"/>operation was cancelled or not.
@@ -95,7 +93,7 @@
     /// </remarks>
     public int ArgumentListIndex { get; }
 
-    internal ProfilerBatchResult Owner { get; set; }
+    internal ProfilerBatchResult Owner { get; }
 
     /// <inheritdoc/>
     public int CompareTo(ProfilerResult other) => this.ElapsedTime.CompareTo(other.ElapsedTime);
@@ -106,11 +104,21 @@
     /// <inheritdoc/>
     public bool Equals(ProfilerResult other) => this.ElapsedTime.Equals(other.ElapsedTime) 
       && this.IsProfiledTaskCancelled == other.IsProfiledTaskCancelled 
-      && this.Iteration == other.Iteration;
+      && this.Iteration == other.Iteration
+      && this.Owner == other.Owner
+      && this.ArgumentListIndex == other.ArgumentListIndex
+      && this.BaseUnit.Equals(other.BaseUnit)
+      && this.Deviation.Equals(other.Deviation);
 
     /// <inheritdoc/>
 #if NET || NETSTANDARD2_1_OR_GREATER
-    public override int GetHashCode() => HashCode.Combine(this.ElapsedTime, this.IsProfiledTaskCancelled, this.Iteration);
+    public override int GetHashCode() => HashCode.Combine(this.ElapsedTime, 
+      this.IsProfiledTaskCancelled, 
+      this.Iteration, 
+      this.Owner, 
+      this.ArgumentListIndex, 
+      this.BaseUnit, 
+      this.Deviation);
 #else
     public override int GetHashCode()
     {
@@ -118,6 +126,10 @@
       hashCode = (hashCode * -1521134295) + this.ElapsedTime.GetHashCode();
       hashCode = (hashCode * -1521134295) + this.IsProfiledTaskCancelled.GetHashCode();
       hashCode = (hashCode * -1521134295) + this.Iteration.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.Owner.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.ArgumentListIndex.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.BaseUnit.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.Deviation.GetHashCode();
       return hashCode;
     }
 #endif

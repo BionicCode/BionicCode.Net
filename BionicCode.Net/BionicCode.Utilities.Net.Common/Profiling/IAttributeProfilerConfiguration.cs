@@ -8,8 +8,7 @@
   internal interface IAttributeProfilerConfiguration
   {
     Runtime Runtime { get; }
-    Assembly GetAssembly(Type type);
-    IEnumerable<Type> Types { get; }
+    IEnumerable<TypeData> TypeData { get; }
     bool IsWarmupEnabled { get; }
     bool IsDefaultLogOutputEnabled { get; }
     int Iterations { get; }

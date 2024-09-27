@@ -5,17 +5,17 @@
 
   internal abstract class ProfiledMemberInfo
   {
+    public abstract MemberInfoData MemberInfoData { get; }
     public string AssemblyName { get; }
     public int LineNumber { get; }
     public string SourceFilePath { get; }
     public Runtime TargetFramework { get; }
     public IList<IEnumerable<object>> ArgumentLists { get; }
     public bool IsStatic { get; }
-    public abstract MemberInfoData MemberInfoData { get; }
-    public abstract string Name { get; }
-    public abstract string DisplayName { get; }
-    public abstract string Namespace { get; }
-    public abstract string Signature { get; }
+    public string Name => this.MemberInfoData.Name;
+    public string DisplayName => this.MemberInfoData.DisplayName;
+    public string Namespace => this.MemberInfoData.Namespace;
+    public string Signature => this.MemberInfoData.Signature;
 
     protected ProfiledMemberInfo(IList<IEnumerable<object>> argumentLists, bool isStatic, string assemblyName, int lineNumber, string sourceFilePath, Runtime targetFramework)
     {
