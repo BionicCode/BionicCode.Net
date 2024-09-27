@@ -9,13 +9,13 @@
     {
     }
 
-    public ProfilerBatchResultGroupCollection(Type profiledType) => this.ProfiledType = profiledType;
+    internal ProfilerBatchResultGroupCollection(TypeData profiledTypeData) => this.ProfiledTypeData = profiledTypeData;
 
-    public ProfilerBatchResultGroupCollection(IEnumerable<ProfilerBatchResultGroup> collection, Type profiledType) : base(collection) => this.ProfiledType = profiledType;
+    internal ProfilerBatchResultGroupCollection(IEnumerable<ProfilerBatchResultGroup> collection, TypeData profiledTypeData) : base(collection) => this.ProfiledTypeData = profiledTypeData;
 
-    public ProfilerBatchResultGroupCollection(int capacity, Type profiledType) : base(capacity) => this.ProfiledType = profiledType;
+    internal ProfilerBatchResultGroupCollection(int capacity, TypeData profiledTypeData) : base(capacity) => this.ProfiledTypeData = profiledTypeData;
 
-    public Type ProfiledType { get; }
+    internal TypeData ProfiledTypeData { get; }
   }
 
   public class ProfiledTypeResultCollection : List<ProfilerBatchResultGroupCollection>

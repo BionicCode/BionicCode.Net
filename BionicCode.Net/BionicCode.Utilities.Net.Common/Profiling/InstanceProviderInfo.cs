@@ -22,6 +22,20 @@
       this.IsAwaitable = false;
     }
 
+    public InstanceProviderInfo(FieldData field, object[] argumentList = null)
+    {
+      this.fieldData = field;
+      this.ArgumentList = argumentList;
+      this.IsAwaitable = false;
+    }
+
+    public InstanceProviderInfo(PropertyData property, object[] argumentList = null)
+    {
+      this.propertyData = property;
+      this.ArgumentList = argumentList;
+      this.IsAwaitable = false;
+    }
+
     public object CreateTargetInstance(object target)
     {
       if (this.IsAwaitable)
@@ -33,7 +47,7 @@
       {
         if (this.factoryMethodData != null)
         {
-          this.instance = this.factoryMethodData.Invoke(null);
+          this.instance = this.factoryMethodData.Invoke(target);
         } 
         else if (this.constructorData != null)
         {
@@ -41,18 +55,18 @@
         }
         else if (this.fieldData != null)
         {
-          this.instance = this.fieldData.GetValue(null);
+          this.instance = this.fieldData.GetValue(target);
         }
         else if (this.propertyData != null)
         {
-          this.instance = this.propertyData.Get(null, this.ArgumentList);
+          this.instance = this.propertyData.Get(target, this.ArgumentList);
         }
       }
 
       return this.instance;
 }
 
-    public async ValueTask<object> CreateTargetInstanceAsync()
+    public async ValueTask<object> CreateTargetInstanceAsync(object target)
     {
       if (!this.IsAwaitable)
       {
@@ -65,11 +79,11 @@
         {
           if (this.factoryMethodData.IsAwaitableTask)
           {
-            this.instance = await this.factoryMethodData.InvokeAwaitableTaskWithResultAsync(null);
+            this.instance = await this.factoryMethodData.InvokeAwaitableTaskWithResultAsync(target);
           }
           else if (this.factoryMethodData.IsAwaitableGenericValueTask)
           {
-            this.instance = await this.factoryMethodData.InvokeAwaitableValueTaskWithResultAsync(null);
+            this.instance = await this.factoryMethodData.InvokeAwaitableValueTaskWithResultAsync(target);
           }
         }
       }

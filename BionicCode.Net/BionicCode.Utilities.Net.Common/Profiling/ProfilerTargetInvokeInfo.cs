@@ -28,6 +28,44 @@
       ProfiledTargetType profiledTargetType)
     {
       this.PropertySetInvocator = propertySetInvocator;
+      this.ConstructorInvocator = null;
+      this.SynchronousMethodInvocator = null;
+      this.AsynchronousTaskMethodInvocator = null;
+      this.AsynchronousValueTaskMethodInvocator = null;
+      this.AsynchronousGenericValueTaskMethodInvocator = null;
+      this.Arguments = arguments;
+      this.ArgumentListIndex = argumentListIndex;
+      this.Target = target;
+      this.ProfiledTargetType = profiledTargetType;
+      this.Signature = targetSignature;
+      this.AssemblyName = targetAssemblyName;
+      this.DisplayName = targetDisplayName;
+      this.Namespace = targetNamespace;
+    }
+    /// <summary>
+    /// Use for constructors
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="arguments"></param>
+    /// <param name="argumentListIndex"></param>
+    /// <param name="targetSignature"></param>
+    /// <param name="targetDisplayName"></param>
+    /// <param name="targetNamespace"></param>
+    /// <param name="targetAssemblyName"></param>
+    /// <param name="constructorInvocator"></param>
+    /// <param name="profiledTargetType"></param>
+    public ProfilerTargetInvokeInfo(object target,
+      object[] arguments,
+      int argumentListIndex,
+      string targetSignature,
+      string targetDisplayName,
+      string targetNamespace,
+      string targetAssemblyName,
+      Func<object[], object> constructorInvocator,
+      ProfiledTargetType profiledTargetType)
+    {
+      this.PropertySetInvocator = null;
+      this.ConstructorInvocator = constructorInvocator;
       this.SynchronousMethodInvocator = null;
       this.AsynchronousTaskMethodInvocator = null;
       this.AsynchronousValueTaskMethodInvocator = null;
@@ -53,6 +91,7 @@
       ProfiledTargetType profiledTargetType)
     {
       this.PropertySetInvocator = null;
+      this.ConstructorInvocator = null;
       this.SynchronousMethodInvocator = synchronousMethodInvocator;
       this.AsynchronousTaskMethodInvocator = null;
       this.AsynchronousValueTaskMethodInvocator = null;
@@ -78,6 +117,7 @@
       ProfiledTargetType profiledTargetType)
     {
       this.PropertySetInvocator = null;
+      this.ConstructorInvocator = null;
       this.SynchronousMethodInvocator = null;
       this.AsynchronousTaskMethodInvocator = asynchronousTaskMethodInvocator;
       this.AsynchronousValueTaskMethodInvocator = null;
@@ -103,6 +143,7 @@
       ProfiledTargetType profiledTargetType)
     {
       this.PropertySetInvocator = null;
+      this.ConstructorInvocator = null;
       this.SynchronousMethodInvocator = null;
       this.AsynchronousTaskMethodInvocator = null;
       this.AsynchronousValueTaskMethodInvocator = asynchronousValueTaskMethodInvocator;
@@ -128,6 +169,7 @@
       ProfiledTargetType profiledTargetType)
     {
       this.PropertySetInvocator = null;
+      this.ConstructorInvocator = null;
       this.SynchronousMethodInvocator = null;
       this.AsynchronousTaskMethodInvocator = null;
       this.AsynchronousValueTaskMethodInvocator = null;
@@ -148,6 +190,7 @@
       string targetAssemblyName)
     {
       this.PropertySetInvocator = null;
+      this.ConstructorInvocator = null;
       this.SynchronousMethodInvocator = null;
       this.AsynchronousTaskMethodInvocator = null;
       this.AsynchronousValueTaskMethodInvocator = null;
@@ -163,6 +206,7 @@
     }
 
     public Action<object, object, object[]> PropertySetInvocator { get; }
+    public Func<object[], object> ConstructorInvocator { get; }
     public Func<object, object[], object> SynchronousMethodInvocator { get; }
     public Func<object, object[], Task> AsynchronousTaskMethodInvocator { get; }
     public Func<object, object[], ValueTask> AsynchronousValueTaskMethodInvocator { get; }

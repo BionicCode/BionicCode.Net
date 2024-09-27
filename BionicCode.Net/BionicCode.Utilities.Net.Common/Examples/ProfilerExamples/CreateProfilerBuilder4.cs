@@ -20,7 +20,7 @@
 
       foreach (ProfilerBatchResultGroupCollection resultGroups in results)
       {
-        Console.WriteLine($"Profiled type: {resultGroups.ProfiledType.FullName}");
+        Console.WriteLine($"Profiled type: {resultGroups.ProfiledTypeData.FullName}");
         foreach (ProfilerBatchResultGroup resultGroup in resultGroups)
         {
           Console.WriteLine($"Profiled member: {resultGroup.ProfiledTargetMemberShortName}");
