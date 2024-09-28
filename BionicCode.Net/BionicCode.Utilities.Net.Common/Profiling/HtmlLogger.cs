@@ -65,7 +65,7 @@
 
         documentBuilderInfosMap.Add(batchResultGroups, htmlDocumentBuilderInfos);
         string indexPageNameOfCurrentType = htmlDocumentBuilderInfos.First().FileName;
-        _ = htmlTypeNavigationIndexBuilder.AppendLine($@"<li><a class=""dropdown-item {{0}}"" {{1}} href=""{indexPageNameOfCurrentType}"">{HtmlLogger.HtmlEncoder.Encode(batchResultGroups.ProfiledTypeData.ToSignatureName())}</a></li>");
+        _ = htmlTypeNavigationIndexBuilder.AppendLine($@"<li><a class=""dropdown-item {{0}}"" {{1}} href=""{indexPageNameOfCurrentType}"">{HtmlLogger.HtmlEncoder.Encode(batchResultGroups.ProfiledTypeData.Signature)}</a></li>");
       }
 
       string htmlTypeNavigationIndexTemplate = htmlTypeNavigationIndexBuilder.ToString();
@@ -88,7 +88,7 @@
           string htmlFilePath = Path.Combine(Path.GetTempPath(), htmlDocumentBuilderInfo.FileName);
           htmlFilePaths.Add(htmlFilePath);
 
-          string encodedCurrentProfiledTypeSignature = HtmlLogger.HtmlEncoder.Encode(batchResultGroups.ProfiledTypeData.ToSignatureName());
+          string encodedCurrentProfiledTypeSignature = HtmlLogger.HtmlEncoder.Encode(batchResultGroups.ProfiledTypeData.Signature);
           string htmlDocument = string.Format(
             htmlDocumentBuilderInfo.DocumentTemplate,
             encodedCurrentProfiledTypeSignature,
@@ -233,7 +233,7 @@
       foreach (ProfilerBatchResult result in profilerBatchResultGroup)
       {
         _ = htmlDocumentBuilder
-          .Append($@"<a class=""list-group-item list-group-item-action"" href=""#{result.Index}"">'{HtmlLogger.HtmlEncoder.Encode(result.Context.TargetTypeInfo.ToDisplayName())}' {result.Context.TargetType.ToDisplayStringValue()}</a>");
+          .Append($@"<a class=""list-group-item list-group-item-action"" href=""#{result.Index}"">'{HtmlLogger.HtmlEncoder.Encode(result.Context.MethodInvokeInfo.DisplayName)}' {result.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue()}</a>");
       }
 
       string htmlDocumentContent = htmlDocumentBuilder.ToString();
@@ -248,7 +248,7 @@
       foreach (ProfilerBatchResult result in profilerBatchResultGroup)
       {
         _ = htmlDocumentBuilder
-          .Append($@"<a class=""list-group-item list-group-item-action"" href=""#{result.Index}"">'{HtmlLogger.HtmlEncoder.Encode(result.Context.TargetTypeInfo.ToDisplayName())}' {result.Context.TargetType.ToDisplayStringValue()}
+          .Append($@"<a class=""list-group-item list-group-item-action"" href=""#{result.Index}"">'{HtmlLogger.HtmlEncoder.Encode(result.Context.MethodInvokeInfo.DisplayName)}' {result.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue()}
                                 results</a>");
       }
 
@@ -290,11 +290,11 @@
           <span style=""font-weight: bold; font-size: 18pt"">Profile Context</span><br/>
           <span style=""font-weight: bold; font-size: 14pt"">Code</span><br/>
       	  <span class=""label-span"">Target framework: </span><span class=""valueSpan"">{batchResult.Context.RuntimeVersion}</span><br />
-      	  <span class=""label-span"">Target type: </span><span class=""valueSpan"">{HtmlLogger.HtmlEncoder.Encode(batchResult.Context.TargetType.ToDisplayStringValue())}</span><br />
-      	  <span class=""label-span"">Target: </span><span class=""valueSpan"">{HtmlLogger.HtmlEncoder.Encode(batchResult.Context.TargetName)}</span><br />
+      	  <span class=""label-span"">Target type: </span><span class=""valueSpan"">{HtmlLogger.HtmlEncoder.Encode(batchResult.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue())}</span><br />
+      	  <span class=""label-span"">Target: </span><span class=""valueSpan"">{HtmlLogger.HtmlEncoder.Encode(batchResult.Context.MethodInvokeInfo.Signature)}</span><br />
       	  <span class=""label-span"">Line number: </span><span class=""valueSpan"">{batchResult.Context.LineNumber}</span><br />
       	  <span class=""label-span"">Source file: </span><span class=""valueSpan"">{batchResult.Context.SourceFileName}</span><br /> 
-      	  <span class=""label-span"">Assembly: </span><span class=""valueSpan"">{batchResult.Context.AssemblyName}</span><br />
+      	  <span class=""label-span"">Assembly: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.AssemblyName}</span><br />
         </div>
         <div style=""margin: 0px 0px 12px 0px;"">
           <div style=""float: left; padding: 0px 12px 0px 0px;"">

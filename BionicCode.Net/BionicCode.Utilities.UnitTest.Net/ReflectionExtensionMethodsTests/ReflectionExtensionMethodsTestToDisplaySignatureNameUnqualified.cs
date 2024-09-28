@@ -42,7 +42,7 @@
     {
       Type type = typeof(Generic.TestDelegateWithReturnValue<,>);
 
-      string delegateSignature = type.ToSignatureName(isFullyQualifiedName: true);
+      string delegateSignature = type.ToSignatureName();
 
       _ = delegateSignature.Should().Be(TestGenericDelegateTypeDefinitionFullyQualifiedSignatureName);
     }
@@ -252,7 +252,7 @@
     {
       Type type = typeof(Generic.TestClassWithBaseClass<,>);
       MethodInfo methodInfo = type.GetMethod("PublicGenericMethodWithReturnValue");
-      string methodSignature = methodInfo.ToSignatureShortName(isCompact: true);
+      string methodSignature = methodInfo.ToSignatureShortName();
 
       _ = methodSignature.Should().Be(TestMethodGenericOfGenericClassCompactSignatureName);
     }
@@ -272,7 +272,7 @@
     {
       Type type = typeof(Generic.TestClassWithBaseClass<,>);
       MethodInfo methodInfo = type.GetMethod("PublicGenericMethodWithReturnValueAsync");
-      string methodSignature = methodInfo.ToSignatureShortName(isCompact: true);
+      string methodSignature = methodInfo.ToSignatureShortName();
 
       _ = methodSignature.Should().Be(TestMethodAsyncGenericOfGenericClassCompactSignatureName);
     }
@@ -296,27 +296,27 @@
         string s1;
         for (int count = 0; count < warmupCount; count++)
         {
-          s1 = methodInfo.ToSignatureNameInternal(false, true, false);
+          s1 = methodInfo.ToSignatureShortName();
         }
 
         stopWatch.Restart();
-        s1 = methodInfo.ToSignatureNameInternal(false, true, false);
+        s1 = methodInfo.ToSignatureShortName();
         stopWatch.Stop();
         fileWriter.WriteLine($"ToSignatureShortName (old): {stopWatch.Elapsed} ms; {s1}");
 
-        var stringBuilder = new StringBuilder();
-        string s2;
-        for (int count = 0; count < warmupCount; count++)
-        {
-          s2 = stringBuilder.AppendSignatureName(methodInfo, false, false).ToString();
-          _ = stringBuilder.Clear();
-        }
+        //var stringBuilder = new StringBuilder();
+        //string s2;
+        //for (int count = 0; count < warmupCount; count++)
+        //{
+        //  s2 = stringBuilder.appendSignatureName(methodInfo, false, false).ToString();
+        //  _ = stringBuilder.Clear();
+        //}
 
-        stopWatch.Restart();
-        s2 = stringBuilder.AppendSignatureName(methodInfo, false, false).ToString();
-        stopWatch.Stop();
-        fileWriter.WriteLine($"AppendSignatureName (compiler API): {stopWatch.Elapsed} ms; {s2}");
-        _ = stringBuilder.Clear();
+        //stopWatch.Restart();
+        //s2 = stringBuilder.AppendSignatureName(methodInfo, false, false).ToString();
+        //stopWatch.Stop();
+        //fileWriter.WriteLine($"AppendSignatureName (compiler API): {stopWatch.Elapsed} ms; {s2}");
+        //_ = stringBuilder.Clear();
 
         string s3;
         //for (int count = 0; count < warmupCount; count++)
@@ -370,7 +370,7 @@
       string constructorSignature = constructorInfo.ToSignatureName();
 
       _ = constructorSignature.Should()
-        .Be(string.Format(TestConstructorOfGenericClassSignatureName, type.ToDisplayName(), type.ToDisplayName(isShortName: true), constructorParameters));
+        .Be(string.Format(TestConstructorOfGenericClassSignatureName, type.ToDisplayName(), type.ToDisplayName(), constructorParameters));
     }
 
     [Fact]
@@ -384,7 +384,7 @@
       string constructorSignature = constructorInfo.ToSignatureName();
 
       _ = constructorSignature.Should()
-        .Be(string.Format(TestConstructorOfGenericClassSignatureName, type.ToDisplayName(), type.ToDisplayName(isShortName: true), constructorParameters));
+        .Be(string.Format(TestConstructorOfGenericClassSignatureName, type.ToDisplayName(), type.ToDisplayName(), constructorParameters));
     }
 
     #endregion Constructor
@@ -400,25 +400,25 @@
     [Fact]
     public void ToSignatureName_DelegateWithoutReturnValue_MustReturnFullDelegateSignature()
     {
-      _ = typeof(TestDelegateWithoutReturnValue).ToSignatureName(isFullyQualifiedName: true).Should().Be(TestDelegateWithoutReturnValueSignatureName);
+      _ = typeof(TestDelegateWithoutReturnValue).ToSignatureName().Should().Be(TestDelegateWithoutReturnValueSignatureName);
     }
 
     [Fact]
     public void ToSignatureName_DelegateWithReturnValue_MustReturnFullDelegateSignature()
     {
-      _ = typeof(TestDelegateWithReturnValue).ToSignatureName(isFullyQualifiedName: true).Should().Be(TestDelegateWithReturnValueSignatureName);
+      _ = typeof(TestDelegateWithReturnValue).ToSignatureName().Should().Be(TestDelegateWithReturnValueSignatureName);
     }
 
     [Fact]
     public void ToSignatureName_SimpleClass_MustReturnFullClassSignature()
     {
-      _ = typeof(TestClass).ToSignatureName(isFullyQualifiedName: true).Should().Be(TestClassSignatureName);
+      _ = typeof(TestClass).ToSignatureName().Should().Be(TestClassSignatureName);
     }
 
     [Fact]
     public void ToSignatureName_ClassWithBaseClass_MustReturnFullClassSignature()
     {
-      _ = typeof(TestClassWithBaseClass).ToSignatureName(isFullyQualifiedName: true).Should().Be(TestClassWithBaseClassSignatureName);
+      _ = typeof(TestClassWithBaseClass).ToSignatureName().Should().Be(TestClassWithBaseClassSignatureName);
     }
   }
 

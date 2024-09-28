@@ -1,4 +1,4 @@
-﻿namespace BionicCode.Utilities.Net.UnitTest
+﻿namespace BionicCode.Utilities.Net.UnitTest.ProfilerTests
 {
   using System;
   using BionicCode.Utilities.Net;

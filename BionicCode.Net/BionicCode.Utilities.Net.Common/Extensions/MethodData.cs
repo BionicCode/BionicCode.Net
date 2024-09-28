@@ -317,8 +317,8 @@
           {
             this.isAwaitableTask = (this.isAwaitableValueTask.HasValue
               && !this.isAwaitableValueTask.Value
-              && HelperExtensionsCommon.IsAwaitableValueTask(this.ReturnTypeData.GetType()))
-              || (!this.isAwaitableValueTask.HasValue && HelperExtensionsCommon.IsAwaitableValueTask(this.ReturnTypeData.GetType()));
+              && HelperExtensionsCommon.IsAwaitableTask(this.ReturnTypeData.GetType()))
+              || (!this.isAwaitableValueTask.HasValue && HelperExtensionsCommon.IsAwaitableTask(this.ReturnTypeData.GetType()));
           }
         }
 

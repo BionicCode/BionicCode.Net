@@ -24,7 +24,7 @@
     }
 
     public ConstructorInfo GetConstructorInfo()
-      => (ConstructorInfo)MethodInfo.GetMethodFromHandle(this.Handle);
+      => (ConstructorInfo)MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle);
 
     protected override MemberInfo GetMemberInfo() 
       => GetConstructorInfo();

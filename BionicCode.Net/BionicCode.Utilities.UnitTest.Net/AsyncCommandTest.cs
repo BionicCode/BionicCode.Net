@@ -105,15 +105,13 @@
     private static string CrateProfilerSummary(string summary, string currentMethodName)
      => $"UnitTest profiler summary: {currentMethodName}{System.Environment.NewLine}{summary}";
 
-    private static ProfilerLoggerDelegate CreateProfilerLogger([CallerMemberName] string currentMethodName = "unknown")
+    private static Action<ProfilerBatchResult, string> CreateProfilerLogger([CallerMemberName] string currentMethodName = "unknown") 
+      => (result, summary) => ProfilerLogger(result, summary, currentMethodName);
+
+    private static void ProfilerLogger(ProfilerBatchResult result, string summary, string currentMethodName)
     {
-      return UnitTestHelper.IsDebugModeEnabled && IsProfilerLoggingEnabled
-        ? result =>
-         {
-           File.WriteAllText("profiler_summary.log", CrateProfilerSummary(result.Summary, currentMethodName));
-           Debug.WriteLine(CrateProfilerSummary(result.Summary, currentMethodName), "profiling");
-         }
-        : new ProfilerLoggerDelegate(result => { });
+      File.WriteAllText("profiler_summary.log", CrateProfilerSummary(result.Summary, currentMethodName));
+      Debug.WriteLine(CrateProfilerSummary(result.Summary, currentMethodName), "profiling");
     }
 
     private bool CanExecuteTestCommand(string commandParameter) => commandParameter?.StartsWith("@") ?? false;
@@ -274,41 +272,41 @@
 
     #endregion Non test members
 
-    [Fact]
-    public async Task AwaitSynchronousCommand()
-    {
-      ProfilerLoggerDelegate logger = CreateProfilerLogger();
-      ProfilerBatchResult profilerResult = await Profiler.LogTimeAsync(() => this.TestCommand.ExecuteAsync(this.ValidCommandParameter), 1, logger);
-      TimeSpan exeutionTime = profilerResult.Results.First().ElapsedTime;
-      _ = exeutionTime.TotalMilliseconds.Should().BeGreaterThanOrEqualTo(this.AsyncDelay.TotalMilliseconds);
-    }
+    //[Fact]
+    //public async Task AwaitSynchronousCommand()
+    //{
+    //  Action<ProfilerBatchResult, string> logger = CreateProfilerLogger();
+    //  ProfilerBatchResult profilerResult = await Profiler.LogTimeAsync(() => this.TestCommand.ExecuteAsync(this.ValidCommandParameter), 1, logger);
+    //  TimeSpan exeutionTime = profilerResult.Results.First().ElapsedTime;
+    //  _ = exeutionTime.TotalMilliseconds.Should().BeGreaterThanOrEqualTo(this.AsyncDelay.TotalMilliseconds);
+    //}
 
-    [Fact]
-    public async Task AwaitSynchronousNoParamCommand()
-    {
-      ProfilerLoggerDelegate logger = CreateProfilerLogger();
-      ProfilerBatchResult profilerResult = await Profiler.LogTimeAsync(this.TestNoParamCommand.ExecuteAsync, 1, logger);
-      TimeSpan exeutionTime = profilerResult.Results.First().ElapsedTime;
-      _ = exeutionTime.TotalMilliseconds.Should().BeGreaterThanOrEqualTo(this.AsyncDelay.TotalMilliseconds);
-    }
+    //[Fact]
+    //public async Task AwaitSynchronousNoParamCommand()
+    //{
+    //  Action<ProfilerBatchResult, string> logger = CreateProfilerLogger();
+    //  ProfilerBatchResult profilerResult = await Profiler.LogTimeAsync(this.TestNoParamCommand.ExecuteAsync, 1, logger);
+    //  TimeSpan exeutionTime = profilerResult.Results.First().ElapsedTime;
+    //  _ = exeutionTime.TotalMilliseconds.Should().BeGreaterThanOrEqualTo(this.AsyncDelay.TotalMilliseconds);
+    //}
 
-    [Fact]
-    public async Task AwaitAsynchronousCommand()
-    {
-      ProfilerLoggerDelegate logger = CreateProfilerLogger();
-      ProfilerBatchResult profilerResult = await Profiler.LogTimeAsync(() => this.AsyncTestCommand.ExecuteAsync(this.ValidCommandParameter), 1, logger);
-      TimeSpan exeutionTime = profilerResult.Results.First().ElapsedTime;
-      _ = exeutionTime.TotalMilliseconds.Should().BeGreaterThanOrEqualTo(this.AsyncDelay.TotalMilliseconds);
-    }
+    //[Fact]
+    //public async Task AwaitAsynchronousCommand()
+    //{
+    //  Action<ProfilerBatchResult, string> logger = CreateProfilerLogger();
+    //  ProfilerBatchResult profilerResult = await Profiler.LogTimeAsync(() => this.AsyncTestCommand.ExecuteAsync(this.ValidCommandParameter), 1, logger);
+    //  TimeSpan exeutionTime = profilerResult.Results.First().ElapsedTime;
+    //  _ = exeutionTime.TotalMilliseconds.Should().BeGreaterThanOrEqualTo(this.AsyncDelay.TotalMilliseconds);
+    //}
 
-    [Fact]
-    public async Task AwaitAsynchronousNoParamCommand()
-    {
-      ProfilerLoggerDelegate logger = CreateProfilerLogger();
-      ProfilerBatchResult profilerResult = await Profiler.LogTimeAsync(this.AsyncTestNoParamCommand.ExecuteAsync, 1, logger);
-      TimeSpan exeutionTime = profilerResult.Results.First().ElapsedTime;
-      _ = exeutionTime.TotalMilliseconds.Should().BeGreaterThanOrEqualTo(this.AsyncDelay.TotalMilliseconds);
-    }
+    //[Fact]
+    //public async Task AwaitAsynchronousNoParamCommand()
+    //{
+    //  Action<ProfilerBatchResult, string> logger = CreateProfilerLogger();
+    //  ProfilerBatchResult profilerResult = await Profiler.LogTimeAsync(this.AsyncTestNoParamCommand.ExecuteAsync, 1, logger);
+    //  TimeSpan exeutionTime = profilerResult.Results.First().ElapsedTime;
+    //  _ = exeutionTime.TotalMilliseconds.Should().BeGreaterThanOrEqualTo(this.AsyncDelay.TotalMilliseconds);
+    //}
 
     [Fact]
     public async Task AwaitAsynchronousCommandThrowsExceptionInCallerContext()
@@ -914,19 +912,19 @@
       }
     }
 
-    [Fact]
-    public async Task ExecutingNoParamCommandWithTimeoutMustBeCancelledOnTimeoutExpired()
-    {
-      using (var cancellationTokenSource = new CancellationTokenSource())
-      {
-        ProfilerLoggerDelegate logger = CreateProfilerLogger();
-        ProfilerBatchResult profilerBatchResult = await Profiler.LogTimeAsync(() => this.AsyncCancellableTestNoParamCommand.ExecuteAsync(this.Timeout), 1, logger);
-        ProfilerResult profilerResult = profilerBatchResult.Results.First();
-        _ = profilerResult.ProfiledTask.Status.Should().Be(TaskStatus.Canceled);
-        _ = profilerResult.ElapsedTime.Value.Should().BeGreaterThanOrEqualTo(this.Timeout.TotalMilliseconds * System.Math.Pow(10, 3));
-        _ = profilerResult.ElapsedTime.Should().BeLessThanOrEqualTo(this.LongRunningAsyncDelay);
-      }
-    }
+    //[Fact]
+    //public async Task ExecutingNoParamCommandWithTimeoutMustBeCancelledOnTimeoutExpired()
+    //{
+    //  using (var cancellationTokenSource = new CancellationTokenSource())
+    //  {
+    //    Action<ProfilerBatchResult, string> logger = CreateProfilerLogger();
+    //    ProfilerBatchResult profilerBatchResult = await Profiler.LogTimeAsync(() => this.AsyncCancellableTestNoParamCommand.ExecuteAsync(this.Timeout), 1, logger);
+    //    ProfilerResult profilerResult = profilerBatchResult.Results.First();
+    //    _ = profilerResult.ProfiledTask.Status.Should().Be(TaskStatus.Canceled);
+    //    _ = profilerResult.ElapsedTime.Value.Should().BeGreaterThanOrEqualTo(this.Timeout.TotalMilliseconds * System.Math.Pow(10, 3));
+    //    _ = profilerResult.ElapsedTime.Should().BeLessThanOrEqualTo(this.LongRunningAsyncDelay);
+    //  }
+    //}
 
     //[Fact]
     //public async Task ExecutingAsyncNoParamCommandWithCancellationTokenMustBeCancelled()

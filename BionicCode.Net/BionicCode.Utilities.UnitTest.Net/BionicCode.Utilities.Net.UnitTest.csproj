@@ -30,10 +30,6 @@
     <ProjectReference Include="..\BionicCode.Utilities.Net.Common\BionicCode.Utilities.Net.Common.csproj" />
     <ProjectReference Include="..\BionicCode.Utilities.Net\BionicCode.Utilities.Net.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Profiling\" />
-  </ItemGroup>
   
   <Target Name="MakeMyDir" AfterTargets="Build">
     <MakeDir Directories="$(OutDir)logs" />

@@ -24,6 +24,7 @@
   using Microsoft.Extensions.Caching.Memory;
   using Microsoft.Extensions.Logging;
   using System.Management;
+  using System.Collections;
 
   /// <summary>
   /// A collection of extension methods for various default constraintTypes
@@ -55,6 +56,7 @@
     private static readonly CSharpCodeProvider CodeProvider = new CSharpCodeProvider();
     private static readonly HashSet<string> IgnorableParameterAttributes = new HashSet<string>
     {
+      nameof(AsyncStateMachineAttribute),
       nameof(InAttribute),
       nameof(OutAttribute),
 #if !NETSTANDARD2_0
@@ -65,7 +67,7 @@
     /// <summary>
     /// Converts a <see cref="Predicate{T}"/> to a <see cref="Func{T, TResult}"/>.
     /// </summary>
-    /// <typeparam genericTypeParameterIdentifier="TParam">The parameter type for the predicate.</typeparam>
+    /// <typeparam genericTypeParameterIdentifier="TParam">The parameter valueType for the predicate.</typeparam>
     /// <param genericTypeParameterIdentifier="predicate">The predicate to convert.</param>
     /// <returns>A <c>Func<typeparamref genericTypeParameterIdentifier="TParam"/>, bool></c> that returns the result of <paramref genericTypeParameterIdentifier="predicate"/>.</returns>
     public static Func<TParam, bool> ToFunc<TParam>(this Predicate<TParam> predicate) => predicate.Invoke;
@@ -76,11 +78,11 @@
     /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
     /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
     public static string ToSignatureName(this MethodInfo methodInfo)
     {
@@ -94,11 +96,11 @@
     /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
     /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
     public static string ToSignatureName(this Type type)
     {
@@ -112,11 +114,11 @@
     /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
     /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
     public static string ToSignatureName(this FieldInfo fieldInfo)
     {
@@ -130,11 +132,11 @@
     /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
     /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
     public static string ToSignatureName(this PropertyInfo propertyInfo)
     {
@@ -148,11 +150,11 @@
     /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
     /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
     public static string ToSignatureName(this ConstructorInfo constructorInfo)
     {
@@ -166,11 +168,11 @@
     /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
     /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
     public static string ToSignatureName(this EventInfo eventInfo)
     {
@@ -184,11 +186,11 @@
     /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
     /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
     public static string ToSignatureShortName(this MethodInfo methodInfo)
     {
@@ -202,11 +204,11 @@
     /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
     /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
     public static string ToSignatureShortName(this Type type)
     {
@@ -220,11 +222,11 @@
     /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
     /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
     public static string ToSignatureShortName(this FieldInfo fieldInfo)
     {
@@ -238,11 +240,11 @@
     /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
     /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
     public static string ToSignatureShortName(this PropertyInfo propertyInfo)
     {
@@ -256,11 +258,11 @@
     /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
     /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
     public static string ToSignatureShortName(this ConstructorInfo constructorInfo)
     {
@@ -274,11 +276,11 @@
     /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
     /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
     public static string ToSignatureShortName(this EventInfo eventInfo)
     {
@@ -492,9 +494,9 @@
 //      return methodGraph;
 //    }
 
-//    private static TypeParameterSyntax CreateMethodTypeParameter(Type type, bool isFullyQualifiedName)
+//    private static TypeParameterSyntax CreateMethodTypeParameter(Type valueType, bool isFullyQualifiedName)
 //    {
-//      IEnumerable<Attribute> attributes = type.GetCustomAttributes();
+//      IEnumerable<Attribute> attributes = valueType.GetCustomAttributes();
 //      AttributeListSyntax attributeSyntaxList = SyntaxFactory.AttributeList();
 //      foreach (Attribute attribute in attributes)
 //      {
@@ -504,19 +506,19 @@
 //      }
 
 //      SyntaxKind variance = SyntaxKind.None;
-//      if (type.IsGenericParameter)
+//      if (valueType.IsGenericParameter)
 //      {
-//        if ((type.GenericParameterAttributes & GenericParameterAttributes.Covariant) != 0)
+//        if ((valueType.GenericParameterAttributes & GenericParameterAttributes.Covariant) != 0)
 //        {
 //          variance = SyntaxKind.OutKeyword;
 //        }
-//        else if ((type.GenericParameterAttributes & GenericParameterAttributes.Contravariant) != 0)
+//        else if ((valueType.GenericParameterAttributes & GenericParameterAttributes.Contravariant) != 0)
 //        {
 //          variance = SyntaxKind.InKeyword;
 //        }
 //      }
 
-//      string typeParameterName = ToDisplayNameInternal(type, isFullyQualifiedName, isShortName: false);
+//      string typeParameterName = ToDisplayNameInternal(valueType, isFullyQualifiedName, isShortName: false);
 //      return SyntaxFactory.TypeParameter(new SyntaxList<AttributeListSyntax>() { attributeSyntaxList }, SyntaxFactory.Token(variance), SyntaxFactory.Identifier(typeParameterName));
 //    }
 
@@ -529,11 +531,11 @@
 //      return symbolName;
 //    }
 
-//    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, Type type, bool isFullyQualifiedName, bool isShortName)
+//    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, Type valueType, bool isFullyQualifiedName, bool isShortName)
 //    {
-//      var typeReference = new CodeTypeReference(type);
+//      var typeReference = new CodeTypeReference(valueType);
 //      ReadOnlySpan<char> typeName = HelperExtensionsCommon.CodeProvider.GetTypeOutput(typeReference).AsSpan();
-//      if (type.IsGenericType)
+//      if (valueType.IsGenericType)
 //      {
 //        int startIndexOfGenericTypeParameters = typeName.IndexOf('<');
 //        typeName = typeName.Slice(0, startIndexOfGenericTypeParameters);
@@ -555,11 +557,11 @@
 //        return nameBuilder;
 //      }
 
-//      if (type.IsGenericType)
+//      if (valueType.IsGenericType)
 //      {
 //        _ = nameBuilder.Append('<');
 
-//        Type[] typeArguments = type.GetGenericArguments();
+//        Type[] typeArguments = valueType.GetGenericArguments();
 //        foreach (Type typeArgument in typeArguments)
 //        {
 //          _ = nameBuilder.AppendDisplayNameInternal(typeArgument, isFullyQualifiedName, isShortName)
@@ -575,9 +577,9 @@
 
 //  private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName)
 //    {
-//      if (memberInfo is Type type)
+//      if (memberInfo is Type valueType)
 //      {
-//        return nameBuilder.AppendDisplayNameInternal(type, isFullyQualifiedName, isShortName);
+//        return nameBuilder.AppendDisplayNameInternal(valueType, isFullyQualifiedName, isShortName);
 //      }
 
 //      if (isFullyQualifiedName)
@@ -605,10 +607,10 @@
 //    }
 //    private static SymbolAttributes GetKind(this MemberInfo memberInfo)
 //    {
-//      var type = memberInfo as Type;
+//      var valueType = memberInfo as Type;
 //      var propertyInfo = memberInfo as PropertyInfo;
 //      MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
-//        ?? type?.GetMethod("Invoke"); // MemberInfo is potentially a delegate
+//        ?? valueType?.GetMethod("Invoke"); // MemberInfo is potentially a delegate
 //      MethodInfo propertyGetMethodInfo = propertyInfo?.GetGetMethod(true);
 //      MethodInfo propertySetMethodInfo = propertyInfo?.GetSetMethod(true);
 //      var constructorInfo = memberInfo as ConstructorInfo;
@@ -619,27 +621,27 @@
 
 //      ParameterInfo[] indexerPropertyIndexParameters = propertyInfo?.GetIndexParameters() ?? Array.Empty<ParameterInfo>();
 
-//      bool isDelegate = type?.IsDelegate() ?? false;
+//      bool isDelegate = valueType?.IsDelegate() ?? false;
 //      if (isDelegate)
 //      {
 //        return SymbolAttributes.Delegate;
 //      }
 
-//      bool isClass = !isDelegate && (type?.IsClass ?? false);
+//      bool isClass = !isDelegate && (valueType?.IsClass ?? false);
 //      if (isClass)
 //      {
 //        SymbolAttributes classKind = SymbolAttributes.Class;
-//        if (type.IsAbstract)
+//        if (valueType.IsAbstract)
 //        {
 //          classKind |= SymbolAttributes.Abstract;
 //        }
 
-//        if (type.IsSealed)
+//        if (valueType.IsSealed)
 //        {
 //          classKind |= SymbolAttributes.Final;
 //        }
 
-//        if (type.IsStatic())
+//        if (valueType.IsStatic())
 //        {
 //          classKind |= SymbolAttributes.Static;
 //        }
@@ -647,19 +649,19 @@
 //        return classKind;
 //      }
 
-//      bool isEnum = !isDelegate && (type?.IsEnum ?? false);
+//      bool isEnum = !isDelegate && (valueType?.IsEnum ?? false);
 //      if (isEnum)
 //      {
 //        return SymbolAttributes.Enum;
 //      }
 
-//      bool isStruct = !isDelegate && (type?.IsValueType ?? false);
+//      bool isStruct = !isDelegate && (valueType?.IsValueType ?? false);
 //      if (isStruct)
 //      {
 //        SymbolAttributes structKind = SymbolAttributes.Struct;
 
 //#if NETSTANDARD2_1_OR_GREATER || NET471_OR_GREATER || NET
-//        bool isReadOnlyStruct = isStruct && type.GetCustomAttribute(typeof(IsReadOnlyAttribute)) != null;
+//        bool isReadOnlyStruct = isStruct && valueType.GetCustomAttribute(typeof(IsReadOnlyAttribute)) != null;
 //        if (isReadOnlyStruct)
 //        {
 //          structKind |= SymbolAttributes.Final;
@@ -800,7 +802,7 @@
 //        return fieldKind;
 //      }
 
-//      bool isInterface = !isDelegate && !isClass && (type?.IsInterface ?? false);
+//      bool isInterface = !isDelegate && !isClass && (valueType?.IsInterface ?? false);
 //      if (isInterface)
 //      {
 //        SymbolAttributes interfaceKind = SymbolAttributes.Interface;
@@ -854,11 +856,11 @@
 //            throw new NotSupportedException("The provided MemberInfo is not supported");
 //        }
 //      }
-//      // TODO::Create type specific overloads to eliminate type switching and use cached reflection data
+//      // TODO::Create valueType specific overloads to eliminate valueType switching and use cached reflection data
 
-//      var type = memberInfo as Type;
+//      var valueType = memberInfo as Type;
 //      MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
-//        ?? type?.GetMethod("Invoke"); // MemberInfo is potentially a delegate
+//        ?? valueType?.GetMethod("Invoke"); // MemberInfo is potentially a delegate
 //      MethodInfo propertyGetMethodInfo = propertyInfo?.GetGetMethod(true);
 //      MethodInfo propertySetMethodInfo = propertyInfo?.GetSetMethod(true);
 //      var constructorInfo = memberInfo as ConstructorInfo;
@@ -978,7 +980,7 @@
 //          .Append(' ');
 //      }
 
-//      // Set return type
+//      // Set return valueType
 //      if (memberAttributes.HasFlag(SymbolAttributes.Method)
 //        || memberAttributes.HasFlag(SymbolAttributes.Property)
 //        || memberAttributes.HasFlag(SymbolAttributes.Field)
@@ -1000,7 +1002,7 @@
 //          .Append('.');
 //      }
 
-//      // Member or type name
+//      // Member or valueType name
 //      if (memberAttributes.HasFlag(SymbolAttributes.IndexerProperty))
 //      {
 //        _ = signatureNameBuilder.Append("this");
@@ -1044,7 +1046,7 @@
 //          }
 //          else if (memberAttributes.HasFlag(SymbolAttributes.GenericType))
 //          {
-//            isGenericTypeDefinition = type.IsGenericTypeDefinition;
+//            isGenericTypeDefinition = valueType.IsGenericTypeDefinition;
 //          }
 
 //          if (isGenericTypeDefinition)
@@ -1116,15 +1118,15 @@
 
 //      if (memberAttributes.HasFlag(SymbolAttributes.Class))
 //      {
-//        signatureNameBuilder = signatureNameBuilder.AppendInheritanceSignature(type, isFullyQualifiedName);
+//        signatureNameBuilder = signatureNameBuilder.AppendInheritanceSignature(valueType, isFullyQualifiedName);
 //      }
 
 //      if (memberAttributes.HasFlag(SymbolAttributes.Generic))
 //      {
 //        Type[] genericTypeParameterDefinitions = Type.EmptyTypes;
-//        if (memberAttributes.HasFlag(SymbolAttributes.GenericType) && type.IsGenericTypeDefinition)
+//        if (memberAttributes.HasFlag(SymbolAttributes.GenericType) && valueType.IsGenericTypeDefinition)
 //        {
-//          genericTypeParameterDefinitions = type.GetGenericTypeDefinition().GetGenericArguments();
+//          genericTypeParameterDefinitions = valueType.GetGenericTypeDefinition().GetGenericArguments();
 //        }
 //        else if (memberAttributes.HasFlag(SymbolAttributes.GenericMethod) && methodInfo.IsGenericMethodDefinition)
 //        {
@@ -1297,7 +1299,7 @@
           .Append(' ');
       }
 
-      // Set return type
+      // Set return valueType
       _ = signatureNameBuilder.AppendDisplayNameInternal(propertyData.PropertyTypeData, isFullyQualifiedName, isShortName: false)
         .Append(' ');
 
@@ -1623,7 +1625,7 @@
       MethodData delegateInvocatorData = null;
       TypeData delegateReturnTypeData = null;
 
-      // Set return type
+      // Set return valueType
       if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))
       {
         delegateInvocatorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeData.GetType().GetMethod("Invoke"));
@@ -2029,9 +2031,13 @@
 
     private static StringBuilder AppendPrimitiveType(this StringBuilder stringBuilder, object value)
     {
-      if (!value.GetType().IsPrimitive)
+      Type valueType = value.GetType();
+      if (!valueType.IsPrimitive 
+        && !typeof(Type).IsAssignableFrom(valueType) 
+        && !typeof(System.Collections.IEnumerable).IsAssignableFrom(valueType)
+        && !valueType.IsEnum)
       {
-        throw new ArgumentException("Only primitive typeArguments allowed)");
+        throw new ArgumentException($"Only primitive typeArguments allowed, but provided {value.GetType().FullName}");
       }
 
       switch (value)
@@ -2040,6 +2046,12 @@
           return stringBuilder.Append(intValue);
         case double doubleValue:
           return stringBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}", doubleValue);
+        case Enum enumValue:
+          return stringBuilder.Append(enumValue.ToString());
+        case Type type:
+          return stringBuilder.AppendDisplayName(type);
+        case object _:
+          return stringBuilder.AppendDisplayName(valueType);
         default:
           throw new NotImplementedException();
       }
@@ -2048,10 +2060,10 @@
     /// <summary>
     /// Gets the access modifier for <see cref="MemberInfo"/> symbolAttributes like <see cref="Type"/>, <see cref="MethodInfo"/>, <see cref="ConstructorInfo"/>, <see cref="PropertyInfo"/>, <see cref="EventInfo"/> or <see cref="FieldInfo"/>.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="type"></param>
-    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="type"/>.</returns>
-    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="type"/>.</exception>
-    /// <exception cref="NotSupportedException">The type provided by the <paramref genericTypeParameterIdentifier="type"/> is not supported.</exception>
+    /// <param genericTypeParameterIdentifier="valueType"></param>
+    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="valueType"/>.</returns>
+    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="valueType"/>.</exception>
+    /// <exception cref="NotSupportedException">The valueType provided by the <paramref genericTypeParameterIdentifier="valueType"/> is not supported.</exception>
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this Type type)
     {
@@ -2062,10 +2074,10 @@
     /// <summary>
     /// Gets the access modifier for <see cref="MemberInfo"/> symbolAttributes like <see cref="Type"/>, <see cref="MethodInfo"/>, <see cref="ConstructorInfo"/>, <see cref="PropertyInfo"/>, <see cref="EventInfo"/> or <see cref="FieldInfo"/>.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="type"></param>
-    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="type"/>.</returns>
-    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="type"/>.</exception>
-    /// <exception cref="NotSupportedException">The type provided by the <paramref genericTypeParameterIdentifier="type"/> is not supported.</exception>
+    /// <param genericTypeParameterIdentifier="valueType"></param>
+    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="valueType"/>.</returns>
+    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="valueType"/>.</exception>
+    /// <exception cref="NotSupportedException">The valueType provided by the <paramref genericTypeParameterIdentifier="valueType"/> is not supported.</exception>
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this MethodInfo method)
     {
@@ -2076,10 +2088,10 @@
     /// <summary>
     /// Gets the access modifier for <see cref="MemberInfo"/> symbolAttributes like <see cref="Type"/>, <see cref="MethodInfo"/>, <see cref="ConstructorInfo"/>, <see cref="PropertyInfo"/>, <see cref="EventInfo"/> or <see cref="FieldInfo"/>.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="type"></param>
-    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="type"/>.</returns>
-    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="type"/>.</exception>
-    /// <exception cref="NotSupportedException">The type provided by the <paramref genericTypeParameterIdentifier="type"/> is not supported.</exception>
+    /// <param genericTypeParameterIdentifier="valueType"></param>
+    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="valueType"/>.</returns>
+    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="valueType"/>.</exception>
+    /// <exception cref="NotSupportedException">The valueType provided by the <paramref genericTypeParameterIdentifier="valueType"/> is not supported.</exception>
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this ConstructorInfo constructor)
     {
@@ -2090,10 +2102,10 @@
     /// <summary>
     /// Gets the access modifier for <see cref="MemberInfo"/> symbolAttributes like <see cref="Type"/>, <see cref="MethodInfo"/>, <see cref="ConstructorInfo"/>, <see cref="PropertyInfo"/>, <see cref="EventInfo"/> or <see cref="FieldInfo"/>.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="type"></param>
-    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="type"/>.</returns>
-    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="type"/>.</exception>
-    /// <exception cref="NotSupportedException">The type provided by the <paramref genericTypeParameterIdentifier="type"/> is not supported.</exception>
+    /// <param genericTypeParameterIdentifier="valueType"></param>
+    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="valueType"/>.</returns>
+    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="valueType"/>.</exception>
+    /// <exception cref="NotSupportedException">The valueType provided by the <paramref genericTypeParameterIdentifier="valueType"/> is not supported.</exception>
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this PropertyInfo property)
     {
@@ -2104,10 +2116,10 @@
     /// <summary>
     /// Gets the access modifier for <see cref="MemberInfo"/> symbolAttributes like <see cref="Type"/>, <see cref="MethodInfo"/>, <see cref="ConstructorInfo"/>, <see cref="PropertyInfo"/>, <see cref="EventInfo"/> or <see cref="FieldInfo"/>.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="type"></param>
-    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="type"/>.</returns>
-    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="type"/>.</exception>
-    /// <exception cref="NotSupportedException">The type provided by the <paramref genericTypeParameterIdentifier="type"/> is not supported.</exception>
+    /// <param genericTypeParameterIdentifier="valueType"></param>
+    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="valueType"/>.</returns>
+    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="valueType"/>.</exception>
+    /// <exception cref="NotSupportedException">The valueType provided by the <paramref genericTypeParameterIdentifier="valueType"/> is not supported.</exception>
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this EventInfo eventInfo)
     {
@@ -2118,10 +2130,10 @@
     /// <summary>
     /// Gets the access modifier for <see cref="MemberInfo"/> symbolAttributes like <see cref="Type"/>, <see cref="MethodInfo"/>, <see cref="ConstructorInfo"/>, <see cref="PropertyInfo"/>, <see cref="EventInfo"/> or <see cref="FieldInfo"/>.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="type"></param>
-    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="type"/>.</returns>
-    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="type"/>.</exception>
-    /// <exception cref="NotSupportedException">The type provided by the <paramref genericTypeParameterIdentifier="type"/> is not supported.</exception>
+    /// <param genericTypeParameterIdentifier="valueType"></param>
+    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="valueType"/>.</returns>
+    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="valueType"/>.</exception>
+    /// <exception cref="NotSupportedException">The valueType provided by the <paramref genericTypeParameterIdentifier="valueType"/> is not supported.</exception>
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this FieldInfo field)
     {
@@ -2201,12 +2213,12 @@
     /// Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// <para>Because <see cref="Type"/> derives from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
     public static string ToDisplayName(this Type type, bool isShortName = false)
     {
@@ -2218,12 +2230,12 @@
     /// Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// <para>Because <see cref="Type"/> derives from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
     public static string ToDisplayName(this MethodInfo methodInfo, bool isShortName = false)
     {
@@ -2235,12 +2247,12 @@
     /// Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// <para>Because <see cref="Type"/> derives from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
     public static string ToDisplayName(this ConstructorInfo constructorInfo, bool isShortName = false)
     {
@@ -2252,12 +2264,12 @@
     /// Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// <para>Because <see cref="Type"/> derives from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
     public static string ToDisplayName(this PropertyInfo propertyInfo, bool isShortName = false)
     {
@@ -2269,12 +2281,12 @@
     /// Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// <para>Because <see cref="Type"/> derives from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
     public static string ToDisplayName(this FieldInfo fieldInfo, bool isShortName = false)
     {
@@ -2286,12 +2298,12 @@
     /// Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// <para>Because <see cref="Type"/> derives from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
     public static string ToDisplayName(this ParameterInfo parameterInfo)
     {
@@ -2303,12 +2315,12 @@
     /// Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// <para>Because <see cref="Type"/> derives from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
     public static string ToDisplayName(this EventInfo eventInfo, bool isShortName = false)
     {
@@ -2320,12 +2332,12 @@
     /// Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// <para>Because <see cref="Type"/> derives from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
     public static string ToFullDisplayName(this Type type, bool isShortName = false)
     {
@@ -2337,12 +2349,12 @@
     /// Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// <para>Because <see cref="Type"/> derives from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
     public static string ToFullDisplayName(this MethodInfo methodInfo, bool isShortName = false)
     {
@@ -2354,12 +2366,12 @@
     /// Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// <para>Because <see cref="Type"/> derives from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
     public static string ToFullDisplayName(this ConstructorInfo constructorInfo, bool isShortName = false)
     {
@@ -2371,12 +2383,12 @@
     /// Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// <para>Because <see cref="Type"/> derives from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
     public static string ToFullDisplayName(this PropertyInfo propertyInfo, bool isShortName = false)
     {
@@ -2388,12 +2400,12 @@
     /// Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// <para>Because <see cref="Type"/> derives from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
     public static string ToFullDisplayName(this FieldInfo fieldInfo, bool isShortName = false)
     {
@@ -2405,12 +2417,12 @@
     /// Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// <para>Because <see cref="Type"/> derives from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
     public static string ToFullDisplayName(this EventInfo eventInfo, bool isShortName = false)
     {
@@ -2419,16 +2431,16 @@
     }
 
     /// <summary>
-    /// Extension method to convert generic and non-generic type names to a readable display genericTypeParameterIdentifier including the symbolNamespace.
+    /// Extension method to convert generic and non-generic valueType names to a readable display genericTypeParameterIdentifier including the symbolNamespace.
     /// </summary>
     /// <param genericTypeParameterIdentifier="memberInfo">The <see cref="Type"/> to extend.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
     /// <para>Because <see cref="Type"/> derives from <see cref="MemberInfo"/> this extension method also works on <see cref="Type"/>.</para>
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
     private static string ToDisplayNameInternal(SymbolInfoData symbolInfoData, bool isFullyQualifiedName, bool isShortName)
     {
@@ -2618,7 +2630,7 @@
         return nameBuilder;
       }
 
-      // Could be an open generic type. Therefore we need to obtain all definitions.
+      // Could be an open generic valueType. Therefore we need to obtain all definitions.
       TypeData[] genericTypeParameterDefinitions;
       TypeData[] genericTypeArguments;
       genericTypeArguments = methodData.GenericTypeArguments;
@@ -2637,7 +2649,7 @@
         return nameBuilder;
       }
 
-      // Could be an open generic type. Therefore we need to obtain all definitions.
+      // Could be an open generic valueType. Therefore we need to obtain all definitions.
       TypeData[] genericTypeParameterDefinitions;
       TypeData[] genericTypeArguments;
       genericTypeArguments = typeData.GenericTypeArguments;
@@ -2870,8 +2882,8 @@
     /// </summary>
     /// <param genericTypeParameterIdentifier="methodInfo">The <see cref="MethodInfo"/> to check if it belongs to an awaitable method.</param>
     /// <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
-    /// <remarks>The method first checks if the return type is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned type (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate type (awaiter).
-    /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
+    /// <remarks>The method first checks if the return valueType is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned valueType (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate valueType (awaiter).
+    /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned valueType that would make the valueType awaitable. If this fails too, the method is not awaitable.</remarks>
     public static bool IsAwaitable(this MethodInfo methodInfo)
     {
       MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
@@ -2883,8 +2895,8 @@
     /// </summary>
     /// <param genericTypeParameterIdentifier="methodInfo">The <see cref="MethodInfo"/> to check if it belongs to an awaitable method.</param>
     /// <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
-    /// <remarks>The method first checks if the return type is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned type (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate type (awaiter).
-    /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
+    /// <remarks>The method first checks if the return valueType is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned valueType (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate valueType (awaiter).
+    /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned valueType that would make the valueType awaitable. If this fails too, the method is not awaitable.</remarks>
     internal static bool IsAwaitableInternal(MethodData methodData)
       => IsAwaitableInternal(methodData.ReturnTypeData);
 
@@ -2893,8 +2905,8 @@
     /// </summary>
     /// <param genericTypeParameterIdentifier="methodInfo">The <see cref="MethodInfo"/> to check if it belongs to an awaitable method.</param>
     /// <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
-    /// <remarks>The method first checks if the return type is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned type (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate type (awaiter).
-    /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
+    /// <remarks>The method first checks if the return valueType is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned valueType (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate valueType (awaiter).
+    /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned valueType that would make the valueType awaitable. If this fails too, the method is not awaitable.</remarks>
     public static bool IsAwaitable(this Type type)
     {
       TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
@@ -2906,8 +2918,8 @@
     /// </summary>
     /// <param genericTypeParameterIdentifier="methodInfo">The <see cref="MethodInfo"/> to check if it belongs to an awaitable method.</param>
     /// <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
-    /// <remarks>The method first checks if the return type is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned type (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate type (awaiter).
-    /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
+    /// <remarks>The method first checks if the return valueType is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned valueType (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate valueType (awaiter).
+    /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned valueType that would make the valueType awaitable. If this fails too, the method is not awaitable.</remarks>
     internal static bool IsAwaitableInternal(TypeData typeData)
     {
       Type type = typeData.GetType();
@@ -2921,8 +2933,8 @@
         return true;
       }
 
-      // The return type of the method is not directly returning an awaitable type.
-      // So, search for an extension method named "GetAwaiter" for the return type of the currently validated method that effectively converts the type into an awaitable object.
+      // The return valueType of the method is not directly returning an awaitable valueType.
+      // So, search for an extension method named "GetAwaiter" for the return valueType of the currently validated method that effectively converts the valueType into an awaitable object.
       // By compiler convention the "GetAwaiter" method must return an awaiter object that implements the INotifyComplete interface
       foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
       {
@@ -3002,7 +3014,7 @@
     /// </summary>
     /// <param genericTypeParameterIdentifier="typeInfo">The extended <see cref="Type"/> instance.</param>
     /// <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="typeInfo"/> is allowed to define extension methods. Otherwise <see langword="false"/>.</returns>
-    /// <remarks>To be able to define extension methods a class must be static, non-generic, a top level type. 
+    /// <remarks>To be able to define extension methods a class must be static, non-generic, a top level valueType. 
     /// <br/>In addition this method checks if the declaring class and the method are both decorated with the <see cref="ExtensionAttribute"/> which is added by the compiler.</remarks>
     public static bool CanDeclareExtensionMethods(this Type typeInfo)
     {
@@ -3111,7 +3123,7 @@
     }
 
     /// <summary>
-    /// Extension method to check if a <see cref="MethodInfo"/> is the info of an extension method for a particular type.
+    /// Extension method to check if a <see cref="MethodInfo"/> is the info of an extension method for a particular valueType.
     /// </summary>
     /// <param genericTypeParameterIdentifier="methodInfo">The extended <see cref="MethodInfo"/> instance to validate.</param>
     /// <param genericTypeParameterIdentifier="typeToExtend">The <see cref="Type"/> the <paramref genericTypeParameterIdentifier="methodInfo"/> is expected to extend.</param>
@@ -3163,8 +3175,8 @@
     //    return (Task)getAwaiterMethodInfo.Invoke(obj, null);
     //  }
 
-    //  // The return type of the method is not directly returning an awaitable type.
-    //  // So search for an extension method named "GetAwaiter" for the return type that effectively converts the type into an awaitable object.
+    //  // The return valueType of the method is not directly returning an awaitable valueType.
+    //  // So search for an extension method named "GetAwaiter" for the return valueType that effectively converts the valueType into an awaitable object.
     //  foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
     //  {
     //    foreach (TypeInfo typeInfo in assembly.GetExportedTypes())

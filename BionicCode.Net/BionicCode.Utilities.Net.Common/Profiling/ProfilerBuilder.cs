@@ -70,7 +70,7 @@
     /// <summary>
     /// Set the time unit that the results are converted to.
     /// </summary>
-    /// <param name="timeUnit">The unit that all result related time ispresented in. The default is <see cref="TimeUnit.Microseconds"/>.</param>
+    /// <param name="timeUnit">The unit that all result related time is presented in. The default is <see cref="TimeUnit.Microseconds"/>.</param>
     /// <returns>
     /// The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.
     /// </returns>
@@ -87,7 +87,7 @@
     /// <returns>
     /// The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.
     /// </returns>
-    public ProfilerBuilder SetLogger(ProfilerLoggerDelegate profilerLogger)
+    public ProfilerBuilder SetLogger(Action<ProfilerBatchResult, string> profilerLogger)
     {
       this.ProfilerLogger = profilerLogger;
       return this;
@@ -96,13 +96,13 @@
     /// <summary>
     /// Set a log delegate that allows to asynchronously output the result to a sink, e.g. a file or application logger.
     /// </summary>
-    /// <param name="profilerLogger">An asynchronous delegate that is invoked by profiler to pass in the result.</param>
+    /// <param name="asyncProfilerLogger">An asynchronous delegate that is invoked by profiler to pass in the result.</param>
     /// <returns>
     /// The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.
     /// </returns>
-    public ProfilerBuilder SetAsyncLogger(ProfilerLoggerAsyncDelegate profilerLogger)
+    public ProfilerBuilder SetAsyncLogger(Func<ProfilerBatchResult, string, Task> asyncProfilerLogger)
     {
-      this.AsyncProfilerLogger = profilerLogger;
+      this.AsyncProfilerLogger = asyncProfilerLogger;
       return this;
     }
 
@@ -113,7 +113,7 @@
     /// <returns>
     /// The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.
     /// </returns>
-    /// <remarks>When running code the first time there is always the incurrence of the JIT to compile the code. 
+    /// <remarks>When running code the first time there is always the cost of the JIT to compile the code at runtime. 
     /// <br/>For this reason it is recommended to execute the code at least once in order to avoid the JIT to impact the profiling.
     /// </remarks>
     public ProfilerBuilder EnableWarmup()
@@ -126,7 +126,7 @@
     /// Disable warm up iterations. Warm up iterations can be scheduled to trigger the JIT compiler. Warm up is enabled by default.
     /// </summary>
     /// <returns>The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.</returns>
-    /// <remarks>When running code the first time there is always the incurrence of the JIT to compile the code. 
+    /// <remarks>When running code the first time there is always the cost of the JIT to compile the code at runtime. 
     /// <br/>For this reason it is recommended to execute the code at least once in order to avoid the JIT to impact the profiling.
     /// </remarks>
     public ProfilerBuilder DisableWarmup()
@@ -167,7 +167,7 @@
     /// <returns>
     /// The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.
     /// </returns>
-    /// <remarks>When running code the first time there is always the incurrence of the JIT to compile the code. 
+    /// <remarks>When running code the first time there is always the cost of the JIT to compile the code at runtime. 
     /// <br/>For this reason it is recommended to execute the code at least once in order to avoid the JIT to impact the profiling.
     /// </remarks>
     public ProfilerBuilder SetWarmupIterations(int warmupIterations)
