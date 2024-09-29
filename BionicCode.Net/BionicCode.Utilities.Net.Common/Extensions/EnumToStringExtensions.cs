@@ -1,6 +1,7 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System;
+  using Microsoft.CodeAnalysis.CSharp.Syntax;
 
   public static partial class HelperExtensionsCommon
   {
@@ -90,6 +91,105 @@
           return toUpperCase ? "Ns" : "ns";
         default:
           throw new NotSupportedException();
+      }
+    }
+
+    internal static string ToDisplayTypeKind(this SymbolAttributes symbolAttributes, bool toUpperCase = false)
+    {
+      switch (symbolAttributes)
+      {
+        case SymbolAttributes.Class:
+        case SymbolAttributes.SealedClass:
+        case SymbolAttributes.AbstractClass:
+        case SymbolAttributes.StaticClass:
+        case SymbolAttributes.GenericClass:
+        case SymbolAttributes.GenericSealedClass:
+        case SymbolAttributes.GenericAbstractClass:
+        case SymbolAttributes.GenericStaticClass:
+          return toUpperCase ? "Class" : "class";
+        case SymbolAttributes.Interface:
+        case SymbolAttributes.GenericInterface:
+          return toUpperCase ? "Interface" : "interface";
+        case SymbolAttributes.Delegate:
+        case SymbolAttributes.GenericDelegate:
+          return toUpperCase ? "Delegate" : "delegate";
+        case SymbolAttributes.Struct:
+        case SymbolAttributes.RefStruct:
+        case SymbolAttributes.ReadOnlyStruct:
+        case SymbolAttributes.GenericStruct:
+        case SymbolAttributes.GenericReadOnlyStruct:
+          return toUpperCase ? "Struct" : "struct";
+        case SymbolAttributes.Enum:
+          return toUpperCase ? "Enum" : "enum";
+        case SymbolAttributes.Method:
+        case SymbolAttributes.VirtualMethod:
+        case SymbolAttributes.AbstractMethod:
+        case SymbolAttributes.StaticMethod:
+        case SymbolAttributes.SealedOverrideMethod:
+        case SymbolAttributes.OverrideMethod:
+        case SymbolAttributes.GenericVirtualMethod:
+        case SymbolAttributes.GenericMethod:
+        case SymbolAttributes.GenericAbstractMethod:
+        case SymbolAttributes.GenericStaticMethod:
+        case SymbolAttributes.GenericSealedOverrideMethod:
+        case SymbolAttributes.GenericOverrideMethod:
+          return toUpperCase ? "Method" : "method";
+        case SymbolAttributes.Property:
+        case SymbolAttributes.ReadOnlyProperty:
+        case SymbolAttributes.InitProperty:
+        case SymbolAttributes.AbstractProperty:
+        case SymbolAttributes.AbstractReadOnlyProperty:
+        case SymbolAttributes.StaticProperty:
+        case SymbolAttributes.StaticReadOnlyProperty:
+        case SymbolAttributes.VirtualProperty:
+        case SymbolAttributes.VirtualReadOnlyProperty:
+        case SymbolAttributes.OverrideProperty:
+        case SymbolAttributes.OverrideReaOnlyProperty:
+          return toUpperCase ? "Property" : "property";
+        case SymbolAttributes.Field:
+        case SymbolAttributes.ReadOnlyField:
+        case SymbolAttributes.RefField:
+        case SymbolAttributes.StaticReadOnlyField:
+        case SymbolAttributes.ConstantField:
+        case SymbolAttributes.ConstantStaticField:
+          return toUpperCase ? "Field" : "field";
+        case SymbolAttributes.Event:
+        case SymbolAttributes.VirtualEvent:
+        case SymbolAttributes.AbstractEvent:
+        case SymbolAttributes.OverrideEvent:
+          return toUpperCase ? "Event" : "event";
+        case SymbolAttributes.Constructor:
+        case SymbolAttributes.StaticConstructor:
+          return toUpperCase ? "Constructor" : "constructor";
+        case SymbolAttributes.IndexerProperty:
+        case SymbolAttributes.ReadOnlyIndexerProperty:
+        case SymbolAttributes.OverrideReadOnlyIndexerProperty:
+        case SymbolAttributes.OverrideIndexerProperty:
+        case SymbolAttributes.StaticIndexerProperty:
+        case SymbolAttributes.StaticReadOnlyIndexerProperty:
+        case SymbolAttributes.AbstractIndexerProperty:
+        case SymbolAttributes.AbstractReadOnlyIndexerProperty:
+          return toUpperCase ? "Indexer" : "indexer";
+        case SymbolAttributes.Undefined:
+        case SymbolAttributes.Final:
+        case SymbolAttributes.Virtual:
+        case SymbolAttributes.Abstract:
+        case SymbolAttributes.Static:
+        case SymbolAttributes.Override:
+        case SymbolAttributes.Generic:
+        case SymbolAttributes.Member:
+        case SymbolAttributes.Type:
+        case SymbolAttributes.GenericType:
+        case SymbolAttributes.Parameter:
+        case SymbolAttributes.InParameter:
+        case SymbolAttributes.OutParameter:
+        case SymbolAttributes.RefParameter:
+        case SymbolAttributes.OptionalParameter:
+        case SymbolAttributes.ByReference:
+        case SymbolAttributes.Init:
+        case SymbolAttributes.Constant:
+        default:
+          return toUpperCase ? "Not a type or member" : "not a type or member";
       }
     }
   }

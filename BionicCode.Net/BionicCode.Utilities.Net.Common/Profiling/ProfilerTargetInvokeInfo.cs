@@ -22,6 +22,8 @@
       int argumentListIndex,
       string targetSignature,
       string targetDisplayName,
+      string targetShortSignature,
+      string targetShortDisplayName,
       string targetNamespace,
       string targetAssemblyName,
       Action<object, object, object[]> propertySetInvocator,
@@ -41,6 +43,9 @@
       this.AssemblyName = targetAssemblyName;
       this.DisplayName = targetDisplayName;
       this.Namespace = targetNamespace;
+      this.ShortDisplayName = targetShortDisplayName;
+      this.ShortSignature = targetShortSignature;
+      this.SymbolComponentInfo = null;
     }
     /// <summary>
     /// Use for constructors
@@ -59,6 +64,8 @@
       int argumentListIndex,
       string targetSignature,
       string targetDisplayName,
+      string targetShortSignature,
+      string targetShortDisplayName,
       string targetNamespace,
       string targetAssemblyName,
       Func<object[], object> constructorInvocator,
@@ -78,6 +85,9 @@
       this.AssemblyName = targetAssemblyName;
       this.DisplayName = targetDisplayName;
       this.Namespace = targetNamespace;
+      this.ShortDisplayName = targetShortDisplayName;
+      this.ShortSignature = targetShortSignature;
+      this.SymbolComponentInfo = null;
     }
 
     public ProfilerTargetInvokeInfo(object target,
@@ -85,6 +95,8 @@
       int argumentListIndex,
       string targetSignature,
       string targetDisplayName,
+      string targetShortSignature,
+      string targetShortDisplayName,
       string targetNamespace,
       string targetAssemblyName,
       Func<object, object[], object> synchronousMethodInvocator,
@@ -104,6 +116,9 @@
       this.AssemblyName = targetAssemblyName;
       this.DisplayName = targetDisplayName;
       this.Namespace = targetNamespace;
+      this.ShortDisplayName = targetShortDisplayName;
+      this.ShortSignature = targetShortSignature;
+      this.SymbolComponentInfo = null;
     }
 
     public ProfilerTargetInvokeInfo(object target,
@@ -111,6 +126,9 @@
       int argumentListIndex,
       string targetSignature,
       string targetDisplayName,
+      string targetShortSignature,
+      string targetShortDisplayName,
+      SymbolComponentInfo symbolComponentInfo,
       string targetNamespace,
       string targetAssemblyName,
       Func<object, object[], Task> asynchronousTaskMethodInvocator,
@@ -130,6 +148,9 @@
       this.AssemblyName = targetAssemblyName;
       this.DisplayName = targetDisplayName;
       this.Namespace = targetNamespace;
+      this.ShortDisplayName = targetShortDisplayName;
+      this.ShortSignature = targetShortSignature;
+      this.SymbolComponentInfo = symbolComponentInfo;
     }
 
     public ProfilerTargetInvokeInfo(object target,
@@ -137,6 +158,8 @@
       int argumentListIndex,
       string targetSignature,
       string targetDisplayName,
+      string targetShortSignature,
+      string targetShortDisplayName,
       string targetNamespace,
       string targetAssemblyName,
       Func<object, object[], ValueTask> asynchronousValueTaskMethodInvocator,
@@ -156,11 +179,16 @@
       this.AssemblyName = targetAssemblyName;
       this.DisplayName = targetDisplayName;
       this.Namespace = targetNamespace;
+      this.ShortDisplayName = targetShortDisplayName;
+      this.ShortSignature = targetShortSignature;
+      this.SymbolComponentInfo = null;
     }
 
     public ProfilerTargetInvokeInfo(object target, 
       string targetSignature,
       string targetDisplayName,
+      string targetShortSignature,
+      string targetShortDisplayName,
       string targetNamespace,
       string targetAssemblyName,
       object[] arguments,
@@ -182,10 +210,15 @@
       this.AssemblyName = targetAssemblyName;
       this.DisplayName = targetDisplayName;
       this.Namespace = targetNamespace;
+      this.ShortDisplayName = targetShortDisplayName;
+      this.ShortSignature = targetShortSignature;
+      this.SymbolComponentInfo = null;
     }
 
     public ProfilerTargetInvokeInfo(string targetSignature,
-      string targetDisplayName,
+      string targetDisplayName, 
+      string targetShortSignature,
+      string targetShortDisplayName,
       string targetNamespace,
       string targetAssemblyName)
     {
@@ -203,6 +236,9 @@
       this.AssemblyName = targetAssemblyName;
       this.DisplayName = targetDisplayName;
       this.Namespace = targetNamespace;
+      this.ShortDisplayName = targetShortDisplayName;
+      this.ShortSignature = targetShortSignature;
+      this.SymbolComponentInfo = null;
     }
 
     public Action<object, object, object[]> PropertySetInvocator { get; }
@@ -216,6 +252,9 @@
     public object Target { get; }
     public string Signature { get; }
     public string DisplayName { get; }
+    public string ShortSignature { get; }
+    public string ShortDisplayName { get; }
+    public SymbolComponentInfo SymbolComponentInfo { get; }
     public string Namespace { get; }
     public string AssemblyName { get; }
     public ProfiledTargetType ProfiledTargetType { get; }

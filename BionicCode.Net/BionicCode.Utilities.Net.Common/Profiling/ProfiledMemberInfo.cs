@@ -14,8 +14,10 @@
     public bool IsStatic { get; }
     public string Name => this.MemberInfoData.Name;
     public string DisplayName => this.MemberInfoData.DisplayName;
+    public string ShortDisplayName => this.MemberInfoData.ShortDisplayName;
     public string Namespace => this.MemberInfoData.Namespace;
     public string Signature => this.MemberInfoData.Signature;
+    public string ShortSignature => this.MemberInfoData.ShortSignature;
 
     protected ProfiledMemberInfo(IList<IEnumerable<object>> argumentLists, bool isStatic, string assemblyName, int lineNumber, string sourceFilePath, Runtime targetFramework)
     {

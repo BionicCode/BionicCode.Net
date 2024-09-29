@@ -34,7 +34,7 @@ namespace BionicCode.Utilities.Net
     private static EnvironmentInfo Info { get; set; }
 
     private static Dictionary<ManagementOperationObserver, ManagementObjectSearcher> ManagementObjectSearcherTable { get; } = new Dictionary<ManagementOperationObserver, ManagementObjectSearcher>();
-    private static SemaphoreSlim Semaphore { get; } = new SemaphoreSlim(1, 1);
+    private static SemaphoreSlim Semaphore { get; set; } = new SemaphoreSlim(1, 1);
 
     public static async ValueTask<EnvironmentInfo> GetEnvironmentInfoAsync()
     {
@@ -43,7 +43,8 @@ namespace BionicCode.Utilities.Net
         return Environment.Info;
       }
 
-      await Environment.Semaphore.WaitAsync();
+      await Environment.Semaphore?.WaitAsync();
+      ManagementObjectSearcher searcher = null;
       try
       {
         if (Environment.Info != default)
@@ -53,7 +54,7 @@ namespace BionicCode.Utilities.Net
 
         Environment.TaskCompletionSource = new TaskCompletionSource<EnvironmentInfo>();
 
-        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_Processor");
+        searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_Processor");
         
         try
         {
@@ -72,7 +73,10 @@ namespace BionicCode.Utilities.Net
       }
       finally
       {
-        _ = Environment.Semaphore.Release();
+        _ = Environment.Semaphore?.Release();
+        Environment.Semaphore?.Dispose();
+        Environment.Semaphore = null;
+        searcher?.Dispose();
       }
     }
 
@@ -98,10 +102,12 @@ namespace BionicCode.Utilities.Net
         numberOfCores, 
         numberOfLogicalCores, 
         threadCount, 
-        clckSpeed, 
-        System.Environment.Is64BitProcess, 
-        System.Environment.Is64BitOperatingSystem, 
-        RuntimeEnvironment.GetSystemVersion());
+        clckSpeed,
+        System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture.ToString().ToLower(),
+        System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString().ToLower(),
+        System.Runtime.InteropServices.RuntimeInformation.OSDescription,
+        System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
+
       _ = Environment.TaskCompletionSource.TrySetResult(Environment.Info);
     }
   }
@@ -109,19 +115,20 @@ namespace BionicCode.Utilities.Net
   public readonly struct EnvironmentInfo : IEquatable<EnvironmentInfo>
   {
     private static readonly double NanosecondsPerSecond = 1E9;
-    public static EnvironmentInfo Default { get; } = new EnvironmentInfo("Unknown", -1, System.Environment.ProcessorCount, -1, -1, System.Environment.Is64BitProcess, System.Environment.Is64BitOperatingSystem, RuntimeEnvironment.GetSystemVersion());
+    public static EnvironmentInfo Default { get; } = new EnvironmentInfo("Unknown", -1, -1, -1, -1, string.Empty, string.Empty, string.Empty, string.Empty);
 
-    public EnvironmentInfo(string processorName, int processorCoreCount, int processorLogicalCoreCount, int thradCount, int processorSpeed, bool is64BitProcess, bool is64BitOperatingSystem, string runtimeVersion)
+    public EnvironmentInfo(string processorName, int processorCoreCount, int processorLogicalCoreCount, int threadCount, int processorSpeed, string processArchitecture, string operatingSystemArchitecture, string operatingSystemName, string runtimeVersion)
     {
       this.ProcessorName = processorName;
       this.ProcessorCoreCount = processorCoreCount;
       this.ProcessorLogicalCoreCount = processorLogicalCoreCount;
-      this.ThradCount = thradCount;
+      this.ThreadCount = threadCount;
       this.ProcessorSpeed = processorSpeed;
-      this.Is64BitProcess = is64BitProcess;
-      this.Is64BitOperatingSystem = is64BitOperatingSystem;
+      this.ProcessArchitecture = processArchitecture;
+      this.OperatingSystemArchitecture = operatingSystemArchitecture;
       this.RuntimeVersion = runtimeVersion;
       this.NanosecondsPerTick = NanosecondsPerSecond / Stopwatch.Frequency;
+      this.OperatingSystemName = operatingSystemName;
     }
 
     public bool HasHighPrecisionTimer => Stopwatch.IsHighResolution;
@@ -130,15 +137,16 @@ namespace BionicCode.Utilities.Net
     public int ProcessorCoreCount { get; }
     public int ProcessorSpeed { get; }
     public int ProcessorLogicalCoreCount { get; }
-    public int ThradCount { get; }
-    public bool Is64BitProcess { get; }
-    public bool Is64BitOperatingSystem { get; }
+    public int ThreadCount { get; }
+    public string ProcessArchitecture { get; }
+    public string OperatingSystemArchitecture { get; }
+    public string OperatingSystemName { get; }
     public string RuntimeVersion { get; }
 
     public bool Equals(EnvironmentInfo other) =>  this.RuntimeVersion == other.RuntimeVersion
-      && this.Is64BitOperatingSystem == other.Is64BitOperatingSystem
-      && this.Is64BitProcess == other.Is64BitProcess
-      && this.ThradCount == other.ThradCount
+      && this.OperatingSystemArchitecture == other.OperatingSystemArchitecture
+      && this.ProcessArchitecture == other.ProcessArchitecture
+      && this.ThreadCount == other.ThreadCount
       && this.ProcessorLogicalCoreCount == other.ProcessorLogicalCoreCount
       && this.ProcessorCoreCount == other.ProcessorCoreCount
       && this.ProcessorSpeed == other.ProcessorSpeed
@@ -153,9 +161,9 @@ namespace BionicCode.Utilities.Net
       hashCode = hashCode * -1521134295 + this.ProcessorCoreCount.GetHashCode();
       hashCode = hashCode * -1521134295 + this.ProcessorSpeed.GetHashCode();
       hashCode = hashCode * -1521134295 + this.ProcessorLogicalCoreCount.GetHashCode();
-      hashCode = hashCode * -1521134295 + this.ThradCount.GetHashCode();
-      hashCode = hashCode * -1521134295 + this.Is64BitProcess.GetHashCode();
-      hashCode = hashCode * -1521134295 + this.Is64BitOperatingSystem.GetHashCode();
+      hashCode = hashCode * -1521134295 + this.ThreadCount.GetHashCode();
+      hashCode = hashCode * -1521134295 + this.ProcessArchitecture.GetHashCode();
+      hashCode = hashCode * -1521134295 + this.OperatingSystemArchitecture.GetHashCode();
       hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(this.RuntimeVersion);
       return hashCode;
     }

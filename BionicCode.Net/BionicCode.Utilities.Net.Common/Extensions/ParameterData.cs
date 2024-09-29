@@ -95,11 +95,17 @@
     public override string Signature
       => this.signature ?? (this.signature = GetParameterInfo().Name);
 
+    public override string ShortSignature
+      => this.Signature;
+
     public override string FullyQualifiedSignature
       => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = GetParameterInfo().Name);
 
     public override string DisplayName
       => this.displayName ?? (this.displayName = GetParameterInfo().Name);
+
+    public override string ShortDisplayName
+      => this.DisplayName;
 
     public override string FullyQualifiedDisplayName 
       => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = GetParameterInfo().Name);

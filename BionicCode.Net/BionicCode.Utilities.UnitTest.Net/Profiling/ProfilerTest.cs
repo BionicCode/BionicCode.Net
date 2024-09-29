@@ -209,11 +209,12 @@
       var targetTypes = new List<Type>
       {
         typeof(BenchmarkTarget<string>),
-        typeof(BenchmarkTargetAlternate<int>)
+        //typeof(BenchmarkTargetAlternate<int>)
       };
 
       ProfilerBuilder profilerBuilder = Profiler.CreateProfilerBuilder(targetTypes)
         .SetIterations(iterations)
+        //.SetRuntime(Runtime.Net8_0)
         .SetLogger((result, summary) => Debug.WriteLine(result.Summary))
         .EnableDefaultLogOutput()
         .SetBaseUnit(TimeUnit.Microseconds);

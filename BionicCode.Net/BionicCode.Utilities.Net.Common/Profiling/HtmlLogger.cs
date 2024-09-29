@@ -14,6 +14,7 @@
   using System.Threading.Tasks;
   using System.Collections.Generic;
   using Microsoft.Extensions.Caching.Memory;
+  using System.Web;
 
   internal class HtmlLogger : IProfilerLogger
   {
@@ -23,7 +24,6 @@
     private const double GraphIntervalResolution = 0.01;
     private readonly MemoryCache fileContentCache;
     private readonly TimeSpan FileContentCacheExpiration = TimeSpan.FromMinutes(5);
-    internal static HtmlEncoder HtmlEncoder { get; } = HtmlEncoder.Create();
 
     public HtmlLogger()
     {
@@ -65,7 +65,7 @@
 
         documentBuilderInfosMap.Add(batchResultGroups, htmlDocumentBuilderInfos);
         string indexPageNameOfCurrentType = htmlDocumentBuilderInfos.First().FileName;
-        _ = htmlTypeNavigationIndexBuilder.AppendLine($@"<li><a class=""dropdown-item {{0}}"" {{1}} href=""{indexPageNameOfCurrentType}"">{HtmlLogger.HtmlEncoder.Encode(batchResultGroups.ProfiledTypeData.Signature)}</a></li>");
+        _ = htmlTypeNavigationIndexBuilder.AppendLine($@"<li><a class=""dropdown-item {{0}}"" {{1}} href=""{indexPageNameOfCurrentType}"">{batchResultGroups.ProfiledTypeData.ShortSignature.ToHtmlEncodedString()}</a></li>");
       }
 
       string htmlTypeNavigationIndexTemplate = htmlTypeNavigationIndexBuilder.ToString();
@@ -88,7 +88,7 @@
           string htmlFilePath = Path.Combine(Path.GetTempPath(), htmlDocumentBuilderInfo.FileName);
           htmlFilePaths.Add(htmlFilePath);
 
-          string encodedCurrentProfiledTypeSignature = HtmlLogger.HtmlEncoder.Encode(batchResultGroups.ProfiledTypeData.Signature);
+          string encodedCurrentProfiledTypeSignature = $"{batchResultGroups.ProfiledTypeData.ShortDisplayName.ToHtmlEncodedString()} ({batchResultGroups.ProfiledTypeData.SymbolAttributes.ToDisplayTypeKind()})";
           string htmlDocument = string.Format(
             htmlDocumentBuilderInfo.DocumentTemplate,
             encodedCurrentProfiledTypeSignature,
@@ -141,9 +141,9 @@
 
         DateTime timeStamp = DateTime.Now;
         string htmlFileName = $"profiler_result_{timeStamp.ToString("MM-dd-yyyy_hhmmss.fffffff")}.html";
-        _ = htmlTypeMemberNavigationIndexBuilder.AppendLine($@"<li><a class=""dropdown-item {{0}}"" {{1}} href=""{htmlFileName}"">{HtmlLogger.HtmlEncoder.Encode(batchResultGroup.ProfiledTargetSignatureMemberName)}</a></li>");
+        _ = htmlTypeMemberNavigationIndexBuilder.AppendLine($@"<li><a class=""dropdown-item {{0}}"" {{1}} href=""{htmlFileName}"">{batchResultGroup.ProfiledTargetShortSignatureMemberName.ToHtmlEncodedString()}</a></li>");
         string htmlSourceCodeTemplate = await GetEncodedHtmlCodeTextAsync();
-        string pageTitel = HtmlLogger.HtmlEncoder.Encode(batchResultGroup.ProfiledTargetSignatureMemberName);
+        string pageTitel = batchResultGroup.ProfiledTargetMemberName.ToHtmlEncodedString();
         string inPageNavigationHtmlElements = CreateHtmlInPageNavigationElements(batchResultGroup);
         //string pageFooterElements = CreateHtmlInPageFooterElements(batchResultGroup);
 
@@ -155,7 +155,7 @@
           InPageNavigationElements = inPageNavigationHtmlElements,
           //DocumentFooterElements = pageFooterElements,
           FileName = htmlFileName,
-          MemberName = HtmlLogger.HtmlEncoder.Encode($"{batchResultGroup.ProfiledTargetMemberShortName} ({batchResultGroup.ProfiledTargetType.ToDisplayStringValue()})")
+          MemberName = $"{batchResultGroup.ProfiledTargetMemberShortName} ({batchResultGroup.ProfiledTargetType.ToDisplayStringValue()})".ToHtmlEncodedString()
         };
 
         htmlDocumentBuilderValues.Add(batchResultGroup, builderInfo);
@@ -233,7 +233,7 @@
       foreach (ProfilerBatchResult result in profilerBatchResultGroup)
       {
         _ = htmlDocumentBuilder
-          .Append($@"<a class=""list-group-item list-group-item-action"" href=""#{result.Index}"">'{HtmlLogger.HtmlEncoder.Encode(result.Context.MethodInvokeInfo.DisplayName)}' {result.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue()}</a>");
+          .Append($@"<a class=""list-group-item list-group-item-action"" width=""20px"" href=""#{result.Index}"">'{result.Context.MethodInvokeInfo.ShortDisplayName.ToHtmlEncodedString()}' ({result.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue()})</a>");
       }
 
       string htmlDocumentContent = htmlDocumentBuilder.ToString();
@@ -248,8 +248,7 @@
       foreach (ProfilerBatchResult result in profilerBatchResultGroup)
       {
         _ = htmlDocumentBuilder
-          .Append($@"<a class=""list-group-item list-group-item-action"" href=""#{result.Index}"">'{HtmlLogger.HtmlEncoder.Encode(result.Context.MethodInvokeInfo.DisplayName)}' {result.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue()}
-                                results</a>");
+          .Append($@"<a class=""list-group-item list-group-item-action"" href=""#{result.Index}"">'{result.Context.MethodInvokeInfo.ShortDisplayName.ToHtmlEncodedString()}' ({result.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue()}) results</a>");
       }
 
       string htmlDocumentContent = htmlDocumentBuilder.ToString();
@@ -289,12 +288,14 @@
         <div style=""margin: 0px 0px 12px 0px;"">
           <span style=""font-weight: bold; font-size: 18pt"">Profile Context</span><br/>
           <span style=""font-weight: bold; font-size: 14pt"">Code</span><br/>
-      	  <span class=""label-span"">Target framework: </span><span class=""valueSpan"">{batchResult.Context.RuntimeVersion}</span><br />
-      	  <span class=""label-span"">Target type: </span><span class=""valueSpan"">{HtmlLogger.HtmlEncoder.Encode(batchResult.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue())}</span><br />
-      	  <span class=""label-span"">Target: </span><span class=""valueSpan"">{HtmlLogger.HtmlEncoder.Encode(batchResult.Context.MethodInvokeInfo.Signature)}</span><br />
-      	  <span class=""label-span"">Line number: </span><span class=""valueSpan"">{batchResult.Context.LineNumber}</span><br />
+      	  <span class=""label-span"">Target framework: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).RuntimeVersion}</span><br />
+      	  <span class=""label-span"">Target kind: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue(toUpperCase: true).ToHtmlEncodedString()}</span><br />
+      	  <span class=""label-span"">Assembly: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.AssemblyName}</span><br />      	 
       	  <span class=""label-span"">Source file: </span><span class=""valueSpan"">{batchResult.Context.SourceFileName}</span><br /> 
-      	  <span class=""label-span"">Assembly: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.AssemblyName}</span><br />
+      	  <span class=""label-span"">Line number: </span><span class=""valueSpan"">{batchResult.Context.LineNumber}</span><br />
+          <span class=""label-span"">Namespace: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.Namespace}</span><br />
+
+      	  <span class=""label-span"">Target:<br></span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.SymbolComponentInfo.ToHtml()}</span><br />
         </div>
         <div style=""margin: 0px 0px 12px 0px;"">
           <div style=""float: left; padding: 0px 12px 0px 0px;"">
@@ -310,13 +311,14 @@
             <span style=""font-weight: bold; font-size: 14pt"">Machine</span><br/>  
       	    <span class=""label-span"">Timer: </span><span class=""valueSpan"">{((await Environment.GetEnvironmentInfoAsync()).HasHighPrecisionTimer ? $"High precision counter" : "System timer (normal precision)")}</span><br />     	
             <span class=""label-span"">Timer resolution: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).NanosecondsPerTick} ns</span><br />     	
-        	  <span class=""label-span"">OS architecture: </span><span class=""valueSpan"">{(environmentInfo.Is64BitOperatingSystem ? 64 : 32)} bit</span><br />   
-        	  <span class=""label-span"">Process architecture: </span><span class=""valueSpan"">{(environmentInfo.Is64BitProcess ? 64 : 32)} bit</span><br />   
+        	  <span class=""label-span"">OS version: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).OperatingSystemName}</span><br />   	
+        	  <span class=""label-span"">OS architecture: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).OperatingSystemArchitecture}</span><br />   
+        	  <span class=""label-span"">Process architecture: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).ProcessArchitecture}</span><br />   
       	    <span class=""label-span"">Processor: </span><span class=""valueSpan"">{environmentInfo.ProcessorName}</span><br />   
+        	  <span class=""label-span"">Clock: </span><span class=""valueSpan"">{environmentInfo.ProcessorSpeed / 1000d} GHz</span><br /> 
       	    <span class=""label-span"">Physical cores: </span><span class=""valueSpan"">{environmentInfo.ProcessorCoreCount}</span><br />   
       	    <span class=""label-span"">Logical cores: </span><span class=""valueSpan"">{environmentInfo.ProcessorLogicalCoreCount}</span><br />   
-        	  <span class=""label-span"">Threads: </span><span class=""valueSpan"">{environmentInfo.ThradCount}</span><br />   
-        	  <span class=""label-span"">Clock: </span><span class=""valueSpan"">{environmentInfo.ProcessorSpeed / 1000d} GHz</span><br /> 
+        	  <span class=""label-span"">Threads: </span><span class=""valueSpan"">{environmentInfo.ThreadCount}</span><br />   
           </div>
         </div>
       </div>

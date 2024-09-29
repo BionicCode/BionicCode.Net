@@ -584,7 +584,7 @@
     {
       var assemblyOfTargetType = Assembly.GetCallingAssembly();
       string assemblyName = assemblyOfTargetType.GetName().Name;
-      var profilerTargetInfo = new ProfilerTargetInvokeInfo(scopeName, scopeName, string.Empty, assemblyName);
+      var profilerTargetInfo = new ProfilerTargetInvokeInfo(scopeName, scopeName, scopeName, scopeName, string.Empty, assemblyName);
       var context = new ProfilerContext(profilerTargetInfo, sourceFileName, lineNumber, -1, -1, Runtime.Current, baseUnit, logger, null);
       var profilerScopeProvider = new ProfilerScopeProvider(logger, context);
       IDisposable profilerScope = profilerScopeProvider.StartProfiling(out result);
@@ -631,7 +631,7 @@
     {
       var assemblyOfTargetType = Assembly.GetCallingAssembly();
       string assemblyName = assemblyOfTargetType.GetName().Name;
-      var profilerTargetInfo = new ProfilerTargetInvokeInfo(scopeName, scopeName, string.Empty, assemblyName);
+      var profilerTargetInfo = new ProfilerTargetInvokeInfo(scopeName, scopeName, scopeName, scopeName, string.Empty, assemblyName);
       var context = new ProfilerContext(profilerTargetInfo, sourceFileName, lineNumber, -1, -1, Runtime.Current, baseUnit, null, asyncLogger);
       var profilerScopeProvider = new ProfilerScopeProvider(asyncLogger, context);
       IAsyncDisposable profilerScope = profilerScopeProvider.StartProfilingAsync(out result);

@@ -2,6 +2,9 @@
 {
   using System;
   using System.Collections.Generic;
+  using System.ComponentModel;
+  using System.ComponentModel.DataAnnotations;
+  using System.Runtime.CompilerServices;
   using System.Threading.Tasks;
 
   public class BenchmarkTarget<TParam>
@@ -88,10 +91,11 @@
     public static async Task TimeConsumingMethod<TMethodParam>(int delayInMilliseconds, TMethodParam someValue) => await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliseconds));
 
     [Profile]
-    [ProfilerArgument(100, new[] { "1", "2", "3" }, 1)]
+    [ProfilerArgument(100, "Test Value 1", new[] { "1", "2", "3" }, 1)]
+    [DisplayName("RTM")]
     //[ProfilerArgument(10, "2", 2)]
     //[ProfilerArgument(200, "3", 3)]
-    public async Task TimeConsumingMethod<TMethodParam1, TMethodParam2>(int delayInMilliseconds, TMethodParam1 someValue1, TMethodParam2 someValue2) => await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliseconds));
+    public async Task TimeConsumingMethod<TMethodParam1, TMethodParam2>(int delayInMilliseconds, TParam someValue, TMethodParam1 someValue1, TMethodParam2 someValue2) => await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliseconds));
   }
 
   public class BenchmarkTargetAlternate<TParam>

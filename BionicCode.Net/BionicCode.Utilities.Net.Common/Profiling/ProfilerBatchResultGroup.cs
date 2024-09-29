@@ -21,6 +21,16 @@
     internal string ProfiledTargetSignatureMemberName { get; set; }
 
     /// <summary>
+    /// The signature name of the profiled type member without attributes, generic constraints and inheritance list.
+    /// </summary>
+    internal string ProfiledTargetShortSignatureMemberName { get; set; }
+
+    /// <summary>
+    /// The signature name of the profiled type member.
+    /// </summary>
+    internal string ProfiledTargetMemberName { get; set; }
+
+    /// <summary>
     /// The signature name of the profiled type member.
     /// </summary>
     internal string ProfiledTargetMemberShortName { get; set; }

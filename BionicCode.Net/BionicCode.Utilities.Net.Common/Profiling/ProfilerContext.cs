@@ -12,7 +12,7 @@
     {
       this.SourceFileName = sourceFileName;
       this.LineNumber = lineNumber;
-      this.RuntimeVersionFactory = new Lazy<string>(() => Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName);
+      this.RuntimeVersionFactory = new Lazy<string>(() => System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
       this.WarmupCount = warmupCount;
       this.IterationCount = iterationCount;
       this.Runtime = runtime;

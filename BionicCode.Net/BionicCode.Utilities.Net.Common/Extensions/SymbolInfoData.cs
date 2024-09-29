@@ -16,8 +16,10 @@
     public string Name { get; }
     public abstract string AssemblyName { get; }
     public abstract string DisplayName { get; }
+    public abstract string ShortDisplayName { get; }
     public abstract string FullyQualifiedDisplayName { get; }
     public abstract string FullyQualifiedSignature { get; }
     public abstract string Signature { get; }
+    public abstract string ShortSignature { get; }
   }
 }

@@ -12,8 +12,10 @@
     private static PropertyData _TaskResultPropertyData;
     private static PropertyData _ValueTaskResultPropertyData;
     private string displayName;
+    private string shortDisplayName;
     private string fullyQualifiedDisplayName;
     private string signature;
+    private string shortSignature;
     private string fullyQualifiedSignature;
     private SymbolAttributes symbolAttributes;
     private AccessModifier? propertyAccessModifier;
@@ -177,13 +179,19 @@
       : this.symbolAttributes;
 
     public override string Signature
-      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false));
+      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: false, isCompact: false));
+
+    public override string ShortSignature
+      => this.shortSignature ?? (this.shortSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false));
 
     public override string FullyQualifiedSignature
       => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false));
 
     public override string DisplayName
-      => this.displayName ?? (this.displayName = GetPropertyInfo().ToDisplayName());
+      => this.displayName ?? (this.displayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isShortName: false));
+
+    public override string ShortDisplayName
+      => this.shortDisplayName ?? (this.shortDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isShortName: true));
 
     public override string FullyQualifiedDisplayName 
       => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = GetPropertyInfo().ToFullDisplayName());

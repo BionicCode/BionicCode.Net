@@ -12,6 +12,7 @@
   internal sealed class MethodData : MemberInfoData
   {
     private string displayName;
+    private string shortDisplayName;
     private string fullyQualifiedDisplayName;
     private SymbolAttributes symbolAttributes;
     private AccessModifier accessModifier;
@@ -26,7 +27,9 @@
     private TypeData[] genericTypeArguments;
     private bool? isOverride;
     private bool? isStatic;
+    private SymbolComponentInfo symbolComponentInfo;
     private string signature;
+    private string shortSignature;
     private string fullyQualifiedSignature;
     private TypeData returnTypeData;
     private bool? isGenericMethod;
@@ -245,7 +248,31 @@
       => GetMethodInfo().Invoke(invocationTarget, invocationArguments);
 
     private void InitializeAwaitableTaskInvocator()
-      => this.awaitableTaskInvocator = (invocationTarget, invocationArguments) => (Task)GetMethodInfo().Invoke(invocationTarget, invocationArguments);
+    {
+      this.awaitableTaskInvocator = (invocationTarget, invocationArguments) =>
+      {
+        MethodInfo methodInfo = GetMethodInfo();
+        if (methodInfo.ContainsGenericParameters)
+        {
+          Type[] genericTypeParameters = new Type[methodInfo.GetGenericArguments().Length];
+          int genericTypeParameterIndex = 0;
+          //Type[] typeArguments = methodInfo.GetGenericArguments();
+          foreach (ParameterData parameterData in this.Parameters)
+          {
+            if (parameterData.ParameterTypeData.GetType().ContainsGenericParameters)
+            {
+              int typeArgumentIndex = parameterData.GetParameterInfo().Position;
+              Type genericParameterType = invocationArguments[typeArgumentIndex].GetType();
+              genericTypeParameters[genericTypeParameterIndex++] = genericParameterType;
+            }
+          }
+
+          methodInfo = methodInfo.MakeGenericMethod(genericTypeParameters);
+        }
+
+        return (Task)methodInfo.Invoke(invocationTarget, invocationArguments);
+      };
+    }
 
     private void InitializeAwaitableValueTaskInvocator()
       => this.awaitableValueTaskInvocator = (invocationTarget, invocationArguments) => (ValueTask)GetMethodInfo().Invoke(invocationTarget, invocationArguments);
@@ -393,17 +420,37 @@
       ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
       : this.symbolAttributes;
 
+    public SymbolComponentInfo SymbolComponentInfo
+    {
+      get
+      {
+        if (this.symbolComponentInfo is null)
+        {
+          this.shortSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false);
+        }
+
+        return this.symbolComponentInfo;
+      }
+      set => this.symbolComponentInfo = value;
+    }
+
     public override string Signature
-      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false));
+      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: false, isCompact: false));
+
+    public override string ShortSignature
+      => this.shortSignature ?? (this.shortSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false));
 
     public override string FullyQualifiedSignature 
       => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false));
 
     public override string DisplayName
-      => this.displayName ?? (this.displayName = GetMethodInfo().ToDisplayName());
+      => this.displayName ?? (this.displayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isShortName: false));
+
+    public override string ShortDisplayName
+      => this.shortDisplayName ?? (this.shortDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isShortName: true));
 
     public override string FullyQualifiedDisplayName
-      => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = GetMethodInfo().ToFullDisplayName());
+      => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: true, isShortName: false));
 
     public override string AssemblyName
       => this.assemblyName ?? (this.assemblyName = this.DeclaringTypeData.AssemblyName);
