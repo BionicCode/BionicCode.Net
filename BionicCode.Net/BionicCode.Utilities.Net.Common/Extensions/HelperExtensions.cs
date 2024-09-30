@@ -1813,12 +1813,6 @@
       _ = signatureNameBuilder.AppendDisplayNameInternal(methodData.ReturnTypeData, isFullyQualifiedName, isShortName: true)
         .Append(' ');
 
-      //if (!isShortName)
-      //{
-      //  _ = signatureNameBuilder.AppendDisplayNameInternal(methodData.DeclaringTypeData, isFullyQualifiedName, isShortName: false)
-      //    .Append('.');
-      //}
-
       // Member name
       _ = signatureNameBuilder.AppendDisplayNameInternal(methodData, isFullyQualifiedName, isShortName, isCompact)
         .Append('(');
@@ -2053,7 +2047,8 @@
         for (int parameterIndex = 0; parameterIndex < parameters.Length; parameterIndex++)
         {
           ParameterData parameterData = parameters[parameterIndex];
-          var parameterInfo = new SymbolComponentInfo(isKeyword: parameterData.ParameterTypeData.IsBuiltInType);
+          SymbolComponentInfo parameterInfo = parameterData.ParameterTypeData.SymbolComponentInfo;
+          //var parameterInfo = new SymbolComponentInfo(isKeyword: parameterData.ParameterTypeData.IsBuiltInType);
           IList<CustomAttributeData> attributes = parameterData.AttributeData;
           if (attributes.Count > 0)
           {
@@ -2073,28 +2068,18 @@
             symbolComponents.AddParameter(new SymbolComponentInfo("out", true));
           }
 
-          parameterInfo.NameBuilder.AppendDisplayNameInternal(parameterData.ParameterTypeData, isFullyQualifiedName, isShortName: false);
-          if (parameterData.ParameterTypeData.IsGenericType)
-          {
-            IEnumerable<SymbolComponentInfo> genericTypeParameters = parameterData.ParameterTypeData.GenericTypeArguments.Select(typeData => new SymbolComponentInfo(typeData.DisplayName));
-            parameterInfo.AddGenericTypeParameterRange(genericTypeParameters);
-          }
-
           parameterInfo.ValueNameBuilder.Append(parameterData.Name);
-
           symbolComponents.AddParameter(parameterInfo);
         }
       }
       
-      TypeData[] genericTypeParameterDefinitions = methodData.GenericTypeArguments;
-      //if (genericTypeParameterDefinitions.Length > 0)
-      //{
-      //  _ = signatureNameBuilder
-      //      .Append(' ')
-      //      .AppendGenericTypeConstraints(genericTypeParameterDefinitions, isFullyQualifiedName, isCompact);
-      //  }
-      //}
-
+      if (methodData.IsGenericMethod)
+      {
+        IEnumerable<SymbolComponentInfo> genericTypeParameterComponents = methodData.GenericTypeArguments.Select(typeParameterData => typeParameterData.SymbolComponentInfo);
+        symbolComponents.AddGenericTypeParameterRange(genericTypeParameterComponents);
+        AddGenericTypeConstraints(symbolComponents, methodData.GenericTypeArguments);
+      }
+    
       return symbolComponents;
     }
 
@@ -2183,27 +2168,6 @@
           customAttributeInfo.AddCustomAttributeNamedArg((propertyName, propertyValue));
         }
       }
-    }
-
-    private static StringBuilder AppendPrimitiveType(this StringBuilder stringBuilder, object value)
-    {
-      return stringBuilder.Append(value.ToArgumentDisplayValue());
-
-      //switch (value)
-      //{
-      //  case int intValue:
-      //    return stringBuilder.Append(intValue);
-      //  case double doubleValue:
-      //    return stringBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}", doubleValue);
-      //  case Enum enumValue:
-      //    return stringBuilder.Append(enumValue.ToString());
-      //  case Type type:
-      //    return stringBuilder.AppendDisplayName(type);
-      //  case object _:
-      //    return stringBuilder.AppendDisplayName(valueType);
-      //  default:
-      //    throw new NotImplementedException();
-      //}
     }
 
     private static string ToArgumentDisplayValue(this object value)

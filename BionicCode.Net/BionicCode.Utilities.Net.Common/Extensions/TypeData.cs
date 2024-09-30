@@ -160,6 +160,9 @@
       ? (this.accessModifier = HelperExtensionsCommon.GetAccessModifierInternal(this))
       : this.accessModifier;
 
+    public SymbolComponentInfo SymbolComponentInfo
+      => this.symbolComponentInfo ?? (this.symbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false));
+
     public override string Signature
       => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: false, isCompact: false));
 
