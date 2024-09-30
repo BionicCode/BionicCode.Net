@@ -6,10 +6,6 @@
 
   internal sealed class ParameterData : SymbolInfoData
   {
-    private string displayName;
-    private string fullyQualifiedDisplayName;
-    private string signature;
-    private string fullyQualifiedSignature;
     private SymbolAttributes symbolAttributes;
     private IList<CustomAttributeData> attributeData;
     private bool? isRef;
@@ -93,22 +89,22 @@
       : this.symbolAttributes;
 
     public override string Signature
-      => this.signature ?? (this.signature = GetParameterInfo().Name);
+      => this.Name;
 
     public override string ShortSignature
-      => this.Signature;
+      => this.Name;
 
     public override string FullyQualifiedSignature
-      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = GetParameterInfo().Name);
+      => this.Name;
 
     public override string DisplayName
-      => this.displayName ?? (this.displayName = GetParameterInfo().Name);
+      => this.Name ;
 
     public override string ShortDisplayName
-      => this.DisplayName;
+      => this.Name;
 
     public override string FullyQualifiedDisplayName 
-      => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = GetParameterInfo().Name);
+      => this.Name;
 
     public override string AssemblyName
       => this.assemblyName ?? (this.assemblyName = this.Member.AssemblyName);

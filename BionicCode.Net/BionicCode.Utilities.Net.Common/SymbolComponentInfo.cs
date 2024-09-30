@@ -15,8 +15,15 @@
     public ReadOnlyCollection<SymbolComponentInfo> GenericTypeParameters { get; }
     public ReadOnlyCollection<SymbolComponentInfo> InheritedTypes { get; }
     public ReadOnlyCollection<SymbolComponentInfo> GenericTypeConstraints { get; }
-    public ReadOnlyCollection<(SymbolComponentInfo Type, string Name, bool IsKeyword)> Parameters { get; }
+    public ReadOnlyCollection<SymbolComponentInfo> CustomAttributes { get; }
+    public ReadOnlyCollection<string> CustomAttributeConstructorArgs { get; }
+    public ReadOnlyCollection<(string PropertyName, string PropertyValue)> CustomAttributeNamedArgs { get; }
+    public ReadOnlyCollection<SymbolComponentInfo> Parameters { get; }
     public StringBuilder NameBuilder { get; }
+    public StringBuilder ValueNameBuilder { get; }
+    public bool IsKeyword { get; }
+    public bool IsExtensionMethodParameter { get; set; }
+    public bool IsSymbol { get; set; }
     public SymbolComponentInfo ReturnType { get; set; }
     public string Signature { get; set; }
 
@@ -24,9 +31,13 @@
     private readonly List<SymbolComponentInfo> genericTypeParametersInternal;
     private readonly List<SymbolComponentInfo> inheritedTypesInternal;
     private readonly List<SymbolComponentInfo> genericTypeConstraintsInternal;
-    private readonly List<(SymbolComponentInfo Type, string Name, bool IsKeyword)> parametersInternal;
+    private readonly List<SymbolComponentInfo> customAttributes;
+    private readonly List<string> customAttributeConstructorArgs;
+    private readonly List<(string PropertyName, string PropertyValue)> customAttributeNamedArgs;
+    private readonly List<SymbolComponentInfo> parametersInternal;
+    private string html;
 
-    public SymbolComponentInfo()
+    public SymbolComponentInfo(bool isKeyword = false)
     {
       this.modifiersInternal = new List<string>();
       this.Modifiers = new ReadOnlyCollection<string>(this.modifiersInternal);
@@ -36,20 +47,37 @@
       this.InheritedTypes = new ReadOnlyCollection<SymbolComponentInfo>(this.inheritedTypesInternal);
       this.genericTypeConstraintsInternal = new List<SymbolComponentInfo>();
       this.GenericTypeConstraints = new ReadOnlyCollection<SymbolComponentInfo>(this.genericTypeConstraintsInternal);
-      this.parametersInternal = new List<(SymbolComponentInfo Type, string Name, bool IsKeyword)>();
-      this.Parameters = new ReadOnlyCollection<(SymbolComponentInfo Type, string Name, bool IsKeyword)>(this.parametersInternal);
+      this.parametersInternal = new List<SymbolComponentInfo>();
+      this.Parameters = new ReadOnlyCollection<SymbolComponentInfo>(this.parametersInternal);
+      this.customAttributes = new List<SymbolComponentInfo>();
+      this.CustomAttributes = new ReadOnlyCollection<SymbolComponentInfo>(this.customAttributes);
+      this.customAttributeConstructorArgs = new List<string>();
+      this.CustomAttributeConstructorArgs = new ReadOnlyCollection<string>(this.customAttributeConstructorArgs);
+      this.customAttributeNamedArgs = new List<(string PropertyName, string PropertyValue)>();
+      this.CustomAttributeNamedArgs = new ReadOnlyCollection<(string PropertyName, string PropertyValue)>(this.customAttributeNamedArgs);
       this.NameBuilder = StringBuilderFactory.GetOrCreate();
+      this.ValueNameBuilder = StringBuilderFactory.GetOrCreate();
       this.Signature = string.Empty;
       this.ReturnType = null;
+      this.IsKeyword = isKeyword;
     }
 
-    public SymbolComponentInfo(string name) : this()
+    public SymbolComponentInfo(string name, bool isKeyword = false) : this(isKeyword)
     {
       _ = this.NameBuilder.Append(name);
     }
 
     public void AddModifier(string modifier)
       => this.modifiersInternal.Add(modifier);
+
+    public void AddCustomAttribute(SymbolComponentInfo attribute)
+      => this.customAttributes.Add(attribute);
+
+    public void AddCustomAttributeConstructorArg(string attributeConstructorArg)
+      => this.customAttributeConstructorArgs.Add(attributeConstructorArg);
+
+    public void AddCustomAttributeNamedArg((string PropertyName, string PropertyValue) attributeNamedArg)
+      => this.customAttributeNamedArgs.Add(attributeNamedArg);
 
     public void AddGenericTypeParameter(SymbolComponentInfo typeParameter)
       => this.genericTypeParametersInternal.Add(typeParameter);
@@ -69,87 +97,25 @@
     public void AddInheritedTypeRange(IEnumerable<SymbolComponentInfo> types)
       => this.inheritedTypesInternal.AddRange(types);
 
-    public void AddParameter((SymbolComponentInfo Type, string Name, bool IsKeyword) parameter)
+    public void AddParameter(SymbolComponentInfo parameter)
       => this.parametersInternal.Add(parameter);
 
     public override string ToString() => this.Signature;
 
     public string ToHtml()
     {
-      StringBuilder signatureBuilder = StringBuilderFactory.GetOrCreate()
-        .Append("<div>");
-
-      if (this.Modifiers.Any())
+      if (this.html is null)
       {
-        _ = signatureBuilder.Append($"<span class=\"syntax-keyword\">");
-        foreach (string modifier in this.Modifiers)
-        {
-          _ = signatureBuilder.Append(modifier)
-              .Append(' ');
-        }
-        
-        _ = signatureBuilder.Append($"</span>");
+        StringBuilder signatureBuilder = StringBuilderFactory.GetOrCreate()
+          .Append("<div style=\"display: block; width: 100%;\">")
+          .ToInlineHtml(this)
+          .Append("</div>");
+
+        this.html = signatureBuilder.ToString();
+        StringBuilderFactory.Recycle(signatureBuilder);
       }
 
-      if (this.ReturnType != null)
-      {
-        _ = signatureBuilder.Append(this.ReturnType.ToHtml())
-            .Append(' ');
-      }
-
-      if (this.NameBuilder.Length > 0)
-      {
-        _ = signatureBuilder.Append($"<span class=\"syntax-symbol\">")
-          .AppendStringBuilder(this.NameBuilder)
-          .Append("</span>");
-        StringBuilderFactory.Recycle(this.NameBuilder);
-      }
-
-      if (this.GenericTypeParameters.Any())
-      {
-        _ = signatureBuilder.Append($"<span class=\"syntax-delimiter\">")
-          .AppendReadOnlySpan('<'.ToHtmlEncodedReadOnlySpan())
-          .Append("</span>")
-          .Append($"<span class=\"syntax-symbol\">");
-
-        foreach (SymbolComponentInfo typeParameter in this.GenericTypeParameters)
-        {
-          _ = signatureBuilder.Append(typeParameter.ToHtml())
-            .Append(", ");
-        }
-
-        _ = signatureBuilder.Remove(signatureBuilder.Length - 2, 2)
-          .Append("</span>")
-          .Append($"<span class=\"syntax-delimiter\">")
-          .AppendReadOnlySpan('>'.ToHtmlEncodedReadOnlySpan())
-          .Append("</span>");
-      }
-
-      if (this.Parameters.Any())
-      {
-        _ = signatureBuilder.Append($"<span class=\"syntax-delimiter\">")
-          .AppendReadOnlySpan('('.ToHtmlEncodedReadOnlySpan())
-          .Append("</span>")
-          .Append($"<span class=\"syntax-symbol\">");
-
-        foreach ((SymbolComponentInfo Type, string Name, bool IsKeyword) parameter in this.Parameters)
-        {
-          _ = signatureBuilder.Append(parameter.Type.ToHtml())
-            .Append(' ')
-            .Append(parameter.Name)
-            .Append(", ");
-        }
-
-        _ = signatureBuilder.Remove(signatureBuilder.Length - 2, 2)
-          .Append("</span>")
-          .Append($"<span class=\"syntax-delimiter\">")
-          .AppendReadOnlySpan(')'.ToHtmlEncodedReadOnlySpan())
-          .Append("</span>");
-      }
-
-      _ = signatureBuilder.Append("<div>");
-
-      return signatureBuilder.ToString();
+      return this.html;
     }
   }
 }

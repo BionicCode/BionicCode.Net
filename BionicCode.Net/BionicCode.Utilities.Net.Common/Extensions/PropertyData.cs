@@ -188,13 +188,13 @@
       => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false));
 
     public override string DisplayName
-      => this.displayName ?? (this.displayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isShortName: false));
+      => this.displayName ?? (this.displayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isShortName: false, isCompact: true));
 
     public override string ShortDisplayName
-      => this.shortDisplayName ?? (this.shortDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isShortName: true));
+      => this.shortDisplayName ?? (this.shortDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: true));
 
     public override string FullyQualifiedDisplayName 
-      => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = GetPropertyInfo().ToFullDisplayName());
+      => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: true, isShortName: false, isCompact: true));
 
     public override string AssemblyName
       => this.assemblyName ?? (this.assemblyName = this.DeclaringTypeData.AssemblyName);

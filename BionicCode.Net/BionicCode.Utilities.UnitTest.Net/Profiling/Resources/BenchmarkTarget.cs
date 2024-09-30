@@ -95,7 +95,7 @@
     [DisplayName("RTM")]
     //[ProfilerArgument(10, "2", 2)]
     //[ProfilerArgument(200, "3", 3)]
-    public async Task TimeConsumingMethod<TMethodParam1, TMethodParam2>(int delayInMilliseconds, TParam someValue, TMethodParam1 someValue1, TMethodParam2 someValue2) => await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliseconds));
+    public async Task TimeConsumingMethod<TMethodParam1, TMethodParam2>(object delayInMilliseconds, TParam someValue, TMethodParam1 someValue1, TMethodParam2 someValue2) => await Task.Delay(TimeSpan.FromMilliseconds((int)delayInMilliseconds));
   }
 
   public class BenchmarkTargetAlternate<TParam>
