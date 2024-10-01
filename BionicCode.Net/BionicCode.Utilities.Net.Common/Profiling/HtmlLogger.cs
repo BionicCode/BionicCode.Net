@@ -155,7 +155,7 @@
           InPageNavigationElements = inPageNavigationHtmlElements,
           //DocumentFooterElements = pageFooterElements,
           FileName = htmlFileName,
-          MemberName = $"{batchResultGroup.ProfiledTargetMemberName} ({batchResultGroup.ProfiledTargetType.ToDisplayStringValue()})".ToHtmlEncodedString()
+          MemberName = $"{batchResultGroup.ProfiledTargetMemberShortName} ({batchResultGroup.ProfiledTargetType.ToDisplayStringValue()})".ToHtmlEncodedString()
         };
 
         htmlDocumentBuilderValues.Add(batchResultGroup, builderInfo);
@@ -288,13 +288,21 @@
         <div style=""margin: 0px 0px 12px 0px;"">
           <span style=""font-weight: bold; font-size: 18pt"">Profile Context</span><br/>
           <span style=""font-weight: bold; font-size: 14pt"">Target</span><br/>
-      	  <span class=""label-span"">Kind: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue(toUpperCase: true).ToHtmlEncodedString()}</span><br />
-      	  <span class=""label-span"">Assembly: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.AssemblyName}</span><br />      	 
-      	  <span class=""label-span"">Source file: </span><span class=""valueSpan"">{batchResult.Context.SourceFileName}</span><br /> 
-      	  <span class=""label-span"">Line number: </span><span class=""valueSpan"">{batchResult.Context.LineNumber}</span><br />
           <span class=""label-span"">Namespace: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.Namespace}</span><br />
+      	  <span class=""label-span"">Assembly: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.AssemblyName}.dll</span><br />      	 
+      	  <span class=""label-span"">Source: </span>
+            <div class=""tooltip"">
+              <a href=""file:///{batchResult.Context.FullSourceFileName}""><span class=""valueSpan"">{batchResult.Context.SourceFileName}</span></a>
+              <span class=""tooltiptext"">{batchResult.Context.FullSourceFileName}</span>
+            </div><br /> 
+      	  <span class=""label-span"">Line: </span><span class=""valueSpan"">{batchResult.Context.LineNumber}</span><br />
 
-      	  <span class=""label-span"">Signature:<br><br></span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.SymbolComponentInfo.ToHtml()}</span><br />
+      	  <span class=""label-span"">Kind: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue(toUpperCase: true).ToHtmlEncodedString()}</span><br />
+      	  <br>
+          <div class=""signature-box-border"">
+            <div class=""signature-box-header"">C#</div>
+            <div class=""signature-box""><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.SymbolComponentInfo.ToHtml()}</span></div>
+          </div><br />
         </div>
         <div style=""margin: 0px 0px 12px 0px;"">
           <div style=""float: left; padding: 0px 12px 0px 0px;"">

@@ -1,6 +1,7 @@
 ﻿namespace BionicCode.Utilities.Net.UnitTest.Resources
 {
   using System;
+  using System.Collections;
   using System.Collections.Generic;
   using System.ComponentModel;
   using System.ComponentModel.DataAnnotations;
@@ -95,7 +96,7 @@
     [DisplayName("RTM")]
     //[ProfilerArgument(10, "2", 2)]
     //[ProfilerArgument(200, "3", 3)]
-    public async Task TimeConsumingMethod<TMethodParam1, TMethodParam2>(object delayInMilliseconds, TParam someValue, TMethodParam1 someValue1, TMethodParam2 someValue2) => await Task.Delay(TimeSpan.FromMilliseconds((int)delayInMilliseconds));
+    public async Task TimeConsumingMethod<TMethodParam1, TMethodParam2>(object delayInMilliseconds, TParam someValue, TMethodParam1 someValue1, TMethodParam2 someValue2) where TMethodParam1 : IEnumerable where TMethodParam2 : struct => await Task.Delay(TimeSpan.FromMilliseconds((int)delayInMilliseconds));
   }
 
   public class BenchmarkTargetAlternate<TParam>

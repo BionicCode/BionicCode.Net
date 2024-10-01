@@ -1,6 +1,7 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System;
+  using System.IO;
   using System.Reflection;
   using System.Runtime.Versioning;
   using System.Threading.Tasks;
@@ -10,7 +11,7 @@
   {
     public ProfilerContext(ProfilerTargetInvokeInfo methodInvokeInfo, string sourceFileName, int lineNumber, int warmupCount, int iterationCount, Runtime runtime, TimeUnit baseUnit, Action<ProfilerBatchResult, string> logger, Func<ProfilerBatchResult, string, Task> asyncLogger)
     {
-      this.SourceFileName = sourceFileName;
+      this.FullSourceFileName = sourceFileName;
       this.LineNumber = lineNumber;
       this.RuntimeVersionFactory = new Lazy<string>(() => System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
       this.WarmupCount = warmupCount;
@@ -23,7 +24,8 @@
     }
 
     public Runtime Runtime { get; }
-    public string SourceFileName { get; }
+    public string FullSourceFileName { get; }
+    public string SourceFileName => Path.GetFileName(this.FullSourceFileName);
     public int LineNumber { get; }
     public Lazy<string> RuntimeVersionFactory { get; }
     public string RuntimeVersion => this.RuntimeVersionFactory.Value;

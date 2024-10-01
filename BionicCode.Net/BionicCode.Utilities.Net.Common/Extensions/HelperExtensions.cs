@@ -4319,8 +4319,8 @@ public static AccessModifier GetAccessModifier(this Type type)
       {
         foreach (SymbolComponentInfo constraintInfo in symbolComponentInfo.GenericTypeConstraints)
         {
-          _ = signatureBuilder.AppendLine()
-            .Append(HelperExtensionsCommon.Indentation)
+          _ = signatureBuilder.AppendReadOnlySpan(System.Environment.NewLine.ToHtmlEncodedReadOnlySpan())
+            .AppendReadOnlySpan(HelperExtensionsCommon.Indentation.ToHtmlEncodedReadOnlySpan())
             .Append($"<span class=\"syntax-keyword\">")
             .Append("where")
             .Append(' ')
@@ -4352,6 +4352,8 @@ public static AccessModifier GetAccessModifier(this Type type)
                 .Append(' ')
                 .Append("</span>");
             }
+
+            _ = signatureBuilder.Remove(signatureBuilder.Length - ", </span>".Length, ", </span>".Length);
           }
         }
       }
