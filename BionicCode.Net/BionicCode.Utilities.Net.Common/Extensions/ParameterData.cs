@@ -14,6 +14,7 @@
     private TypeData declaringTypeData;
     private MemberInfoData member;
     private string assemblyName;
+    private SymbolComponentInfo symbolComponentInfo;
 
     public ParameterData(ParameterInfo parameterInfo) : base(parameterInfo.Name)
     {
@@ -87,6 +88,9 @@
     public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
       ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
       : this.symbolAttributes;
+
+    public override SymbolComponentInfo SymbolComponentInfo
+      => this.symbolComponentInfo ?? (this.symbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false));
 
     public override string Signature
       => this.Name;

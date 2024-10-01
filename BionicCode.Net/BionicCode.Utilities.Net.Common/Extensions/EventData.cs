@@ -22,6 +22,7 @@
     private TypeData eventHandlerTypeData;
     private Func<object, object[], object> invocator;
     private string assemblyName;
+    private SymbolComponentInfo symbolComponentInfo;
 
     public EventData(EventInfo eventInfo) : base(eventInfo)
     {
@@ -66,6 +67,9 @@
     public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
       ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
       : this.symbolAttributes;
+
+    public override SymbolComponentInfo SymbolComponentInfo
+      => this.symbolComponentInfo ?? (this.symbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false));
 
     public override string Signature
       => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: false, isCompact: false));

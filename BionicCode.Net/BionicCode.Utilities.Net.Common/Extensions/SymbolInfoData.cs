@@ -21,5 +21,6 @@
     public abstract string FullyQualifiedSignature { get; }
     public abstract string Signature { get; }
     public abstract string ShortSignature { get; }
+    public abstract SymbolComponentInfo SymbolComponentInfo { get; }
   }
 }

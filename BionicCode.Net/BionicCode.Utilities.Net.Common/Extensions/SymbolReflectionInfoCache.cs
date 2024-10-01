@@ -95,7 +95,10 @@
       ISymbolInfoDataCacheKey cacheKey = new SymbolInfoDataCacheKey<RuntimeTypeHandle>(type.Name, type.Namespace, default, type.TypeHandle, Type.EmptyTypes);
       if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
       {
-        symbolInfoData = new TypeData(type);
+        symbolInfoData = new TypeData(type)
+        {
+          IsParameterType = true
+        };
         SymbolReflectionInfoCache.SymbolInfoDataCache.Add(cacheKey, symbolInfoData);
       }
 

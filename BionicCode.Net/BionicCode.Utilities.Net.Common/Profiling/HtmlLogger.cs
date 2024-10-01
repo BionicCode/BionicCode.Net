@@ -155,7 +155,7 @@
           InPageNavigationElements = inPageNavigationHtmlElements,
           //DocumentFooterElements = pageFooterElements,
           FileName = htmlFileName,
-          MemberName = $"{batchResultGroup.ProfiledTargetMemberShortName} ({batchResultGroup.ProfiledTargetType.ToDisplayStringValue()})".ToHtmlEncodedString()
+          MemberName = $"{batchResultGroup.ProfiledTargetMemberName} ({batchResultGroup.ProfiledTargetType.ToDisplayStringValue()})".ToHtmlEncodedString()
         };
 
         htmlDocumentBuilderValues.Add(batchResultGroup, builderInfo);
@@ -287,20 +287,20 @@
       <div class=""scroll-host"" style=""font-weight: normal; text-align: left; border: 1px solid black; padding: 12px"">
         <div style=""margin: 0px 0px 12px 0px;"">
           <span style=""font-weight: bold; font-size: 18pt"">Profile Context</span><br/>
-          <span style=""font-weight: bold; font-size: 14pt"">Code</span><br/>
-      	  <span class=""label-span"">Target framework: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).RuntimeVersion}</span><br />
-      	  <span class=""label-span"">Target kind: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue(toUpperCase: true).ToHtmlEncodedString()}</span><br />
+          <span style=""font-weight: bold; font-size: 14pt"">Target</span><br/>
+      	  <span class=""label-span"">Kind: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue(toUpperCase: true).ToHtmlEncodedString()}</span><br />
       	  <span class=""label-span"">Assembly: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.AssemblyName}</span><br />      	 
       	  <span class=""label-span"">Source file: </span><span class=""valueSpan"">{batchResult.Context.SourceFileName}</span><br /> 
       	  <span class=""label-span"">Line number: </span><span class=""valueSpan"">{batchResult.Context.LineNumber}</span><br />
           <span class=""label-span"">Namespace: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.Namespace}</span><br />
 
-      	  <span class=""label-span"">Target:<br></span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.SymbolComponentInfo.ToHtml()}</span><br />
+      	  <span class=""label-span"">Signature:<br><br></span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.SymbolComponentInfo.ToHtml()}</span><br />
         </div>
         <div style=""margin: 0px 0px 12px 0px;"">
           <div style=""float: left; padding: 0px 12px 0px 0px;"">
-            <span style=""font-weight: bold; font-size: 14pt"">Profiler</span><br/>
-      	    <span class=""label-span"">Timestamp: </span><span class=""valueSpan"">{batchResult.TimeStamp}</span><br />  	
+            <span style=""font-weight: bold; font-size: 14pt"">Conditions</span><br/>
+      	    <span class=""label-span"">Timestamp: </span><span class=""valueSpan"">{batchResult.TimeStamp}</span><br /> 
+      	  <span class=""label-span"">Target framework: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).RuntimeVersion}</span><br /> 	
             <span class=""label-span"">Base unit: </span><span class=""valueSpan"">{timeUnit.ToDisplayStringValue()}</span><br />
       	    <span class=""label-span"">Warmup iterations: </span><span class=""valueSpan"">{batchResult.Context.WarmupCount} runs for each argument list</span><br />
       	    <span class=""label-span"">Iterations: </span><span class=""valueSpan"">{batchResult.IterationCount} runs for each argument list</span><br />
@@ -308,7 +308,7 @@
       	    <span class=""label-span"">Total iterations: </span><span class=""valueSpan"">{batchResult.TotalIterationCount} ({batchResult.IterationCount} runs for each of {batchResult.ArgumentListCount} argument {(batchResult.ArgumentListCount == 1 ? "list" : "lists")}) </span><br />
           </div>
           <div style=""float: left; border-left: 1px solid black; padding: 0px 0px 0px 12px;"">
-            <span style=""font-weight: bold; font-size: 14pt"">Machine</span><br/>  
+            <span style=""font-weight: bold; font-size: 14pt"">Environment</span><br/>  
       	    <span class=""label-span"">Timer: </span><span class=""valueSpan"">{((await Environment.GetEnvironmentInfoAsync()).HasHighPrecisionTimer ? $"High precision counter" : "System timer (normal precision)")}</span><br />     	
             <span class=""label-span"">Timer resolution: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).NanosecondsPerTick} ns</span><br />     	
         	  <span class=""label-span"">OS version: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).OperatingSystemName}</span><br />   	

@@ -420,7 +420,7 @@
       ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
       : this.symbolAttributes;
 
-    public SymbolComponentInfo SymbolComponentInfo
+    public override SymbolComponentInfo SymbolComponentInfo
       => this.symbolComponentInfo ?? (this.symbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false));
 
     public override string Signature

@@ -21,11 +21,18 @@
     public ReadOnlyCollection<SymbolComponentInfo> Parameters { get; }
     public StringBuilder NameBuilder { get; }
     public StringBuilder ValueNameBuilder { get; }
-    public bool IsKeyword { get; }
+    public bool IsKeyword { get; set; }
     public bool IsExtensionMethodParameter { get; set; }
     public bool IsSymbol { get; set; }
     public SymbolComponentInfo ReturnType { get; set; }
+    public SymbolComponentInfo PropertyGet { get; set; }
+    public SymbolComponentInfo PropertySet { get; set; }
     public string Signature { get; set; }
+    public bool HasExpressionTerminator { get; set; }
+    public bool IsIndexer { get; set; }
+    public bool IsInitProperty { get; set; }
+    public bool IsParameter { get; set; }
+    public bool HasInlineAttributes { get; set; }
 
     private readonly List<string> modifiersInternal;
     private readonly List<SymbolComponentInfo> genericTypeParametersInternal;

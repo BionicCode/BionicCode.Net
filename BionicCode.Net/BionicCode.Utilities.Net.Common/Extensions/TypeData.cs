@@ -40,6 +40,7 @@
     private ConstructorData[] constructorsData;
     private IList<CustomAttributeData> attributeData;
     private string assemblyName;
+    private SymbolComponentInfo symbolComponentInfo;
 
 #if !NETFRAMEWORK && !NETSTANDARD2_0
     private bool? isByRefLike;
@@ -160,7 +161,7 @@
       ? (this.accessModifier = HelperExtensionsCommon.GetAccessModifierInternal(this))
       : this.accessModifier;
 
-    public SymbolComponentInfo SymbolComponentInfo
+    public override SymbolComponentInfo SymbolComponentInfo
       => this.symbolComponentInfo ?? (this.symbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false));
 
     public override string Signature
@@ -270,5 +271,7 @@
 
     public ConstructorData[] ConstructorsData
       => this.constructorsData ?? (this.constructorsData = GetType().GetConstructors(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
+
+    public bool IsParameterType { get; set; }
   }
 }

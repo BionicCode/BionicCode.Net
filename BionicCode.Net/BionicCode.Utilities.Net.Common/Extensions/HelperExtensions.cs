@@ -1965,7 +1965,8 @@
     {
       SymbolComponentInfo symbolComponents = new SymbolComponentInfo()
       {
-        IsSymbol = true
+        IsSymbol = true,
+        HasExpressionTerminator = true,
       };
       
       if (methodData.IsGenericMethod && !methodData.IsGenericMethodDefinition)
@@ -2034,7 +2035,7 @@
 #endif
 
       symbolComponents.ReturnType = new SymbolComponentInfo();
-      symbolComponents.ReturnType.NameBuilder.AppendDisplayNameInternal(methodData.ReturnTypeData, isFullyQualifiedName, isShortName: true);
+      _ = symbolComponents.ReturnType.NameBuilder.AppendDisplayNameInternal(methodData.ReturnTypeData, isFullyQualifiedName, isShortName: true);
 
       // Member name
       _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(methodData, isFullyQualifiedName: false, isShortName: true, isCompact: true);
@@ -2047,39 +2048,454 @@
         for (int parameterIndex = 0; parameterIndex < parameters.Length; parameterIndex++)
         {
           ParameterData parameterData = parameters[parameterIndex];
-          SymbolComponentInfo parameterInfo = parameterData.ParameterTypeData.SymbolComponentInfo;
-          //var parameterInfo = new SymbolComponentInfo(isKeyword: parameterData.ParameterTypeData.IsBuiltInType);
-          IList<CustomAttributeData> attributes = parameterData.AttributeData;
-          if (attributes.Count > 0)
-          {
-            AddCustomAttributes(parameterInfo, attributes);
-          }
-
-          if (parameterData.IsRef)
-          {
-            symbolComponents.AddParameter(new SymbolComponentInfo("ref", true));
-          }
-          else if (parameterData.IsIn)
-          {
-            symbolComponents.AddParameter(new SymbolComponentInfo("in", true));
-          }
-          else if (parameterData.IsOut)
-          {
-            symbolComponents.AddParameter(new SymbolComponentInfo("out", true));
-          }
-
-          parameterInfo.ValueNameBuilder.Append(parameterData.Name);
+          SymbolComponentInfo parameterInfo = parameterData.SymbolComponentInfo;
           symbolComponents.AddParameter(parameterInfo);
         }
       }
       
       if (methodData.IsGenericMethod)
       {
-        IEnumerable<SymbolComponentInfo> genericTypeParameterComponents = methodData.GenericTypeArguments.Select(typeParameterData => typeParameterData.SymbolComponentInfo);
+        IEnumerable<SymbolComponentInfo> genericTypeParameterComponents = methodData.GenericTypeArguments.Select(typeParameterData => 
+        {
+          SymbolComponentInfo info = typeParameterData.SymbolComponentInfo; 
+          info.IsParameter = true;
+          return info;
+        });
         symbolComponents.AddGenericTypeParameterRange(genericTypeParameterComponents);
-        AddGenericTypeConstraints(symbolComponents, methodData.GenericTypeArguments);
+        AddGenericTypeConstraints(symbolComponents, methodData.GenericTypeArguments, isFullyQualifiedName);
       }
     
+      return symbolComponents;
+    }
+
+    internal static SymbolComponentInfo ToSignatureComponentsInternal(TypeData typeData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    {
+      SymbolComponentInfo symbolComponents = new SymbolComponentInfo()
+      {
+        IsSymbol = true,
+        IsKeyword = typeData.IsBuiltInType,
+      };
+
+      if (typeData.IsGenericType && !typeData.IsGenericTypeDefinition)
+      {
+        typeData = typeData.GenericTypeDefinitionData;
+      }
+
+      SymbolAttributes symbolAttributes = typeData.SymbolAttributes;
+      IEnumerable<CustomAttributeData> customAttributesData = typeData.AttributeData;
+
+#if !NETSTANDARD2_0
+      if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+      {
+        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
+      }
+#endif
+
+      if (!isCompact)
+      {
+        AddCustomAttributes(symbolComponents, customAttributesData);
+      }
+
+      AccessModifier accessModifier = typeData.AccessModifier;
+      symbolComponents.AddModifier(accessModifier.ToDisplayStringValue());
+
+      if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))
+      {
+        symbolComponents.AddModifier("delegate");
+      }
+      else if (symbolAttributes.HasFlag(SymbolAttributes.Struct))
+      {
+        if (symbolAttributes.HasFlag(SymbolAttributes.ReadOnlyStruct))
+        {
+          symbolComponents.AddModifier("readonly");
+        }
+        else if (symbolAttributes.HasFlag(SymbolAttributes.RefStruct))
+        {
+          symbolComponents.AddModifier("ref");
+        }
+
+        symbolComponents.AddModifier("struct");
+      }
+      else if (symbolAttributes.HasFlag(SymbolAttributes.Class))
+      {
+        if (symbolAttributes.HasFlag(SymbolAttributes.Abstract))
+        {
+          symbolComponents.AddModifier("abstract");
+        }
+        else if (symbolAttributes.HasFlag(SymbolAttributes.Static))
+        {
+          symbolComponents.AddModifier("static");
+        }
+        else if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+        {
+          symbolComponents.AddModifier("sealed");
+        }
+
+        symbolComponents.AddModifier("class");
+      }
+      else if (symbolAttributes.HasFlag(SymbolAttributes.Interface))
+      {
+        symbolComponents.AddModifier("interface");
+      }
+      else if (symbolAttributes.HasFlag(SymbolAttributes.Enum))
+      {
+        symbolComponents.AddModifier("enum");
+      }
+
+      MethodData delegateInvocatorData = null;
+      TypeData delegateReturnTypeData = null;
+
+      // Set return valueType
+      if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))
+      {
+        delegateInvocatorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeData.GetType().GetMethod("Invoke"));
+        delegateReturnTypeData = delegateInvocatorData.ReturnTypeData;
+        symbolComponents.ReturnType = new SymbolComponentInfo();
+        _ = symbolComponents.ReturnType.NameBuilder.AppendDisplayNameInternal(delegateReturnTypeData, isFullyQualifiedName, isShortName: false);
+      }
+
+      // Type name
+      _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(typeData, isFullyQualifiedName, isShortName: false);
+
+      if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))
+      {
+        ParameterData[] parameters = delegateInvocatorData.Parameters;
+        if (parameters.Length > 0)
+        {
+          foreach (ParameterData parameterData in parameters)
+          {
+            SymbolComponentInfo parameterInfo = parameterData.SymbolComponentInfo;
+            symbolComponents.AddParameter(parameterInfo);
+          }
+        }
+        else if (!isCompact && symbolAttributes.HasFlag(SymbolAttributes.Class))
+        {
+          AddInheritanceSignature(symbolComponents, typeData, isFullyQualifiedName);
+        }
+
+        if (!isCompact && typeData.IsGenericType)
+        {
+          IEnumerable<SymbolComponentInfo> genericTypeParameterComponents = typeData.GenericTypeArguments.Select(typeParameterData => typeParameterData.SymbolComponentInfo);
+          symbolComponents.AddGenericTypeParameterRange(genericTypeParameterComponents);
+          AddGenericTypeConstraints(symbolComponents, typeData.GenericTypeArguments, isFullyQualifiedName);
+        }
+
+        symbolComponents.HasExpressionTerminator = symbolAttributes.HasFlag(SymbolAttributes.Delegate);
+      }
+
+      return symbolComponents;
+    }
+
+    internal static SymbolComponentInfo ToSignatureComponentsInternal(ParameterData parameterData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    {
+      TypeData parameterTypeData = parameterData.ParameterTypeData;
+      SymbolComponentInfo symbolComponents = new SymbolComponentInfo()
+      {
+        IsSymbol = false,
+        IsParameter = true,
+        HasExpressionTerminator = false,
+        HasInlineAttributes = true,
+        IsKeyword = parameterTypeData.IsBuiltInType,
+      };
+
+      if (parameterTypeData.IsGenericType && !parameterTypeData.IsGenericTypeDefinition)
+      {
+        parameterTypeData = parameterTypeData.GenericTypeDefinitionData;
+      }
+
+      SymbolAttributes symbolAttributes = parameterData.SymbolAttributes;
+      IEnumerable<CustomAttributeData> customAttributesData = parameterData.AttributeData;
+
+#if !NETSTANDARD2_0
+      if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+      {
+        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
+      }
+#endif
+
+      if (!isCompact)
+      {
+        AddCustomAttributes(symbolComponents, customAttributesData);
+      }
+
+      if (parameterData.IsRef)
+      {
+        symbolComponents.AddModifier("ref");
+      }
+      else if (parameterData.IsIn)
+      {
+        symbolComponents.AddModifier("in");
+      }
+      else if (parameterData.IsOut)
+      {
+        symbolComponents.AddModifier("out");
+      }
+
+      // Type name
+      _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(parameterTypeData, isFullyQualifiedName, isShortName: false);
+      _ = symbolComponents.ValueNameBuilder.Append(parameterData.Name);
+
+      return symbolComponents;
+    }
+
+    internal static SymbolComponentInfo ToSignatureComponentsInternal(FieldData fieldData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    {
+      SymbolComponentInfo symbolComponents = new SymbolComponentInfo()
+      {
+        IsSymbol = true,
+        HasExpressionTerminator = true,
+      };
+
+      SymbolAttributes symbolAttributes = fieldData.SymbolAttributes;
+      IEnumerable<CustomAttributeData> customAttributesData = fieldData.AttributeData;
+
+#if !NETSTANDARD2_0
+      if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+      {
+        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
+      }
+#endif
+
+      if (!isCompact)
+      {
+        AddCustomAttributes(symbolComponents, customAttributesData);
+      }
+
+      AccessModifier accessModifier = fieldData.AccessModifier;
+      symbolComponents.AddModifier(accessModifier.ToDisplayStringValue());
+
+      if (symbolAttributes.HasFlag(SymbolAttributes.ConstantField))
+      {
+        symbolComponents.AddModifier("const");
+      }
+      else
+      {
+        if (symbolAttributes.HasFlag(SymbolAttributes.Static))
+        {
+          symbolComponents.AddModifier("static");
+        }
+
+        if (symbolAttributes.HasFlag(SymbolAttributes.ReadOnlyField))
+        {
+          symbolComponents.AddModifier("readonly");
+        }
+
+        if (fieldData.IsRef)
+        {
+          symbolComponents.AddModifier("ref");
+        }
+      }
+
+      symbolComponents.ReturnType = new SymbolComponentInfo();
+      _ = symbolComponents.ReturnType.NameBuilder.AppendDisplayNameInternal(fieldData.FieldTypeData, isFullyQualifiedName, isShortName: true);
+      
+      _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(fieldData, isFullyQualifiedName, isShortName, isCompact: true);
+
+      return symbolComponents;
+    }
+
+    internal static SymbolComponentInfo ToSignatureComponentsInternal(EventData eventData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    {
+      SymbolComponentInfo symbolComponents = new SymbolComponentInfo()
+      {
+        IsSymbol = true,
+        HasExpressionTerminator = true,
+      };
+
+      SymbolAttributes symbolAttributes = eventData.SymbolAttributes;
+      IEnumerable<CustomAttributeData> customAttributesData = eventData.AttributeData;
+
+#if !NETSTANDARD2_0
+      if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+      {
+        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType);
+      }
+#endif
+
+      if (!isCompact)
+      {
+        AddCustomAttributes(symbolComponents, customAttributesData);
+      }
+
+      AccessModifier accessModifier = eventData.AccessModifier;
+      symbolComponents.AddModifier(accessModifier.ToDisplayStringValue());
+
+      if (symbolAttributes.HasFlag(SymbolAttributes.Static))
+      {
+        symbolComponents.AddModifier("static");
+      }
+      else if (symbolAttributes.HasFlag(SymbolAttributes.Abstract))
+      {
+        symbolComponents.AddModifier("abstract");
+      }
+      else if (symbolAttributes.HasFlag(SymbolAttributes.Virtual))
+      {
+        symbolComponents.AddModifier("virtual");
+      }
+
+      if (symbolAttributes.HasFlag(SymbolAttributes.Override))
+      {
+        symbolComponents.AddModifier("override");
+      }
+
+      symbolComponents.AddModifier("event");
+
+      symbolComponents.ReturnType = new SymbolComponentInfo();
+      _ = symbolComponents.ReturnType.NameBuilder.AppendDisplayNameInternal(eventData.EventHandlerTypeData, isFullyQualifiedName, isShortName: true);
+
+      _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(eventData, isFullyQualifiedName, isShortName, isCompact: true);
+
+      return symbolComponents;
+    }
+
+    internal static SymbolComponentInfo ToSignatureComponentsInternal(PropertyData propertyData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    {
+      SymbolComponentInfo symbolComponents = new SymbolComponentInfo()
+      {
+        IsSymbol = true,
+        HasExpressionTerminator = false,
+      };
+
+      SymbolAttributes symbolAttributes = propertyData.SymbolAttributes;
+      IEnumerable<CustomAttributeData> customAttributesData = propertyData.AttributeData;
+
+#if !NETSTANDARD2_0
+      if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+      {
+        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute));
+      }
+#endif
+
+      if (!isCompact)
+      {
+        AddCustomAttributes(symbolComponents, customAttributesData);
+      }
+
+      AccessModifier accessModifier = propertyData.AccessModifier;
+      symbolComponents.AddModifier(accessModifier.ToDisplayStringValue());
+
+      if (symbolAttributes.HasFlag(SymbolAttributes.Static))
+      {
+        symbolComponents.AddModifier("static");
+      }
+
+      bool isAbstract = symbolAttributes.HasFlag(SymbolAttributes.Abstract);
+      if (!symbolAttributes.HasFlag(SymbolAttributes.Delegate) && isAbstract)
+      {
+        symbolComponents.AddModifier("abstract");
+      }
+      else if (symbolAttributes.HasFlag(SymbolAttributes.Virtual))
+      {
+        symbolComponents.AddModifier("virtual");
+      }
+
+      if (symbolAttributes.HasFlag(SymbolAttributes.Override))
+      {
+        symbolComponents.AddModifier("override");
+      }
+
+      // Set return valueType
+
+      symbolComponents.ReturnType = new SymbolComponentInfo();
+      _ = symbolComponents.ReturnType.NameBuilder.AppendDisplayNameInternal(propertyData.PropertyTypeData, isFullyQualifiedName, isShortName);
+
+      
+      if (symbolAttributes.HasFlag(SymbolAttributes.IndexerProperty))
+      {
+        _ = symbolComponents.IsIndexer = true;
+
+        ParameterData[] parameters = propertyData.IndexerParameters;
+        if (parameters.Any())
+        {
+          foreach (ParameterData parameter in parameters)
+          {
+            SymbolComponentInfo parameterInfo = parameter.SymbolComponentInfo;
+            symbolComponents.AddParameter(parameterInfo);
+          }
+        }
+      }
+      else
+      {
+        _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(propertyData, isFullyQualifiedName, isShortName, isCompact: true);
+      }
+
+      if (propertyData.CanRead)
+      {
+        var propertyGet = new SymbolComponentInfo();
+        if (HelperExtensionsCommon.AccessModifierComparer.Compare(propertyData.GetAccessorAccessModifier, propertyData.AccessModifier) < 0)
+        {
+          propertyGet.AddModifier(propertyData.GetAccessorAccessModifier.ToDisplayStringValue());
+        }
+
+        symbolComponents.PropertyGet = propertyGet;
+      }
+
+      if (propertyData.CanWrite)
+      {
+        var propertySet = new SymbolComponentInfo();
+        if (HelperExtensionsCommon.AccessModifierComparer.Compare(propertyData.SetAccessorAccessModifier, propertyData.AccessModifier) < 0)
+        {
+          propertySet.AddModifier(propertyData.SetAccessorAccessModifier.ToDisplayStringValue());
+        }
+
+#if !NETSTANDARD2_0
+        if (propertyData.IsSetMethodReadOnly)
+        {
+          propertySet.AddModifier("readonly");
+        }
+#endif
+        propertySet.IsInitProperty = propertyData.SymbolAttributes.HasFlag(SymbolAttributes.InitProperty);
+        symbolComponents.PropertySet = propertySet;
+      }
+
+      return symbolComponents;
+    }
+
+    internal static SymbolComponentInfo ToSignatureComponentsInternal(ConstructorData constructorData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    {
+      SymbolComponentInfo symbolComponents = new SymbolComponentInfo()
+      {
+        IsSymbol = true,
+        HasExpressionTerminator = true,
+      };
+
+      SymbolAttributes symbolAttributes = constructorData.SymbolAttributes;
+      IEnumerable<CustomAttributeData> customAttributesData = constructorData.AttributeData;
+      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+
+#if !NETSTANDARD2_0
+      if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+      {
+        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType);
+      }
+#endif
+
+      if (!isCompact)
+      {
+        AddCustomAttributes(symbolComponents, customAttributesData);
+      }
+
+      AccessModifier accessModifier = constructorData.AccessModifier;
+      symbolComponents.AddModifier(accessModifier.ToDisplayStringValue());
+
+      if (constructorData.IsStatic)
+      {
+        symbolComponents.AddModifier("static");
+      }
+
+      // Member name
+      _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(constructorData, isFullyQualifiedName, isShortName, isCompact: true);
+
+      ParameterData[] parameters = constructorData.Parameters;
+      if (parameters.Length > 0)
+      {
+        foreach (ParameterData parameterData in parameters)
+        {
+          SymbolComponentInfo parameterInfo = parameterData.SymbolComponentInfo;
+          symbolComponents.AddParameter(parameterInfo);
+        }
+      }
+
       return symbolComponents;
     }
 
@@ -2893,6 +3309,49 @@ public static AccessModifier GetAccessModifier(this Type type)
       return constraintBuilder;
     }
 
+    private static void AddGenericTypeConstraints(SymbolComponentInfo symbolComponents, TypeData[] genericTypeDefinitionsData, bool isFullyQualified)
+    {
+      for (int genericTypeArgumentIndex = 0; genericTypeArgumentIndex < genericTypeDefinitionsData.Length; genericTypeArgumentIndex++)
+      {
+        TypeData genericTypeDefinitionData = genericTypeDefinitionsData[genericTypeArgumentIndex];
+        var constraintComponents = new SymbolComponentInfo(genericTypeDefinitionData.Name);
+        TypeData[] constraints = genericTypeDefinitionData.GenericParameterConstraintsData;
+        if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.SpecialConstraintMask) == GenericParameterAttributes.None
+          && constraints.Length == 0)
+        {
+          continue;
+        }
+
+        if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0)
+        {
+          var constraint = new SymbolComponentInfo("class", isKeyword: true);
+          constraintComponents.AddGenericTypeConstraint(constraint);
+        }
+
+        if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) != 0)
+        {
+          var constraint = new SymbolComponentInfo("struct", isKeyword: true);
+          constraintComponents.AddGenericTypeConstraint(constraint);
+        }
+
+        foreach (TypeData constraintData in constraints)
+        {
+          var constraint = new SymbolComponentInfo();
+          Type constraintTypeData = constraintData.GetType();
+          _ = constraint.NameBuilder.AppendDisplayNameInternal(constraintData, isFullyQualified, isShortName: false);
+          constraintComponents.AddGenericTypeConstraint(constraint);
+        }
+
+        if (!genericTypeDefinitionData.IsValueType && (genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0)
+        {
+          var constraint = new SymbolComponentInfo("new()", isKeyword: true);
+          constraintComponents.AddGenericTypeConstraint(constraint);
+        }
+
+        symbolComponents.AddGenericTypeConstraint(constraintComponents);
+      }
+    }
+
     private static StringBuilder AppendInheritanceSignature(this StringBuilder memberNameBuilder, TypeData typeData, bool isFullyQualified)
     {
       if (typeData.IsDelegate)
@@ -2926,6 +3385,30 @@ public static AccessModifier GetAccessModifier(this Type type)
       }
 
       return memberNameBuilder;
+    }
+
+    private static void AddInheritanceSignature(SymbolComponentInfo symbolComponents, TypeData typeData, bool isFullyQualified)
+    {
+      if (typeData.IsDelegate)
+      {
+        return;
+      }
+
+      bool isSubclass = typeData.IsSubclass;
+      TypeData[] interfaces = typeData.InterfacesData;
+      if (isSubclass)
+      {
+        var inheritedTypeComponent = new SymbolComponentInfo(isKeyword: typeData.BaseTypeData.IsBuiltInType);
+        _ = inheritedTypeComponent.NameBuilder.Append(isFullyQualified ? typeData.BaseTypeData.GetType().FullName : typeData.BaseTypeData.Name);
+        symbolComponents.AddInheritedType(inheritedTypeComponent);
+      }
+
+      foreach (TypeData interfaceData in interfaces)
+      {
+        var inheritedTypeComponent = new SymbolComponentInfo();
+        _ = inheritedTypeComponent.NameBuilder.Append(isFullyQualified ? interfaceData.GetType().FullName : interfaceData.Name);
+        symbolComponents.AddInheritedType(inheritedTypeComponent);
+      }
     }
 
     public static StringBuilder AppendStringBuilder(this StringBuilder stringBuilder, StringBuilder value)
@@ -3663,7 +4146,7 @@ public static AccessModifier GetAccessModifier(this Type type)
         foreach (SymbolComponentInfo attribute in symbolComponentInfo.CustomAttributes)
         {
           _ = signatureBuilder.Append($"<span class=\"syntax-delimiter\">[</span>")
-            .Append($"<span class=\"syntax-symbol\">")
+            .Append($"<span class=\"syntax-type\">")
             .Append(attribute.NameBuilder.ToString());
 
           bool hasConstructorArgs = symbolComponentInfo.CustomAttributeConstructorArgs.Any();
@@ -3695,22 +4178,36 @@ public static AccessModifier GetAccessModifier(this Type type)
 
           if (hasArguments)
           {
-            _ = signatureBuilder.Append($"<span class=\"syntax-symbol\">")
+            _ = signatureBuilder.Append($"<span class=\"syntax-type\">")
               .Append(')');
           }
 
           _ = signatureBuilder.Append("</span>")
-            .Append($"<span class=\"syntax-delimiter\">]</span>")
-            .Append("<br>");
+            .Append($"<span class=\"syntax-delimiter\">]</span>");
+
+          if (symbolComponentInfo.HasInlineAttributes)
+          {
+            _ = signatureBuilder.Append(' ');
+          }
+          else
+          {
+            _ = signatureBuilder.Append("<br>");
+          }
         }
       }
 
-      if (symbolComponentInfo.Modifiers.Any())
+      if (!symbolComponentInfo.IsParameter && symbolComponentInfo.Modifiers.Any())
       {
         _ = signatureBuilder.Append($"<span class=\"syntax-keyword\">");
         foreach (string modifier in symbolComponentInfo.Modifiers)
         {
           _ = signatureBuilder.Append(modifier)
+            .Append(' ');
+        }
+
+        if (symbolComponentInfo.IsIndexer)
+        {
+          _ = signatureBuilder.Append("this")
             .Append(' ');
         }
 
@@ -3729,7 +4226,7 @@ public static AccessModifier GetAccessModifier(this Type type)
         {
           _ = signatureBuilder.Append($"<span class=\"syntax-keyword\">");
         }
-        else if (symbolComponentInfo.IsSymbol)
+        else if (symbolComponentInfo.IsSymbol && !symbolComponentInfo.IsParameter)
         {
           _ = signatureBuilder.Append($"<span class=\"syntax-symbol\">");
         }
@@ -3758,7 +4255,7 @@ public static AccessModifier GetAccessModifier(this Type type)
         _ = signatureBuilder.Append($"<span class=\"syntax-delimiter\">")
           .AppendReadOnlySpan('<'.ToHtmlEncodedReadOnlySpan())
           .Append("</span>")
-          .Append($"<span class=\"syntax-symbol\">");
+          .Append($"<span class=\"syntax-type\">");
 
         foreach (SymbolComponentInfo typeParameter in symbolComponentInfo.GenericTypeParameters)
         {
@@ -3776,10 +4273,18 @@ public static AccessModifier GetAccessModifier(this Type type)
 
       if (symbolComponentInfo.Parameters.Any())
       {
-        _ = signatureBuilder.Append($"<span class=\"syntax-delimiter\">")
-          .AppendReadOnlySpan('('.ToHtmlEncodedReadOnlySpan())
-          .Append("</span>")
-          .Append($"<span class=\"syntax-symbol\">");
+        _ = signatureBuilder.Append($"<span class=\"syntax-delimiter\">");
+        if (symbolComponentInfo.IsIndexer)
+        {
+          _ = signatureBuilder.AppendReadOnlySpan('['.ToHtmlEncodedReadOnlySpan());
+        }
+        else
+        {
+          _ = signatureBuilder.AppendReadOnlySpan('('.ToHtmlEncodedReadOnlySpan());
+        }
+
+        _ = signatureBuilder.Append("</span>")
+          .Append($"<span class=\"syntax-type\">");
 
         foreach (SymbolComponentInfo parameter in symbolComponentInfo.Parameters)
         {
@@ -3797,9 +4302,66 @@ public static AccessModifier GetAccessModifier(this Type type)
         }
 
         _ = signatureBuilder.Remove(signatureBuilder.Length - 2, 2)
-          .Append($"<span class=\"syntax-delimiter\">")
-          .AppendReadOnlySpan(')'.ToHtmlEncodedReadOnlySpan())
+          .Append($"<span class=\"syntax-delimiter\">");
+        if (symbolComponentInfo.IsIndexer)
+        {
+          _ = signatureBuilder.AppendReadOnlySpan(']'.ToHtmlEncodedReadOnlySpan())
           .Append("</span>");
+        }
+        else
+        {
+          _ = signatureBuilder.AppendReadOnlySpan(')'.ToHtmlEncodedReadOnlySpan())
+          .Append("</span>");
+        }
+      }
+
+      if (symbolComponentInfo.GenericTypeConstraints.Any())
+      {
+        foreach (SymbolComponentInfo constraintInfo in symbolComponentInfo.GenericTypeConstraints)
+        {
+          _ = signatureBuilder.AppendLine()
+            .Append(HelperExtensionsCommon.Indentation)
+            .Append($"<span class=\"syntax-keyword\">")
+            .Append("where")
+            .Append(' ')
+            .Append("</span>")
+            .Append($"<span class=\"syntax-type\">")
+            .AppendStringBuilder(constraintInfo.NameBuilder)
+            .Append(' ')
+            .Append("</span>")
+            .Append($"<span class=\"syntax-delimiter\">")
+            .Append(':')
+            .Append(' ')
+            .Append("</span>");
+
+          foreach (SymbolComponentInfo constraint in constraintInfo.GenericTypeConstraints)
+          {
+            if (constraint.IsKeyword)
+            {
+              _ = signatureBuilder.Append($"<span class=\"syntax-keyword\">")
+                .AppendStringBuilder(constraint.NameBuilder)
+                .Append(',')
+                .Append(' ')
+                .Append("</span>");
+            }
+            else
+            {
+              _ = signatureBuilder.Append($"<span class=\"syntax-type\">")
+                .AppendStringBuilder(constraint.NameBuilder)
+                .Append(',')
+                .Append(' ')
+                .Append("</span>");
+            }
+          }
+        }
+      }
+
+      if (symbolComponentInfo.HasExpressionTerminator)
+      {
+        _ = signatureBuilder
+            .Append($"<span class=\"syntax-delimiter\">")
+            .Append(';')
+            .Append("</span>");
       }
 
       return signatureBuilder;
