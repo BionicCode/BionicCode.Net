@@ -23,7 +23,7 @@
         Console.WriteLine($"Profiled type: {resultGroups.ProfiledTypeData.FullyQualifiedDisplayName}");
         foreach (ProfilerBatchResultGroup resultGroup in resultGroups)
         {
-          Console.WriteLine($"Profiled member: {resultGroup.ProfiledTargetMemberShortName}");
+          Console.WriteLine($"Profiled member: {resultGroup.TargetShortName}");
           foreach (ProfilerBatchResult result in resultGroup)
           {
             Console.WriteLine($"Summary: {result.Summary}");

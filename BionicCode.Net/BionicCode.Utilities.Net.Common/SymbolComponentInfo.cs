@@ -24,7 +24,18 @@
     public bool IsKeyword { get; set; }
     public bool IsExtensionMethodParameter { get; set; }
     public bool IsSymbol { get; set; }
-    public SymbolComponentInfo ReturnType { get; set; }
+    public SymbolComponentInfo ReturnType
+    {
+      get => this.returnType;
+      set
+      {
+        this.returnType = value;
+        if (this.returnType != null)
+        {
+          this.returnType.IsSymbol = false;
+        }
+      }
+    }
     public SymbolComponentInfo PropertyGet { get; set; }
     public SymbolComponentInfo PropertySet { get; set; }
     public string Signature { get; set; }
@@ -43,6 +54,7 @@
     private readonly List<(string PropertyName, string PropertyValue)> customAttributeNamedArgs;
     private readonly List<SymbolComponentInfo> parametersInternal;
     private string html;
+    private SymbolComponentInfo returnType;
 
     public SymbolComponentInfo(bool isKeyword = false)
     {

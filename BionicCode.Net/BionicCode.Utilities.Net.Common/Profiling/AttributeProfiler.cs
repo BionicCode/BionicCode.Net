@@ -287,10 +287,11 @@
 
         var memberResultGroup = new ProfilerBatchResultGroup
         {
-          ProfiledTargetSignatureMemberName = memberInfo.Signature,
-          ProfiledTargetShortSignatureMemberName = memberInfo.ShortSignature,
-          ProfiledTargetMemberName = memberInfo.DisplayName,
-          ProfiledTargetMemberShortName = memberInfo.ShortDisplayName
+          TargetSignature = memberInfo.Signature,
+          TargetShortSignature = memberInfo.ShortSignature,
+          TargetShortCompactSignature = memberInfo.ShortCompactSignature,
+          TargetName = memberInfo.DisplayName,
+          TargetShortName = memberInfo.ShortDisplayName
         };
 
         for (int argumentListIndex = 0; argumentListIndex < memberInfo.ArgumentLists.Count(); argumentListIndex++)
@@ -329,7 +330,7 @@
             if (memberResultGroup.IsEmpty())
             {
               result.ArgumentListCount = argumentList is VoidArgumentList ? 0 : memberInfo.ArgumentLists.Count();
-              memberResultGroup.ProfiledTargetType = invocationInfo.ProfiledTargetType;
+              memberResultGroup.TargetType = invocationInfo.ProfiledTargetType;
               memberResultGroup.Add(result);
             }
             else
@@ -346,7 +347,7 @@
             if (memberResultGroup.IsEmpty())
             {
               result.ArgumentListCount = argumentList is VoidArgumentList ? 0 : memberInfo.ArgumentLists.Count();
-              memberResultGroup.ProfiledTargetType = invocationInfo.ProfiledTargetType;
+              memberResultGroup.TargetType = invocationInfo.ProfiledTargetType;
               memberResultGroup.Add(result);
             }
             else
@@ -367,7 +368,7 @@
               if (memberResultGroup.IsEmpty())
               {
                 propertyGetResult.ArgumentListCount = argumentList is VoidArgumentList ? 0 : memberInfo.ArgumentLists.Count();
-                memberResultGroup.ProfiledTargetType = invocationInfo.ProfiledTargetType;
+                memberResultGroup.TargetType = invocationInfo.ProfiledTargetType;
                 memberResultGroup.Add(propertyGetResult);
               }
               else

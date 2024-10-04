@@ -38,9 +38,9 @@
 
     private static readonly Type ValueTaskType = typeof(ValueTask);
     private static readonly Type ValueTaskGenericType = typeof(ValueTask<>);
-    private static readonly Type TaskType = typeof(Task); 
+    private static readonly Type TaskType = typeof(Task);
     private static readonly Type AsyncStateMachineAttributeType = typeof(AsyncStateMachineAttribute);
-    private static readonly Type ExtensionAttributeType = typeof(ExtensionAttribute); 
+    private static readonly Type ExtensionAttributeType = typeof(ExtensionAttribute);
     private static readonly Type DelegateType = typeof(Delegate);
 #if !NETSTANDARD2_0
     private static readonly Type IsReadOnlyAttributeType = typeof(IsReadOnlyAttribute);
@@ -201,7 +201,7 @@
       MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
       return methodData.Signature;
     }
-    
+
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
@@ -294,968 +294,968 @@
 
     #region REMOVE AFTER BENCHMARK COMPARISON!!!
 
-//    public static StringBuilder AppendSignatureName(this StringBuilder nameBuilder, MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName)
-//    {
-//      SyntaxNode syntaxGraph = null;
-//      bool isTerminationRequested = false;
-//      if (memberInfo is MethodInfo methodInfo)
-//      {
-//        syntaxGraph = CreateMethodGraph(methodInfo, isFullyQualifiedName);
-//        isTerminationRequested = true;
-//      }
-
-//      if (syntaxGraph != null)
-//      {
-//        _ = nameBuilder.Append(syntaxGraph.ToString());
-//        if (isTerminationRequested)
-//        {
-//          _ = nameBuilder.Append(HelperExtensionsCommon.ExpressionTerminator);
-//        }
-//      }
-
-//      return nameBuilder;
-//    }
-
-//    private static SyntaxNode CreateMethodGraph(MethodInfo methodInfo, bool isFullyQualifiedName)
-//    {
-//      TypeSyntax returnType = SyntaxFactory.ParseTypeName(ToDisplayNameInternal(methodInfo.ReturnType, isFullyQualifiedName, isShortName: false));
-//      string methodName = ToDisplayNameInternal(methodInfo, isFullyQualifiedName, isShortName: false);
-//      MethodDeclarationSyntax methodGraph = SyntaxFactory.MethodDeclaration(returnType, methodName)
-//        .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-
-//      ParameterInfo[] parameters = methodInfo.GetParameters();
-//      foreach (ParameterInfo parameter in parameters)
-//      {
-//        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.Name))
-//          .WithType(SyntaxFactory.IdentifierName(ToDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isShortName: false)));
-
-//        if (parameter.IsRef())
-//        {
-//          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.RefKeyword));
-//        }
-//        else if (parameter.IsIn)
-//        {
-//          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.InKeyword));
-//        }
-//        else if (parameter.IsOut)
-//        {
-//          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.OutKeyword));
-//        }
-//        //IList<CustomAttributeData> parameterAttributes = parameter.GetCustomAttributesData();
-//        //foreach(CustomAttributeData parameterAttribute in parameterAttributes)
-//        //{
-//        //  AttributeArgumentListSyntax argumentList = SyntaxFactory.AttributeArgumentList();
-
-//        //  IList<CustomAttributeTypedArgument> arguments = parameterAttribute.ConstructorArguments;
-//        //  foreach (CustomAttributeTypedArgument argument in arguments)
-//        //  {
-//        //    var argumentSyntax = SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression)
-//        //  }
-//        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.Name, isFullyQualifiedName, isShortName: false)));
-//        //  parameterSyntax = parameterSyntax.AddAttributeLists(attributeSyntax);
-//        //}
-//        methodGraph = methodGraph.AddParameterListParameters(parameterSyntax);
-//      }
-
-//      if (methodInfo.IsGenericMethod)
-//      {
-//        Type[] typeArguments = methodInfo.GetGenericArguments();
-//        for (int typeArgumentIndex = 0; typeArgumentIndex < typeArguments.Length; typeArgumentIndex++)
-//        {
-//          Type typeArgument = typeArguments[typeArgumentIndex];
-//          //TypeParameterSyntax typeParameter = CreateMethodTypeParameter(typeArgument, isFullyQualifiedName);
-//          //methodGraph = methodGraph.AddTypeParameterListParameters(typeParameter);
-
-//          if (methodInfo.IsGenericMethodDefinition)
-//          {
-//            SeparatedSyntaxList<TypeParameterConstraintSyntax> constraints = SyntaxFactory.SeparatedList<TypeParameterConstraintSyntax>();
-//            if ((typeArgument.GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) != 0)
-//            {
-//              constraints = constraints.Add(SyntaxFactory.ClassOrStructConstraint(SyntaxKind.StructConstraint));
-//            }
-
-//            if ((typeArgument.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0)
-//            {
-//              constraints = constraints.Add(SyntaxFactory.ClassOrStructConstraint(SyntaxKind.ClassConstraint));
-//            }
-
-//            Type[] constraintTypes = typeArgument.GetGenericParameterConstraints();
-//            foreach (Type constraintType in constraintTypes)
-//            {
-//              if (constraintType == typeof(object) || constraintType == typeof(ValueType))
-//              {
-//                continue;
-//              }
-
-//              string constraintName = ToDisplayNameInternal(constraintType, isFullyQualifiedName, isShortName: false);
-//              TypeConstraintSyntax constraintSyntax = SyntaxFactory.TypeConstraint(SyntaxFactory.IdentifierName(constraintName));
-//              constraints = constraints.Add(constraintSyntax);
-//            }
-
-//            if (!typeArgument.IsValueType && (typeArgument.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0)
-//            {
-//              constraints = constraints.Add(SyntaxFactory.ConstructorConstraint());
-//            }
-
-//            string genericTypeParameterName = ToDisplayNameInternal(typeArgument, isFullyQualifiedName, isShortName: false);
-//            methodGraph = methodGraph.AddConstraintClauses(SyntaxFactory.TypeParameterConstraintClause(SyntaxFactory.IdentifierName(genericTypeParameterName), constraints));
-//          }
-//        }
-//      }
-
-//      methodGraph = methodGraph.NormalizeWhitespace();
-//      return methodGraph;
-//    }
-
-//    private static SyntaxNode CreateDelegateGraph(MethodInfo methodInfo, bool isFullyQualifiedName)
-//    {
-//      TypeSyntax returnType = SyntaxFactory.ParseTypeName(ToDisplayNameInternal(methodInfo.ReturnType, isFullyQualifiedName, isShortName: false));
-//      string methodName = ToDisplayNameInternal(methodInfo, isFullyQualifiedName, isShortName: true);
-//      MethodDeclarationSyntax methodGraph = SyntaxFactory.MethodDeclaration(returnType, methodName)
-//        .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-
-//      ParameterInfo[] parameters = methodInfo.GetParameters();
-//      foreach (ParameterInfo parameter in parameters)
-//      {
-//        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.Name))
-//          .WithType(SyntaxFactory.IdentifierName(ToDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isShortName: false)));
-
-//        if (parameter.IsRef())
-//        {
-//          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.RefKeyword));
-//        }
-//        else if (parameter.IsIn)
-//        {
-//          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.InKeyword));
-//        }
-//        else if (parameter.IsOut)
-//        {
-//          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.OutKeyword));
-//        }
-//        //IList<CustomAttributeData> parameterAttributes = parameter.GetCustomAttributesData();
-//        //foreach(CustomAttributeData parameterAttribute in parameterAttributes)
-//        //{
-//        //  AttributeArgumentListSyntax argumentList = SyntaxFactory.AttributeArgumentList();
-
-//        //  IList<CustomAttributeTypedArgument> arguments = parameterAttribute.ConstructorArguments;
-//        //  foreach (CustomAttributeTypedArgument argument in arguments)
-//        //  {
-//        //    var argumentSyntax = SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression)
-//        //  }
-//        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.Name, isFullyQualifiedName, isShortName: false)));
-//        //  parameterSyntax = parameterSyntax.AddAttributeLists(attributeSyntax);
-//        //}
-//        methodGraph = methodGraph.AddParameterListParameters(parameterSyntax);
-//      }
-
-//      if (methodInfo.IsGenericMethod)
-//      {
-//        Type[] typeArguments = methodInfo.GetGenericArguments();
-//        for (int typeArgumentIndex = 0; typeArgumentIndex < typeArguments.Length; typeArgumentIndex++)
-//        {
-//          Type typeArgument = typeArguments[typeArgumentIndex];
-//          TypeParameterSyntax typeParameter = CreateMethodTypeParameter(typeArgument, isFullyQualifiedName);
-//          methodGraph = methodGraph.AddTypeParameterListParameters(typeParameter);
-
-//          if (methodInfo.IsGenericMethodDefinition)
-//          {
-//            SeparatedSyntaxList<TypeParameterConstraintSyntax> constraints = SyntaxFactory.SeparatedList<TypeParameterConstraintSyntax>();
-//            if ((typeArgument.GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) != 0)
-//            {
-//              constraints = constraints.Add(SyntaxFactory.ClassOrStructConstraint(SyntaxKind.StructConstraint));
-//            }
-
-//            if ((typeArgument.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0)
-//            {
-//              constraints = constraints.Add(SyntaxFactory.ClassOrStructConstraint(SyntaxKind.ClassConstraint));
-//            }
-
-//            if (!typeArgument.IsValueType && (typeArgument.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0)
-//            {
-//              constraints = constraints.Add(SyntaxFactory.ConstructorConstraint());
-//            }
-
-//            Type[] constraintTypes = typeArgument.GetGenericParameterConstraints();
-//            foreach (Type constraintType in constraintTypes)
-//            {
-//              if (constraintType == typeof(object) || constraintType == typeof(ValueType))
-//              {
-//                continue;
-//              }
-
-//              string constraintName = ToDisplayNameInternal(constraintType, isFullyQualifiedName, isShortName: false);
-//              TypeConstraintSyntax constraintSyntax = SyntaxFactory.TypeConstraint(SyntaxFactory.IdentifierName(constraintName));
-//              constraints = constraints.Add(constraintSyntax);
-//            }
-
-//            string genericTypeParameterName = ToDisplayNameInternal(typeArgument, isFullyQualifiedName, isShortName: false);
-//            methodGraph = methodGraph.AddConstraintClauses(SyntaxFactory.TypeParameterConstraintClause(SyntaxFactory.IdentifierName(genericTypeParameterName), constraints));
-//          }
-//        }
-//      }
-
-//      methodGraph = methodGraph.NormalizeWhitespace(indentation: " ", elasticTrivia: true);
-//      return methodGraph;
-//    }
-
-//    private static TypeParameterSyntax CreateMethodTypeParameter(Type valueType, bool isFullyQualifiedName)
-//    {
-//      IEnumerable<Attribute> attributes = valueType.GetCustomAttributes();
-//      AttributeListSyntax attributeSyntaxList = SyntaxFactory.AttributeList();
-//      foreach (Attribute attribute in attributes)
-//      {
-//        string attributeName = ToDisplayNameInternal(attribute.GetType(), isFullyQualifiedName, isShortName: false);
-//        AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.IdentifierName(attributeName));
-//        attributeSyntaxList = attributeSyntaxList.AddAttributes(attributeSyntax);
-//      }
-
-//      SyntaxKind variance = SyntaxKind.None;
-//      if (valueType.IsGenericParameter)
-//      {
-//        if ((valueType.GenericParameterAttributes & GenericParameterAttributes.Covariant) != 0)
-//        {
-//          variance = SyntaxKind.OutKeyword;
-//        }
-//        else if ((valueType.GenericParameterAttributes & GenericParameterAttributes.Contravariant) != 0)
-//        {
-//          variance = SyntaxKind.InKeyword;
-//        }
-//      }
-
-//      string typeParameterName = ToDisplayNameInternal(valueType, isFullyQualifiedName, isShortName: false);
-//      return SyntaxFactory.TypeParameter(new SyntaxList<AttributeListSyntax>() { attributeSyntaxList }, SyntaxFactory.Token(variance), SyntaxFactory.Identifier(typeParameterName));
-//    }
-
-//    private static string ToDisplayNameInternal(MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName)
-//    {
-//      string symbolName = new StringBuilder()
-//        .AppendDisplayNameInternal(memberInfo, isFullyQualifiedName, isShortName)
-//        .ToString();
-
-//      return symbolName;
-//    }
-
-//    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, Type valueType, bool isFullyQualifiedName, bool isShortName)
-//    {
-//      var typeReference = new CodeTypeReference(valueType);
-//      ReadOnlySpan<char> typeName = HelperExtensionsCommon.CodeProvider.GetTypeOutput(typeReference).AsSpan();
-//      if (valueType.IsGenericType)
-//      {
-//        int startIndexOfGenericTypeParameters = typeName.IndexOf('<');
-//        typeName = typeName.Slice(0, startIndexOfGenericTypeParameters);
-//      }
-
-//      if (!isFullyQualifiedName)
-//      {
-//        int startIndexOfUnqualifiedTypeName = typeName.LastIndexOf('.') + 1;
-//        if (startIndexOfUnqualifiedTypeName > 0)
-//        {
-//          typeName = typeName.Slice(startIndexOfUnqualifiedTypeName, typeName.Length - startIndexOfUnqualifiedTypeName);
-//        }
-//      }
-
-//      _ = nameBuilder.Append(typeName.ToArray());
-
-//      if (isShortName)
-//      {
-//        return nameBuilder;
-//      }
-
-//      if (valueType.IsGenericType)
-//      {
-//        _ = nameBuilder.Append('<');
-
-//        Type[] typeArguments = valueType.GetGenericArguments();
-//        foreach (Type typeArgument in typeArguments)
-//        {
-//          _ = nameBuilder.AppendDisplayNameInternal(typeArgument, isFullyQualifiedName, isShortName)
-//            .Append(ParameterSeparator);
-//        }
-
-//        _ = nameBuilder.Remove(nameBuilder.Length - ParameterSeparator.Length, ParameterSeparator.Length)
-//          .Append('>');
-//      }
-
-//      return nameBuilder;
-//    }
-
-//  private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName)
-//    {
-//      if (memberInfo is Type valueType)
-//      {
-//        return nameBuilder.AppendDisplayNameInternal(valueType, isFullyQualifiedName, isShortName);
-//      }
-
-//      if (isFullyQualifiedName)
-//      {
-//        _ = nameBuilder.AppendDisplayNameInternal(memberInfo.DeclaringType, isFullyQualifiedName, isShortName)
-//          .Append('.');
-//      }
-
-//      if (memberInfo.MemberType.HasFlag(MemberTypes.Constructor))
-//      {
-//        if (memberInfo.DeclaringType.IsGenericType)
-//        {
-//          int genericTypeArgumentPlaceholderIndex = memberInfo.DeclaringType.Name.IndexOf('`');
-//          return nameBuilder.Append(memberInfo.DeclaringType.Name, 0, genericTypeArgumentPlaceholderIndex);
-//        }
-//        else
-//        {
-//          return nameBuilder.Append(memberInfo.DeclaringType.Name);
-//        }
-//      }
-//      else
-//      {
-//        return nameBuilder.Append(memberInfo.Name);
-//      }
-//    }
-//    private static SymbolAttributes GetKind(this MemberInfo memberInfo)
-//    {
-//      var valueType = memberInfo as Type;
-//      var propertyInfo = memberInfo as PropertyInfo;
-//      MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
-//        ?? valueType?.GetMethod("Invoke"); // MemberInfo is potentially a delegate
-//      MethodInfo propertyGetMethodInfo = propertyInfo?.GetGetMethod(true);
-//      MethodInfo propertySetMethodInfo = propertyInfo?.GetSetMethod(true);
-//      var constructorInfo = memberInfo as ConstructorInfo;
-//      var fieldInfo = memberInfo as FieldInfo;
-//      var eventInfo = memberInfo as EventInfo;
-//      MethodInfo eventAddMethodInfo = eventInfo?.GetAddMethod(true);
-//      FieldInfo eventDeclaredFieldInfo = eventInfo?.DeclaringType.GetField(eventInfo.Name, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-//      ParameterInfo[] indexerPropertyIndexParameters = propertyInfo?.GetIndexParameters() ?? Array.Empty<ParameterInfo>();
-
-//      bool isDelegate = valueType?.IsDelegate() ?? false;
-//      if (isDelegate)
-//      {
-//        return SymbolAttributes.Delegate;
-//      }
-
-//      bool isClass = !isDelegate && (valueType?.IsClass ?? false);
-//      if (isClass)
-//      {
-//        SymbolAttributes classKind = SymbolAttributes.Class;
-//        if (valueType.IsAbstract)
-//        {
-//          classKind |= SymbolAttributes.Abstract;
-//        }
-
-//        if (valueType.IsSealed)
-//        {
-//          classKind |= SymbolAttributes.Final;
-//        }
-
-//        if (valueType.IsStatic())
-//        {
-//          classKind |= SymbolAttributes.Static;
-//        }
-
-//        return classKind;
-//      }
-
-//      bool isEnum = !isDelegate && (valueType?.IsEnum ?? false);
-//      if (isEnum)
-//      {
-//        return SymbolAttributes.Enum;
-//      }
-
-//      bool isStruct = !isDelegate && (valueType?.IsValueType ?? false);
-//      if (isStruct)
-//      {
-//        SymbolAttributes structKind = SymbolAttributes.Struct;
-
-//#if NETSTANDARD2_1_OR_GREATER || NET471_OR_GREATER || NET
-//        bool isReadOnlyStruct = isStruct && valueType.GetCustomAttribute(typeof(IsReadOnlyAttribute)) != null;
-//        if (isReadOnlyStruct)
-//        {
-//          structKind |= SymbolAttributes.Final;
-//        }
-//#endif
-//        return structKind;
-//      }
-
-//      bool isProperty = propertyInfo != null;
-//      if (isProperty)
-//      {
-//        bool isIndexerProperty = indexerPropertyIndexParameters.Length > 0;
-//        SymbolAttributes propertyKind = isIndexerProperty
-//          ? SymbolAttributes.IndexerProperty
-//          : SymbolAttributes.Property;
-
-//        MethodInfo getMethod = propertyInfo.GetGetMethod();
-//        if (!propertyInfo.CanWrite)
-//        {
-//          propertyKind |= SymbolAttributes.Final;
-//        }
-
-//        if (getMethod.IsAbstract)
-//        {
-//          propertyKind |= SymbolAttributes.Abstract;
-//        }
-
-//        if (getMethod.IsStatic)
-//        {
-//          propertyKind |= SymbolAttributes.Static;
-//        }
-
-//        if (getMethod.IsVirtual)
-//        {
-//          propertyKind |= SymbolAttributes.Virtual;
-//        }
-
-//        if (getMethod.IsOverride())
-//        {
-//          propertyKind |= SymbolAttributes.Override;
-//        }
-
-//        return propertyKind;
-//      }
-
-//      bool isMethod = !isDelegate && !isClass && memberInfo.MemberType.HasFlag(MemberTypes.Method);
-//      if (isMethod)
-//      {
-//        SymbolAttributes methodKind = SymbolAttributes.Method;
-//        if (methodInfo.IsFinal)
-//        {
-//          methodKind |= SymbolAttributes.Final;
-//        }
-
-//        if (methodInfo.IsAbstract)
-//        {
-//          methodKind |= SymbolAttributes.Abstract;
-//        }
-
-//        if (methodInfo.IsStatic)
-//        {
-//          methodKind |= SymbolAttributes.Static;
-//        }
-
-//        if (methodInfo.IsVirtual)
-//        {
-//          methodKind |= SymbolAttributes.Virtual;
-//        }
-
-//        if (methodInfo.IsOverride())
-//        {
-//          methodKind |= SymbolAttributes.Override;
-//        }
-
-//        return methodKind;
-//      }
-
-//      bool isEvent = eventInfo != null;
-//      if (isEvent)
-//      {
-//        SymbolAttributes eventKind = SymbolAttributes.Event;
-//        MethodInfo addHandlerMethod = eventInfo.GetAddMethod(true);
-//        if (addHandlerMethod.IsFinal)
-//        {
-//          eventKind |= SymbolAttributes.Final;
-//        }
-
-//        if (addHandlerMethod.IsAbstract)
-//        {
-//          eventKind |= SymbolAttributes.Abstract;
-//        }
-
-//        if (addHandlerMethod.IsStatic)
-//        {
-//          eventKind |= SymbolAttributes.Static;
-//        }
-
-//        if (addHandlerMethod.IsVirtual)
-//        {
-//          eventKind |= SymbolAttributes.Virtual;
-//        }
-
-//        if (addHandlerMethod.IsOverride())
-//        {
-//          eventKind |= SymbolAttributes.Override;
-//        }
-
-//        return eventKind;
-//      }
-
-//      bool isConstructor = constructorInfo != null;
-//      if (isConstructor)
-//      {
-//        SymbolAttributes constructorKind = SymbolAttributes.Constructor;
-
-//        if (constructorInfo.IsStatic)
-//        {
-//          constructorKind |= SymbolAttributes.Static;
-//        }
-
-//        return constructorKind;
-//      }
-
-//      bool isField = fieldInfo != null;
-//      if (isField)
-//      {
-//        SymbolAttributes fieldKind = SymbolAttributes.Event;
-//        if (fieldInfo.IsInitOnly)
-//        {
-//          fieldKind |= SymbolAttributes.Final;
-//        }
-
-//        if (fieldInfo.IsStatic)
-//        {
-//          fieldKind |= SymbolAttributes.Static;
-//        }
-
-//        return fieldKind;
-//      }
-
-//      bool isInterface = !isDelegate && !isClass && (valueType?.IsInterface ?? false);
-//      if (isInterface)
-//      {
-//        SymbolAttributes interfaceKind = SymbolAttributes.Interface;
-//        return interfaceKind;
-//      }
-
-//      return SymbolAttributes.Undefined;
-//    }
-//    internal static string ToSignatureNameInternal(this MemberInfo memberInfo, bool isFullyQualifiedName, bool isShortName, bool isCompact)
-//    {
-//      var fieldInfo = memberInfo as FieldInfo;
-//      var eventInfo = memberInfo as EventInfo;
-//      var propertyInfo = memberInfo as PropertyInfo;
-//      AccessModifier GetAccessModifier()
-//      {
-//        switch (memberInfo)
-//        {
-//          case Type typeInfo:
-//            return typeInfo.IsPublic ? AccessModifier.Public
-//              : typeInfo.IsNestedPrivate ? AccessModifier.Private
-//              : typeInfo.IsNestedAssembly ? AccessModifier.Internal
-//              : typeInfo.IsNestedFamily ? AccessModifier.Protected
-//              : typeInfo.IsNestedPublic ? AccessModifier.Public
-//              : typeInfo.IsNestedFamORAssem ? AccessModifier.ProtectedInternal
-//              : typeInfo.IsNestedFamANDAssem ? AccessModifier.PrivateProtected
-//              : !typeInfo.IsVisible ? AccessModifier.Internal
-//              : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
-//          case MethodBase methodBaseInfo:
-//            return methodBaseInfo.IsPublic ? AccessModifier.Public
-//              : methodBaseInfo.IsPrivate ? AccessModifier.Private
-//              : methodBaseInfo.IsAssembly ? AccessModifier.Internal
-//              : methodBaseInfo.IsFamily ? AccessModifier.Protected
-//              : methodBaseInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
-//              : methodBaseInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
-//              : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
-//          case FieldInfo _:
-//            return fieldInfo.IsPublic ? AccessModifier.Public
-//              : fieldInfo.IsPrivate ? AccessModifier.Private
-//              : fieldInfo.IsAssembly ? AccessModifier.Internal
-//              : fieldInfo.IsFamily ? AccessModifier.Protected
-//              : fieldInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
-//              : fieldInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
-//              : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
-//          case EventInfo _:
-//            return eventInfo.GetAddMethod(true).GetAccessModifier();
-//          case PropertyInfo _:
-//            return propertyInfo.GetAccessors(true)
-//        .Select(accessor => accessor.GetAccessModifier())
-//        .Min();
-//          default:
-//            throw new NotSupportedException("The provided MemberInfo is not supported");
-//        }
-//      }
-//      // TODO::Create valueType specific overloads to eliminate valueType switching and use cached reflection data
-
-//      var valueType = memberInfo as Type;
-//      MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
-//        ?? valueType?.GetMethod("Invoke"); // MemberInfo is potentially a delegate
-//      MethodInfo propertyGetMethodInfo = propertyInfo?.GetGetMethod(true);
-//      MethodInfo propertySetMethodInfo = propertyInfo?.GetSetMethod(true);
-//      var constructorInfo = memberInfo as ConstructorInfo;
-
-//      ParameterInfo[] indexerPropertyIndexParameters = propertyInfo?.GetIndexParameters() ?? Array.Empty<ParameterInfo>();
-
-//      SymbolAttributes memberAttributes = memberInfo.GetKind();
-//      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
-//      IEnumerable<CustomAttributeData> symbolAttributes = memberInfo.GetCustomAttributesData();
-//#if !NETSTANDARD2_0
-//      if (memberAttributes.HasFlag(SymbolAttributes.Final))
-//      {
-//        symbolAttributes = symbolAttributes.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute));
-//      }
-//#endif
-
-//      _ = signatureNameBuilder.AppendCustomAttributes(symbolAttributes, isAppendNewLineEnabled: true);
-
-//      AccessModifier accessModifier = GetAccessModifier();
-//      _ = signatureNameBuilder
-//        .Append(accessModifier.ToDisplayStringValue())
-//        .Append(' ');
-
-
-//      if (!memberAttributes.HasFlag(SymbolAttributes.Delegate)
-//        && !memberAttributes.HasFlag(SymbolAttributes.Struct)
-//        && !memberAttributes.HasFlag(SymbolAttributes.Field)
-//        && memberAttributes.HasFlag(SymbolAttributes.Final))
-//      {
-//        _ = signatureNameBuilder
-//          .Append("sealed")
-//          .Append(' ');
-//      }
-
-//      if (!memberAttributes.HasFlag(SymbolAttributes.Delegate)
-//        && memberAttributes.HasFlag(SymbolAttributes.Static))
-//      {
-//        _ = signatureNameBuilder
-//          .Append("static")
-//          .Append(' ');
-//      }
-
-//      bool isAbstract = memberAttributes.HasFlag(SymbolAttributes.Abstract);
-//      if (!memberAttributes.HasFlag(SymbolAttributes.Delegate) && isAbstract)
-//      {
-//        _ = signatureNameBuilder
-//          .Append("abstract")
-//          .Append(' ');
-//      }
-
-//      if (!isAbstract
-//        && !memberAttributes.HasFlag(SymbolAttributes.Delegate)
-//        && !memberAttributes.HasFlag(SymbolAttributes.Class)
-//        && memberAttributes.HasFlag(SymbolAttributes.Virtual))
-//      {
-//        _ = signatureNameBuilder
-//          .Append("virtual")
-//          .Append(' ');
-//      }
-
-//      if (memberAttributes.HasFlag(SymbolAttributes.ReadOnlyStruct)
-//        || memberAttributes.HasFlag(SymbolAttributes.ReadOnlyField))
-//      {
-//        _ = signatureNameBuilder
-//          .Append("readonly")
-//          .Append(' ');
-//      }
-
-//      if (memberAttributes.HasFlag(SymbolAttributes.Struct))
-//      {
-//        _ = signatureNameBuilder
-//          .Append("struct")
-//          .Append(' ');
-//      }
-
-//      if (memberAttributes.HasFlag(SymbolAttributes.Class))
-//      {
-//        _ = signatureNameBuilder
-//          .Append("class")
-//          .Append(' ');
-//      }
-
-//      if (memberAttributes.HasFlag(SymbolAttributes.Interface))
-//      {
-//        _ = signatureNameBuilder
-//          .Append("interface")
-//          .Append(' ');
-//      }
-
-//      if (memberAttributes.HasFlag(SymbolAttributes.Delegate))
-//      {
-//        _ = signatureNameBuilder
-//          .Append("delegate")
-//          .Append(' ');
-//      }
-
-//      if (memberAttributes.HasFlag(SymbolAttributes.Event))
-//      {
-//        _ = signatureNameBuilder
-//          .Append("event")
-//          .Append(' ');
-//      }
-
-//      if (memberAttributes.HasFlag(SymbolAttributes.Enum))
-//      {
-//        _ = signatureNameBuilder
-//          .Append("enum")
-//          .Append(' ');
-//      }
-
-//      if (!memberAttributes.HasFlag(SymbolAttributes.Delegate)
-//        && !memberAttributes.HasFlag(SymbolAttributes.Class)
-//        && memberAttributes.HasFlag(SymbolAttributes.Override))
-//      {
-//        _ = signatureNameBuilder
-//          .Append("override")
-//          .Append(' ');
-//      }
-
-//      // Set return valueType
-//      if (memberAttributes.HasFlag(SymbolAttributes.Method)
-//        || memberAttributes.HasFlag(SymbolAttributes.Property)
-//        || memberAttributes.HasFlag(SymbolAttributes.Field)
-//        || memberAttributes.HasFlag(SymbolAttributes.Delegate)
-//        || memberAttributes.HasFlag(SymbolAttributes.Event))
-//      {
-//        Type returnType = fieldInfo?.FieldType
-//          ?? methodInfo?.ReturnType
-//          ?? propertyGetMethodInfo?.ReturnType
-//          ?? eventInfo?.EventHandlerType;
-
-//        _ = signatureNameBuilder.AppendDisplayNameInternal(returnType, isFullyQualifiedName, isShortName: false)
-//          .Append(' ');
-//      }
-
-//      if (memberAttributes.HasFlag(SymbolAttributes.Member) && (!isShortName || isFullyQualifiedName))
-//      {
-//        _ = signatureNameBuilder.AppendDisplayNameInternal(memberInfo.DeclaringType, isFullyQualifiedName, isShortName: false)
-//          .Append('.');
-//      }
-
-//      // Member or valueType name
-//      if (memberAttributes.HasFlag(SymbolAttributes.IndexerProperty))
-//      {
-//        _ = signatureNameBuilder.Append("this");
-//      }
-//      else
-//      {
-//        _ = signatureNameBuilder.AppendDisplayNameInternal(memberInfo, isFullyQualifiedName: isFullyQualifiedName && memberAttributes.HasFlag(SymbolAttributes.Type), isShortName: false);
-//      }
-
-//      if (memberAttributes.HasFlag(SymbolAttributes.Constructor)
-//        || memberAttributes.HasFlag(SymbolAttributes.Method)
-//        || memberAttributes.HasFlag(SymbolAttributes.Delegate))
-//      {
-//        _ = signatureNameBuilder.Append('(');
-
-//        if (memberAttributes.HasFlag(SymbolAttributes.Method) && (methodInfo?.IsExtensionMethod() ?? false))
-//        {
-//          _ = signatureNameBuilder
-//            .Append("this")
-//            .Append(' ');
-//        }
-//      }
-//      else if (memberAttributes.HasFlag(SymbolAttributes.IndexerProperty))
-//      {
-//        _ = signatureNameBuilder.Append('[');
-//      }
-
-//      IEnumerable<ParameterInfo> parameters = methodInfo?.GetParameters()
-//        ?? constructorInfo?.GetParameters()
-//        ?? indexerPropertyIndexParameters
-//        ?? Enumerable.Empty<ParameterInfo>();
-
-//      if (parameters.Any())
-//      {
-//        foreach (ParameterInfo parameter in parameters)
-//        {
-//          bool isGenericTypeDefinition = false;
-//          if (memberAttributes.HasFlag(SymbolAttributes.GenericMethod))
-//          {
-//            isGenericTypeDefinition = methodInfo.IsGenericMethodDefinition;
-//          }
-//          else if (memberAttributes.HasFlag(SymbolAttributes.GenericType))
-//          {
-//            isGenericTypeDefinition = valueType.IsGenericTypeDefinition;
-//          }
-
-//          if (isGenericTypeDefinition)
-//          {
-//            IEnumerable<CustomAttributeData> attributes = parameter.GetCustomAttributesData();
-//            _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false);
-//          }
-
-//          if (parameter.IsRef())
-//          {
-//            _ = signatureNameBuilder.Append("ref ");
-//          }
-//          else if (parameter.IsIn)
-//          {
-//            _ = signatureNameBuilder.Append("in ");
-//          }
-//          else if (parameter.IsOut)
-//          {
-//            _ = signatureNameBuilder.Append("out ");
-//          }
-
-//          _ = signatureNameBuilder
-//            .AppendDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isShortName: false)
-//            .Append(' ')
-//            .Append(parameter.Name)
-//            .Append(HelperExtensionsCommon.ParameterSeparator);
-//        }
-
-//        // Remove trailing comma and whitespace
-//        _ = signatureNameBuilder.Remove(signatureNameBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length);
-//      }
-
-//      if (memberAttributes.HasFlag(SymbolAttributes.Constructor)
-//        || memberAttributes.HasFlag(SymbolAttributes.Method)
-//        || memberAttributes.HasFlag(SymbolAttributes.Delegate))
-//      {
-//        _ = signatureNameBuilder.Append(')');
-//      }
-//      else if (memberAttributes.HasFlag(SymbolAttributes.IndexerProperty))
-//      {
-//        _ = signatureNameBuilder.Append(']');
-//      }
-
-//      if (memberAttributes.HasFlag(SymbolAttributes.Property))
-//      {
-//        _ = signatureNameBuilder
-//          .Append(' ')
-//          .Append('{')
-//          .Append(' ');
-
-//        if (propertyGetMethodInfo != null)
-//        {
-//          _ = signatureNameBuilder
-//            .Append("get")
-//            .Append(HelperExtensionsCommon.ExpressionTerminator)
-//            .Append(' ');
-//        }
-
-//        if (propertySetMethodInfo != null)
-//        {
-//          _ = signatureNameBuilder
-//            .Append("set")
-//            .Append(HelperExtensionsCommon.ExpressionTerminator)
-//            .Append(' ');
-//        }
-
-//        _ = signatureNameBuilder.Append('}');
-//      }
-
-//      if (memberAttributes.HasFlag(SymbolAttributes.Class))
-//      {
-//        signatureNameBuilder = signatureNameBuilder.AppendInheritanceSignature(valueType, isFullyQualifiedName);
-//      }
-
-//      if (memberAttributes.HasFlag(SymbolAttributes.Generic))
-//      {
-//        Type[] genericTypeParameterDefinitions = Type.EmptyTypes;
-//        if (memberAttributes.HasFlag(SymbolAttributes.GenericType) && valueType.IsGenericTypeDefinition)
-//        {
-//          genericTypeParameterDefinitions = valueType.GetGenericTypeDefinition().GetGenericArguments();
-//        }
-//        else if (memberAttributes.HasFlag(SymbolAttributes.GenericMethod) && methodInfo.IsGenericMethodDefinition)
-//        {
-//          genericTypeParameterDefinitions = methodInfo.GetGenericMethodDefinition().GetGenericArguments();
-//        }
-
-//        _ = signatureNameBuilder.AppendGenericTypeConstraints(genericTypeParameterDefinitions, isFullyQualifiedName, isCompact);
-//      }
-
-//      if (!memberAttributes.HasFlag(SymbolAttributes.Class)
-//        && !memberAttributes.HasFlag(SymbolAttributes.Struct)
-//        && !memberAttributes.HasFlag(SymbolAttributes.Enum))
-//      {
-//        _ = signatureNameBuilder.Append(HelperExtensionsCommon.ExpressionTerminator);
-//      }
-
-//      string fullMemberName = signatureNameBuilder.ToString();
-//      StringBuilderFactory.Recycle(signatureNameBuilder);
-
-//      return fullMemberName;
-//    }
-//    private static StringBuilder AppendInheritanceSignature(this StringBuilder memberNameBuilder, Type typeData, bool isFullyQualified)
-//    {
-//      bool isDelegate = HelperExtensionsCommon.DelegateType.IsAssignableFrom(typeData);
-//      if (isDelegate)
-//      {
-//        return memberNameBuilder;
-//      }
-
-//      bool isSubclass = typeData.BaseType != typeof(object);
-//      Type[] interfaces = typeData.GetInterfaces();
-//      bool hasInterfaces = interfaces.Length > 0;
-//      if (isSubclass || hasInterfaces)
-//      {
-//        _ = memberNameBuilder.Append(" : ");
-//      }
-
-//      if (isSubclass)
-//      {
-//        _ = memberNameBuilder.Append(isFullyQualified ? typeData.BaseType.FullName : typeData.BaseType.Name)
-//          .Append(HelperExtensionsCommon.ParameterSeparator);
-//      }
-
-//      foreach (Type interfaceData in interfaces)
-//      {
-//        _ = memberNameBuilder.Append(isFullyQualified ? interfaceData.FullName : interfaceData.Name)
-//          .Append(HelperExtensionsCommon.ParameterSeparator);
-//      }
-
-//      if (isSubclass || hasInterfaces)
-//      {
-//        _ = memberNameBuilder.Remove(memberNameBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length);
-//      }
-
-//      return memberNameBuilder;
-//    }
-//    private static StringBuilder AppendGenericTypeConstraints(this StringBuilder constraintBuilder, Type[] genericTypeDefinitionsData, bool isFullyQualified, bool isCompact)
-//    {
-//      bool hasSingleNewLine = false;
-//      for (int genericTypeArgumentIndex = 0; genericTypeArgumentIndex < genericTypeDefinitionsData.Length; genericTypeArgumentIndex++)
-//      {
-//        Type genericTypeDefinitionData = genericTypeDefinitionsData[genericTypeArgumentIndex];
-//        Type[] constraints = genericTypeDefinitionData.GetGenericParameterConstraints();
-//        if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.SpecialConstraintMask) == GenericParameterAttributes.None
-//          && constraints.Length == 0)
-//        {
-//          continue;
-//        }
-
-//        if (isCompact)
-//        {
-//          if (!hasSingleNewLine)
-//          {
-//            _ = constraintBuilder.AppendLine()
-//            .Append(HelperExtensionsCommon.Indentation);
-//            hasSingleNewLine = true;
-//          }
-//          else
-//          {
-//            _ = constraintBuilder.Append(' ');
-//          }
-//        }
-//        else
-//        {
-//          _ = constraintBuilder.AppendLine()
-//            .Append(HelperExtensionsCommon.Indentation);
-//        }
-
-//        _ = constraintBuilder.Append("where")
-//          .Append(' ')
-//          .Append(genericTypeDefinitionData.Name)
-//          .Append(" : ");
-
-//        if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0)
-//        {
-//          _ = constraintBuilder.Append("class")
-//            .Append(HelperExtensionsCommon.ParameterSeparator);
-//        }
-
-//        if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) != 0)
-//        {
-//          _ = constraintBuilder.Append("struct")
-//            .Append(HelperExtensionsCommon.ParameterSeparator);
-//        }
-
-//        foreach (Type constraint in constraints)
-//        {
-//          _ = constraintBuilder.AppendDisplayNameInternal(constraint, isFullyQualified, isShortName: false)
-//            .Append(HelperExtensionsCommon.ParameterSeparator);
-//        }
-
-//        if (!genericTypeDefinitionData.IsValueType && (genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0)
-//        {
-//          _ = constraintBuilder.Append("new()")
-//            .Append(HelperExtensionsCommon.ParameterSeparator);
-//        }
-
-//        _ = constraintBuilder.Remove(constraintBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length);
-//      }
-
-//      return constraintBuilder;
-//    }
+    //    public static StringBuilder AppendSignatureName(this StringBuilder nameBuilder, MemberInfo memberInfo, bool isFullyQualifiedName, bool isDeclaringTypeIncluded)
+    //    {
+    //      SyntaxNode syntaxGraph = null;
+    //      bool isTerminationRequested = false;
+    //      if (memberInfo is MethodInfo methodInfo)
+    //      {
+    //        syntaxGraph = CreateMethodGraph(methodInfo, isFullyQualifiedName);
+    //        isTerminationRequested = true;
+    //      }
+
+    //      if (syntaxGraph != null)
+    //      {
+    //        _ = nameBuilder.Append(syntaxGraph.ToString());
+    //        if (isTerminationRequested)
+    //        {
+    //          _ = nameBuilder.Append(HelperExtensionsCommon.ExpressionTerminator);
+    //        }
+    //      }
+
+    //      return nameBuilder;
+    //    }
+
+    //    private static SyntaxNode CreateMethodGraph(MethodInfo methodInfo, bool isFullyQualifiedName)
+    //    {
+    //      TypeSyntax returnType = SyntaxFactory.ParseTypeName(ToDisplayNameInternal(methodInfo.ReturnType, isFullyQualifiedName, isDeclaringTypeIncluded: false));
+    //      string methodName = ToDisplayNameInternal(methodInfo, isFullyQualifiedName, isDeclaringTypeIncluded: false);
+    //      MethodDeclarationSyntax methodGraph = SyntaxFactory.MethodDeclaration(returnType, methodName)
+    //        .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+
+    //      ParameterInfo[] parameters = methodInfo.GetParameters();
+    //      foreach (ParameterInfo parameter in parameters)
+    //      {
+    //        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.Name))
+    //          .WithType(SyntaxFactory.IdentifierName(ToDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
+
+    //        if (parameter.IsRef())
+    //        {
+    //          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.RefKeyword));
+    //        }
+    //        else if (parameter.IsIn)
+    //        {
+    //          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.InKeyword));
+    //        }
+    //        else if (parameter.IsOut)
+    //        {
+    //          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.OutKeyword));
+    //        }
+    //        //IList<CustomAttributeData> parameterAttributes = parameter.GetCustomAttributesData();
+    //        //foreach(CustomAttributeData parameterAttribute in parameterAttributes)
+    //        //{
+    //        //  AttributeArgumentListSyntax argumentList = SyntaxFactory.AttributeArgumentList();
+
+    //        //  IList<CustomAttributeTypedArgument> arguments = parameterAttribute.ConstructorArguments;
+    //        //  foreach (CustomAttributeTypedArgument argument in arguments)
+    //        //  {
+    //        //    var argumentSyntax = SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression)
+    //        //  }
+    //        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.Name, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
+    //        //  parameterSyntax = parameterSyntax.AddAttributeLists(attributeSyntax);
+    //        //}
+    //        methodGraph = methodGraph.AddParameterListParameters(parameterSyntax);
+    //      }
+
+    //      if (methodInfo.IsGenericMethod)
+    //      {
+    //        Type[] typeArguments = methodInfo.GetGenericArguments();
+    //        for (int typeArgumentIndex = 0; typeArgumentIndex < typeArguments.Length; typeArgumentIndex++)
+    //        {
+    //          Type typeArgument = typeArguments[typeArgumentIndex];
+    //          //TypeParameterSyntax typeParameter = CreateMethodTypeParameter(typeArgument, isFullyQualifiedName);
+    //          //methodGraph = methodGraph.AddTypeParameterListParameters(typeParameter);
+
+    //          if (methodInfo.IsGenericMethodDefinition)
+    //          {
+    //            SeparatedSyntaxList<TypeParameterConstraintSyntax> constraints = SyntaxFactory.SeparatedList<TypeParameterConstraintSyntax>();
+    //            if ((typeArgument.GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) != 0)
+    //            {
+    //              constraints = constraints.Add(SyntaxFactory.ClassOrStructConstraint(SyntaxKind.StructConstraint));
+    //            }
+
+    //            if ((typeArgument.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0)
+    //            {
+    //              constraints = constraints.Add(SyntaxFactory.ClassOrStructConstraint(SyntaxKind.ClassConstraint));
+    //            }
+
+    //            Type[] constraintTypes = typeArgument.GetGenericParameterConstraints();
+    //            foreach (Type constraintType in constraintTypes)
+    //            {
+    //              if (constraintType == typeof(object) || constraintType == typeof(ValueType))
+    //              {
+    //                continue;
+    //              }
+
+    //              string constraintName = ToDisplayNameInternal(constraintType, isFullyQualifiedName, isDeclaringTypeIncluded: false);
+    //              TypeConstraintSyntax constraintSyntax = SyntaxFactory.TypeConstraint(SyntaxFactory.IdentifierName(constraintName));
+    //              constraints = constraints.Add(constraintSyntax);
+    //            }
+
+    //            if (!typeArgument.IsValueType && (typeArgument.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0)
+    //            {
+    //              constraints = constraints.Add(SyntaxFactory.ConstructorConstraint());
+    //            }
+
+    //            string genericTypeParameterName = ToDisplayNameInternal(typeArgument, isFullyQualifiedName, isDeclaringTypeIncluded: false);
+    //            methodGraph = methodGraph.AddConstraintClauses(SyntaxFactory.TypeParameterConstraintClause(SyntaxFactory.IdentifierName(genericTypeParameterName), constraints));
+    //          }
+    //        }
+    //      }
+
+    //      methodGraph = methodGraph.NormalizeWhitespace();
+    //      return methodGraph;
+    //    }
+
+    //    private static SyntaxNode CreateDelegateGraph(MethodInfo methodInfo, bool isFullyQualifiedName)
+    //    {
+    //      TypeSyntax returnType = SyntaxFactory.ParseTypeName(ToDisplayNameInternal(methodInfo.ReturnType, isFullyQualifiedName, isDeclaringTypeIncluded: false));
+    //      string methodName = ToDisplayNameInternal(methodInfo, isFullyQualifiedName, isDeclaringTypeIncluded: true);
+    //      MethodDeclarationSyntax methodGraph = SyntaxFactory.MethodDeclaration(returnType, methodName)
+    //        .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+
+    //      ParameterInfo[] parameters = methodInfo.GetParameters();
+    //      foreach (ParameterInfo parameter in parameters)
+    //      {
+    //        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.Name))
+    //          .WithType(SyntaxFactory.IdentifierName(ToDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
+
+    //        if (parameter.IsRef())
+    //        {
+    //          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.RefKeyword));
+    //        }
+    //        else if (parameter.IsIn)
+    //        {
+    //          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.InKeyword));
+    //        }
+    //        else if (parameter.IsOut)
+    //        {
+    //          parameterSyntax = parameterSyntax.AddModifiers(SyntaxFactory.Token(SyntaxKind.OutKeyword));
+    //        }
+    //        //IList<CustomAttributeData> parameterAttributes = parameter.GetCustomAttributesData();
+    //        //foreach(CustomAttributeData parameterAttribute in parameterAttributes)
+    //        //{
+    //        //  AttributeArgumentListSyntax argumentList = SyntaxFactory.AttributeArgumentList();
+
+    //        //  IList<CustomAttributeTypedArgument> arguments = parameterAttribute.ConstructorArguments;
+    //        //  foreach (CustomAttributeTypedArgument argument in arguments)
+    //        //  {
+    //        //    var argumentSyntax = SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression)
+    //        //  }
+    //        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.Name, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
+    //        //  parameterSyntax = parameterSyntax.AddAttributeLists(attributeSyntax);
+    //        //}
+    //        methodGraph = methodGraph.AddParameterListParameters(parameterSyntax);
+    //      }
+
+    //      if (methodInfo.IsGenericMethod)
+    //      {
+    //        Type[] typeArguments = methodInfo.GetGenericArguments();
+    //        for (int typeArgumentIndex = 0; typeArgumentIndex < typeArguments.Length; typeArgumentIndex++)
+    //        {
+    //          Type typeArgument = typeArguments[typeArgumentIndex];
+    //          TypeParameterSyntax typeParameter = CreateMethodTypeParameter(typeArgument, isFullyQualifiedName);
+    //          methodGraph = methodGraph.AddTypeParameterListParameters(typeParameter);
+
+    //          if (methodInfo.IsGenericMethodDefinition)
+    //          {
+    //            SeparatedSyntaxList<TypeParameterConstraintSyntax> constraints = SyntaxFactory.SeparatedList<TypeParameterConstraintSyntax>();
+    //            if ((typeArgument.GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) != 0)
+    //            {
+    //              constraints = constraints.Add(SyntaxFactory.ClassOrStructConstraint(SyntaxKind.StructConstraint));
+    //            }
+
+    //            if ((typeArgument.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0)
+    //            {
+    //              constraints = constraints.Add(SyntaxFactory.ClassOrStructConstraint(SyntaxKind.ClassConstraint));
+    //            }
+
+    //            if (!typeArgument.IsValueType && (typeArgument.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0)
+    //            {
+    //              constraints = constraints.Add(SyntaxFactory.ConstructorConstraint());
+    //            }
+
+    //            Type[] constraintTypes = typeArgument.GetGenericParameterConstraints();
+    //            foreach (Type constraintType in constraintTypes)
+    //            {
+    //              if (constraintType == typeof(object) || constraintType == typeof(ValueType))
+    //              {
+    //                continue;
+    //              }
+
+    //              string constraintName = ToDisplayNameInternal(constraintType, isFullyQualifiedName, isDeclaringTypeIncluded: false);
+    //              TypeConstraintSyntax constraintSyntax = SyntaxFactory.TypeConstraint(SyntaxFactory.IdentifierName(constraintName));
+    //              constraints = constraints.Add(constraintSyntax);
+    //            }
+
+    //            string genericTypeParameterName = ToDisplayNameInternal(typeArgument, isFullyQualifiedName, isDeclaringTypeIncluded: false);
+    //            methodGraph = methodGraph.AddConstraintClauses(SyntaxFactory.TypeParameterConstraintClause(SyntaxFactory.IdentifierName(genericTypeParameterName), constraints));
+    //          }
+    //        }
+    //      }
+
+    //      methodGraph = methodGraph.NormalizeWhitespace(indentation: " ", elasticTrivia: true);
+    //      return methodGraph;
+    //    }
+
+    //    private static TypeParameterSyntax CreateMethodTypeParameter(Type valueType, bool isFullyQualifiedName)
+    //    {
+    //      IEnumerable<Attribute> attributes = valueType.GetCustomAttributes();
+    //      AttributeListSyntax attributeSyntaxList = SyntaxFactory.AttributeList();
+    //      foreach (Attribute attribute in attributes)
+    //      {
+    //        string attributeName = ToDisplayNameInternal(attribute.GetType(), isFullyQualifiedName, isDeclaringTypeIncluded: false);
+    //        AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.IdentifierName(attributeName));
+    //        attributeSyntaxList = attributeSyntaxList.AddAttributes(attributeSyntax);
+    //      }
+
+    //      SyntaxKind variance = SyntaxKind.None;
+    //      if (valueType.IsGenericParameter)
+    //      {
+    //        if ((valueType.GenericParameterAttributes & GenericParameterAttributes.Covariant) != 0)
+    //        {
+    //          variance = SyntaxKind.OutKeyword;
+    //        }
+    //        else if ((valueType.GenericParameterAttributes & GenericParameterAttributes.Contravariant) != 0)
+    //        {
+    //          variance = SyntaxKind.InKeyword;
+    //        }
+    //      }
+
+    //      string typeParameterName = ToDisplayNameInternal(valueType, isFullyQualifiedName, isDeclaringTypeIncluded: false);
+    //      return SyntaxFactory.TypeParameter(new SyntaxList<AttributeListSyntax>() { attributeSyntaxList }, SyntaxFactory.Token(variance), SyntaxFactory.Identifier(typeParameterName));
+    //    }
+
+    //    private static string ToDisplayNameInternal(MemberInfo memberInfo, bool isFullyQualifiedName, bool isDeclaringTypeIncluded)
+    //    {
+    //      string symbolName = new StringBuilder()
+    //        .AppendDisplayNameInternal(memberInfo, isFullyQualifiedName, isDeclaringTypeIncluded)
+    //        .ToString();
+
+    //      return symbolName;
+    //    }
+
+    //    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, Type valueType, bool isFullyQualifiedName, bool isDeclaringTypeIncluded)
+    //    {
+    //      var typeReference = new CodeTypeReference(valueType);
+    //      ReadOnlySpan<char> typeName = HelperExtensionsCommon.CodeProvider.GetTypeOutput(typeReference).AsSpan();
+    //      if (valueType.IsGenericType)
+    //      {
+    //        int startIndexOfGenericTypeParameters = typeName.IndexOf('<');
+    //        typeName = typeName.Slice(0, startIndexOfGenericTypeParameters);
+    //      }
+
+    //      if (!isFullyQualifiedName)
+    //      {
+    //        int startIndexOfUnqualifiedTypeName = typeName.LastIndexOf('.') + 1;
+    //        if (startIndexOfUnqualifiedTypeName > 0)
+    //        {
+    //          typeName = typeName.Slice(startIndexOfUnqualifiedTypeName, typeName.Length - startIndexOfUnqualifiedTypeName);
+    //        }
+    //      }
+
+    //      _ = nameBuilder.Append(typeName.ToArray());
+
+    //      if (isDeclaringTypeIncluded)
+    //      {
+    //        return nameBuilder;
+    //      }
+
+    //      if (valueType.IsGenericType)
+    //      {
+    //        _ = nameBuilder.Append('<');
+
+    //        Type[] typeArguments = valueType.GetGenericArguments();
+    //        foreach (Type typeArgument in typeArguments)
+    //        {
+    //          _ = nameBuilder.AppendDisplayNameInternal(typeArgument, isFullyQualifiedName, isDeclaringTypeIncluded)
+    //            .Append(ParameterSeparator);
+    //        }
+
+    //        _ = nameBuilder.Remove(nameBuilder.Length - ParameterSeparator.Length, ParameterSeparator.Length)
+    //          .Append('>');
+    //      }
+
+    //      return nameBuilder;
+    //    }
+
+    //  private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, MemberInfo memberInfo, bool isFullyQualifiedName, bool isDeclaringTypeIncluded)
+    //    {
+    //      if (memberInfo is Type valueType)
+    //      {
+    //        return nameBuilder.AppendDisplayNameInternal(valueType, isFullyQualifiedName, isDeclaringTypeIncluded);
+    //      }
+
+    //      if (isFullyQualifiedName)
+    //      {
+    //        _ = nameBuilder.AppendDisplayNameInternal(memberInfo.DeclaringType, isFullyQualifiedName, isDeclaringTypeIncluded)
+    //          .Append('.');
+    //      }
+
+    //      if (memberInfo.MemberType.HasFlag(MemberTypes.Constructor))
+    //      {
+    //        if (memberInfo.DeclaringType.IsGenericType)
+    //        {
+    //          int genericTypeArgumentPlaceholderIndex = memberInfo.DeclaringType.Name.IndexOf('`');
+    //          return nameBuilder.Append(memberInfo.DeclaringType.Name, 0, genericTypeArgumentPlaceholderIndex);
+    //        }
+    //        else
+    //        {
+    //          return nameBuilder.Append(memberInfo.DeclaringType.Name);
+    //        }
+    //      }
+    //      else
+    //      {
+    //        return nameBuilder.Append(memberInfo.Name);
+    //      }
+    //    }
+    //    private static SymbolAttributes GetKind(this MemberInfo memberInfo)
+    //    {
+    //      var valueType = memberInfo as Type;
+    //      var propertyInfo = memberInfo as PropertyInfo;
+    //      MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
+    //        ?? valueType?.GetMethod("Invoke"); // MemberInfo is potentially a delegate
+    //      MethodInfo propertyGetMethodInfo = propertyInfo?.GetGetMethod(true);
+    //      MethodInfo propertySetMethodInfo = propertyInfo?.GetSetMethod(true);
+    //      var constructorInfo = memberInfo as ConstructorInfo;
+    //      var fieldInfo = memberInfo as FieldInfo;
+    //      var eventInfo = memberInfo as EventInfo;
+    //      MethodInfo eventAddMethodInfo = eventInfo?.GetAddMethod(true);
+    //      FieldInfo eventDeclaredFieldInfo = eventInfo?.DeclaringType.GetField(eventInfo.Name, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+    //      ParameterInfo[] indexerPropertyIndexParameters = propertyInfo?.GetIndexParameters() ?? Array.Empty<ParameterInfo>();
+
+    //      bool isDelegate = valueType?.IsDelegate() ?? false;
+    //      if (isDelegate)
+    //      {
+    //        return SymbolAttributes.Delegate;
+    //      }
+
+    //      bool isClass = !isDelegate && (valueType?.IsClass ?? false);
+    //      if (isClass)
+    //      {
+    //        SymbolAttributes classKind = SymbolAttributes.Class;
+    //        if (valueType.IsAbstract)
+    //        {
+    //          classKind |= SymbolAttributes.Abstract;
+    //        }
+
+    //        if (valueType.IsSealed)
+    //        {
+    //          classKind |= SymbolAttributes.Final;
+    //        }
+
+    //        if (valueType.IsStatic())
+    //        {
+    //          classKind |= SymbolAttributes.Static;
+    //        }
+
+    //        return classKind;
+    //      }
+
+    //      bool isEnum = !isDelegate && (valueType?.IsEnum ?? false);
+    //      if (isEnum)
+    //      {
+    //        return SymbolAttributes.Enum;
+    //      }
+
+    //      bool isStruct = !isDelegate && (valueType?.IsValueType ?? false);
+    //      if (isStruct)
+    //      {
+    //        SymbolAttributes structKind = SymbolAttributes.Struct;
+
+    //#if NETSTANDARD2_1_OR_GREATER || NET471_OR_GREATER || NET
+    //        bool isReadOnlyStruct = isStruct && valueType.GetCustomAttribute(typeof(IsReadOnlyAttribute)) != null;
+    //        if (isReadOnlyStruct)
+    //        {
+    //          structKind |= SymbolAttributes.Final;
+    //        }
+    //#endif
+    //        return structKind;
+    //      }
+
+    //      bool isProperty = propertyInfo != null;
+    //      if (isProperty)
+    //      {
+    //        bool isIndexerProperty = indexerPropertyIndexParameters.Length > 0;
+    //        SymbolAttributes propertyKind = isIndexerProperty
+    //          ? SymbolAttributes.IndexerProperty
+    //          : SymbolAttributes.Property;
+
+    //        MethodInfo getMethod = propertyInfo.GetGetMethod();
+    //        if (!propertyInfo.CanWrite)
+    //        {
+    //          propertyKind |= SymbolAttributes.Final;
+    //        }
+
+    //        if (getMethod.IsAbstract)
+    //        {
+    //          propertyKind |= SymbolAttributes.Abstract;
+    //        }
+
+    //        if (getMethod.IsStatic)
+    //        {
+    //          propertyKind |= SymbolAttributes.Static;
+    //        }
+
+    //        if (getMethod.IsVirtual)
+    //        {
+    //          propertyKind |= SymbolAttributes.Virtual;
+    //        }
+
+    //        if (getMethod.IsOverride())
+    //        {
+    //          propertyKind |= SymbolAttributes.Override;
+    //        }
+
+    //        return propertyKind;
+    //      }
+
+    //      bool isMethod = !isDelegate && !isClass && memberInfo.MemberType.HasFlag(MemberTypes.Method);
+    //      if (isMethod)
+    //      {
+    //        SymbolAttributes methodKind = SymbolAttributes.Method;
+    //        if (methodInfo.IsFinal)
+    //        {
+    //          methodKind |= SymbolAttributes.Final;
+    //        }
+
+    //        if (methodInfo.IsAbstract)
+    //        {
+    //          methodKind |= SymbolAttributes.Abstract;
+    //        }
+
+    //        if (methodInfo.IsStatic)
+    //        {
+    //          methodKind |= SymbolAttributes.Static;
+    //        }
+
+    //        if (methodInfo.IsVirtual)
+    //        {
+    //          methodKind |= SymbolAttributes.Virtual;
+    //        }
+
+    //        if (methodInfo.IsOverride())
+    //        {
+    //          methodKind |= SymbolAttributes.Override;
+    //        }
+
+    //        return methodKind;
+    //      }
+
+    //      bool isEvent = eventInfo != null;
+    //      if (isEvent)
+    //      {
+    //        SymbolAttributes eventKind = SymbolAttributes.Event;
+    //        MethodInfo addHandlerMethod = eventInfo.GetAddMethod(true);
+    //        if (addHandlerMethod.IsFinal)
+    //        {
+    //          eventKind |= SymbolAttributes.Final;
+    //        }
+
+    //        if (addHandlerMethod.IsAbstract)
+    //        {
+    //          eventKind |= SymbolAttributes.Abstract;
+    //        }
+
+    //        if (addHandlerMethod.IsStatic)
+    //        {
+    //          eventKind |= SymbolAttributes.Static;
+    //        }
+
+    //        if (addHandlerMethod.IsVirtual)
+    //        {
+    //          eventKind |= SymbolAttributes.Virtual;
+    //        }
+
+    //        if (addHandlerMethod.IsOverride())
+    //        {
+    //          eventKind |= SymbolAttributes.Override;
+    //        }
+
+    //        return eventKind;
+    //      }
+
+    //      bool isConstructor = constructorInfo != null;
+    //      if (isConstructor)
+    //      {
+    //        SymbolAttributes constructorKind = SymbolAttributes.Constructor;
+
+    //        if (constructorInfo.IsStatic)
+    //        {
+    //          constructorKind |= SymbolAttributes.Static;
+    //        }
+
+    //        return constructorKind;
+    //      }
+
+    //      bool isField = fieldInfo != null;
+    //      if (isField)
+    //      {
+    //        SymbolAttributes fieldKind = SymbolAttributes.Event;
+    //        if (fieldInfo.IsInitOnly)
+    //        {
+    //          fieldKind |= SymbolAttributes.Final;
+    //        }
+
+    //        if (fieldInfo.IsStatic)
+    //        {
+    //          fieldKind |= SymbolAttributes.Static;
+    //        }
+
+    //        return fieldKind;
+    //      }
+
+    //      bool isInterface = !isDelegate && !isClass && (valueType?.IsInterface ?? false);
+    //      if (isInterface)
+    //      {
+    //        SymbolAttributes interfaceKind = SymbolAttributes.Interface;
+    //        return interfaceKind;
+    //      }
+
+    //      return SymbolAttributes.Undefined;
+    //    }
+    //    internal static string ToSignatureNameInternal(this MemberInfo memberInfo, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
+    //    {
+    //      var fieldInfo = memberInfo as FieldInfo;
+    //      var eventInfo = memberInfo as EventInfo;
+    //      var propertyInfo = memberInfo as PropertyInfo;
+    //      AccessModifier GetAccessModifier()
+    //      {
+    //        switch (memberInfo)
+    //        {
+    //          case Type typeInfo:
+    //            return typeInfo.IsPublic ? AccessModifier.Public
+    //              : typeInfo.IsNestedPrivate ? AccessModifier.Private
+    //              : typeInfo.IsNestedAssembly ? AccessModifier.Internal
+    //              : typeInfo.IsNestedFamily ? AccessModifier.Protected
+    //              : typeInfo.IsNestedPublic ? AccessModifier.Public
+    //              : typeInfo.IsNestedFamORAssem ? AccessModifier.ProtectedInternal
+    //              : typeInfo.IsNestedFamANDAssem ? AccessModifier.PrivateProtected
+    //              : !typeInfo.IsVisible ? AccessModifier.Internal
+    //              : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
+    //          case MethodBase methodBaseInfo:
+    //            return methodBaseInfo.IsPublic ? AccessModifier.Public
+    //              : methodBaseInfo.IsPrivate ? AccessModifier.Private
+    //              : methodBaseInfo.IsAssembly ? AccessModifier.Internal
+    //              : methodBaseInfo.IsFamily ? AccessModifier.Protected
+    //              : methodBaseInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
+    //              : methodBaseInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
+    //              : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
+    //          case FieldInfo _:
+    //            return fieldInfo.IsPublic ? AccessModifier.Public
+    //              : fieldInfo.IsPrivate ? AccessModifier.Private
+    //              : fieldInfo.IsAssembly ? AccessModifier.Internal
+    //              : fieldInfo.IsFamily ? AccessModifier.Protected
+    //              : fieldInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
+    //              : fieldInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
+    //              : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
+    //          case EventInfo _:
+    //            return eventInfo.GetAddMethod(true).GetAccessModifier();
+    //          case PropertyInfo _:
+    //            return propertyInfo.GetAccessors(true)
+    //        .Select(accessor => accessor.GetAccessModifier())
+    //        .Min();
+    //          default:
+    //            throw new NotSupportedException("The provided MemberInfo is not supported");
+    //        }
+    //      }
+    //      // TODO::Create valueType specific overloads to eliminate valueType switching and use cached reflection data
+
+    //      var valueType = memberInfo as Type;
+    //      MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
+    //        ?? valueType?.GetMethod("Invoke"); // MemberInfo is potentially a delegate
+    //      MethodInfo propertyGetMethodInfo = propertyInfo?.GetGetMethod(true);
+    //      MethodInfo propertySetMethodInfo = propertyInfo?.GetSetMethod(true);
+    //      var constructorInfo = memberInfo as ConstructorInfo;
+
+    //      ParameterInfo[] indexerPropertyIndexParameters = propertyInfo?.GetIndexParameters() ?? Array.Empty<ParameterInfo>();
+
+    //      SymbolAttributes memberAttributes = memberInfo.GetKind();
+    //      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+    //      IEnumerable<CustomAttributeData> symbolAttributes = memberInfo.GetCustomAttributesData();
+    //#if !NETSTANDARD2_0
+    //      if (memberAttributes.HasFlag(SymbolAttributes.Final))
+    //      {
+    //        symbolAttributes = symbolAttributes.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute));
+    //      }
+    //#endif
+
+    //      _ = signatureNameBuilder.AppendCustomAttributes(symbolAttributes, isAppendNewLineEnabled: true);
+
+    //      AccessModifier accessModifier = GetAccessModifier();
+    //      _ = signatureNameBuilder
+    //        .Append(accessModifier.ToDisplayStringValue())
+    //        .Append(' ');
+
+
+    //      if (!memberAttributes.HasFlag(SymbolAttributes.Delegate)
+    //        && !memberAttributes.HasFlag(SymbolAttributes.Struct)
+    //        && !memberAttributes.HasFlag(SymbolAttributes.Field)
+    //        && memberAttributes.HasFlag(SymbolAttributes.Final))
+    //      {
+    //        _ = signatureNameBuilder
+    //          .Append("sealed")
+    //          .Append(' ');
+    //      }
+
+    //      if (!memberAttributes.HasFlag(SymbolAttributes.Delegate)
+    //        && memberAttributes.HasFlag(SymbolAttributes.Static))
+    //      {
+    //        _ = signatureNameBuilder
+    //          .Append("static")
+    //          .Append(' ');
+    //      }
+
+    //      bool isAbstract = memberAttributes.HasFlag(SymbolAttributes.Abstract);
+    //      if (!memberAttributes.HasFlag(SymbolAttributes.Delegate) && isAbstract)
+    //      {
+    //        _ = signatureNameBuilder
+    //          .Append("abstract")
+    //          .Append(' ');
+    //      }
+
+    //      if (!isAbstract
+    //        && !memberAttributes.HasFlag(SymbolAttributes.Delegate)
+    //        && !memberAttributes.HasFlag(SymbolAttributes.Class)
+    //        && memberAttributes.HasFlag(SymbolAttributes.Virtual))
+    //      {
+    //        _ = signatureNameBuilder
+    //          .Append("virtual")
+    //          .Append(' ');
+    //      }
+
+    //      if (memberAttributes.HasFlag(SymbolAttributes.ReadOnlyStruct)
+    //        || memberAttributes.HasFlag(SymbolAttributes.ReadOnlyField))
+    //      {
+    //        _ = signatureNameBuilder
+    //          .Append("readonly")
+    //          .Append(' ');
+    //      }
+
+    //      if (memberAttributes.HasFlag(SymbolAttributes.Struct))
+    //      {
+    //        _ = signatureNameBuilder
+    //          .Append("struct")
+    //          .Append(' ');
+    //      }
+
+    //      if (memberAttributes.HasFlag(SymbolAttributes.Class))
+    //      {
+    //        _ = signatureNameBuilder
+    //          .Append("class")
+    //          .Append(' ');
+    //      }
+
+    //      if (memberAttributes.HasFlag(SymbolAttributes.Interface))
+    //      {
+    //        _ = signatureNameBuilder
+    //          .Append("interface")
+    //          .Append(' ');
+    //      }
+
+    //      if (memberAttributes.HasFlag(SymbolAttributes.Delegate))
+    //      {
+    //        _ = signatureNameBuilder
+    //          .Append("delegate")
+    //          .Append(' ');
+    //      }
+
+    //      if (memberAttributes.HasFlag(SymbolAttributes.Event))
+    //      {
+    //        _ = signatureNameBuilder
+    //          .Append("event")
+    //          .Append(' ');
+    //      }
+
+    //      if (memberAttributes.HasFlag(SymbolAttributes.Enum))
+    //      {
+    //        _ = signatureNameBuilder
+    //          .Append("enum")
+    //          .Append(' ');
+    //      }
+
+    //      if (!memberAttributes.HasFlag(SymbolAttributes.Delegate)
+    //        && !memberAttributes.HasFlag(SymbolAttributes.Class)
+    //        && memberAttributes.HasFlag(SymbolAttributes.Override))
+    //      {
+    //        _ = signatureNameBuilder
+    //          .Append("override")
+    //          .Append(' ');
+    //      }
+
+    //      // Set return valueType
+    //      if (memberAttributes.HasFlag(SymbolAttributes.Method)
+    //        || memberAttributes.HasFlag(SymbolAttributes.Property)
+    //        || memberAttributes.HasFlag(SymbolAttributes.Field)
+    //        || memberAttributes.HasFlag(SymbolAttributes.Delegate)
+    //        || memberAttributes.HasFlag(SymbolAttributes.Event))
+    //      {
+    //        Type returnType = fieldInfo?.FieldType
+    //          ?? methodInfo?.ReturnType
+    //          ?? propertyGetMethodInfo?.ReturnType
+    //          ?? eventInfo?.EventHandlerType;
+
+    //        _ = signatureNameBuilder.AppendDisplayNameInternal(returnType, isFullyQualifiedName, isDeclaringTypeIncluded: false)
+    //          .Append(' ');
+    //      }
+
+    //      if (memberAttributes.HasFlag(SymbolAttributes.Member) && (!isDeclaringTypeIncluded || isFullyQualifiedName))
+    //      {
+    //        _ = signatureNameBuilder.AppendDisplayNameInternal(memberInfo.DeclaringType, isFullyQualifiedName, isDeclaringTypeIncluded: false)
+    //          .Append('.');
+    //      }
+
+    //      // Member or valueType name
+    //      if (memberAttributes.HasFlag(SymbolAttributes.IndexerProperty))
+    //      {
+    //        _ = signatureNameBuilder.Append("this");
+    //      }
+    //      else
+    //      {
+    //        _ = signatureNameBuilder.AppendDisplayNameInternal(memberInfo, isFullyQualifiedName: isFullyQualifiedName && memberAttributes.HasFlag(SymbolAttributes.Type), isDeclaringTypeIncluded: false);
+    //      }
+
+    //      if (memberAttributes.HasFlag(SymbolAttributes.Constructor)
+    //        || memberAttributes.HasFlag(SymbolAttributes.Method)
+    //        || memberAttributes.HasFlag(SymbolAttributes.Delegate))
+    //      {
+    //        _ = signatureNameBuilder.Append('(');
+
+    //        if (memberAttributes.HasFlag(SymbolAttributes.Method) && (methodInfo?.IsExtensionMethod() ?? false))
+    //        {
+    //          _ = signatureNameBuilder
+    //            .Append("this")
+    //            .Append(' ');
+    //        }
+    //      }
+    //      else if (memberAttributes.HasFlag(SymbolAttributes.IndexerProperty))
+    //      {
+    //        _ = signatureNameBuilder.Append('[');
+    //      }
+
+    //      IEnumerable<ParameterInfo> parameters = methodInfo?.GetParameters()
+    //        ?? constructorInfo?.GetParameters()
+    //        ?? indexerPropertyIndexParameters
+    //        ?? Enumerable.Empty<ParameterInfo>();
+
+    //      if (parameters.Any())
+    //      {
+    //        foreach (ParameterInfo parameter in parameters)
+    //        {
+    //          bool isGenericTypeDefinition = false;
+    //          if (memberAttributes.HasFlag(SymbolAttributes.GenericMethod))
+    //          {
+    //            isGenericTypeDefinition = methodInfo.IsGenericMethodDefinition;
+    //          }
+    //          else if (memberAttributes.HasFlag(SymbolAttributes.GenericType))
+    //          {
+    //            isGenericTypeDefinition = valueType.IsGenericTypeDefinition;
+    //          }
+
+    //          if (isGenericTypeDefinition)
+    //          {
+    //            IEnumerable<CustomAttributeData> attributes = parameter.GetCustomAttributesData();
+    //            _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false);
+    //          }
+
+    //          if (parameter.IsRef())
+    //          {
+    //            _ = signatureNameBuilder.Append("ref ");
+    //          }
+    //          else if (parameter.IsIn)
+    //          {
+    //            _ = signatureNameBuilder.Append("in ");
+    //          }
+    //          else if (parameter.IsOut)
+    //          {
+    //            _ = signatureNameBuilder.Append("out ");
+    //          }
+
+    //          _ = signatureNameBuilder
+    //            .AppendDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isDeclaringTypeIncluded: false)
+    //            .Append(' ')
+    //            .Append(parameter.Name)
+    //            .Append(HelperExtensionsCommon.ParameterSeparator);
+    //        }
+
+    //        // Remove trailing comma and whitespace
+    //        _ = signatureNameBuilder.Remove(signatureNameBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length);
+    //      }
+
+    //      if (memberAttributes.HasFlag(SymbolAttributes.Constructor)
+    //        || memberAttributes.HasFlag(SymbolAttributes.Method)
+    //        || memberAttributes.HasFlag(SymbolAttributes.Delegate))
+    //      {
+    //        _ = signatureNameBuilder.Append(')');
+    //      }
+    //      else if (memberAttributes.HasFlag(SymbolAttributes.IndexerProperty))
+    //      {
+    //        _ = signatureNameBuilder.Append(']');
+    //      }
+
+    //      if (memberAttributes.HasFlag(SymbolAttributes.Property))
+    //      {
+    //        _ = signatureNameBuilder
+    //          .Append(' ')
+    //          .Append('{')
+    //          .Append(' ');
+
+    //        if (propertyGetMethodInfo != null)
+    //        {
+    //          _ = signatureNameBuilder
+    //            .Append("get")
+    //            .Append(HelperExtensionsCommon.ExpressionTerminator)
+    //            .Append(' ');
+    //        }
+
+    //        if (propertySetMethodInfo != null)
+    //        {
+    //          _ = signatureNameBuilder
+    //            .Append("set")
+    //            .Append(HelperExtensionsCommon.ExpressionTerminator)
+    //            .Append(' ');
+    //        }
+
+    //        _ = signatureNameBuilder.Append('}');
+    //      }
+
+    //      if (memberAttributes.HasFlag(SymbolAttributes.Class))
+    //      {
+    //        signatureNameBuilder = signatureNameBuilder.AppendInheritanceSignature(valueType, isFullyQualifiedName);
+    //      }
+
+    //      if (memberAttributes.HasFlag(SymbolAttributes.Generic))
+    //      {
+    //        Type[] genericTypeParameterDefinitions = Type.EmptyTypes;
+    //        if (memberAttributes.HasFlag(SymbolAttributes.GenericType) && valueType.IsGenericTypeDefinition)
+    //        {
+    //          genericTypeParameterDefinitions = valueType.GetGenericTypeDefinition().GetGenericArguments();
+    //        }
+    //        else if (memberAttributes.HasFlag(SymbolAttributes.GenericMethod) && methodInfo.IsGenericMethodDefinition)
+    //        {
+    //          genericTypeParameterDefinitions = methodInfo.GetGenericMethodDefinition().GetGenericArguments();
+    //        }
+
+    //        _ = signatureNameBuilder.AppendGenericTypeConstraints(genericTypeParameterDefinitions, isFullyQualifiedName, isCompact);
+    //      }
+
+    //      if (!memberAttributes.HasFlag(SymbolAttributes.Class)
+    //        && !memberAttributes.HasFlag(SymbolAttributes.Struct)
+    //        && !memberAttributes.HasFlag(SymbolAttributes.Enum))
+    //      {
+    //        _ = signatureNameBuilder.Append(HelperExtensionsCommon.ExpressionTerminator);
+    //      }
+
+    //      string fullMemberName = signatureNameBuilder.ToString();
+    //      StringBuilderFactory.Recycle(signatureNameBuilder);
+
+    //      return fullMemberName;
+    //    }
+    //    private static StringBuilder AppendInheritanceSignature(this StringBuilder memberNameBuilder, Type typeData, bool isFullyQualified)
+    //    {
+    //      bool isDelegate = HelperExtensionsCommon.DelegateType.IsAssignableFrom(typeData);
+    //      if (isDelegate)
+    //      {
+    //        return memberNameBuilder;
+    //      }
+
+    //      bool isSubclass = typeData.BaseType != typeof(object);
+    //      Type[] interfaces = typeData.GetInterfaces();
+    //      bool hasInterfaces = interfaces.Length > 0;
+    //      if (isSubclass || hasInterfaces)
+    //      {
+    //        _ = memberNameBuilder.Append(" : ");
+    //      }
+
+    //      if (isSubclass)
+    //      {
+    //        _ = memberNameBuilder.Append(isFullyQualified ? typeData.BaseType.FullName : typeData.BaseType.Name)
+    //          .Append(HelperExtensionsCommon.ParameterSeparator);
+    //      }
+
+    //      foreach (Type interfaceData in interfaces)
+    //      {
+    //        _ = memberNameBuilder.Append(isFullyQualified ? interfaceData.FullName : interfaceData.Name)
+    //          .Append(HelperExtensionsCommon.ParameterSeparator);
+    //      }
+
+    //      if (isSubclass || hasInterfaces)
+    //      {
+    //        _ = memberNameBuilder.Remove(memberNameBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length);
+    //      }
+
+    //      return memberNameBuilder;
+    //    }
+    //    private static StringBuilder AppendGenericTypeConstraints(this StringBuilder constraintBuilder, Type[] genericTypeDefinitionsData, bool isFullyQualified, bool isCompact)
+    //    {
+    //      bool hasSingleNewLine = false;
+    //      for (int genericTypeArgumentIndex = 0; genericTypeArgumentIndex < genericTypeDefinitionsData.Length; genericTypeArgumentIndex++)
+    //      {
+    //        Type genericTypeDefinitionData = genericTypeDefinitionsData[genericTypeArgumentIndex];
+    //        Type[] constraints = genericTypeDefinitionData.GetGenericParameterConstraints();
+    //        if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.SpecialConstraintMask) == GenericParameterAttributes.None
+    //          && constraints.Length == 0)
+    //        {
+    //          continue;
+    //        }
+
+    //        if (isCompact)
+    //        {
+    //          if (!hasSingleNewLine)
+    //          {
+    //            _ = constraintBuilder.AppendLine()
+    //            .Append(HelperExtensionsCommon.Indentation);
+    //            hasSingleNewLine = true;
+    //          }
+    //          else
+    //          {
+    //            _ = constraintBuilder.Append(' ');
+    //          }
+    //        }
+    //        else
+    //        {
+    //          _ = constraintBuilder.AppendLine()
+    //            .Append(HelperExtensionsCommon.Indentation);
+    //        }
+
+    //        _ = constraintBuilder.Append("where")
+    //          .Append(' ')
+    //          .Append(genericTypeDefinitionData.Name)
+    //          .Append(" : ");
+
+    //        if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0)
+    //        {
+    //          _ = constraintBuilder.Append("class")
+    //            .Append(HelperExtensionsCommon.ParameterSeparator);
+    //        }
+
+    //        if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.NotNullableValueTypeConstraint) != 0)
+    //        {
+    //          _ = constraintBuilder.Append("struct")
+    //            .Append(HelperExtensionsCommon.ParameterSeparator);
+    //        }
+
+    //        foreach (Type constraint in constraints)
+    //        {
+    //          _ = constraintBuilder.AppendDisplayNameInternal(constraint, isFullyQualified, isDeclaringTypeIncluded: false)
+    //            .Append(HelperExtensionsCommon.ParameterSeparator);
+    //        }
+
+    //        if (!genericTypeDefinitionData.IsValueType && (genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0)
+    //        {
+    //          _ = constraintBuilder.Append("new()")
+    //            .Append(HelperExtensionsCommon.ParameterSeparator);
+    //        }
+
+    //        _ = constraintBuilder.Remove(constraintBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length);
+    //      }
+
+    //      return constraintBuilder;
+    //    }
     #endregion REMOVE AFTER BENCHMARK COMPARISON!!!
 
-    internal static string ToSignatureNameInternal(PropertyData propertyData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static string ToSignatureNameInternal(PropertyData propertyData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
     {
       SymbolAttributes symbolAttributes = propertyData.SymbolAttributes;
       IEnumerable<CustomAttributeData> customAttributesData = propertyData.AttributeData;
@@ -1307,14 +1307,8 @@
       }
 
       // Set return valueType
-      _ = signatureNameBuilder.AppendDisplayNameInternal(propertyData.PropertyTypeData, isFullyQualifiedName, isShortName: false)
+      _ = signatureNameBuilder.AppendDisplayNameInternal(propertyData.PropertyTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
         .Append(' ');
-
-      //if (!isShortName)
-      //{
-      //  _ = signatureNameBuilder.AppendDisplayNameInternal(propertyData.DeclaringTypeData, isFullyQualifiedName, isShortName: false)
-      //    .Append('.');
-      //}
 
       // Member name
       if (symbolAttributes.HasFlag(SymbolAttributes.IndexerProperty))
@@ -1329,7 +1323,7 @@
           {
             IList<CustomAttributeData> attributes = parameter.AttributeData;
             _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false)
-              .AppendDisplayNameInternal(parameter.ParameterTypeData, isFullyQualifiedName, isShortName: false)
+              .AppendDisplayNameInternal(parameter.ParameterTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
               .Append(' ')
               .Append(parameter.Name)
               .Append(HelperExtensionsCommon.ParameterSeparator);
@@ -1342,7 +1336,7 @@
       }
       else
       {
-        _ = signatureNameBuilder.AppendDisplayNameInternal(propertyData, isFullyQualifiedName, isShortName, isCompact: true);
+        _ = signatureNameBuilder.AppendDisplayNameInternal(propertyData, isFullyQualifiedName, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
       }
 
       _ = signatureNameBuilder
@@ -1406,7 +1400,7 @@
       return fullMemberName;
     }
 
-    internal static string ToSignatureNameInternal(EventData eventData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static string ToSignatureNameInternal(EventData eventData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
     {
       SymbolAttributes symbolAttributes = eventData.SymbolAttributes;
       IEnumerable<CustomAttributeData> customAttributesData = eventData.AttributeData;
@@ -1459,16 +1453,10 @@
       _ = signatureNameBuilder
         .Append("event")
         .Append(' ')
-        .AppendDisplayNameInternal(eventData.EventHandlerTypeData, isFullyQualifiedName, isShortName: true)
+        .AppendDisplayNameInternal(eventData.EventHandlerTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
         .Append(' ');
 
-      //if (!isShortName)
-      //{
-      //  _ = signatureNameBuilder.AppendDisplayNameInternal(eventData.DeclaringTypeData, isFullyQualifiedName, isShortName: false)
-      //    .Append('.');
-      //}
-
-      _ = signatureNameBuilder.AppendDisplayNameInternal(eventData, isFullyQualifiedName, isShortName, isCompact: true)
+      _ = signatureNameBuilder.AppendDisplayNameInternal(eventData, isFullyQualifiedName, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded)
         .Append(HelperExtensionsCommon.ExpressionTerminator);
 
       string fullMemberName = signatureNameBuilder.ToString();
@@ -1477,7 +1465,7 @@
       return fullMemberName;
     }
 
-    internal static string ToSignatureNameInternal(FieldData fieldData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static string ToSignatureNameInternal(FieldData fieldData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
     {
       SymbolAttributes symbolAttributes = fieldData.SymbolAttributes;
       IEnumerable<CustomAttributeData> customAttributesData = fieldData.AttributeData;
@@ -1531,16 +1519,10 @@
         }
       }
 
-      _ = signatureNameBuilder.AppendDisplayNameInternal(fieldData.FieldTypeData, isFullyQualifiedName, isShortName: true)
+      _ = signatureNameBuilder.AppendDisplayNameInternal(fieldData.FieldTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
         .Append(' ');
 
-      //if (!isShortName)
-      //{
-      //  _ = signatureNameBuilder.AppendDisplayNameInternal(fieldData.DeclaringTypeData, isFullyQualifiedName, isShortName: false)
-      //    .Append('.');
-      //}
-
-      _ = signatureNameBuilder.AppendDisplayNameInternal(fieldData, isFullyQualifiedName, isShortName, isCompact: true)
+      _ = signatureNameBuilder.AppendDisplayNameInternal(fieldData, isFullyQualifiedName, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded)
         .Append(HelperExtensionsCommon.ExpressionTerminator);
 
       string fullMemberName = signatureNameBuilder.ToString();
@@ -1549,7 +1531,7 @@
       return fullMemberName;
     }
 
-    internal static string ToSignatureNameInternal(TypeData typeData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static string ToSignatureNameInternal(TypeData typeData, bool isFullyQualifiedName, bool isCompact)
     {
       if (typeData.IsGenericType && !typeData.IsGenericTypeDefinition)
       {
@@ -1638,7 +1620,7 @@
         _ = signatureNameBuilder
           .Append("enum")
           .Append(' ');
-      }      
+      }
 
       MethodData delegateInvocatorData = null;
       TypeData delegateReturnTypeData = null;
@@ -1646,14 +1628,13 @@
       // Set return valueType
       if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))
       {
-        delegateInvocatorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeData.GetType().GetMethod("Invoke"));
-        delegateReturnTypeData = delegateInvocatorData.ReturnTypeData;
-        _ = signatureNameBuilder.AppendDisplayNameInternal(delegateReturnTypeData, isFullyQualifiedName, isShortName: false)
+        delegateReturnTypeData = typeData.DelegateInvokeMethodData.ReturnTypeData;
+        _ = signatureNameBuilder.AppendDisplayNameInternal(delegateReturnTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
           .Append(' ');
       }
 
       // Type name
-      _ = signatureNameBuilder.AppendDisplayNameInternal(typeData, isFullyQualifiedName, isShortName: false);
+      _ = signatureNameBuilder.AppendDisplayNameInternal(typeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true);
 
       if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))
       {
@@ -1681,7 +1662,7 @@
             }
 
             _ = signatureNameBuilder
-              .AppendDisplayNameInternal(parameterData.ParameterTypeData, isFullyQualifiedName, isShortName: false)
+              .AppendDisplayNameInternal(parameterData.ParameterTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
               .Append(' ')
               .Append(parameterData.Name)
               .Append(HelperExtensionsCommon.ParameterSeparator);
@@ -1719,7 +1700,7 @@
       return fullMemberName;
     }
 
-    internal static string ToSignatureNameInternal(MethodData methodData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static string ToSignatureNameInternal(MethodData methodData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
     {
       Debug.WriteLine($"Generating method signature");
 
@@ -1810,11 +1791,11 @@
       }
 #endif
 
-      _ = signatureNameBuilder.AppendDisplayNameInternal(methodData.ReturnTypeData, isFullyQualifiedName, isShortName: true)
+      _ = signatureNameBuilder.AppendDisplayNameInternal(methodData.ReturnTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
         .Append(' ');
 
       // Member name
-      _ = signatureNameBuilder.AppendDisplayNameInternal(methodData, isFullyQualifiedName, isShortName, isCompact)
+      _ = signatureNameBuilder.AppendDisplayNameInternal(methodData, isFullyQualifiedName, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded)
         .Append('(');
 
       if (methodData.IsExtensionMethod)
@@ -1847,7 +1828,7 @@
           }
 
           _ = signatureNameBuilder
-            .AppendDisplayNameInternal(parameterData.ParameterTypeData, isFullyQualifiedName, isShortName: false)
+            .AppendDisplayNameInternal(parameterData.ParameterTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
             .Append(' ')
             .Append(parameterData.Name)
             .Append(HelperExtensionsCommon.ParameterSeparator);
@@ -1858,14 +1839,14 @@
           .Append(')');
       }
 
-      if (methodData.IsGenericMethod)
+      if (!isCompact && methodData.IsGenericMethod)
       {
         TypeData[] genericTypeParameterDefinitions = methodData.GenericTypeArguments;
         if (genericTypeParameterDefinitions.Length > 0)
         {
           _ = signatureNameBuilder
             .Append(' ')
-            .AppendGenericTypeConstraints(genericTypeParameterDefinitions, isFullyQualifiedName, isCompact);
+            .AppendGenericTypeConstraints(genericTypeParameterDefinitions, isFullyQualifiedName, isSingleLine: false);
         }
       }
 
@@ -1877,7 +1858,7 @@
       return fullMemberName;
     }
 
-    internal static string ToSignatureNameInternal(ConstructorData constructorData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static string ToSignatureNameInternal(ConstructorData constructorData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
     {
       SymbolAttributes symbolAttributes = constructorData.SymbolAttributes;
       IEnumerable<CustomAttributeData> customAttributesData = constructorData.AttributeData;
@@ -1910,14 +1891,8 @@
           .Append(' ');
       }
 
-      //if (!isShortName)
-      //{
-      //  _ = signatureNameBuilder.AppendDisplayNameInternal(constructorData.DeclaringTypeData, isFullyQualifiedName, isShortName: false)
-      //    .Append('.');
-      //}
-
       // Member name
-      _ = signatureNameBuilder.AppendDisplayNameInternal(constructorData, isFullyQualifiedName, isShortName, isCompact: true)
+      _ = signatureNameBuilder.AppendDisplayNameInternal(constructorData, isFullyQualifiedName, isGenericTypeParameterIncluded: false, isDeclaringTypeIncluded)
         .Append('(');
 
       ParameterData[] parameters = constructorData.Parameters;
@@ -1942,7 +1917,7 @@
           }
 
           _ = signatureNameBuilder
-            .AppendDisplayNameInternal(parameterData.ParameterTypeData, isFullyQualifiedName, isShortName: false)
+            .AppendDisplayNameInternal(parameterData.ParameterTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
             .Append(' ')
             .Append(parameterData.Name)
             .Append(HelperExtensionsCommon.ParameterSeparator);
@@ -1961,14 +1936,14 @@
       return fullMemberName;
     }
 
-    internal static SymbolComponentInfo ToSignatureComponentsInternal(MethodData methodData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static SymbolComponentInfo ToSignatureComponentsInternal(MethodData methodData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
     {
       SymbolComponentInfo symbolComponents = new SymbolComponentInfo()
       {
         IsSymbol = true,
         HasExpressionTerminator = true,
       };
-      
+
       if (methodData.IsGenericMethod && !methodData.IsGenericMethodDefinition)
       {
         methodData = methodData.GenericMethodDefinitionData;
@@ -2034,12 +2009,11 @@
       }
 #endif
 
-      symbolComponents.ReturnType = new SymbolComponentInfo();
-      _ = symbolComponents.ReturnType.NameBuilder.AppendDisplayNameInternal(methodData.ReturnTypeData, isFullyQualifiedName, isShortName: true);
+      symbolComponents.ReturnType = methodData.ReturnTypeData.CompactSymbolComponentInfo;
 
       // Member name
-      _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(methodData, isFullyQualifiedName: false, isShortName: true, isCompact: true);
-      
+      _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(methodData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: false, isDeclaringTypeIncluded);
+
       symbolComponents.IsExtensionMethodParameter = methodData.IsExtensionMethod;
 
       ParameterData[] parameters = methodData.Parameters;
@@ -2052,23 +2026,27 @@
           symbolComponents.AddParameter(parameterInfo);
         }
       }
-      
+
       if (methodData.IsGenericMethod)
       {
-        IEnumerable<SymbolComponentInfo> genericTypeParameterComponents = methodData.GenericTypeArguments.Select(typeParameterData => 
+        IEnumerable<SymbolComponentInfo> genericTypeParameterComponents = methodData.GenericTypeArguments.Select(typeParameterData =>
         {
-          SymbolComponentInfo info = typeParameterData.SymbolComponentInfo; 
+          SymbolComponentInfo info = typeParameterData.SymbolComponentInfo;
           info.IsParameter = true;
           return info;
         });
         symbolComponents.AddGenericTypeParameterRange(genericTypeParameterComponents);
-        AddGenericTypeConstraints(symbolComponents, methodData.GenericTypeArguments, isFullyQualifiedName);
+
+        if (!isCompact)
+        {
+          AddGenericTypeConstraints(symbolComponents, methodData.GenericTypeArguments, isFullyQualifiedName);
+        }
       }
-    
+
       return symbolComponents;
     }
 
-    internal static SymbolComponentInfo ToSignatureComponentsInternal(TypeData typeData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static SymbolComponentInfo ToSignatureComponentsInternal(TypeData typeData, bool isFullyQualifiedName, bool isCompact)
     {
       SymbolComponentInfo symbolComponents = new SymbolComponentInfo()
       {
@@ -2094,52 +2072,52 @@
       if (!isCompact)
       {
         AddCustomAttributes(symbolComponents, customAttributesData);
-      }
 
-      AccessModifier accessModifier = typeData.AccessModifier;
-      symbolComponents.AddModifier(accessModifier.ToDisplayStringValue());
+        AccessModifier accessModifier = typeData.AccessModifier;
+        symbolComponents.AddModifier(accessModifier.ToDisplayStringValue());
 
-      if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))
-      {
-        symbolComponents.AddModifier("delegate");
-      }
-      else if (symbolAttributes.HasFlag(SymbolAttributes.Struct))
-      {
-        if (symbolAttributes.HasFlag(SymbolAttributes.ReadOnlyStruct))
+        if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))
         {
-          symbolComponents.AddModifier("readonly");
+          symbolComponents.AddModifier("delegate");
         }
-        else if (symbolAttributes.HasFlag(SymbolAttributes.RefStruct))
+        else if (symbolAttributes.HasFlag(SymbolAttributes.Struct))
         {
-          symbolComponents.AddModifier("ref");
-        }
+          if (symbolAttributes.HasFlag(SymbolAttributes.ReadOnlyStruct))
+          {
+            symbolComponents.AddModifier("readonly");
+          }
+          else if (symbolAttributes.HasFlag(SymbolAttributes.RefStruct))
+          {
+            symbolComponents.AddModifier("ref");
+          }
 
-        symbolComponents.AddModifier("struct");
-      }
-      else if (symbolAttributes.HasFlag(SymbolAttributes.Class))
-      {
-        if (symbolAttributes.HasFlag(SymbolAttributes.Abstract))
-        {
-          symbolComponents.AddModifier("abstract");
+          symbolComponents.AddModifier("struct");
         }
-        else if (symbolAttributes.HasFlag(SymbolAttributes.Static))
+        else if (symbolAttributes.HasFlag(SymbolAttributes.Class))
         {
-          symbolComponents.AddModifier("static");
-        }
-        else if (symbolAttributes.HasFlag(SymbolAttributes.Final))
-        {
-          symbolComponents.AddModifier("sealed");
-        }
+          if (symbolAttributes.HasFlag(SymbolAttributes.Abstract))
+          {
+            symbolComponents.AddModifier("abstract");
+          }
+          else if (symbolAttributes.HasFlag(SymbolAttributes.Static))
+          {
+            symbolComponents.AddModifier("static");
+          }
+          else if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+          {
+            symbolComponents.AddModifier("sealed");
+          }
 
-        symbolComponents.AddModifier("class");
-      }
-      else if (symbolAttributes.HasFlag(SymbolAttributes.Interface))
-      {
-        symbolComponents.AddModifier("interface");
-      }
-      else if (symbolAttributes.HasFlag(SymbolAttributes.Enum))
-      {
-        symbolComponents.AddModifier("enum");
+          symbolComponents.AddModifier("class");
+        }
+        else if (symbolAttributes.HasFlag(SymbolAttributes.Interface))
+        {
+          symbolComponents.AddModifier("interface");
+        }
+        else if (symbolAttributes.HasFlag(SymbolAttributes.Enum))
+        {
+          symbolComponents.AddModifier("enum");
+        }
       }
 
       MethodData delegateInvocatorData = null;
@@ -2148,14 +2126,12 @@
       // Set return valueType
       if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))
       {
-        delegateInvocatorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeData.GetType().GetMethod("Invoke"));
-        delegateReturnTypeData = delegateInvocatorData.ReturnTypeData;
-        symbolComponents.ReturnType = new SymbolComponentInfo();
-        _ = symbolComponents.ReturnType.NameBuilder.AppendDisplayNameInternal(delegateReturnTypeData, isFullyQualifiedName, isShortName: false);
+        delegateReturnTypeData = typeData.DelegateInvokeMethodData.ReturnTypeData;
+        symbolComponents.ReturnType = delegateReturnTypeData.SymbolComponentInfo;
       }
 
       // Type name
-      _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(typeData, isFullyQualifiedName, isShortName: false);
+      _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(typeData, isFullyQualifiedName, isGenericTypeParameterIncluded: false);
 
       if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))
       {
@@ -2168,25 +2144,29 @@
             symbolComponents.AddParameter(parameterInfo);
           }
         }
-        else if (!isCompact && symbolAttributes.HasFlag(SymbolAttributes.Class))
-        {
-          AddInheritanceSignature(symbolComponents, typeData, isFullyQualifiedName);
-        }
-
-        if (!isCompact && typeData.IsGenericType)
-        {
-          IEnumerable<SymbolComponentInfo> genericTypeParameterComponents = typeData.GenericTypeArguments.Select(typeParameterData => typeParameterData.SymbolComponentInfo);
-          symbolComponents.AddGenericTypeParameterRange(genericTypeParameterComponents);
-          AddGenericTypeConstraints(symbolComponents, typeData.GenericTypeArguments, isFullyQualifiedName);
-        }
-
-        symbolComponents.HasExpressionTerminator = symbolAttributes.HasFlag(SymbolAttributes.Delegate);
+      }
+      else if (!isCompact && symbolAttributes.HasFlag(SymbolAttributes.Class))
+      {
+        AddInheritanceSignature(symbolComponents, typeData, isFullyQualifiedName);
       }
 
+      if (typeData.IsGenericType)
+      {
+        TypeData[] genericTypeArguments = typeData.GenericTypeArguments;
+        IEnumerable<SymbolComponentInfo> genericTypeParameterComponents = genericTypeArguments.Select(typeParameterData => typeParameterData.SymbolComponentInfo);
+        symbolComponents.AddGenericTypeParameterRange(genericTypeParameterComponents);
+
+        if (!isCompact)
+        {
+          AddGenericTypeConstraints(symbolComponents, genericTypeArguments, isFullyQualifiedName);
+        }
+      }
+
+      symbolComponents.HasExpressionTerminator = symbolAttributes.HasFlag(SymbolAttributes.Delegate);
       return symbolComponents;
     }
 
-    internal static SymbolComponentInfo ToSignatureComponentsInternal(ParameterData parameterData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static SymbolComponentInfo ToSignatureComponentsInternal(ParameterData parameterData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
     {
       TypeData parameterTypeData = parameterData.ParameterTypeData;
       SymbolComponentInfo symbolComponents = new SymbolComponentInfo()
@@ -2232,13 +2212,13 @@
       }
 
       // Type name
-      _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(parameterTypeData, isFullyQualifiedName, isShortName: false);
-      _ = symbolComponents.ValueNameBuilder.Append(parameterData.Name);
+      _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(parameterTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true);
+      _ = symbolComponents.ValueNameBuilder.AppendDisplayNameInternal(parameterData);
 
       return symbolComponents;
     }
 
-    internal static SymbolComponentInfo ToSignatureComponentsInternal(FieldData fieldData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static SymbolComponentInfo ToSignatureComponentsInternal(FieldData fieldData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
     {
       SymbolComponentInfo symbolComponents = new SymbolComponentInfo()
       {
@@ -2286,15 +2266,14 @@
         }
       }
 
-      symbolComponents.ReturnType = new SymbolComponentInfo();
-      _ = symbolComponents.ReturnType.NameBuilder.AppendDisplayNameInternal(fieldData.FieldTypeData, isFullyQualifiedName, isShortName: true);
-      
-      _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(fieldData, isFullyQualifiedName, isShortName, isCompact: true);
+      symbolComponents.ReturnType = fieldData.FieldTypeData.SymbolComponentInfo;
+
+      _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(fieldData, isFullyQualifiedName, isGenericTypeParameterIncluded: false, isDeclaringTypeIncluded);
 
       return symbolComponents;
     }
 
-    internal static SymbolComponentInfo ToSignatureComponentsInternal(EventData eventData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static SymbolComponentInfo ToSignatureComponentsInternal(EventData eventData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
     {
       SymbolComponentInfo symbolComponents = new SymbolComponentInfo()
       {
@@ -2340,15 +2319,14 @@
 
       symbolComponents.AddModifier("event");
 
-      symbolComponents.ReturnType = new SymbolComponentInfo();
-      _ = symbolComponents.ReturnType.NameBuilder.AppendDisplayNameInternal(eventData.EventHandlerTypeData, isFullyQualifiedName, isShortName: true);
+      symbolComponents.ReturnType = eventData.EventHandlerTypeData.SymbolComponentInfo;
 
-      _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(eventData, isFullyQualifiedName, isShortName, isCompact: true);
+      _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(eventData, isFullyQualifiedName, isGenericTypeParameterIncluded: false, isDeclaringTypeIncluded);
 
       return symbolComponents;
     }
 
-    internal static SymbolComponentInfo ToSignatureComponentsInternal(PropertyData propertyData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static SymbolComponentInfo ToSignatureComponentsInternal(PropertyData propertyData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
     {
       SymbolComponentInfo symbolComponents = new SymbolComponentInfo()
       {
@@ -2395,11 +2373,9 @@
       }
 
       // Set return valueType
+      symbolComponents.ReturnType = propertyData.PropertyTypeData.SymbolComponentInfo;
 
-      symbolComponents.ReturnType = new SymbolComponentInfo();
-      _ = symbolComponents.ReturnType.NameBuilder.AppendDisplayNameInternal(propertyData.PropertyTypeData, isFullyQualifiedName, isShortName);
 
-      
       if (symbolAttributes.HasFlag(SymbolAttributes.IndexerProperty))
       {
         _ = symbolComponents.IsIndexer = true;
@@ -2416,7 +2392,7 @@
       }
       else
       {
-        _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(propertyData, isFullyQualifiedName, isShortName, isCompact: true);
+        _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(propertyData, isFullyQualifiedName, isGenericTypeParameterIncluded: false, isDeclaringTypeIncluded);
       }
 
       if (propertyData.CanRead)
@@ -2451,7 +2427,7 @@
       return symbolComponents;
     }
 
-    internal static SymbolComponentInfo ToSignatureComponentsInternal(ConstructorData constructorData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static SymbolComponentInfo ToSignatureComponentsInternal(ConstructorData constructorData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
     {
       SymbolComponentInfo symbolComponents = new SymbolComponentInfo()
       {
@@ -2484,7 +2460,7 @@
       }
 
       // Member name
-      _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(constructorData, isFullyQualifiedName, isShortName, isCompact: true);
+      _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(constructorData, isFullyQualifiedName, isGenericTypeParameterIncluded: false, isDeclaringTypeIncluded);
 
       ParameterData[] parameters = constructorData.Parameters;
       if (parameters.Length > 0)
@@ -2567,7 +2543,7 @@
         {
           continue;
         }
-        
+
         var customAttributeInfo = new SymbolComponentInfo(attribute.AttributeType.Name);
         symbolComponentInfo.AddCustomAttribute(customAttributeInfo);
 
@@ -2597,9 +2573,9 @@
         case double doubleValue:
           return string.Format(CultureInfo.InvariantCulture, "{0}", doubleValue);
         case Enum enumValue:
-          return $"{value.GetType().ToDisplayName(isShortName: true)}.{enumValue.ToString()}";
+          return $"{value.GetType().ToDisplayName(isGenericTypeParameterIncluded: true)}.{enumValue.ToString()}";
         case Type type:
-          return $"typeof({type.ToDisplayName(isShortName: true)})";
+          return $"typeof({type.ToDisplayName(isGenericTypeParameterIncluded: true)})";
         case IEnumerable enumerableValue:
           return $"new[] {{ {string.Join(", ", enumerableValue.OfType<object>().Select(val => val.ToArgumentDisplayValue()))} }}";
         default:
@@ -2607,15 +2583,15 @@
       }
     }
 
-/// <summary>
-/// Gets the access modifier for <see cref="MemberInfo"/> symbolAttributes like <see cref="Type"/>, <see cref="MethodInfo"/>, <see cref="ConstructorInfo"/>, <see cref="PropertyInfo"/>, <see cref="EventInfo"/> or <see cref="FieldInfo"/>.
-/// </summary>
-/// <param genericTypeParameterIdentifier="valueType"></param>
-/// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="valueType"/>.</returns>
-/// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="valueType"/>.</exception>
-/// <exception cref="NotSupportedException">The valueType provided by the <paramref genericTypeParameterIdentifier="valueType"/> is not supported.</exception>
-/// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
-public static AccessModifier GetAccessModifier(this Type type)
+    /// <summary>
+    /// Gets the access modifier for <see cref="MemberInfo"/> symbolAttributes like <see cref="Type"/>, <see cref="MethodInfo"/>, <see cref="ConstructorInfo"/>, <see cref="PropertyInfo"/>, <see cref="EventInfo"/> or <see cref="FieldInfo"/>.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="valueType"></param>
+    /// <returns>The <see cref="AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="valueType"/>.</returns>
+    /// <exception cref="InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="valueType"/>.</exception>
+    /// <exception cref="NotSupportedException">The valueType provided by the <paramref genericTypeParameterIdentifier="valueType"/> is not supported.</exception>
+    /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
+    public static AccessModifier GetAccessModifier(this Type type)
     {
       TypeData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return entry.AccessModifier;
@@ -2691,10 +2667,10 @@ public static AccessModifier GetAccessModifier(this Type type)
       return entry.AccessModifier;
     }
 
-    internal static AccessModifier GetAccessModifierInternal(PropertyData propertyData) 
+    internal static AccessModifier GetAccessModifierInternal(PropertyData propertyData)
       => GetPropertyAccessModifier(propertyData.GetMethodData, propertyData.SetMethodData).PropertyModifier;
 
-    internal static AccessModifier GetAccessModifierInternal(EventData eventData) 
+    internal static AccessModifier GetAccessModifierInternal(EventData eventData)
       => GetAccessModifierInternal(eventData.AddMethodData);
 
     internal static AccessModifier GetAccessModifierInternal(FieldData fieldData)
@@ -2770,10 +2746,10 @@ public static AccessModifier GetAccessModifier(this Type type)
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
-    public static string ToDisplayName(this Type type, bool isShortName = false)
+    public static string ToDisplayName(this Type type, bool isGenericTypeParameterIncluded = true)
     {
       TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
-      return ToDisplayNameInternal(typeData, isFullyQualifiedName: false, isShortName, isCompact: true);
+      return ToDisplayNameInternal(typeData, isFullyQualifiedName: false, isGenericTypeParameterIncluded, isDeclaringTypeIncluded: false);
     }
 
     /// <summary>
@@ -2787,10 +2763,10 @@ public static AccessModifier GetAccessModifier(this Type type)
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
-    public static string ToDisplayName(this MethodInfo methodInfo, bool isShortName = false)
+    public static string ToDisplayName(this MethodInfo methodInfo, bool isDeclaringTypeIncluded = false)
     {
       MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-      return ToDisplayNameInternal(methodData, isFullyQualifiedName: false, isShortName, isCompact: true);
+      return ToDisplayNameInternal(methodData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
     /// <summary>
@@ -2804,10 +2780,10 @@ public static AccessModifier GetAccessModifier(this Type type)
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
-    public static string ToDisplayName(this ConstructorInfo constructorInfo, bool isShortName = false)
+    public static string ToDisplayName(this ConstructorInfo constructorInfo, bool isDeclaringTypeIncluded = false)
     {
       ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
-      return ToDisplayNameInternal(constructorData, isFullyQualifiedName: false, isShortName, isCompact: true);
+      return ToDisplayNameInternal(constructorData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
     /// <summary>
@@ -2821,10 +2797,10 @@ public static AccessModifier GetAccessModifier(this Type type)
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
-    public static string ToDisplayName(this PropertyInfo propertyInfo, bool isShortName = false)
+    public static string ToDisplayName(this PropertyInfo propertyInfo, bool isDeclaringTypeIncluded = false)
     {
       PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
-      return ToDisplayNameInternal(propertyData, isFullyQualifiedName: false, isShortName, isCompact: true);
+      return ToDisplayNameInternal(propertyData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
     /// <summary>
@@ -2838,10 +2814,10 @@ public static AccessModifier GetAccessModifier(this Type type)
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
-    public static string ToDisplayName(this FieldInfo fieldInfo, bool isShortName = false)
+    public static string ToDisplayName(this FieldInfo fieldInfo, bool isDeclaringTypeIncluded = false)
     {
       FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
-      return ToDisplayNameInternal(fieldData, isFullyQualifiedName: false, isShortName, isCompact: true);
+      return ToDisplayNameInternal(fieldData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
     /// <summary>
@@ -2858,7 +2834,7 @@ public static AccessModifier GetAccessModifier(this Type type)
     public static string ToDisplayName(this ParameterInfo parameterInfo)
     {
       ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
-      return ToDisplayNameInternal(parameterData, isFullyQualifiedName: false, isShortName: true, isCompact: true);
+      return ToDisplayNameInternal(parameterData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: false, isDeclaringTypeIncluded: false);
     }
 
     /// <summary>
@@ -2872,10 +2848,10 @@ public static AccessModifier GetAccessModifier(this Type type)
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
-    public static string ToDisplayName(this EventInfo eventInfo, bool isShortName = false)
+    public static string ToDisplayName(this EventInfo eventInfo, bool isDeclaringTypeIncluded = false)
     {
       EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
-      return ToDisplayNameInternal(eventData, isFullyQualifiedName: false, isShortName, isCompact: true);
+      return ToDisplayNameInternal(eventData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
     /// <summary>
@@ -2889,10 +2865,10 @@ public static AccessModifier GetAccessModifier(this Type type)
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
-    public static string ToFullDisplayName(this Type type, bool isShortName = false)
+    public static string ToFullDisplayName(this Type type, bool isGenericTypeParameterIncluded = false)
     {
       TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
-      return ToDisplayNameInternal(typeData, isFullyQualifiedName: true, isShortName, isCompact: true);
+      return ToDisplayNameInternal(typeData, isFullyQualifiedName: true, isGenericTypeParameterIncluded, isDeclaringTypeIncluded: false);
     }
 
     /// <summary>
@@ -2906,10 +2882,10 @@ public static AccessModifier GetAccessModifier(this Type type)
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
-    public static string ToFullDisplayName(this MethodInfo methodInfo, bool isShortName = false)
+    public static string ToFullDisplayName(this MethodInfo methodInfo, bool isDeclaringTypeIncluded = false)
     {
       MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-      return ToDisplayNameInternal(methodData, isFullyQualifiedName: true, isShortName, isCompact: true);
+      return ToDisplayNameInternal(methodData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
     /// <summary>
@@ -2923,10 +2899,10 @@ public static AccessModifier GetAccessModifier(this Type type)
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
-    public static string ToFullDisplayName(this ConstructorInfo constructorInfo, bool isShortName = false)
+    public static string ToFullDisplayName(this ConstructorInfo constructorInfo, bool isDeclaringTypeIncluded = false)
     {
       ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
-      return ToDisplayNameInternal(constructorData, isFullyQualifiedName: true, isShortName, isCompact: true);
+      return ToDisplayNameInternal(constructorData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
     /// <summary>
@@ -2940,10 +2916,10 @@ public static AccessModifier GetAccessModifier(this Type type)
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
-    public static string ToFullDisplayName(this PropertyInfo propertyInfo, bool isShortName = false)
+    public static string ToFullDisplayName(this PropertyInfo propertyInfo, bool isDeclaringTypeIncluded = false)
     {
       PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
-      return ToDisplayNameInternal(propertyData, isFullyQualifiedName: true, isShortName, isCompact: true);
+      return ToDisplayNameInternal(propertyData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
     /// <summary>
@@ -2957,10 +2933,10 @@ public static AccessModifier GetAccessModifier(this Type type)
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
-    public static string ToFullDisplayName(this FieldInfo fieldInfo, bool isShortName = false)
+    public static string ToFullDisplayName(this FieldInfo fieldInfo, bool isDeclaringTypeIncluded = false)
     {
       FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
-      return ToDisplayNameInternal(fieldData, isFullyQualifiedName: true, isShortName, isCompact: true);
+      return ToDisplayNameInternal(fieldData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
     /// <summary>
@@ -2974,10 +2950,10 @@ public static AccessModifier GetAccessModifier(this Type type)
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
-    public static string ToFullDisplayName(this EventInfo eventInfo, bool isShortName = false)
+    public static string ToFullDisplayName(this EventInfo eventInfo, bool isDeclaringTypeIncluded = false)
     {
       EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
-      return ToDisplayNameInternal(eventData, isFullyQualifiedName: true, isShortName, isCompact: true);
+      return ToDisplayNameInternal(eventData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
     /// <summary>
@@ -2992,7 +2968,7 @@ public static AccessModifier GetAccessModifier(this Type type)
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
     /// </remarks>
-    internal static string ToDisplayNameInternal(SymbolInfoData symbolInfoData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    internal static string ToDisplayNameInternal(SymbolInfoData symbolInfoData, bool isFullyQualifiedName, bool isGenericTypeParameterIncluded, bool isDeclaringTypeIncluded)
     {
       StringBuilder nameBuilder = StringBuilderFactory.GetOrCreate();
 
@@ -3002,49 +2978,49 @@ public static AccessModifier GetAccessModifier(this Type type)
           _ = nameBuilder.AppendDisplayNameInternal(parameterData);
           break;
         case TypeData typeData:
-          _ = nameBuilder.AppendDisplayNameInternal(typeData, isFullyQualifiedName, isShortName);
+          _ = nameBuilder.AppendDisplayNameInternal(typeData, isFullyQualifiedName, isGenericTypeParameterIncluded);
           break;
         case MemberInfoData memberInfoData:
-          _ = nameBuilder.AppendDisplayNameInternal(memberInfoData, isFullyQualifiedName, isShortName, isCompact);
+          _ = nameBuilder.AppendDisplayNameInternal(memberInfoData, isFullyQualifiedName, isGenericTypeParameterIncluded, isDeclaringTypeIncluded);
           break;
         default:
           throw new NotImplementedException();
       }
-      
+
       string symbolName = nameBuilder.ToString();
       StringBuilderFactory.Recycle(nameBuilder);
 
       return symbolName;
     }
 
-    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, Type type, bool isShortName = false)
+    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, Type type, bool isGenericTypeParameterIncluded = true)
     {
       TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
-      return AppendDisplayNameInternal(nameBuilder, typeData, isFullyQualifiedName: false, isShortName);
+      return AppendDisplayNameInternal(nameBuilder, typeData, isFullyQualifiedName: false, isGenericTypeParameterIncluded);
     }
 
-    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, MethodInfo methodInfo, bool isShortName = false, bool isCompact = false)
+    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, MethodInfo methodInfo, bool isDeclaringTypeIncluded = false)
     {
       MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-      return AppendDisplayNameInternal(nameBuilder, methodData, isFullyQualifiedName: false, isShortName, isCompact);
+      return AppendDisplayNameInternal(nameBuilder, methodData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
-    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, EventInfo eventInfo, bool isShortName = false, bool isCompact = false)
+    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, EventInfo eventInfo, bool isDeclaringTypeIncluded = false)
     {
       EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
-      return AppendDisplayNameInternal(nameBuilder, eventData, isFullyQualifiedName: false, isShortName, isCompact);
+      return AppendDisplayNameInternal(nameBuilder, eventData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
-    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, ConstructorInfo constructorInfo, bool isShortName = false, bool isCompact = false)
+    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, ConstructorInfo constructorInfo, bool isDeclaringTypeIncluded = false)
     {
       ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
-      return AppendDisplayNameInternal(nameBuilder, constructorData, isFullyQualifiedName: false, isShortName, isCompact);
+      return AppendDisplayNameInternal(nameBuilder, constructorData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
-    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, PropertyInfo propertyInfo, bool isShortName = false, bool isCompact = false)
+    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, PropertyInfo propertyInfo, bool isDeclaringTypeIncluded = false)
     {
       PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
-      return AppendDisplayNameInternal(nameBuilder, propertyData, isFullyQualifiedName: false, isShortName, isCompact);
+      return AppendDisplayNameInternal(nameBuilder, propertyData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, ParameterInfo parameterInfo)
@@ -3053,40 +3029,40 @@ public static AccessModifier GetAccessModifier(this Type type)
       return AppendDisplayNameInternal(nameBuilder, parameterData);
     }
 
-    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, FieldInfo fieldInfo, bool isShortName = false, bool isCompact = false)
+    public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, FieldInfo fieldInfo, bool isDeclaringTypeIncluded = false)
     {
       FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
-      return AppendDisplayNameInternal(nameBuilder, fieldData, isFullyQualifiedName: false, isShortName, isCompact);
+      return AppendDisplayNameInternal(nameBuilder, fieldData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
-    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, Type type, bool isShortName = false)
+    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, Type type, bool isGenericTypeParameterIncluded = true)
     {
       TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
-      return AppendDisplayNameInternal(nameBuilder, typeData, isFullyQualifiedName: true, isShortName);
+      return AppendDisplayNameInternal(nameBuilder, typeData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true);
     }
 
-    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, MethodInfo methodInfo, bool isShortName = false, bool isCompact = false)
+    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, MethodInfo methodInfo, bool isDeclaringTypeIncluded = true)
     {
       MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-      return AppendDisplayNameInternal(nameBuilder, methodData, isFullyQualifiedName: true, isShortName, isCompact);
+      return AppendDisplayNameInternal(nameBuilder, methodData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
-    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, EventInfo eventInfo, bool isShortName = false, bool isCompact = false)
+    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, EventInfo eventInfo, bool isDeclaringTypeIncluded = true)
     {
       EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
-      return AppendDisplayNameInternal(nameBuilder, eventData, isFullyQualifiedName: true, isShortName, isCompact);
+      return AppendDisplayNameInternal(nameBuilder, eventData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
-    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, ConstructorInfo constructorInfo, bool isShortName = false, bool isCompact = false)
+    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, ConstructorInfo constructorInfo, bool isDeclaringTypeIncluded = true)
     {
       ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
-      return AppendDisplayNameInternal(nameBuilder, constructorData, isFullyQualifiedName: true, isShortName, isCompact);
+      return AppendDisplayNameInternal(nameBuilder, constructorData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
-    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, PropertyInfo propertyInfo, bool isShortName = false, bool isCompact = false)
+    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, PropertyInfo propertyInfo, bool isDeclaringTypeIncluded = true)
     {
       PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
-      return AppendDisplayNameInternal(nameBuilder, propertyData, isFullyQualifiedName: true, isShortName, isCompact);
+      return AppendDisplayNameInternal(nameBuilder, propertyData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, ParameterInfo parameterInfo)
@@ -3095,13 +3071,13 @@ public static AccessModifier GetAccessModifier(this Type type)
       return AppendDisplayNameInternal(nameBuilder, parameterData);
     }
 
-    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, FieldInfo fieldInfo, bool isShortName = false, bool isCompact = false)
+    public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, FieldInfo fieldInfo, bool isDeclaringTypeIncluded = true)
     {
       FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
-      return AppendDisplayNameInternal(nameBuilder, fieldData, isFullyQualifiedName: true, isShortName, isCompact);
+      return AppendDisplayNameInternal(nameBuilder, fieldData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
     }
 
-    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, TypeData typeData, bool isFullyQualifiedName, bool isShortName)
+    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, TypeData typeData, bool isFullyQualifiedName, bool isGenericTypeParameterIncluded)
     {
       Type type = typeData.GetType();
       if (typeData.IsByRef)
@@ -3130,12 +3106,7 @@ public static AccessModifier GetAccessModifier(this Type type)
 
       _ = nameBuilder.Append(typeName.ToArray());
 
-      if (isShortName)
-      {
-        return nameBuilder;
-      }
-
-      if (typeData.IsGenericType)
+      if (isGenericTypeParameterIncluded && typeData.IsGenericType)
       {
         _ = nameBuilder.AppendGenericTypeArguments(typeData, isFullyQualifiedName);
       }
@@ -3143,27 +3114,27 @@ public static AccessModifier GetAccessModifier(this Type type)
       return nameBuilder;
     }
 
-    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, ParameterData parameterData) 
+    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, ParameterData parameterData)
       => nameBuilder.Append(parameterData.Name);
 
-    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, MemberInfoData memberInfoData, bool isFullyQualifiedName, bool isShortName, bool isCompact)
+    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, MemberInfoData memberInfoData, bool isFullyQualifiedName, bool isGenericTypeParameterIncluded, bool isDeclaringTypeIncluded)
     {
-      if (isFullyQualifiedName || !isShortName)
+      if (isFullyQualifiedName || isDeclaringTypeIncluded)
       {
-        _ = nameBuilder.AppendDisplayNameInternal(memberInfoData.DeclaringTypeData, isFullyQualifiedName, isShortName: false)
+        _ = nameBuilder.AppendDisplayNameInternal(memberInfoData.DeclaringTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
           .Append('.');
       }
 
       if (memberInfoData.SymbolAttributes.HasFlag(SymbolAttributes.Constructor))
       {
-        _ = nameBuilder.AppendDisplayNameInternal(memberInfoData.DeclaringTypeData, isFullyQualifiedName: false, isShortName: true);
+        _ = nameBuilder.AppendDisplayNameInternal(memberInfoData.DeclaringTypeData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: false);
       }
       else
       {
         _ = nameBuilder.Append(memberInfoData.Name);
 
-        if (!isCompact 
-          && memberInfoData.SymbolAttributes.HasFlag(SymbolAttributes.GenericMethod) 
+        if (isGenericTypeParameterIncluded
+          && memberInfoData.SymbolAttributes.HasFlag(SymbolAttributes.GenericMethod)
           && memberInfoData is MethodData methodData)
         {
           _ = nameBuilder.AppendGenericTypeArguments(methodData, isFullyQualifiedName);
@@ -3232,7 +3203,7 @@ public static AccessModifier GetAccessModifier(this Type type)
           }
         }
 
-        _ = nameBuilder.AppendDisplayNameInternal(genericParameterTypeData, isFullyQualified, isShortName: false)
+        _ = nameBuilder.AppendDisplayNameInternal(genericParameterTypeData, isFullyQualified, isGenericTypeParameterIncluded: true)
           .Append(HelperExtensionsCommon.ParameterSeparator);
       }
 
@@ -3292,8 +3263,7 @@ public static AccessModifier GetAccessModifier(this Type type)
 
         foreach (TypeData constraintData in constraints)
         {
-          Type constraint = constraintData.GetType();
-          _ = constraintBuilder.AppendDisplayNameInternal(constraintData, isFullyQualified, isShortName: false)
+          _ = constraintBuilder.AppendDisplayNameInternal(constraintData, isFullyQualified, isGenericTypeParameterIncluded: true)
             .Append(HelperExtensionsCommon.ParameterSeparator);
         }
 
@@ -3337,8 +3307,7 @@ public static AccessModifier GetAccessModifier(this Type type)
         foreach (TypeData constraintData in constraints)
         {
           var constraint = new SymbolComponentInfo();
-          Type constraintTypeData = constraintData.GetType();
-          _ = constraint.NameBuilder.AppendDisplayNameInternal(constraintData, isFullyQualified, isShortName: false);
+          _ = constraint.NameBuilder.AppendDisplayNameInternal(constraintData, isFullyQualified, isGenericTypeParameterIncluded: true);
           constraintComponents.AddGenericTypeConstraint(constraint);
         }
 
@@ -3399,41 +3368,16 @@ public static AccessModifier GetAccessModifier(this Type type)
       if (isSubclass)
       {
         var inheritedTypeComponent = new SymbolComponentInfo(isKeyword: typeData.BaseTypeData.IsBuiltInType);
-        _ = inheritedTypeComponent.NameBuilder.Append(isFullyQualified ? typeData.BaseTypeData.GetType().FullName : typeData.BaseTypeData.Name);
+        _ = inheritedTypeComponent.NameBuilder.Append(isFullyQualified ? typeData.BaseTypeData.FullyQualifiedDisplayName : typeData.BaseTypeData.Name);
         symbolComponents.AddInheritedType(inheritedTypeComponent);
       }
 
       foreach (TypeData interfaceData in interfaces)
       {
         var inheritedTypeComponent = new SymbolComponentInfo();
-        _ = inheritedTypeComponent.NameBuilder.Append(isFullyQualified ? interfaceData.GetType().FullName : interfaceData.Name);
+        _ = inheritedTypeComponent.NameBuilder.Append(isFullyQualified ? interfaceData.FullyQualifiedDisplayName : interfaceData.Name);
         symbolComponents.AddInheritedType(inheritedTypeComponent);
       }
-    }
-
-    public static StringBuilder AppendStringBuilder(this StringBuilder stringBuilder, StringBuilder value)
-    {
-#if NETSTANDARD2_0 || NETFRAMEWORK
-      char[] tempArray = new char[value.Length];
-      value.CopyTo(0, tempArray, 0, value.Length);
-      return stringBuilder.Append(tempArray);
-#else
-      return stringBuilder.Append(value);
-#endif
-    }
-
-#if NETSTANDARD2_0 || NETFRAMEWORK
-    public static StringBuilder AppendJoin(this StringBuilder stringBuilder, string separator, IEnumerable<string> values) 
-      => stringBuilder.Append(string.Join(separator, values));
-#endif
-
-    public static StringBuilder AppendReadOnlySpan(this StringBuilder stringBuilder, ReadOnlySpan<char> value)
-    {
-#if NETSTANDARD2_0 || NETFRAMEWORK
-      return stringBuilder.Append(value.ToArray());
-#else
-      return stringBuilder.Append(value);
-#endif
     }
 
     // TODO::Test if checking get() is enough to determine if a property is overridden
@@ -3615,7 +3559,7 @@ public static AccessModifier GetAccessModifier(this Type type)
       return typeData.IsStatic;
     }
 
-    internal static bool IsStaticInternal(TypeData typeData) 
+    internal static bool IsStaticInternal(TypeData typeData)
       => typeData.IsAbstract && typeData.IsSealed;
 
     public static bool IsBuiltInType(this Type type)
@@ -3628,7 +3572,12 @@ public static AccessModifier GetAccessModifier(this Type type)
     {
       var typeReference = new CodeTypeReference(typeData.GetType());
       string typeName = HelperExtensionsCommon.CodeProvider.GetTypeOutput(typeReference);
-      
+      int typeNameStartIndex = typeName.LastIndexOf('.') + 1;
+      if (typeNameStartIndex > 0)
+      {
+        typeName = typeName.Substring(typeNameStartIndex);
+      }
+
       return !HelperExtensionsCommon.CodeProvider.IsValidIdentifier(typeName);
     }
 
@@ -3642,7 +3591,7 @@ public static AccessModifier GetAccessModifier(this Type type)
       return typeData.IsRef;
     }
 
-    internal static bool IsRefInternal(ParameterData parameterData) 
+    internal static bool IsRefInternal(ParameterData parameterData)
       => parameterData.IsByRef && !parameterData.IsOut && !parameterData.IsIn;
 
     /// <summary>
@@ -3709,7 +3658,7 @@ public static AccessModifier GetAccessModifier(this Type type)
         return false;
       }
 
-      MethodInfo methodInfo = methodData.GetMethodInfo(); 
+      MethodInfo methodInfo = methodData.GetMethodInfo();
       Attribute methodExtensionAttribute = methodInfo.GetCustomAttribute(HelperExtensionsCommon.ExtensionAttributeType, false);
       if (methodExtensionAttribute == null)
       {
@@ -3849,7 +3798,7 @@ public static AccessModifier GetAccessModifier(this Type type)
 
     internal static SymbolAttributes GetAttributesInternal(TypeData typeData)
     {
-      Type type =  typeData.GetType();
+      Type type = typeData.GetType();
       if (IsDelegateInternal(type))
       {
         SymbolAttributes delegateAttributes = SymbolAttributes.Delegate;
@@ -4139,6 +4088,27 @@ public static AccessModifier GetAccessModifier(this Type type)
       .Replace(" ", "&nbsp;")
       .AsSpan();
 
+    internal static string ToWrappingHtml(this string text, WrapStyle wrapStyle, params char[] delimiters)
+    {
+      bool isWrappingAtCasing = wrapStyle is WrapStyle.Casing;
+      var delimiterSet = new HashSet<char>(delimiters);
+      StringBuilder resultBuilder = StringBuilderFactory.GetOrCreateWith(text);
+      for (int characterIndex = text.Length - 1; characterIndex >= 0; characterIndex--)
+      {
+        char textCharacter = resultBuilder[characterIndex];
+        if (delimiterSet.Contains(textCharacter)
+          || isWrappingAtCasing && char.IsUpper(textCharacter))
+        {
+          _ = resultBuilder.Insert(characterIndex, "<wbr>");
+        }
+      }
+
+      string result = resultBuilder.ToString();
+      StringBuilderFactory.Recycle(resultBuilder);
+
+      return result;
+    }
+
     internal static StringBuilder ToInlineHtml(this StringBuilder signatureBuilder, SymbolComponentInfo symbolComponentInfo)
     {
       if (symbolComponentInfo.CustomAttributes.Any())
@@ -4367,6 +4337,31 @@ public static AccessModifier GetAccessModifier(this Type type)
       }
 
       return signatureBuilder;
+    }
+
+    public static StringBuilder AppendStringBuilder(this StringBuilder stringBuilder, StringBuilder value)
+    {
+#if NETSTANDARD2_0 || NETFRAMEWORK
+      char[] tempArray = new char[value.Length];
+      value.CopyTo(0, tempArray, 0, value.Length);
+      return stringBuilder.Append(tempArray);
+#else
+      return stringBuilder.Append(value);
+#endif
+    }
+
+#if NETSTANDARD2_0 || NETFRAMEWORK
+    public static StringBuilder AppendJoin(this StringBuilder stringBuilder, string separator, IEnumerable<string> values)
+      => stringBuilder.Append(string.Join(separator, values));
+#endif
+
+    public static StringBuilder AppendReadOnlySpan(this StringBuilder stringBuilder, ReadOnlySpan<char> value)
+    {
+#if NETSTANDARD2_0 || NETFRAMEWORK
+      return stringBuilder.Append(value.ToArray());
+#else
+      return stringBuilder.Append(value);
+#endif
     }
   }
 }

@@ -90,12 +90,15 @@
       : this.symbolAttributes;
 
     public override SymbolComponentInfo SymbolComponentInfo
-      => this.symbolComponentInfo ?? (this.symbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false));
+      => this.symbolComponentInfo ?? (this.symbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false));
 
     public override string Signature
       => this.Name;
 
     public override string ShortSignature
+      => this.Name;
+
+    public override string ShortCompactSignature
       => this.Name;
 
     public override string FullyQualifiedSignature

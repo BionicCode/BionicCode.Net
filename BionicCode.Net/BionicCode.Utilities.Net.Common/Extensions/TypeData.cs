@@ -16,6 +16,7 @@
     private bool? isAwaitable;
     private string signature;
     private string shortSignature;
+    private string shortCompactSignature;
     private string fullyQualifiedSignature;
     private bool? isStatic;
     private bool? isBuiltInType;
@@ -40,7 +41,9 @@
     private ConstructorData[] constructorsData;
     private IList<CustomAttributeData> attributeData;
     private string assemblyName;
+    private MethodData delegateInvokeMethodData;
     private SymbolComponentInfo symbolComponentInfo;
+    private SymbolComponentInfo comapactSymbolComponentInfo;
 
 #if !NETFRAMEWORK && !NETSTANDARD2_0
     private bool? isByRefLike;
@@ -162,25 +165,30 @@
       : this.accessModifier;
 
     public override SymbolComponentInfo SymbolComponentInfo
-      => this.symbolComponentInfo ?? (this.symbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false));
+      => this.symbolComponentInfo ?? (this.symbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isCompact: false));
+
+    public SymbolComponentInfo CompactSymbolComponentInfo
+      => this.comapactSymbolComponentInfo ?? (this.comapactSymbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isCompact: true));
 
     public override string Signature
-      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: false, isCompact: false));
+      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: false));
 
     public override string ShortSignature
-      => this.shortSignature ?? (this.shortSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: false));
+      => this.shortSignature ?? (this.shortSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: false));
+
+    public override string ShortCompactSignature
+      => this.shortCompactSignature ?? (this.shortCompactSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: true));
 
     public override string FullyQualifiedSignature
-      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isShortName: true, isCompact: false));
+      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isCompact: true));
 
     public override string DisplayName
-      => this.displayName ?? (this.displayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isShortName: false, isCompact: true));
+      => this.displayName ?? (this.displayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false));
 
     public override string ShortDisplayName
-      => this.shortDisplayName ?? (this.shortDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isShortName: true, isCompact: true));
-
+      => this.shortDisplayName ?? (this.shortDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false));
     public override string FullyQualifiedDisplayName 
-      => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: true, isShortName: false, isCompact: true));
+      => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false));
 
     public override string AssemblyName
       => this.assemblyName ?? (this.assemblyName = GetType().Assembly.GetName().Name);
@@ -236,6 +244,20 @@
         }
 
         return this.baseTypeData;
+      }
+    }
+
+    public MethodData DelegateInvokeMethodData
+    {
+      get
+      {
+        if (this.delegateInvokeMethodData is null)
+        {
+          MethodInfo methodInfo = GetType().GetMethod("Invoke");
+          this.delegateInvokeMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+        }
+
+        return this.delegateInvokeMethodData;
       }
     }
 

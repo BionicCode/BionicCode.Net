@@ -11,42 +11,47 @@
     /// <summary>
     /// Describes the profiled member that the <see cref="ProfilerBatchResult"/> items represent.
     /// </summary>
-    /// <value>The value can differ from the value of the indivudual items. 
+    /// <value>The value can differ from the value of the individual items. 
     /// <br/>For example, this collection will have the value <see cref="ProfiledTargetType.Property"/> while the actual <see cref="ProfilerBatchResult.Context"/> has <see cref="ProfilerContext.TargetType"/> return <see cref="ProfiledTargetType.PropertyGet"/> and <see cref="ProfiledTargetType.PropertySet"/>.</value>
-    internal ProfiledTargetType ProfiledTargetType { get; set; }
+    internal ProfiledTargetType TargetType { get; set; }
 
     /// <summary>
-    /// The signature name of the profiled type member.
+    /// The signature of the profiled type including the declaring type (in case if the target is a member).
     /// </summary>
-    internal string ProfiledTargetSignatureMemberName { get; set; }
+    internal string TargetSignature { get; set; }
 
     /// <summary>
-    /// The signature name of the profiled type member without attributes, generic constraints and inheritance list.
+    /// The signature of the profiled type without the declaring type (in case if the target is a member).
     /// </summary>
-    internal string ProfiledTargetShortSignatureMemberName { get; set; }
+    internal string TargetShortSignature { get; set; }
 
     /// <summary>
-    /// The signature name of the profiled type member.
+    /// The signature name of the profiled type without the declaring type (in case if the target is a member), attributes, generic constraints and inheritance list.
     /// </summary>
-    internal string ProfiledTargetMemberName { get; set; }
+    internal string TargetShortCompactSignature { get; set; }
 
     /// <summary>
-    /// The signature name of the profiled type member.
+    /// The name of the profiled type including the declaring type (in case if the target is a member)..
     /// </summary>
-    internal string ProfiledTargetMemberShortName { get; set; }
+    internal string TargetName { get; set; }
+
+    /// <summary>
+    /// The name of the profiled type without the declaring type (in case if the target is a member).
+    /// </summary>
+    internal string TargetShortName { get; set; }
 
     internal TimeUnit CommonBaseUnit => this.Min(result => result.BaseUnit);
 
-    public ProfilerBatchResultGroup(ProfiledTargetType profiledTargetType) => this.ProfiledTargetType = profiledTargetType;
+    public ProfilerBatchResultGroup(ProfiledTargetType profiledTargetType) => this.TargetType = profiledTargetType;
 
     internal ProfilerBatchResultGroup()
     {
-      this.ProfiledTargetType = ProfiledTargetType.None;
-      this.ProfiledTargetSignatureMemberName = string.Empty;
+      this.TargetType = ProfiledTargetType.None;
+      this.TargetSignature = string.Empty;
     }
 
-    public ProfilerBatchResultGroup(ProfiledTargetType profiledTargetType, IEnumerable<ProfilerBatchResult> collection) : base(collection) => this.ProfiledTargetType = profiledTargetType;
+    public ProfilerBatchResultGroup(ProfiledTargetType profiledTargetType, IEnumerable<ProfilerBatchResult> collection) : base(collection) => this.TargetType = profiledTargetType;
 
-    public ProfilerBatchResultGroup(ProfiledTargetType profiledTargetType, int capacity) : base(capacity) => this.ProfiledTargetType = profiledTargetType;
+    public ProfilerBatchResultGroup(ProfiledTargetType profiledTargetType, int capacity) : base(capacity) => this.TargetType = profiledTargetType;
   }
 }

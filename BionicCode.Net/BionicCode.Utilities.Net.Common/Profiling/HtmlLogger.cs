@@ -47,7 +47,7 @@
     public async Task LogAsync(ProfiledTypeResultCollection typeResults, CancellationToken cancellationToken)
     {
       StringBuilder htmlTypeNavigationIndexBuilder = StringBuilderFactory.GetOrCreate();
-      var documentBuilderInfosMap = new Dictionary<ProfilerBatchResultGroupCollection, IEnumerable<HtmlDocumentBuilderInfo>>();
+      var documentBuilderInfoMap = new Dictionary<ProfilerBatchResultGroupCollection, IEnumerable<HtmlDocumentBuilderInfo>>();
       foreach (ProfilerBatchResultGroupCollection batchResultGroups in typeResults)
       {
         cancellationToken.ThrowIfCancellationRequested();
@@ -63,9 +63,9 @@
           continue;
         }
 
-        documentBuilderInfosMap.Add(batchResultGroups, htmlDocumentBuilderInfos);
+        documentBuilderInfoMap.Add(batchResultGroups, htmlDocumentBuilderInfos);
         string indexPageNameOfCurrentType = htmlDocumentBuilderInfos.First().FileName;
-        _ = htmlTypeNavigationIndexBuilder.AppendLine($@"<li><a class=""dropdown-item {{0}}"" {{1}} href=""{indexPageNameOfCurrentType}"">{batchResultGroups.ProfiledTypeData.ShortSignature.ToHtmlEncodedString()}</a></li>");
+        _ = htmlTypeNavigationIndexBuilder.AppendLine($@"<li><a class=""dropdown-item {{0}}"" {{1}} href=""{indexPageNameOfCurrentType}"">{batchResultGroups.ProfiledTypeData.ShortCompactSignature.ToHtmlEncodedString()}</a></li>");
       }
 
       string htmlTypeNavigationIndexTemplate = htmlTypeNavigationIndexBuilder.ToString();
@@ -75,7 +75,7 @@
         cancellationToken.ThrowIfCancellationRequested();
 
         ProfilerBatchResultGroupCollection batchResultGroups = typeResults[typeResultGroupsIndex];
-        if (!documentBuilderInfosMap.TryGetValue(batchResultGroups, out IEnumerable<HtmlDocumentBuilderInfo> documentBuilderInfos))
+        if (!documentBuilderInfoMap.TryGetValue(batchResultGroups, out IEnumerable<HtmlDocumentBuilderInfo> documentBuilderInfos))
         {
           continue;
         }
@@ -102,10 +102,15 @@
             htmlDocumentBuilderInfo.DocumentFooterElements,
             htmlFilePath);
 
+#if NETCOREAPP || NET
+          await using var streamWriter = new StreamWriter(htmlFilePath, false);
+          await streamWriter.WriteAsync(htmlDocument);
+#else
           using (var streamWriter = new StreamWriter(htmlFilePath, false))
           {
             await streamWriter.WriteAsync(htmlDocument);
           }
+#endif
         }
       }
 
@@ -141,9 +146,9 @@
 
         DateTime timeStamp = DateTime.Now;
         string htmlFileName = $"profiler_result_{timeStamp.ToString("MM-dd-yyyy_hhmmss.fffffff")}.html";
-        _ = htmlTypeMemberNavigationIndexBuilder.AppendLine($@"<li><a class=""dropdown-item {{0}}"" {{1}} href=""{htmlFileName}"">{batchResultGroup.ProfiledTargetShortSignatureMemberName.ToHtmlEncodedString()}</a></li>");
+        _ = htmlTypeMemberNavigationIndexBuilder.AppendLine($@"<li><a class=""dropdown-item {{0}}"" style=""white-space: pre-wrap; "" {{1}} href=""{htmlFileName}"">{batchResultGroup.TargetShortCompactSignature.ToHtmlEncodedString()}</a></li>");
         string htmlSourceCodeTemplate = await GetEncodedHtmlCodeTextAsync();
-        string pageTitel = batchResultGroup.ProfiledTargetMemberName.ToHtmlEncodedString();
+        string pageTitle = $"{batchResultGroup.TargetName.ToWrappingHtml(WrapStyle.Casing, '.', '<', '>', ':', '(', '[')} {batchResultGroup.TargetType.ToDisplayStringValue(toUpperCase: true)}";
         string inPageNavigationHtmlElements = CreateHtmlInPageNavigationElements(batchResultGroup);
         //string pageFooterElements = CreateHtmlInPageFooterElements(batchResultGroup);
 
@@ -151,11 +156,11 @@
         {
           ChartSection = resultHtmlTable,
           DocumentTemplate = htmlSourceCodeTemplate,
-          DocumentTitle = pageTitel,
+          DocumentTitle = pageTitle,
           InPageNavigationElements = inPageNavigationHtmlElements,
           //DocumentFooterElements = pageFooterElements,
           FileName = htmlFileName,
-          MemberName = $"{batchResultGroup.ProfiledTargetMemberShortName} ({batchResultGroup.ProfiledTargetType.ToDisplayStringValue()})".ToHtmlEncodedString()
+          MemberName = $"{batchResultGroup.TargetShortName} ({batchResultGroup.TargetType.ToDisplayStringValue()})".ToHtmlEncodedString()
         };
 
         htmlDocumentBuilderValues.Add(batchResultGroup, builderInfo);
@@ -173,7 +178,6 @@
 
         _ = htmlTypeMemberNavigationIndexBuilder.Clear();
         string globalNavigationIndexForCurrentResult = await CreateGlobalNavigationIndexAsync(htmlTypeMemberNavigationIndexBuilder, batchResultGroups.Count, groupIndex, htmlNavigationIndexTemplate, cancellationToken);
-
         HtmlDocumentBuilderInfo htmlDocumentBuilderInfo = htmlDocumentBuilderValues[resultGroup];
         htmlDocumentBuilderInfo.ResultNavigationElements = globalNavigationIndexForCurrentResult;
 
@@ -188,11 +192,11 @@
       return htmlDocumentBuilderValues.Values.ToList();
     }
 
-    private async Task<string> CreateGlobalNavigationIndexAsync(StringBuilder htmlDocumentNavigationIndexBuilder, int totalResultCount, int currentResultIndex, string htmlNavigationIndexTemplate, CancellationToken cancellationToken)
+    private async Task<string> CreateGlobalNavigationIndexAsync(StringBuilder htmlDocumentNavigationIndexBuilder, int totalResultCount, int currentResultIndex, string htmlTypeNavigationIndexTemplate, CancellationToken cancellationToken)
     {
       int lineIndex = 0;
 
-      using (var templateReader = new StringReader(htmlNavigationIndexTemplate))
+      using (var templateReader = new StringReader(htmlTypeNavigationIndexTemplate))
       {
         string line = string.Empty;
         string rawLine = string.Empty;
@@ -284,18 +288,15 @@
         _ = htmlDocumentBuilder.Append($@"
     <article id=""{batchResult.Index}"">
 
-      <div class=""scroll-host"" style=""font-weight: normal; text-align: left; border: 1px solid black; padding: 12px"">
         <div style=""margin: 0px 0px 12px 0px;"">
           <span style=""font-weight: bold; font-size: 18pt"">Profile Context</span><br/>
           <span style=""font-weight: bold; font-size: 14pt"">Target</span><br/>
           <span class=""label-span"">Namespace: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.Namespace}</span><br />
       	  <span class=""label-span"">Assembly: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.AssemblyName}.dll</span><br />      	 
-      	  <span class=""label-span"">Source: </span>
-            <div class=""tooltip"">
-              <a href=""file:///{batchResult.Context.FullSourceFileName}""><span class=""valueSpan"">{batchResult.Context.SourceFileName}</span></a>
+      	  <span class=""label-span"">Source: </span><span class=""valueSpan"">{batchResult.Context.SourceFileName}</span>
+            <div class=""tooltip"">              
               <span class=""tooltiptext"">{batchResult.Context.FullSourceFileName}</span>
-            </div><br /> 
-      	  <span class=""label-span"">Line: </span><span class=""valueSpan"">{batchResult.Context.LineNumber}</span><br />
+            </div><span class=""valueSpan""> line {batchResult.Context.LineNumber}</span><br />
 
       	  <span class=""label-span"">Kind: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue(toUpperCase: true).ToHtmlEncodedString()}</span><br />
       	  <br>
@@ -389,8 +390,7 @@
 
         <div style=""width:50%; float: left;"">
           <div id=""chart-{batchResult.Index}"" class=""line-chart""></div>
-        </div>
-      </div>")
+        </div>")
         .Append($@"<a class=""navigation-link"" href=""#document_start"">Go to top 🡡</a>")
         .Append("</article>");
       }
