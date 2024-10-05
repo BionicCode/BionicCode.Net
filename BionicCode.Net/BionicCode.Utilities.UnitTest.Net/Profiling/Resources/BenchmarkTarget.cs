@@ -11,19 +11,23 @@
   public class BenchmarkTarget<TParam>
   {
     [Profile(Runtime.Net6_0)]
-    [ProfilerArgument(100)]
-    [ProfilerArgument(200)]
+    [ProfilerPropertyArgument(100)]
+    [ProfilerPropertyArgument(200)]
+    [ProfilerPropertyArgument(500, Accessor = PropertyAccessor.Set)]
+    [ProfilerPropertyArgument(600, Accessor = PropertyAccessor.Set)]
+    [ProfilerPropertyArgument(700, Accessor = PropertyAccessor.Set)]
+    [ProfilerPropertyArgument(Accessor = PropertyAccessor.Get)]
     //[ProfilerArgument(300)]
     public int NumericValue
     {
       //[Profile]
-      [ProfilerArgument(500)]
+      [ProfilerMethodArgument(2500)]
       get;
 
       //[Profile]
-      [ProfilerArgument(500)]
-      [ProfilerArgument(600)]
-      [ProfilerArgument(700)]
+      [ProfilerMethodArgument(2500)]
+      [ProfilerMethodArgument(2600)]
+      [ProfilerMethodArgument(2700)]
       private set;
     }
 
@@ -33,17 +37,17 @@
     private Dictionary<int, string> KeyValuePairsReverse { get; }
 
     //[Profile]
-    [ProfilerArgument(12, Index = "A")]
-    [ProfilerArgument(20, Index = "T")]
+    [ProfilerPropertyArgument(12, Index = "A")]
+    [ProfilerPropertyArgument(20, Index = "T")]
     public int this[string key]
     {
       get => this.KeyValuePairs[key];
       set => this.KeyValuePairs[key] = value;
     }
 
-    //[Profile]
-    [ProfilerArgument("Twenty", Index = 20)]
-    [ProfilerArgument("Twelve", Index = 12)]
+    [Profile]
+    [ProfilerPropertyArgument("Twenty", Index = 20)]
+    [ProfilerPropertyArgument("Twelve", Index = 12)]
     public string this[int key]
     {
       get => this.KeyValuePairsReverse[key];
@@ -76,23 +80,23 @@
     private static BenchmarkTarget<TParam> Factory { get; } = new BenchmarkTarget<TParam>(300);
 
     //[Profile]
-    [ProfilerArgument(500)]
+    [ProfilerMethodArgument(500)]
     public BenchmarkTarget(int numericValue) : this() => this.NumericValue = numericValue;
 
     //[Profile]
-    [ProfilerArgument(500, "1")]
-    [ProfilerArgument(1000, "2")]
-    [ProfilerArgument(200, "3")]
+    [ProfilerMethodArgument(500, "1")]
+    [ProfilerMethodArgument(1000, "2")]
+    [ProfilerMethodArgument(200, "3")]
     public static async Task TimeConsumingMethod(int delayInMilliseconds, TParam someValue) => await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliseconds));
 
     //[Profile]
-    [ProfilerArgument(500, "1")]
-    [ProfilerArgument(1000, "2")]
-    [ProfilerArgument(200, "3")]
+    [ProfilerMethodArgument(500, "1")]
+    [ProfilerMethodArgument(1000, "2")]
+    [ProfilerMethodArgument(200, "3")]
     public static async Task TimeConsumingMethod<TMethodParam>(int delayInMilliseconds, TMethodParam someValue) => await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliseconds));
 
     [Profile]
-    [ProfilerArgument(100, "Test Value 1", new[] { "1", "2", "3" }, 1)]
+    [ProfilerMethodArgument(100, "Test Value 1", new[] { "1", "2", "3" }, 1)]
     [DisplayName("RTM")]
     //[ProfilerArgument(10, "2", 2)]
     //[ProfilerArgument(200, "3", 3)]
@@ -102,19 +106,23 @@
   public class BenchmarkTargetAlternate<TParam>
   {
     [Profile]
-    [ProfilerArgument("A")]
-    [ProfilerArgument("B")]
+    [ProfilerPropertyArgument("A")]
+    [ProfilerPropertyArgument("B")]
+    [ProfilerPropertyArgument("E", Accessor = PropertyAccessor.Set)]
+    [ProfilerPropertyArgument("F", Accessor = PropertyAccessor.Set)]
+    [ProfilerPropertyArgument("G", Accessor = PropertyAccessor.Set)]
+    [ProfilerPropertyArgument("D", Accessor = PropertyAccessor.Get)]
     //[ProfilerArgument("C")]
     public string TextValue
     {
       //[Profile]
-      [ProfilerArgument("D")]
+      [ProfilerMethodArgument("D")]
       get;
 
       //[Profile]
-      [ProfilerArgument("E")]
-      [ProfilerArgument("F")]
-      [ProfilerArgument("G")]
+      [ProfilerMethodArgument("E")]
+      [ProfilerMethodArgument("F")]
+      [ProfilerMethodArgument("G")]
       private set;
     }
 
@@ -124,8 +132,8 @@
     private Dictionary<int, string> KeyValuePairsReverse { get; }
 
     [Profile]
-    [ProfilerArgument(12, Index = "A")]
-    [ProfilerArgument(20, Index = "T")]
+    [ProfilerPropertyArgument(12, Index = "A")]
+    [ProfilerPropertyArgument(20, Index = "T")]
     public int this[string key]
     {
       get => this.KeyValuePairs[key];
@@ -133,8 +141,8 @@
     }
 
     //[Profile]
-    [ProfilerArgument("Twenty", Index = 20)]
-    [ProfilerArgument("Twelve", Index = 12)]
+    [ProfilerPropertyArgument("Twenty", Index = 20)]
+    [ProfilerPropertyArgument("Twelve", Index = 12)]
     public string this[int key]
     {
       get => this.KeyValuePairsReverse[key];
@@ -167,23 +175,23 @@
     private static BenchmarkTargetAlternate<TParam> Factory { get; } = new BenchmarkTargetAlternate<TParam>("Created by factory property");
 
     //[Profile]
-    [ProfilerArgument("Malcolm X")]
+    [ProfilerMethodArgument("Malcolm X")]
     public BenchmarkTargetAlternate(string textValue) : this() => this.TextValue = textValue;
 
     //[Profile]
-    [ProfilerArgument(500, "1")]
-    [ProfilerArgument(1000, "2")]
-    [ProfilerArgument(200, "3")]
+    [ProfilerMethodArgument(500, "1")]
+    [ProfilerMethodArgument(1000, "2")]
+    [ProfilerMethodArgument(200, "3")]
     public static async Task TimeConsumingOperation(int delayInMilliseconds, TParam someValue) => await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliseconds));
 
     //[Profile]
-    [ProfilerArgument(500, "1")]
-    [ProfilerArgument(1000, "2")]
-    [ProfilerArgument(200, "3")]
+    [ProfilerMethodArgument(500, "1")]
+    [ProfilerMethodArgument(1000, "2")]
+    [ProfilerMethodArgument(200, "3")]
     public static async Task TimeConsumingOperation<TMethodParam>(int delayInMilliseconds, TMethodParam someValue) => await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliseconds));
 
     [Profile]
-    [ProfilerArgument(100, new[] { "1", "2", "3" }, 1)]
+    [ProfilerMethodArgument(100, new[] { "1", "2", "3" }, 1)]
     //[ProfilerArgument(10, "2", 2)]
     //[ProfilerArgument(200, "3", 3)]
     public async Task TimeConsumingOperation<TMethodParam1, TMethodParam2>(int delayInMilliseconds, TMethodParam1 someValue1, TMethodParam2 someValue2) => await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliseconds));

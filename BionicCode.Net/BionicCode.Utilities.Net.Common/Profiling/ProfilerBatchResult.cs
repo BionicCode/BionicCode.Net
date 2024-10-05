@@ -189,7 +189,7 @@
     /// The number of iterations the <see cref="Profiler"/> has run the specified operation.
     /// </summary>
     /// <value>The number of iterations (which is equivalent to the number of results) per argument list.</value>
-    /// <remarks>Using the profiler with annotations (symbolAttributes) (see <see cref="ProfileAttribute"/>) allows to specify argument lists (see <see cref="ProfilerArgumentAttribute"/>) to simulate real-world behavior where usually the values of the arguments that are provided to the member change.
+    /// <remarks>Using the profiler with annotations (symbolAttributes) (see <see cref="ProfileAttribute"/>) allows to specify argument lists (see <see cref="ProfilerMethodArgumentAttribute"/>) to simulate real-world behavior where usually the values of the arguments that are provided to the member change.
     /// <br/>A member is executed and profiled with each argument list for the number of the <see cref="IterationCount"/> times.
     /// <br/>For example if a method is profiled with three argument lists and an iteration count of 10, the <see cref="IterationCount"/> will return <c>10</c> and the total iterations run for the profiled member is <c>30</c>, the product of <see cref="IterationCount"/> and <see cref="ArgumentListCount"/> (see <see cref="TotalIterationCount"/>).</remarks>
     public int IterationCount => this.Context.IterationCount;

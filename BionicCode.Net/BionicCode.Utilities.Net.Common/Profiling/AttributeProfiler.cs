@@ -294,32 +294,32 @@
           TargetShortName = memberInfo.ShortDisplayName
         };
 
-        for (int argumentListIndex = 0; argumentListIndex < memberInfo.ArgumentLists.Count(); argumentListIndex++)
+        if (memberInfo is ProfiledMethodInfo method)
         {
-          cancellationToken.ThrowIfCancellationRequested();
-
-          object[] argumentList = memberInfo.ArgumentLists[argumentListIndex].ToArray();
-          if (memberInfo is ProfiledMethodInfo method)
+          for (int argumentListIndex = 0; argumentListIndex < method.ArgumentInfo.Count; argumentListIndex++)
           {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            MethodArgumentInfo arguments = method.ArgumentInfo[argumentListIndex];
             ProfilerTargetInvokeInfo invocationInfo;
             if (method.IsAwaitable)
             {
               if (method.IsAwaitableTask)
               {
-                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, argumentList, argumentListIndex, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.MethodData.SymbolComponentInfo, method.Namespace, method.AssemblyName, asynchronousTaskMethodInvocator: method.MethodData.GetAwaitableTaskInvocator(), ProfiledTargetType.Method);
+                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, arguments, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.MethodData.SymbolComponentInfo, method.Namespace, method.AssemblyName, asynchronousTaskMethodInvocator: method.MethodData.GetAwaitableTaskInvocator(), ProfiledTargetType.Method);
               }
               else if (method.IsAwaitableValueTask)
               {
-                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, argumentList, argumentListIndex, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.Namespace, method.AssemblyName, asynchronousValueTaskMethodInvocator: method.MethodData.GetAwaitableValueTaskInvocator(), ProfiledTargetType.Method);
+                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, arguments, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.Namespace, method.AssemblyName, asynchronousValueTaskMethodInvocator: method.MethodData.GetAwaitableValueTaskInvocator(), ProfiledTargetType.Method);
               }
               else
               {
-                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.Namespace, method.AssemblyName, argumentList, argumentListIndex, asynchronousGenericValueTaskMethodInvocator: method.MethodData.GetAwaitableGenericValueTaskInvocator(), ProfiledTargetType.Method);
+                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.Namespace, method.AssemblyName, arguments, asynchronousGenericValueTaskMethodInvocator: method.MethodData.GetAwaitableGenericValueTaskInvocator(), ProfiledTargetType.Method);
               }
             }
             else
             {
-              invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, argumentList, argumentListIndex, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.Namespace, method.AssemblyName, synchronousMethodInvocator: method.MethodData.GetInvocator(), ProfiledTargetType.Method);
+              invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, arguments, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.Namespace, method.AssemblyName, synchronousMethodInvocator: method.MethodData.GetInvocator(), ProfiledTargetType.Method);
             }
 
             var context = new ProfilerContext(invocationInfo, method.SourceFilePath, method.LineNumber, this.Configuration.WarmupIterations, this.Configuration.Iterations, method.TargetFramework, this.Configuration.BaseUnit, this.Configuration.ProfilerLogger, this.Configuration.AsyncProfilerLogger);
@@ -329,7 +329,7 @@
 
             if (memberResultGroup.IsEmpty())
             {
-              result.ArgumentListCount = argumentList is VoidArgumentList ? 0 : memberInfo.ArgumentLists.Count();
+              result.ArgumentListCount = method.ArgumentInfo.Count;
               memberResultGroup.TargetType = invocationInfo.ProfiledTargetType;
               memberResultGroup.Add(result);
             }
@@ -338,15 +338,21 @@
               memberResultGroup.First().Combine(result);
             }
           }
-          else if (memberInfo is ProfiledConstructorInfo constructor)
+        }
+        else if (memberInfo is ProfiledConstructorInfo constructor)
+        {
+          for (int argumentListIndex = 0; argumentListIndex < constructor.ArgumentInfo.Count; argumentListIndex++)
           {
-            var invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, argumentList, argumentListIndex, constructor.Signature, constructor.DisplayName, constructor.ShortSignature, constructor.ShortDisplayName, constructor.Namespace, constructor.AssemblyName, constructorInvocator: constructor.ConstructorData.GetInvocator(), ProfiledTargetType.Constructor);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            MethodArgumentInfo arguments = constructor.ArgumentInfo[argumentListIndex];
+            var invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, arguments, constructor.Signature, constructor.DisplayName, constructor.ShortSignature, constructor.ShortDisplayName, constructor.Namespace, constructor.AssemblyName, constructorInvocator: constructor.ConstructorData.GetInvocator(), ProfiledTargetType.Constructor);
             var context = new ProfilerContext(invocationInfo, constructor.SourceFilePath, constructor.LineNumber, this.Configuration.WarmupIterations, this.Configuration.Iterations, constructor.TargetFramework, this.Configuration.BaseUnit, this.Configuration.ProfilerLogger, this.Configuration.AsyncProfilerLogger);
             ProfilerBatchResult result = Profiler.LogTimeInternal(context);
 
             if (memberResultGroup.IsEmpty())
             {
-              result.ArgumentListCount = argumentList is VoidArgumentList ? 0 : memberInfo.ArgumentLists.Count();
+              result.ArgumentListCount = constructor.ArgumentInfo.Count;
               memberResultGroup.TargetType = invocationInfo.ProfiledTargetType;
               memberResultGroup.Add(result);
             }
@@ -355,19 +361,25 @@
               memberResultGroup.First().Combine(result);
             }
           }
-          else if (memberInfo is ProfiledPropertyInfo property)
+        }
+        else if (memberInfo is ProfiledPropertyInfo property)
+        {
+          for (int argumentIndex = 0; argumentIndex < property.Arguments.Count; argumentIndex++)
           {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            PropertyArgumentInfo argument = property.Arguments[argumentIndex];
             ProfilerTargetInvokeInfo invocationInfo;
             if (property.PropertyData.CanRead)
             {
-              invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, argumentList, argumentListIndex, property.Signature, property.DisplayName, property.ShortSignature, property.ShortDisplayName, property.Namespace, property.AssemblyName, synchronousMethodInvocator: property.PropertyData.GetGetInvocator(), ProfiledTargetType.PropertyGet);
+              invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, argument, property.Signature, property.DisplayName, property.ShortSignature, property.ShortDisplayName, property.Namespace, property.AssemblyName, propertyGetInvocator: property.PropertyData.GetGetInvocator(), ProfiledTargetType.PropertyGet);
               var context = new ProfilerContext(invocationInfo, property.SourceFilePath, property.LineNumber, this.Configuration.WarmupIterations, this.Configuration.Iterations, property.TargetFramework, this.Configuration.BaseUnit, this.Configuration.ProfilerLogger, this.Configuration.AsyncProfilerLogger);
               ProfilerBatchResult propertyGetResult = Profiler.LogTimeInternal(context);
               propertyGetResult.Index = 0;
 
               if (memberResultGroup.IsEmpty())
               {
-                propertyGetResult.ArgumentListCount = argumentList is VoidArgumentList ? 0 : memberInfo.ArgumentLists.Count();
+                propertyGetResult.ArgumentListCount = property.Arguments.Count;
                 memberResultGroup.TargetType = invocationInfo.ProfiledTargetType;
                 memberResultGroup.Add(propertyGetResult);
               }
@@ -379,14 +391,14 @@
 
             if (property.PropertyData.CanWrite)
             {
-              invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, argumentList, argumentListIndex, property.Signature, property.DisplayName, property.ShortSignature, property.ShortDisplayName, property.Namespace, property.AssemblyName, propertySetInvocator: property.PropertyData.GetSetInvocator(), ProfiledTargetType.PropertySet);
+              invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, argument, property.Signature, property.DisplayName, property.ShortSignature, property.ShortDisplayName, property.Namespace, property.AssemblyName, propertySetInvocator: property.PropertyData.GetSetInvocator(), ProfiledTargetType.PropertySet);
               var context = new ProfilerContext(invocationInfo, property.SourceFilePath, property.LineNumber, this.Configuration.WarmupIterations, this.Configuration.Iterations, property.TargetFramework, this.Configuration.BaseUnit, this.Configuration.ProfilerLogger, this.Configuration.AsyncProfilerLogger);
               ProfilerBatchResult propertySetResult = Profiler.LogTimeInternal(context);
               propertySetResult.Index = 1;
 
               if (memberResultGroup.Count == 1)
               {
-                propertySetResult.ArgumentListCount = argumentList is VoidArgumentList ? 0 : memberInfo.ArgumentLists.Count();
+                propertySetResult.ArgumentListCount = property.Arguments.Count;
                 memberResultGroup.Add(propertySetResult);
               }
               else
@@ -395,7 +407,7 @@
               }
             }
           }
-        }
+        }        
 
         if (memberResultGroup.Any())
         {
@@ -560,14 +572,19 @@
 
           hasProfiledInstanceMethods |= !isMethodStatic;
 
-          IList<IEnumerable<object>> argumentLists = new List<IEnumerable<object>> { new VoidArgumentList() };
+          var argumentLists = new List<MethodArgumentInfo>();
           int methodParameterCount = methodData.Parameters.Length;
           bool isMethodParameterless = methodParameterCount == 0;
           if (!isMethodParameterless)
           {
-            argumentLists = methodInfo.GetCustomAttributes<ProfilerArgumentAttribute>(false)
-              .Select(attribute => attribute.Arguments)
-              .ToList();
+            IEnumerable<ProfilerMethodArgumentAttribute> argumentAttributes = methodInfo.GetCustomAttributes<ProfilerMethodArgumentAttribute>(false);
+            int argumentListIndex = 0;
+            foreach (ProfilerMethodArgumentAttribute attribute in argumentAttributes)
+            {
+              var argumentInfo = new MethodArgumentInfo(attribute.Arguments.ToList(), argumentListIndex++);
+              argumentLists.Add(argumentInfo);
+            }
+
             if (argumentLists.IsEmpty())
             {
               string exceptionMessage = ExceptionMessages.GetMissingProfiledArgumentAttributeExceptionMessage_Method(methodParameterCount);
@@ -620,14 +637,19 @@
 
           hasProfiledInstanceConstructors |= !constructorData.IsStatic;
 
-          IList<IEnumerable<object>> argumentLists = new List<IEnumerable<object>> { new VoidArgumentList() };
+          var argumentLists = new List<MethodArgumentInfo>();
           int constructorParameterCount = constructorData.Parameters.Length;
           bool isConstructorParameterless = constructorParameterCount == 0;
           if (!isConstructorParameterless)
           {
-            argumentLists = constructorInfo.GetCustomAttributes<ProfilerArgumentAttribute>(false)
-              .Select(attribute =>attribute.Arguments)
-              .ToList();
+            IEnumerable<ProfilerMethodArgumentAttribute> argumentAttributes = constructorInfo.GetCustomAttributes<ProfilerMethodArgumentAttribute>(false);
+            int argumentListIndex = 0;
+            foreach (ProfilerMethodArgumentAttribute attribute in argumentAttributes)
+            {
+              var argumentInfo = new MethodArgumentInfo(attribute.Arguments.ToList(), argumentListIndex++);
+              argumentLists.Add(argumentInfo);
+            }
+
             if (argumentLists.IsEmpty())
             {
               string exceptionMessage = ExceptionMessages.GetMissingProfiledArgumentAttributeExceptionMessage_Constructor(constructorParameterCount);
@@ -681,18 +703,19 @@
 
           hasProfiledInstanceProperties |= !isPropertyStatic;
 
-          IList<IEnumerable<object>> argumentLists = new List<IEnumerable<object>> { new VoidArgumentList() };
+          IList<PropertyArgumentInfo> argumentList = new List<PropertyArgumentInfo>();
           bool isRequiringArguments = isPropertyIndexer || propertyData.CanWrite;
           if (isRequiringArguments)
           {
-            argumentLists = isPropertyIndexer
-            ? propertyInfo.GetCustomAttributes<ProfilerArgumentAttribute>(false)
-              .Select(argumentAttribute => (IEnumerable<object>)new List<object> { new KeyValuePair<object, object>(argumentAttribute.Index, argumentAttribute.Arguments.FirstOrDefault()) })
-              .ToList()
-            : propertyInfo.GetCustomAttributes<ProfilerArgumentAttribute>(false)
-              .Select(attribute => attribute.Arguments)
-              .ToList();
-            if (argumentLists.IsEmpty())
+            IEnumerable<ProfilerPropertyArgumentAttribute> argumentAttributes = propertyInfo.GetCustomAttributes<ProfilerPropertyArgumentAttribute>(false);
+            int argumentListIndex = 0;
+            foreach (ProfilerPropertyArgumentAttribute attribute in argumentAttributes)
+            {
+              var argumentInfo = new PropertyArgumentInfo(attribute.Value, attribute.Index, attribute.Accessor, argumentListIndex++);
+              argumentList.Add(argumentInfo);
+            }
+
+            if (argumentList.IsEmpty())
             {
               string propertyExceptionMessage = isPropertyIndexer
                 ? ExceptionMessages.GetMissingProfiledArgumentAttributeExceptionMessage_IndexerProperty()
@@ -702,7 +725,7 @@
             }
           }
 
-          var profiledPropertyInfo = new ProfiledPropertyInfo(argumentLists, propertyData, profileAttribute.SourceFilePath, profileAttribute.LineNumber, typeDataToProfile.AssemblyName, profileAttribute.TargetFramework, isPropertyStatic);
+          var profiledPropertyInfo = new ProfiledPropertyInfo(argumentList, propertyData, profileAttribute.SourceFilePath, profileAttribute.LineNumber, typeDataToProfile.AssemblyName, profileAttribute.TargetFramework, isPropertyStatic);
           targetMembers.Add(profiledPropertyInfo);
         }
       }

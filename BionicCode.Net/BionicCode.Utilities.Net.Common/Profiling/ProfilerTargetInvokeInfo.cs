@@ -9,7 +9,7 @@
     /// Use for property set()
     /// </summary>
     /// <param name="target"></param>
-    /// <param name="arguments"></param>
+    /// <param name="methodArguments"></param>
     /// <param name="argumentListIndex"></param>
     /// <param name="targetSignature"></param>
     /// <param name="targetDisplayName"></param>
@@ -18,8 +18,7 @@
     /// <param name="propertySetInvocator"></param>
     /// <param name="profiledTargetType"></param>
     public ProfilerTargetInvokeInfo(object target,
-      object[] arguments,
-      int argumentListIndex,
+      PropertyArgumentInfo propertyArgument,
       string targetSignature,
       string targetDisplayName,
       string targetShortSignature,
@@ -35,8 +34,8 @@
       this.AsynchronousTaskMethodInvocator = null;
       this.AsynchronousValueTaskMethodInvocator = null;
       this.AsynchronousGenericValueTaskMethodInvocator = null;
-      this.Arguments = arguments;
-      this.ArgumentListIndex = argumentListIndex;
+      this.PropertyArgument = propertyArgument;
+      this.MethodArgument = default;
       this.Target = target;
       this.ProfiledTargetType = profiledTargetType;
       this.Signature = targetSignature;
@@ -47,11 +46,42 @@
       this.ShortSignature = targetShortSignature;
       this.SymbolComponentInfo = null;
     }
+
+    public ProfilerTargetInvokeInfo(object target,
+      PropertyArgumentInfo propertyArgument,
+      string targetSignature,
+      string targetDisplayName,
+      string targetShortSignature,
+      string targetShortDisplayName,
+      string targetNamespace,
+      string targetAssemblyName,
+      Func<object, object[], object> propertyGetInvocator,
+      ProfiledTargetType profiledTargetType)
+    {
+      this.PropertySetInvocator = null;
+      this.ConstructorInvocator = null;
+      this.SynchronousMethodInvocator = propertyGetInvocator;
+      this.AsynchronousTaskMethodInvocator = null;
+      this.AsynchronousValueTaskMethodInvocator = null;
+      this.AsynchronousGenericValueTaskMethodInvocator = null;
+      this.PropertyArgument = propertyArgument;
+      this.MethodArgument = default;
+      this.Target = target;
+      this.ProfiledTargetType = profiledTargetType;
+      this.Signature = targetSignature;
+      this.AssemblyName = targetAssemblyName;
+      this.DisplayName = targetDisplayName;
+      this.Namespace = targetNamespace;
+      this.ShortDisplayName = targetShortDisplayName;
+      this.ShortSignature = targetShortSignature;
+      this.SymbolComponentInfo = null;
+    }
+
     /// <summary>
     /// Use for constructors
     /// </summary>
     /// <param name="target"></param>
-    /// <param name="arguments"></param>
+    /// <param name="methodArguments"></param>
     /// <param name="argumentListIndex"></param>
     /// <param name="targetSignature"></param>
     /// <param name="targetDisplayName"></param>
@@ -60,8 +90,7 @@
     /// <param name="constructorInvocator"></param>
     /// <param name="profiledTargetType"></param>
     public ProfilerTargetInvokeInfo(object target,
-      object[] arguments,
-      int argumentListIndex,
+      MethodArgumentInfo methodArgument,
       string targetSignature,
       string targetDisplayName,
       string targetShortSignature,
@@ -77,8 +106,8 @@
       this.AsynchronousTaskMethodInvocator = null;
       this.AsynchronousValueTaskMethodInvocator = null;
       this.AsynchronousGenericValueTaskMethodInvocator = null;
-      this.Arguments = arguments;
-      this.ArgumentListIndex = argumentListIndex;
+      this.PropertyArgument = default;
+      this.MethodArgument = methodArgument;
       this.Target = target;
       this.ProfiledTargetType = profiledTargetType;
       this.Signature = targetSignature;
@@ -91,8 +120,7 @@
     }
 
     public ProfilerTargetInvokeInfo(object target,
-      object[] arguments,
-      int argumentListIndex,
+      MethodArgumentInfo methodArgument,
       string targetSignature,
       string targetDisplayName,
       string targetShortSignature,
@@ -108,8 +136,8 @@
       this.AsynchronousTaskMethodInvocator = null;
       this.AsynchronousValueTaskMethodInvocator = null;
       this.AsynchronousGenericValueTaskMethodInvocator = null;
-      this.Arguments = arguments;
-      this.ArgumentListIndex = argumentListIndex;
+      this.PropertyArgument = default;
+      this.MethodArgument = methodArgument;
       this.Target = target;
       this.ProfiledTargetType = profiledTargetType;
       this.Signature = targetSignature;
@@ -122,8 +150,7 @@
     }
 
     public ProfilerTargetInvokeInfo(object target,
-      object[] arguments,
-      int argumentListIndex,
+      MethodArgumentInfo methodArgument,
       string targetSignature,
       string targetDisplayName,
       string targetShortSignature,
@@ -140,8 +167,8 @@
       this.AsynchronousTaskMethodInvocator = asynchronousTaskMethodInvocator;
       this.AsynchronousValueTaskMethodInvocator = null;
       this.AsynchronousGenericValueTaskMethodInvocator = null;
-      this.Arguments = arguments;
-      this.ArgumentListIndex = argumentListIndex;
+      this.PropertyArgument = default;
+      this.MethodArgument = methodArgument;
       this.Target = target;
       this.ProfiledTargetType = profiledTargetType;
       this.Signature = targetSignature;
@@ -154,8 +181,7 @@
     }
 
     public ProfilerTargetInvokeInfo(object target,
-      object[] arguments,
-      int argumentListIndex,
+      MethodArgumentInfo methodArgument,
       string targetSignature,
       string targetDisplayName,
       string targetShortSignature,
@@ -171,8 +197,8 @@
       this.AsynchronousTaskMethodInvocator = null;
       this.AsynchronousValueTaskMethodInvocator = asynchronousValueTaskMethodInvocator;
       this.AsynchronousGenericValueTaskMethodInvocator = null;
-      this.Arguments = arguments;
-      this.ArgumentListIndex = argumentListIndex;
+      this.PropertyArgument = default;
+      this.MethodArgument = methodArgument;
       this.Target = target;
       this.ProfiledTargetType = profiledTargetType;
       this.Signature = targetSignature;
@@ -191,8 +217,7 @@
       string targetShortDisplayName,
       string targetNamespace,
       string targetAssemblyName,
-      object[] arguments,
-      int argumentListIndex,
+      MethodArgumentInfo methodArgument,
       Func<object, object[], dynamic> asynchronousGenericValueTaskMethodInvocator,
       ProfiledTargetType profiledTargetType)
     {
@@ -202,8 +227,8 @@
       this.AsynchronousTaskMethodInvocator = null;
       this.AsynchronousValueTaskMethodInvocator = null;
       this.AsynchronousGenericValueTaskMethodInvocator = asynchronousGenericValueTaskMethodInvocator;
-      this.Arguments = arguments;
-      this.ArgumentListIndex = argumentListIndex;
+      this.PropertyArgument = default;
+      this.MethodArgument = methodArgument;
       this.Target = target;
       this.ProfiledTargetType = profiledTargetType;
       this.Signature = targetSignature;
@@ -228,8 +253,6 @@
       this.AsynchronousTaskMethodInvocator = null;
       this.AsynchronousValueTaskMethodInvocator = null;
       this.AsynchronousGenericValueTaskMethodInvocator = null;
-      this.Arguments = Array.Empty<object>();
-      this.ArgumentListIndex = -1;
       this.Target = null;
       this.ProfiledTargetType = ProfiledTargetType.Scope;
       this.Signature = targetSignature;
@@ -239,6 +262,8 @@
       this.ShortDisplayName = targetShortDisplayName;
       this.ShortSignature = targetShortSignature;
       this.SymbolComponentInfo = null;
+      this.PropertyArgument = default;
+      this.MethodArgument = default;
     }
 
     public Action<object, object, object[]> PropertySetInvocator { get; }
@@ -247,9 +272,9 @@
     public Func<object, object[], Task> AsynchronousTaskMethodInvocator { get; }
     public Func<object, object[], ValueTask> AsynchronousValueTaskMethodInvocator { get; }
     public Func<object, object[], dynamic> AsynchronousGenericValueTaskMethodInvocator { get; }
-    public object[] Arguments { get; }
-    public int ArgumentListIndex { get; }
+    public PropertyArgumentInfo PropertyArgument { get; }
     public object Target { get; }
+    public MethodArgumentInfo MethodArgument { get; }
     public string Signature { get; }
     public string DisplayName { get; }
     public string ShortSignature { get; }

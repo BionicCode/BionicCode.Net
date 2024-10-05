@@ -61,7 +61,7 @@
       nameof(InAttribute),
       nameof(OutAttribute),
       nameof(ProfileAttribute),
-      nameof(ProfilerArgumentAttribute),
+      nameof(ProfilerMethodArgumentAttribute),
       nameof(ProfilerFactoryAttribute),
 #if !NETSTANDARD2_0
       nameof(IsReadOnlyAttribute),

@@ -78,7 +78,7 @@
     /// </summary>
     /// <value>The number of the run the <see cref="ProfilerResult"/> is associated with. Otherwise <c>-1</c>.</value>
     /// <remarks>
-    /// In case of a attributed benchmark run (e.g. by calling <see cref="Profiler.CreateProfilerBuilder(Type)"/>), the property <see cref="Iteration"/> returns the number of runs for each argument list (defined using the <see cref="ProfilerArgumentAttribute"/> attribute) 
+    /// In case of a attributed benchmark run (e.g. by calling <see cref="Profiler.CreateProfilerBuilder(Type)"/>), the property <see cref="Iteration"/> returns the number of runs for each argument list (defined using the <see cref="ProfilerMethodArgumentAttribute"/> attribute) 
     /// <br/>and the <see cref="ArgumentListIndex"/> property returns the index of the argument list that the <see cref="ProfilerResult"/> is associated with.
     /// </remarks>
     public int Iteration { get; }
@@ -88,7 +88,7 @@
     /// </summary>
     /// <value>The index of the argument list the <see cref="ProfilerResult"/> is associated with. Otherwise <c>-1</c>.</value>
     /// <remarks>
-    /// In case of a attributed benchmark run (e.g. by calling <see cref="Profiler.CreateProfilerBuilder(Type)"/>), the property <see cref="Iteration"/> returns the number of runs for each argument list (defined using the <see cref="ProfilerArgumentAttribute"/> attribute) 
+    /// In case of a attributed benchmark run (e.g. by calling <see cref="Profiler.CreateProfilerBuilder(Type)"/>), the property <see cref="Iteration"/> returns the number of runs for each argument list (defined using the <see cref="ProfilerMethodArgumentAttribute"/> attribute) 
     /// <br/>and the <see cref="ArgumentListIndex"/> property returns the index of the argument list that the <see cref="ProfilerResult"/> is associated with.
     /// </remarks>
     public int ArgumentListIndex { get; }

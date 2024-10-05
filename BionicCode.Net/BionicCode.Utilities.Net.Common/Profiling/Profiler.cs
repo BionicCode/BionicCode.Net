@@ -663,7 +663,7 @@
     /// The builder instance which configures and starts the attribute based profiling.</returns>
     /// <remarks>
     /// The member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
-    /// <br/>Use the <see cref="ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
+    /// <br/>Use the <see cref="ProfilerMethodArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
     /// </remarks>
     public static ProfilerBuilder CreateProfilerBuilder<TTarget>()
     {
@@ -679,7 +679,7 @@
     /// The builder instance which configures and starts the attribute based profiling.</returns>
     /// <remarks>
     /// The member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
-    /// <br/>Use the <see cref="ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
+    /// <br/>Use the <see cref="ProfilerMethodArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
     /// </remarks>
     public static ProfilerBuilder CreateProfilerBuilder(Type targetType)
     {
@@ -695,7 +695,7 @@
     /// The builder instance which configures and starts the attribute based profiling.</returns>
     /// <remarks>
     /// The member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
-    /// <br/>Use the <see cref="ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
+    /// <br/>Use the <see cref="ProfilerMethodArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
     /// </remarks>
     public static ProfilerBuilder CreateProfilerBuilder(params Type[] targetTypes)
     {
@@ -711,7 +711,7 @@
     /// The builder instance which configures and starts the attribute based profiling.</returns>
     /// <remarks>
     /// The member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
-    /// <br/>Use the <see cref="ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
+    /// <br/>Use the <see cref="ProfilerMethodArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
     /// </remarks>
     public static ProfilerBuilder CreateProfilerBuilder(IEnumerable<Type> targetTypes)
     {

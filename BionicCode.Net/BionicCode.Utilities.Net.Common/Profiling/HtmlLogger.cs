@@ -288,7 +288,7 @@
         _ = htmlDocumentBuilder.Append($@"
     <article id=""{batchResult.Index}"">
 
-        <div style=""margin: 0px 0px 12px 0px;"">
+        <div style=""margin: 0px 0px 0px 0px;"">
           <span style=""font-weight: bold; font-size: 18pt"">Profile Context</span><br/>
           <span style=""font-weight: bold; font-size: 14pt"">Target</span><br/>
           <span class=""label-span"">Namespace: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.Namespace}</span><br />
@@ -305,18 +305,18 @@
             <div class=""signature-box""><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.SymbolComponentInfo.ToHtml()}</span></div>
           </div><br />
         </div>
-        <div style=""margin: 0px 0px 12px 0px;"">
-          <div style=""float: left; padding: 0px 12px 0px 0px;"">
+        <div style=""margin: 12px 0px 24px 0px;"">
+          <div style=""float: left; border-left: 1px solid black; padding: 12px 12px 12px 0px;"">
             <span style=""font-weight: bold; font-size: 14pt"">Conditions</span><br/>
       	    <span class=""label-span"">Timestamp: </span><span class=""valueSpan"">{batchResult.TimeStamp}</span><br /> 
-      	  <span class=""label-span"">Target framework: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).RuntimeVersion}</span><br /> 	
+      	    <span class=""label-span"">Target framework: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).RuntimeVersion}</span><br /> 	
             <span class=""label-span"">Base unit: </span><span class=""valueSpan"">{timeUnit.ToDisplayStringValue()}</span><br />
       	    <span class=""label-span"">Warmup iterations: </span><span class=""valueSpan"">{batchResult.Context.WarmupCount} runs for each argument list</span><br />
       	    <span class=""label-span"">Iterations: </span><span class=""valueSpan"">{batchResult.IterationCount} runs for each argument list</span><br />
       	    <span class=""label-span"">Argument lists: </span><span class=""valueSpan"">{batchResult.ArgumentListCount}</span><br />
       	    <span class=""label-span"">Total iterations: </span><span class=""valueSpan"">{batchResult.TotalIterationCount} ({batchResult.IterationCount} runs for each of {batchResult.ArgumentListCount} argument {(batchResult.ArgumentListCount == 1 ? "list" : "lists")}) </span><br />
           </div>
-          <div style=""float: left; border-left: 1px solid black; padding: 0px 0px 0px 12px;"">
+          <div style=""float: left; border-left: 1px solid black; padding: 12px 0px 12px 12px;"">
             <span style=""font-weight: bold; font-size: 14pt"">Environment</span><br/>  
       	    <span class=""label-span"">Timer: </span><span class=""valueSpan"">{((await Environment.GetEnvironmentInfoAsync()).HasHighPrecisionTimer ? $"High precision counter" : "System timer (normal precision)")}</span><br />     	
             <span class=""label-span"">Timer resolution: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).NanosecondsPerTick} ns</span><br />     	
@@ -352,7 +352,7 @@
         {
           _ = htmlDocumentBuilder.Append($@"
               <tr class=""data-row"">
-                <td class=""row-data"">{++resultIndex} (iteration {result.Iteration} /w argument list {result.ArgumentListIndex}</td>
+                <td class=""row-data"">{++resultIndex} (argument list {result.ArgumentListIndex})</td>
                 <td class=""row-data"">{TimeValueConverter.ConvertTo(timeUnit, result.ElapsedTime, true)}</td>
                 <td class=""row-data"">{TimeValueConverter.ConvertTo(timeUnit, batchResult.AverageDuration, true)}</td>
                 <td class=""row-data"">{TimeValueConverter.ConvertTo(timeUnit, result.Deviation, true)}</td>

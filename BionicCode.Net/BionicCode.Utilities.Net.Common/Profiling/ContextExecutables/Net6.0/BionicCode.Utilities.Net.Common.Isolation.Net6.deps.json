@@ -144,6 +144,7 @@
           }
         }
       },
+      "Microsoft.CSharp/4.7.0": {},
       "Microsoft.Extensions.Caching.Abstractions/8.0.0": {
         "dependencies": {
           "Microsoft.Extensions.Primitives": "8.0.0"
@@ -366,6 +367,7 @@
       "BionicCode.Utilities.Net.Common/2.0.0": {
         "dependencies": {
           "JetBrains.Annotations": "2024.2.0",
+          "Microsoft.CSharp": "4.7.0",
           "Microsoft.CodeAnalysis.CSharp": "4.11.0",
           "Microsoft.Extensions.Caching.Memory": "8.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.1",
@@ -419,6 +421,13 @@
       "sha512": "sha512-6XYi2EusI8JT4y2l/F3VVVS+ISoIX9nqHsZRaG6W5aFeJ5BEuBosHfT/ABb73FN0RZ1Z3cj2j7cL28SToJPXOw==",
       "path": "microsoft.codeanalysis.csharp/4.11.0",
       "hashPath": "microsoft.codeanalysis.csharp.4.11.0.nupkg.sha512"
+    },
+    "Microsoft.CSharp/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pTj+D3uJWyN3My70i2Hqo+OXixq3Os2D1nJ2x92FFo6sk8fYS1m1WLNTs0Dc1uPaViH0YvEEwvzddQ7y4rhXmA==",
+      "path": "microsoft.csharp/4.7.0",
+      "hashPath": "microsoft.csharp.4.7.0.nupkg.sha512"
     },
     "Microsoft.Extensions.Caching.Abstractions/8.0.0": {
       "type": "package",
