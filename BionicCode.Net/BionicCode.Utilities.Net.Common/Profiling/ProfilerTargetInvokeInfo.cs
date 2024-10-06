@@ -23,6 +23,7 @@
       string targetDisplayName,
       string targetShortSignature,
       string targetShortDisplayName,
+      SymbolComponentInfo symbolComponentInfo,
       string targetNamespace,
       string targetAssemblyName,
       Action<object, object, object[]> propertySetInvocator,
@@ -44,7 +45,7 @@
       this.Namespace = targetNamespace;
       this.ShortDisplayName = targetShortDisplayName;
       this.ShortSignature = targetShortSignature;
-      this.SymbolComponentInfo = null;
+      this.SymbolComponentInfo = symbolComponentInfo;
     }
 
     public ProfilerTargetInvokeInfo(object target,
@@ -53,6 +54,7 @@
       string targetDisplayName,
       string targetShortSignature,
       string targetShortDisplayName,
+      SymbolComponentInfo symbolComponentInfo,
       string targetNamespace,
       string targetAssemblyName,
       Func<object, object[], object> propertyGetInvocator,
@@ -74,7 +76,7 @@
       this.Namespace = targetNamespace;
       this.ShortDisplayName = targetShortDisplayName;
       this.ShortSignature = targetShortSignature;
-      this.SymbolComponentInfo = null;
+      this.SymbolComponentInfo = symbolComponentInfo;
     }
 
     /// <summary>
@@ -95,6 +97,7 @@
       string targetDisplayName,
       string targetShortSignature,
       string targetShortDisplayName,
+      SymbolComponentInfo symbolComponentInfo,
       string targetNamespace,
       string targetAssemblyName,
       Func<object[], object> constructorInvocator,
@@ -116,7 +119,7 @@
       this.Namespace = targetNamespace;
       this.ShortDisplayName = targetShortDisplayName;
       this.ShortSignature = targetShortSignature;
-      this.SymbolComponentInfo = null;
+      this.SymbolComponentInfo = symbolComponentInfo;
     }
 
     public ProfilerTargetInvokeInfo(object target,
@@ -125,6 +128,7 @@
       string targetDisplayName,
       string targetShortSignature,
       string targetShortDisplayName,
+      SymbolComponentInfo symbolComponentInfo,
       string targetNamespace,
       string targetAssemblyName,
       Func<object, object[], object> synchronousMethodInvocator,
@@ -146,7 +150,7 @@
       this.Namespace = targetNamespace;
       this.ShortDisplayName = targetShortDisplayName;
       this.ShortSignature = targetShortSignature;
-      this.SymbolComponentInfo = null;
+      this.SymbolComponentInfo = symbolComponentInfo;
     }
 
     public ProfilerTargetInvokeInfo(object target,
@@ -186,6 +190,7 @@
       string targetDisplayName,
       string targetShortSignature,
       string targetShortDisplayName,
+      SymbolComponentInfo symbolComponentInfo,
       string targetNamespace,
       string targetAssemblyName,
       Func<object, object[], ValueTask> asynchronousValueTaskMethodInvocator,
@@ -207,7 +212,7 @@
       this.Namespace = targetNamespace;
       this.ShortDisplayName = targetShortDisplayName;
       this.ShortSignature = targetShortSignature;
-      this.SymbolComponentInfo = null;
+      this.SymbolComponentInfo = symbolComponentInfo;
     }
 
     public ProfilerTargetInvokeInfo(object target, 
@@ -215,6 +220,7 @@
       string targetDisplayName,
       string targetShortSignature,
       string targetShortDisplayName,
+      SymbolComponentInfo symbolComponentInfo,
       string targetNamespace,
       string targetAssemblyName,
       MethodArgumentInfo methodArgument,
@@ -237,7 +243,7 @@
       this.Namespace = targetNamespace;
       this.ShortDisplayName = targetShortDisplayName;
       this.ShortSignature = targetShortSignature;
-      this.SymbolComponentInfo = null;
+      this.SymbolComponentInfo = symbolComponentInfo;
     }
 
     public ProfilerTargetInvokeInfo(string targetSignature,
@@ -266,6 +272,7 @@
       this.MethodArgument = default;
     }
 
+    public Func<object, object[], object> PropertyGetInvocator => this.SynchronousMethodInvocator;
     public Action<object, object, object[]> PropertySetInvocator { get; }
     public Func<object[], object> ConstructorInvocator { get; }
     public Func<object, object[], object> SynchronousMethodInvocator { get; }

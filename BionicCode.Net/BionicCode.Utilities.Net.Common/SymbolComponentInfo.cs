@@ -41,7 +41,6 @@
     public string Signature { get; set; }
     public bool HasExpressionTerminator { get; set; }
     public bool IsIndexer { get; set; }
-    public bool IsInitProperty { get; set; }
     public bool IsParameter { get; set; }
     public bool HasInlineAttributes { get; set; }
 
@@ -56,7 +55,7 @@
     private string html;
     private SymbolComponentInfo returnType;
 
-    public SymbolComponentInfo(bool isKeyword = false)
+    public SymbolComponentInfo(bool isKeyword)
     {
       this.modifiersInternal = new List<string>();
       this.Modifiers = new ReadOnlyCollection<string>(this.modifiersInternal);
@@ -127,7 +126,7 @@
       {
         StringBuilder signatureBuilder = StringBuilderFactory.GetOrCreate()
           .Append("<div style=\"display: block; width: 100%;\">")
-          .ToInlineHtml(this)
+          .AppendInlineHtml(this)
           .Append("</div>");
 
         this.html = signatureBuilder.ToString();

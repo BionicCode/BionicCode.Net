@@ -4,7 +4,7 @@
 
   internal readonly struct PropertyArgumentInfo
   {
-    public PropertyArgumentInfo(object value, object index, PropertyAccessor accessor, int argumentListIndex)
+    public PropertyArgumentInfo(object value, object[] index, PropertyAccessor accessor, int argumentListIndex)
     {
       this.Value = value;
       this.Index = index;
@@ -13,7 +13,7 @@
     }
 
     public object Value { get; }
-    public object Index { get; }
+    public object[] Index { get; }
     public PropertyAccessor Accessor { get; }
     public int ArgumentListIndex { get; }
   }

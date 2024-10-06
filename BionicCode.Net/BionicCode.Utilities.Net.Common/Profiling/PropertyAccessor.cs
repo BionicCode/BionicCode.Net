@@ -5,8 +5,9 @@
   [Flags]
   public enum PropertyAccessor
   {
-    Set = 0,
-    Get = 1,
+    Undefined = 0,
+    Set = 1,
+    Get = 2,
     GetAndSet = Get | Set,
   }
 }

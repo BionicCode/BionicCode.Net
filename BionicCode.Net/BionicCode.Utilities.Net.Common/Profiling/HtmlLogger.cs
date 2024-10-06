@@ -148,7 +148,7 @@
         string htmlFileName = $"profiler_result_{timeStamp.ToString("MM-dd-yyyy_hhmmss.fffffff")}.html";
         _ = htmlTypeMemberNavigationIndexBuilder.AppendLine($@"<li><a class=""dropdown-item {{0}}"" style=""white-space: pre-wrap; "" {{1}} href=""{htmlFileName}"">{batchResultGroup.TargetShortCompactSignature.ToHtmlEncodedString()}</a></li>");
         string htmlSourceCodeTemplate = await GetEncodedHtmlCodeTextAsync();
-        string pageTitle = $"{batchResultGroup.TargetName.ToWrappingHtml(WrapStyle.Casing, '.', '<', '>', ':', '(', '[')} {batchResultGroup.TargetType.ToDisplayStringValue(toUpperCase: true)}";
+        string pageTitle = $"{batchResultGroup.TargetName.ToWrappingHtml(WrapStyle.Casing, '.', '<', '>', ':', '(', '[')} {batchResultGroup.TargetType.ToDisplayStringValue(toUpperCase: true, toBaseType: true)}";
         string inPageNavigationHtmlElements = CreateHtmlInPageNavigationElements(batchResultGroup);
         //string pageFooterElements = CreateHtmlInPageFooterElements(batchResultGroup);
 
@@ -160,7 +160,7 @@
           InPageNavigationElements = inPageNavigationHtmlElements,
           //DocumentFooterElements = pageFooterElements,
           FileName = htmlFileName,
-          MemberName = $"{batchResultGroup.TargetShortName} ({batchResultGroup.TargetType.ToDisplayStringValue()})".ToHtmlEncodedString()
+          MemberName = $"{batchResultGroup.TargetShortName} ({batchResultGroup.TargetType.ToDisplayStringValue(toBaseType: true)})".ToHtmlEncodedString()
         };
 
         htmlDocumentBuilderValues.Add(batchResultGroup, builderInfo);
@@ -288,7 +288,8 @@
         _ = htmlDocumentBuilder.Append($@"
     <article id=""{batchResult.Index}"">
 
-        <div style=""margin: 0px 0px 0px 0px;"">
+      <div style=""margin: 12px 0px 24px 0px; width: 100%; display: grid; grid-template-columns: auto auto; overflow: auto;"">
+        <div style=""margin: 0px 0px 0px 0px; grid-column: 1 / 3; width: auto;"">
           <span style=""font-weight: bold; font-size: 18pt"">Profile Context</span><br/>
           <span style=""font-weight: bold; font-size: 14pt"">Target</span><br/>
           <span class=""label-span"">Namespace: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.Namespace}</span><br />
@@ -305,30 +306,30 @@
             <div class=""signature-box""><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.SymbolComponentInfo.ToHtml()}</span></div>
           </div><br />
         </div>
-        <div style=""margin: 12px 0px 24px 0px;"">
-          <div style=""float: left; border-left: 1px solid black; padding: 12px 12px 12px 0px;"">
-            <span style=""font-weight: bold; font-size: 14pt"">Conditions</span><br/>
-      	    <span class=""label-span"">Timestamp: </span><span class=""valueSpan"">{batchResult.TimeStamp}</span><br /> 
-      	    <span class=""label-span"">Target framework: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).RuntimeVersion}</span><br /> 	
-            <span class=""label-span"">Base unit: </span><span class=""valueSpan"">{timeUnit.ToDisplayStringValue()}</span><br />
-      	    <span class=""label-span"">Warmup iterations: </span><span class=""valueSpan"">{batchResult.Context.WarmupCount} runs for each argument list</span><br />
-      	    <span class=""label-span"">Iterations: </span><span class=""valueSpan"">{batchResult.IterationCount} runs for each argument list</span><br />
-      	    <span class=""label-span"">Argument lists: </span><span class=""valueSpan"">{batchResult.ArgumentListCount}</span><br />
-      	    <span class=""label-span"">Total iterations: </span><span class=""valueSpan"">{batchResult.TotalIterationCount} ({batchResult.IterationCount} runs for each of {batchResult.ArgumentListCount} argument {(batchResult.ArgumentListCount == 1 ? "list" : "lists")}) </span><br />
-          </div>
-          <div style=""float: left; border-left: 1px solid black; padding: 12px 0px 12px 12px;"">
-            <span style=""font-weight: bold; font-size: 14pt"">Environment</span><br/>  
-      	    <span class=""label-span"">Timer: </span><span class=""valueSpan"">{((await Environment.GetEnvironmentInfoAsync()).HasHighPrecisionTimer ? $"High precision counter" : "System timer (normal precision)")}</span><br />     	
-            <span class=""label-span"">Timer resolution: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).NanosecondsPerTick} ns</span><br />     	
-        	  <span class=""label-span"">OS version: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).OperatingSystemName}</span><br />   	
-        	  <span class=""label-span"">OS architecture: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).OperatingSystemArchitecture}</span><br />   
-        	  <span class=""label-span"">Process architecture: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).ProcessArchitecture}</span><br />   
-      	    <span class=""label-span"">Processor: </span><span class=""valueSpan"">{environmentInfo.ProcessorName}</span><br />   
-        	  <span class=""label-span"">Clock: </span><span class=""valueSpan"">{environmentInfo.ProcessorSpeed / 1000d} GHz</span><br /> 
-      	    <span class=""label-span"">Physical cores: </span><span class=""valueSpan"">{environmentInfo.ProcessorCoreCount}</span><br />   
-      	    <span class=""label-span"">Logical cores: </span><span class=""valueSpan"">{environmentInfo.ProcessorLogicalCoreCount}</span><br />   
-        	  <span class=""label-span"">Threads: </span><span class=""valueSpan"">{environmentInfo.ThreadCount}</span><br />   
-          </div>
+
+        <div style=""height: 100%; width: auto; border-left: 1px solid black; padding: 12px 12px 12px 12px;"">
+          <span style=""font-weight: bold; font-size: 14pt"">Conditions</span><br/>
+      	  <span class=""label-span"">Timestamp: </span><span class=""valueSpan"">{batchResult.TimeStamp}</span><br /> 
+      	  <span class=""label-span"">Target framework: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).RuntimeVersion}</span><br /> 	
+          <span class=""label-span"">Base unit: </span><span class=""valueSpan"">{timeUnit.ToDisplayStringValue()}</span><br />
+      	  <span class=""label-span"">Warmup iterations: </span><span class=""valueSpan"">{batchResult.Context.WarmupCount} runs for each argument list</span><br />
+      	  <span class=""label-span"">Iterations: </span><span class=""valueSpan"">{batchResult.IterationCount} runs for each argument list</span><br />
+      	  <span class=""label-span"">Argument lists: </span><span class=""valueSpan"">{batchResult.ArgumentListCount}</span><br />
+      	  <span class=""label-span"">Total iterations: </span><span class=""valueSpan"">{batchResult.TotalIterationCount} ({batchResult.IterationCount} runs for each of {batchResult.ArgumentListCount} argument {(batchResult.ArgumentListCount == 1 ? "list" : "lists")}) </span><br />
+        </div>
+        <div style=""height: 100%; width: auto; border-left: 1px solid black; padding: 12px 0px 12px 12px;"">
+          <span style=""font-weight: bold; font-size: 14pt"">Environment</span><br/>  
+      	  <span class=""label-span"">Timer: </span><span class=""valueSpan"">{((await Environment.GetEnvironmentInfoAsync()).HasHighPrecisionTimer ? $"High precision counter" : "System timer (normal precision)")}</span><br />     	
+          <span class=""label-span"">Timer resolution: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).NanosecondsPerTick} ns</span><br />     	
+        	<span class=""label-span"">OS version: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).OperatingSystemName}</span><br />   	
+        	<span class=""label-span"">OS architecture: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).OperatingSystemArchitecture}</span><br />   
+        	<span class=""label-span"">Process architecture: </span><span class=""valueSpan"">{(await Environment.GetEnvironmentInfoAsync()).ProcessArchitecture}</span><br />   
+      	  <span class=""label-span"">Processor: </span><span class=""valueSpan"">{environmentInfo.ProcessorName}</span><br />   
+        	<span class=""label-span"">Clock: </span><span class=""valueSpan"">{environmentInfo.ProcessorSpeed / 1000d} GHz</span><br /> 
+      	  <span class=""label-span"">Physical cores: </span><span class=""valueSpan"">{environmentInfo.ProcessorCoreCount}</span><br />   
+      	  <span class=""label-span"">Logical cores: </span><span class=""valueSpan"">{environmentInfo.ProcessorLogicalCoreCount}</span><br />   
+        	<span class=""label-span"">Threads: </span><span class=""valueSpan"">{environmentInfo.ThreadCount}</span><br />   
+        </div>
         </div>
       </div>
 

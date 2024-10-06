@@ -10,7 +10,7 @@
 
   public class BenchmarkTarget<TParam>
   {
-    [Profile(Runtime.Net6_0)]
+    //[Profile(Runtime.Net6_0)]
     [ProfilerPropertyArgument(100)]
     [ProfilerPropertyArgument(200)]
     [ProfilerPropertyArgument(500, Accessor = PropertyAccessor.Set)]
@@ -37,8 +37,8 @@
     private Dictionary<int, string> KeyValuePairsReverse { get; }
 
     //[Profile]
-    [ProfilerPropertyArgument(12, Index = "A")]
-    [ProfilerPropertyArgument(20, Index = "T")]
+    [ProfilerPropertyArgument(12, Index = new[] { "A" })]
+    [ProfilerPropertyArgument(20, Index = new[] { "T" })]
     public int this[string key]
     {
       get => this.KeyValuePairs[key];
@@ -46,8 +46,8 @@
     }
 
     [Profile]
-    [ProfilerPropertyArgument("Twenty", Index = 20)]
-    [ProfilerPropertyArgument("Twelve", Index = 12)]
+    [ProfilerPropertyArgument("Twenty", Index = new object[] { 20 })]
+    [ProfilerPropertyArgument("Twelve", Index = new object[] { 12 })]
     public string this[int key]
     {
       get => this.KeyValuePairsReverse[key];
@@ -132,8 +132,8 @@
     private Dictionary<int, string> KeyValuePairsReverse { get; }
 
     [Profile]
-    [ProfilerPropertyArgument(12, Index = "A")]
-    [ProfilerPropertyArgument(20, Index = "T")]
+    [ProfilerPropertyArgument(12, Index = new[] { "A" })]
+    [ProfilerPropertyArgument(20, Index = new[] { "T" })]
     public int this[string key]
     {
       get => this.KeyValuePairs[key];
@@ -141,8 +141,8 @@
     }
 
     //[Profile]
-    [ProfilerPropertyArgument("Twenty", Index = 20)]
-    [ProfilerPropertyArgument("Twelve", Index = 12)]
+    [ProfilerPropertyArgument("Twenty", Index = new object[] { 20 })]
+    [ProfilerPropertyArgument("Twelve", Index = new object[] { 12 })]
     public string this[int key]
     {
       get => this.KeyValuePairsReverse[key];

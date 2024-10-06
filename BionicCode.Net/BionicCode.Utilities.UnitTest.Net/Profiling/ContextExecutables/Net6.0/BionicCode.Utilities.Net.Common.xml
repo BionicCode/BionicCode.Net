@@ -315,8 +315,8 @@
             To start profiling create a configurator by calling <see cref="M:BionicCode.Utilities.Net.Profiler.CreateProfilerBuilder``1"/>. This returns a <see cref="T:BionicCode.Utilities.Net.ProfilerBuilder"/> for a particular <see cref="T:System.Type"/> that allows the configuration of the profiling session.
             <br/>Finalize the step by calling <see cref="M:BionicCode.Utilities.Net.ProfilerBuilder.RunAsync(System.Threading.CancellationToken)"/> to start the profiling for the current type.
             <para>
-            A member can be decorated with multiple <see cref="T:BionicCode.Utilities.Net.ProfilerArgumentAttribute"/> attributes. This is useful to emulate real-world usage where the input is dynamic and may impact the perfomance of the profiled member. 
-            <br/>Each <see cref="T:BionicCode.Utilities.Net.ProfilerArgumentAttribute"/> results in an profiling iteration. If the configured iterations of the <see cref="T:BionicCode.Utilities.Net.ProfilerBuilder"/> exceed the number of <see cref="T:BionicCode.Utilities.Net.ProfilerArgumentAttribute"/> attributes, then the profiler will alterante between the argument lists.
+            A member can be decorated with multiple <see cref="T:BionicCode.Utilities.Net.ProfilerArgumentAttribute"/> symbolAttributes. This is useful to emulate real-world usage where the input is dynamic and may impact the perfomance of the profiled member. 
+            <br/>Each <see cref="T:BionicCode.Utilities.Net.ProfilerArgumentAttribute"/> results in an profiling iteration. If the configured iterations of the <see cref="T:BionicCode.Utilities.Net.ProfilerBuilder"/> exceed the number of <see cref="T:BionicCode.Utilities.Net.ProfilerArgumentAttribute"/> symbolAttributes, then the profiler will alterante between the argument lists.
             <br/>The default number of iterations is <c>1</c> and can be customized by calling <see cref="M:BionicCode.Utilities.Net.ProfilerBuilder.SetIterations(System.Int32)"/>.
             </para>
             </remarks>
@@ -916,86 +916,419 @@
             <summary>
             Converts a <see cref="T:System.Predicate`1"/> to a <see cref="T:System.Func`2"/>.
             </summary>
-            <typeparam genericTypeParameterIdentifier="TParam">The parameter type for the predicate.</typeparam>
+            <typeparam genericTypeParameterIdentifier="TParam">The parameter valueType for the predicate.</typeparam>
             <param genericTypeParameterIdentifier="predicate">The predicate to convert.</param>
             <returns>A <c>Func<typeparamref genericTypeParameterIdentifier="TParam"/>, bool></c> that returns the result of <paramref genericTypeParameterIdentifier="predicate"/>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.MemberInfo,System.Boolean,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.MethodInfo)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
             </summary>
             <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
             <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
             <returns>
-            A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
             </returns>
             <remarks>
             Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
             </remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Reflection.MemberInfo,System.Boolean,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Type)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
             </summary>
             <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
             <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
             <returns>
-            A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
             </returns>
             <remarks>
             Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic type parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
             </remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetAccessModifier(System.Reflection.MemberInfo)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.FieldInfo)">
             <summary>
-            Gets the access modifier for <see cref="T:System.Reflection.MemberInfo"/> attributes like <see cref="T:System.Type"/>, <see cref="T:System.Reflection.MethodInfo"/>, <see cref="T:System.Reflection.ConstructorInfo"/>, <see cref="T:System.Reflection.PropertyInfo"/>, <see cref="T:System.Reflection.EventInfo"/> or <see cref="T:System.Reflection.FieldInfo"/>.
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
             </summary>
-            <param genericTypeParameterIdentifier="type"></param>
-            <returns>The <see cref="T:BionicCode.Utilities.Net.AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="type"/>.</returns>
-            <exception cref="T:System.InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="type"/>.</exception>
-            <exception cref="T:System.NotSupportedException">The type provided by the <paramref genericTypeParameterIdentifier="type"/> is not supported.</exception>
+            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
+            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.PropertyInfo)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+            </summary>
+            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
+            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.ConstructorInfo)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+            </summary>
+            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
+            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.EventInfo)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+            </summary>
+            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
+            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Reflection.MethodInfo)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
+            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Type)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
+            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Reflection.FieldInfo)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
+            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Reflection.PropertyInfo)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
+            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Reflection.ConstructorInfo)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
+            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Reflection.EventInfo)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
+            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetAccessModifier(System.Type)">
+            <summary>
+            Gets the access modifier for <see cref="T:System.Reflection.MemberInfo"/> symbolAttributes like <see cref="T:System.Type"/>, <see cref="T:System.Reflection.MethodInfo"/>, <see cref="T:System.Reflection.ConstructorInfo"/>, <see cref="T:System.Reflection.PropertyInfo"/>, <see cref="T:System.Reflection.EventInfo"/> or <see cref="T:System.Reflection.FieldInfo"/>.
+            </summary>
+            <param genericTypeParameterIdentifier="valueType"></param>
+            <returns>The <see cref="T:BionicCode.Utilities.Net.AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="valueType"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="valueType"/>.</exception>
+            <exception cref="T:System.NotSupportedException">The valueType provided by the <paramref genericTypeParameterIdentifier="valueType"/> is not supported.</exception>
             <remarks>For a <see cref="T:System.Reflection.PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayName(System.Reflection.MemberInfo,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetAccessModifier(System.Reflection.MethodInfo)">
             <summary>
-            Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the namespace.
+            Gets the access modifier for <see cref="T:System.Reflection.MemberInfo"/> symbolAttributes like <see cref="T:System.Type"/>, <see cref="T:System.Reflection.MethodInfo"/>, <see cref="T:System.Reflection.ConstructorInfo"/>, <see cref="T:System.Reflection.PropertyInfo"/>, <see cref="T:System.Reflection.EventInfo"/> or <see cref="T:System.Reflection.FieldInfo"/>.
+            </summary>
+            <param genericTypeParameterIdentifier="valueType"></param>
+            <returns>The <see cref="T:BionicCode.Utilities.Net.AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="valueType"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="valueType"/>.</exception>
+            <exception cref="T:System.NotSupportedException">The valueType provided by the <paramref genericTypeParameterIdentifier="valueType"/> is not supported.</exception>
+            <remarks>For a <see cref="T:System.Reflection.PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetAccessModifier(System.Reflection.ConstructorInfo)">
+            <summary>
+            Gets the access modifier for <see cref="T:System.Reflection.MemberInfo"/> symbolAttributes like <see cref="T:System.Type"/>, <see cref="T:System.Reflection.MethodInfo"/>, <see cref="T:System.Reflection.ConstructorInfo"/>, <see cref="T:System.Reflection.PropertyInfo"/>, <see cref="T:System.Reflection.EventInfo"/> or <see cref="T:System.Reflection.FieldInfo"/>.
+            </summary>
+            <param genericTypeParameterIdentifier="valueType"></param>
+            <returns>The <see cref="T:BionicCode.Utilities.Net.AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="valueType"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="valueType"/>.</exception>
+            <exception cref="T:System.NotSupportedException">The valueType provided by the <paramref genericTypeParameterIdentifier="valueType"/> is not supported.</exception>
+            <remarks>For a <see cref="T:System.Reflection.PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetAccessModifier(System.Reflection.PropertyInfo)">
+            <summary>
+            Gets the access modifier for <see cref="T:System.Reflection.MemberInfo"/> symbolAttributes like <see cref="T:System.Type"/>, <see cref="T:System.Reflection.MethodInfo"/>, <see cref="T:System.Reflection.ConstructorInfo"/>, <see cref="T:System.Reflection.PropertyInfo"/>, <see cref="T:System.Reflection.EventInfo"/> or <see cref="T:System.Reflection.FieldInfo"/>.
+            </summary>
+            <param genericTypeParameterIdentifier="valueType"></param>
+            <returns>The <see cref="T:BionicCode.Utilities.Net.AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="valueType"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="valueType"/>.</exception>
+            <exception cref="T:System.NotSupportedException">The valueType provided by the <paramref genericTypeParameterIdentifier="valueType"/> is not supported.</exception>
+            <remarks>For a <see cref="T:System.Reflection.PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetAccessModifier(System.Reflection.EventInfo)">
+            <summary>
+            Gets the access modifier for <see cref="T:System.Reflection.MemberInfo"/> symbolAttributes like <see cref="T:System.Type"/>, <see cref="T:System.Reflection.MethodInfo"/>, <see cref="T:System.Reflection.ConstructorInfo"/>, <see cref="T:System.Reflection.PropertyInfo"/>, <see cref="T:System.Reflection.EventInfo"/> or <see cref="T:System.Reflection.FieldInfo"/>.
+            </summary>
+            <param genericTypeParameterIdentifier="valueType"></param>
+            <returns>The <see cref="T:BionicCode.Utilities.Net.AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="valueType"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="valueType"/>.</exception>
+            <exception cref="T:System.NotSupportedException">The valueType provided by the <paramref genericTypeParameterIdentifier="valueType"/> is not supported.</exception>
+            <remarks>For a <see cref="T:System.Reflection.PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetAccessModifier(System.Reflection.FieldInfo)">
+            <summary>
+            Gets the access modifier for <see cref="T:System.Reflection.MemberInfo"/> symbolAttributes like <see cref="T:System.Type"/>, <see cref="T:System.Reflection.MethodInfo"/>, <see cref="T:System.Reflection.ConstructorInfo"/>, <see cref="T:System.Reflection.PropertyInfo"/>, <see cref="T:System.Reflection.EventInfo"/> or <see cref="T:System.Reflection.FieldInfo"/>.
+            </summary>
+            <param genericTypeParameterIdentifier="valueType"></param>
+            <returns>The <see cref="T:BionicCode.Utilities.Net.AccessModifier"/> for the current <paramref genericTypeParameterIdentifier="valueType"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Unable to identify the accessibility of the <paramref genericTypeParameterIdentifier="valueType"/>.</exception>
+            <exception cref="T:System.NotSupportedException">The valueType provided by the <paramref genericTypeParameterIdentifier="valueType"/> is not supported.</exception>
+            <remarks>For a <see cref="T:System.Reflection.PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayName(System.Type,System.Boolean)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
             </summary>
             <returns>
-            A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
             </returns>
             <remarks>
             <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
             Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+            <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
             </remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.MemberInfo,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayName(System.Reflection.MethodInfo,System.Boolean)">
             <summary>
-            Extension method to convert generic and non-generic type names to a readable display genericTypeParameterIdentifier including the namespace.
+            Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
             </summary>
             <returns>
-            A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
             </returns>
             <remarks>
             <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
             Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
+            <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
             </remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayNameInternal(System.Reflection.MemberInfo,System.Boolean,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayName(System.Reflection.ConstructorInfo,System.Boolean)">
             <summary>
-            Extension method to convert generic and non-generic type names to a readable display genericTypeParameterIdentifier including the namespace.
+            Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayName(System.Reflection.PropertyInfo,System.Boolean)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayName(System.Reflection.FieldInfo,System.Boolean)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayName(System.Reflection.ParameterInfo)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayName(System.Reflection.EventInfo,System.Boolean)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Type,System.Boolean)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.MethodInfo,System.Boolean)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.ConstructorInfo,System.Boolean)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.PropertyInfo,System.Boolean)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.FieldInfo,System.Boolean)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.EventInfo,System.Boolean)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayNameInternal(BionicCode.Utilities.Net.SymbolInfoData,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Extension method to convert generic and non-generic valueType names to a readable display genericTypeParameterIdentifier including the symbolNamespace.
             </summary>
             <param genericTypeParameterIdentifier="memberInfo">The <see cref="T:System.Type"/> to extend.</param>
             <returns>
-            A readable genericTypeParameterIdentifier of type members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
             </returns>
             <remarks>
             <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
             Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic type parameters to construct the full type genericTypeParameterIdentifier like <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
+            <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
             </remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.IsAwaitable(System.Reflection.MethodInfo)">
@@ -1004,8 +1337,35 @@
             </summary>
             <param genericTypeParameterIdentifier="methodInfo">The <see cref="T:System.Reflection.MethodInfo"/> to check if it belongs to an awaitable method.</param>
             <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
-            <remarks>The method first checks if the return type is either <see cref="T:System.Threading.Tasks.Task"/> or <see cref="T:System.Threading.Tasks.ValueTask"/>. If that fails, it checks if the returned type (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate type (awaiter).
-            <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned type that would make the type awaitable. If this fails too, the method is not awaitable.</remarks>
+            <remarks>The method first checks if the return valueType is either <see cref="T:System.Threading.Tasks.Task"/> or <see cref="T:System.Threading.Tasks.ValueTask"/>. If that fails, it checks if the returned valueType (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate valueType (awaiter).
+            <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned valueType that would make the valueType awaitable. If this fails too, the method is not awaitable.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.IsAwaitableInternal(BionicCode.Utilities.Net.MethodData)">
+            <summary>
+            Checks if the provided <see cref="T:System.Reflection.MethodInfo"/> belongs to an asynchronous/awaitable method.
+            </summary>
+            <param genericTypeParameterIdentifier="methodInfo">The <see cref="T:System.Reflection.MethodInfo"/> to check if it belongs to an awaitable method.</param>
+            <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
+            <remarks>The method first checks if the return valueType is either <see cref="T:System.Threading.Tasks.Task"/> or <see cref="T:System.Threading.Tasks.ValueTask"/>. If that fails, it checks if the returned valueType (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate valueType (awaiter).
+            <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned valueType that would make the valueType awaitable. If this fails too, the method is not awaitable.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.IsAwaitable(System.Type)">
+            <summary>
+            Checks if the provided <see cref="T:System.Reflection.MethodInfo"/> belongs to an asynchronous/awaitable method.
+            </summary>
+            <param genericTypeParameterIdentifier="methodInfo">The <see cref="T:System.Reflection.MethodInfo"/> to check if it belongs to an awaitable method.</param>
+            <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
+            <remarks>The method first checks if the return valueType is either <see cref="T:System.Threading.Tasks.Task"/> or <see cref="T:System.Threading.Tasks.ValueTask"/>. If that fails, it checks if the returned valueType (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate valueType (awaiter).
+            <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned valueType that would make the valueType awaitable. If this fails too, the method is not awaitable.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.IsAwaitableInternal(BionicCode.Utilities.Net.TypeData)">
+            <summary>
+            Checks if the provided <see cref="T:System.Reflection.MethodInfo"/> belongs to an asynchronous/awaitable method.
+            </summary>
+            <param genericTypeParameterIdentifier="methodInfo">The <see cref="T:System.Reflection.MethodInfo"/> to check if it belongs to an awaitable method.</param>
+            <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
+            <remarks>The method first checks if the return valueType is either <see cref="T:System.Threading.Tasks.Task"/> or <see cref="T:System.Threading.Tasks.ValueTask"/>. If that fails, it checks if the returned valueType (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate valueType (awaiter).
+            <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned valueType that would make the valueType awaitable. If this fails too, the method is not awaitable.</remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.IsStatic(System.Type)">
             <summary>
@@ -1026,7 +1386,7 @@
             </summary>
             <param genericTypeParameterIdentifier="typeInfo">The extended <see cref="T:System.Type"/> instance.</param>
             <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="typeInfo"/> is allowed to define extension methods. Otherwise <see langword="false"/>.</returns>
-            <remarks>To be able to define extension methods a class must be static, non-generic, a top level type. 
+            <remarks>To be able to define extension methods a class must be static, non-generic, a top level valueType. 
             <br/>In addition this method checks if the declaring class and the method are both decorated with the <see cref="T:System.Runtime.CompilerServices.ExtensionAttribute"/> which is added by the compiler.</remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.IsExtensionMethod(System.Reflection.MethodInfo)">
@@ -1038,7 +1398,7 @@
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.IsExtensionMethodOf(System.Reflection.MethodInfo,System.Type)">
             <summary>
-            Extension method to check if a <see cref="T:System.Reflection.MethodInfo"/> is the info of an extension method for a particular type.
+            Extension method to check if a <see cref="T:System.Reflection.MethodInfo"/> is the info of an extension method for a particular valueType.
             </summary>
             <param genericTypeParameterIdentifier="methodInfo">The extended <see cref="T:System.Reflection.MethodInfo"/> instance to validate.</param>
             <param genericTypeParameterIdentifier="typeToExtend">The <see cref="T:System.Type"/> the <paramref genericTypeParameterIdentifier="methodInfo"/> is expected to extend.</param>
@@ -1078,7 +1438,7 @@
             </item>
             </list>.
             <br/>This rules apply to the complete object graph.</returns>
-            <remarks>This method recursivly traverses the complete object graph and converts every object node i.e. property value (execpt primitive types and <see cref="T:System.String"/>) to a <see cref="T:System.Collections.Generic.Dictionary`2"/>. 
+            <remarks>This method recursively traverses the complete object graph and converts every object node i.e. property value (execpt primitive types and <see cref="T:System.String"/>) to a <see cref="T:System.Collections.Generic.Dictionary`2"/>. 
             <br/>It creates entries for all <see langword="public"/> instance and class properties of this object. Each entry represents a property as key-value-pair of property name and property value.
             <para>To create a flat map of the object graph, use the <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFlatDictionary(System.Object)"/></para>
             <para>Use the <see cref="T:BionicCode.Utilities.Net.IgnoreInObjectGraphAttribute"/> attribute to decorate properties that should be excluded.</para></remarks>
@@ -1112,6 +1472,41 @@
             </summary>
             <param name="streamToCheck"></param>
             <returns></returns>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.SymbolInfoData.DisplayName">
+            <summary>
+            Name without namespace, but with the declaring type (in case of a member), and generic type parameters.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.SymbolInfoData.ShortDisplayName">
+            <summary>
+            Name without namespace and the declaring type (in case of a member), but <see langword="with"/>generic type parameters.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.SymbolInfoData.FullyQualifiedDisplayName">
+            <summary>
+            Name with namespace, the declaring type (in case of a member), and generic type parameters.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.SymbolInfoData.FullyQualifiedSignature">
+            <summary>
+            Signature with namespace, the declaring type (in case of a member), attributes, generic type parameters and generic type parameter constraints.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.SymbolInfoData.Signature">
+            <summary>
+            Signature without namespace, but with the declaring type (in case of a member), attributes, generic type parameters and generic type parameter constraints.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.SymbolInfoData.ShortSignature">
+            <summary>
+            Signature without namespace and the declaring type (in case of a member), but with attributes, generic type parameters and generic type parameter constraints.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.SymbolInfoData.ShortCompactSignature">
+            <summary>
+            Signature without namespace and the declaring type (in case of a member), attributes and generic type parameter constraints, but with generic type parameters.
+            </summary>
         </member>
         <member name="T:BionicCode.Utilities.Net.FactoryMode">
             <summary>
@@ -3053,7 +3448,7 @@
             </para>
             </remarks>
         </member>
-        <member name="F:BionicCode.Utilities.Net.Profiler.DefaultIterationCount">
+        <member name="F:BionicCode.Utilities.Net.Profiler.DefaultIterationsCount">
             <summary>
             The default number of iterations to execute the profiled code.
             </summary>
@@ -3061,368 +3456,7 @@
             Use the appropriate overloads of the profiler methods or define a <see cref="T:BionicCode.Utilities.Net.ProfilerOptions"/> object to change the default behavior.
             </remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.Profiler.LogTime(System.Action,BionicCode.Utilities.Net.ProfilerOptions,System.String,System.Int32)">
-            <summary>
-            Measures the execution time of a method using a default warmup iteration count of '4' to warmup the JIT compiler.
-            </summary>
-            <param name="action">The code to measure execution time.</param>
-            <param name="options">The options object to customize the behavior of the <see cref="T:BionicCode.Utilities.Net.Profiler"/>.</param>
-            <returns>The result containing the average execution time of all iterations as <see cref="T:System.TimeSpan"/>.</returns>
-            <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the value of <see cref="P:BionicCode.Utilities.Net.ProfilerOptions.Iterations"/> or <see cref="P:BionicCode.Utilities.Net.ProfilerOptions.WarmupIterations"/> is not between '0' and 'ulong.MaxValue'.</exception>
-            <remarks>
-            The results are calculated using the default time base defined by <see cref="F:BionicCode.Utilities.Net.Profiler.DefaultBaseUnit"/>.
-            <para>
-            Use the <see cref="M:BionicCode.Utilities.Net.Profiler.LogTime(System.Action,System.Int32,BionicCode.Utilities.Net.ProfilerLoggerDelegate,BionicCode.Utilities.Net.TimeUnit,System.String,System.Int32)"/> and provide an instance of the <see cref="T:BionicCode.Utilities.Net.ProfilerLoggerDelegate"/>  to enable logging.
-            <br/>Or use the <see cref="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Action,System.Int32,BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate,System.String,System.Int32)"/> overload and provide a <see cref="T:BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate"/> delegate to enable asynchronous logging (for example, use asnchronous API to write the results to a file).
-            </para>
-            </remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Profiler.LogTime(System.Action,System.Int32,System.String,System.Int32)">
-            <summary>
-            Measures the execution time of a method using a default warmup iteration count of '4' to warmup the JIT compiler.
-            </summary>
-            <param name="action">The code to measure execution time.</param>
-            <returns>The average execution time of all <paramref name="runCount"/> number of iterations as <see cref="T:System.TimeSpan"/>.</returns>
-            <param name="runCount">Number of iterations the <paramref name="action"/> should be executed.</param>
-            <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the value of<paramref name="runCount"/> is not between '0' and 'ulong.MaxValue'.</exception>
-            <remarks>
-            <para>
-            Use the <see cref="M:BionicCode.Utilities.Net.Profiler.LogTime(System.Action,System.Int32,BionicCode.Utilities.Net.ProfilerLoggerDelegate,BionicCode.Utilities.Net.TimeUnit,System.String,System.Int32)"/> and provide an instance of the <see cref="T:BionicCode.Utilities.Net.ProfilerLoggerDelegate"/>  to enable logging.
-            <br/>Or use the <see cref="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Action,System.Int32,BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate,System.String,System.Int32)"/> overload and provide a <see cref="T:BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate"/> delegate to enable asynchronous logging (for example, use asnchronous API to write the results to a file).
-            </para>
-            <para>
-            The results are calculated using the default time base defined by <see cref="F:BionicCode.Utilities.Net.Profiler.DefaultBaseUnit"/>.
-            Use the <see cref="M:BionicCode.Utilities.Net.Profiler.LogTime(System.Action,BionicCode.Utilities.Net.ProfilerOptions,System.String,System.Int32)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
-            </para>
-            </remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Profiler.LogTime(System.Action,System.Int32,BionicCode.Utilities.Net.ProfilerLoggerDelegate,BionicCode.Utilities.Net.TimeUnit,System.String,System.Int32)">
-            <summary>
-            Measures the execution time of a method using a default warmup iteration count of '4' to warmup the JIT compiler.
-            </summary>
-            <param name="action">The code to measure execution time.</param>
-            <returns>The average execution time of all <paramref name="runCount"/> number of iterations as <see cref="T:System.TimeSpan"/>.</returns>
-            <param name="runCount">Number of iterations the <paramref name="action"/> should be executed.</param>
-            <param name="baseUnit">The optional time unit that theresults should be converted to. The default is <see cref="F:BionicCode.Utilities.Net.TimeUnit.Milliseconds"/>. </param>
-            <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="logger">A delegate of type <see cref="T:BionicCode.Utilities.Net.ProfilerLoggerDelegate"/> which can be used to automatically print the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary" /> to a destination (e.g. file) in the following formatting:
-            
-            <br/>
-            <code>
-                      ╭───────────────┬────────────────────────────┬────────────────╮
-                      | Iteration #   │ Duration [ms]              │ Is cancelled   |
-                      ┝━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥
-                      │ 1             │                     1.0512 │ False          |
-                      │ 2             │                     1.0020 │ False          │
-                      │ 3             │                     0.8732 │ False          │
-                      │ 4             │                     0.0258 │ True (ignored) │
-                      │ 5             │                     0.9943 │ False          │
-            ╭═════════╧═══════════════╪════════════════════════════┼────────────────┤
-            │ Total:    -             │                     3.9207 │                │
-            │ Min:      3             │                     0.8732 │                │
-            │ Max:      1             │                     1.0512 │                │
-            │ Average:  -             │                     0.9802 │                │
-            ╰─────────────────────────┴────────────────────────────┴────────────────╯
-            </code></param>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the value of<paramref name="runCount"/> is not between '0' and 'ulong.MaxValue'.</exception>
-            <remarks>
-            <para>
-            Provide an instance of the <see cref="T:BionicCode.Utilities.Net.ProfilerLoggerDelegate"/> delegate for the <paramref name="logger"/> parameter to control the output target or customize the formatting.
-            <br/> Use the <see cref="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Action,BionicCode.Utilities.Net.AsyncProfilerOptions,System.String,System.Int32)"/> or <see cref="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Action,System.Int32,BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate,System.String,System.Int32)"/> overload to enable asynchronous logging.
-            </para>
-            <para>
-            The results are calculated using the default time base defined by <see cref="F:BionicCode.Utilities.Net.Profiler.DefaultBaseUnit"/>.
-            Use the <see cref="M:BionicCode.Utilities.Net.Profiler.LogTime(System.Action,BionicCode.Utilities.Net.ProfilerOptions,System.String,System.Int32)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
-            </para>
-            </remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Action,BionicCode.Utilities.Net.AsyncProfilerOptions,System.String,System.Int32)">
-            <summary>
-            Measures the execution time of a method using a default warump iteration cvount of '4' to warmup the JIT compiler.
-            </summary>
-            <param name="action">The code to measure execution time.</param>
-            <param name="options">The options object to customize the behavior of the <see cref="T:BionicCode.Utilities.Net.Profiler"/>.</param>
-            <returns>The profiling result.</returns>
-            <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the value of <see cref="P:BionicCode.Utilities.Net.ProfilerOptions.Iterations"/> or <see cref="P:BionicCode.Utilities.Net.ProfilerOptions.WarmupIterations"/> is not between '0' and 'ulong.MaxValue'.</exception>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Action,System.Int32,BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate,System.String,System.Int32)">
-            <summary>
-            Measures the execution time of a method using a default warump iteration cvount of '4' to warmup the JIT compiler.
-            </summary>
-            <param name="action">The code to measure execution time.</param>
-            <returns>The average execution time of all <paramref name="runCount"/> number of iterations as <see cref="T:System.TimeSpan"/>.</returns>
-            <param name="runCount">Number of iterations the <paramref name="action"/> should be executed.</param>
-            <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="asyncLogger">A delegate of type <see cref="T:BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate"/> which can be used to automatically print the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
-            
-            <br/>
-            <code>
-                      ╭───────────────┬────────────────────────────┬────────────────╮
-                      | Iteration #   │ Duration [ms]              │ Is cancelled   |
-                      ┝━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥
-                      │ 1             │                     1.0512 │ False          |
-                      │ 2             │                     1.0020 │ False          │
-                      │ 3             │                     0.8732 │ False          │
-                      │ 4             │                     0.0258 │ True (ignored) │
-                      │ 5             │                     0.9943 │ False          │
-            ╭═════════╧═══════════════╪════════════════════════════┼────────────────┤
-            │ Total:    -             │                     3.9207 │                │
-            │ Min:      3             │                     0.8732 │                │
-            │ Max:      1             │                     1.0512 │                │
-            │ Average:  -             │                     0.9802 │                │
-            ╰─────────────────────────┴────────────────────────────┴────────────────╯
-            </code></param>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the value of<paramref name="runCount"/> is not between '0' and 'ulong.MaxValue'.</exception>
-            <remarks>
-            Provide an instance of the <see cref="T:BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate"/> delegate for the <paramref name="asyncLogger"/> parameter to control the output target or customize the formatting.   
-            <para>
-            The results are calculated using the default time base defined by <see cref="F:BionicCode.Utilities.Net.Profiler.DefaultBaseUnit"/>.
-            Use the <see cref="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Action,BionicCode.Utilities.Net.AsyncProfilerOptions,System.String,System.Int32)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
-            </para>
-            </remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.Task},BionicCode.Utilities.Net.AsyncProfilerOptions,System.String,System.Int32)">
-            <summary>
-            Measures the execution time of a method using a default warmup iteration count of '4' to warmup the JIT compiler.
-            </summary>
-            <param name="options">The options object to customize the behavior of the profiler.</param>
-            <param name="asyncAction">A delegate that executes the asynchronous code to measure execution time.</param>
-            <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the value of <see cref="P:BionicCode.Utilities.Net.ProfilerOptions.Iterations"/> or <see cref="P:BionicCode.Utilities.Net.ProfilerOptions.WarmupIterations"/> is not between '0' and 'ulong.MaxValue'.</exception>
-            <returns>The profiling result.</returns> 
-            <remarks>
-            <para>Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/>, but marked as cancelled).
-            <br/>A cancelled task is a <see cref="T:System.Threading.Tasks.Task"/> where the <see cref="P:System.Threading.Tasks.Task.Status"/> returns either <see cref="F:System.Threading.Tasks.TaskStatus.Canceled"/> or <see cref="F:System.Threading.Tasks.TaskStatus.Faulted"/> or an <see cref="T:System.OperationCanceledException"/> exception was thrown.</para>
-            </remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.Task},System.Int32,System.String,System.Int32)">
-            <summary>
-            Measures the execution time of a method using a default warmup iteration count of '4' to warmup the JIT compiler.
-            </summary>
-            <param name="asyncAction">A delegate that executes the asynchronous code to measure execution time.</param>
-            <param name="runCount">Number of iterations the <paramref name="asyncAction"/> should be executed.</param>
-            <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the value of <paramref name="runCount"/> is not between '0' and 'ulong.MaxValue'.</exception>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> holding the average execution time of all <paramref name="runCount"/> number of iterations as <see cref="T:System.TimeSpan"/>.</returns> 
-            <remarks>
-            <para>Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/>, but marked as cancelled).
-            <br/>A cancelled task is a <see cref="T:System.Threading.Tasks.Task"/> where the <see cref="P:System.Threading.Tasks.Task.Status"/> returns either <see cref="F:System.Threading.Tasks.TaskStatus.Canceled"/> or <see cref="F:System.Threading.Tasks.TaskStatus.Faulted"/> or an <see cref="T:System.OperationCanceledException"/> exception was thrown.</para>
-            Use the <see cref="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.Task},System.Int32,BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate,System.String,System.Int32)"/> or <see cref="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.Task},BionicCode.Utilities.Net.AsyncProfilerOptions,System.String,System.Int32)"/> overload and provide an instance of the <see cref="T:BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate"/> to enable asynchronous logging.
-            <para>
-            The results are calculated using the default time base defined by <see cref="F:BionicCode.Utilities.Net.Profiler.DefaultBaseUnit"/>.
-            Use the <see cref="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.Task},BionicCode.Utilities.Net.AsyncProfilerOptions,System.String,System.Int32)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
-            </para>
-            </remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.ValueTask},BionicCode.Utilities.Net.AsyncProfilerOptions,System.String,System.Int32)">
-            <summary>
-            Measures the execution time of a method using a default warmup iteration count of '4' to warmup the JIT compiler.
-            </summary>
-            <param name="asyncAction">A delegate that executes the asynchronous code to measure execution time.</param>
-            <param name="options">The options object to customize the behavior of the profiler.</param>
-            <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the value of <see cref="P:BionicCode.Utilities.Net.ProfilerOptions.Iterations"/> or <see cref="P:BionicCode.Utilities.Net.ProfilerOptions.WarmupIterations"/> is not between '0' and 'ulong.MaxValue'.</exception>
-            <returns>The profiling result.</returns> 
-            <remarks>
-            <para>Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/>, but marked as cancelled).
-            <br/>A cancelled task is a <see cref="T:System.Threading.Tasks.Task"/> where the <see cref="P:System.Threading.Tasks.Task.Status"/> returns either <see cref="F:System.Threading.Tasks.TaskStatus.Canceled"/> or <see cref="F:System.Threading.Tasks.TaskStatus.Faulted"/> or an <see cref="T:System.OperationCanceledException"/> exception was thrown.</para>
-            </remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.ValueTask},System.Int32,System.String,System.Int32)">
-            <summary>
-            Measures the execution time of a method using a default warmup iteration count of '4' to warmup the JIT compiler.
-            </summary>
-            <param name="asyncAction">A delegate that executes the asynchronous code to measure execution time.</param>
-            <param name="runCount">Number of iterations the <paramref name="asyncAction"/> should be executed.</param>
-            <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the value of <paramref name="runCount"/> is not between '0' and 'ulong.MaxValue'.</exception>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> holding the average execution time of all <paramref name="runCount"/> number of iterations as <see cref="T:System.TimeSpan"/>.</returns> 
-            <remarks>
-            <para>
-            Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/>, but marked as cancelled).
-            <br/>A cancelled task is a <see cref="T:System.Threading.Tasks.Task"/> where the <see cref="P:System.Threading.Tasks.Task.Status"/> returns either <see cref="F:System.Threading.Tasks.TaskStatus.Canceled"/> or <see cref="F:System.Threading.Tasks.TaskStatus.Faulted"/> or an <see cref="T:System.OperationCanceledException"/> exception was thrown.
-            </para>
-            Use the <see cref="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.ValueTask},System.Int32,BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate,System.String,System.Int32)"/> or <see cref="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.ValueTask},BionicCode.Utilities.Net.AsyncProfilerOptions,System.String,System.Int32)"/> overload and provide an instance of the <see cref="T:BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate"/> delegate to enable logging.
-            <para>
-            The results are calculated using the default time base defined by <see cref="F:BionicCode.Utilities.Net.Profiler.DefaultBaseUnit"/>.
-            Use the <see cref="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.ValueTask},BionicCode.Utilities.Net.AsyncProfilerOptions,System.String,System.Int32)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
-            </para>
-            </remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.Task},System.Int32,BionicCode.Utilities.Net.ProfilerLoggerDelegate,System.String,System.Int32)">
-            <summary>
-            Measures the execution time of a method using a default warmup iteration count of '4' to warmup the JIT compiler.
-            </summary>
-            <param name="asyncAction">A delegate that executes the asynchronous code to measure execution time.</param>
-            <param name="runCount">Number of iterations the <paramref name="asyncAction"/> should be executed.</param>
-            <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="logger">A delegate of type <see cref="T:BionicCode.Utilities.Net.ProfilerLoggerDelegate"/> which can be used to automatically print the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
-            
-            <br/>
-            <code>
-                      ╭───────────────┬────────────────────────────┬────────────────╮
-                      | Iteration #   │ Duration [ms]              │ Is cancelled   |
-                      ┝━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥
-                      │ 1             │                     1.0512 │ False          |
-                      │ 2             │                     1.0020 │ False          │
-                      │ 3             │                     0.8732 │ False          │
-                      │ 4             │                     0.0258 │ True (ignored) │
-                      │ 5             │                     0.9943 │ False          │
-            ╭═════════╧═══════════════╪════════════════════════════┼────────────────┤
-            │ Total:    -             │                     3.9207 │                │
-            │ Min:      3             │                     0.8732 │                │
-            │ Max:      1             │                     1.0512 │                │
-            │ Average:  -             │                     0.9802 │                │
-            ╰─────────────────────────┴────────────────────────────┴────────────────╯
-            </code></param>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the value of <paramref name="runCount"/> is not between '0' and 'ulong.MaxValue'.</exception>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> holding the <see cref="T:BionicCode.Utilities.Net.ProfilerBatchResult"/> result which contains neta data like average execution time or a formatted report (<see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/>) of all <paramref name="runCount"/> number of iterations.</returns>
-            <remarks>
-            <para>
-            Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/>, but marked as cancelled).
-            <br/>A cancelled task is a <see cref="T:System.Threading.Tasks.Task"/> where the <see cref="P:System.Threading.Tasks.Task.Status"/> returns either <see cref="F:System.Threading.Tasks.TaskStatus.Canceled"/> or <see cref="F:System.Threading.Tasks.TaskStatus.Faulted"/> or an <see cref="T:System.OperationCanceledException"/> exception was thrown.
-            </para>
-            <para>
-            The results are calculated using the default time base defined by <see cref="F:BionicCode.Utilities.Net.Profiler.DefaultBaseUnit"/>.
-            Use the <see cref="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.Task},BionicCode.Utilities.Net.AsyncProfilerOptions,System.String,System.Int32)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
-            </para>
-            </remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.ValueTask},System.Int32,BionicCode.Utilities.Net.ProfilerLoggerDelegate,System.String,System.Int32)">
-            <summary>
-            Measures the execution time of a method using a default warmup iteration count of '4' to warmup the JIT compiler.
-            </summary>
-            <param name="asyncAction">A delegate that executes the asynchronous code to measure execution time.</param>
-            <param name="runCount">Number of iterations the <paramref name="asyncAction"/> should be executed.</param>
-            <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="logger">A delegate of type <see cref="T:BionicCode.Utilities.Net.ProfilerLoggerDelegate"/> which can be used to automatically print the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
-            
-            <br/>
-            <code>
-                      ╭───────────────┬────────────────────────────┬────────────────╮
-                      | Iteration #   │ Duration [ms]              │ Is cancelled   |
-                      ┝━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥
-                      │ 1             │                     1.0512 │ False          |
-                      │ 2             │                     1.0020 │ False          │
-                      │ 3             │                     0.8732 │ False          │
-                      │ 4             │                     0.0258 │ True (ignored) │
-                      │ 5             │                     0.9943 │ False          │
-            ╭═════════╧═══════════════╪════════════════════════════┼────────────────┤
-            │ Total:    -             │                     3.9207 │                │
-            │ Min:      3             │                     0.8732 │                │
-            │ Max:      1             │                     1.0512 │                │
-            │ Average:  -             │                     0.9802 │                │
-            ╰─────────────────────────┴────────────────────────────┴────────────────╯
-            </code></param>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the value of <paramref name="runCount"/> is not between '0' and 'ulong.MaxValue'.</exception>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> holding the <see cref="T:BionicCode.Utilities.Net.ProfilerBatchResult"/> result which contains neta data like average execution time or a formatted report (<see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/>) of all <paramref name="runCount"/> number of iterations.</returns>
-            <remarks>
-            <para>
-            Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/>, but marked as cancelled).
-            <br/>A cancelled task is a <see cref="T:System.Threading.Tasks.Task"/> where the <see cref="P:System.Threading.Tasks.Task.Status"/> returns either <see cref="F:System.Threading.Tasks.TaskStatus.Canceled"/> or <see cref="F:System.Threading.Tasks.TaskStatus.Faulted"/> or an <see cref="T:System.OperationCanceledException"/> exception was thrown.
-            </para>
-            <para>
-            The results are calculated using the default time base defined by <see cref="F:BionicCode.Utilities.Net.Profiler.DefaultBaseUnit"/>.
-            Use the <see cref="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.ValueTask},BionicCode.Utilities.Net.AsyncProfilerOptions,System.String,System.Int32)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
-            </para>
-            </remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.Task},System.Int32,BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate,System.String,System.Int32)">
-            <summary>
-            Measures the execution time of a method using a default warmup iteation count of '4' to wramup the JIT compiler.
-            </summary>
-            <param name="asyncAction">A delegate that executes the asynchronous code to measure execution time.</param>
-            <param name="runCount">Number of iterations the <paramref name="asyncAction"/> should be executed.</param>
-            <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="asyncLogger">An asynchronous delegate of type <see cref="T:BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate"/> which can be used to automatically let the <see cref="!:LogTimeAsync(Func&lt;Task&gt;, int, int, ProfilerLoggerAsyncDelegate, TimeUnit, string, int)"/> print the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
-            
-            <br/>
-            <code>
-                      ╭───────────────┬────────────────────────────┬────────────────╮
-                      | Iteration #   │ Duration [ms]              │ Is cancelled   |
-                      ┝━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥
-                      │ 1             │                     1.0512 │ False          |
-                      │ 2             │                     1.0020 │ False          │
-                      │ 3             │                     0.8732 │ False          │
-                      │ 4             │                     0.0258 │ True (ignored) │
-                      │ 5             │                     0.9943 │ False          │
-            ╭═════════╧═══════════════╪════════════════════════════┼────────────────┤
-            │ Total:    -             │                     3.9207 │                │
-            │ Min:      3             │                     0.8732 │                │
-            │ Max:      1             │                     1.0512 │                │
-            │ Average:  -             │                     0.9802 │                │
-            ╰─────────────────────────┴────────────────────────────┴────────────────╯
-            </code></param>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the value of<paramref name="runCount"/> is not between '0' and 'ulong.MaxValue'.</exception>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> holding the <see cref="T:BionicCode.Utilities.Net.ProfilerBatchResult"/> result which contains neta data like average execution time or a formatted report (<see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/>) of all <paramref name="runCount"/> number of iterations.</returns>
-            <remarks>
-            <para>
-            Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/>, but marked as cancelled).
-            <br/>A cancelled task is a <see cref="T:System.Threading.Tasks.Task"/> where the <see cref="P:System.Threading.Tasks.Task.Status"/> returns either <see cref="F:System.Threading.Tasks.TaskStatus.Canceled"/> or <see cref="F:System.Threading.Tasks.TaskStatus.Faulted"/> or an <see cref="T:System.OperationCanceledException"/> exception was thrown.
-            </para>
-            <para>
-            The results are calculated using the default time base defined by <see cref="F:BionicCode.Utilities.Net.Profiler.DefaultBaseUnit"/>.
-            Use the <see cref="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.Task},BionicCode.Utilities.Net.AsyncProfilerOptions,System.String,System.Int32)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
-            </para>
-            </remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.ValueTask},System.Int32,BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate,System.String,System.Int32)">
-            <summary>
-            Measures the execution time of a method.
-            </summary>
-            <param name="asyncAction">A delegate that executes the asynchronous code to measure execution time.</param>
-            <param name="runCount">Number of iterations the <paramref name="asyncAction"/> should be executed.</param>
-            <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <param name="asyncLogger">An asynchronous delegate of type <see cref="T:BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate"/> which can be used to automatically let the <see cref="!:LogTimeAsync(Func&lt;Task&gt;, int, ProfilerLoggerAsyncDelegate, TimeUnit, string, int)"/> print the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/> to a destination (e.g. file) in the following formatting:
-            
-            <br/>
-            <code>
-                      ╭───────────────┬────────────────────────────┬────────────────╮
-                      | Iteration #   │ Duration [ms]              │ Is cancelled   |
-                      ┝━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥
-                      │ 1             │                     1.0512 │ False          |
-                      │ 2             │                     1.0020 │ False          │
-                      │ 3             │                     0.8732 │ False          │
-                      │ 4             │                     0.0258 │ True (ignored) │
-                      │ 5             │                     0.9943 │ False          │
-            ╭═════════╧═══════════════╪════════════════════════════┼────────────────┤
-            │ Total:    -             │                     3.9207 │                │
-            │ Min:      3             │                     0.8732 │                │
-            │ Max:      1             │                     1.0512 │                │
-            │ Average:  -             │                     0.9802 │                │
-            ╰─────────────────────────┴────────────────────────────┴────────────────╯
-            </code></param>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the value of<paramref name="runCount"/> is not between '0' and 'ulong.MaxValue'.</exception>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> holding the <see cref="T:BionicCode.Utilities.Net.ProfilerBatchResult"/> result which contains neta data like average execution time or a formatted report (<see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/>) of all <paramref name="runCount"/> number of iterations.</returns>
-            <remarks>
-            <para>
-            Cancelled tasks are ignored when calculating the result (although the cancelled runs are listed in the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/>, but marked as cancelled).
-            <br/>A cancelled task is a <see cref="T:System.Threading.Tasks.Task"/> where the <see cref="P:System.Threading.Tasks.Task.Status"/> returns either <see cref="F:System.Threading.Tasks.TaskStatus.Canceled"/> or <see cref="F:System.Threading.Tasks.TaskStatus.Faulted"/> or an <see cref="T:System.OperationCanceledException"/> exception was thrown.
-            </para>
-            <para>
-            The results are calculated using the default time base defined by <see cref="F:BionicCode.Utilities.Net.Profiler.DefaultBaseUnit"/>.
-            Use the <see cref="M:BionicCode.Utilities.Net.Profiler.LogTimeAsync(System.Func{System.Threading.Tasks.ValueTask},BionicCode.Utilities.Net.AsyncProfilerOptions,System.String,System.Int32)"/> overload to customize the behavior, e.g. time base or the number of warmup iterations.
-            </para>
-            </remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.Profiler.LogTimeScoped(BionicCode.Utilities.Net.ProfilerLoggerDelegate,BionicCode.Utilities.Net.ProfilerBatchResult@,BionicCode.Utilities.Net.TimeUnit,System.String,System.String,System.Int32)">
+        <member name="M:BionicCode.Utilities.Net.Profiler.LogTimeScoped(System.Action{BionicCode.Utilities.Net.ProfilerBatchResult,System.String},BionicCode.Utilities.Net.ProfilerBatchResult@,BionicCode.Utilities.Net.TimeUnit,System.String,System.String,System.Int32)">
             <summary>
             Measures the execution time of a using block i.e. the scope of the <see cref="T:System.IDisposable"/>'s lifetime.
             </summary>
@@ -3459,7 +3493,7 @@
             </para>
             </remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.Profiler.LogTimeScoped(BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate,BionicCode.Utilities.Net.ProfilerBatchResult@,BionicCode.Utilities.Net.TimeUnit,System.String,System.String,System.Int32)">
+        <member name="M:BionicCode.Utilities.Net.Profiler.LogTimeScopedAsync(System.Func{BionicCode.Utilities.Net.ProfilerBatchResult,System.String,System.Threading.Tasks.Task},BionicCode.Utilities.Net.ProfilerBatchResult@,BionicCode.Utilities.Net.TimeUnit,System.String,System.String,System.Int32)">
             <summary>
             Measures the execution time of a using block i.e. the scope of the <see cref="T:System.IDisposable"/>'s lifetime.
             </summary>
@@ -3483,16 +3517,16 @@
             ╰─────────────────────────┴────────────────────────────┴────────────────╯
             </code></param>
             <param name="result">An <see langword="out"/> parameter holding the <see cref="T:BionicCode.Utilities.Net.ProfilerBatchResult"/> result which contains meta data like average execution time or a formatted report (<see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/>).</param>
-            <param name="baseUnit">The optional time unit that theresults should be converted to. The default is <see cref="F:BionicCode.Utilities.Net.TimeUnit.Milliseconds"/>. </param>
-            <param name="scopeName">The name of the scope. This value is automatically captured and set to the caller's member name. Therfore this optional parameter doesn't require an explicit value.</param>
+            <param name="baseUnit">The optional time unit that the results should be converted to. The default is <see cref="F:BionicCode.Utilities.Net.TimeUnit.Milliseconds"/>. </param>
+            <param name="scopeName">The name of the scope. This value is automatically captured and set to the caller's member name. Therefore, this optional parameter doesn't require an explicit value.</param>
             <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
             <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
-            <returns>An <see cref="T:System.IDisposable"/> to control the scope of the profiling.</returns>
+            <returns>An <see cref="T:System.IAsyncDisposable"/> to control the scope of the profiling and that executes the async logger delegate.</returns>
             <remarks>
-            Time is measured during the lifetime of the <see cref="T:System.IDisposable"/> instance: from time of creation to the final <see cref="M:System.IDisposable.Dispose"/> call.
-            <br/>It's recommended to use the <see cref="T:System.IDisposable"/> managed by a using-statement or using-expression.
+            Time is measured during the lifetime of the <see cref="T:System.IAsyncDisposable"/> instance: from time of creation to the final <see cref="M:System.IDisposable.Dispose"/> call.
+            <br/>It's recommended to use the <see cref="T:System.IAsyncDisposable"/> managed by a using-statement or using-expression.
             <para>
-            API docs: <see href="https://sampoh.de/github/docs/bioniccode.net/api/BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerLoggerAsyncDelegate_BionicCode_Utilities_Net_ProfilerBatchResult__">IDisposable LogTimeScoped(ProfilerLoggerAsyncDelegate, out ProfilerBatchResult)</see>
+            API docs: <see href="https://sampoh.de/github/docs/bioniccode.net/api/BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerLoggerAsync_BionicCode_Utilities_Net_ProfilerBatchResult__">IDisposable LogTimeScoped(ProfilerLoggerAsyncDelegate, out ProfilerBatchResult)</see>
             </para>
             </remarks>
         </member>
@@ -3501,8 +3535,8 @@
             Measures the execution time of a using block i.e. the scope of the <see cref="T:System.IDisposable"/>'s lifetime.
             </summary>
             <param name="result">An <see langword="out"/> parameter holding the <see cref="T:BionicCode.Utilities.Net.ProfilerBatchResult"/> result which contains meta data like average execution time or a formatted report (<see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Summary"/>).</param>
-            <param name="baseUnit">The optional time unit that theresults should be converted to. The default is <see cref="F:BionicCode.Utilities.Net.TimeUnit.Milliseconds"/>. </param>
-            <param name="scopeName">The name of the scope. This value is automatically captured and set to the caller's member name. Therfore this optional parameter doesn't require an explicit value.</param>
+            <param name="baseUnit">The optional time unit that the results should be converted to. The default is <see cref="F:BionicCode.Utilities.Net.TimeUnit.Milliseconds"/>. </param>
+            <param name="scopeName">The name of the scope. This value is automatically captured and set to the caller's member name. Therefore this optional parameter doesn't require an explicit value.</param>
             <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
             <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
             <returns>An <see cref="T:System.IDisposable"/> to control the scope of the profiling.</returns>
@@ -3520,7 +3554,7 @@
             The builder instance which configures and starts the attribute based profiling.</returns>
             <remarks>
             The member of the profiled type must be decorated with the <see cref="T:BionicCode.Utilities.Net.ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
-            <br/>Use the <see cref="T:BionicCode.Utilities.Net.ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The memeber can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="T:BionicCode.Utilities.Net.ProfilerBuilder"/>.
+            <br/>Use the <see cref="T:BionicCode.Utilities.Net.ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="T:BionicCode.Utilities.Net.ProfilerBuilder"/>.
             </remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.Profiler.CreateProfilerBuilder(System.Type)">
@@ -3532,7 +3566,7 @@
             The builder instance which configures and starts the attribute based profiling.</returns>
             <remarks>
             The member of the profiled type must be decorated with the <see cref="T:BionicCode.Utilities.Net.ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
-            <br/>Use the <see cref="T:BionicCode.Utilities.Net.ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The memeber can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="T:BionicCode.Utilities.Net.ProfilerBuilder"/>.
+            <br/>Use the <see cref="T:BionicCode.Utilities.Net.ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="T:BionicCode.Utilities.Net.ProfilerBuilder"/>.
             </remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.Profiler.CreateProfilerBuilder(System.Type[])">
@@ -3544,7 +3578,7 @@
             The builder instance which configures and starts the attribute based profiling.</returns>
             <remarks>
             The member of the profiled type must be decorated with the <see cref="T:BionicCode.Utilities.Net.ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
-            <br/>Use the <see cref="T:BionicCode.Utilities.Net.ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The memeber can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="T:BionicCode.Utilities.Net.ProfilerBuilder"/>.
+            <br/>Use the <see cref="T:BionicCode.Utilities.Net.ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="T:BionicCode.Utilities.Net.ProfilerBuilder"/>.
             </remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.Profiler.CreateProfilerBuilder(System.Collections.Generic.IEnumerable{System.Type})">
@@ -3556,7 +3590,7 @@
             The builder instance which configures and starts the attribute based profiling.</returns>
             <remarks>
             The member of the profiled type must be decorated with the <see cref="T:BionicCode.Utilities.Net.ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
-            <br/>Use the <see cref="T:BionicCode.Utilities.Net.ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The memeber can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="T:BionicCode.Utilities.Net.ProfilerBuilder"/>.
+            <br/>Use the <see cref="T:BionicCode.Utilities.Net.ProfilerArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="T:BionicCode.Utilities.Net.ProfilerBuilder"/>.
             </remarks>
         </member>
         <member name="T:BionicCode.Utilities.Net.ProfilerBatchResult">
@@ -3600,7 +3634,7 @@
             The number of iterations the <see cref="T:BionicCode.Utilities.Net.Profiler"/> has run the specified operation.
             </summary>
             <value>The number of iterations (which is equivalent to the number of results) per argument list.</value>
-            <remarks>Using the profiler with annotations (attributes) (see <see cref="T:BionicCode.Utilities.Net.ProfileAttribute"/>) allows to specify argument lists (see <see cref="T:BionicCode.Utilities.Net.ProfilerArgumentAttribute"/>) to simulate real-world behavior where usually the values of the arguments that are provided to the member change.
+            <remarks>Using the profiler with annotations (symbolAttributes) (see <see cref="T:BionicCode.Utilities.Net.ProfileAttribute"/>) allows to specify argument lists (see <see cref="T:BionicCode.Utilities.Net.ProfilerArgumentAttribute"/>) to simulate real-world behavior where usually the values of the arguments that are provided to the member change.
             <br/>A member is executed and profiled with each argument list for the number of the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.IterationCount"/> times.
             <br/>For example if a method is profiled with three argument lists and an iteration count of 10, the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.IterationCount"/> will return <c>10</c> and the total iterations run for the profiled member is <c>30</c>, the product of <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.IterationCount"/> and <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.ArgumentListCount"/> (see <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.TotalIterationCount"/>).</remarks>
         </member>
@@ -3615,7 +3649,7 @@
             The number of iterations the <see cref="T:BionicCode.Utilities.Net.Profiler"/> has run the specified operation.
             </summary>
             <value>The number of iterations (which is equivalent to the number of results) per argument list.</value>
-            <remarks>Using the profiler with annotations (attributes) allows to specify argument lists to simulate real-world behavior where usually the values of the arguments that are provided to the member change.
+            <remarks>Using the profiler with annotations (symbolAttributes) allows to specify argument lists to simulate real-world behavior where usually the values of the arguments that are provided to the member change.
             <br/>A member is executed and profiled with each argument list for the number of the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.IterationCount"/> times.
             <br/>For example if a method is profiled with three argument lists and an iteration count of 10, the <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.IterationCount"/> will return <c>10</c> and the total iterations run for the profiled member is the product of <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.IterationCount"/> and <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.ArgumentListCount"/>.</remarks>
         </member>
@@ -3716,21 +3750,36 @@
             A list to hold a collection of <see cref="T:BionicCode.Utilities.Net.ProfilerBatchResult"/> items.
             </summary>
         </member>
-        <member name="P:BionicCode.Utilities.Net.ProfilerBatchResultGroup.ProfiledTargetType">
+        <member name="P:BionicCode.Utilities.Net.ProfilerBatchResultGroup.TargetType">
             <summary>
             Describes the profiled member that the <see cref="T:BionicCode.Utilities.Net.ProfilerBatchResult"/> items represent.
             </summary>
-            <value>The value can differ from the value of the indivudual items. 
-            <br/>For example, this collection will have the value <see cref="F:BionicCode.Utilities.Net.ProfiledTargetType.Property"/> while the actual <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Context"/> has <see cref="P:BionicCode.Utilities.Net.ProfilerContext.TargetType"/> return <see cref="F:BionicCode.Utilities.Net.ProfiledTargetType.PropertyGet"/> and <see cref="F:BionicCode.Utilities.Net.ProfiledTargetType.PropertySet"/>.</value>
+            <value>The value can differ from the value of the individual items. 
+            <br/>For example, this collection will have the value <see cref="F:BionicCode.Utilities.Net.ProfiledTargetType.Property"/> while the actual <see cref="P:BionicCode.Utilities.Net.ProfilerBatchResult.Context"/> has <see cref="!:ProfilerContext.TargetType"/> return <see cref="F:BionicCode.Utilities.Net.ProfiledTargetType.PropertyGet"/> and <see cref="F:BionicCode.Utilities.Net.ProfiledTargetType.PropertySet"/>.</value>
         </member>
-        <member name="P:BionicCode.Utilities.Net.ProfilerBatchResultGroup.ProfiledTargetSignatureMemberName">
+        <member name="P:BionicCode.Utilities.Net.ProfilerBatchResultGroup.TargetSignature">
             <summary>
-            The signature name of the profiled type member.
+            The signature of the profiled type including the declaring type (in case if the target is a member).
             </summary>
         </member>
-        <member name="P:BionicCode.Utilities.Net.ProfilerBatchResultGroup.ProfiledTargetMemberShortName">
+        <member name="P:BionicCode.Utilities.Net.ProfilerBatchResultGroup.TargetShortSignature">
             <summary>
-            The signature name of the profiled type member.
+            The signature of the profiled type without the declaring type (in case if the target is a member).
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.ProfilerBatchResultGroup.TargetShortCompactSignature">
+            <summary>
+            The signature name of the profiled type without the declaring type (in case if the target is a member), attributes, generic constraints and inheritance list.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.ProfilerBatchResultGroup.TargetName">
+            <summary>
+            The name of the profiled type including the declaring type (in case if the target is a member)..
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.ProfilerBatchResultGroup.TargetShortName">
+            <summary>
+            The name of the profiled type without the declaring type (in case if the target is a member).
             </summary>
         </member>
         <member name="T:BionicCode.Utilities.Net.ProfilerBuilder">
@@ -3751,12 +3800,12 @@
             <summary>
             Set the time unit that the results are converted to.
             </summary>
-            <param name="timeUnit">The unit that all result related time ispresented in. The default is <see cref="F:BionicCode.Utilities.Net.TimeUnit.Microseconds"/>.</param>
+            <param name="timeUnit">The unit that all result related time is presented in. The default is <see cref="F:BionicCode.Utilities.Net.TimeUnit.Microseconds"/>.</param>
             <returns>
             The currently configured <see cref="T:BionicCode.Utilities.Net.ProfilerBuilder"/> instance to enable to chain calls.
             </returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.ProfilerBuilder.SetLogger(BionicCode.Utilities.Net.ProfilerLoggerDelegate)">
+        <member name="M:BionicCode.Utilities.Net.ProfilerBuilder.SetLogger(System.Action{BionicCode.Utilities.Net.ProfilerBatchResult,System.String})">
             <summary>
             Set a log delegate that allows to output the result to a sink, e.g. a file or application logger.
             </summary>
@@ -3765,16 +3814,16 @@
             The currently configured <see cref="T:BionicCode.Utilities.Net.ProfilerBuilder"/> instance to enable to chain calls.
             </returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.ProfilerBuilder.SetAsyncLogger(BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate)">
+        <member name="M:BionicCode.Utilities.Net.ProfilerBuilder.SetAsyncLogger(System.Func{BionicCode.Utilities.Net.ProfilerBatchResult,System.String,System.Threading.Tasks.Task})">
             <summary>
             Set a log delegate that allows to asynchronously output the result to a sink, e.g. a file or application logger.
             </summary>
-            <param name="profilerLogger">An asynchronous delegate that is invoked by profiler to pass in the result.</param>
+            <param name="asyncProfilerLogger">An asynchronous delegate that is invoked by profiler to pass in the result.</param>
             <returns>
             The currently configured <see cref="T:BionicCode.Utilities.Net.ProfilerBuilder"/> instance to enable to chain calls.
             </returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.ProfilerBuilder.EnableWarmup(System.Int32)">
+        <member name="M:BionicCode.Utilities.Net.ProfilerBuilder.EnableWarmup">
             <summary>
             Enable warm up iterations to trigger the JIT compiler. Warm up is enabled by default.
             </summary>
@@ -3782,7 +3831,7 @@
             <returns>
             The currently configured <see cref="T:BionicCode.Utilities.Net.ProfilerBuilder"/> instance to enable to chain calls.
             </returns>
-            <remarks>When running code the first time there is always the incurrence of the JIT to compile the code. 
+            <remarks>When running code the first time there is always the cost of the JIT to compile the code at runtime. 
             <br/>For this reason it is recommended to execute the code at least once in order to avoid the JIT to impact the profiling.
             </remarks>
         </member>
@@ -3791,7 +3840,7 @@
             Disable warm up iterations. Warm up iterations can be scheduled to trigger the JIT compiler. Warm up is enabled by default.
             </summary>
             <returns>The currently configured <see cref="T:BionicCode.Utilities.Net.ProfilerBuilder"/> instance to enable to chain calls.</returns>
-            <remarks>When running code the first time there is always the incurrence of the JIT to compile the code. 
+            <remarks>When running code the first time there is always the cost of the JIT to compile the code at runtime. 
             <br/>For this reason it is recommended to execute the code at least once in order to avoid the JIT to impact the profiling.
             </remarks>
         </member>
@@ -3820,7 +3869,7 @@
             <returns>
             The currently configured <see cref="T:BionicCode.Utilities.Net.ProfilerBuilder"/> instance to enable to chain calls.
             </returns>
-            <remarks>When running code the first time there is always the incurrence of the JIT to compile the code. 
+            <remarks>When running code the first time there is always the cost of the JIT to compile the code at runtime. 
             <br/>For this reason it is recommended to execute the code at least once in order to avoid the JIT to impact the profiling.
             </remarks>
         </member>
@@ -3859,7 +3908,7 @@
             The number of iterations that the profiled code is executed.
             </summary>
             <value>
-            An integer number greater than <c>0</c> or <c>0</c> to perform no profiling. The <see cref="T:BionicCode.Utilities.Net.Profiler"/> will throw an exception if the value is less than <c>0</c>. The default is defined by <see cref="F:BionicCode.Utilities.Net.Profiler.DefaultIterationCount"/>.
+            An integer number greater than <c>0</c> or <c>0</c> to perform no profiling. The <see cref="T:BionicCode.Utilities.Net.Profiler"/> will throw an exception if the value is less than <c>0</c>. The default is defined by <see cref="F:BionicCode.Utilities.Net.Profiler.DefaultIterationsCount"/>.
             </value>
         </member>
         <member name="P:BionicCode.Utilities.Net.ProfilerOptions.WarmupIterations">
@@ -3932,9 +3981,9 @@
         </member>
         <member name="P:BionicCode.Utilities.Net.ProfilerResult.IsProfiledTaskCancelled">
             <summary>
-            In case the benchmarked operation is an async method, <see cref="P:BionicCode.Utilities.Net.ProfilerResult.IsProfiledTaskCancelled"/> indiocates wwhether the <see langword="async"/>operation was cancelled or not.
+            In case the benchmarked operation is an async method, <see cref="P:BionicCode.Utilities.Net.ProfilerResult.IsProfiledTaskCancelled"/> indicates whether the <see langword="async"/>operation was cancelled or not.
             </summary>
-            <value><see langword="true"/> in case the operation wwwas cancelled (and the <see cref="P:BionicCode.Utilities.Net.ProfilerResult.ProfiledTask"/> result is in a canlled state (<see cref="P:System.Threading.Tasks.Task.Status"/> returns <see cref="F:System.Threading.Tasks.TaskStatus.Canceled"/>).</value>
+            <value><see langword="true"/> in case the operation was cancelled (and the <see cref="!:ProfiledTask"/> result is in a cancelled state (<see cref="P:System.Threading.Tasks.Task.Status"/> returns <see cref="F:System.Threading.Tasks.TaskStatus.Canceled"/>).</value>
         </member>
         <member name="P:BionicCode.Utilities.Net.ProfilerResult.Iteration">
             <summary>
@@ -3956,12 +4005,6 @@
             <br/>and the <see cref="P:BionicCode.Utilities.Net.ProfilerResult.ArgumentListIndex"/> property returns the index of the argument list that the <see cref="T:BionicCode.Utilities.Net.ProfilerResult"/> is associated with.
             </remarks>
         </member>
-        <member name="P:BionicCode.Utilities.Net.ProfilerResult.ProfiledTask">
-            <summary>
-            The <see cref="T:System.Threading.Tasks.Task"/> returned from the async operation that was benchmarked.
-            </summary>
-            <value>The <see cref="T:System.Threading.Tasks.Task"/> result.</value>
-        </member>
         <member name="M:BionicCode.Utilities.Net.ProfilerResult.CompareTo(BionicCode.Utilities.Net.ProfilerResult)">
             <inheritdoc/>
         </member>
@@ -3973,6 +4016,34 @@
         </member>
         <member name="M:BionicCode.Utilities.Net.ProfilerResult.GetHashCode">
             <inheritdoc/>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.ProfilerTargetInvokeInfo.#ctor(System.Object,System.Object[],System.Int32,System.String,System.String,System.String,System.String,System.String,System.String,System.Action{System.Object,System.Object,System.Object[]},BionicCode.Utilities.Net.ProfiledTargetType)">
+            <summary>
+            Use for property set()
+            </summary>
+            <param name="target"></param>
+            <param name="arguments"></param>
+            <param name="argumentListIndex"></param>
+            <param name="targetSignature"></param>
+            <param name="targetDisplayName"></param>
+            <param name="targetNamespace"></param>
+            <param name="targetAssemblyName"></param>
+            <param name="propertySetInvocator"></param>
+            <param name="profiledTargetType"></param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.ProfilerTargetInvokeInfo.#ctor(System.Object,System.Object[],System.Int32,System.String,System.String,System.String,System.String,System.String,System.String,System.Func{System.Object[],System.Object},BionicCode.Utilities.Net.ProfiledTargetType)">
+            <summary>
+            Use for constructors
+            </summary>
+            <param name="target"></param>
+            <param name="arguments"></param>
+            <param name="argumentListIndex"></param>
+            <param name="targetSignature"></param>
+            <param name="targetDisplayName"></param>
+            <param name="targetNamespace"></param>
+            <param name="targetAssemblyName"></param>
+            <param name="constructorInvocator"></param>
+            <param name="profiledTargetType"></param>
         </member>
         <member name="T:BionicCode.Utilities.Net.Runtime">
             <summary>
@@ -5118,12 +5189,12 @@
         </member>
         <member name="M:BionicCode.Utilities.Net.ViewModelCommon.IsPropertyAttributeValid``1(``0,System.String)">
             <summary>
-            Validates the value of a particular property against decorating validation attributes.
+            Validates the value of a particular property against decorating validation symbolAttributes.
             </summary>
             <typeparam name="TValue"></typeparam>
             <param name="value">The value to validate.</param>
             <param name="propertyName">The name of the property to validate.</param>
-            <returns><c>true</c> if validation passed or the property is not decorated with any validation attributes. Otherwise <c>false</c>.</returns>
+            <returns><c>true</c> if validation passed or the property is not decorated with any validation symbolAttributes. Otherwise <c>false</c>.</returns>
         </member>
         <member name="M:BionicCode.Utilities.Net.ViewModelCommon.ClearErrors(System.String)">
             <summary>

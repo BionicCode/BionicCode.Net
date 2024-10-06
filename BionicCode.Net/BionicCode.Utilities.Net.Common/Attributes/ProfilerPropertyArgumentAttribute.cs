@@ -48,7 +48,7 @@
     /// <summary>
     /// The index used to get/set an indexer.
     /// </summary>
-    public object Index { get; set; }
+    public object[] Index { get; set; }
 
     public PropertyAccessor Accessor { get; set; }
   }

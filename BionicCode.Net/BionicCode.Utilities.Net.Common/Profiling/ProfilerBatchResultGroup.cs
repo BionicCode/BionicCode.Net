@@ -42,7 +42,7 @@
 
     internal TimeUnit CommonBaseUnit => this.Min(result => result.BaseUnit);
 
-    public ProfilerBatchResultGroup(ProfiledTargetType profiledTargetType) => this.TargetType = profiledTargetType;
+    internal ProfilerBatchResultGroup(ProfiledTargetType profiledTargetType) => this.TargetType = profiledTargetType;
 
     internal ProfilerBatchResultGroup()
     {
@@ -50,8 +50,8 @@
       this.TargetSignature = string.Empty;
     }
 
-    public ProfilerBatchResultGroup(ProfiledTargetType profiledTargetType, IEnumerable<ProfilerBatchResult> collection) : base(collection) => this.TargetType = profiledTargetType;
+    internal ProfilerBatchResultGroup(ProfiledTargetType profiledTargetType, IEnumerable<ProfilerBatchResult> collection) : base(collection) => this.TargetType = profiledTargetType;
 
-    public ProfilerBatchResultGroup(ProfiledTargetType profiledTargetType, int capacity) : base(capacity) => this.TargetType = profiledTargetType;
+    internal ProfilerBatchResultGroup(ProfiledTargetType profiledTargetType, int capacity) : base(capacity) => this.TargetType = profiledTargetType;
   }
 }

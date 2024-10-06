@@ -420,7 +420,7 @@
     //internal static async Task<ProfilerBatchResult> LogTimeAsyncInternal<TResult>(Func<ValueTask<TResult>> asyncValueTaskAction, Action action, int warmupCount, int runCount, int argumentListIndex, ProfilerLoggerDelegate logger, ProfilerLoggerAsyncDelegate asyncLogger, TimeUnit baseUnit, string sourceFileName, int lineNumber)
     //  => LogTimeAsyncInternal(new ProfilerTargetInvokeInfo())
 
-    internal static async Task<ProfilerBatchResult> LogTimeAsyncInternal(ProfilerContext context)
+    internal static async Task<ProfilerBatchResult> LogTimeInternalAsync(ProfilerContext context)
     {      
       if (context.IterationCount < 1)
       {
@@ -437,35 +437,40 @@
       return result;
     }
 
-    internal static ProfilerBatchResult LogTimeInternal(ProfilerContext context)
+    private static async Task<ProfilerBatchResult> LogAverageTimeInternalAsync(ProfilerContext context)
     {
-      if (context.IterationCount < 1)
+      ProfilerBatchResult result = null;
+      ProfiledTargetType profiledTargetType = context.MethodInvokeInfo.ProfiledTargetType;
+      if (profiledTargetType is ProfiledTargetType.Method)
       {
-        return ProfilerBatchResult.Empty;
+        result = await LogMethodAsync(context);
       }
-
-      ProfilerBatchResult result = LogAverageTimeInternal(context);
-      context.Logger?.Invoke(result, result.Summary);
+      else if (profiledTargetType is ProfiledTargetType.Constructor)
+      {
+        result = LogConstructor(context);
+      }
+      else if (profiledTargetType.HasFlag(ProfiledTargetType.PropertyGet))
+      {
+        result = LogPropertyGet(context);
+      }
+      else if (profiledTargetType.HasFlag(ProfiledTargetType.PropertySet))
+      {
+        result = LogPropertySet(context);
+      }
 
       return result;
     }
 
-    private static async Task<ProfilerBatchResult> LogAverageTimeInternalAsync(ProfilerContext context)
+    private static async Task<ProfilerBatchResult> LogMethodAsync(ProfilerContext context)
     {
       ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
       var stopwatch = new Stopwatch();
       object invocationTarget = context.MethodInvokeInfo.Target;
-      object[] arguments = context.MethodInvokeInfo.Arguments;
+      object[] arguments = context.MethodInvokeInfo.MethodArgument.Arguments.ToArray();
       bool isTaskCancelled = false;
       for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
       {
-        if (context.MethodInvokeInfo.SynchronousMethodInvocator != null)
-        {
-          stopwatch.Restart();
-          _ = context.MethodInvokeInfo.SynchronousMethodInvocator.Invoke(invocationTarget, arguments);
-          stopwatch.Stop();
-        }
-        else if (context.MethodInvokeInfo.AsynchronousTaskMethodInvocator != null)
+        if (context.MethodInvokeInfo.AsynchronousTaskMethodInvocator != null)
         {
           try
           {
@@ -511,34 +516,90 @@
 
         if (iterationCounter < 1)
         {
+          // Still warming up
           continue;
         }
 
-        var iterationResult = new ProfilerResult(iterationCounter, isTaskCancelled, stopwatch.Elapsed, context.BaseUnit, result, context.MethodInvokeInfo.ArgumentListIndex);
+        var iterationResult = new ProfilerResult(iterationCounter, isTaskCancelled, stopwatch.Elapsed, context.BaseUnit, result, context.MethodInvokeInfo.MethodArgument.ArgumentListIndex);
         result.AddResult(iterationResult);
       }
 
       return result;
     }
 
-    private static ProfilerBatchResult LogAverageTimeInternal(ProfilerContext context)
+    private static ProfilerBatchResult LogConstructor(ProfilerContext context)
     {
       ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
       var stopwatch = new Stopwatch();
-      object invocationTarget = context.MethodInvokeInfo.Target;
-      object[] arguments = context.MethodInvokeInfo.Arguments;
+      object[] arguments = context.MethodInvokeInfo.MethodArgument.Arguments.ToArray();
       for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
       {
         stopwatch.Restart();
-        _ = context.MethodInvokeInfo.SynchronousMethodInvocator.Invoke(invocationTarget, arguments);
+        _ = context.MethodInvokeInfo.ConstructorInvocator.Invoke(arguments);
         stopwatch.Stop();
 
         if (iterationCounter < 1)
         {
+          // Still warming up
           continue;
         }
 
-        var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, context.BaseUnit, result, context.MethodInvokeInfo.ArgumentListIndex);
+        var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, context.BaseUnit, result, context.MethodInvokeInfo.MethodArgument.ArgumentListIndex);
+        result.AddResult(iterationResult);
+      }
+
+      return result;
+    }
+
+    private static ProfilerBatchResult LogPropertySet(ProfilerContext context)
+    {
+      ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
+      var stopwatch = new Stopwatch();
+      object[] indexArguments = context.MethodInvokeInfo.ProfiledTargetType.HasFlag(ProfiledTargetType.Indexer) 
+        ? context.MethodInvokeInfo.PropertyArgument.Index 
+        : null;
+      object value = context.MethodInvokeInfo.PropertyArgument.Value;
+      object invocationTarget = context.MethodInvokeInfo.Target;
+      for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
+      {
+        stopwatch.Restart();
+        context.MethodInvokeInfo.PropertySetInvocator.Invoke(invocationTarget, value, indexArguments);
+        stopwatch.Stop();
+
+        if (iterationCounter < 1)
+        {
+          // Still warming up
+          continue;
+        }
+
+        var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, context.BaseUnit, result, context.MethodInvokeInfo.PropertyArgument.ArgumentListIndex);
+        result.AddResult(iterationResult);
+      }
+
+      return result;
+    }
+
+    private static ProfilerBatchResult LogPropertyGet(ProfilerContext context)
+    {
+      ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
+      var stopwatch = new Stopwatch();
+      object[] indexArguments = context.MethodInvokeInfo.ProfiledTargetType.HasFlag(ProfiledTargetType.Indexer)
+        ? context.MethodInvokeInfo.PropertyArgument.Index
+        : null;
+      object invocationTarget = context.MethodInvokeInfo.Target;
+      for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
+      {
+        stopwatch.Restart();
+        _ = context.MethodInvokeInfo.PropertyGetInvocator.Invoke(invocationTarget, indexArguments);
+        stopwatch.Stop();
+
+        if (iterationCounter < 1)
+        {
+          // Still warming up
+          continue;
+        }
+
+        var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, context.BaseUnit, result, context.MethodInvokeInfo.PropertyArgument.ArgumentListIndex);
         result.AddResult(iterationResult);
       }
 

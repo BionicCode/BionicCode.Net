@@ -28,7 +28,7 @@
         case AccessModifier.Protected:
           return toUpperCase ? "Protected" : "protected";
         case AccessModifier.PrivateProtected:
-          return toUpperCase ? "Provate Protected" : "private protected";
+          return toUpperCase ? "Private Protected" : "private protected";
         case AccessModifier.Private:
           return toUpperCase ? "Private" : "private";
         default:
@@ -43,16 +43,22 @@
     /// <param name="toUpperCase">Controls whether to convert the string's first character to uppercase (<paramref name="toUpperCase"/>=<c>true</c>). The default is lowercase (<paramref name="toUpperCase"/>=<c>true</c>.</param>
     /// <returns>The readable string representation of the enum value.</returns>
     /// <exception cref="NotSupportedException">The enum value is not supported. (This exception is only intended for internal maintainance and will never be thrown in production code)</exception>
-    public static string ToDisplayStringValue(this ProfiledTargetType profiledTargetType, bool toUpperCase = false)
+    internal static string ToDisplayStringValue(this ProfiledTargetType profiledTargetType, bool toUpperCase = false, bool toBaseType = false)
     {
       switch (profiledTargetType)
       {
         case ProfiledTargetType.None:
           return toUpperCase ? "None" : "none";
         case ProfiledTargetType.PropertyGet:
-          return toUpperCase ? "Property get()" : "property get()";
+          {
+            string result = toUpperCase ? "Property" : "property";
+            return toBaseType ? result : $"{result} get()";
+          }
         case ProfiledTargetType.PropertySet:
-          return toUpperCase ? "Property set()" : "property set()";
+          {
+            string result = toUpperCase ? "Property" : "property";
+            return toBaseType ? result : $"{result} set()";
+          }
         case ProfiledTargetType.Property:
           return toUpperCase ? "Property" : "property";
         case ProfiledTargetType.Constructor:
@@ -63,6 +69,18 @@
           return toUpperCase ? "Delegate" : "delegate";
         case ProfiledTargetType.Method:
           return toUpperCase ? "Method" : "method";
+        case ProfiledTargetType.Indexer:
+          return toUpperCase ? "Indexer" : "indexer";
+        case ProfiledTargetType.IndexerGet:
+          {
+            string result = toUpperCase ? "Indexer" : "indexer";
+            return toBaseType ? result : $"{result} get()";
+          }
+        case ProfiledTargetType.IndexerSet:
+          {
+            string result = toUpperCase ? "Indexer" : "indexer";
+            return toBaseType ? result : $"{result} set()";
+          }
         default:
           throw new NotSupportedException();
       }
@@ -151,7 +169,6 @@
         case SymbolAttributes.RefField:
         case SymbolAttributes.StaticReadOnlyField:
         case SymbolAttributes.ConstantField:
-        case SymbolAttributes.ConstantStaticField:
           return toUpperCase ? "Field" : "field";
         case SymbolAttributes.Event:
         case SymbolAttributes.VirtualEvent:
