@@ -7,6 +7,7 @@
     Microseconds = -6,
     Milliseconds = -3,
     Seconds = 1,
-    Minutes = 60
+    Minutes = 60,
+    Auto,
   }
 }

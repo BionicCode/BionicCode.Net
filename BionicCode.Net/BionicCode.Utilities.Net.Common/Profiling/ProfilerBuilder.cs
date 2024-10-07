@@ -2,6 +2,7 @@
 {
   using System;
   using System.Collections.Generic;
+  using System.Linq;
   using System.Reflection;
   using System.Threading;
   using System.Threading.Tasks;
@@ -12,9 +13,11 @@
   /// </summary>
   public class ProfilerBuilder : IAttributeProfilerConfiguration
   {
-    private IEnumerable<TypeData> TypeData { get; }
+    private HashSet<TypeData> TypeData { get; }
+    private HashSet<Assembly> SourceAssemblies { get; }
     private bool IsWarmupEnabled { get; set; }
     private bool IsDefaultLogOutputEnabled { get; set; }
+    private bool IsAutoDiscoverEnabled { get; set; }
     private int Iterations { get; set; }
     private int WarmupIterations { get; set; }
     private TimeUnit BaseUnit { get; set; }
@@ -27,6 +30,7 @@
     //Assembly IAttributeProfilerConfiguration.TypeAssembly => this.TypeAssembly;
     TimeUnit IAttributeProfilerConfiguration.BaseUnit => this.BaseUnit;
     bool IAttributeProfilerConfiguration.IsWarmupEnabled => this.IsWarmupEnabled;
+    bool IAttributeProfilerConfiguration.IsAutoDiscoverEnabled => this.IsAutoDiscoverEnabled;
     bool IAttributeProfilerConfiguration.IsDefaultLogOutputEnabled => this.IsDefaultLogOutputEnabled;
     int IAttributeProfilerConfiguration.Iterations => this.Iterations;
     int IAttributeProfilerConfiguration.WarmupIterations => this.WarmupIterations;
@@ -34,13 +38,18 @@
     Action<ProfilerBatchResult, string> IAttributeProfilerConfiguration.ProfilerLogger => this.ProfilerLogger;
     Runtime IAttributeProfilerConfiguration.Runtime => this.Runtime;
 
+    internal ProfilerBuilder() : this(Enumerable.Empty<TypeData>())
+    {
+      this.IsAutoDiscoverEnabled = true;
+    }
+
     internal ProfilerBuilder(TypeData targetType) : this(new[] { targetType })
     {
     }
 
     internal ProfilerBuilder(IEnumerable<TypeData> targetTypes)
     {
-      this.TypeData = targetTypes;
+      this.TypeData = new HashSet<TypeData>(targetTypes);
       this.IsWarmupEnabled = true;
       this.IsDefaultLogOutputEnabled = true;
       this.WarmupIterations = Profiler.DefaultWarmupCount;
@@ -50,12 +59,35 @@
     }
 
     /// <summary>
-    /// Set a log delegate that allows to output the result to a sink, e.g. a file or application logger.
+    /// Add a new profiling target type.
+    /// </summary>
+    /// <typeparam name="TTargetype">The type to profile.</typeparam>
+    /// <returns>
+    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable chaining calls.
+    /// </returns>
+    /// <remarks>
+    /// The target member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
+    /// <br/>Use the <see cref="ProfilerMethodArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
+    /// </remarks>
+    public void AddTargetType<TTargetype>()
+    {
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(TTargetType));
+      if (!this.TypeData.Contains(typeData))
+      {
+        this.TypeData.Add(typeData);
+      }
+
+      return this;
+    }
+
+    /// <summary>
+    /// Set the number of iterations.
     /// </summary>
     /// <param name="iterations">The number of iterations to perform when executing the target code. The default is <c>1</c>.</param>
     /// <returns>
-    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.
+    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable chaining calls.
     /// </returns>
+    /// <remarks>Use <see cref="SetWarmupIterations(int)"/> to define the number of warmup iterations. The default is <see cref="Profiler.DefaultWarmupCount"/></remarks>
     public ProfilerBuilder SetIterations(int iterations)
     {
       if (iterations < 0)
@@ -68,11 +100,24 @@
     }
 
     /// <summary>
+    /// Set whether types that were decorated with the <see cref="ProfilerAutoDiscoverAttribute"/> attribute should be included in addition to the explicitly specified types.
+    /// </summary>
+    /// <param name="isAutoDiscoverEnabled"><see langword="true"/> to include types that were decorated with the <see cref="ProfilerAutoDiscoverAttribute"/> attribute. The default is <see langword="true"/> if the builder was obtained by calling the parameterless <see cref="Profiler.CreateProfilerBuilder()"/>. Otherwise, the default is <see langword="false"/></param>
+    /// <returns>
+    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable chaining calls.
+    /// </returns>
+    public ProfilerBuilder SetIncludeAutoDiscoverableTypes(bool isAutoDiscoverEnabled)
+    {
+      this.IsAutoDiscoverEnabled = isAutoDiscoverEnabled;
+      return this;
+    }
+
+    /// <summary>
     /// Set the time unit that the results are converted to.
     /// </summary>
     /// <param name="timeUnit">The unit that all result related time is presented in. The default is <see cref="TimeUnit.Microseconds"/>.</param>
     /// <returns>
-    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.
+    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable chaining calls.
     /// </returns>
     public ProfilerBuilder SetBaseUnit(TimeUnit timeUnit)
     {
@@ -85,7 +130,7 @@
     /// </summary>
     /// <param name="profilerLogger">A delegate that is invoked by profiler to pass in the result.</param>
     /// <returns>
-    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.
+    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable chaining calls.
     /// </returns>
     public ProfilerBuilder SetLogger(Action<ProfilerBatchResult, string> profilerLogger)
     {
@@ -111,7 +156,7 @@
     /// </summary>
     /// <param name="warmupIterations">The number of iterations to perform before starting the profiling. The default is <c>4</c>.</param>
     /// <returns>
-    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.
+    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable chaining calls.
     /// </returns>
     /// <remarks>When running code the first time there is always the cost of the JIT to compile the code at runtime. 
     /// <br/>For this reason it is recommended to execute the code at least once in order to avoid the JIT to impact the profiling.
@@ -125,7 +170,8 @@
     /// <summary>
     /// Disable warm up iterations. Warm up iterations can be scheduled to trigger the JIT compiler. Warm up is enabled by default.
     /// </summary>
-    /// <returns>The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.</returns>
+    /// <returns>
+    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable chaining calls.</returns>
     /// <remarks>When running code the first time there is always the cost of the JIT to compile the code at runtime. 
     /// <br/>For this reason it is recommended to execute the code at least once in order to avoid the JIT to impact the profiling.
     /// </remarks>
@@ -139,7 +185,7 @@
     /// Enable default log output. The default is enabled.
     /// </summary>
     /// <returns>
-    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.
+    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable chaining calls.
     /// </returns>
     /// <remarks>Enables to print the profiler results to a HTML document that will be automatically displayed in the default browser. 
     /// <br/>A second output sink is the default Output console window of Visual Studio, but only when in debug mode.
@@ -153,7 +199,8 @@
     /// <summary>
     /// Disable default log output.
     /// </summary>
-    /// <returns>The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.</returns>
+    /// <returns>
+    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable chaining calls.</returns>
     public ProfilerBuilder DisableDefaultLogOutput()
     {
       this.IsDefaultLogOutputEnabled = false;
@@ -165,7 +212,7 @@
     /// </summary>
     /// <param name="warmupIterations">The number of iterations to perform before starting the profiling. The default is <c>4</c>.</param>
     /// <returns>
-    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable to chain calls.
+    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable chaining calls.
     /// </returns>
     /// <remarks>When running code the first time there is always the cost of the JIT to compile the code at runtime. 
     /// <br/>For this reason it is recommended to execute the code at least once in order to avoid the JIT to impact the profiling.

@@ -717,13 +717,31 @@
       => LogTimeScoped(null, out result, baseUnit, scopeName, sourceFileName, lineNumber);
 
     /// <summary>
+    /// Creates the builder object which configures and starts the attribute based profiling only targeting auto discoverable types.
+    /// </summary>
+    /// <returns>
+    /// The builder instance which configures and starts the attribute based profiling.</returns>
+    /// <remarks>
+    /// To make a type auto discoverable it must b e decorated with the <see cref="ProfilerAutoDiscoverAttribute"/> attribute. 
+    /// <para></para>
+    /// 
+    /// The target member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
+    /// <br/>Use the <see cref="ProfilerMethodArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
+    /// </remarks>
+    public static ProfilerBuilder CreateProfilerBuilder()
+    {
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(TTarget));
+      return new ProfilerBuilder(typeData);
+    }
+
+    /// <summary>
     /// Creates the builder object which configures and starts the attribute based profiling.
     /// </summary>
     /// <typeparam name="TTarget">The type to profile.</typeparam>
     /// <returns>
     /// The builder instance which configures and starts the attribute based profiling.</returns>
     /// <remarks>
-    /// The member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
+    /// The target member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
     /// <br/>Use the <see cref="ProfilerMethodArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
     /// </remarks>
     public static ProfilerBuilder CreateProfilerBuilder<TTarget>()
@@ -737,9 +755,10 @@
     /// </summary>
     /// <param name="targetType">The type to profile.</param>
     /// <returns>
-    /// The builder instance which configures and starts the attribute based profiling.</returns>
+    /// The builder instance which configures and starts the attribute based profiling.
+    /// </returns>
     /// <remarks>
-    /// The member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
+    /// The target member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
     /// <br/>Use the <see cref="ProfilerMethodArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
     /// </remarks>
     public static ProfilerBuilder CreateProfilerBuilder(Type targetType)
@@ -771,7 +790,7 @@
     /// <returns>
     /// The builder instance which configures and starts the attribute based profiling.</returns>
     /// <remarks>
-    /// The member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
+    /// The target member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
     /// <br/>Use the <see cref="ProfilerMethodArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
     /// </remarks>
     public static ProfilerBuilder CreateProfilerBuilder(IEnumerable<Type> targetTypes)

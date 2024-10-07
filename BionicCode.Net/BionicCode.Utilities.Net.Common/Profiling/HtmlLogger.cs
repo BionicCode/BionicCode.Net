@@ -287,9 +287,7 @@
 
         _ = htmlDocumentBuilder.Append($@"
     <article id=""{batchResult.Index}"">
-
-      <div style=""margin: 12px 0px 24px 0px; width: 100%; display: grid; grid-template-columns: auto auto; overflow: auto;"">
-        <div style=""margin: 0px 0px 0px 0px; grid-column: 1 / 3; width: auto;"">
+<div style=""margin: 12px 0px 0px 12px; grid-column: 1 / 3; width: auto;"">
           <span style=""font-weight: bold; font-size: 18pt"">Profile Context</span><br/>
           <span style=""font-weight: bold; font-size: 14pt"">Target</span><br/>
           <span class=""label-span"">Namespace: </span><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.Namespace}</span><br />
@@ -306,6 +304,8 @@
             <div class=""signature-box""><span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.SymbolComponentInfo.ToHtml()}</span></div>
           </div><br />
         </div>
+      <div style=""margin: 12px 0px 24px 0px; width: 100%; display: grid; grid-template-columns: auto auto; overflow: auto;"">
+        
 
         <div style=""height: 100%; width: auto; border-left: 1px solid black; padding: 12px 12px 12px 12px;"">
           <span style=""font-weight: bold; font-size: 14pt"">Conditions</span><br/>
@@ -369,21 +369,20 @@
                 <th class=""data-row-summary"" colspan=""10"">Summary</th>
               </tr>
               <tr>
-                <td class=""dataRow"">{batchResult.TotalIterationCount}</td>
-                <td class=""dataRow"">{TimeValueConverter.ConvertTo(timeUnit, batchResult.TotalDuration, true)}</td>
-                <td class=""dataRow"">{TimeValueConverter.ConvertTo(timeUnit, batchResult.AverageDuration, true)}</td>
-                <td class=""dataRow"">-</td>
-                <td class=""dataRow"">{TimeValueConverter.ConvertTo(timeUnit, batchResult.StandardDeviation, true)}</td>
-                <td class=""dataRow"">{batchResult.Variance}</td>
+                <td colspan=""3"" class=""data-row-summary"">Total runs: {batchResult.TotalIterationCount}</td>
+                <td colspan=""3"" class=""data-row-summary"">Total time elapsed: {TimeValueConverter.ConvertTo(timeUnit, batchResult.TotalDuration, true)} {timeUnit.ToDisplayStringValue()}</td>
               </tr>
               <tr>
-              <td colspan=""6"" class=""data-row-summary"">Min (fastest): {batchResult.MinResult.ElapsedTimeConverted} {timeUnit.ToDisplayStringValue()} (#{batchResult.MinResult.Iteration})</td>
-                </tr>
-              <tr>
-                <td colspan=""6"" class=""data-row-summary"">Max (slowest): {batchResult.MaxResult.ElapsedTimeConverted} {timeUnit.ToDisplayStringValue()} (#{batchResult.MaxResult.Iteration})</td>
+                <td colspan=""3"" class=""data-row-summary"">Min (fastest): {batchResult.MinResult.ElapsedTimeConverted} {timeUnit.ToDisplayStringValue()} (#{batchResult.MinResult.Iteration})</td>
+                <td colspan=""3"" class=""data-row-summary"">Max (slowest): {batchResult.MaxResult.ElapsedTimeConverted} {timeUnit.ToDisplayStringValue()} (#{batchResult.MaxResult.Iteration})</td>
               </tr>
               <tr>
-                <td colspan=""6"" class=""data-row-summary"">Range: {batchResult.RangeConverted} {timeUnit.ToDisplayStringValue()}</td>
+                <td colspan=""3"" class=""data-row-summary"">Mean: {TimeValueConverter.ConvertTo(timeUnit, batchResult.AverageDuration, true)} {timeUnit.ToDisplayStringValue()}</td>
+                <td colspan=""3"" class=""data-row-summary"">Range: {batchResult.RangeConverted} {timeUnit.ToDisplayStringValue()}</td>
+              </tr>
+              <tr>
+                <td colspan=""3"" class=""data-row-summary"">Standard deviation: {TimeValueConverter.ConvertTo(timeUnit, batchResult.StandardDeviation, true)} {timeUnit.ToDisplayStringValue()}</td>
+                <td colspan=""3"" class=""data-row-summary"">Variance: { batchResult.Variance}</td>
               </tr>
             </tfoot>
           </table>

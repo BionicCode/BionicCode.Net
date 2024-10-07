@@ -5,9 +5,11 @@
   using System.Collections.Generic;
   using System.ComponentModel;
   using System.ComponentModel.DataAnnotations;
+  using System.Reflection;
   using System.Runtime.CompilerServices;
   using System.Threading.Tasks;
 
+  [ProfilerAutoDiscover("BionicCode.Utilities.Net.UnitTest")]
   public class BenchmarkTarget<TParam>
   {
     //[Profile(Runtime.Net6_0)]
@@ -190,7 +192,7 @@
     [ProfilerMethodArgument(200, "3")]
     public static async Task TimeConsumingOperation<TMethodParam>(int delayInMilliseconds, TMethodParam someValue) => await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliseconds));
 
-    [Profile]
+    [Profile()]
     [ProfilerMethodArgument(100, new[] { "1", "2", "3" }, 1)]
     //[ProfilerArgument(10, "2", 2)]
     //[ProfilerArgument(200, "3", 3)]
