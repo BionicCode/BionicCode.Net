@@ -728,11 +728,8 @@
     /// The target member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
     /// <br/>Use the <see cref="ProfilerMethodArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
     /// </remarks>
-    public static ProfilerBuilder CreateProfilerBuilder()
-    {
-      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(TTarget));
-      return new ProfilerBuilder(typeData);
-    }
+    public static ProfilerBuilder CreateProfilerBuilder() 
+      => new ProfilerBuilder().SetIncludeAutoDiscoverableTypes(true);
 
     /// <summary>
     /// Creates the builder object which configures and starts the attribute based profiling.
@@ -763,6 +760,11 @@
     /// </remarks>
     public static ProfilerBuilder CreateProfilerBuilder(Type targetType)
     {
+      if (targetType is null)
+      {
+        throw new ArgumentNullException(nameof(targetType));
+      }
+
       TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(targetType);
       return new ProfilerBuilder(typeData);
     }
@@ -778,10 +780,7 @@
     /// <br/>Use the <see cref="ProfilerMethodArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
     /// </remarks>
     public static ProfilerBuilder CreateProfilerBuilder(params Type[] targetTypes)
-    {
-      IEnumerable<TypeData> typeData = targetTypes.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
-      return new ProfilerBuilder(typeData);
-    }
+      => CreateProfilerBuilder((IEnumerable<Type> )targetTypes);
 
     /// <summary>
     /// Creates the builder object which configures and starts the attribute based profiling.
@@ -795,7 +794,17 @@
     /// </remarks>
     public static ProfilerBuilder CreateProfilerBuilder(IEnumerable<Type> targetTypes)
     {
-      IEnumerable<TypeData> typeData = targetTypes.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
+      var typeData = new List<TypeData>();
+      foreach (Type targetType in targetTypes)
+      {
+        if (targetType is null)
+        {
+          throw new ArgumentNullException(nameof(targetTypes), "One or more type parameters are NULL.");
+        }
+
+        typeData.Add(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(targetType));
+      }
+
       return new ProfilerBuilder(typeData);
     }
 

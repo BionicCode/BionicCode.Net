@@ -44,6 +44,7 @@
     private MethodData delegateInvokeMethodData;
     private SymbolComponentInfo symbolComponentInfo;
     private SymbolComponentInfo comapactSymbolComponentInfo;
+    private bool? containsGenericParameters;
 
 #if !NETFRAMEWORK && !NETSTANDARD2_0
     private bool? isByRefLike;
@@ -269,6 +270,9 @@
 
     public bool IsGenericTypeDefinition
       => (bool)(this.isGenericTypeDefinition ?? (this.isGenericTypeDefinition = GetType().IsGenericTypeDefinition));
+
+    public bool ContainsGenericParameters
+      => (bool)(this.containsGenericParameters ?? (this.containsGenericParameters = GetType().ContainsGenericParameters));
 
     public GenericParameterAttributes GenericParameterAttributes
       => (GenericParameterAttributes)(this.genericParameterAttributes ?? (this.genericParameterAttributes = GetType().GenericParameterAttributes));

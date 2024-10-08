@@ -176,6 +176,11 @@
     internal async Task<ProfiledTypeResultCollection> StartAsync(CancellationToken cancellationToken)
     {
       var typeResults = new ProfiledTypeResultCollection();
+      if (this.Configuration.IsAutoDiscoverEnabled)
+      {
+        DiscoverTargetTypes(this.Configuration.AutoDiscoverSourceAssemblies, this.Configuration.TypeData);
+      }
+
       foreach (TypeData typeDataToProfile in this.Configuration.TypeData)
       {
         cancellationToken.ThrowIfCancellationRequested();
@@ -199,6 +204,39 @@
       }
 
       return typeResults;
+    }
+
+    private void DiscoverTargetTypes(Assembly[] targetAssemblies, HashSet<TypeData> discoveredTypes)
+    {
+      if (targetAssemblies.Length == 0)
+      {
+        targetAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+      }
+
+      foreach (Assembly assembly in targetAssemblies)
+      {
+        Type[] typesInAssembly = assembly.GetTypes();
+        for (int index = 0; index < typesInAssembly.Length; index++)
+        {
+          Type type = typesInAssembly[index];
+          ProfilerAutoDiscoverAttribute attribute = type.GetCustomAttribute<ProfilerAutoDiscoverAttribute>();
+          if (attribute != null)
+          {
+            if ((type.IsGenericTypeDefinition || type.ContainsGenericParameters))
+            {
+              if (attribute.GenericTypeParameters.Length == 0)
+              {
+                throw new ProfilerConfigurationException(ExceptionMessages.GetMissingGenericTypeArgumentsForAutoDiscoveredGenericTypeExceptionMessage(type));
+              }
+
+              type = type.MakeGenericType(attribute.GenericTypeParameters);
+            }
+
+            TypeData targetTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+            _ = discoveredTypes.Add(targetTypeData);
+          }
+        }
+      }
     }
 
     private async Task<ProfilerBatchResultGroupCollection> ProfileType(TypeData typeDataToProfile, CancellationToken cancellationToken)
@@ -594,7 +632,7 @@
             if (argumentLists.IsEmpty())
             {
               string exceptionMessage = ExceptionMessages.GetMissingProfiledArgumentAttributeExceptionMessage_Method(methodParameterCount);
-              throw new MissingProfilerArgumentAttributeException(exceptionMessage);
+              throw new ProfilerConfigurationException(exceptionMessage);
             }
           }
 
@@ -659,7 +697,7 @@
             if (argumentLists.IsEmpty())
             {
               string exceptionMessage = ExceptionMessages.GetMissingProfiledArgumentAttributeExceptionMessage_Constructor(constructorParameterCount);
-              throw new MissingProfilerArgumentAttributeException(exceptionMessage);
+              throw new ProfilerConfigurationException(exceptionMessage);
             }
           }
 
@@ -727,7 +765,7 @@
                 ? ExceptionMessages.GetMissingProfiledArgumentAttributeExceptionMessage_IndexerProperty()
                 : ExceptionMessages.GetMissingProfiledArgumentAttributeExceptionMessage_Property();
 
-              throw new MissingProfilerArgumentAttributeException(propertyExceptionMessage);
+              throw new ProfilerConfigurationException(propertyExceptionMessage);
             }
           }
 

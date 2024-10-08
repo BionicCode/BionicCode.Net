@@ -26,11 +26,12 @@
     private Action<ProfilerBatchResult, string> ProfilerLogger { get; set; }
     private Runtime Runtime { get; set; }
 
-    IEnumerable<TypeData> IAttributeProfilerConfiguration.TypeData => this.TypeData;
+    HashSet<TypeData> IAttributeProfilerConfiguration.TypeData => this.TypeData;
     //Assembly IAttributeProfilerConfiguration.TypeAssembly => this.TypeAssembly;
     TimeUnit IAttributeProfilerConfiguration.BaseUnit => this.BaseUnit;
     bool IAttributeProfilerConfiguration.IsWarmupEnabled => this.IsWarmupEnabled;
     bool IAttributeProfilerConfiguration.IsAutoDiscoverEnabled => this.IsAutoDiscoverEnabled;
+    Assembly[] IAttributeProfilerConfiguration.AutoDiscoverSourceAssemblies => this.SourceAssemblies.ToArray();
     bool IAttributeProfilerConfiguration.IsDefaultLogOutputEnabled => this.IsDefaultLogOutputEnabled;
     int IAttributeProfilerConfiguration.Iterations => this.Iterations;
     int IAttributeProfilerConfiguration.WarmupIterations => this.WarmupIterations;
@@ -40,7 +41,6 @@
 
     internal ProfilerBuilder() : this(Enumerable.Empty<TypeData>())
     {
-      this.IsAutoDiscoverEnabled = true;
     }
 
     internal ProfilerBuilder(TypeData targetType) : this(new[] { targetType })
@@ -50,6 +50,13 @@
     internal ProfilerBuilder(IEnumerable<TypeData> targetTypes)
     {
       this.TypeData = new HashSet<TypeData>(targetTypes);
+      TypeData invalidGenericType = this.TypeData.FirstOrDefault(typeData => typeData.IsGenericTypeDefinition || typeData.ContainsGenericParameters);
+      if (invalidGenericType != null)
+      {
+        throw new ProfilerConfigurationException(ExceptionMessages.GetMissingGenericTypeArgumentsForAutoDiscoveredGenericTypeExceptionMessage(invalidGenericType));
+      }
+
+      this.SourceAssemblies = new HashSet<Assembly>();
       this.IsWarmupEnabled = true;
       this.IsDefaultLogOutputEnabled = true;
       this.WarmupIterations = Profiler.DefaultWarmupCount;
@@ -61,7 +68,7 @@
     /// <summary>
     /// Add a new profiling target type.
     /// </summary>
-    /// <typeparam name="TTargetype">The type to profile.</typeparam>
+    /// <typeparam name="TTargetType">The type to profile.</typeparam>
     /// <returns>
     /// The currently configured <see cref="ProfilerBuilder"/> instance to enable chaining calls.
     /// </returns>
@@ -69,14 +76,65 @@
     /// The target member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
     /// <br/>Use the <see cref="ProfilerMethodArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
     /// </remarks>
-    public void AddTargetType<TTargetype>()
-    {
-      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(TTargetType));
-      if (!this.TypeData.Contains(typeData))
-      {
-        this.TypeData.Add(typeData);
-      }
+    public ProfilerBuilder AddTargetType<TTargetType>()
+      => AddTargetType(typeof(TTargetType));
 
+    /// <summary>
+    /// Add a new profiling target type.
+    /// </summary>
+    /// <param name="targetType">The type to profile.</param>
+    /// <returns>
+    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable chaining calls.
+    /// </returns>
+    /// <remarks>
+    /// The target member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
+    /// <br/>Use the <see cref="ProfilerMethodArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
+    /// </remarks>
+    public ProfilerBuilder AddTargetType(Type targetType)
+    {
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(targetType);
+      _ = this.TypeData.Add(typeData);
+
+      return this;
+    }
+
+    /// <summary>
+    /// Add a new profiling target assembly that is used for auto discovery of target types.
+    /// </summary>
+    /// <param name="targetAssembly">The assembly to look for types that are decorated with the <see cref="ProfilerAutoDiscoverAttribute"/> attribute.</param>
+    /// <returns>
+    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable chaining calls.
+    /// </returns>
+    /// <remarks>
+    /// If no explicit assembly were provided, the profiler will lookup target types that were decorated with the <see cref="ProfilerAutoDiscoverAttribute"/> attribute in all loaded assemblies of the current app domain.
+    /// Adding assemblies explicitly disables this behavior.
+    /// <para></para>
+    /// The target member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
+    /// <br/>Use the <see cref="ProfilerMethodArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
+    /// </remarks>
+    public ProfilerBuilder AddAutoDiscoverAssembly(Assembly targetAssembly)
+    {
+      _ = this.SourceAssemblies.Add(targetAssembly);
+      return this;
+    }
+
+    /// <summary>
+    /// Add a new profiling target assembly that is used for auto discovery of target types.
+    /// </summary>
+    /// <param name="targetAssemblies">The assemblies to look for types that are decorated with the <see cref="ProfilerAutoDiscoverAttribute"/> attribute.</param>
+    /// <returns>
+    /// The currently configured <see cref="ProfilerBuilder"/> instance to enable chaining calls.
+    /// </returns>
+    /// <remarks>
+    /// If no explicit assembly were provided, the profiler will lookup target types that were decorated with the <see cref="ProfilerAutoDiscoverAttribute"/> attribute in all loaded assemblies of the current app domain.
+    /// Adding assemblies explicitly disables this behavior.
+    /// <para></para>
+    /// The target member of the profiled type must be decorated with the <see cref="ProfileAttribute"/>. These members don't have to be <see langword="public"/>.
+    /// <br/>Use the <see cref="ProfilerMethodArgumentAttribute"/> to define the argument list which is used to invoke the member. The member can have multiple argument lists. Each argument list is invoked for the number of iterations that are set using the <see cref="ProfilerBuilder"/>.
+    /// </remarks>
+    public ProfilerBuilder AddAutoDiscoverAssembly(IEnumerable<Assembly> targetAssemblies)
+    {
+      _ = this.SourceAssemblies.AddRange(targetAssemblies);
       return this;
     }
 

@@ -9,7 +9,7 @@
   using System.Runtime.CompilerServices;
   using System.Threading.Tasks;
 
-  [ProfilerAutoDiscover("BionicCode.Utilities.Net.UnitTest")]
+  [ProfilerAutoDiscover(typeof(string))]
   public class BenchmarkTarget<TParam>
   {
     //[Profile(Runtime.Net6_0)]

@@ -4,6 +4,7 @@
   using System.Collections.Generic;
   using System.Diagnostics;
   using System.Linq;
+  using System.Reflection;
   using System.Threading;
   using System.Threading.Tasks;
   using BionicCode.Utilities.Net;
@@ -212,7 +213,9 @@
         //typeof(BenchmarkTargetAlternate<int>)
       };
 
-      ProfilerBuilder profilerBuilder = Profiler.CreateProfilerBuilder(targetTypes)
+      //ProfilerBuilder profilerBuilder = Profiler.CreateProfilerBuilder(targetTypes)
+      ProfilerBuilder profilerBuilder = Profiler.CreateProfilerBuilder()
+        //.AddAutoDiscoverAssembly(Assembly.GetExecutingAssembly())
         .SetIterations(iterations)
         //.SetRuntime(Runtime.Net8_0)
         .SetLogger((result, summary) => Debug.WriteLine(result.Summary))

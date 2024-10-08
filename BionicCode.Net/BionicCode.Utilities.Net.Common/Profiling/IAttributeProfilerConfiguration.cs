@@ -8,10 +8,10 @@
   internal interface IAttributeProfilerConfiguration
   {
     Runtime Runtime { get; }
-    IEnumerable<TypeData> TypeData { get; }
+    HashSet<TypeData> TypeData { get; }
     bool IsWarmupEnabled { get; }
     bool IsAutoDiscoverEnabled { get; }
-    HashSet<Assembly> AutoDiscoverSourceAssemblies { get; }
+    Assembly[] AutoDiscoverSourceAssemblies { get; }
     bool IsDefaultLogOutputEnabled { get; }
     int Iterations { get; }
     int WarmupIterations { get; }
