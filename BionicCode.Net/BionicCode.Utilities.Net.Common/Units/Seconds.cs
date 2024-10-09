@@ -2,11 +2,11 @@
 {
   using System;
 
-  public readonly struct Seconds : IEquatable<Seconds>, IComparable<Seconds>
+  public readonly struct Seconds : IEquatable<Seconds>, IComparable<Seconds>, IConvertible
   {
-    public static Seconds Zero { get; } = new Seconds(0);
-    public static Seconds MinValue { get; } = new Seconds(TimeValueConverter.ToSeconds(Nanoseconds.MinValue));
-    public static Seconds MaxValue { get; } = new Seconds(TimeValueConverter.ToSeconds(Nanoseconds.MaxValue));
+    public static Seconds Zero { get; } = 0;
+    public static Seconds MinValue { get; } = TimeValueConverter.ToSeconds(Nanoseconds.MinValue);
+    public static Seconds MaxValue { get; } = TimeValueConverter.ToSeconds(Nanoseconds.MaxValue);
 
     public Seconds(double value)
     {
@@ -14,10 +14,10 @@
       this.Unit = TimeUnit.Seconds;
     }
 
-    public Minutes ToMinutes() => new Minutes(this.Value / 60);
-    public Milliseconds ToMilliseconds() => new Milliseconds(TimeValueConverter.ToMilliseconds(this));
-    public Microseconds ToMicroseconds() => new Microseconds(TimeValueConverter.ToMicroseconds(this));
-    public Nanoseconds ToNanoseconds() => new Nanoseconds(TimeValueConverter.ToNanoseconds(this));
+    public Minutes ToMinutes() => TimeValueConverter.ToMinutes(this);
+    public Milliseconds ToMilliseconds() => TimeValueConverter.ToMilliseconds(this);
+    public Microseconds ToMicroseconds() => TimeValueConverter.ToMicroseconds(this);
+    public Nanoseconds ToNanoseconds() => TimeValueConverter.ToNanoseconds(this);
 
     public override string ToString() => $"{this.Value} {this.Unit.ToDisplayStringValue()}";
     public bool Equals(Seconds other) => this.Value.Equals(other.Value);
@@ -111,56 +111,56 @@
 
     #region Arithmetic operators
 
-    public static Seconds operator +(Seconds left, Minutes right) => new Seconds(left.Value + TimeValueConverter.ToSeconds(right));
-    public static Seconds operator -(Seconds left, Minutes right) => new Seconds(left.Value - TimeValueConverter.ToSeconds(right));
+    public static Seconds operator +(Seconds left, Minutes right) => left.Value + TimeValueConverter.ToSeconds(right);
+    public static Seconds operator -(Seconds left, Minutes right) => left.Value - TimeValueConverter.ToSeconds(right);
 
     /// <inheritdoc cref="System.Numerics.IMultiplyOperators{TSelf, TOther, TResult}.op_Multiply(TSelf, TOther)" />
-    public static Seconds operator *(Seconds left, Minutes right) => new Seconds(left.Value * TimeValueConverter.ToSeconds(right));
+    public static Seconds operator *(Seconds left, Minutes right) => left.Value * TimeValueConverter.ToSeconds(right);
 
     /// <inheritdoc cref="System.Numerics.IDivisionOperators{TSelf, TOther, TResult}.op_Division(TSelf, TOther)" />
-    public static Seconds operator /(Seconds left, Minutes right) => new Seconds(left.Value / TimeValueConverter.ToSeconds(right));
+    public static Seconds operator /(Seconds left, Minutes right) => left.Value / TimeValueConverter.ToSeconds(right);
 
-    public static Seconds operator +(Seconds left, Seconds right) => new Seconds(left.Value + right.Value);
-    public static Seconds operator -(Seconds left, Seconds right) => new Seconds(left.Value - right.Value);
+    public static Seconds operator +(Seconds left, Seconds right) => left.Value + right.Value;
+    public static Seconds operator -(Seconds left, Seconds right) => left.Value - right.Value;
 
     /// <inheritdoc cref="System.Numerics.IMultiplyOperators{TSelf, TOther, TResult}.op_Multiply(TSelf, TOther)" />
-    public static Seconds operator *(Seconds left, Seconds right) => new Seconds(left.Value * right.Value);
+    public static Seconds operator *(Seconds left, Seconds right) => left.Value * right.Value;
 
     /// <inheritdoc cref="System.Numerics.IDivisionOperators{TSelf, TOther, TResult}.op_Division(TSelf, TOther)" />
-    public static Seconds operator /(Seconds left, Seconds right) => new Seconds(left.Value / right.Value);
+    public static Seconds operator /(Seconds left, Seconds right) => left.Value / right.Value;
 
-    public static Seconds operator +(Seconds left, Milliseconds right) => new Seconds(left.Value + TimeValueConverter.ToSeconds(right));
-    public static Seconds operator -(Seconds left, Milliseconds right) => new Seconds(left.Value - TimeValueConverter.ToSeconds(right));
+    public static Seconds operator +(Seconds left, Milliseconds right) => left.Value + TimeValueConverter.ToSeconds(right);
+    public static Seconds operator -(Seconds left, Milliseconds right) => left.Value - TimeValueConverter.ToSeconds(right);
 
     /// <inheritdoc cref="System.Numerics.IMultiplyOperators{TSelf, TOther, TResult}.op_Multiply(TSelf, TOther)" />
-    public static Seconds operator *(Seconds left, Milliseconds right) => new Seconds(left.Value * TimeValueConverter.ToSeconds(right));
+    public static Seconds operator *(Seconds left, Milliseconds right) => left.Value * TimeValueConverter.ToSeconds(right);
 
     /// <inheritdoc cref="System.Numerics.IDivisionOperators{TSelf, TOther, TResult}.op_Division(TSelf, TOther)" />
-    public static Seconds operator /(Seconds left, Milliseconds right) => new Seconds(left.Value / TimeValueConverter.ToSeconds(right));
+    public static Seconds operator /(Seconds left, Milliseconds right) => left.Value / TimeValueConverter.ToSeconds(right);
 
-    public static Seconds operator +(Seconds left, Microseconds right) => new Seconds(left.Value + TimeValueConverter.ToSeconds(right));
-    public static Seconds operator -(Seconds left, Microseconds right) => new Seconds(left.Value - TimeValueConverter.ToSeconds(right));
+    public static Seconds operator +(Seconds left, Microseconds right) => left.Value + TimeValueConverter.ToSeconds(right);
+    public static Seconds operator -(Seconds left, Microseconds right) => left.Value - TimeValueConverter.ToSeconds(right);
 
     /// <inheritdoc cref="System.Numerics.IMultiplyOperators{TSelf, TOther, TResult}.op_Multiply(TSelf, TOther)" />
-    public static Seconds operator *(Seconds left, Microseconds right) => new Seconds(left.Value * TimeValueConverter.ToSeconds(right));
+    public static Seconds operator *(Seconds left, Microseconds right) => left.Value * TimeValueConverter.ToSeconds(right);
 
     /// <inheritdoc cref="System.Numerics.IDivisionOperators{TSelf, TOther, TResult}.op_Division(TSelf, TOther)" />
-    public static Seconds operator /(Seconds left, Microseconds right) => new Seconds(left.Value / TimeValueConverter.ToSeconds(right));
+    public static Seconds operator /(Seconds left, Microseconds right) => left.Value / TimeValueConverter.ToSeconds(right);
 
-    public static Seconds operator +(Seconds left, Nanoseconds right) => new Seconds(left.Value + TimeValueConverter.ToSeconds(right));
-    public static Seconds operator -(Seconds left, Nanoseconds right) => new Seconds(left.Value - TimeValueConverter.ToSeconds(right));
+    public static Seconds operator +(Seconds left, Nanoseconds right) => left.Value + TimeValueConverter.ToSeconds(right);
+    public static Seconds operator -(Seconds left, Nanoseconds right) => left.Value - TimeValueConverter.ToSeconds(right);
 
     /// <inheritdoc cref="System.Numerics.IMultiplyOperators{TSelf, TOther, TResult}.op_Multiply(TSelf, TOther)" />
-    public static Seconds operator *(Seconds left, Nanoseconds right) => new Seconds(left.Value * TimeValueConverter.ToSeconds(right));
+    public static Seconds operator *(Seconds left, Nanoseconds right) => left.Value * TimeValueConverter.ToSeconds(right);
 
     /// <inheritdoc cref="System.Numerics.IDivisionOperators{TSelf, TOther, TResult}.op_Division(TSelf, TOther)" />
-    public static Seconds operator /(Seconds left, Nanoseconds right) => new Seconds(left.Value / TimeValueConverter.ToSeconds(right));
+    public static Seconds operator /(Seconds left, Nanoseconds right) => left.Value / TimeValueConverter.ToSeconds(right);
 
     /// <inheritdoc cref="System.Numerics.IMultiplyOperators{TSelf, TOther, TResult}.op_Multiply(TSelf, TOther)" />
-    public static Seconds operator *(Seconds left, double right) => new Seconds(left.Value * right);
+    public static Seconds operator *(Seconds left, double right) => left.Value * right;
 
     /// <inheritdoc cref="System.Numerics.IDivisionOperators{TSelf, TOther, TResult}.op_Division(TSelf, TOther)" />
-    public static Seconds operator /(Seconds left, double right) => new Seconds(left.Value / right);
+    public static Seconds operator /(Seconds left, double right) => left.Value / right;
 
     #endregion Arithmetic operators
 
@@ -217,5 +217,27 @@
     public static bool operator !=(Seconds left, Nanoseconds right) => !(left == right);
 
     #endregion Equality operators
+    
+    #region IConvertible
+
+    TypeCode IConvertible.GetTypeCode() => throw new NotImplementedException();
+    bool IConvertible.ToBoolean(IFormatProvider provider) => throw new InvalidCastException();
+    char IConvertible.ToChar(IFormatProvider provider) => throw new InvalidCastException();
+    sbyte IConvertible.ToSByte(IFormatProvider provider) => Convert.ToSByte(this.Value);
+    byte IConvertible.ToByte(IFormatProvider provider) => Convert.ToByte(this.Value);
+    short IConvertible.ToInt16(IFormatProvider provider) => Convert.ToInt16(this.Value);
+    ushort IConvertible.ToUInt16(IFormatProvider provider) => Convert.ToUInt16(this.Value);
+    int IConvertible.ToInt32(IFormatProvider provider) => Convert.ToInt32(this.Value);
+    uint IConvertible.ToUInt32(IFormatProvider provider) => Convert.ToUInt32(this.Value);
+    long IConvertible.ToInt64(IFormatProvider provider) => Convert.ToInt64(this.Value);
+    ulong IConvertible.ToUInt64(IFormatProvider provider) => Convert.ToUInt64(this.Value);
+    float IConvertible.ToSingle(IFormatProvider provider) => Convert.ToSingle(this.Value);
+    double IConvertible.ToDouble(IFormatProvider provider) => this.Value;
+    decimal IConvertible.ToDecimal(IFormatProvider provider) => Convert.ToDecimal(this.Value);
+    DateTime IConvertible.ToDateTime(IFormatProvider provider) => throw new InvalidCastException();
+    string IConvertible.ToString(IFormatProvider provider) => ToString();
+    object IConvertible.ToType(Type conversionType, IFormatProvider provider) => Convert.ChangeType(this.Value, conversionType, provider);
+    
+    #endregion IConvertible
   }
 }
