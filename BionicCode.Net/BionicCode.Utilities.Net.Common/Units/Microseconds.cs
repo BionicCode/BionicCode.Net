@@ -18,7 +18,6 @@
     public Seconds ToSeconds() => TimeValueConverter.ToSeconds(this);
     public Milliseconds ToMilliseconds() => TimeValueConverter.ToMilliseconds(this);
     public Nanoseconds ToNanoseconds() => TimeValueConverter.ToNanoseconds(this);
-    public Seconds ToSiUnit() => ToSeconds();
 
     public override string ToString() => $"{this.Value} {this.Unit.ToDisplayStringValue()}";
     public bool Equals(Microseconds other) => this.Value.Equals(other.Value);
@@ -286,11 +285,14 @@
 
     #region ITimeUnit
 
+    public Seconds ToSiUnit() => ToSeconds();
+
     public ITimeUnit ToUnit(TimeUnit unit)
     {
       switch (unit)
       {
         case TimeUnit.Microseconds:
+        case TimeUnit.None:
           return this;
         case TimeUnit.Nanoseconds:
           return ToNanoseconds();
@@ -300,8 +302,9 @@
           return ToSeconds();
         case TimeUnit.Minutes:
           return ToMinutes();
-        case TimeUnit.None:
         case TimeUnit.Auto:
+          TimeUnit newUnit = TimeValueConverter.GetBestDisplayUnit(this);
+          return ToUnit(newUnit);
         default:
           throw new NotImplementedException();
       }
