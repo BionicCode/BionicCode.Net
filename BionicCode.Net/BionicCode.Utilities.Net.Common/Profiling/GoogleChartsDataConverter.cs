@@ -24,7 +24,7 @@
         {
           Title = "Normal distribution",
           LegendOptions = new LegendOptions() { Position = LegendOptions.PositionTop },
-          HorizontalAxis = new ChartAxis() { Title = $"Elapsed time [{batchResultGroup.CommonBaseUnit.ToDisplayStringValue()}]" }
+          HorizontalAxis = new ChartAxis() { Title = $"Elapsed time [{batchResult.BaseUnit.ToDisplayStringValue()}]" }
         };
 
         var verticalChartAxis = new ChartAxis()
@@ -38,7 +38,7 @@
         {
           SeriesIndex = batchResult.Index,
           TargetAxisIndex = verticalChartAxis.AxisIndex,
-          Title = $"{batchResult.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue()}"
+          Title = $"{batchResult.Context.MethodInvokeInfo.ShortDisplayName} ({batchResult.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue()})"
         };
 
         chartOptions.AddSeries(series);
@@ -56,14 +56,8 @@
           int dataSetIndex = resultIndex;
           var calculationTask = Task.Run(() =>
           {
-#if NET7_0_OR_GREATER
-            IEnumerable<CartesianPoint> normalDistributionValues = Math.NormDist(TimeValueConverter.ConvertTo(batchResultGroup.CommonBaseUnit, profilerBatchResult.AverageDuration, true), TimeValueConverter.ConvertTo(batchResultGroup.CommonBaseUnit, profilerBatchResult.StandardDeviation, true), graphIntervalResolution, profilerBatchResult.Results.Select(profilerResult => TimeValueConverter.ConvertTo(batchResultGroup.CommonBaseUnit, profilerResult.ElapsedTime, true)));
-#else
-            IEnumerable<CartesianPoint> normalDistributionValues = Math.NormDist(TimeValueConverter.ConvertTo(batchResultGroup.CommonBaseUnit, profilerBatchResult.AverageDuration, true), TimeValueConverter.ConvertTo(batchResultGroup.CommonBaseUnit, profilerBatchResult.StandardDeviation, true), graphIntervalResolution, profilerBatchResult.Results.Select(profilerResult => TimeValueConverter.ConvertTo(batchResultGroup.CommonBaseUnit, profilerResult.ElapsedTime, true)));
-
-#endif
-
-            var result = new NormalDistributionData<CartesianPoint>(dataSetIndex, normalDistributionValues, TimeValueConverter.ConvertTo(batchResultGroup.CommonBaseUnit, profilerBatchResult.AverageDuration, true), TimeValueConverter.ConvertTo(batchResultGroup.CommonBaseUnit, profilerBatchResult.StandardDeviation, true), batchResultGroup.CommonBaseUnit, profilerBatchResult.Results.Count)
+            IEnumerable<CartesianPoint> normalDistributionValues = Math.NormDist(profilerBatchResult.AverageDurationConverted, profilerBatchResult.StandardDeviationConverted, graphIntervalResolution, profilerBatchResult.Results.Select(profilerResult => profilerResult.ElapsedTimeConverted));
+            var result = new NormalDistributionData<CartesianPoint>(dataSetIndex, normalDistributionValues, profilerBatchResult.AverageDurationConverted, profilerBatchResult.StandardDeviationConverted, profilerBatchResult.BaseUnit, profilerBatchResult.Results.Count)
             {
               Title = series.Title,
             };
@@ -89,7 +83,7 @@
         };
 
         // X-axis
-        chartTable.AddColumn(new ChartTableColumn() { Label = $"Elapsed time [{batchResultGroup.CommonBaseUnit.ToDisplayStringValue()}]", Type = ColumnType.Number });
+        chartTable.AddColumn(new ChartTableColumn() { Label = $"Elapsed time [{batchResult.BaseUnit.ToDisplayStringValue()}]", Type = ColumnType.Number });
 
         var seriesResultToRowIndexMapIndex = new SeriesResultToRowIndexMap[results.Length];
         foreach (NormalDistributionData<CartesianPoint> dataSet in results)
@@ -109,7 +103,7 @@
 
         ChartTableRowBuilder tableRowBuilder = chartTable.CreateTableRowBuilder();
 
-        // In case the profiler resultsa contains multiple equal values ensure that the sigma annotations
+        // In case the profiler results contains multiple equal values ensure that the sigma annotations
         // are only added once (for each of the two pots).
         int plotHasSigma0Bit = BitVector32.CreateMask();
         int plotHasSigma1Bit = BitVector32.CreateMask(plotHasSigma0Bit);
@@ -144,7 +138,7 @@
             ChartTableRow tableRow = tableRowBuilder.CreateRow();
 
             // Write x-axis column
-            tableRow.AppendValue(dataPoint.X);
+            _ = tableRow.AppendValue(dataPoint.X);
 
             for (int dataCellIndex = 0; dataCellIndex < dataCellCount; dataCellIndex++)
             {
@@ -153,67 +147,67 @@
               {
                 for (int entryCellCount = 0; entryCellCount < totalCellCountPerEntry; entryCellCount++)
                 {
-                  tableRow.AppendValue(null);
+                  _ = tableRow.AppendValue(null);
                 }
 
                 continue;
               }
 
               // Write y-axis column
-              tableRow.AppendValue(dataPoint.Y);
+              _ = tableRow.AppendValue(dataPoint.Y);
 
               // Write annotation and annotation text column
               bool isDataPointMean = dataPoint.X == dataSet.Mean;
               if (!plotHasSigmaMap[plotHasSigma0Bit] && isDataPointMean)
               {
                 plotHasSigmaMap[plotHasSigma0Bit] = true;
-                tableRow.AppendValue($"µ = {dataPoint.X} {batchResultGroup.CommonBaseUnit.ToDisplayStringValue()}");
-                tableRow.AppendValue($"Average elapsed time: P({dataPoint.X},{dataPoint.Y})".ToString(System.Globalization.CultureInfo.CurrentUICulture));
+                _ = tableRow.AppendValue($"µ = {dataPoint.X} {batchResult.BaseUnit.ToDisplayStringValue()}");
+                _ = tableRow.AppendValue($"Average elapsed time: P({dataPoint.X},{dataPoint.Y})".ToString(System.Globalization.CultureInfo.CurrentUICulture));
               }
               else if (!plotHasSigmaMap[plotHasSigma1NegativeBit] && dataPoint.X == dataSet.Mean - dataSet.StandardDeviation)
               {
                 plotHasSigmaMap[plotHasSigma1NegativeBit] = true;
-                tableRow.AppendValue("34.1 %");
-                tableRow.AppendValue("-1 σ. Interval µ ± 1σ contains 68.3 % of all values.");
+                _ = tableRow.AppendValue("34.1 %");
+                _ = tableRow.AppendValue("-1 σ. Interval µ ± 1σ contains 68.3 % of all values.");
               }
               else if (!plotHasSigmaMap[plotHasSigma2NegativeBit] && dataPoint.X == dataSet.Mean - (2 * dataSet.StandardDeviation))
               {
                 plotHasSigmaMap[plotHasSigma2NegativeBit] = true;
-                tableRow.AppendValue("13.6 %");
-                tableRow.AppendValue("-2 σ. Interval µ ± 2σ contains 95.4 % of all values.");
+                _ = tableRow.AppendValue("13.6 %");
+                _ = tableRow.AppendValue("-2 σ. Interval µ ± 2σ contains 95.4 % of all values.");
               }
               else if (!plotHasSigmaMap[plotHasSigma3NegativeBit] && dataPoint.X == dataSet.Mean - (3 * dataSet.StandardDeviation))
               {
                 plotHasSigmaMap[plotHasSigma3NegativeBit] = true;
-                tableRow.AppendValue("2.1 %");
-                tableRow.AppendValue("-3 σ. Interval µ ± 3σ contains 99.7 % of all values.");
+                _ = tableRow.AppendValue("2.1 %");
+                _ = tableRow.AppendValue("-3 σ. Interval µ ± 3σ contains 99.7 % of all values.");
               }
               else if (!plotHasSigmaMap[plotHasSigma1Bit] && dataPoint.X == dataSet.Mean + dataSet.StandardDeviation)
               {
                 plotHasSigmaMap[plotHasSigma1Bit] = true;
-                tableRow.AppendValue("34.1 %");
-                tableRow.AppendValue("1 σ. Interval µ ± 1σ contains 68.3 % of all values.");
+                _ = tableRow.AppendValue("34.1 %");
+                _ = tableRow.AppendValue("1 σ. Interval µ ± 1σ contains 68.3 % of all values.");
               }
               else if (!plotHasSigmaMap[plotHasSigma2Bit] && dataPoint.X == dataSet.Mean + (2 * dataSet.StandardDeviation))
               {
                 plotHasSigmaMap[plotHasSigma2Bit] = true;
-                tableRow.AppendValue("13.6 %");
-                tableRow.AppendValue("2 σ. Interval µ ± 2σ contains 95.4 % of all values.");
+                _ = tableRow.AppendValue("13.6 %");
+                _ = tableRow.AppendValue("2 σ. Interval µ ± 2σ contains 95.4 % of all values.");
               }
               else if (!plotHasSigmaMap[plotHasSigma3Bit] && dataPoint.X == dataSet.Mean + (3 * dataSet.StandardDeviation))
               {
                 plotHasSigmaMap[plotHasSigma3Bit] = true;
-                tableRow.AppendValue("2.1 %");
-                tableRow.AppendValue("3 σ. Interval µ ± 3σ contains 99.7 % of all values.");
+                _ = tableRow.AppendValue("2.1 %");
+                _ = tableRow.AppendValue("3 σ. Interval µ ± 3σ contains 99.7 % of all values.");
               }
               else
               {
-                tableRow.AppendValue(null);
-                tableRow.AppendValue(null);
+                _ = tableRow.AppendValue(null);
+                _ = tableRow.AppendValue(null);
               }
 
               // Write tooltip column
-              tableRow.AppendValue($"{dataSet.Title}: {(isDataPointMean ? "data mean" : string.Empty)} {dataPoint.X} {batchResultGroup.CommonBaseUnit.ToDisplayStringValue()} (density {dataPoint.Y})");
+              _ = tableRow.AppendValue($"{dataSet.Title}: {(isDataPointMean ? "data mean" : string.Empty)} {dataPoint.X} {batchResult.BaseUnit.ToDisplayStringValue()} (density {dataPoint.Y})");
             }
           }
         }

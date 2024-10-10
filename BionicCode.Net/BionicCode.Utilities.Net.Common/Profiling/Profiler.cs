@@ -30,7 +30,7 @@
     /// Use the appropriate overloads of the profiler methods or define a <see cref="ProfilerOptions"/> object to change the default behavior.
     /// </para>
     /// </remarks>
-    public const TimeUnit DefaultBaseUnit = TimeUnit.Milliseconds;
+    public const TimeUnit DefaultBaseUnit = TimeUnit.Auto;
 
     /// <summary>
     /// The default number of iterations to execute the profiled code.
@@ -520,7 +520,7 @@
           continue;
         }
 
-        var iterationResult = new ProfilerResult(iterationCounter, isTaskCancelled, stopwatch.Elapsed, context.BaseUnit, result, context.MethodInvokeInfo.MethodArgument.ArgumentListIndex);
+        var iterationResult = new ProfilerResult(iterationCounter, isTaskCancelled, stopwatch.Elapsed, result, context.MethodInvokeInfo.MethodArgument.ArgumentListIndex);
         result.AddResult(iterationResult);
       }
 
@@ -544,7 +544,7 @@
           continue;
         }
 
-        var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, context.BaseUnit, result, context.MethodInvokeInfo.MethodArgument.ArgumentListIndex);
+        var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, result, context.MethodInvokeInfo.MethodArgument.ArgumentListIndex);
         result.AddResult(iterationResult);
       }
 
@@ -572,7 +572,7 @@
           continue;
         }
 
-        var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, context.BaseUnit, result, context.MethodInvokeInfo.PropertyArgument.ArgumentListIndex);
+        var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, result, context.MethodInvokeInfo.PropertyArgument.ArgumentListIndex);
         result.AddResult(iterationResult);
       }
 
@@ -599,7 +599,7 @@
           continue;
         }
 
-        var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, context.BaseUnit, result, context.MethodInvokeInfo.PropertyArgument.ArgumentListIndex);
+        var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, result, context.MethodInvokeInfo.PropertyArgument.ArgumentListIndex);
         result.AddResult(iterationResult);
       }
 

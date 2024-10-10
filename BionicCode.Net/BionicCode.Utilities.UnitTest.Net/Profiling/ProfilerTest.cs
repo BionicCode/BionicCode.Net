@@ -14,8 +14,8 @@
 
   public class ProfilerTest
   {
-    private readonly TimeSpan ShortDuration = TimeSpan.FromMilliseconds(1);
-    private readonly TimeSpan NoDuration = TimeSpan.Zero;
+    private readonly Milliseconds ShortDuration = TimeSpan.FromMilliseconds(1);
+    private readonly Milliseconds NoDuration = TimeSpan.Zero;
 
     private ProfilerBatchResult ProfilerRunResult { get; set; }
     private string ProfilerRunSummary { get; set; }
@@ -64,7 +64,7 @@
         await operationToProfile.Invoke();
       }
 
-      _ = result.TotalDuration.Should().BeGreaterThanOrEqualTo(this.ShortDuration);
+      _ = result.TotalDuration.Value.Should().BeGreaterThanOrEqualTo(this.ShortDuration.ToMicroseconds());
     }
 
     [Fact]
@@ -93,7 +93,7 @@
         await operationToProfile.Invoke();
       }
 
-      _ = result.TotalDuration.Should().BeGreaterThanOrEqualTo(this.ShortDuration);
+      _ = result.TotalDuration.Value.Should().BeGreaterThanOrEqualTo(this.ShortDuration.ToMicroseconds());
     }
 
     [Fact]
@@ -220,7 +220,7 @@
         //.SetRuntime(Runtime.Net8_0)
         .SetLogger((result, summary) => Debug.WriteLine(result.Summary))
         .EnableDefaultLogOutput()
-        .SetBaseUnit(TimeUnit.Microseconds);
+        .SetBaseUnit(TimeUnit.Auto);
 
       ProfiledTypeResultCollection profilerResult = await profilerBuilder.RunAsync(CancellationToken.None);
 

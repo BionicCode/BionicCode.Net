@@ -326,6 +326,11 @@
         var memberResultGroup = new ProfilerBatchResultGroup
         {
           TargetSignature = memberInfo.Signature,
+          TargetSignatureComponentInfo = memberInfo.MemberInfoData.SymbolComponentInfo,
+          TargetNamespace = memberInfo.Namespace,
+          TargetAssemblyName = memberInfo.AssemblyName,
+          TargetSourceFileName = Path.GetFileName(memberInfo.SourceFilePath),
+          TargetSourceFileLineNumber = memberInfo.LineNumber,
           TargetShortSignature = memberInfo.ShortSignature,
           TargetShortCompactSignature = memberInfo.ShortCompactSignature,
           TargetName = memberInfo.DisplayName,

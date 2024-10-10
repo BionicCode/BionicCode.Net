@@ -18,7 +18,12 @@
     /// <summary>
     /// The signature of the profiled type including the declaring type (in case if the target is a member).
     /// </summary>
+    internal string TargetNamespace { get; set; }
+    internal string TargetAssemblyName { get; set; }
+    internal string TargetSourceFileName { get; set; }
+    internal int TargetSourceFileLineNumber { get; set; }
     internal string TargetSignature { get; set; }
+    internal SymbolComponentInfo TargetSignatureComponentInfo { get; set; }
 
     /// <summary>
     /// The signature of the profiled type without the declaring type (in case if the target is a member).

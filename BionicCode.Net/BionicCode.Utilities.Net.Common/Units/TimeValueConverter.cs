@@ -29,6 +29,30 @@
     internal static double ToNanoseconds(Milliseconds milliseconds) => milliseconds.Value * 1E6;
     internal static double ToNanoseconds(Microseconds microseconds) => microseconds.Value * 1E3;
 
+    internal static TimeUnit GetBestDisplayUnit(ITimeUnit value)
+    {
+      Seconds seconds = value.ToSiUnit();
+      if (seconds > 60d)
+      {
+        return TimeUnit.Minutes;
+      }      
+      else if (seconds >= 1d)
+      {
+        return TimeUnit.Seconds;
+      }
+
+      double resultValue = seconds.Value;
+      int unitExponent = 0;
+      while (resultValue < 1 && unitExponent > (int)TimeUnit.Nanoseconds)
+      {
+        resultValue = seconds.Value;
+        unitExponent -= 3;
+        resultValue /= System.Math.Pow(10, unitExponent);
+      }
+
+      return (TimeUnit)unitExponent;
+    }
+
     internal static double ConvertTo(TimeUnit timeUnit, Minutes minutes, bool isMaxTimerResolutionRoundingEnabled)
     {
       switch (timeUnit)

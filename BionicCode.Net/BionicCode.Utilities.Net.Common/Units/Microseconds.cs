@@ -2,96 +2,51 @@
 {
   using System;
 
-  public readonly struct Microseconds : IEquatable<Microseconds>, IComparable<Microseconds>
+  public readonly struct Microseconds : IEquatable<Microseconds>, IComparable<Microseconds>, IComparable, IConvertible, ITimeUnit
   {
-    public static Microseconds Zero { get; } = new Microseconds(0);
-    public static Microseconds MinValue { get; } = new Microseconds(TimeValueConverter.ToMicroseconds(Nanoseconds.MinValue));
-    public static Microseconds MaxValue { get; } = new Microseconds(TimeValueConverter.ToMicroseconds(Nanoseconds.MaxValue));
+    public static Microseconds Zero { get; } = 0;
+    public static Microseconds MinValue { get; } = TimeValueConverter.ToMicroseconds(Nanoseconds.MinValue);
+    public static Microseconds MaxValue { get; } = TimeValueConverter.ToMicroseconds(Nanoseconds.MaxValue);
 
     public Microseconds(double value)
     {
       this.Value = value;
       this.Unit = TimeUnit.Microseconds;
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard21)'
-Before:
-    }
-    
-
-    public Minutes ToMinutes() => new Minutes(TimeValueConverter.ToMinutes(this));
-After:
     }
 
-
-    public Minutes ToMinutes() => new Minutes(TimeValueConverter.ToMinutes(this));
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net50)'
-Before:
-    }
-    
-
-    public Minutes ToMinutes() => new Minutes(TimeValueConverter.ToMinutes(this));
-After:
-    }
-
-
-    public Minutes ToMinutes() => new Minutes(TimeValueConverter.ToMinutes(this));
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net80)'
-Before:
-    }
-    
-
-    public Minutes ToMinutes() => new Minutes(TimeValueConverter.ToMinutes(this));
-After:
-    }
-
-
-    public Minutes ToMinutes() => new Minutes(TimeValueConverter.ToMinutes(this));
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net60)'
-Before:
-    }
-    
-
-    public Minutes ToMinutes() => new Minutes(TimeValueConverter.ToMinutes(this));
-After:
-    }
-
-
-    public Minutes ToMinutes() => new Minutes(TimeValueConverter.ToMinutes(this));
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net70)'
-Before:
-    }
-    
-
-    public Minutes ToMinutes() => new Minutes(TimeValueConverter.ToMinutes(this));
-After:
-    }
-
-
-    public Minutes ToMinutes() => new Minutes(TimeValueConverter.ToMinutes(this));
-*/
-    }
-
-
-    public Minutes ToMinutes() => new Minutes(TimeValueConverter.ToMinutes(this));
-    public Seconds ToSeconds() => new Seconds(TimeValueConverter.ToSeconds(this));
-    public Milliseconds ToMilliseconds() => new Milliseconds(TimeValueConverter.ToMilliseconds(this));
-    public Nanoseconds ToNanoseconds() => new Nanoseconds(TimeValueConverter.ToNanoseconds(this));
+    public Minutes ToMinutes() => TimeValueConverter.ToMinutes(this);
+    public Seconds ToSeconds() => TimeValueConverter.ToSeconds(this);
+    public Milliseconds ToMilliseconds() => TimeValueConverter.ToMilliseconds(this);
+    public Nanoseconds ToNanoseconds() => TimeValueConverter.ToNanoseconds(this);
+    public Seconds ToSiUnit() => ToSeconds();
 
     public override string ToString() => $"{this.Value} {this.Unit.ToDisplayStringValue()}";
     public bool Equals(Microseconds other) => this.Value.Equals(other.Value);
+    public override bool Equals(object obj) => obj is Microseconds microseconds && Equals(microseconds) || obj is double value && Equals(value);
+    
+    #region IComparable
     public int CompareTo(Microseconds other) => this.Value.CompareTo(other.Value);
     public int CompareTo(Minutes other) => CompareTo(other.ToMicroseconds());
     public int CompareTo(Seconds other) => CompareTo(other.ToMicroseconds());
     public int CompareTo(Milliseconds other) => CompareTo(other.ToMicroseconds());
     public int CompareTo(Nanoseconds other) => CompareTo(other.ToMicroseconds());
+    public int CompareTo(TimeSpan other) => CompareTo((Microseconds)other);
+
+    int IComparable.CompareTo(object obj) => obj is Seconds seconds
+      ? CompareTo(seconds)
+      : obj is Minutes minutes
+        ? CompareTo(minutes)
+        : obj is Milliseconds milliseconds
+          ? CompareTo(milliseconds)
+          : obj is Microseconds microseconds
+            ? CompareTo(microseconds)
+            : obj is Nanoseconds nanoseconds
+              ? CompareTo(nanoseconds)
+              : obj is TimeSpan timeSpan
+                ? CompareTo(timeSpan)
+                : throw new ArgumentException("Unable to compare the provided type.", nameof(obj));
+
+    #endregion IComaparable
 
     /// <inheritdoc/>
 #if NET || NETSTANDARD2_1_OR_GREATER
@@ -106,7 +61,27 @@ After:
     }
 #endif
 
-    public override bool Equals(object obj) => obj is Microseconds microseconds && Equals(microseconds);
+    #region IConvertible
+
+    TypeCode IConvertible.GetTypeCode() => throw new NotImplementedException();
+    bool IConvertible.ToBoolean(IFormatProvider provider) => throw new InvalidCastException();
+    char IConvertible.ToChar(IFormatProvider provider) => throw new InvalidCastException();
+    sbyte IConvertible.ToSByte(IFormatProvider provider) => Convert.ToSByte(this.Value);
+    byte IConvertible.ToByte(IFormatProvider provider) => Convert.ToByte(this.Value);
+    short IConvertible.ToInt16(IFormatProvider provider) => Convert.ToInt16(this.Value);
+    ushort IConvertible.ToUInt16(IFormatProvider provider) => Convert.ToUInt16(this.Value);
+    int IConvertible.ToInt32(IFormatProvider provider) => Convert.ToInt32(this.Value);
+    uint IConvertible.ToUInt32(IFormatProvider provider) => Convert.ToUInt32(this.Value);
+    long IConvertible.ToInt64(IFormatProvider provider) => Convert.ToInt64(this.Value);
+    ulong IConvertible.ToUInt64(IFormatProvider provider) => Convert.ToUInt64(this.Value);
+    float IConvertible.ToSingle(IFormatProvider provider) => Convert.ToSingle(this.Value);
+    double IConvertible.ToDouble(IFormatProvider provider) => this.Value;
+    decimal IConvertible.ToDecimal(IFormatProvider provider) => Convert.ToDecimal(this.Value);
+    DateTime IConvertible.ToDateTime(IFormatProvider provider) => throw new InvalidCastException();
+    string IConvertible.ToString(IFormatProvider provider) => ToString();
+    object IConvertible.ToType(Type conversionType, IFormatProvider provider) => Convert.ChangeType(this.Value, conversionType, provider);
+
+    #endregion IConvertible
 
     public double Value { get; }
     public TimeUnit Unit { get; }
@@ -114,121 +89,129 @@ After:
     #region Comparison operators
 
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_LessThan(TSelf, TOther)" />
-    public static bool operator <(Microseconds left, Minutes right) => left.CompareTo(right) < 0;
+    public static bool operator <(Microseconds left, double right) => left.CompareTo((Microseconds)right) < 0;
+    /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_LessThanOrEqual(TSelf, TOther)" />
+    public static bool operator <=(Microseconds left, double right) => left.CompareTo((Microseconds)right) <= 0;
+    /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_GreaterThan(TSelf, TOther)" />
+    public static bool operator >(Microseconds left, double right) => left.CompareTo((Microseconds)right) > 0;
+    /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_GreaterThanOrEqual(TSelf, TOther)" />
+    public static bool operator >=(Microseconds left, double right) => left.CompareTo((Microseconds)right) >= 0;
 
+    /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_LessThan(TSelf, TOther)" />
+    public static bool operator <(Microseconds left, Minutes right) => left.CompareTo(right) < 0;
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_LessThanOrEqual(TSelf, TOther)" />
     public static bool operator <=(Microseconds left, Minutes right) => left.CompareTo(right) <= 0;
-
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_GreaterThan(TSelf, TOther)" />
     public static bool operator >(Microseconds left, Minutes right) => left.CompareTo(right) > 0;
-
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_GreaterThanOrEqual(TSelf, TOther)" />
     public static bool operator >=(Microseconds left, Minutes right) => left.CompareTo(right) >= 0;
 
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_LessThan(TSelf, TOther)" />
     public static bool operator <(Microseconds left, Seconds right) => left.CompareTo(right) < 0;
-
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_LessThanOrEqual(TSelf, TOther)" />
     public static bool operator <=(Microseconds left, Seconds right) => left.CompareTo(right) <= 0;
-
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_GreaterThan(TSelf, TOther)" />
     public static bool operator >(Microseconds left, Seconds right) => left.CompareTo(right) > 0;
-
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_GreaterThanOrEqual(TSelf, TOther)" />
     public static bool operator >=(Microseconds left, Seconds right) => left.CompareTo(right) >= 0;
 
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_LessThan(TSelf, TOther)" />
     public static bool operator <(Microseconds left, Milliseconds right) => left.CompareTo(right) < 0;
-
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_LessThanOrEqual(TSelf, TOther)" />
     public static bool operator <=(Microseconds left, Milliseconds right) => left.CompareTo(right) <= 0;
-
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_GreaterThan(TSelf, TOther)" />
     public static bool operator >(Microseconds left, Milliseconds right) => left.CompareTo(right) > 0;
-
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_GreaterThanOrEqual(TSelf, TOther)" />
     public static bool operator >=(Microseconds left, Milliseconds right) => left.CompareTo(right) >= 0;
 
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_LessThan(TSelf, TOther)" />
     public static bool operator <(Microseconds left, Microseconds right) => left.CompareTo(right) < 0;
-
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_LessThanOrEqual(TSelf, TOther)" />
     public static bool operator <=(Microseconds left, Microseconds right) => left.CompareTo(right) <= 0;
-
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_GreaterThan(TSelf, TOther)" />
     public static bool operator >(Microseconds left, Microseconds right) => left.CompareTo(right) > 0;
-
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_GreaterThanOrEqual(TSelf, TOther)" />
     public static bool operator >=(Microseconds left, Microseconds right) => left.CompareTo(right) >= 0;
 
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_LessThan(TSelf, TOther)" />
     public static bool operator <(Microseconds left, Nanoseconds right) => left.CompareTo(right) < 0;
-
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_LessThanOrEqual(TSelf, TOther)" />
     public static bool operator <=(Microseconds left, Nanoseconds right) => left.CompareTo(right) <= 0;
-
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_GreaterThan(TSelf, TOther)" />
     public static bool operator >(Microseconds left, Nanoseconds right) => left.CompareTo(right) > 0;
-
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_GreaterThanOrEqual(TSelf, TOther)" />
     public static bool operator >=(Microseconds left, Nanoseconds right) => left.CompareTo(right) >= 0;
+
+    /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_LessThan(TSelf, TOther)" />
+    public static bool operator <(Microseconds left, TimeSpan right) => left.CompareTo(right) < 0;
+    /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_LessThanOrEqual(TSelf, TOther)" />
+    public static bool operator <=(Microseconds left, TimeSpan right) => left.CompareTo(right) <= 0;
+    /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_GreaterThan(TSelf, TOther)" />
+    public static bool operator >(Microseconds left, TimeSpan right) => left.CompareTo(right) > 0;
+    /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_GreaterThanOrEqual(TSelf, TOther)" />
+    public static bool operator >=(Microseconds left, TimeSpan right) => left.CompareTo(right) >= 0;
 
     #endregion Comparison operators
 
     #region Arithmetic operators
 
-    public static Microseconds operator +(Microseconds left, Minutes right) => new Microseconds(left.Value + TimeValueConverter.ToMicroseconds(right));
-    public static Microseconds operator -(Microseconds left, Minutes right) => new Microseconds(left.Value - TimeValueConverter.ToMicroseconds(right));
-
+    public static Microseconds operator +(Microseconds left, Minutes right) => left.Value + right.ToMicroseconds();
+    public static Microseconds operator -(Microseconds left, Minutes right) => left.Value - right.ToMicroseconds();
     /// <inheritdoc cref="System.Numerics.IMultiplyOperators{TSelf, TOther, TResult}.op_Multiply(TSelf, TOther)" />
-    public static Microseconds operator *(Microseconds left, Minutes right) => new Microseconds(left.Value * TimeValueConverter.ToMicroseconds(right));
-
+    public static Microseconds operator *(Microseconds left, Minutes right) => left.Value * right.ToMicroseconds();
     /// <inheritdoc cref="System.Numerics.IDivisionOperators{TSelf, TOther, TResult}.op_Division(TSelf, TOther)" />
-    public static Microseconds operator /(Microseconds left, Minutes right) => new Microseconds(left.Value / TimeValueConverter.ToMicroseconds(right));
+    public static Microseconds operator /(Microseconds left, Minutes right) => left.Value / right.ToMicroseconds();
 
-    public static Microseconds operator +(Microseconds left, Seconds right) => new Microseconds(left.Value + TimeValueConverter.ToMicroseconds(right));
-    public static Microseconds operator -(Microseconds left, Seconds right) => new Microseconds(left.Value - TimeValueConverter.ToMicroseconds(right));
-
+    public static Microseconds operator +(Microseconds left, Seconds right) => left.Value + right.ToMicroseconds();
+    public static Microseconds operator -(Microseconds left, Seconds right) => left.Value - right.ToMicroseconds();
     /// <inheritdoc cref="System.Numerics.IMultiplyOperators{TSelf, TOther, TResult}.op_Multiply(TSelf, TOther)" />
-    public static Microseconds operator *(Microseconds left, Seconds right) => new Microseconds(left.Value * TimeValueConverter.ToMicroseconds(right));
-
+    public static Microseconds operator *(Microseconds left, Seconds right) => left.Value * right.ToMicroseconds();
     /// <inheritdoc cref="System.Numerics.IDivisionOperators{TSelf, TOther, TResult}.op_Division(TSelf, TOther)" />
-    public static Microseconds operator /(Microseconds left, Seconds right) => new Microseconds(left.Value / TimeValueConverter.ToMicroseconds(right));
+    public static Microseconds operator /(Microseconds left, Seconds right) => left.Value / right.ToMicroseconds();
 
-    public static Microseconds operator +(Microseconds left, Milliseconds right) => new Microseconds(left.Value + TimeValueConverter.ToMicroseconds(right));
-    public static Microseconds operator -(Microseconds left, Milliseconds right) => new Microseconds(left.Value - TimeValueConverter.ToMicroseconds(right));
-
+    public static Microseconds operator +(Microseconds left, Milliseconds right) => left.Value + right.ToMicroseconds();
+    public static Microseconds operator -(Microseconds left, Milliseconds right) => left.Value - right.ToMicroseconds();
     /// <inheritdoc cref="System.Numerics.IMultiplyOperators{TSelf, TOther, TResult}.op_Multiply(TSelf, TOther)" />
-    public static Microseconds operator *(Microseconds left, Milliseconds right) => new Microseconds(left.Value * TimeValueConverter.ToMicroseconds(right));
-
+    public static Microseconds operator *(Microseconds left, Milliseconds right) => left.Value * right.ToMicroseconds();
     /// <inheritdoc cref="System.Numerics.IDivisionOperators{TSelf, TOther, TResult}.op_Division(TSelf, TOther)" />
-    public static Microseconds operator /(Microseconds left, Milliseconds right) => new Microseconds(left.Value / TimeValueConverter.ToMicroseconds(right));
+    public static Microseconds operator /(Microseconds left, Milliseconds right) => left.Value / right.ToMicroseconds();
 
-    public static Microseconds operator +(Microseconds left, Microseconds right) => new Microseconds(left.Value + right.Value);
-    public static Microseconds operator -(Microseconds left, Microseconds right) => new Microseconds(left.Value - right.Value);
-
+    public static Microseconds operator +(Microseconds left, Microseconds right) => left.Value + right.Value;
+    public static Microseconds operator -(Microseconds left, Microseconds right) => left.Value - right.Value;
     /// <inheritdoc cref="System.Numerics.IMultiplyOperators{TSelf, TOther, TResult}.op_Multiply(TSelf, TOther)" />
-    public static Microseconds operator *(Microseconds left, Microseconds right) => new Microseconds(left.Value * right.Value);
-
+    public static Microseconds operator *(Microseconds left, Microseconds right) => left.Value * right.Value;
     /// <inheritdoc cref="System.Numerics.IDivisionOperators{TSelf, TOther, TResult}.op_Division(TSelf, TOther)" />
-    public static Microseconds operator /(Microseconds left, Microseconds right) => new Microseconds(left.Value / right.Value);
+    public static Microseconds operator /(Microseconds left, Microseconds right) => left.Value / right.Value;
 
-    public static Microseconds operator +(Microseconds left, Nanoseconds right) => new Microseconds(left.Value + TimeValueConverter.ToMicroseconds(right));
-    public static Microseconds operator -(Microseconds left, Nanoseconds right) => new Microseconds(left.Value - TimeValueConverter.ToMicroseconds(right));
-
+    public static Microseconds operator +(Microseconds left, Nanoseconds right) => left.Value + right.ToMicroseconds();
+    public static Microseconds operator -(Microseconds left, Nanoseconds right) => left.Value - right.ToMicroseconds();
     /// <inheritdoc cref="System.Numerics.IMultiplyOperators{TSelf, TOther, TResult}.op_Multiply(TSelf, TOther)" />
-    public static Microseconds operator *(Microseconds left, Nanoseconds right) => new Microseconds(left.Value * TimeValueConverter.ToMicroseconds(right));
-
+    public static Microseconds operator *(Microseconds left, Nanoseconds right) => left.Value * right.ToMicroseconds();
     /// <inheritdoc cref="System.Numerics.IDivisionOperators{TSelf, TOther, TResult}.op_Division(TSelf, TOther)" />
-    public static Microseconds operator /(Microseconds left, Nanoseconds right) => new Microseconds(left.Value / TimeValueConverter.ToMicroseconds(right));
+    public static Microseconds operator /(Microseconds left, Nanoseconds right) => left.Value / right.ToMicroseconds();
 
+    public static Microseconds operator +(Microseconds left, double right) => left.Value + right;
+    public static Microseconds operator -(Microseconds left, double right) => left.Value - right;
     /// <inheritdoc cref="System.Numerics.IMultiplyOperators{TSelf, TOther, TResult}.op_Multiply(TSelf, TOther)" />
-    public static Microseconds operator *(Microseconds left, double right) => new Microseconds(left.Value * right);
-
+    public static Microseconds operator *(Microseconds left, double right) => left.Value * right;
     /// <inheritdoc cref="System.Numerics.IDivisionOperators{TSelf, TOther, TResult}.op_Division(TSelf, TOther)" />
-    public static Microseconds operator /(Microseconds left, double right) => new Microseconds(left.Value / right);
+    public static Microseconds operator /(Microseconds left, double right) => left.Value / right;
 
-    #endregion Arithmetic operators
+#if NET7_0_OR_GREATER
+    public static Microseconds operator +(Microseconds left, TimeSpan right) => left.Value + right.TotalMicroseconds;
+    public static Microseconds operator -(Microseconds left, TimeSpan right) => left.Value - right.TotalMicroseconds;
+    public static Microseconds operator *(Microseconds left, TimeSpan right) => left.Value * right.TotalMicroseconds;
+    /// <inheritdoc cref="System.Numerics.IDivisionOperators{TSelf, TOther, TResult}.op_Division(TSelf, TOther)" />
+    public static Microseconds operator /(Microseconds left, TimeSpan right) => left.Value / right.TotalMicroseconds;
+#else
+    public static Microseconds operator +(Microseconds left, TimeSpan right) => left + right.TotalMicroseconds();
+    public static Microseconds operator -(Microseconds left, TimeSpan right) => left.Value - right.TotalMicroseconds();
+    public static Microseconds operator *(Microseconds left, TimeSpan right) => left.Value * right.TotalMicroseconds();
+    /// <inheritdoc cref="System.Numerics.IDivisionOperators{TSelf, TOther, TResult}.op_Division(TSelf, TOther)" />
+    public static Microseconds operator /(Microseconds left, TimeSpan right) => left.Value / right.TotalMicroseconds();
+#endif
+
+#endregion Arithmetic operators
 
     #region Cast operators
 
@@ -258,35 +241,110 @@ After:
     #region Equality operators
 
     /// <inheritdoc cref="System.Numerics.IEqualityOperators{TSelf, TOther, TResult}.op_Equality(TSelf, TOther)" />
-    public static bool operator ==(Microseconds left, Minutes right) => left.Equals(right);
+    public static bool operator ==(Microseconds left, double right) => left.Equals(right);
+    /// <inheritdoc cref="System.Numerics.IEqualityOperators{TSelf, TOther, TResult}.op_Inequality(TSelf, TOther)" />
+    public static bool operator !=(Microseconds left, double right) => !(left == right);
 
+    /// <inheritdoc cref="System.Numerics.IEqualityOperators{TSelf, TOther, TResult}.op_Equality(TSelf, TOther)" />
+    public static bool operator ==(Microseconds left, Minutes right) => left.Equals(right);
     /// <inheritdoc cref="System.Numerics.IEqualityOperators{TSelf, TOther, TResult}.op_Inequality(TSelf, TOther)" />
     public static bool operator !=(Microseconds left, Minutes right) => !(left == right);
 
     /// <inheritdoc cref="System.Numerics.IEqualityOperators{TSelf, TOther, TResult}.op_Equality(TSelf, TOther)" />
     public static bool operator ==(Microseconds left, Seconds right) => left.Equals(right);
-
     /// <inheritdoc cref="System.Numerics.IEqualityOperators{TSelf, TOther, TResult}.op_Inequality(TSelf, TOther)" />
     public static bool operator !=(Microseconds left, Seconds right) => !(left == right);
 
     /// <inheritdoc cref="System.Numerics.IEqualityOperators{TSelf, TOther, TResult}.op_Equality(TSelf, TOther)" />
     public static bool operator ==(Microseconds left, Milliseconds right) => left.Equals(right);
-
     /// <inheritdoc cref="System.Numerics.IEqualityOperators{TSelf, TOther, TResult}.op_Inequality(TSelf, TOther)" />
     public static bool operator !=(Microseconds left, Milliseconds right) => !(left == right);
 
     /// <inheritdoc cref="System.Numerics.IEqualityOperators{TSelf, TOther, TResult}.op_Equality(TSelf, TOther)" />
     public static bool operator ==(Microseconds left, Microseconds right) => left.Equals(right);
-
     /// <inheritdoc cref="System.Numerics.IEqualityOperators{TSelf, TOther, TResult}.op_Inequality(TSelf, TOther)" />
     public static bool operator !=(Microseconds left, Microseconds right) => !(left == right);
 
     /// <inheritdoc cref="System.Numerics.IEqualityOperators{TSelf, TOther, TResult}.op_Equality(TSelf, TOther)" />
     public static bool operator ==(Microseconds left, Nanoseconds right) => left.Equals(right);
-
     /// <inheritdoc cref="System.Numerics.IEqualityOperators{TSelf, TOther, TResult}.op_Inequality(TSelf, TOther)" />
     public static bool operator !=(Microseconds left, Nanoseconds right) => !(left == right);
 
+    /// <inheritdoc cref="System.Numerics.IEqualityOperators{TSelf, TOther, TResult}.op_Equality(TSelf, TOther)" />
+    public static bool operator ==(Microseconds left, TimeSpan right) => left.Equals(right);
+    /// <inheritdoc cref="System.Numerics.IEqualityOperators{TSelf, TOther, TResult}.op_Inequality(TSelf, TOther)" />
+    public static bool operator !=(Microseconds left, TimeSpan right) => !(left == right);
+
     #endregion Equality operators
+
+    #region Increment and Decrement operators
+
+    public static Microseconds operator ++(Microseconds microseconds) => microseconds.Value + 1d;
+    public static Microseconds operator --(Microseconds microseconds) => microseconds.Value - 1d;
+
+    #endregion Increment and Decrement operators
+
+    #region ITimeUnit
+
+    public ITimeUnit ToUnit(TimeUnit unit)
+    {
+      switch (unit)
+      {
+        case TimeUnit.Microseconds:
+          return this;
+        case TimeUnit.Nanoseconds:
+          return ToNanoseconds();
+        case TimeUnit.Milliseconds:
+          return ToMilliseconds();
+        case TimeUnit.Seconds:
+          return ToSeconds();
+        case TimeUnit.Minutes:
+          return ToMinutes();
+        case TimeUnit.None:
+        case TimeUnit.Auto:
+        default:
+          throw new NotImplementedException();
+      }
+    }
+
+    int IComparable<ITimeUnit>.CompareTo(ITimeUnit other)
+    {
+      switch (other)
+      {
+        case Minutes minutes:
+          return CompareTo(minutes);
+        case Seconds seconds:
+          return CompareTo(seconds);
+        case Milliseconds milliseconds:
+          return CompareTo(milliseconds);
+        case Microseconds microseconds:
+          return CompareTo(microseconds);
+        case Nanoseconds nanoseconds:
+          return CompareTo(nanoseconds);
+        default:
+          throw new NotImplementedException();
+      }
+    }
+
+    bool IEquatable<ITimeUnit>.Equals(ITimeUnit other)
+    {
+      switch (other)
+      {
+        case Minutes minutes:
+          return Equals(minutes);
+        case Seconds seconds:
+          return Equals(seconds);
+        case Milliseconds milliseconds:
+          return Equals(milliseconds);
+        case Microseconds microseconds:
+          return Equals(microseconds);
+        case Nanoseconds nanoseconds:
+          return Equals(nanoseconds);
+        default:
+          throw new NotImplementedException();
+      }
+    }
+
+    #endregion ITimeUnit
   }
 }

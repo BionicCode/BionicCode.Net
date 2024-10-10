@@ -9,26 +9,25 @@
   /// </summary>
   public struct ProfilerResult : IEquatable<ProfilerResult>, IComparable<ProfilerResult>
   {
-    internal static ProfilerResult Empty => new ProfilerResult(-1, Microseconds.Zero, TimeUnit.Microseconds, null, -1);
-    internal static ProfilerResult MaxDuration => new ProfilerResult(-1, Microseconds.MaxValue, TimeUnit.Microseconds, null, -1);
-    internal static ProfilerResult MinDuration => new ProfilerResult(-1, Microseconds.MinValue, TimeUnit.Microseconds, null, -1);
+    internal static ProfilerResult Empty => new ProfilerResult(-1, Microseconds.Zero, null, -1);
+    internal static ProfilerResult MaxDuration => new ProfilerResult(-1, Microseconds.MaxValue, null, -1);
+    internal static ProfilerResult MinDuration => new ProfilerResult(-1, Microseconds.MinValue, null, -1);
 
-    internal ProfilerResult(int iteration, Microseconds elapsedTime, TimeUnit baseUnit, ProfilerBatchResult owner, int argumentListIndex) : this(iteration, false, elapsedTime, Microseconds.MinValue, baseUnit, owner, argumentListIndex)
+    internal ProfilerResult(int iteration, Microseconds elapsedTime, ProfilerBatchResult owner, int argumentListIndex) : this(iteration, false, elapsedTime, Microseconds.MinValue, owner, argumentListIndex)
     {
     }
 
-    internal ProfilerResult(int iteration, bool isProfiledTaskCancelled, Microseconds elapsedTime, TimeUnit baseUnit, ProfilerBatchResult owner, int argumentListIndex) : this(iteration, isProfiledTaskCancelled, elapsedTime, Microseconds.MinValue, baseUnit, owner, argumentListIndex)
+    internal ProfilerResult(int iteration, bool isProfiledTaskCancelled, Microseconds elapsedTime, ProfilerBatchResult owner, int argumentListIndex) : this(iteration, isProfiledTaskCancelled, elapsedTime, Microseconds.MinValue, owner, argumentListIndex)
     {
     }
 
-    internal ProfilerResult(int iteration, bool isProfiledTaskCancelled, Microseconds elapsedTime, Microseconds deviation, TimeUnit baseUnit, ProfilerBatchResult owner, int argumentListIndex)
+    internal ProfilerResult(int iteration, bool isProfiledTaskCancelled, Microseconds elapsedTime, Microseconds deviation, ProfilerBatchResult owner, int argumentListIndex)
     {
       this.Owner = owner;
       this.Iteration = iteration;
       this.IsProfiledTaskCancelled = isProfiledTaskCancelled;
       this.ElapsedTime = elapsedTime;
       this.deviation = deviation;
-      this.BaseUnit = baseUnit;
       this.ArgumentListIndex = argumentListIndex;
     }
 
@@ -65,7 +64,7 @@
     /// <summary>
     /// The base unit used to calculate the values for <see cref="DeviationConverted"/> and <see cref="ElapsedTimeConverted"/>.
     /// </summary>
-    public TimeUnit BaseUnit { get; }
+    public TimeUnit BaseUnit => this.Owner?.BaseUnit ?? TimeUnit.Microseconds;
 
     /// <summary>
     /// In case the benchmarked operation is an async method, <see cref="IsProfiledTaskCancelled"/> indicates whether the <see langword="async"/>operation was cancelled or not.

@@ -61,7 +61,7 @@
       this.IsDefaultLogOutputEnabled = true;
       this.WarmupIterations = Profiler.DefaultWarmupCount;
       this.Iterations = Profiler.DefaultIterationsCount;
-      this.BaseUnit = TimeUnit.Microseconds;
+      this.BaseUnit = TimeUnit.Auto;
       this.Runtime = Runtime.Current;
     }
 

@@ -64,7 +64,7 @@
           {
             this.Stopwatch.Stop();
 
-            var iterationResult = new ProfilerResult(1, this.Stopwatch.Elapsed, this.ScopeProvider.Result.BaseUnit, this.ScopeProvider.Result, -1);
+            var iterationResult = new ProfilerResult(1, this.Stopwatch.Elapsed, this.ScopeProvider.Result, -1);
 
             this.ScopeProvider.Result.AddResult(iterationResult);
             this.ScopeProvider.Result.TotalDuration = this.Stopwatch.Elapsed;
@@ -93,7 +93,7 @@
           {
             this.Stopwatch.Stop();
 
-            var iterationResult = new ProfilerResult(1, this.Stopwatch.Elapsed, this.ScopeProvider.Result.BaseUnit, this.ScopeProvider.Result, -1);
+            var iterationResult = new ProfilerResult(1, this.Stopwatch.Elapsed, this.ScopeProvider.Result, -1);
 
             this.ScopeProvider.Result.AddResult(iterationResult);
             this.ScopeProvider.Result.TotalDuration = this.Stopwatch.Elapsed;

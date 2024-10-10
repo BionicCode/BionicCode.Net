@@ -305,7 +305,16 @@
     /// <summary>
     /// The base unit used to calculate the values for <see cref="TotalDurationConverted"/>, <see cref="StandardDeviationConverted"/> and <see cref="AverageDurationConverted"/>.
     /// </summary>
-    public TimeUnit BaseUnit => this.Context?.BaseUnit ?? Profiler.DefaultBaseUnit;
+    public TimeUnit BaseUnit
+    {
+      get
+      {
+        TimeUnit timeUnit = this.Context?.BaseUnit ?? Profiler.DefaultBaseUnit;
+        return timeUnit is TimeUnit.None || timeUnit is TimeUnit.Auto
+          ? TimeValueConverter.GetBestDisplayUnit(this.AverageDuration)
+          : timeUnit;
+      }
+    }
 
     internal ProfilerBatchResult ProfilerReferenceResult { get; set; }
   }
