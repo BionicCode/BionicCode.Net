@@ -18,6 +18,7 @@
       this.TargetAssemblyName = string.Empty;
       this.TargetSourceFileName = string.Empty;
       this.TargetSourceFileLineNumber = 0;
+      this.EnvironmentInfo = string.Empty;
     }
 
     public string ScriptCode { get; set; }
@@ -34,5 +35,6 @@
     public string TargetAssemblyName { get; set; }
     public string TargetSourceFileName { get; set; }
     public int TargetSourceFileLineNumber { get; set; }
+    public string EnvironmentInfo { get; internal set; }
   }
 }
