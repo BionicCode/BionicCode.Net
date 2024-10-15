@@ -55,7 +55,7 @@
         return string.Empty;
       }
 
-      StringBuilder summaryBuilder = StringBuilderFactory.GetOrCreate();
+      PooledStringBuilder summaryBuilder = StringBuilderFactory.GetOrCreate();
       string title = $"Profile target: {this.Context.MethodInvokeInfo.Signature}";
       Profiler.BuildSummaryHeader(summaryBuilder, title, this.Context.MethodInvokeInfo.Signature, this.Context.SourceFileName, this.Context.LineNumber);
 

@@ -808,7 +808,7 @@
       return new ProfilerBuilder(typeData);
     }
 
-    internal static void BuildSummaryHeader(StringBuilder outputBuilder, string title, string callerName, string sourceFileName, int lineNumber)
+    internal static void BuildSummaryHeader(PooledStringBuilder outputBuilder, string title, string callerName, string sourceFileName, int lineNumber)
     {
       sourceFileName = Path.GetFileName(sourceFileName);
       string headerCol1 = "Iteration #";
@@ -825,9 +825,9 @@
         .AppendLine($"{"┝",11}━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━┥");
     }
 
-    internal static void BuildSummaryEntry(StringBuilder outputBuilder, ProfilerResult iterationResult) => outputBuilder.AppendLine($"{"│",11} {iterationResult.Iteration,-13:N0} │ {iterationResult.ElapsedTime,26:N6} │ {iterationResult.IsProfiledTaskCancelled + (iterationResult.IsProfiledTaskCancelled ? " (ignored)" : ""),-14} │");
+    internal static void BuildSummaryEntry(PooledStringBuilder outputBuilder, ProfilerResult iterationResult) => outputBuilder.AppendLine($"{"│",11} {iterationResult.Iteration,-13:N0} │ {iterationResult.ElapsedTime,26:N6} │ {iterationResult.IsProfiledTaskCancelled + (iterationResult.IsProfiledTaskCancelled ? " (ignored)" : ""),-14} │");
 
-    internal static void BuildSummaryFooter(StringBuilder outputBuilder, ProfilerBatchResult batchResult) => _ = outputBuilder
+    internal static void BuildSummaryFooter(PooledStringBuilder outputBuilder, ProfilerBatchResult batchResult) => _ = outputBuilder
         .AppendLine($"╭═════════╧═══════════════╪════════════════════════════┼────────────────┤")
         .AppendLine($"{"│ Total:",-11} {"-",-13} │ {batchResult.TotalDuration,26:N6} │{"│",17}")
         .AppendLine($"{"│ Min:",-11} {(batchResult.MinResult.Iteration < 0 ? "-" : batchResult.MinResult.Iteration.ToString("N0")),-13:N0} │ {(batchResult.MinResult.Iteration < 0 ? "-" : batchResult.MinResult.ElapsedTime.Value.ToString("N6")),26:N6} │{"│",17}")

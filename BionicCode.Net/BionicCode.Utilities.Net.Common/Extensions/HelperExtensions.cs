@@ -1260,7 +1260,7 @@
     {
       SymbolAttributes symbolAttributes = propertyData.SymbolAttributes;
       IEnumerable<CustomAttributeData> customAttributesData = propertyData.AttributeData;
-      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+      PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
 #if !NETSTANDARD2_0
       if (symbolAttributes.HasFlag(SymbolAttributes.Final))
@@ -1350,7 +1350,7 @@
         if (HelperExtensionsCommon.AccessModifierComparer.Compare(propertyData.GetAccessorAccessModifier, propertyData.AccessModifier) < 0)
         {
           _ = signatureNameBuilder
-            .Append(propertyData.GetAccessorAccessModifier)
+            .Append(propertyData.GetAccessorAccessModifier.ToDisplayStringValue())
             .Append(' ');
         }
 
@@ -1365,7 +1365,7 @@
         if (HelperExtensionsCommon.AccessModifierComparer.Compare(propertyData.SetAccessorAccessModifier, propertyData.AccessModifier) < 0)
         {
           _ = signatureNameBuilder
-            .Append(propertyData.SetAccessorAccessModifier)
+            .Append(propertyData.SetAccessorAccessModifier.ToDisplayStringValue())
             .Append(' ');
         }
 
@@ -1413,7 +1413,7 @@
       }
 #endif
 
-      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+      PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
       if (!isCompact)
       {
@@ -1478,7 +1478,7 @@
       }
 #endif
 
-      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+      PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
       if (!isCompact)
       {
@@ -1541,7 +1541,7 @@
 
       SymbolAttributes symbolAttributes = typeData.SymbolAttributes;
       IEnumerable<CustomAttributeData> customAttributesData = typeData.AttributeData;
-      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+      PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
 #if !NETSTANDARD2_0
       if (symbolAttributes.HasFlag(SymbolAttributes.Final))
@@ -1714,7 +1714,7 @@
 
       SymbolAttributes symbolAttributes = methodData.SymbolAttributes;
       IEnumerable<CustomAttributeData> customAttributesData = methodData.AttributeData;
-      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+      PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
 #if !NETSTANDARD2_0
       if (symbolAttributes.HasFlag(SymbolAttributes.Final))
@@ -1863,7 +1863,7 @@
     {
       SymbolAttributes symbolAttributes = constructorData.SymbolAttributes;
       IEnumerable<CustomAttributeData> customAttributesData = constructorData.AttributeData;
-      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+      PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
 #if !NETSTANDARD2_0
       if (symbolAttributes.HasFlag(SymbolAttributes.Final))
@@ -2439,7 +2439,7 @@
 
       SymbolAttributes symbolAttributes = constructorData.SymbolAttributes;
       IEnumerable<CustomAttributeData> customAttributesData = constructorData.AttributeData;
-      StringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+      PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
 #if !NETSTANDARD2_0
       if (symbolAttributes.HasFlag(SymbolAttributes.Final))
@@ -2477,7 +2477,7 @@
       return symbolComponents;
     }
 
-    private static StringBuilder AppendCustomAttributes(this StringBuilder nameBuilder, IEnumerable<CustomAttributeData> attributes, bool isAppendNewLineEnabled)
+    private static PooledStringBuilder AppendCustomAttributes(this PooledStringBuilder nameBuilder, IEnumerable<CustomAttributeData> attributes, bool isAppendNewLineEnabled)
     {
       foreach (CustomAttributeData attribute in attributes)
       {
@@ -2972,7 +2972,7 @@
     /// </remarks>
     internal static string ToDisplayNameInternal(SymbolInfoData symbolInfoData, bool isFullyQualifiedName, bool isGenericTypeParameterIncluded, bool isDeclaringTypeIncluded)
     {
-      StringBuilder nameBuilder = StringBuilderFactory.GetOrCreate();
+      PooledStringBuilder nameBuilder = StringBuilderFactory.GetOrCreate();
 
       switch (symbolInfoData)
       {
@@ -2990,7 +2990,7 @@
       }
 
       string symbolName = nameBuilder.ToString();
-      StringBuilderFactory.Recycle(nameBuilder);
+      nameBuilder.Recycle();
 
       return symbolName;
     }
@@ -2998,88 +2998,102 @@
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, Type type, bool isGenericTypeParameterIncluded = true)
     {
       TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
-      return AppendDisplayNameInternal(nameBuilder, typeData, isFullyQualifiedName: false, isGenericTypeParameterIncluded);
+      _ = AppendDisplayNameInternal(new PooledStringBuilder(nameBuilder), typeData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true);
+      return nameBuilder;
     }
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, MethodInfo methodInfo, bool isDeclaringTypeIncluded = false)
     {
       MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-      return AppendDisplayNameInternal(nameBuilder, methodData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      _ = AppendDisplayNameInternal(new PooledStringBuilder(nameBuilder), methodData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      return nameBuilder;
     }
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, EventInfo eventInfo, bool isDeclaringTypeIncluded = false)
     {
       EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
-      return AppendDisplayNameInternal(nameBuilder, eventData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      _ = AppendDisplayNameInternal(new PooledStringBuilder(nameBuilder), eventData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      return nameBuilder;
     }
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, ConstructorInfo constructorInfo, bool isDeclaringTypeIncluded = false)
     {
       ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
-      return AppendDisplayNameInternal(nameBuilder, constructorData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      _ = AppendDisplayNameInternal(new PooledStringBuilder(nameBuilder), constructorData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      return nameBuilder;
     }
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, PropertyInfo propertyInfo, bool isDeclaringTypeIncluded = false)
     {
       PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
-      return AppendDisplayNameInternal(nameBuilder, propertyData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      _ = AppendDisplayNameInternal(new PooledStringBuilder(nameBuilder), propertyData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      return nameBuilder;
     }
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, ParameterInfo parameterInfo)
     {
       ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
-      return AppendDisplayNameInternal(nameBuilder, parameterData);
+      _ = AppendDisplayNameInternal(new PooledStringBuilder(nameBuilder), parameterData);
+      return nameBuilder;
     }
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, FieldInfo fieldInfo, bool isDeclaringTypeIncluded = false)
     {
       FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
-      return AppendDisplayNameInternal(nameBuilder, fieldData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      _ = AppendDisplayNameInternal(new PooledStringBuilder(nameBuilder), fieldData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      return nameBuilder;
     }
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, Type type, bool isGenericTypeParameterIncluded = true)
     {
       TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
-      return AppendDisplayNameInternal(nameBuilder, typeData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true);
+      _ = AppendDisplayNameInternal(new PooledStringBuilder(nameBuilder), typeData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true);
+      return nameBuilder;
     }
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, MethodInfo methodInfo, bool isDeclaringTypeIncluded = true)
     {
       MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-      return AppendDisplayNameInternal(nameBuilder, methodData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      _ = AppendDisplayNameInternal(new PooledStringBuilder(nameBuilder), methodData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      return nameBuilder;
     }
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, EventInfo eventInfo, bool isDeclaringTypeIncluded = true)
     {
       EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
-      return AppendDisplayNameInternal(nameBuilder, eventData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      _ = AppendDisplayNameInternal(new PooledStringBuilder(nameBuilder), eventData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      return nameBuilder;
     }
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, ConstructorInfo constructorInfo, bool isDeclaringTypeIncluded = true)
     {
       ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
-      return AppendDisplayNameInternal(nameBuilder, constructorData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      _ = AppendDisplayNameInternal(new PooledStringBuilder(nameBuilder), constructorData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      return nameBuilder;
     }
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, PropertyInfo propertyInfo, bool isDeclaringTypeIncluded = true)
     {
       PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
-      return AppendDisplayNameInternal(nameBuilder, propertyData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      _ = AppendDisplayNameInternal(new PooledStringBuilder(nameBuilder), propertyData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      return nameBuilder;
     }
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, ParameterInfo parameterInfo)
     {
       ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
-      return AppendDisplayNameInternal(nameBuilder, parameterData);
+      _ = AppendDisplayNameInternal(new PooledStringBuilder(nameBuilder), parameterData);
+      return nameBuilder;
     }
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, FieldInfo fieldInfo, bool isDeclaringTypeIncluded = true)
     {
       FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
-      return AppendDisplayNameInternal(nameBuilder, fieldData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      _ = AppendDisplayNameInternal(new PooledStringBuilder(nameBuilder), fieldData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+      return nameBuilder;
     }
 
-    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, TypeData typeData, bool isFullyQualifiedName, bool isGenericTypeParameterIncluded)
+    private static PooledStringBuilder AppendDisplayNameInternal(this PooledStringBuilder nameBuilder, TypeData typeData, bool isFullyQualifiedName, bool isGenericTypeParameterIncluded)
     {
       Type type = typeData.GetType();
       if (typeData.IsByRef)
@@ -3116,10 +3130,10 @@
       return nameBuilder;
     }
 
-    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, ParameterData parameterData)
+    private static PooledStringBuilder AppendDisplayNameInternal(this PooledStringBuilder nameBuilder, ParameterData parameterData)
       => nameBuilder.Append(parameterData.Name);
 
-    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, MemberInfoData memberInfoData, bool isFullyQualifiedName, bool isGenericTypeParameterIncluded, bool isDeclaringTypeIncluded)
+    private static PooledStringBuilder AppendDisplayNameInternal(this PooledStringBuilder nameBuilder, MemberInfoData memberInfoData, bool isFullyQualifiedName, bool isGenericTypeParameterIncluded, bool isDeclaringTypeIncluded)
     {
       if (isFullyQualifiedName || isDeclaringTypeIncluded)
       {
@@ -3162,7 +3176,7 @@
       return nameBuilder;
     }
 
-    private static StringBuilder AppendGenericTypeArguments(this StringBuilder nameBuilder, MethodData methodData, bool isFullyQualified)
+    private static PooledStringBuilder AppendGenericTypeArguments(this PooledStringBuilder nameBuilder, MethodData methodData, bool isFullyQualified)
     {
       if (!methodData.IsGenericMethod)
       {
@@ -3181,7 +3195,7 @@
       return nameBuilder;
     }
 
-    private static StringBuilder AppendGenericTypeArguments(this StringBuilder nameBuilder, TypeData typeData, bool isFullyQualified)
+    private static PooledStringBuilder AppendGenericTypeArguments(this PooledStringBuilder nameBuilder, TypeData typeData, bool isFullyQualified)
     {
       if (!typeData.IsGenericType)
       {
@@ -3200,7 +3214,7 @@
       return nameBuilder;
     }
 
-    private static void AppendGenericParameters(StringBuilder nameBuilder, bool isFullyQualified, TypeData[] genericTypeParameterDefinitions, TypeData[] genericTypeArguments)
+    private static void AppendGenericParameters(PooledStringBuilder nameBuilder, bool isFullyQualified, TypeData[] genericTypeParameterDefinitions, TypeData[] genericTypeArguments)
     {
       _ = nameBuilder.Append('<');
       for (int typeArgumentIndex = 0; typeArgumentIndex < genericTypeArguments.Length; typeArgumentIndex++)
@@ -3230,7 +3244,7 @@
         .Append('>');
     }
 
-    private static StringBuilder AppendGenericTypeConstraints(this StringBuilder constraintBuilder, TypeData[] genericTypeDefinitionsData, bool isFullyQualified, bool isSingleLine)
+    private static PooledStringBuilder AppendGenericTypeConstraints(this PooledStringBuilder constraintBuilder, TypeData[] genericTypeDefinitionsData, bool isFullyQualified, bool isSingleLine)
     {
       bool hasSingleNewLine = false;
       for (int genericTypeArgumentIndex = 0; genericTypeArgumentIndex < genericTypeDefinitionsData.Length; genericTypeArgumentIndex++)
@@ -3339,7 +3353,7 @@
       }
     }
 
-    private static StringBuilder AppendInheritanceSignature(this StringBuilder memberNameBuilder, TypeData typeData, bool isFullyQualified)
+    private static PooledStringBuilder AppendInheritanceSignature(this PooledStringBuilder memberNameBuilder, TypeData typeData, bool isFullyQualified)
     {
       if (typeData.IsDelegate)
       {
@@ -4145,7 +4159,7 @@
     {
       bool isWrappingAtCasing = wrapStyle is WrapStyle.Casing;
       var delimiterSet = new HashSet<char>(delimiters);
-      StringBuilder resultBuilder = StringBuilderFactory.GetOrCreateWith(text);
+      PooledStringBuilder resultBuilder = StringBuilderFactory.GetOrCreateWith(text);
       for (int characterIndex = text.Length - 1; characterIndex >= 0; characterIndex--)
       {
         bool hasNextCharacter = resultBuilder.Length > characterIndex + 1;
@@ -4162,12 +4176,12 @@
       }
 
       string result = resultBuilder.ToString();
-      StringBuilderFactory.Recycle(resultBuilder);
+      resultBuilder.Recycle();
 
       return result;
     }
 
-    internal static StringBuilder AppendInlineHtml(this StringBuilder signatureBuilder, SymbolComponentInfo symbolComponentInfo)
+    internal static PooledStringBuilder AppendInlineHtml(this PooledStringBuilder signatureBuilder, SymbolComponentInfo symbolComponentInfo)
     {
       if (symbolComponentInfo.CustomAttributes.Any())
       {
@@ -4175,7 +4189,7 @@
         {
           _ = signatureBuilder.Append($"<span class=\"syntax-delimiter\">[</span>")
             .Append($"<span class=\"syntax-type\">")
-            .Append(attribute.NameBuilder.ToString());
+            .Append(attribute.Name);
 
           bool hasConstructorArgs = symbolComponentInfo.CustomAttributeConstructorArgs.Any();
           bool hasNamedArgs = symbolComponentInfo.CustomAttributeNamedArgs.Any();
@@ -4242,7 +4256,7 @@
             .Append(' ');
       }
 
-      if (symbolComponentInfo.NameBuilder.Length > 0)
+      if (symbolComponentInfo.Name.Length > 0)
       {
         if (symbolComponentInfo.IsKeyword)
         {
@@ -4257,19 +4271,16 @@
           _ = signatureBuilder.Append($"<span class=\"syntax-type\">");
         }
 
-        _ = signatureBuilder.AppendStringBuilder(symbolComponentInfo.NameBuilder)
+        _ = signatureBuilder.Append(symbolComponentInfo.Name)
           .Append("</span>");
-        StringBuilderFactory.Recycle(symbolComponentInfo.NameBuilder);
       }
 
-      if (symbolComponentInfo.ValueNameBuilder.Length > 0)
+      if (symbolComponentInfo.ValueName.Length > 0)
       {
         _ = signatureBuilder.Append($"<span class=\"syntax-value\">")
           .Append(' ')
-          .AppendStringBuilder(symbolComponentInfo.ValueNameBuilder)
+          .Append(symbolComponentInfo.ValueName)
           .Append("</span>");
-
-        StringBuilderFactory.Recycle(symbolComponentInfo.ValueNameBuilder);
       }
 
       if (symbolComponentInfo.IsIndexer)
@@ -4282,7 +4293,7 @@
       if (symbolComponentInfo.GenericTypeParameters.Any())
       {
         _ = signatureBuilder.Append($"<span class=\"syntax-delimiter\">")
-          .AppendReadOnlySpan('<'.ToHtmlEncodedReadOnlySpan())
+          .Append('<'.ToHtmlEncodedReadOnlySpan())
           .Append("</span>")
           .Append($"<span class=\"syntax-type\">");
 
@@ -4296,7 +4307,7 @@
         _ = signatureBuilder.Remove(signatureBuilder.Length - 2, 2)
           .Append("</span>")
           .Append($"<span class=\"syntax-delimiter\">")
-          .AppendReadOnlySpan('>'.ToHtmlEncodedReadOnlySpan())
+          .Append('>'.ToHtmlEncodedReadOnlySpan())
           .Append("</span>");
       }
 
@@ -4305,11 +4316,11 @@
         _ = signatureBuilder.Append($"<span class=\"syntax-delimiter\">");
         if (symbolComponentInfo.IsIndexer)
         {
-          _ = signatureBuilder.AppendReadOnlySpan('['.ToHtmlEncodedReadOnlySpan());
+          _ = signatureBuilder.Append('['.ToHtmlEncodedReadOnlySpan());
         }
         else
         {
-          _ = signatureBuilder.AppendReadOnlySpan('('.ToHtmlEncodedReadOnlySpan());
+          _ = signatureBuilder.Append('('.ToHtmlEncodedReadOnlySpan());
         }
 
         _ = signatureBuilder.Append("</span>")
@@ -4335,12 +4346,12 @@
 
         if (symbolComponentInfo.IsIndexer)
         {
-          _ = signatureBuilder.AppendReadOnlySpan(']'.ToHtmlEncodedReadOnlySpan())
+          _ = signatureBuilder.Append(']'.ToHtmlEncodedReadOnlySpan())
           .Append("</span>");
         }
         else
         {
-          _ = signatureBuilder.AppendReadOnlySpan(')'.ToHtmlEncodedReadOnlySpan())
+          _ = signatureBuilder.Append(')'.ToHtmlEncodedReadOnlySpan())
           .Append("</span>");
         }
       }
@@ -4371,14 +4382,14 @@
       {
         foreach (SymbolComponentInfo constraintInfo in symbolComponentInfo.GenericTypeConstraints)
         {
-          _ = signatureBuilder.AppendReadOnlySpan(System.Environment.NewLine.ToHtmlEncodedReadOnlySpan())
-            .AppendReadOnlySpan(HelperExtensionsCommon.Indentation.ToHtmlEncodedReadOnlySpan())
+          _ = signatureBuilder.Append(System.Environment.NewLine.ToHtmlEncodedReadOnlySpan())
+            .Append(HelperExtensionsCommon.Indentation.ToHtmlEncodedReadOnlySpan())
             .Append($"<span class=\"syntax-keyword\">")
             .Append("where")
             .Append(' ')
             .Append("</span>")
             .Append($"<span class=\"syntax-type\">")
-            .AppendStringBuilder(constraintInfo.NameBuilder)
+            .Append(constraintInfo.Name)
             .Append(' ')
             .Append("</span>")
             .Append($"<span class=\"syntax-delimiter\">")
@@ -4391,7 +4402,7 @@
             if (constraint.IsKeyword)
             {
               _ = signatureBuilder.Append($"<span class=\"syntax-keyword\">")
-                .AppendStringBuilder(constraint.NameBuilder)
+                .Append(constraint.Name)
                 .Append(',')
                 .Append(' ')
                 .Append("</span>");
@@ -4399,7 +4410,7 @@
             else
             {
               _ = signatureBuilder.Append($"<span class=\"syntax-type\">")
-                .AppendStringBuilder(constraint.NameBuilder)
+                .Append(constraint.Name)
                 .Append(',')
                 .Append(' ')
                 .Append("</span>");

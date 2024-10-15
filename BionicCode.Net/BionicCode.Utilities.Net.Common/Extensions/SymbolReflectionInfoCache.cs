@@ -113,12 +113,12 @@
       return (TypeData)symbolInfoData;
     }
 
-    internal static MethodData GetOrCreateSymbolInfoDataCacheEntry(MethodInfo constructorInfo)
+    internal static MethodData GetOrCreateSymbolInfoDataCacheEntry(MethodInfo methodInfo)
     {
-      ISymbolInfoDataCacheKey cacheKey = new SymbolInfoDataCacheKey<RuntimeMethodHandle>(constructorInfo.Name, constructorInfo.DeclaringType.Namespace, constructorInfo.DeclaringType.TypeHandle, constructorInfo.MethodHandle, constructorInfo.GetParameters());
+      ISymbolInfoDataCacheKey cacheKey = new SymbolInfoDataCacheKey<RuntimeMethodHandle>(methodInfo.Name, methodInfo.DeclaringType.Namespace, methodInfo.DeclaringType.TypeHandle, methodInfo.MethodHandle, methodInfo.GetParameters());
       if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
       {
-        symbolInfoData = new MethodData(constructorInfo);
+        symbolInfoData = new MethodData(methodInfo);
         SymbolReflectionInfoCache.SymbolInfoDataCache.Add(cacheKey, symbolInfoData);
       }
 

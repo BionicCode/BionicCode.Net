@@ -46,7 +46,7 @@
 
     public async Task LogAsync(ProfiledTypeResultCollection typeResults, CancellationToken cancellationToken)
     {
-      StringBuilder htmlTypeNavigationIndexBuilder = StringBuilderFactory.GetOrCreate();
+      PooledStringBuilder htmlTypeNavigationIndexBuilder = StringBuilderFactory.GetOrCreate();
       var documentBuilderInfoMap = new Dictionary<ProfilerBatchResultGroupCollection, IEnumerable<HtmlDocumentBuilderInfo>>();
       foreach (ProfilerBatchResultGroupCollection batchResultGroups in typeResults)
       {
@@ -137,7 +137,7 @@
       var filePaths = new List<string>();
       var runningTasks = new List<Task<ChartTableCollection>>();
       var htmlDocumentBuilderValues = new Dictionary<ProfilerBatchResultGroup, HtmlDocumentBuilderInfo>();
-      StringBuilder htmlTypeMemberNavigationIndexBuilder = StringBuilderFactory.GetOrCreate();
+      PooledStringBuilder htmlTypeMemberNavigationIndexBuilder = StringBuilderFactory.GetOrCreate();
       var chartDataConverter = new GoogleChartsDataConverter();
 
       string scriptCode = await GetEncodedJavaScriptCodeTextAsync();
@@ -205,7 +205,7 @@
       return htmlDocumentBuilderValues.Values.ToList();
     }
 
-    private async Task<string> CreateGlobalNavigationIndexAsync(StringBuilder htmlDocumentNavigationIndexBuilder, int totalResultCount, int currentResultIndex, string htmlTypeNavigationIndexTemplate, CancellationToken cancellationToken)
+    private async Task<string> CreateGlobalNavigationIndexAsync(PooledStringBuilder htmlDocumentNavigationIndexBuilder, int totalResultCount, int currentResultIndex, string htmlTypeNavigationIndexTemplate, CancellationToken cancellationToken)
     {
       int lineIndex = 0;
 
@@ -246,7 +246,7 @@
         return string.Empty;
       }
 
-      StringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
+      PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
       foreach (ProfilerBatchResult result in profilerBatchResultGroup)
       {
         _ = htmlDocumentBuilder
@@ -261,7 +261,7 @@
 
     private string CreateHtmlInPageFooterElements(ProfilerBatchResultGroup profilerBatchResultGroup)
     {
-      StringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
+      PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
       foreach (ProfilerBatchResult result in profilerBatchResultGroup)
       {
         _ = htmlDocumentBuilder
@@ -290,7 +290,7 @@
 
     private async Task<string> CreateHtmlTableAsync(ProfilerBatchResultGroup batchResultGroup, CancellationToken cancellationToken)
     {
-      StringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
+      PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
       EnvironmentInfo environmentInfo = await Environment.GetEnvironmentInfoAsync();
 
       foreach (ProfilerBatchResult batchResult in batchResultGroup)

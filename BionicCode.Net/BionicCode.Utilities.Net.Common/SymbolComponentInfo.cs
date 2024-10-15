@@ -21,8 +21,39 @@
     public ReadOnlyCollection<string> CustomAttributeConstructorArgs { get; }
     public ReadOnlyCollection<(string PropertyName, string PropertyValue)> CustomAttributeNamedArgs { get; }
     public ReadOnlyCollection<SymbolComponentInfo> Parameters { get; }
-    public StringBuilder NameBuilder { get; }
-    public StringBuilder ValueNameBuilder { get; }
+
+    private string name;
+    public string Name
+    {
+      get
+      {
+        if (this.name is null)
+        {
+          this.name = this.NameBuilder?.ToString() ?? string.Empty;
+          this.NameBuilder.Recycle();
+        }
+
+        return this.name;
+      }
+    }
+
+    private string valueName;
+    public string ValueName
+    {
+      get
+      {
+        if (this.valueName is null)
+        {
+          this.valueName = this.ValueNameBuilder?.ToString() ?? string.Empty;
+          this.ValueNameBuilder.Recycle();
+        }
+
+        return this.valueName;
+      }
+    }
+
+    public PooledStringBuilder NameBuilder { get; }
+    public PooledStringBuilder ValueNameBuilder { get; }
     public bool IsKeyword { get; set; }
     public bool IsExtensionMethodParameter { get; set; }
     public bool IsSymbol { get; set; }
@@ -126,13 +157,13 @@
     {
       if (this.html is null)
       {
-        StringBuilder signatureBuilder = StringBuilderFactory.GetOrCreate()
+        PooledStringBuilder signatureBuilder = StringBuilderFactory.GetOrCreate()
           .Append("<div style=\"display: block; width: 100%;\">")
           .AppendInlineHtml(this)
           .Append("</div>");
 
         this.html = signatureBuilder.ToString();
-        StringBuilderFactory.Recycle(signatureBuilder);
+        signatureBuilder.Recycle();
       }
 
       return this.html;
