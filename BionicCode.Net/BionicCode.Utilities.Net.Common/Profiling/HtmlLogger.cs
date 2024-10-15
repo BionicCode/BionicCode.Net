@@ -154,7 +154,7 @@
         string htmlFileName = $"profiler_result_{timeStamp.ToString("MM-dd-yyyy_hhmmss.fffffff")}.html";
         _ = htmlTypeMemberNavigationIndexBuilder.AppendLine($@"<li><a class=""dropdown-item {{0}}"" style=""white-space: pre-wrap; "" {{1}} href=""{htmlFileName}"">{batchResultGroup.TargetShortCompactSignature.ToHtmlEncodedString()}</a></li>");
         string htmlSourceCodeTemplate = await GetEncodedHtmlCodeTextAsync();
-        string pageTitle = $"{batchResultGroup.TargetName.ToWrappingHtml(WrapStyle.Casing, '.', '<', '>', ':', '(', '[')} {batchResultGroup.TargetType.ToDisplayStringValue(toUpperCase: true, toBaseType: true)}";
+        string pageTitle = $"{batchResultGroup.TargetName.ToHtmlEncodedString().ToWrappingHtml(WrapStyle.Casing, '.', '<', '>', '&', ':', '(', '[')} {batchResultGroup.TargetType.ToDisplayStringValue(toUpperCase: true, toBaseType: true)}";
         string inPageNavigationHtmlElements = CreateHtmlInPageNavigationElements(batchResultGroup);
         //string pageFooterElements = CreateHtmlInPageFooterElements(batchResultGroup);
 
@@ -377,7 +377,7 @@
         <div style=""width:50%; float: left;"">
           <div id=""chart-{batchResult.Index}"" class=""line-chart""></div>
         </div>")
-        .Append($@"<a class=""navigation-link"" href=""#document_start"">Go to top 🡡</a>")
+        .Append($@"<a class=""navigation-link"" href=""#top"">Go to top 🡡</a>")
         .Append("</article>");
       }
 

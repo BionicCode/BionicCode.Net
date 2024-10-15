@@ -3133,15 +3133,19 @@
       }
       else if (memberInfoData is PropertyData propertyData)
       {
-        _ = nameBuilder.Append(propertyData.Name)
-          .Append('[');
+        _ = nameBuilder.Append(propertyData.Name);
 
-        foreach (ParameterData indexerParameter in propertyData.IndexerParameters)
+        if (propertyData.IsIndexer)
         {
-          _ = nameBuilder.Append(indexerParameter.ParameterTypeData.ShortDisplayName);
+          _ = nameBuilder.Append('[');
+
+          foreach (ParameterData indexerParameter in propertyData.IndexerParameters)
+          {
+            _ = nameBuilder.Append(indexerParameter.ParameterTypeData.ShortDisplayName);
+          }
+
+          _ = nameBuilder.Append(']');
         }
-        
-        _ = nameBuilder.Append(']');
       }
       else
       {
@@ -4081,25 +4085,60 @@
 #endif
 
     internal static string ToHtmlEncodedString(this string text)
-      => HttpUtility.HtmlAttributeEncode(text)
+      => text.Replace("&", "&amp;")
+      .Replace("<", "&lt;")
+      .Replace(">", "&gt;")
+      .Replace("\"", "&quot;")
+      .Replace("'", "&apos;")
       .Replace(System.Environment.NewLine, "<br>")
       .Replace(" ", "&nbsp;");
 
     internal static ReadOnlySpan<char> ToHtmlEncodedReadOnlySpan(this string text)
-      => HttpUtility.HtmlAttributeEncode(text)
-      .Replace(System.Environment.NewLine, "<br>")
-      .Replace(" ", "&nbsp;")
+      => text.ToHtmlEncodedString()
       .AsSpan();
 
     internal static string ToHtmlEncodedString(this char character)
-      => HttpUtility.HtmlAttributeEncode(new string(new char[] { character }))
-      .Replace(System.Environment.NewLine, "<br>")
-      .Replace(" ", "&nbsp;");
+    {
+      if (character == '&')
+      {
+        return "&amp;";
+      }
+      else if (character == '<')
+      {
+        return "&lt;";
+      }
+      else if (character == '>')
+      {
+        return "&gt;";
+      }
+      else if (character == ' ')
+      {
+        return "&nbsp;";
+      }
+      else if (character == '"')
+      {
+        return "&quot;";
+      }
+      else if (character == '\'')
+      {
+        return "&apos;";
+      }
+      else if (character == System.Environment.NewLine[1]) // \n
+      {
+        return "<br>";
+      }
+      else if (character == System.Environment.NewLine[0]) // \r
+      {
+        return string.Empty;
+      }
+      else
+      {
+        return character.ToString();
+      }
+    }
 
     internal static ReadOnlySpan<char> ToHtmlEncodedReadOnlySpan(this char character)
-      => HttpUtility.HtmlAttributeEncode(new string(new char[] { character })).Replace(System.Environment.NewLine, "<br>")
-      .Replace(System.Environment.NewLine, "<br>")
-      .Replace(" ", "&nbsp;")
+      => character.ToHtmlEncodedString()
       .AsSpan();
 
     internal static string ToWrappingHtml(this string text, WrapStyle wrapStyle, params char[] delimiters)
@@ -4109,8 +4148,13 @@
       StringBuilder resultBuilder = StringBuilderFactory.GetOrCreateWith(text);
       for (int characterIndex = text.Length - 1; characterIndex >= 0; characterIndex--)
       {
+        bool hasNextCharacter = resultBuilder.Length > characterIndex + 1;
         char textCharacter = resultBuilder[characterIndex];
-        if (delimiterSet.Contains(textCharacter)
+        char nextTextCharacter = hasNextCharacter
+          ? resultBuilder[characterIndex + 1] 
+          : default;
+        if (delimiterSet.Contains(textCharacter) 
+          && (textCharacter == '&' && hasNextCharacter && nextTextCharacter != 'n' || !hasNextCharacter)
           || isWrappingAtCasing && char.IsUpper(textCharacter))
         {
           _ = resultBuilder.Insert(characterIndex, "<wbr>");
