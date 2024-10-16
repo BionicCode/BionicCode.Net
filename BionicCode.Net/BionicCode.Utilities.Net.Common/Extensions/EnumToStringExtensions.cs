@@ -81,8 +81,10 @@
             string result = toUpperCase ? "Indexer" : "indexer";
             return toBaseType ? result : $"{result} set()";
           }
+        case ProfiledTargetType.Scope:
+          return toUpperCase ? "Scope" : "scope";
         default:
-          throw new NotSupportedException();
+          throw new NotSupportedException(ExceptionMessages.GetValueNotSupportedExceptionMessage(profiledTargetType));
       }
     }
 
@@ -92,7 +94,7 @@
     /// <param name="timeUnit"></param>
     /// <param name="toUpperCase">Controls whether to convert the string's first character to uppercase (<paramref name="toUpperCase"/>=<c>true</c>). The default is lowercase (<paramref name="toUpperCase"/>=<c>true</c>.</param>
     /// <returns>The readable string representation of the enum value.</returns>
-    /// <exception cref="NotSupportedException">The enum value is not supported. (This exception is only intended for internal maintainance and will never be thrown in production code)</exception>
+    /// <exception cref="NotSupportedException">The enum value is not supported. (This exception is only intended for internal maintenance and will never be thrown in production code)</exception>
     public static string ToDisplayStringValue(this TimeUnit timeUnit, bool toUpperCase = false)
     {
       switch (timeUnit)
@@ -108,7 +110,7 @@
         case TimeUnit.Nanoseconds:
           return toUpperCase ? "Ns" : "ns";
         default:
-          throw new NotSupportedException();
+          throw new NotSupportedException(ExceptionMessages.GetValueNotSupportedExceptionMessage(timeUnit));
       }
     }
 
@@ -205,8 +207,9 @@
         case SymbolAttributes.ByReference:
         case SymbolAttributes.Init:
         case SymbolAttributes.Constant:
-        default:
           return toUpperCase ? "Not a type or member" : "not a type or member";
+        default:
+          throw new NotSupportedException(ExceptionMessages.GetValueNotSupportedExceptionMessage(symbolAttributes));
       }
     }
   }
