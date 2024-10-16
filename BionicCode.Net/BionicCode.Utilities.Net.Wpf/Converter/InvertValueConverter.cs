@@ -4,7 +4,7 @@
   using System.Globalization;
   using System.Windows;
 
-#if NET || NET461_OR_GREATER
+#if !NETSTANDARD
   using System.Windows.Data;
   /// <summary>
   /// Implementation of <see cref="IValueConverter"/> that inverts <see cref="bool"/>, <see cref="Visibility"/>, <see cref="int"/>, <see cref="double"/>, <see cref="decimal"/> and <see cref="float"/>

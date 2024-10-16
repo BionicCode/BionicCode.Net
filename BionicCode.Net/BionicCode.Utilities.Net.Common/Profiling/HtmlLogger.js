@@ -2,6 +2,13 @@
 addEventListener('load', initialize);
 window.addEventListener('resize', onWindowResized);
 
+const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
+for (let popoverIndex = 0; popoverIndex < popoverList.length; popoverIndex += 1) {
+  let popover = popoverList[popoverIndex];
+  popover.popover();
+}
+
 const charts = [];
 const dataTables = [];
 let chartTableCollectionJson;

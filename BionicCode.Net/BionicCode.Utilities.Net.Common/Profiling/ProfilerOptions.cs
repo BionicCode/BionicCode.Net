@@ -37,7 +37,7 @@
     /// The number of iterations that the profiled code is executed.
     /// </summary>
     /// <value>
-    /// An integer number greater than <c>0</c> or <c>0</c> to perform no profiling. The <see cref="Profiler"/> will throw an exception if the value is less than <c>0</c>. The default is defined by <see cref="Profiler.DefaultIterationCount"/>.
+    /// An integer number greater than <c>0</c> or <c>0</c> to perform no profiling. The <see cref="Profiler"/> will throw an exception if the value is less than <c>0</c>. The default is defined by <see cref="Profiler.DefaultIterationsCount"/>.
     /// </value>
     public int Iterations { get; set; }
 

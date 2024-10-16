@@ -10,7 +10,7 @@ namespace BionicCode.Utilities.Net
   using System.ComponentModel;
   using System.Windows;
 
-#if NET || NET461_OR_GREATER
+#if !NETSTANDARD
   using System.Windows.Controls;
   using System.Windows.Data;
   /// <summary>

@@ -176,11 +176,16 @@
     internal async Task<ProfiledTypeResultCollection> StartAsync(CancellationToken cancellationToken)
     {
       var typeResults = new ProfiledTypeResultCollection();
-      foreach (Type typeToProfile in this.Configuration.Types)
+      if (this.Configuration.IsAutoDiscoverEnabled)
+      {
+        DiscoverTargetTypes(this.Configuration.AutoDiscoverSourceAssemblies, this.Configuration.TypeData);
+      }
+
+      foreach (TypeData typeDataToProfile in this.Configuration.TypeData)
       {
         cancellationToken.ThrowIfCancellationRequested();
 
-        ProfilerBatchResultGroupCollection typeMemberResults = await ProfileType(typeToProfile, cancellationToken);
+        ProfilerBatchResultGroupCollection typeMemberResults = await ProfileType(typeDataToProfile, cancellationToken);
         typeResults.Add(typeMemberResults);
       }
 
@@ -201,60 +206,94 @@
       return typeResults;
     }
 
-    private async Task<ProfilerBatchResultGroupCollection> ProfileType(Type typeToProfile, CancellationToken cancellationToken)
+    private void DiscoverTargetTypes(Assembly[] targetAssemblies, HashSet<TypeData> discoveredTypes)
     {
-      object targetInstance = null;
+      if (targetAssemblies.Length == 0)
+      {
+        targetAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+      }
+
+      foreach (Assembly assembly in targetAssemblies)
+      {
+        Type[] typesInAssembly = assembly.GetTypes();
+        for (int index = 0; index < typesInAssembly.Length; index++)
+        {
+          Type type = typesInAssembly[index];
+          ProfilerAutoDiscoverAttribute attribute = type.GetCustomAttribute<ProfilerAutoDiscoverAttribute>();
+          if (attribute != null)
+          {
+            if ((type.IsGenericTypeDefinition || type.ContainsGenericParameters))
+            {
+              if (attribute.GenericTypeParameters.Length == 0)
+              {
+                throw new ProfilerConfigurationException(ExceptionMessages.GetMissingGenericTypeArgumentsForAutoDiscoveredGenericTypeExceptionMessage(type));
+              }
+
+              type = type.MakeGenericType(attribute.GenericTypeParameters);
+            }
+
+            TypeData targetTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+            _ = discoveredTypes.Add(targetTypeData);
+          }
+        }
+      }
+    }
+
+    private async Task<ProfilerBatchResultGroupCollection> ProfileType(TypeData typeDataToProfile, CancellationToken cancellationToken)
+    {
       bool hasProfiledInstanceMembers = false;
-      bool isInstanceProviderMemberInfoRequired = !typeToProfile.IsAbstract;
+      bool isInstanceProviderMemberInfoRequired = !typeDataToProfile.IsAbstract;
       var targetMembers = new List<ProfiledMemberInfo>();
-      GetTargetMethods(typeToProfile, isInstanceProviderMemberInfoRequired, targetMembers, cancellationToken, out bool hasProfiledInstanceMethods, out InstanceProviderInfo instanceProviderMethodInfo);
+      bool hasHighPriorityInstanceProvider = false;
+      InstanceProviderInfo instanceProviderInfo = null;
+      GetTargetMethods(typeDataToProfile, isInstanceProviderMemberInfoRequired, targetMembers, cancellationToken, out bool hasProfiledInstanceMethods, ref hasHighPriorityInstanceProvider, ref instanceProviderInfo);
       hasProfiledInstanceMembers |= hasProfiledInstanceMethods;
-      if (isInstanceProviderMemberInfoRequired && instanceProviderMethodInfo != null)
+      if (isInstanceProviderMemberInfoRequired && hasHighPriorityInstanceProvider)
       {
         isInstanceProviderMemberInfoRequired = false;
-        targetInstance = ((MethodInfo)instanceProviderMethodInfo?.MemberInfo).Invoke(null, instanceProviderMethodInfo.ArgumentList);
       }
 
-      GetTargetProperties(typeToProfile, isInstanceProviderMemberInfoRequired, targetMembers, cancellationToken, out bool hasProfiledInstanceProperties, out InstanceProviderInfo instanceProviderPropertyInfo);
+      GetTargetProperties(typeDataToProfile, isInstanceProviderMemberInfoRequired, targetMembers, cancellationToken, out bool hasProfiledInstanceProperties, ref hasHighPriorityInstanceProvider, ref instanceProviderInfo);
       hasProfiledInstanceMembers |= hasProfiledInstanceProperties;
-      if (isInstanceProviderMemberInfoRequired && instanceProviderPropertyInfo != null)
+      if (isInstanceProviderMemberInfoRequired && hasHighPriorityInstanceProvider)
       {
         isInstanceProviderMemberInfoRequired = false;
-        targetInstance = ((PropertyInfo)instanceProviderPropertyInfo.MemberInfo).GetValue(null, null);
       }
 
-      if (isInstanceProviderMemberInfoRequired)
+      GetTargetConstructors(typeDataToProfile, isInstanceProviderMemberInfoRequired, targetMembers, cancellationToken, out bool hasProfiledInstanceConstructors, ref hasHighPriorityInstanceProvider, ref instanceProviderInfo);
+      hasProfiledInstanceMembers |= hasProfiledInstanceConstructors;
+
+      if (isInstanceProviderMemberInfoRequired && hasProfiledInstanceMembers)
       {
-        InstanceProviderInfo instanceProviderFieldInfo = GetInstanceProviderField(typeToProfile, cancellationToken);
-        isInstanceProviderMemberInfoRequired = instanceProviderFieldInfo == null;
-        targetInstance = ((FieldInfo)instanceProviderFieldInfo?.MemberInfo)?.GetValue(null);
+        GetInstanceProviderField(typeDataToProfile, cancellationToken, ref hasHighPriorityInstanceProvider, ref instanceProviderInfo);
       }
-
-      GetTargetConstructors(typeToProfile, isInstanceProviderMemberInfoRequired, targetMembers, cancellationToken, out InstanceProviderInfo instanceProviderConstructorInfo);
 
       // We don't need an instance if we have an abstract (abstract, static) type
       // or the profiled members are only constructors.
-      bool isTargetInstanceRequired = !typeToProfile.IsAbstract
+      bool isTargetInstanceRequired = !typeDataToProfile.IsAbstract
         && hasProfiledInstanceMembers;
 
-      if (isTargetInstanceRequired && targetInstance == null)
+      object targetInstance = null;
+      if (isTargetInstanceRequired)
       {
-        targetInstance = ((ConstructorInfo)instanceProviderConstructorInfo?.MemberInfo)?.Invoke(instanceProviderConstructorInfo.ArgumentList);
-      }
-
-      if (isTargetInstanceRequired && targetInstance == null)
-      {
-        throw new MissingMemberException(ExceptionMessages.GetMissingCreationMemberOfProfiledTypeExceptionMessage(typeToProfile));
+        if (instanceProviderInfo is null)
+        {
+          throw new MissingMemberException(ExceptionMessages.GetMissingCreationMemberOfProfiledTypeExceptionMessage(typeDataToProfile));
+        }
+        else
+        {
+          targetInstance = instanceProviderInfo.IsAwaitable ? await instanceProviderInfo.CreateTargetInstanceAsync(null) : instanceProviderInfo.CreateTargetInstance(null);
+        }
       }
 
       cancellationToken.ThrowIfCancellationRequested();
 
-      return await ProfileMembersAsync(targetMembers, targetInstance, typeToProfile, cancellationToken);
+      return await ProfileMembersAsync(targetMembers, targetInstance, typeDataToProfile, cancellationToken);
     }
 
-    protected async Task<ProfilerBatchResultGroupCollection> ProfileMembersAsync(IEnumerable<ProfiledMemberInfo> memberInfos, object profiledInstance, Type typeToProfile, CancellationToken cancellationToken)
+    protected async Task<ProfilerBatchResultGroupCollection> ProfileMembersAsync(IEnumerable<ProfiledMemberInfo> memberInfos, object profiledInstance, TypeData typeDataToProfile, CancellationToken cancellationToken)
     {
-      var resultGroups = new ProfilerBatchResultGroupCollection(typeToProfile);
+      var resultGroups = new ProfilerBatchResultGroupCollection(typeDataToProfile);
       foreach (ProfiledMemberInfo memberInfo in memberInfos)
       {
         cancellationToken.ThrowIfCancellationRequested();
@@ -275,7 +314,7 @@
             }
           }
 
-          var profilerConfiguration = new RuntimeContextProfilerConfiguration(memberInfo.TargetFramework, new[] { typeToProfile }, this.Configuration);
+          var profilerConfiguration = new RuntimeContextProfilerConfiguration(memberInfo.TargetFramework, new[] { typeDataToProfile }, this.Configuration);
           ProfiledTypeResultCollection resultCollection = await executionContext.ProfileTargetTypesInRuntimeContext(profilerConfiguration, cancellationToken);
           IEnumerable<ProfilerBatchResultGroup> externalContextResultGroups = resultCollection.SelectMany(groupCollection => groupCollection);
           foreach (ProfilerBatchResultGroup resultGroup in externalContextResultGroups)
@@ -284,108 +323,140 @@
           }
         }
 
-        string fullSignatureName = memberInfo.MemberInfo.ToSignatureName();
-        bool memberIsMethod = memberInfo is ProfiledMethodInfo;
-        bool memberIsConstructor = memberInfo is ProfiledConstructorInfo;
-        bool memberIsProperty = memberInfo is ProfiledPropertyInfo;
-
-        ProfiledMethodInfo method = memberInfo as ProfiledMethodInfo;
-        ProfiledConstructorInfo constructor = memberInfo as ProfiledConstructorInfo;
-        ProfiledPropertyInfo property = memberInfo as ProfiledPropertyInfo;
-
-        var memberResultGroup = new ProfilerBatchResultGroup();
-        for (int argumentListIndex = 0; argumentListIndex < memberInfo.ArgumentLists.Count(); argumentListIndex++)
+        var memberResultGroup = new ProfilerBatchResultGroup
         {
-          cancellationToken.ThrowIfCancellationRequested();
+          TargetSignature = memberInfo.Signature,
+          TargetSignatureComponentInfo = memberInfo.MemberInfoData.SymbolComponentInfo,
+          TargetNamespace = memberInfo.Namespace,
+          TargetAssemblyName = memberInfo.AssemblyName,
+          TargetSourceFileName = Path.GetFileName(memberInfo.SourceFilePath),
+          TargetSourceFileLineNumber = memberInfo.LineNumber,
+          TargetShortSignature = memberInfo.ShortSignature,
+          TargetShortCompactSignature = memberInfo.ShortCompactSignature,
+          TargetName = memberInfo.DisplayName,
+          TargetShortName = memberInfo.ShortDisplayName
+        };
 
-          IEnumerable<object> argumentList = memberInfo.ArgumentLists.ElementAt(argumentListIndex);
-          CreateTargetMemberDelegate(profiledInstance, memberInfo, argumentList);
-          if (memberIsMethod)
+        if (memberInfo is ProfiledMethodInfo method)
+        {
+          for (int argumentListIndex = 0; argumentListIndex < method.ArgumentInfo.Count; argumentListIndex++)
           {
-            ProfilerBatchResult result = method.IsAsync
-              ? await Profiler.LogTimeAsyncInternal(method.AsyncMethodDelegate.Invoke, null, null, this.Configuration.WarmupIterations, this.Configuration.Iterations, argumentListIndex, this.Configuration.ProfilerLogger, this.Configuration.AsyncProfilerLogger, this.Configuration.BaseUnit, method.SourceFilePath, method.LineNumber)
-              : Profiler.LogTimeInternal(method.MethodDelegate.Invoke, this.Configuration.WarmupIterations, this.Configuration.Iterations, argumentListIndex, this.Configuration.ProfilerLogger, this.Configuration.BaseUnit, method.SourceFilePath, method.LineNumber);
-            ProfiledTargetType targetType = method.MethodName.StartsWith("set_", StringComparison.Ordinal) && method.MethodInfo.GetParameters().Length == 1
-              ? ProfiledTargetType.PropertySet
-              : method.MethodName.StartsWith("get_", StringComparison.Ordinal) && method.MethodInfo.GetParameters().Length == 0
-                ? ProfiledTargetType.PropertyGet
-                : ProfiledTargetType.Method;
+            cancellationToken.ThrowIfCancellationRequested();
 
-            var context = new ProfilerContext(method.AssemblyName, fullSignatureName, targetType, method.SourceFilePath, method.LineNumber, memberInfo.MemberInfo, this.Configuration.WarmupIterations, memberInfo.TargetFramework);
-            result.Context = context;
-            result.BaseUnit = this.Configuration.BaseUnit;
+            MethodArgumentInfo arguments = method.ArgumentInfo[argumentListIndex];
+            ProfilerTargetInvokeInfo invocationInfo;
+            if (method.IsAwaitable)
+            {
+              if (method.IsAwaitableTask)
+              {
+                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, arguments, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.MethodData.SymbolComponentInfo, method.Namespace, method.AssemblyName, asynchronousTaskMethodInvocator: method.MethodData.GetAwaitableTaskInvocator(), ProfiledTargetType.Method);
+              }
+              else if (method.IsAwaitableValueTask)
+              {
+                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, arguments, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.MethodData.SymbolComponentInfo, method.Namespace, method.AssemblyName, asynchronousValueTaskMethodInvocator: method.MethodData.GetAwaitableValueTaskInvocator(), ProfiledTargetType.Method);
+              }
+              else
+              {
+                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.MethodData.SymbolComponentInfo, method.Namespace, method.AssemblyName, arguments, asynchronousGenericValueTaskMethodInvocator: method.MethodData.GetAwaitableGenericValueTaskInvocator(), ProfiledTargetType.Method);
+              }
+            }
+            else
+            {
+              invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, arguments, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.MethodData.SymbolComponentInfo, method.Namespace, method.AssemblyName, synchronousMethodInvocator: method.MethodData.GetInvocator(), ProfiledTargetType.Method);
+            }
+
+            var context = new ProfilerContext(invocationInfo, method.SourceFilePath, method.LineNumber, this.Configuration.WarmupIterations, this.Configuration.Iterations, method.TargetFramework, this.Configuration.BaseUnit, this.Configuration.ProfilerLogger, this.Configuration.AsyncProfilerLogger);
+            ProfilerBatchResult result = await Profiler.LogTimeInternalAsync(context);
 
             if (memberResultGroup.IsEmpty())
             {
-              memberResultGroup.ProfiledTargetType = ProfiledTargetType.Method;
-              memberResultGroup.ProfiledTargetSignatureMemberName = fullSignatureName;
-              memberResultGroup.ProfiledTargetMemberShortName = method.MethodInfo.ToDisplayName();
-              result.ArgumentListCount = argumentList is VoidArgumentList ? 0 : memberInfo.ArgumentLists.Count();
+              result.ArgumentListCount = method.ArgumentInfo.Count;
+              memberResultGroup.TargetType = invocationInfo.ProfiledTargetType;
               memberResultGroup.Add(result);
             }
             else
             {
               memberResultGroup.First().Combine(result);
-            }
-          }
-          else if (memberIsConstructor)
-          {
-            ProfilerBatchResult result = Profiler.LogTimeInternal(constructor.ConstructorDelegate, this.Configuration.WarmupIterations, this.Configuration.Iterations, argumentListIndex, this.Configuration.ProfilerLogger, this.Configuration.BaseUnit, constructor.SourceFilePath, lineNumber: constructor.LineNumber);
-            var context = new ProfilerContext(constructor.AssemblyName, fullSignatureName, ProfiledTargetType.Constructor, constructor.SourceFilePath, constructor.LineNumber, memberInfo.MemberInfo, this.Configuration.WarmupIterations, memberInfo.TargetFramework);
-            result.Context = context;
-            result.BaseUnit = this.Configuration.BaseUnit;
-
-            if (memberResultGroup.IsEmpty())
-            {
-              memberResultGroup.ProfiledTargetType = ProfiledTargetType.Constructor;
-              memberResultGroup.ProfiledTargetSignatureMemberName = fullSignatureName;
-              memberResultGroup.ProfiledTargetMemberShortName = constructor.ConstructorInfo.ToDisplayName();
-              result.ArgumentListCount = argumentList is VoidArgumentList ? 0 : memberInfo.ArgumentLists.Count();
-              memberResultGroup.Add(result);
-            }
-            else
-            {
-              memberResultGroup.First().Combine(result);
-            }
-          }
-          else if (memberIsProperty)
-          {
-            ProfilerBatchResult propertyGetResult = Profiler.LogTimeInternal(property.GetDelegate, this.Configuration.WarmupIterations, this.Configuration.Iterations, argumentListIndex, this.Configuration.ProfilerLogger, this.Configuration.BaseUnit, property.SourceFilePath, lineNumber: property.LineNumber);
-            var context = new ProfilerContext(property.AssemblyName, fullSignatureName, ProfiledTargetType.PropertyGet, property.SourceFilePath, property.LineNumber, memberInfo.MemberInfo, this.Configuration.WarmupIterations, memberInfo.TargetFramework);
-            propertyGetResult.Context = context;
-            propertyGetResult.Index = 0;
-            propertyGetResult.BaseUnit = this.Configuration.BaseUnit;
-
-            if (memberResultGroup.IsEmpty())
-            {
-              memberResultGroup.ProfiledTargetType = ProfiledTargetType.Property;
-              memberResultGroup.ProfiledTargetSignatureMemberName = fullSignatureName;
-              memberResultGroup.ProfiledTargetMemberShortName = property.PropertyInfo.ToDisplayName();
-              propertyGetResult.ArgumentListCount = argumentList is VoidArgumentList ? 0 : memberInfo.ArgumentLists.Count();
-              memberResultGroup.Add(propertyGetResult);
-            }
-            else
-            {
-              memberResultGroup[0].Combine(propertyGetResult);
-            }
-
-            ProfilerBatchResult propertySetResult = Profiler.LogTimeInternal(property.SetDelegate, this.Configuration.WarmupIterations, this.Configuration.Iterations, argumentListIndex, this.Configuration.ProfilerLogger, this.Configuration.BaseUnit, property.SourceFilePath, lineNumber: property.LineNumber);
-            context = new ProfilerContext(property.AssemblyName, fullSignatureName, ProfiledTargetType.PropertySet, property.SourceFilePath, property.LineNumber, memberInfo.MemberInfo, this.Configuration.WarmupIterations, memberInfo.TargetFramework);
-            propertySetResult.Context = context;
-            propertySetResult.Index = 1;
-            propertySetResult.BaseUnit = this.Configuration.BaseUnit;
-
-            if (memberResultGroup.Count == 1)
-            {
-              propertySetResult.ArgumentListCount = argumentList is VoidArgumentList ? 0 : memberInfo.ArgumentLists.Count();
-              memberResultGroup.Add(propertySetResult);
-            }
-            else
-            {
-              memberResultGroup[1].Combine(propertySetResult);
             }
           }
         }
+        else if (memberInfo is ProfiledConstructorInfo constructor)
+        {
+          for (int argumentListIndex = 0; argumentListIndex < constructor.ArgumentInfo.Count; argumentListIndex++)
+          {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            MethodArgumentInfo arguments = constructor.ArgumentInfo[argumentListIndex];
+            var invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, arguments, constructor.Signature, constructor.DisplayName, constructor.ShortSignature, constructor.ShortDisplayName, constructor.ConstructorData.SymbolComponentInfo, constructor.Namespace, constructor.AssemblyName, constructorInvocator: constructor.ConstructorData.GetInvocator(), ProfiledTargetType.Constructor);
+            var context = new ProfilerContext(invocationInfo, constructor.SourceFilePath, constructor.LineNumber, this.Configuration.WarmupIterations, this.Configuration.Iterations, constructor.TargetFramework, this.Configuration.BaseUnit, this.Configuration.ProfilerLogger, this.Configuration.AsyncProfilerLogger);
+            ProfilerBatchResult result = await Profiler.LogTimeInternalAsync(context);
+
+            if (memberResultGroup.IsEmpty())
+            {
+              result.ArgumentListCount = constructor.ArgumentInfo.Count;
+              memberResultGroup.TargetType = invocationInfo.ProfiledTargetType;
+              memberResultGroup.Add(result);
+            }
+            else
+            {
+              memberResultGroup.First().Combine(result);
+            }
+          }
+        }
+        else if (memberInfo is ProfiledPropertyInfo property)
+        {
+          for (int argumentIndex = 0; argumentIndex < property.Arguments.Count; argumentIndex++)
+          {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            PropertyArgumentInfo argument = property.Arguments[argumentIndex];
+            ProfilerTargetInvokeInfo invocationInfo;
+            if (property.PropertyData.CanRead && (argument.Accessor & PropertyAccessor.Get) != 0)
+            {
+              ProfiledTargetType targetType = property.IsIndexer 
+                ? ProfiledTargetType.IndexerGet 
+                : ProfiledTargetType.PropertyGet;
+
+              invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, argument, property.Signature, property.DisplayName, property.ShortSignature, property.ShortDisplayName, property.PropertyData.SymbolComponentInfo, property.Namespace, property.AssemblyName, propertyGetInvocator: property.PropertyData.GetGetInvocator(), targetType);
+              var context = new ProfilerContext(invocationInfo, property.SourceFilePath, property.LineNumber, this.Configuration.WarmupIterations, this.Configuration.Iterations, property.TargetFramework, this.Configuration.BaseUnit, this.Configuration.ProfilerLogger, this.Configuration.AsyncProfilerLogger);
+              ProfilerBatchResult propertyGetResult = await Profiler.LogTimeInternalAsync(context);
+              propertyGetResult.Index = 0;
+
+              if (memberResultGroup.IsEmpty())
+              {
+                propertyGetResult.ArgumentListCount = property.Arguments.Count;
+                memberResultGroup.TargetType = invocationInfo.ProfiledTargetType;
+                memberResultGroup.Add(propertyGetResult);
+              }
+              else
+              {
+                memberResultGroup[0].Combine(propertyGetResult);
+              }
+            }
+
+            if (property.PropertyData.CanWrite && (argument.Accessor & PropertyAccessor.Set) != 0)
+            {
+              ProfiledTargetType targetType = property.IsIndexer
+                ? ProfiledTargetType.IndexerSet
+                : ProfiledTargetType.PropertySet;
+
+              invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, argument, property.Signature, property.DisplayName, property.ShortSignature, property.ShortDisplayName, property.PropertyData.SymbolComponentInfo, property.Namespace, property.AssemblyName, propertySetInvocator: property.PropertyData.GetSetInvocator(), targetType);
+              var context = new ProfilerContext(invocationInfo, property.SourceFilePath, property.LineNumber, this.Configuration.WarmupIterations, this.Configuration.Iterations, property.TargetFramework, this.Configuration.BaseUnit, this.Configuration.ProfilerLogger, this.Configuration.AsyncProfilerLogger);
+              ProfilerBatchResult propertySetResult = await Profiler.LogTimeInternalAsync(context);
+              propertySetResult.Index = 1;
+
+              if (memberResultGroup.Count == 1)
+              {
+                propertySetResult.ArgumentListCount = property.Arguments.Count;
+                memberResultGroup.Add(propertySetResult);
+              }
+              else
+              {
+                memberResultGroup[1].Combine(propertySetResult);
+              }
+            }
+          }
+        }        
 
         if (memberResultGroup.Any())
         {
@@ -396,206 +467,148 @@
       return resultGroups;
     }
 
-    private void CreateTargetMemberDelegate(object targetInstance, ProfiledMemberInfo profiledMemberInfo, IEnumerable<object> argumentList)
-    {
-      if (profiledMemberInfo.IsStatic)
-      {
-        targetInstance = null;
-      }
+    //private void CreateTargetMemberDelegate(object targetInstance, ProfiledMemberInfo profiledMemberInfo, IEnumerable<object> argumentList)
+    //{
+    //  if (profiledMemberInfo.IsStatic)
+    //  {
+    //    targetInstance = null;
+    //  }
 
-      if (profiledMemberInfo is ProfiledConstructorInfo profiledConstructorInfo)
-      {
-        Action constructor = () => profiledConstructorInfo.ConstructorInfo.Invoke(argumentList.ToArray());
-        profiledConstructorInfo.ConstructorDelegate = constructor;
+    //  if (profiledMemberInfo is ProfiledConstructorInfo profiledConstructorInfo)
+    //  {
+    //    Action constructor = () => profiledConstructorInfo.ConstructorInfo.Invoke(argumentList.ToArray());
+    //    profiledConstructorInfo.ConstructorDelegate = constructor;
 
-        return;
-      }
+    //    return;
+    //  }
 
-      if (profiledMemberInfo is ProfiledMethodInfo profiledMethodInfo)
-      {
-        Action method = null;
-        Func<Task> asyncMethod = null;
-        if (profiledMethodInfo.IsGeneric)
-        {
-          Type[] genericTypeArguments = profiledMethodInfo.MethodInfo.GetGenericArguments();
-          ParameterInfo[] methodParameters = profiledMethodInfo.MethodInfo.GetParameters();
-          var genericParameterTypes = new Type[genericTypeArguments.Length];
-          int genericParameterTypesIndex = 0;
-          foreach (Type genericTypeArgument in genericTypeArguments)
-          {
-            for (int genericParameterIndex = 0; genericParameterIndex < methodParameters.Length; genericParameterIndex++)
-            {
-              ParameterInfo parameterAtCurrentPosition = methodParameters[genericParameterIndex];
-              if (parameterAtCurrentPosition.ParameterType.Name.Equals(genericTypeArgument.Name, StringComparison.Ordinal))
-              {
-                object argumentForGenericParameterPosition = argumentList.ElementAt(genericParameterIndex);
-                genericParameterTypes[genericParameterTypesIndex++] = argumentForGenericParameterPosition.GetType();
-              }
-            }
-          }
+    //  if (profiledMemberInfo is ProfiledMethodInfo profiledMethodInfo)
+    //  {
+    //    Action method = null;
+    //    Func<Task> asyncTaskMethod = null;
+    //    Func<dynamic> asyncValueTaskMethod = null;
+    //    //if (profiledMethodInfo.IsGeneric)
+    //    //{
+    //    //  Type[] genericTypeArguments = profiledMethodInfo.MethodInfo.GetGenericArguments();
+    //    //  ParameterInfo[] methodParameters = profiledMethodInfo.MethodInfo.GetParameters();
+    //    //  var genericParameterTypes = new Type[genericTypeArguments.Length];
+    //    //  int genericParameterTypesIndex = 0;
+    //    //  foreach (Type genericTypeArgument in genericTypeArguments)
+    //    //  {
+    //    //    for (int genericParameterIndex = 0; genericParameterIndex < methodParameters.Length; genericParameterIndex++)
+    //    //    {
+    //    //      ParameterInfo parameterAtCurrentPosition = methodParameters[genericParameterIndex];
+    //    //      if (parameterAtCurrentPosition.ParameterType.Name.Equals(genericTypeArgument.Name, StringComparison.Ordinal))
+    //    //      {
+    //    //        object argumentForGenericParameterPosition = argumentList.ElementAt(genericParameterIndex);
+    //    //        genericParameterTypes[genericParameterTypesIndex++] = argumentForGenericParameterPosition.GetType();
+    //    //      }
+    //    //    }
+    //    //  }
 
-          MethodInfo genericMethodInfo = profiledMethodInfo.MethodInfo.MakeGenericMethod(genericParameterTypes);
-          if (profiledMethodInfo.IsAsync)
-          {
-            if (profiledMethodInfo.IsAsyncTask)
-            {
-              asyncMethod = async () =>
-              {
-                try
-                {
-                  await (Task)genericMethodInfo.Invoke(targetInstance, argumentList.ToArray());
-                }
-                catch (ArgumentException e)
-                {
+    //    //  MethodInfo genericMethodInfo = profiledMethodInfo.MethodInfo.MakeGenericMethod(genericParameterTypes);
+    //    //  if (profiledMethodInfo.IsAwaitable)
+    //    //  {
+    //    //    if (profiledMethodInfo.IsAwaitableTask)
+    //    //    {
+    //    //      asyncMethod = async () =>
+    //    //      {
+    //    //        try
+    //    //        {
+    //    //          await (Task)genericMethodInfo.Invoke(targetInstance, argumentList.ToArray());
+    //    //        }
+    //    //        catch (ArgumentException e)
+    //    //        {
 
-                  throw new ProfilerArgumentException(ExceptionMessages.GetArgumentListMismatchExceptionMessage(), e);
-                }
-              };
-            }
-            else
-            {
-              asyncMethod = async () => await (ValueTask)genericMethodInfo.Invoke(targetInstance, argumentList.ToArray());
-            }
-          }
-          else
-          {
-            method = () => genericMethodInfo.Invoke(targetInstance, argumentList.ToArray());
-          }
-        }
-        else if (profiledMethodInfo.IsAsync)
-        {
-          if (profiledMethodInfo.IsAsyncTask)
-          {
-            asyncMethod = () => (Task)profiledMethodInfo.MethodInfo.Invoke(targetInstance, argumentList.ToArray());
-          }
-          else
-          {
-            asyncMethod = async () => await (ValueTask)profiledMethodInfo.MethodInfo.Invoke(targetInstance, argumentList.ToArray());
-          }
-        }
-        else
-        {
-          method = () => profiledMethodInfo.MethodInfo.Invoke(targetInstance, argumentList.ToArray());
-        }
+    //    //          throw new ProfilerArgumentException(ExceptionMessages.GetArgumentListMismatchExceptionMessage(), e);
+    //    //        }
+    //    //      };
+    //    //    }
+    //    //    else
+    //    //    {
+    //    //      asyncMethod = async () => await (ValueTask)genericMethodInfo.Invoke(targetInstance, argumentList.ToArray());
+    //    //    }
+    //    //  }
+    //    //  else
+    //    //  {
+    //    //    method = () => genericMethodInfo.Invoke(targetInstance, argumentList.ToArray());
+    //    //  }
+    //    //}
+    //    //else
+    //    if (profiledMethodInfo.IsAwaitable)
+    //    {
+    //      if (profiledMethodInfo.IsAwaitableTask)
+    //      {
+    //        asyncTaskMethod = () => (Task)profiledMethodInfo.MethodData.Invoke(targetInstance, argumentList.ToArray());
+    //      }
+    //      else
+    //      {
+    //        asyncTaskMethod = async () => await (ValueTask)profiledMethodInfo.MethodInfo.Invoke(targetInstance, argumentList.ToArray());
+    //      }
+    //    }
+    //    else
+    //    {
+    //      method = () => profiledMethodInfo.MethodInfo.Invoke(targetInstance, argumentList.ToArray());
+    //    }
 
-        profiledMethodInfo.MethodDelegate = method;
-        profiledMethodInfo.AsyncMethodDelegate = asyncMethod;
+    //    profiledMethodInfo.MethodDelegate = method;
+    //    profiledMethodInfo.AsyncMethodDelegate = asyncTaskMethod;
 
-        return;
-      }
+    //    return;
+    //  }
 
-      if (profiledMemberInfo is ProfiledPropertyInfo profiledPropertyInfo)
-      {
-        MethodInfo getMethodInfo = profiledPropertyInfo.PropertyInfo.GetGetMethod(true);
-        MethodInfo setMethodInfo = profiledPropertyInfo.PropertyInfo.GetSetMethod(true);
-        Action setMethod = null;
-        Action getMethod = null;
+    //  if (profiledMemberInfo is ProfiledPropertyInfo profiledPropertyInfo)
+    //  {
+    //    MethodInfo getMethodInfo = profiledPropertyInfo.PropertyInfo.GetGetMethod(true);
+    //    MethodInfo setMethodInfo = profiledPropertyInfo.PropertyInfo.GetSetMethod(true);
+    //    Action setMethod = null;
+    //    Action getMethod = null;
 
-        if (profiledPropertyInfo.IsIndexer)
-        {
-          var argumentInfo = (KeyValuePair<object, object>)argumentList.FirstOrDefault();
-          setMethod = () => profiledPropertyInfo.PropertyInfo.SetValue(targetInstance, argumentInfo.Value, new[] { argumentInfo.Key });
-          getMethod = () => profiledPropertyInfo.PropertyInfo.GetValue(targetInstance, new[] { argumentInfo.Key });
-        }
-        else
-        {
-          setMethod = () => profiledPropertyInfo.PropertyInfo.SetValue(targetInstance, argumentList.ElementAtOrDefault(0));
-          getMethod = () => profiledPropertyInfo.PropertyInfo.GetValue(targetInstance);
-        }
+    //    if (profiledPropertyInfo.IsIndexer)
+    //    {
+    //      var argumentInfo = (KeyValuePair<object, object>)argumentList.FirstOrDefault();
+    //      setMethod = () => profiledPropertyInfo.PropertyInfo.SetValue(targetInstance, argumentInfo.Value, new[] { argumentInfo.Key });
+    //      getMethod = () => profiledPropertyInfo.PropertyInfo.GetValue(targetInstance, new[] { argumentInfo.Key });
+    //    }
+    //    else
+    //    {
+    //      setMethod = () => profiledPropertyInfo.PropertyInfo.SetValue(targetInstance, argumentList.ElementAtOrDefault(0));
+    //      getMethod = () => profiledPropertyInfo.PropertyInfo.GetValue(targetInstance);
+    //    }
 
-        profiledPropertyInfo.SetDelegate = setMethod;
-        profiledPropertyInfo.GetDelegate = getMethod;
-      }
-    }
+    //    profiledPropertyInfo.SetDelegate = setMethod;
+    //    profiledPropertyInfo.GetDelegate = getMethod;
+    //  }
+    //}
 
-    private void GetTargetMethods(Type typeToProfile, bool isFindInstanceProviderEnabled, IList<ProfiledMemberInfo> targetMembers, CancellationToken cancellationToken, out bool hasProfiledInstanceMethods, out InstanceProviderInfo instanceProviderMethodInfo)
+    private void GetTargetMethods(TypeData typeDataToProfile, bool isFindInstanceProviderEnabled, in IList<ProfiledMemberInfo> targetMembers, CancellationToken cancellationToken, out bool hasProfiledInstanceMethods, ref bool hasHighPriorityInstanceProvider, ref InstanceProviderInfo instanceProviderInfo)
     {
       hasProfiledInstanceMethods = false;
-      instanceProviderMethodInfo = null;
-      bool hasHighPriorityInstanceProvider = false;
-      foreach (MethodInfo methodInfo in typeToProfile.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+
+      foreach (MethodData methodData in typeDataToProfile.MethodsData)
       {
         cancellationToken.ThrowIfCancellationRequested();
 
-        bool isMethodStatic = methodInfo.IsStatic;
+        MethodInfo methodInfo = methodData.GetMethodInfo();
+        bool isMethodStatic = methodData.IsStatic;
+        bool isFactoryMethod = isMethodStatic && typeDataToProfile.GetType().IsAssignableFrom(methodData.ReturnTypeData.GetType());
         if (isFindInstanceProviderEnabled
-          && isMethodStatic
-          && typeToProfile.IsAssignableFrom(methodInfo.ReturnType))
+          && !hasHighPriorityInstanceProvider
+          && isFactoryMethod)
         {
-          if (instanceProviderMethodInfo == null || !hasHighPriorityInstanceProvider)
-          {
-            var profilerFactoryAttribute = (ProfilerFactoryAttribute)methodInfo.GetCustomAttribute(typeof(ProfilerFactoryAttribute));
-            hasHighPriorityInstanceProvider = profilerFactoryAttribute != null;
-            object[] argumentList = hasHighPriorityInstanceProvider
-              ? profilerFactoryAttribute.ArgumentList
-              : Array.Empty<object>();
+          ProfilerFactoryAttribute profilerFactoryAttribute = methodInfo.GetCustomAttribute<ProfilerFactoryAttribute>(false);
+          hasHighPriorityInstanceProvider = profilerFactoryAttribute != null;
+          object[] argumentList = hasHighPriorityInstanceProvider
+            ? profilerFactoryAttribute.ArgumentList
+            : Array.Empty<object>();
 
-            instanceProviderMethodInfo = new InstanceProviderInfo(argumentList, methodInfo);
+          if (hasHighPriorityInstanceProvider || instanceProviderInfo is null)
+          {
+            instanceProviderInfo = new InstanceProviderInfo(methodData, argumentList);
           }
         }
 
-        IEnumerable<ProfileAttribute> profileAttributes = methodInfo.GetCustomAttributes(typeof(ProfileAttribute))
-          .Cast<ProfileAttribute>();
-        foreach (ProfileAttribute profileAttribute in profileAttributes)
-        {
-          cancellationToken.ThrowIfCancellationRequested();
-
-          if (profileAttribute == null
-          || (profileAttribute.TargetFramework != Runtime.Current && profileAttribute.TargetFramework != Runtime.Default && profileAttribute.TargetFramework != this.Configuration.Runtime))
-          {
-            continue;
-          }
-
-          hasProfiledInstanceMethods |= !isMethodStatic;
-
-          IEnumerable<IEnumerable<object>> argumentLists = new List<IEnumerable<object>> { new VoidArgumentList() };
-          int methodParameterCount = methodInfo.GetParameters().Length;
-          bool isMethodParameterless = methodParameterCount == 0;
-          if (!isMethodParameterless)
-          {
-            argumentLists = methodInfo.GetCustomAttributes(typeof(ProfilerArgumentAttribute), false)
-              .Select(attribute => ((ProfilerArgumentAttribute)attribute).Arguments);
-            if (argumentLists.IsEmpty())
-            {
-              string exceptionMessage = ExceptionMessages.GetMissingProfiledArgumentAttributeExceptionMessage_Method(methodParameterCount);
-              throw new MissingProfilerArgumentAttributeException(exceptionMessage);
-            }
-          }
-
-          string assemblyName = this.Configuration.GetAssembly(typeToProfile).GetName().Name;
-          var profiledMethodInfo = new ProfiledMethodInfo(argumentLists, methodInfo, profileAttribute.SourceFilePath, profileAttribute.LineNumber, assemblyName, profileAttribute.TargetFramework, isMethodStatic);
-          targetMembers.Add(profiledMethodInfo);
-        }
-      }
-    }
-
-    private void GetTargetConstructors(Type typeToProfile, bool isFindInstanceProviderEnabled, IList<ProfiledMemberInfo> targetMembers, CancellationToken cancellationToken, out InstanceProviderInfo instanceProviderConstructorInfo)
-    {
-      instanceProviderConstructorInfo = null;
-      bool hasHighPriorityInstanceProvider = false;
-      foreach (ConstructorInfo constructorInfo in typeToProfile.GetConstructors(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
-      {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        bool isConstructorStatic = constructorInfo.IsStatic;
-        if (isFindInstanceProviderEnabled
-          && !isConstructorStatic)
-        {
-          if ((instanceProviderConstructorInfo == null && constructorInfo.GetParameters().Length == 0)
-            || !hasHighPriorityInstanceProvider)
-          {
-            var profilerFactoryAttribute = (ProfilerFactoryAttribute)constructorInfo.GetCustomAttribute(typeof(ProfilerFactoryAttribute));
-            hasHighPriorityInstanceProvider = profilerFactoryAttribute != null;
-            object[] argumentList = hasHighPriorityInstanceProvider
-              ? profilerFactoryAttribute.ArgumentList
-              : Array.Empty<object>();
-
-            instanceProviderConstructorInfo = new InstanceProviderInfo(argumentList, constructorInfo);
-          }
-        }
-
-        IEnumerable<ProfileAttribute> profileAttributes = constructorInfo.GetCustomAttributes(typeof(ProfileAttribute))
-          .Cast<ProfileAttribute>();
+        IEnumerable<ProfileAttribute> profileAttributes = methodInfo.GetCustomAttributes<ProfileAttribute>(false);
         foreach (ProfileAttribute profileAttribute in profileAttributes)
         {
           cancellationToken.ThrowIfCancellationRequested();
@@ -606,115 +619,191 @@
             continue;
           }
 
-          IEnumerable<IEnumerable<object>> argumentLists = new List<IEnumerable<object>> { new VoidArgumentList() };
-          int constructorParameterCount = constructorInfo.GetParameters().Length;
-          bool isConstructorParameterless = constructorParameterCount == 0;
-          if (!isConstructorParameterless)
+          hasProfiledInstanceMethods |= !isMethodStatic;
+
+          var argumentLists = new List<MethodArgumentInfo>();
+          int methodParameterCount = methodData.Parameters.Length;
+          bool isMethodParameterless = methodParameterCount == 0;
+          if (!isMethodParameterless)
           {
-            argumentLists = constructorInfo.GetCustomAttributes(typeof(ProfilerArgumentAttribute), false)
-              .Select(attribute => ((ProfilerArgumentAttribute)attribute).Arguments);
+            IEnumerable<ProfilerMethodArgumentAttribute> argumentAttributes = methodInfo.GetCustomAttributes<ProfilerMethodArgumentAttribute>(false);
+            int argumentListIndex = 0;
+            foreach (ProfilerMethodArgumentAttribute attribute in argumentAttributes)
+            {
+              var argumentInfo = new MethodArgumentInfo(attribute.Arguments.ToList(), argumentListIndex++);
+              argumentLists.Add(argumentInfo);
+            }
+
             if (argumentLists.IsEmpty())
             {
-              string exceptionMessage = ExceptionMessages.GetMissingProfiledArgumentAttributeExceptionMessage_Constructor(constructorParameterCount);
-              throw new MissingProfilerArgumentAttributeException(exceptionMessage);
+              string exceptionMessage = ExceptionMessages.GetMissingProfiledArgumentAttributeExceptionMessage_Method(methodParameterCount);
+              throw new ProfilerConfigurationException(exceptionMessage);
             }
           }
 
-          string assemblyName = this.Configuration.GetAssembly(typeToProfile).GetName().Name;
-          ProfiledConstructorInfo profiledConstructorInfo = new ProfiledConstructorInfo(argumentLists, constructorInfo, profileAttribute.SourceFilePath, profileAttribute.LineNumber, assemblyName, profileAttribute.TargetFramework, isConstructorStatic);
+          var profiledMethodInfo = new ProfiledMethodInfo(argumentLists, methodData, profileAttribute.SourceFilePath, profileAttribute.LineNumber, typeDataToProfile.AssemblyName, profileAttribute.TargetFramework, isMethodStatic);
+          targetMembers.Add(profiledMethodInfo);
+        }
+      }
+    }
+
+    private void GetTargetConstructors(TypeData typeDataToProfile, bool isFindInstanceProviderEnabled, IList<ProfiledMemberInfo> targetMembers, CancellationToken cancellationToken, out bool hasProfiledInstanceConstructors, ref bool hasHighPriorityInstanceProvider, ref InstanceProviderInfo instanceProviderInfo)
+    {
+      hasProfiledInstanceConstructors = false;
+
+      foreach (ConstructorData constructorData in typeDataToProfile.ConstructorsData)
+      {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        ConstructorInfo constructorInfo = constructorData.GetConstructorInfo();
+        bool isConstructorStatic = constructorData.IsStatic;
+        if (isFindInstanceProviderEnabled
+          && !hasHighPriorityInstanceProvider
+          && !isConstructorStatic)
+        {
+          ProfilerFactoryAttribute profilerFactoryAttribute = constructorInfo.GetCustomAttribute<ProfilerFactoryAttribute>(false);
+          hasHighPriorityInstanceProvider = profilerFactoryAttribute != null;
+          object[] argumentList = hasHighPriorityInstanceProvider
+            ? profilerFactoryAttribute.ArgumentList
+            : Array.Empty<object>();
+
+          if (hasHighPriorityInstanceProvider || (instanceProviderInfo is null && constructorData.Parameters.Length == 0))
+          {
+            instanceProviderInfo = new InstanceProviderInfo(constructorData, argumentList);
+          }
+        }
+
+        IEnumerable<ProfileAttribute> profileAttributes = constructorInfo.GetCustomAttributes<ProfileAttribute>(false);
+        foreach (ProfileAttribute profileAttribute in profileAttributes)
+        {
+          cancellationToken.ThrowIfCancellationRequested();
+
+          if (profileAttribute == null
+            || (profileAttribute.TargetFramework != Runtime.Current && profileAttribute.TargetFramework != Runtime.Default && profileAttribute.TargetFramework != this.Configuration.Runtime))
+          {
+            continue;
+          }
+
+          hasProfiledInstanceConstructors |= !constructorData.IsStatic;
+
+          var argumentLists = new List<MethodArgumentInfo>();
+          int constructorParameterCount = constructorData.Parameters.Length;
+          bool isConstructorParameterless = constructorParameterCount == 0;
+          if (!isConstructorParameterless)
+          {
+            IEnumerable<ProfilerMethodArgumentAttribute> argumentAttributes = constructorInfo.GetCustomAttributes<ProfilerMethodArgumentAttribute>(false);
+            int argumentListIndex = 0;
+            foreach (ProfilerMethodArgumentAttribute attribute in argumentAttributes)
+            {
+              var argumentInfo = new MethodArgumentInfo(attribute.Arguments.ToList(), argumentListIndex++);
+              argumentLists.Add(argumentInfo);
+            }
+
+            if (argumentLists.IsEmpty())
+            {
+              string exceptionMessage = ExceptionMessages.GetMissingProfiledArgumentAttributeExceptionMessage_Constructor(constructorParameterCount);
+              throw new ProfilerConfigurationException(exceptionMessage);
+            }
+          }
+
+          ProfiledConstructorInfo profiledConstructorInfo = new ProfiledConstructorInfo(argumentLists, constructorData, profileAttribute.SourceFilePath, profileAttribute.LineNumber, typeDataToProfile.AssemblyName, profileAttribute.TargetFramework, isConstructorStatic);
           targetMembers.Add(profiledConstructorInfo);
         }
       }
     }
 
-    private void GetTargetProperties(Type typeToProfile, bool isFindInstanceProviderEnabled, IList<ProfiledMemberInfo> targetMembers, CancellationToken cancellationToken, out bool hasProfiledInstanceProperties, out InstanceProviderInfo instanceProviderPropertyInfo)
+    private void GetTargetProperties(TypeData typeDataToProfile, bool isFindInstanceProviderEnabled, IList<ProfiledMemberInfo> targetMembers, CancellationToken cancellationToken, out bool hasProfiledInstanceProperties, ref bool hasHighPriorityInstanceProvider, ref InstanceProviderInfo instanceProviderInfo)
     {
       hasProfiledInstanceProperties = false;
-      instanceProviderPropertyInfo = null;
-      bool hasHighPriorityInstanceProvider = false;
-      foreach (PropertyInfo propertyInfo in typeToProfile.GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+      foreach (PropertyData propertyData in typeDataToProfile.PropertiesData)
       {
         cancellationToken.ThrowIfCancellationRequested();
-
-        bool isPropertyStatic = propertyInfo.GetGetMethod(true)?.IsStatic ?? false;
-
+        PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
+        bool isPropertyStatic = propertyData.IsStatic;
+        bool isPropertyIndexer = propertyData.IsIndexer;
         if (isFindInstanceProviderEnabled
+          && !hasHighPriorityInstanceProvider
           && isPropertyStatic
-          && typeToProfile.IsAssignableFrom(propertyInfo.PropertyType))
+          && propertyData.CanRead
+          && typeDataToProfile.GetType().IsAssignableFrom(propertyData.PropertyTypeData.GetType()))
         {
-          if (instanceProviderPropertyInfo == null || !hasHighPriorityInstanceProvider)
-          {
-            hasHighPriorityInstanceProvider = ((ProfilerFactoryAttribute)propertyInfo.GetCustomAttribute(typeof(ProfilerFactoryAttribute))) != null;
-            instanceProviderPropertyInfo = new InstanceProviderInfo(Array.Empty<object>(), propertyInfo);
+            ProfilerFactoryAttribute profilerFactoryAttribute = propertyInfo.GetCustomAttribute<ProfilerFactoryAttribute>(false);
+            hasHighPriorityInstanceProvider = profilerFactoryAttribute != null;
+            object[] argumentList = hasHighPriorityInstanceProvider && isPropertyIndexer
+              ? profilerFactoryAttribute.ArgumentList
+              : Array.Empty<object>();
+           
+          if (hasHighPriorityInstanceProvider || instanceProviderInfo is null)
+          { 
+            instanceProviderInfo = new InstanceProviderInfo(propertyData, argumentList);
           }
         }
 
-        IEnumerable<ProfileAttribute> profileAttributes = propertyInfo.GetCustomAttributes(typeof(ProfileAttribute))
-          .Cast<ProfileAttribute>();
+        IEnumerable<ProfileAttribute> profileAttributes = propertyInfo.GetCustomAttributes<ProfileAttribute>(false);
         foreach (ProfileAttribute profileAttribute in profileAttributes)
         {
           cancellationToken.ThrowIfCancellationRequested();
 
-          if (profileAttribute == null)
+          if (profileAttribute == null
+            || (profileAttribute.TargetFramework != Runtime.Current && profileAttribute.TargetFramework != Runtime.Default && profileAttribute.TargetFramework != this.Configuration.Runtime))
           {
             continue;
           }
 
           hasProfiledInstanceProperties |= !isPropertyStatic;
 
-          IEnumerable<IEnumerable<object>> argumentLists = new List<IEnumerable<object>> { new VoidArgumentList() };
-          bool isPropertyIndexer = propertyInfo.GetIndexParameters().Length > 0;
-          bool isRequiringArguments = isPropertyIndexer || propertyInfo.GetSetMethod(true) != null;
+          IList<PropertyArgumentInfo> argumentList = new List<PropertyArgumentInfo>();
+          bool isRequiringArguments = isPropertyIndexer || propertyData.CanWrite;
           if (isRequiringArguments)
           {
-            argumentLists = isPropertyIndexer
-            ? propertyInfo.GetCustomAttributes(typeof(ProfilerArgumentAttribute), false)
-              .Cast<ProfilerArgumentAttribute>()
-              .Select(argumentAttribute => new List<object> { new KeyValuePair<object, object>(argumentAttribute.Index, argumentAttribute.Arguments.FirstOrDefault()) })
-            : propertyInfo.GetCustomAttributes(typeof(ProfilerArgumentAttribute), false)
-              .Cast<ProfilerArgumentAttribute>()
-              .Select(attribute => attribute.Arguments);
-            if (argumentLists.IsEmpty())
+            IEnumerable<ProfilerPropertyArgumentAttribute> argumentAttributes = propertyInfo.GetCustomAttributes<ProfilerPropertyArgumentAttribute>(false);
+            int argumentListIndex = 0;
+            foreach (ProfilerPropertyArgumentAttribute attribute in argumentAttributes)
             {
-              string propertyExceptionMesssage = isPropertyIndexer
+              var argumentInfo = new PropertyArgumentInfo(attribute.Value, attribute.Index, attribute.Accessor, argumentListIndex++);
+              argumentList.Add(argumentInfo);
+            }
+
+            if (argumentList.IsEmpty())
+            {
+              string propertyExceptionMessage = isPropertyIndexer
                 ? ExceptionMessages.GetMissingProfiledArgumentAttributeExceptionMessage_IndexerProperty()
                 : ExceptionMessages.GetMissingProfiledArgumentAttributeExceptionMessage_Property();
 
-              throw new MissingProfilerArgumentAttributeException(propertyExceptionMesssage);
+              throw new ProfilerConfigurationException(propertyExceptionMessage);
             }
           }
 
-          string assemblyName = this.Configuration.GetAssembly(typeToProfile).GetName().Name;
-          var profiledPropertyInfo = new ProfiledPropertyInfo(argumentLists, propertyInfo, profileAttribute.SourceFilePath, profileAttribute.LineNumber, assemblyName, profileAttribute.TargetFramework, isPropertyIndexer, isPropertyStatic);
+          var profiledPropertyInfo = new ProfiledPropertyInfo(argumentList, propertyData, profileAttribute.SourceFilePath, profileAttribute.LineNumber, typeDataToProfile.AssemblyName, profileAttribute.TargetFramework, isPropertyStatic);
           targetMembers.Add(profiledPropertyInfo);
         }
       }
     }
 
-    private InstanceProviderInfo GetInstanceProviderField(Type typeToProfile, CancellationToken cancellationToken)
+    private void GetInstanceProviderField(TypeData typeDataToProfile, CancellationToken cancellationToken, ref bool hasHighPriorityInstanceProvider, ref InstanceProviderInfo instanceProviderInfo)
     {
-      bool hasHighPriorityInstanceProvider = false;
-      FieldInfo instanceProviderFieldInfo = null;
-      foreach (FieldInfo fieldInfo in typeToProfile.GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+      foreach (FieldData fieldData in typeDataToProfile.FieldsData)
       {
         cancellationToken.ThrowIfCancellationRequested();
 
-        if (fieldInfo.IsStatic
-          && typeToProfile.IsAssignableFrom(fieldInfo.FieldType))
+        FieldInfo fieldInfo = fieldData.GetFieldInfo();
+        if (fieldData.IsStatic
+          && !hasHighPriorityInstanceProvider
+          && typeDataToProfile.GetType().IsAssignableFrom(fieldData.FieldTypeData.GetType()))
         {
-          if (instanceProviderFieldInfo == null || !hasHighPriorityInstanceProvider)
+          hasHighPriorityInstanceProvider = fieldInfo.GetCustomAttribute<ProfilerFactoryAttribute>(false) != null;
+          if (hasHighPriorityInstanceProvider || instanceProviderInfo is null)
           {
-            hasHighPriorityInstanceProvider = fieldInfo.GetCustomAttribute(typeof(ProfilerFactoryAttribute)) != null;
-            instanceProviderFieldInfo = fieldInfo;
-            if (hasHighPriorityInstanceProvider)
-            {
-              break;
-            }
+            instanceProviderInfo = new InstanceProviderInfo(fieldData, Array.Empty<object>());
+            break;
+          }
+
+          if (hasHighPriorityInstanceProvider)
+          {
+            break;
           }
         }
       }
-
-      return new InstanceProviderInfo(Array.Empty<object>(), instanceProviderFieldInfo);
     }
   } 
 }

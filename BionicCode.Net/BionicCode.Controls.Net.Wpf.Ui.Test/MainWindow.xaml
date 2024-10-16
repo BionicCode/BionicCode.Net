@@ -1,0 +1,80 @@
+﻿<Window x:Class="BionicCode.Net.Wpf.Ui.Test.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wpf="clr-namespace:BionicCode.Controls.Net.Wpf;assembly=BionicCode.Controls.Net.Wpf" 
+        xmlns:local="clr-namespace:BionicCode.Net.Wpf.Ui.Test"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="628" Width="800" Name="Window"
+        Background="#FF252526">
+  <Window.DataContext>
+    <local:CartesianChartViewModel />
+  </Window.DataContext>
+  <Window.Resources>
+  </Window.Resources>
+  <!--<Grid Margin="0,0,0,0"
+             Background="Transparent">-->
+    <!--<Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition />
+    </Grid.RowDefinitions>-->
+    <StackPanel>
+      <TextBox Margin="0,12" Height="200"/>
+      <!--<wpf:HighlightTextBox Grid.Row="1" Background="White" Height="200" />-->
+
+    <wpf:Clock DockPanel.Dock="Top">
+      <wpf:Clock.ClockFace>
+        <wpf:AnalogClockFace/>
+      </wpf:Clock.ClockFace>
+    </wpf:Clock>
+    <wpf:Clock DockPanel.Dock="Top">
+      <wpf:Clock.ClockFace>
+        <wpf:DigitalClockFace />
+      </wpf:Clock.ClockFace>
+    </wpf:Clock>
+    <!--
+
+    <wpf:Clock DockPanel.Dock="Top" />-->
+    <wpf:DigitalClockFace SelectedTime="{Binding ElementName=Window, Path=CurrentDateTime}" Is24HModeEnabled="True" />
+   
+    <!--<wpf:AnalogClockFace x:Name="TimePicker"  IsTimePickerModeEnabled="False" SelectedTime="{Binding ElementName=Window, Path=CurrentDateTime}"/>-->
+    
+    <wpf:AnalogTimePicker x:Name="TimePicker"  Background="#FF252526" Foreground="AntiqueWhite" IsClockHandVisible="False" Margin="0,20" IsOverflowEnabled="True" />
+
+    <!--<Canvas x:Name="Canvas"/>-->
+
+    <!--<TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedTime}" />
+  -->
+  <!--<StackPanel>
+    <wpf:TimePicker x:Name="TimePicker" IsSecondsEnabled="True" IsOpen="True"/>
+
+    <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedTime}"/>
+    <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedHours}"/>
+    <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedMinutes}"/>
+    <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedSeconds}"/>
+    <TextBlock Text="{Binding ElementName=TimePicker, Path=SelectedMeridiem}"/>
+  </StackPanel>-->
+    </StackPanel>
+    <!--<wpf:Calendar  DockPanel.Dock="Top" VerticalContentAlignment="Stretch"
+                   FirstDayOfWeek="Monday" />-->
+
+
+    <!--<bionicCharts:CartesianChart x:Name="CartesianChart" VirtualizingPanel.VirtualizationMode="Recycling"
+                                ItemsSource="{Binding ChartPoints}" Height="700" Width="700" VirtualizingPanel.CacheLengthUnit="Page" VirtualizingPanel.CacheLength="1,1"  bionicCharts:VirtualizingCartesianCanvas.XZoomFactor="3" bionicCharts:VirtualizingCartesianCanvas.YZoomFactor="1"   Background="CadetBlue">-->
+    <!--<bionicCharts:CartesianChart x:Name="CartesianChart"
+                                 ItemsSource="{Binding ChartPoints}"
+                                 Height="700"
+                                 Width="700"
+                                 Background="CadetBlue"
+                                 >-->
+      <!--<bionicCharts:CartesianChart.Items>
+        <bionicCharts:CartesianChartItem X="100" Y="20">
+          <Ellipse Height="10" Width="10" StrokeThickness="2" Stroke="Black"/>
+        </bionicCharts:CartesianChartItem>
+      </bionicCharts:CartesianChart.Items>
+
+    </bionicCharts:CartesianChart>-->
+
+  <!--</Grid>-->
+</Window>

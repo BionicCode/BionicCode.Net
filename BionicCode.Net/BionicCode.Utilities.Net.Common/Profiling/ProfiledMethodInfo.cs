@@ -3,30 +3,30 @@
   using System;
   using System.Collections.Generic;
   using System.Reflection;
+  using System.Threading;
   using System.Threading.Tasks;
 
   internal class ProfiledMethodInfo : ProfiledMemberInfo
   {
-    public ProfiledMethodInfo(IEnumerable<IEnumerable<object>> argumentLists, MethodInfo methodInfo, string sourceFilePath, int lineNumber, string assemblyName, Runtime targetFramework, bool isStatic)
-      : base(argumentLists, isStatic, assemblyName, lineNumber, sourceFilePath, targetFramework)
+    public ProfiledMethodInfo(IList<MethodArgumentInfo> argumentInfo, MethodData methodData, string sourceFilePath, int lineNumber, string assemblyName, Runtime targetFramework, bool isStatic)
+      : base(isStatic, assemblyName, lineNumber, sourceFilePath, targetFramework)
     {
-      this.MethodInfo = methodInfo;
-      this.IsAsyncTask = this.MethodInfo.IsAwaitableTask();
-      this.IsAsyncValueTask = !this.IsAsyncTask && this.MethodInfo.IsAwaitableValueTask();
-      this.IsGeneric = this.MethodInfo.IsGenericMethod;
-      this.MethodName = this.MethodInfo.Name;
-      this.MethodReturnTypeName = this.MethodInfo.ReturnType.Name;
+      this.MethodData = methodData;
+      this.ArgumentInfo = argumentInfo;
     }
 
-    public MethodInfo MethodInfo { get; }
-    public string MethodName { get; }
-    public string MethodReturnTypeName { get; }
-    public bool IsAsync => this.IsAsyncTask || this.IsAsyncValueTask;
-    public bool IsAsyncTask { get; }
-    public bool IsAsyncValueTask { get; }
-    public bool IsGeneric { get; }
-    public Func<Task> AsyncMethodDelegate { get; set; }
-    public Action MethodDelegate { get; set; }
-    public override MemberInfo MemberInfo => this.MethodInfo;
+    public MethodData MethodData { get; }
+    public string MethodReturnTypeDisplayName => this.MethodData.ReturnTypeData.DisplayName;
+    public bool IsAwaitable => this.MethodData.IsAwaitable;
+
+    public bool IsAwaitableTask => this.MethodData.IsAwaitableTask;
+
+    public bool IsAwaitableValueTask => this.MethodData.IsAwaitableValueTask;
+    public bool IsAwaitableGenericValueTask => this.MethodData.IsAwaitableGenericValueTask;
+
+    public bool IsGeneric => this.MethodData.IsGenericMethod;
+
+    public override MemberInfoData MemberInfoData => this.MethodData;
+    public IList<MethodArgumentInfo> ArgumentInfo { get; }
   }
 }

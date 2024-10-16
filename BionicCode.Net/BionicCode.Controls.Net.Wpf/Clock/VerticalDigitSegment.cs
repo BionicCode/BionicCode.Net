@@ -11,6 +11,7 @@
   using System.Windows;
   using System.Windows.Media;
   using BionicCode.Utilities.Net;
+  using Math = System.Math;
 
   public class VerticalDigitSegment : DigitSegment
   {

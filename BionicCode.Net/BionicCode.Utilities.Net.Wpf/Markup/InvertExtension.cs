@@ -3,7 +3,7 @@ namespace BionicCode.Utilities.Net
 {
   using System;
   using System.Windows;
-#if NET || NET461_OR_GREATER
+#if !NETSTANDARD
   using System.Windows.Data;
   using System.Windows.Markup;
   /// <summary>

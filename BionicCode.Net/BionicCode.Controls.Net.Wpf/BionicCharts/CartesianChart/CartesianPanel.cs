@@ -5,11 +5,13 @@
   using System.Linq;
   using System.Windows;
   using System.Windows.Controls;
-/* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
-Before:
-  using System.Linq;
-After:
   using System.Windows.Media;
+
+  /* Unmerged change from project 'BionicCode.Controls.Net.Wpf (net6.0-windows)'
+Before:
+using System.Linq;
+After:
+using System.Windows.Media;
 */
 
 
@@ -47,13 +49,13 @@ After:
 
     protected override Size MeasureOverride(Size availableSize)
     {
-      base.MeasureOverride(availableSize);
+      _ = base.MeasureOverride(availableSize);
       return new Size(0, 0);
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-      base.ArrangeOverride(finalSize);
+      _ = base.ArrangeOverride(finalSize);
 
       if (this.IsRenderedDataInvalid)
       {

@@ -2,7 +2,7 @@
 namespace BionicCode.Utilities.Net
 {
   using System;
-#if NET || NET461_OR_GREATER
+#if !NETSTANDARD
   using System.Windows.Markup;
   /// <summary>
   /// XAML extension to return the values of an enumeration.

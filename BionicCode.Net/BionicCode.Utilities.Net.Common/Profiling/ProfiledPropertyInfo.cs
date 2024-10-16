@@ -2,22 +2,23 @@
 {
   using System;
   using System.Collections.Generic;
+  using System.Management;
   using System.Reflection;
 
   internal class ProfiledPropertyInfo : ProfiledMemberInfo
   {
-    public ProfiledPropertyInfo(IEnumerable<IEnumerable<object>> argumentLists, PropertyInfo methodInfo, string sourceFilePath, int lineNumber, string assemblyName, Runtime targetFramework, bool isIndexer, bool isStatic)
-      : base(argumentLists, isStatic, assemblyName, lineNumber, sourceFilePath, targetFramework)
+    public ProfiledPropertyInfo(IList<PropertyArgumentInfo> argumentList, PropertyData propertyData, string sourceFilePath, int lineNumber, string assemblyName, Runtime targetFramework, bool isStatic)
+      : base(isStatic, assemblyName, lineNumber, sourceFilePath, targetFramework)
     {
-      this.PropertyInfo = methodInfo;
-      this.IsIndexer = isIndexer;
+      this.PropertyData = propertyData;
+      this.Arguments = argumentList;
     }
 
-    public PropertyInfo PropertyInfo { get; }
-    public string PropertyName => this.PropertyInfo.Name;
-    public bool IsIndexer { get; }
-    public Action SetDelegate { get; set; }
-    public Action GetDelegate { get; set; }
-    public override MemberInfo MemberInfo => this.PropertyInfo;
+    public PropertyData PropertyData { get; }
+    public bool IsIndexer => this.PropertyData.IsIndexer;
+
+    public string MethodReturnTypeDisplayName => this.PropertyData.PropertyTypeData.DisplayName;
+    public override MemberInfoData MemberInfoData => this.PropertyData;
+    public IList<PropertyArgumentInfo> Arguments { get; }
   }
 }

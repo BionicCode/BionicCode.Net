@@ -8,6 +8,7 @@
   using System.Windows;
   using System.Windows.Media;
   using BionicCode.Utilities.Net;
+  using Math = System.Math;
 
   /// <summary>
   /// Manages the text content that is renderd by <see cref="TextSite"/>.
@@ -275,7 +276,7 @@
       //TextRange textRangeAtCaretPosition = textRangesBeforeCaretPosition.Last();
       //FormattedText formattedTextAtCaretPosition = CreateFormattedTextFrom(textRangeAtCaretPosition.Text);
       //ApplyTextRangeFormatting(formattedTextAtCaretPosition, textRangeAtCaretPosition);
-      double caretHeight = Math.Round(this.FormattedText.Height, 0, MidpointRounding.AwayFromZero);
+      double caretHeight = System.Math.Round(this.FormattedText.Height, 0, MidpointRounding.AwayFromZero);
       return new Size(this.CaretWidth, caretHeight);
     }
 
@@ -315,8 +316,8 @@
       this.TextContainer = new TextContainer(this.TextContainer.TextInfo, this.FormattedText.LineHeight);
     }
 
-    private Task InitializeFormattedTextAsync(TextInfo textInfo) =>
-      Task.Run(() =>
+    private Task InitializeFormattedTextAsync(TextInfo textInfo) 
+      => Task.Run(() =>
       {
         foreach (TextRange textRange in textInfo.TextRanges)
         {
@@ -344,7 +345,7 @@
 
     private void ApplyTextRangeFormatting(FormattedText formattedText, TextRange textRange)
     {
-      int textRangeLength = Math.Min(formattedText.Text.Length, textRange.Length);
+      int textRangeLength = System.Math.Min(formattedText.Text.Length, textRange.Length);
       formattedText.SetCulture(textRange.CultureInfo, textRange.Begin, textRangeLength);
       formattedText.SetNumberSubstitution(textRange.NumberSubstitution, textRange.Begin, textRangeLength);
       formattedText.SetForegroundBrush(textRange.TextBrush, textRange.Begin, textRangeLength);

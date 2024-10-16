@@ -17,15 +17,10 @@
   {
     internal static ProfilerBatchResult Empty { get; } = new ProfilerBatchResult();
 
-    internal ProfilerBatchResult(int iterationCount, DateTime timeStamp)
+    internal ProfilerBatchResult(DateTime timeStamp, ProfilerContext context)
     {
-      if (iterationCount < 1)
-      {
-        throw new ArgumentOutOfRangeException(nameof(iterationCount), "A valid result must have at least a single iteration.");
-      }
-
-      this.IterationCount = iterationCount;
       this.TimeStamp = timeStamp;
+      this.Context = context;
       this.ResultsInternal = new List<ProfilerResult>();
       this.Results = new ReadOnlyCollection<ProfilerResult>(this.ResultsInternal);
       this.TotalDuration = Microseconds.Zero;
@@ -40,7 +35,6 @@
 
     private ProfilerBatchResult()
     {
-      this.IterationCount = 0;
       this.TimeStamp = DateTime.Now;
       this.ResultsInternal = new List<ProfilerResult>();
       this.Results = new ReadOnlyCollection<ProfilerResult>(this.ResultsInternal);
@@ -61,9 +55,9 @@
         return string.Empty;
       }
 
-      var summaryBuilder = new StringBuilder();
-      string title = $"Profile target: {this.Context.TargetName}";
-      Profiler.BuildSummaryHeader(summaryBuilder, title, this.Context.TargetName, this.Context.SourceFileName, this.Context.LineNumber);
+      PooledStringBuilder summaryBuilder = StringBuilderFactory.GetOrCreate();
+      string title = $"Profile target: {this.Context.MethodInvokeInfo.Signature}";
+      Profiler.BuildSummaryHeader(summaryBuilder, title, this.Context.MethodInvokeInfo.Signature, this.Context.SourceFileName, this.Context.LineNumber);
 
       foreach (ProfilerResult result in this.Results)
       {
@@ -72,7 +66,10 @@
 
       Profiler.BuildSummaryFooter(summaryBuilder, this);
 
-      return summaryBuilder.ToString();
+      string summary = summaryBuilder.ToString();
+      StringBuilderFactory.Recycle(summaryBuilder);
+
+      return summary;
     }
 
     internal void Combine(ProfilerBatchResult batchResultToAppend)
@@ -192,10 +189,10 @@
     /// The number of iterations the <see cref="Profiler"/> has run the specified operation.
     /// </summary>
     /// <value>The number of iterations (which is equivalent to the number of results) per argument list.</value>
-    /// <remarks>Using the profiler with annotations (attributes) (see <see cref="ProfileAttribute"/>) allows to specify argument lists (see <see cref="ProfilerArgumentAttribute"/>) to simulate real-world behavior where usually the values of the arguments that are provided to the member change.
+    /// <remarks>Using the profiler with annotations (symbolAttributes) (see <see cref="ProfileAttribute"/>) allows to specify argument lists (see <see cref="ProfilerMethodArgumentAttribute"/>) to simulate real-world behavior where usually the values of the arguments that are provided to the member change.
     /// <br/>A member is executed and profiled with each argument list for the number of the <see cref="IterationCount"/> times.
     /// <br/>For example if a method is profiled with three argument lists and an iteration count of 10, the <see cref="IterationCount"/> will return <c>10</c> and the total iterations run for the profiled member is <c>30</c>, the product of <see cref="IterationCount"/> and <see cref="ArgumentListCount"/> (see <see cref="TotalIterationCount"/>).</remarks>
-    public int IterationCount { get; internal set; }
+    public int IterationCount => this.Context.IterationCount;
 
     /// <summary>
     /// The total number of iterations to conduct the profiling.
@@ -207,7 +204,7 @@
     /// The number of iterations the <see cref="Profiler"/> has run the specified operation.
     /// </summary>
     /// <value>The number of iterations (which is equivalent to the number of results) per argument list.</value>
-    /// <remarks>Using the profiler with annotations (attributes) allows to specify argument lists to simulate real-world behavior where usually the values of the arguments that are provided to the member change.
+    /// <remarks>Using the profiler with annotations (symbolAttributes) allows to specify argument lists to simulate real-world behavior where usually the values of the arguments that are provided to the member change.
     /// <br/>A member is executed and profiled with each argument list for the number of the <see cref="IterationCount"/> times.
     /// <br/>For example if a method is profiled with three argument lists and an iteration count of 10, the <see cref="IterationCount"/> will return <c>10</c> and the total iterations run for the profiled member is the product of <see cref="IterationCount"/> and <see cref="ArgumentListCount"/>.</remarks>
     public int ArgumentListCount { get; internal set; }
@@ -303,12 +300,21 @@
     /// Describes the context that the profiler was executed.
     /// </summary>
     /// <remarks>The context describes machine atributes like core clock and core count to help to compare results from sessions on different machines.</remarks>
-    public ProfilerContext Context { get; internal set; }
+    internal ProfilerContext Context { get; set; }
 
     /// <summary>
     /// The base unit used to calculate the values for <see cref="TotalDurationConverted"/>, <see cref="StandardDeviationConverted"/> and <see cref="AverageDurationConverted"/>.
     /// </summary>
-    public TimeUnit BaseUnit { get; internal set; }
+    public TimeUnit BaseUnit
+    {
+      get
+      {
+        TimeUnit timeUnit = this.Context?.BaseUnit ?? Profiler.DefaultBaseUnit;
+        return timeUnit is TimeUnit.None || timeUnit is TimeUnit.Auto
+          ? TimeValueConverter.GetBestDisplayUnit(this.AverageDuration)
+          : timeUnit;
+      }
+    }
 
     internal ProfilerBatchResult ProfilerReferenceResult { get; set; }
   }

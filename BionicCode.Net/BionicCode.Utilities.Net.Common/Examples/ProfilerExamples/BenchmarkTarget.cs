@@ -7,9 +7,9 @@
   class BenchmarkTarget
   {
     [Profile]
-    [ProfilerArgument(100)]
-    [ProfilerArgument(100000)]
-    [ProfilerArgument(100000000)]
+    [ProfilerMethodArgument(100)]
+    [ProfilerMethodArgument(100000)]
+    [ProfilerMethodArgument(100000000)]
     public IEnumerable<int> CalculateFibonacciSeriesRecursive(int length)
     {
       int firstNumberSeed = 0;
@@ -20,9 +20,9 @@
     }
 
     [Profile]
-    [ProfilerArgument(100)]
-    [ProfilerArgument(100000)]
-    [ProfilerArgument(100000000)]
+    [ProfilerMethodArgument(100)]
+    [ProfilerMethodArgument(100000)]
+    [ProfilerMethodArgument(100000000)]
     protected IEnumerable<int> CalculateFibonacciSeriesIterative(int length)
     {
       IEnumerable<int> resultSeries = FibonacciSeriesIterative(length);

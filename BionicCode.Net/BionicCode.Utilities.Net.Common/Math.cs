@@ -70,7 +70,7 @@
     }
 
     /// <summary>
-    /// Calculates the normal distribution and retuns an enumerable collection. The interval used is [µ-5*σ...µ+5*σ], where µ=mean and σ=standard deviation.
+    /// Calculates the normal distribution and returns an enumerable collection. The interval used is [µ-5*σ...µ+5*σ], where µ=mean and σ=standard deviation.
     /// </summary>
     /// <param name="mean">The arithmetic mean of the data series.</param>
     /// <param name="standardDeviation">The sigma i.e. standard deviation of the data series.</param>
@@ -79,7 +79,7 @@
     /// <returns>The data set of x,y points. Can be used to plot the graph.
     /// <br/>The data set always contains the mean µ (0σ), ±1σ, ±2σ, ±3σ.</returns>
     /// <remarks><see cref="EnumerateNormDist(double, double, double)"/> and <see cref="NormDist(double, double, double)"/> differ as follows: When you use <see cref="EnumerateNormDist(double, double, double)"/>, you can start enumerating the collection of cartesian points before the whole collection is returned. 
-    /// <br/>When you use <see cref="NormDist(double, double, double)"/>, you must wait for the whole array of cartesian points to be returned before you can access the array. 
+    /// <br/>When you use <see cref="NormDist(double, double, double)"/>, you must wait for the whole array of Cartesian points to be returned before you can access the array. 
     /// <br/>Therefore, when you are expecting a huge spread of values i.e. a big standard deviation value for <paramref name="standardDeviation"/>, <see cref="EnumerateNormDist(double, double, double)"/> can be more efficient.</remarks>
     public static IEnumerable<CartesianPoint> EnumerateNormDist(double mean, double standardDeviation, double resolution = 0.1)
       => EnumerateNormDistInternal(mean, standardDeviation, resolution, Enumerable.Empty<double>());

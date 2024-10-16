@@ -28,7 +28,7 @@
   /// </code></para>
   /// API docs: <see href="https://sampoh.de/github/docs/bioniccode.net/api/BionicCode.Utilities.Net.ProfilerLoggerDelegate.html">void ProfilerLoggerDelegate(ProfilerBatchResult results, string preformattedOutput)</see>
   /// </remarks>
-  public delegate void ProfilerLoggerDelegate(ProfilerBatchResult results);
+  public delegate void ProfilerLoggerDelegate(ProfilerBatchResult results, string preformattedOutput);
   /// <summary>
   /// An asynchronous delegate to print the results of the <see cref="Profiler"/> to a output (e.g. file).
   /// </summary>
@@ -55,5 +55,5 @@
   /// </code></para>
   /// API docs: <see href="https://sampoh.de/github/docs/bioniccode.net/api/BionicCode.Utilities.Net.ProfilerLoggerAsyncDelegate.html">Task ProfilerLoggerAsyncDelegate(ProfilerBatchResult results, string preformattedOutput)</see>
   /// </remarks>
-  public delegate Task ProfilerLoggerAsyncDelegate(ProfilerBatchResult results);
+  public delegate Task ProfilerLoggerAsyncDelegate(ProfilerBatchResult results, string preformattedOutput);
 }

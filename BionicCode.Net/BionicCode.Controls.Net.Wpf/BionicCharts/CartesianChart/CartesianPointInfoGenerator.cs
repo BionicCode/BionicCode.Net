@@ -43,8 +43,8 @@ After:
 
   public class CartesianPointInfoGenerator : PointInfoGenerator<ICartesianSeriesInfo>
 */
-  using BionicCode.Windows;
-  using BionicCode.Utilities.Net;
+
+  using System.Windows;
 
   public class CartesianPointInfoGenerator : PointInfoGenerator<ICartesianSeriesInfo>
   {
@@ -54,7 +54,7 @@ After:
 
     public override Rect GetValueBounds()
     {
-      var valueBounds = new Size(Math.Abs(this.MinX.X) + Math.Abs(this.MaxX.X), Math.Abs(this.MinY.Y) + Math.Abs(this.MaxY.Y));
+      var valueBounds = new Size(System.Math.Abs(this.MinX.X) + System.Math.Abs(this.MaxX.X), System.Math.Abs(this.MinY.Y) + System.Math.Abs(this.MaxY.Y));
       return new Rect(valueBounds);
     }
 

@@ -1,5 +1,8 @@
 ﻿namespace BionicCode.Utilities.Net
 {
+  using System;
+  using System.Collections.Generic;
+
   /// <summary>
   /// 
   /// </summary>
@@ -24,10 +27,11 @@
 
   public enum AccessModifier
   {
+    Undefined = 0,
     /// <summary>
     /// Should be interpreted as <see langword="internal"/> per language default.
     /// </summary>
-    Default = 0,
+    Default,
     /// <summary>
     /// Represents the <see langword="public"/> modifier.
     /// </summary>
@@ -52,5 +56,13 @@
     /// Represents the <see langword="private"/> modifier.
     /// </summary>
     Private,
+  }
+
+  public class AccessModifierComparer : Comparer<AccessModifier>
+  {
+    public override int Compare(AccessModifier x, AccessModifier y)
+    {
+      return x is AccessModifier.Internal && y is AccessModifier.Protected ? 0 : x.CompareTo(y);
+    }
   }
 }

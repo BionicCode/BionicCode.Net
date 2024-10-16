@@ -16,7 +16,7 @@ namespace BionicCode.Utilities.Net
   using System.Linq;
   using System.Windows;
 
-#if NET || NET461_OR_GREATER
+#if !NETSTANDARD
   using System.Windows.Data;
   internal class BindingResolver : FrameworkElement
   {

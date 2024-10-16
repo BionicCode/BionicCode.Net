@@ -12,7 +12,7 @@ namespace BionicCode.Utilities.Net
   /// <summary>
   /// A reusable command that encapsulates the implementation of <see cref="ICommand"/> with support for async/await command delegates. 
   /// <br/>Enables instant creation of an ICommand without implementing the ICommand interface for each command.
-  /// The <see cref="AsyncRelayCommandCommon{TParam}"/> accepts asynchronous command handlers and supports data bindng to properties like <see cref="IsExecuting"/> by implementing <see cref="INotifyPropertyChanged"/>.
+  /// The <see cref="AsyncRelayCommandCommon{TParam}"/> accepts asynchronous command handlers and supports data binding to properties like <see cref="IsExecuting"/> by implementing <see cref="INotifyPropertyChanged"/>.
   /// <br/>Call and await the <see cref="ExecuteAsync()"/> method or one of its overloads to execute the command explicitly asynchronously.
   ///   <seealso cref="System.Windows.Input.ICommand" />
   /// </summary>
@@ -187,16 +187,19 @@ namespace BionicCode.Utilities.Net
     }
 
     #region ICommand implementation
-#if NET
-    bool ICommand.CanExecute(object? parameter) => CanExecute();
-#else
-    bool ICommand.CanExecute(object parameter) => CanExecute();
-#endif
 
+#if NET
+    /// <inheritdoc />
+    bool ICommand.CanExecute(object? parameter) => CanExecute();
+    /// <inheritdoc />
+    async void ICommand.Execute(object? parameter) => await ExecuteAsync();
+#else
+    /// <inheritdoc />
+    bool ICommand.CanExecute(object parameter) => CanExecute();
     /// <inheritdoc />
     async void ICommand.Execute(object parameter) => await ExecuteAsync();
+#endif
 
     #endregion ICommand implementation
-
   }
 }

@@ -13,6 +13,12 @@
       this.FileName = string.Empty;
       this.MemberName = string.Empty;
       this.ScriptCode = string.Empty;
+      this.TargetSignature = string.Empty;
+      this.TargetNamespace = string.Empty;
+      this.TargetAssemblyName = string.Empty;
+      this.TargetSourceFileName = string.Empty;
+      this.TargetSourceFileLineNumber = 0;
+      this.EnvironmentInfo = string.Empty;
     }
 
     public string ScriptCode { get; set; }
@@ -24,5 +30,11 @@
     public string ChartSection { get; set; }
     public string FileName { get; set; }
     public string MemberName { get; set; }
+    public string TargetSignature { get; set; }
+    public string TargetNamespace { get; set; }
+    public string TargetAssemblyName { get; set; }
+    public string TargetSourceFileName { get; set; }
+    public int TargetSourceFileLineNumber { get; set; }
+    public string EnvironmentInfo { get; internal set; }
   }
 }

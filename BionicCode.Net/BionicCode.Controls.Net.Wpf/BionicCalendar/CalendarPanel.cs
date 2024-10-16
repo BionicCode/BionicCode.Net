@@ -155,6 +155,7 @@ namespace BionicCode.Controls.Net.Wpf
         eventItemContainersOfNewDateItemContainer = new List<UIElement>() { e.ItemContainer };
         this.InternalDateToEventItemContainersSnapshotTable.Add(dropDate, eventItemContainersOfNewDateItemContainer);
       }
+
       UIElement equallySpanningItem = eventItemContainersOfNewDateItemContainer.Find(
         itemContainer => itemContainer != e.ItemContainer && Grid.GetColumnSpan(itemContainer) == Grid.GetColumnSpan(e.ItemContainer));
 
@@ -169,13 +170,13 @@ namespace BionicCode.Controls.Net.Wpf
       if (equallySpanningItem == null)
       {
         droppedEventItemContainerHost = new StackPanel();
-        droppedEventItemContainerHost.Children.Add(e.ItemContainer);
+        _ = droppedEventItemContainerHost.Children.Add(e.ItemContainer);
         this.InternalHostPanels.Add(e.ItemContainer, droppedEventItemContainerHost);
       }
       else if (this.InternalHostPanels.TryGetValue(equallySpanningItem, out droppedEventItemContainerHost))
       {
         this.InternalHostPanels.Add(e.ItemContainer, droppedEventItemContainerHost);
-        droppedEventItemContainerHost.Children.Add(e.ItemContainer);
+        _ = droppedEventItemContainerHost.Children.Add(e.ItemContainer);
         var unsortedEventItemContainers = droppedEventItemContainerHost.Children
           .Cast<FrameworkElement>()
           .ToList();
@@ -194,20 +195,20 @@ namespace BionicCode.Controls.Net.Wpf
 
     private void UnhookEventItemContainer(EventItemDragDropArgs e, DateTime date)
     {
-      if (this.InternalDateItemContainerLookupTable.TryGetValue(e.OriginalDay.Date, out UIElement oldDateItemContainer))
+      if (this.InternalDateItemContainerLookupTable.TryGetValue(e.OriginalDay.Date, out _))
       {
         if (this.InternalDateToEventItemContainersSnapshotTable.TryGetValue(
           date.Date,
           out List<UIElement> eventItemContainersOfOldDateItemContainer))
         {
-          eventItemContainersOfOldDateItemContainer.Remove(e.ItemContainer);
+          _ = eventItemContainersOfOldDateItemContainer.Remove(e.ItemContainer);
         }
       }
 
       if (this.InternalHostPanels.TryGetValue(e.ItemContainer, out Panel oldHostPanel))
       {
         oldHostPanel.Children.Remove(e.ItemContainer);
-        this.InternalHostPanels.Remove(e.ItemContainer);
+        _ = this.InternalHostPanels.Remove(e.ItemContainer);
       }
     }
 
@@ -222,6 +223,7 @@ namespace BionicCode.Controls.Net.Wpf
       {
         return;
       }
+
       newDateItemContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
       double heightOffset = newDateItemContainer.DesiredSize.Height + verticalContainerOffset;
 
@@ -406,7 +408,7 @@ After:
                 }
 
                 eventItemContainerHost = new StackPanel() { VerticalAlignment = VerticalAlignment.Top };
-                eventItemContainerHost.Children.Add(eventItemDragDropArgs.ItemContainer);
+                _ = eventItemContainerHost.Children.Add(eventItemDragDropArgs.ItemContainer);
                 eventItemContainerHost.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
                 Grid.SetColumnSpan(eventItemContainerHost, newDateSpan);
                 this.InternalHostPanels[eventItemDragDropArgs.ItemContainer] = eventItemContainerHost;
@@ -475,7 +477,7 @@ After:
                 IEnumerable<Panel> nextDateEventItemHosts = nextDateEventItems
                   .Select(itemContainer => this.InternalHostPanels[itemContainer])
                   .Distinct()
-                  .OrderByDescending(panel => Grid.GetColumnSpan(panel));
+                  .OrderByDescending(Grid.GetColumnSpan);
                 ArrangeCalendarEventItemHostsOfDateItem(
                   nextDateEventItemHosts,
                   nextDateItemContainer,
@@ -558,6 +560,7 @@ After:
       {
         AddInternalChild(this.ItemsHost);
       }
+
       constraint = base.MeasureOverride(constraint);
       this.ItemsHost.Measure(constraint);
 
@@ -593,8 +596,9 @@ After:
             weekHeaderItemContainer = this.Owner.GetContainerForWeekHeaderItem();
             this.InternalRowIndexToWeekNumberItemTable.Add(rowIndex + this.ContentRowOffset, weekHeaderItemContainer);
           }
+
           this.Owner.PrepareContainerForWeekHeaderItemOverride(weekHeaderItemContainer, weekNumbers[rowIndex]);
-          this.ItemsHost.Children.Add(weekHeaderItemContainer);
+          _ = this.ItemsHost.Children.Add(weekHeaderItemContainer);
         }
       }
 
@@ -605,13 +609,13 @@ After:
           UIElement columnHeaderItem = this.Owner.GetContainerForDateColumnHeaderItem();
           this.Owner.PrepareContainerForCalendarDateColumnHeaderItemOverride(columnHeaderItem, (DayOfWeek)(((int)this.Owner.FirstDayOfWeek + columnIndex) % 7));
           this.InternalDateColumnHeaderItems.Add(columnHeaderItem);
-          this.ItemsHost.Children.Add(columnHeaderItem);
+          _ = this.ItemsHost.Children.Add(columnHeaderItem);
         }
 
         UIElement dummyColumnHeaderItem = this.Owner.GetContainerForDateColumnHeaderItem();
         this.Owner.PrepareContainerForCalendarDateColumnHeaderItemOverride(dummyColumnHeaderItem, string.Empty);
         this.InternalDateColumnHeaderItems.Add(dummyColumnHeaderItem);
-        this.ItemsHost.Children.Add(dummyColumnHeaderItem);
+        _ = this.ItemsHost.Children.Add(dummyColumnHeaderItem);
       }
       else
       {
@@ -619,10 +623,11 @@ After:
         {
           UIElement dateColumnHeaderItem = this.InternalDateColumnHeaderItems[columnIndex];
           this.Owner.PrepareContainerForCalendarDateColumnHeaderItemOverride(dateColumnHeaderItem, (DayOfWeek)(((int)this.Owner.FirstDayOfWeek + columnIndex) % 7));
-          this.ItemsHost.Children.Add(dateColumnHeaderItem);
+          _ = this.ItemsHost.Children.Add(dateColumnHeaderItem);
         }
+
         UIElement dummyColumnHeaderItem = this.Owner.GetContainerForDateColumnHeaderItem();
-        this.ItemsHost.Children.Add(dummyColumnHeaderItem);
+        _ = this.ItemsHost.Children.Add(dummyColumnHeaderItem);
       }
 
       this.InternalEventItems.Clear();
@@ -640,7 +645,7 @@ After:
             var eventItemContainer = this.ItemContainerGenerator.GenerateNext(out bool isNewlyRealized) as UIElement;
             this.ItemContainerGenerator.PrepareItemContainer(eventItemContainer);
             eventItemContainer.Measure(constraint);
-            this.ItemsHost.Children.Add(eventItemContainer);
+            _ = this.ItemsHost.Children.Add(eventItemContainer);
             DateTime eventDate = Calendar.GetDay(eventItemContainer);
 
             if (!this.CurrentCalendarView.ContainsDate(eventDate.Date))
@@ -665,6 +670,7 @@ After:
                 eventContainers = new List<UIElement>();
                 this.InternalDateToEventItemContainersSnapshotTable.Add(eventDate.Date, eventContainers);
               }
+
               eventContainers.Add(eventItemContainer);
             }
           }
@@ -680,7 +686,7 @@ After:
     protected override Size ArrangeOverride(Size arrangeSize)
     {
       this.ItemsHost.Arrange(new Rect(arrangeSize));
-      base.ArrangeOverride(arrangeSize);
+      _ = base.ArrangeOverride(arrangeSize);
       if (!this.IsCalendarPanelInitialized)
       {
         throw new InvalidOperationException(
@@ -692,9 +698,9 @@ After:
         //return arrangeSize;
       }
 
-      ArrangeDateItems(arrangeSize);
-      ArrangeDateColumnHeaderItems(arrangeSize);
-      ArrangeCalendarEventItems(arrangeSize);
+      _ = ArrangeDateItems(arrangeSize);
+      _ = ArrangeDateColumnHeaderItems(arrangeSize);
+      _ = ArrangeCalendarEventItems(arrangeSize);
 
       this.IsLayoutDirty = false;
       //UpdateLayout();
@@ -704,9 +710,6 @@ After:
     private Size ArrangeCalendarEventItems(Size arrangeSize)
     {
       this.InternalHostPanels.Clear();
-
-      var eventItems = this.InternalEventItems.ToList();
-      var dateToEventItemContainerCacheTable = new Dictionary<DateTime, List<UIElement>>();
 
       foreach (DateTime calendarViewDate in this.CurrentCalendarView.Dates.Union(this.CurrentCalendarView.GetNext().Dates))
       {
@@ -731,7 +734,7 @@ After:
         foreach (UIElement itemContainer in eventItemContainersOfCurrentDate)
         {
           ((itemContainer as FrameworkElement)?.Parent as Panel)?.Children.Remove(itemContainer);
-          hostPanel.Children.Add(itemContainer);
+          _ = hostPanel.Children.Add(itemContainer);
           this.InternalHostPanels.Add(itemContainer, hostPanel);
           object item = (this.ItemContainerGenerator as ItemContainerGenerator).ItemFromContainer(itemContainer);
           items.Add(item);
@@ -747,6 +750,7 @@ After:
         {
           dateContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
         }
+
         itemMargin.Top = dateContainer.DesiredSize.Height;
         hostPanel.Margin = itemMargin;
 
@@ -790,9 +794,9 @@ After:
         for (int index = this.InternalDateItemContainerLookupTable.Count - 1; index >= 0; index--)
         {
           DateTime recycleDate = this.InternalDateItemContainerLookupTable.Keys.ElementAt(index);
-          this.InternalDateItemContainerLookupTable.Remove(recycleDate, out UIElement itemContainerToRecycle);
-          this.InternalDateItemContainerToDateItemTable.Remove(itemContainerToRecycle);
-          this.InternalDateItemLookupTable.Remove(recycleDate);
+          _ = this.InternalDateItemContainerLookupTable.Remove(recycleDate, out UIElement itemContainerToRecycle);
+          _ = this.InternalDateItemContainerToDateItemTable.Remove(itemContainerToRecycle);
+          _ = this.InternalDateItemLookupTable.Remove(recycleDate);
           this.Owner.ClearItemContainer(itemContainerToRecycle);
           //Selector.SetIsSelected(itemContainerToRecycle, false);
           this.InternalRecycledDateItemContainerLookupTable.Push(itemContainerToRecycle);
@@ -813,6 +817,7 @@ After:
               recycleWeekCount = this.NextCalendarView.WeekCount - missingWeeksCount;
               RecycleTrailingContainers(0, recycleWeekCount);
             }
+
             break;
           }
         case ScrollDirection.Top:
@@ -833,9 +838,9 @@ After:
       {
         if (this.InternalDateItemContainerLookupTable.Remove(dateTime, out UIElement recycleReadyContainer))
         {
-          this.InternalDateItemContainerToDateItemTable.Remove(recycleReadyContainer);
+          _ = this.InternalDateItemContainerToDateItemTable.Remove(recycleReadyContainer);
           this.Owner.ClearItemContainer(recycleReadyContainer);
-          this.InternalDateItemLookupTable.Remove(dateTime);
+          _ = this.InternalDateItemLookupTable.Remove(dateTime);
           this.InternalRecycledDateItemContainerLookupTable.Push(recycleReadyContainer);
         }
       }
@@ -851,9 +856,9 @@ After:
       {
         if (this.InternalDateItemContainerLookupTable.Remove(dateTime, out UIElement recycleReadyContainer))
         {
-          this.InternalDateItemContainerToDateItemTable.Remove(recycleReadyContainer);
+          _ = this.InternalDateItemContainerToDateItemTable.Remove(recycleReadyContainer);
           this.Owner.ClearItemContainer(recycleReadyContainer);
-          this.InternalDateItemLookupTable.Remove(dateTime);
+          _ = this.InternalDateItemLookupTable.Remove(dateTime);
           this.InternalRecycledDateItemContainerLookupTable.Push(recycleReadyContainer);
         }
       }
@@ -878,7 +883,7 @@ After:
             this.InternalDateItemContainerToCalendarIndexTable.Add(dateItemContainer, calendarIndex);
             this.InternalCalendarIndexToWeekNumberTable.Add(calendarIndex, appendingWeekView.WeekNumber);
             dateItemContainer.Measure(constraint);
-            this.ItemsHost.Children.Add(dateItemContainer);
+            _ = this.ItemsHost.Children.Add(dateItemContainer);
             calendarIndex++;
           }
         }
@@ -889,7 +894,7 @@ After:
     {
       foreach (CalendarWeekView weekView in this.CurrentCalendarView.Skip(this.WeekRealizationOffset))
       {
-        if (++weekIndex >= Math.Min(this.RowCount, this.CurrentCalendarView.WeekCount))
+        if (++weekIndex >= System.Math.Min(this.RowCount, this.CurrentCalendarView.WeekCount))
         {
           break;
         }
@@ -908,7 +913,7 @@ After:
           this.InternalDateItemContainerToCalendarIndexTable.Add(dateItemContainer, calendarIndex);
           this.InternalCalendarIndexToWeekNumberTable.Add(calendarIndex, weekView.WeekNumber);
           dateItemContainer.Measure(constraint);
-          this.ItemsHost.Children.Add(dateItemContainer);
+          _ = this.ItemsHost.Children.Add(dateItemContainer);
           calendarIndex++;
         }
       }
@@ -929,6 +934,7 @@ After:
         columnIndex,
         rowIndex,
         weekNumber);
+
       return dateGeneratorArgs;
     }
 
@@ -960,6 +966,7 @@ After:
           {
             dateContainer = this.Owner.GetContainerForDateItem();
           }
+
           this.Owner.PrepareContainerForCalendarDateItemOverride(dateContainer, dateItem);
 
           this.InternalDateItemContainerLookupTable.Add(calendarViewDate, dateContainer);
@@ -976,8 +983,8 @@ After:
       return calendarView;
     }
 
-    private CalendarMonthView CreateCalendarViewOfMonth(int year, int month) =>
-      CreateCalendarViewOfMonth(new DateTime(year, month, 1));
+    private CalendarMonthView CreateCalendarViewOfMonth(int year, int month) 
+      => CreateCalendarViewOfMonth(new DateTime(year, month, 1));
 
     private Size ArrangeDateColumnHeaderItems(Size arrangeBounds)
     {
@@ -1069,7 +1076,7 @@ After:
         //(targetHost as Grid).RowDefinitions.Add(new RowDefinition {Height = GridLength.Auto});
         //var itemHost = new DockPanel();
         //itemHost.Children.Add(eventGeneratorArgs.ItemContainer);
-        targetHost.Children.Add(eventGeneratorArgs.ItemContainer);
+        _ = targetHost.Children.Add(eventGeneratorArgs.ItemContainer);
       }
     }
 
@@ -1132,27 +1139,28 @@ After:
       return calendarDay;
     }
 
-    public bool TryGetDateItem(DateTime calendarDate, out CalendarDate calendarDateItem) =>
-      this.InternalDateItemLookupTable.TryGetValue(calendarDate, out calendarDateItem);
+    public bool TryGetDateItem(DateTime calendarDate, out CalendarDate calendarDateItem) 
+      => this.InternalDateItemLookupTable.TryGetValue(calendarDate, out calendarDateItem);
 
-    public IReadOnlyCollection<UIElement> GetDateItemContainers() =>
-      new ReadOnlyCollection<UIElement>(this.InternalDateItemContainerLookupTable.Values.ToList());
+    public IReadOnlyCollection<UIElement> GetDateItemContainers() 
+      => new ReadOnlyCollection<UIElement>(this.InternalDateItemContainerLookupTable.Values.ToList());
 
-    public IReadOnlyCollection<UIElement> GetEventItemContainers() =>
-      new ReadOnlyCollection<UIElement>(this.InternalDateToEventItemContainersSnapshotTable.Values.SelectMany(eventContainers => eventContainers).ToList());
+    public IReadOnlyCollection<UIElement> GetEventItemContainers() 
+      => new ReadOnlyCollection<UIElement>(this.InternalDateToEventItemContainersSnapshotTable.Values.SelectMany(eventContainers => eventContainers).ToList());
 
-    public IReadOnlyCollection<UIElement> GetDateColumnHeaderItemContainers() =>
-      new ReadOnlyCollection<UIElement>(this.InternalDateColumnHeaderItems);
+    public IReadOnlyCollection<UIElement> GetDateColumnHeaderItemContainers() 
+      => new ReadOnlyCollection<UIElement>(this.InternalDateColumnHeaderItems);
 
-    private bool IsDateRealized(DateTime date) => this.InternalDateItemContainerLookupTable.ContainsKey(date.Date);
+    private bool IsDateRealized(DateTime date) 
+      => this.InternalDateItemContainerLookupTable.ContainsKey(date.Date);
 
     private int WeekRealizationOffset { get; set; }
     private CalendarMonthView NextCalendarView { get; set; }
 
     #region OnIsShowingCalendarWeekChanged dependency property changed handler
 
-    private static void OnIsShowingCalendarWeekChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
-      (d as CalendarPanel).OnIsShowingCalendarWeekChanged((bool)e.OldValue, (bool)e.NewValue);
+    private static void OnIsShowingCalendarWeekChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) 
+      => (d as CalendarPanel).OnIsShowingCalendarWeekChanged((bool)e.OldValue, (bool)e.NewValue);
 
     protected virtual void OnIsShowingCalendarWeekChanged(bool oldValue, bool newValue)
     {
@@ -1166,8 +1174,8 @@ After:
     protected virtual void OnAutoGeneratingEvent(EventGeneratorArgs e) => this.AutoGeneratingEvent?.Invoke(this, e);
     protected virtual void OnAutoGeneratingDate(DateGeneratorArgs e) => this.AutoGeneratingDate?.Invoke(this, e);
 
-    protected virtual void OnAutoGeneratingDateColumnHeader(DateColumnHeaderGeneratorArgs e) =>
-      this.AutoGeneratingDateColumnHeader?.Invoke(this, e);
+    protected virtual void OnAutoGeneratingDateColumnHeader(DateColumnHeaderGeneratorArgs e) 
+      => this.AutoGeneratingDateColumnHeader?.Invoke(this, e);
 
     public event EventHandler<EventGeneratorArgs> AutoGeneratingEvent;
     public event EventHandler<DateGeneratorArgs> AutoGeneratingDate;
@@ -1285,7 +1293,7 @@ After:
         return;
       }
 
-      int offsetDelta = (int)Math.Ceiling(offset - this.VerticalOffset);
+      int offsetDelta = (int)System.Math.Ceiling(offset - this.VerticalOffset);
       ScrollDirection scrollDirection = offset < this.VerticalOffset && this.WeekRealizationOffset + offsetDelta < 0 ? ScrollDirection.Top : offset > this.VerticalOffset && this.WeekRealizationOffset + offsetDelta > 0 ? ScrollDirection.Bottom : this.PreviousScrollDirection;
       this.WeekRealizationOffset += offsetDelta;
       this.VerticalOffset = offset;

@@ -7,7 +7,7 @@
   using System.Windows.Input;
 
   /// <inheritdoc/>
-  public interface IAsyncRelayCommand : IAsyncRelayCommandCommon
+  public partial interface IAsyncRelayCommand : IAsyncRelayCommandCommon
   {
 #if !NETSTANDARD
     /// <summary>

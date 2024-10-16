@@ -12,7 +12,7 @@
 //  {
 //    public NullObjectCreator()
 //    {
-//      AssemblyName nullObjectAssembly = new AssemblyName {Name = "NullObjectImplementations"};
+//      TargetAssemblyName nullObjectAssembly = new TargetAssemblyName {Name = "NullObjectImplementations"};
 
 //    }
 
@@ -127,7 +127,7 @@
 
 //          typeBuilder.DefineProperty(
 //            propertyInfo.Name,
-//            propertyInfo.Attributes,
+//            propertyInfo.symbolAttributes,
 //            CallingConventions.HasThis,
 //            propertyInfo.PropertyType,
 //            Types.EmptyTypes);
@@ -149,7 +149,7 @@
 //        });
 //    }
 
-//    private AssemblyName NullObjectsAssemblyName { get; } = new AssemblyName { Name = "NullObjectImplementations" };
+//    private TargetAssemblyName NullObjectsAssemblyName { get; } = new TargetAssemblyName { Name = "NullObjectImplementations" };
 //    private ModuleBuilder NullObjectModule { get; set; }
 //  }
 //}

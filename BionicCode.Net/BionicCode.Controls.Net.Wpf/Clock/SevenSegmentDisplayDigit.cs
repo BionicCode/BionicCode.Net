@@ -11,6 +11,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using BionicCode.Utilities.Net;
+using Math = System.Math;
 
 namespace BionicCode.Controls.Net.Wpf
 {
@@ -63,7 +64,7 @@ namespace BionicCode.Controls.Net.Wpf
         OnColor = this.SegmentOnColor,
         OffColor = this.SegmentOffColor
       };
-      this.SegmentPanel.Children.Add(verticalTopLeftSegment);
+      _ = this.SegmentPanel.Children.Add(verticalTopLeftSegment);
       Canvas.SetLeft(verticalTopLeftSegment, bounds.X);
       Canvas.SetTop(verticalTopLeftSegment, bounds.Y + this.GapWidth);
 
@@ -76,7 +77,7 @@ namespace BionicCode.Controls.Net.Wpf
         OnColor = this.SegmentOnColor,
         OffColor = this.SegmentOffColor
       };
-      this.SegmentPanel.Children.Add(verticalTopRightSegment);
+      _ = this.SegmentPanel.Children.Add(verticalTopRightSegment);
       Canvas.SetLeft(verticalTopRightSegment, bounds.X + this.SegmentWidth + (2 * this.GapWidth));
       Canvas.SetTop(verticalTopRightSegment, bounds.Y + this.GapWidth);
 
@@ -89,7 +90,7 @@ namespace BionicCode.Controls.Net.Wpf
         OnColor = this.SegmentOnColor,
         OffColor = this.SegmentOffColor
       };
-      this.SegmentPanel.Children.Add(verticalBottomRightSegment);
+      _ = this.SegmentPanel.Children.Add(verticalBottomRightSegment);
       Canvas.SetLeft(verticalBottomRightSegment, bounds.X + this.SegmentWidth + (2 * this.GapWidth) - this.SegmentHeight);
       Canvas.SetTop(verticalBottomRightSegment, bounds.Y + coercedVerticalSegmentHeight + (3 * this.GapWidth));
 
@@ -102,7 +103,7 @@ namespace BionicCode.Controls.Net.Wpf
         OnColor = this.SegmentOnColor,
         OffColor = this.SegmentOffColor
       };
-      this.SegmentPanel.Children.Add(verticalBottomLeftSegment);
+      _ = this.SegmentPanel.Children.Add(verticalBottomLeftSegment);
       Canvas.SetLeft(verticalBottomLeftSegment, bounds.X - this.SegmentHeight);
       Canvas.SetTop(verticalBottomLeftSegment, bounds.Y + coercedVerticalSegmentHeight + (3 * this.GapWidth));
 
@@ -115,7 +116,7 @@ namespace BionicCode.Controls.Net.Wpf
         OnColor = this.SegmentOnColor,
         OffColor = this.SegmentOffColor
       };
-      this.SegmentPanel.Children.Add(horizontalTopSegment);
+      _ = this.SegmentPanel.Children.Add(horizontalTopSegment);
       Canvas.SetLeft(horizontalTopSegment, bounds.X + this.GapWidth);
       Canvas.SetTop(horizontalTopSegment, bounds.Y);
 
@@ -128,7 +129,7 @@ namespace BionicCode.Controls.Net.Wpf
         OnColor = this.SegmentOnColor,
         OffColor = this.SegmentOffColor
       };
-      this.SegmentPanel.Children.Add(horizontalCenterSegment);
+      _ = this.SegmentPanel.Children.Add(horizontalCenterSegment);
       Canvas.SetLeft(horizontalCenterSegment, bounds.X - this.SegmentHeight + this.GapWidth);
       Canvas.SetTop(horizontalCenterSegment, bounds.Y + coercedVerticalSegmentHeight + (2 * this.GapWidth));
 
@@ -141,7 +142,7 @@ namespace BionicCode.Controls.Net.Wpf
         OnColor = this.SegmentOnColor,
         OffColor = this.SegmentOffColor
       };
-      this.SegmentPanel.Children.Add(horizontalBottomSegment);
+      _ = this.SegmentPanel.Children.Add(horizontalBottomSegment);
       Canvas.SetLeft(horizontalBottomSegment, bounds.X + this.GapWidth - horizontalOffset + (this.SegmentHeight / 2));
       Canvas.SetTop(horizontalBottomSegment, bounds.Y + (2 * coercedVerticalSegmentHeight) + (4 * this.GapWidth));
     }

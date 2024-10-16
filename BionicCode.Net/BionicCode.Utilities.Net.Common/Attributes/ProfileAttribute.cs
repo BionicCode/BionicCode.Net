@@ -26,11 +26,8 @@
     /// </summary>
     /// <param name="sourceFilePath"></param>
     /// <param name="lineNumber"></param>
-    public ProfileAttribute([CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = -1)
+    public ProfileAttribute([CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = -1) : this(Runtime.Current, TimeUnit.Auto, sourceFilePath, lineNumber)
     {
-      this.SourceFilePath = sourceFilePath;
-      this.LineNumber = lineNumber;
-      this.TargetFramework = Runtime.Current;
     }
 
     /// <summary>
@@ -39,15 +36,27 @@
     /// <param name="targetFramework">The target .NET runtime that the profiler must use to execute the profiled code.</param>
     /// <param name="sourceFilePath"></param>
     /// <param name="lineNumber"></param>
-    public ProfileAttribute(Runtime targetFramework, [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = -1)
+    public ProfileAttribute(Runtime targetFramework, [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = -1) : this(targetFramework, TimeUnit.Auto, sourceFilePath, lineNumber)
+    {
+    }
+
+    /// <summary>
+    /// Constructor. 
+    /// </summary>
+    /// <param name="targetFramework">The target .NET runtime that the profiler must use to execute the profiled code.</param>
+    /// <param name="sourceFilePath"></param>
+    /// <param name="lineNumber"></param>
+    public ProfileAttribute(Runtime targetFramework, TimeUnit baseUnit, [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int lineNumber = -1)
     {
       this.SourceFilePath = sourceFilePath;
       this.LineNumber = lineNumber;
       this.TargetFramework = targetFramework;
+      this.BaseUnit = baseUnit;
     }
 
     public string SourceFilePath { get; }
     public int LineNumber { get; }
     public Runtime TargetFramework { get; }
+    public TimeUnit BaseUnit { get; }
   }
 }

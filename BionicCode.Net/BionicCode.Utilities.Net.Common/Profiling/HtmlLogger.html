@@ -1,225 +1,318 @@
 ﻿<!DOCTYPE html>
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-  <title>Profiler report</title>
-  <style>
-    th,
-    td {
-      padding: 8px 12px 8px 12px;
-    }
+<-- Bootstrap docs
+    https: //getbootstrap.com/docs/5.3/components/dropdowns/ -->
 
-    tr:nth-child(even) {
-      background-color: #8fb2e6;
-    }
+  <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Profiler report</title>
+    <style>
 
-    tbody tr:hover {
-      border: 4px solid rgb(160, 93, 93);
-    }
-
-    tbody tr {
-    }
-
-    thead {
-      position: sticky;
-      top: 0;
-      background-color: #4073a5;
-      color: white;
-      text-align: left;
-    }
-
-    tfoot {
-      position: sticky;
-      bottom: 0;
-      background-color: #4073a5;
-    }
-
-    .data-row-summary {
-      background-color: #4073a5;
-      color: white;
-      border-collapse: collapse;
-      padding: 4px 8px 4px 8px;
-    }
-
-    tfoot tr:nth-child(1) {
-      font-weight: bold;
-    }
-
-    tfoot tr:nth-child(even) {
-      background-color: #4073a5;
-      color: white;
-    }
-
-    table {
-      border-spacing: 0px;
-      width: 100%;
-      /*height: 560px;*/
-    }
-
-    .line-chart {
-      overflow: auto;
-      height: 560px;
-    }
-
-    .source-file-span {
-      font-style: italic;
-      font-size: 10pt;
-    }
-
-    .label-span {
-      font-style: italic;
-      font-size: 10pt;
-    }
-
-    .scroll-host {
-      overflow: auto;
-      max-height: 100vh;
-    }
-
-    .table-scroll-host {
-      overflow-y: scroll;
-      float: left;
-      max-height: 560px;
-      width: 50%;
-    }
-
-    .chart-scroll-host {
-      overflow-y: scroll;
-      overflow-x: scroll;
-      max-height: 560px;
-      float: left;
-      width: 50%;
-    }
-
-    .nav-host {
-      width: 100%;
-      position: fixed; 
-      z-index: 11;
-      top: 0;
-      /*float: left;*/
-      /*height: 100vh;*/
-      /*overflow-y: scroll;*/
-    }
-
-    .default-icon {
-      width: 16px;
-      height: 16px;
-      margin: 0px;
-    }
-
-    .tool-button {
-      padding: 4px;
-    }
-
-    .navigation-link {
-      margin-right: 24px;
-      background: transparent;
-      /*  float: right;
-        position: fixed;*/
-    }
-
-    footer .navigation-link {
-      margin-right: 24px;
-      background: transparent;
-      color: white;
-      /*  float: right;
-        position: fixed;*/
-    }
-
-    .in-page-nav {
-      right: 0;
-      position: fixed;
-      z-index: 10;
-      opacity: 0.9;
-      width: auto;
-      background: #ccc;
-      padding: 20px;
-      border-radius: 5px;
-    }
-
-      .in-page-nav ul {
-        list-style-type: none;
-        padding: 0;
+      .syntax-symbol {
+        color: teal;
+        font-family: Consolas;
       }
 
-      .in-page-nav li {
-        list-style-type: none;
-        margin-bottom: 24px;
+      .syntax-keyword {
+        color: blue;
+        font-family: Consolas;
       }
 
-    article {
-      float: left;
-      position: relative;
-      padding: 20px;
-      width: 100%;
-      background-color: #f1f1f1;
-      /* height: 300px;
-         only for demonstration, should be removed */
-    }
+      .syntax-delimiter {
+        color: black;
+        font-family: Consolas;
+      }
 
-    footer article {
-      float: left;
-      position: relative;
-      padding: 20px;
-      width: auto;
-      background-color: transparent;
-      color: white;
-      /* height: 300px;
-     only for demonstration, should be removed */
-    }
+      .syntax-value {
+        color: black;
+        font-family: Consolas;
+      }
 
-    /* Clear floats after the columns */
-    section::after {
-      content: "";
-      display: table;
-      clear: both;
-    }
+      .syntax-type {
+        color: black;
+        font-family: Consolas;
+      }
 
-    footer {
-      background-color: #777;
-      padding: 10px;
-      text-align: center;
-      color: white;
-    }
-  </style>
-</head>
+      .signature-box-border {
+        padding: 4px;
+        background-color: #e3e3e3;
+      }
+
+      .signature-box-header {
+        padding: 8px;
+      }
+
+      .signature-box {
+        overflow: auto;
+        padding: 8px;
+        width: auto;
+        max-height: 200px;
+        white-space: nowrap;
+        background-color: #f1f1f1;
+      }
+
+      .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+      }
+
+        .tooltip .tooltiptext {
+          visibility: hidden;
+          width: 120px;
+          background-color: #555;
+          color: #fff;
+          text-align: center;
+          border-radius: 6px;
+          padding: 5px 0;
+          position: absolute;
+          z-index: 1;
+          bottom: 125%;
+          left: 50%;
+          margin-left: -60px;
+          opacity: 0;
+          transition: opacity 0.3s;
+        }
+
+          .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+          }
+
+        .tooltip:hover .tooltiptext {
+          visibility: visible;
+          opacity: 1;
+        }
+
+      th, td {
+        padding: 8px 12px 8px 12px;
+      }
+
+      tr:nth-child(even) {
+        background-color: #8fb2e6;
+      }
+
+      tbody tr:hover {
+        border: 4px solid rgb(160, 93, 93);
+      }
+
+      tbody tr {
+      }
+
+      thead {
+        position: sticky;
+        top: 0;
+        background-color: #4073a5;
+        color: white;
+        text-align: left;
+      }
+
+      tfoot {
+        position: sticky;
+        bottom: 0;
+        background-color: #4073a5;
+      }
+
+      .data-row-summary {
+        background-color: #4073a5;
+        color: white;
+        border-collapse: collapse;
+        padding: 4px 8px 4px 8px;
+      }
+
+      tfoot tr:nth-child(1) {
+        font-weight: bold;
+      }
+
+      tfoot tr:nth-child(even) {
+        background-color: #4073a5;
+        color: white;
+      }
+
+      table {
+        border-spacing: 0px;
+        width: 100%;
+        /*height: 560px;*/
+      }
+
+      .line-chart {
+        overflow: auto;
+        height: 560px;
+      }
+
+      .source-file-span {
+        font-style: italic;
+        font-size: 10pt;
+      }
+
+      .label-span {
+        font-style: italic;
+        font-size: 10pt;
+      }
+
+      .value-span {
+      }
+
+      .scroll-host {
+        overflow: auto;
+        max-height: 100vh;
+      }
+
+      .table-scroll-host {
+        overflow-y: scroll;
+        float: left;
+        max-height: 560px;
+        width: 50%;
+      }
+
+      .chart-scroll-host {
+        overflow-y: scroll;
+        overflow-x: scroll;
+        max-height: 560px;
+        float: left;
+        width: 50%;
+      }
+
+      .nav-host {
+        width: 100%;
+        position: fixed;
+        z-index: 11;
+        top: 0;
+        /*float: left;*/
+        /*height: 100vh;*/
+        /*overflow-y: scroll;*/
+      }
+
+      .default-icon {
+        width: 16px;
+        height: 16px;
+        margin: 0px;
+      }
+
+      .tool-button {
+        padding: 4px;
+      }
+
+      .navigation-link {
+        margin-right: 24px;
+        background: transparent;
+        /*  float: right;
+         position: fixed;*/
+      }
+
+      footer .navigation-link {
+        margin-right: 24px;
+        background: transparent;
+        color: white;
+        /*  float: right;
+         position: fixed;*/
+      }
+
+      .in-page-nav {
+        right: 0;
+        position: fixed;
+        z-index: 10;
+        opacity: 0.9;
+        width: auto;
+        background: #ccc;
+        padding: 20px;
+        border-radius: 5px;
+      }
+
+        .in-page-nav ul {
+          list-style-type: none;
+          padding: 0;
+        }
+
+        .in-page-nav li {
+          list-style-type: none;
+          margin-bottom: 24px;
+        }
+
+      .document-title {
+        margin-top: 32px;
+        margin-bottom: 16px;
+        font-size: 32px;
+        /*font-size: 2vw;*/
+        font-weight: bold;
+      }
+
+      article {
+        float: left;
+        position: relative;
+        padding: 0px;
+        width: 100%;
+        /*background-color: #f1f1f1;*/
+        /* height: 300px;
+          only for demonstration, should be removed */
+      }
+
+      footer article {
+        float: left;
+        position: relative;
+        padding: 20px;
+        width: auto;
+        background-color: transparent;
+        color: white;
+        /* height: 300px;
+      only for demonstration, should be removed */
+      }
+
+      /* Clear floats after the columns */
+      section::after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+
+      footer {
+        background-color: #777;
+        padding: 10px;
+        text-align: center;
+        color: white;
+      }
+    </style>
+  </head>
 
 
-<body style="padding: 0px 12px 12px 12px;">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-          crossorigin="anonymous"></script>
-  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <body style="padding: 0px;" data-bs-spy="scroll" data-bs-target="#in-document-navigation" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" class="scrollspy-example bg-body-tertiary p-3 rounded-2" tabindex="0">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
 
-  <div id="document_start"></div>
+    <div id="document_start"></div>
 
-  <section>
-    <div class="nav-host">
-      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">Summary</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <!--<div style="color: white" class="dropdown-header">Profiled type: </div>-->
-          <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
-            <ul class="navbar-nav">
-              <li style="margin-left: 12px; color: white; font-size: 11px; margin-top: 14px;" class="dropdown-header">Type: </li>
-              <li class="nav-item dropdown">
-                <button style="float: left;" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                  {0}
-                </button>
-                <ul class="dropdown-menu">
-                  {1}
-                </ul>
-              </li>
-                <li style="margin-left: 12px; color: white; font-size: 11px; margin-top: 14px;" class="dropdown-header">Type member: </li>
+    <section>
+      <div class="nav-host">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="#">Summary</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <!--<div style="color: white" class="dropdown-header">Profiled type: </div>-->
+            <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+              <ul class="navbar-nav">
+                <li style="margin-left: 12px; color: white; font-size: 11px; margin-top: 14px;" class="dropdown-header">Type: </li>
                 <li class="nav-item dropdown">
-                  <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  <button style="float: left;" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    {0}
+                  </button>
+                  <ul class="dropdown-menu" style="width: 100px;">
+                    {1}
+                  </ul>
+                </li>
+                <li style="margin-left: 12px; color: white; font-size: 11px; margin-top: 14px;" class="dropdown-header">Member: </li>
+                <li class="nav-item dropdown">
+                  <button class="btn btn-dark dropdown-toggle" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
                     {2}
                   </button>
                   <ul class="dropdown-menu">
@@ -227,44 +320,75 @@
                   </ul>
                 </li>
               </ul>
-</div>
-        </div>
-      </nav>
-    </div>
-    <div id="json_data"></div>
-
-
-    <div style="width: 100%;">
-      <div id="in-document-navigation-host" style="position: fixed; float: right; z-index: 10;">
-        <nav class="in-page-nav">
-          <h4>Page index</h4>
-          <div class="list-group">
-            {4}
+            </div>
           </div>
         </nav>
       </div>
+      <div id="json_data"></div>
 
-      <h3 style="margin-top: 64px;">{5}</h3>
-      <div style="width: 100%; margin-top: 0px;">
-        {6}
+
+      <div style="width: 100%; padding: 0px 16px 0px 16px">
+        <div id="in-document-navigation-host" style="position: fixed; float: right; z-index: 10;">
+          <nav id="in-document-navigation" class="in-page-nav">
+            <h4>Page index</h4>
+            <div class="list-group">
+              {4}
+            </div>
+          </nav>
+        </div>
+
+        <div class="document-title">{5}</div>
+        <div>
+          <span style="font-weight: 900; font-size: 18pt">Profiler Context</span><br>
+          <span style="font-weight: bold; font-size: 14pt">Target</span><br>
+          <span class="label-span">Namespace: </span><span class="valueSpan">{11}</span><br>
+          <span class="label-span">Assembly: </span><span class="valueSpan">{12}.dll</span><br>
+          <span class="label-span">Source: </span><span class="valueSpan">{13}</span>
+          <div class="tooltip">
+            <span class="tooltiptext">Hallo</span>
+          </div>
+          <span class="valueSpan"> line {14}</span><br>
+
+          <br>
+          <div class="signature-box-border">
+            <div class="signature-box-header">C#</div>
+            <div class="signature-box"><span class="valueSpan">{10}</span></div>
+          </div>
+          <br>
+          <br>
+          <div class="accordion" id="system-info-expander">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                  <span style="font-weight: bold; font-size: 14pt">Environment</span>
+                </button>
+              </h2>
+              <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#system-info-expander">
+                <div class="accordion-body">{15}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="width: 100%; margin-top: 0px;">
+          {6}
+        </div>
       </div>
-    </div>
-  </section>
-  <script>{7}</script>
-  <footer>
-    {8}
-    <a class="navigation-link" href="#document_start">Go to top 🡡</a>
-    <div class="source-file-span">
-      <p>
-        Report location: <span id="report_file_path" style="margin-right: 12px">{9}</span>
-        <button type="button" class="btn btn-outline-light btn-sm" onclick="copyToClipboard()"
-                title="Copy file path to clipboard">
-          <img class="default-icon"
-               src="https://sampoh.de/globalWebResources/icons/svg/clipboard-svgrepo-com.svg"
-               alt="copy file path">
-        </button>
-      </p>
-    </div>
-  </footer>
-</body>
+    </section>
+    <script>{7}</script>
+    <footer>
+      {8}
+      <a class="navigation-link" href="#top">Go to top 🡡</a>
+      <div class="source-file-span">
+        <p>
+          Report location: <span id="report_file_path" style="margin-right: 12px">{9}</span>
+          <button type="button" class="btn btn-outline-light btn-sm" onclick="copyToClipboard()"
+                  title="Copy file path to clipboard">
+            <img class="default-icon"
+                 src="https://sampoh.de/globalWebResources/icons/svg/clipboard-svgrepo-com.svg"
+                 alt="copy file path">
+          </button>
+        </p>
+      </div>
+    </footer>
+  </body>
 </html>

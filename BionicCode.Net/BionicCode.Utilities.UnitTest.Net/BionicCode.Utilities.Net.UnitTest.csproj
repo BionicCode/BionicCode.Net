@@ -1,22 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net472;net48;net481;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
 
     <IsPackable>false</IsPackable>
+
+    <AnalysisLevel>none</AnalysisLevel>
+
+    <EnableNETAnalyzers>False</EnableNETAnalyzers>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Profiling\ContextExecutables\**" />
-    <EmbeddedResource Remove="Profiling\ContextExecutables\**" />
-    <None Remove="Profiling\ContextExecutables\**" />
+    <Compile Remove="UnitTests\Profiling\ContextExecutables\**" />
+    <EmbeddedResource Remove="UnitTests\Profiling\ContextExecutables\**" />
+    <None Remove="UnitTests\Profiling\ContextExecutables\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="6.12.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-    <PackageReference Include="xunit" Version="2.8.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.0">
+    <PackageReference Include="FluentAssertions" Version="6.12.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -29,10 +33,6 @@
   <ItemGroup>
     <ProjectReference Include="..\BionicCode.Utilities.Net.Common\BionicCode.Utilities.Net.Common.csproj" />
     <ProjectReference Include="..\BionicCode.Utilities.Net\BionicCode.Utilities.Net.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Profiling\" />
   </ItemGroup>
   
   <Target Name="MakeMyDir" AfterTargets="Build">

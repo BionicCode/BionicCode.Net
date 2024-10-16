@@ -9,26 +9,25 @@
   /// </summary>
   public struct ProfilerResult : IEquatable<ProfilerResult>, IComparable<ProfilerResult>
   {
-    internal static ProfilerResult Empty => new ProfilerResult(-1, Microseconds.Zero, TimeUnit.Microseconds, null, -1);
-    internal static ProfilerResult MaxDuration => new ProfilerResult(-1, Microseconds.MaxValue, TimeUnit.Microseconds, null, -1);
-    internal static ProfilerResult MinDuration => new ProfilerResult(-1, Microseconds.MinValue, TimeUnit.Microseconds, null, -1);
+    internal static ProfilerResult Empty => new ProfilerResult(-1, Microseconds.Zero, null, -1);
+    internal static ProfilerResult MaxDuration => new ProfilerResult(-1, Microseconds.MaxValue, null, -1);
+    internal static ProfilerResult MinDuration => new ProfilerResult(-1, Microseconds.MinValue, null, -1);
 
-    internal ProfilerResult(int iteration, Microseconds elapsedTime, TimeUnit baseUnit, ProfilerBatchResult owner, int argumentListIndex) : this(iteration, null, elapsedTime, Microseconds.MinValue, baseUnit, owner, argumentListIndex)
+    internal ProfilerResult(int iteration, Microseconds elapsedTime, ProfilerBatchResult owner, int argumentListIndex) : this(iteration, false, elapsedTime, Microseconds.MinValue, owner, argumentListIndex)
     {
     }
 
-    internal ProfilerResult(int iteration, Task profiledTask, Microseconds elapsedTime, TimeUnit baseUnit, ProfilerBatchResult owner, int argumentListIndex) : this(iteration, profiledTask, elapsedTime, Microseconds.MinValue, baseUnit, owner, argumentListIndex)
+    internal ProfilerResult(int iteration, bool isProfiledTaskCancelled, Microseconds elapsedTime, ProfilerBatchResult owner, int argumentListIndex) : this(iteration, isProfiledTaskCancelled, elapsedTime, Microseconds.MinValue, owner, argumentListIndex)
     {
     }
 
-    internal ProfilerResult(int iteration, Task profiledTask, Microseconds elapsedTime, Microseconds deviation, TimeUnit baseUnit, ProfilerBatchResult owner, int argumentListIndex)
+    internal ProfilerResult(int iteration, bool isProfiledTaskCancelled, Microseconds elapsedTime, Microseconds deviation, ProfilerBatchResult owner, int argumentListIndex)
     {
       this.Owner = owner;
       this.Iteration = iteration;
-      this.ProfiledTask = profiledTask;
+      this.IsProfiledTaskCancelled = isProfiledTaskCancelled;
       this.ElapsedTime = elapsedTime;
       this.deviation = deviation;
-      this.BaseUnit = baseUnit;
       this.ArgumentListIndex = argumentListIndex;
     }
 
@@ -53,9 +52,7 @@
     /// </summary>
     /// <value>A positive or negative value to describe the deviation from the arithmetic mean in microseconds.</value>
     public Microseconds Deviation => this.deviation == Microseconds.MinValue
-      ? this.Owner is null
-        ? throw new InvalidOperationException("The property is unset")
-        : (this.deviation = GetDeviation())
+      ? (this.deviation = GetDeviation())
       : this.deviation;
 
     /// <summary>
@@ -67,20 +64,20 @@
     /// <summary>
     /// The base unit used to calculate the values for <see cref="DeviationConverted"/> and <see cref="ElapsedTimeConverted"/>.
     /// </summary>
-    public TimeUnit BaseUnit { get; internal set; }
+    public TimeUnit BaseUnit => this.Owner?.BaseUnit ?? TimeUnit.Microseconds;
 
     /// <summary>
-    /// In case the benchmarked operation is an async method, <see cref="IsProfiledTaskCancelled"/> indiocates wwhether the <see langword="async"/>operation was cancelled or not.
+    /// In case the benchmarked operation is an async method, <see cref="IsProfiledTaskCancelled"/> indicates whether the <see langword="async"/>operation was cancelled or not.
     /// </summary>
-    /// <value><see langword="true"/> in case the operation wwwas cancelled (and the <see cref="ProfiledTask"/> result is in a canlled state (<see cref="Task.Status"/> returns <see cref="TaskStatus.Canceled"/>).</value>
-    public bool IsProfiledTaskCancelled => this.ProfiledTask?.Status is TaskStatus.Canceled || this.ProfiledTask?.Status is TaskStatus.Faulted;
+    /// <value><see langword="true"/> in case the operation was cancelled (and the <see cref="ProfiledTask"/> result is in a cancelled state (<see cref="Task.Status"/> returns <see cref="TaskStatus.Canceled"/>).</value>
+    public bool IsProfiledTaskCancelled { get; }
 
     /// <summary>
     /// In case of a multi-run benchmark run (e.g. by calling <see cref="Profiler.LogTime(Action, int, TimeUnit, string, int)"/>), the property <see cref="Iteration"/> returns the run's actual number the <see cref="ProfilerResult"/> is associated with.
     /// </summary>
     /// <value>The number of the run the <see cref="ProfilerResult"/> is associated with. Otherwise <c>-1</c>.</value>
     /// <remarks>
-    /// In case of a attributed benchmark run (e.g. by calling <see cref="Profiler.CreateProfilerBuilder(Type)"/>), the property <see cref="Iteration"/> returns the number of runs for each argument list (defined using the <see cref="ProfilerArgumentAttribute"/> attribute) 
+    /// In case of a attributed benchmark run (e.g. by calling <see cref="Profiler.CreateProfilerBuilder(Type)"/>), the property <see cref="Iteration"/> returns the number of runs for each argument list (defined using the <see cref="ProfilerMethodArgumentAttribute"/> attribute) 
     /// <br/>and the <see cref="ArgumentListIndex"/> property returns the index of the argument list that the <see cref="ProfilerResult"/> is associated with.
     /// </remarks>
     public int Iteration { get; }
@@ -90,18 +87,12 @@
     /// </summary>
     /// <value>The index of the argument list the <see cref="ProfilerResult"/> is associated with. Otherwise <c>-1</c>.</value>
     /// <remarks>
-    /// In case of a attributed benchmark run (e.g. by calling <see cref="Profiler.CreateProfilerBuilder(Type)"/>), the property <see cref="Iteration"/> returns the number of runs for each argument list (defined using the <see cref="ProfilerArgumentAttribute"/> attribute) 
+    /// In case of a attributed benchmark run (e.g. by calling <see cref="Profiler.CreateProfilerBuilder(Type)"/>), the property <see cref="Iteration"/> returns the number of runs for each argument list (defined using the <see cref="ProfilerMethodArgumentAttribute"/> attribute) 
     /// <br/>and the <see cref="ArgumentListIndex"/> property returns the index of the argument list that the <see cref="ProfilerResult"/> is associated with.
     /// </remarks>
     public int ArgumentListIndex { get; }
 
-    /// <summary>
-    /// The <see cref="Task"/> returned from the async operation that was benchmarked.
-    /// </summary>
-    /// <value>The <see cref="Task"/> result.</value>
-    public Task ProfiledTask { get; }
-
-    internal ProfilerBatchResult Owner { get; set; }
+    internal ProfilerBatchResult Owner { get; }
 
     /// <inheritdoc/>
     public int CompareTo(ProfilerResult other) => this.ElapsedTime.CompareTo(other.ElapsedTime);
@@ -110,11 +101,23 @@
     public override bool Equals(object obj) => obj is ProfilerResult result && Equals(result);
 
     /// <inheritdoc/>
-    public bool Equals(ProfilerResult other) => this.ElapsedTime.Equals(other.ElapsedTime) && this.IsProfiledTaskCancelled == other.IsProfiledTaskCancelled && this.Iteration == other.Iteration && EqualityComparer<Task>.Default.Equals(this.ProfiledTask, other.ProfiledTask);
+    public bool Equals(ProfilerResult other) => this.ElapsedTime.Equals(other.ElapsedTime) 
+      && this.IsProfiledTaskCancelled == other.IsProfiledTaskCancelled 
+      && this.Iteration == other.Iteration
+      && this.Owner == other.Owner
+      && this.ArgumentListIndex == other.ArgumentListIndex
+      && this.BaseUnit.Equals(other.BaseUnit)
+      && this.Deviation.Equals(other.Deviation);
 
     /// <inheritdoc/>
 #if NET || NETSTANDARD2_1_OR_GREATER
-    public override int GetHashCode() => HashCode.Combine(this.ElapsedTime, this.IsProfiledTaskCancelled, this.Iteration, this.ProfiledTask);
+    public override int GetHashCode() => HashCode.Combine(this.ElapsedTime, 
+      this.IsProfiledTaskCancelled, 
+      this.Iteration, 
+      this.Owner, 
+      this.ArgumentListIndex, 
+      this.BaseUnit, 
+      this.Deviation);
 #else
     public override int GetHashCode()
     {
@@ -122,7 +125,10 @@
       hashCode = (hashCode * -1521134295) + this.ElapsedTime.GetHashCode();
       hashCode = (hashCode * -1521134295) + this.IsProfiledTaskCancelled.GetHashCode();
       hashCode = (hashCode * -1521134295) + this.Iteration.GetHashCode();
-      hashCode = (hashCode * -1521134295) + EqualityComparer<Task>.Default.GetHashCode(this.ProfiledTask);
+      hashCode = (hashCode * -1521134295) + this.Owner.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.ArgumentListIndex.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.BaseUnit.GetHashCode();
+      hashCode = (hashCode * -1521134295) + this.Deviation.GetHashCode();
       return hashCode;
     }
 #endif

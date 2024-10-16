@@ -1,17 +1,18 @@
-﻿#region Info
-
-// 2021/02/04  00:47
-// BionicCode.Controls.Net.Wpf
-
-#endregion
-
-using System;
-using System.Windows;
-using System.Windows.Media;
-using BionicCode.Utilities.Net;
-
-namespace BionicCode.Controls.Net.Wpf
+﻿namespace BionicCode.Controls.Net.Wpf
 {
+  #region Info
+
+  // 2021/02/04  00:47
+  // BionicCode.Controls.Net.Wpf
+
+  #endregion
+
+  using System;
+  using System.Windows;
+  using System.Windows.Media;
+  using BionicCode.Utilities.Net;
+  using Math = System.Math;
+
   public class HorizontalDigitSegment : DigitSegment
   {
     protected override Geometry CreateGeometry()

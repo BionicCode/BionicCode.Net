@@ -5,7 +5,7 @@
   using System.Globalization;
   using System.Windows;
 
-#if NET || NET461_OR_GREATER
+#if !NETSTANDARD
   using System.Windows.Data;
   [ValueConversion(typeof(double), typeof(bool))]
   public class IsGreaterThanValueConverter : DependencyObject, IValueConverter
