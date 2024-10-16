@@ -12,7 +12,7 @@
     /// <param name="accessModifier"></param>
     /// <param name="toUpperCase">Controls whether to convert the string's first character to uppercase (<paramref name="toUpperCase"/>=<c>true</c>). The default is lowercase (<paramref name="toUpperCase"/>=<c>true</c>.</param>
     /// <returns>The readable string representation of the enum value.</returns>
-    /// <exception cref="NotSupportedException">The enum value is not supported. (This exception is only intended for internal maintainance and will never be thrown in production code)</exception>
+    /// <exception cref="NotSupportedException">The enum value is not supported. (This exception is only intended for internal maintenance and will never be thrown in production code)</exception>
     public static string ToDisplayStringValue(this AccessModifier accessModifier, bool toUpperCase = false)
     {
       switch (accessModifier)
@@ -42,7 +42,7 @@
     /// <param name="profiledTargetType"></param>
     /// <param name="toUpperCase">Controls whether to convert the string's first character to uppercase (<paramref name="toUpperCase"/>=<c>true</c>). The default is lowercase (<paramref name="toUpperCase"/>=<c>true</c>.</param>
     /// <returns>The readable string representation of the enum value.</returns>
-    /// <exception cref="NotSupportedException">The enum value is not supported. (This exception is only intended for internal maintainance and will never be thrown in production code)</exception>
+    /// <exception cref="NotSupportedException">The enum value is not supported. (This exception is only intended for internal maintenance and will never be thrown in production code)</exception>
     internal static string ToDisplayStringValue(this ProfiledTargetType profiledTargetType, bool toUpperCase = false, bool toBaseType = false)
     {
       switch (profiledTargetType)
