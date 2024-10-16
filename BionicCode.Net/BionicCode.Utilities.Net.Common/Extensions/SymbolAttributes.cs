@@ -84,7 +84,5 @@
     ByReference = 16777216,
     Init = 33554432,
     Constant = 67108864,
-    MemberExcludeFilter = ~Member,
-    TypeExcludeFilter = ~Type,
   }
 }

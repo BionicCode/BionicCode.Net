@@ -17,14 +17,15 @@
     {
       switch (accessModifier)
       {
+        case AccessModifier.Undefined:
+          return toUpperCase ? "Undefined" : "undefined";
         case AccessModifier.Default:
+        case AccessModifier.Internal:
           return toUpperCase ? "Internal" : "internal";
         case AccessModifier.Public:
           return toUpperCase ? "Public" : "public";
         case AccessModifier.ProtectedInternal:
           return toUpperCase ? "Protected Internal" : "protected internal";
-        case AccessModifier.Internal:
-          return toUpperCase ? "Internal" : "internal";
         case AccessModifier.Protected:
           return toUpperCase ? "Protected" : "protected";
         case AccessModifier.PrivateProtected:
@@ -32,7 +33,7 @@
         case AccessModifier.Private:
           return toUpperCase ? "Private" : "private";
         default:
-          throw new NotSupportedException();
+          throw new NotSupportedException(ExceptionMessages.GetValueNotSupportedExceptionMessage(accessModifier));
       }
     }
 
@@ -101,6 +102,8 @@
       {
         case TimeUnit.None:
           return toUpperCase ? "None" : "none";
+        case TimeUnit.Auto:
+          return toUpperCase ? "Auto" : "auto";
         case TimeUnit.Seconds:
           return toUpperCase ? "S" : "s";
         case TimeUnit.Milliseconds:
@@ -109,6 +112,8 @@
           return toUpperCase ? "µs" : "µs";
         case TimeUnit.Nanoseconds:
           return toUpperCase ? "Ns" : "ns";
+        case TimeUnit.Minutes:
+          return toUpperCase ? "Min" : "min";
         default:
           throw new NotSupportedException(ExceptionMessages.GetValueNotSupportedExceptionMessage(timeUnit));
       }
