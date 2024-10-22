@@ -150,7 +150,7 @@
     {
       if (iterations < 0)
       {
-        throw new ArgumentOutOfRangeException(ExceptionMessages.GetArgumentExceptionMessage_ProfilerRunCount(), nameof(iterations));
+        throw new ArgumentOutOfRangeExceptionEx(ExceptionMessages.GetArgumentExceptionMessage_ProfilerRunCount(), nameof(iterations));
       }
 
       this.Iterations = iterations;
@@ -279,7 +279,7 @@
     {
       if (warmupIterations < 0)
       {
-        throw new ArgumentOutOfRangeException(ExceptionMessages.GetArgumentExceptionMessage_ProfilerWarmupCount(), nameof(warmupIterations));
+        throw new ArgumentOutOfRangeExceptionEx(ExceptionMessages.GetArgumentExceptionMessage_ProfilerWarmupCount(), nameof(warmupIterations));
       }
 
       this.WarmupIterations = warmupIterations;

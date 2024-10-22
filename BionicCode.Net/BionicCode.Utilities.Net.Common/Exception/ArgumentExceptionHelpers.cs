@@ -11,22 +11,21 @@
   using NotNullAttribute = System.Diagnostics.CodeAnalysis.NotNullAttribute;
 #endif
 
-#if !NET6_0_OR_GREATER
-  public class ArgumentNullException : System.ArgumentNullException
+  public class ArgumentNullExceptionEx : System.ArgumentNullException
   {
-    public ArgumentNullException()
+    public ArgumentNullExceptionEx()
     {
     }
 
-    public ArgumentNullException(string paramName) : base(paramName)
+    public ArgumentNullExceptionEx(string paramName) : base(paramName)
     {
     }
 
-    public ArgumentNullException(string message, Exception innerException) : base(message, innerException)
+    public ArgumentNullExceptionEx(string message, Exception innerException) : base(message, innerException)
     {
     }
 
-    public ArgumentNullException(string paramName, string message) : base(paramName, message)
+    public ArgumentNullExceptionEx(string paramName, string message) : base(paramName, message)
     {
     }
 
@@ -36,53 +35,16 @@
     public static void ThrowIfNull(object argument, string paramName = null)
 #endif
     {
-      if (argument is null)
-      {
-        Throw(paramName);
-      }
-    }
-
-#if NET5_0_OR_GREATER || NETCOREAPP || NETSTANDARD2_1_OR_GREATER
-    [DoesNotReturn]
-#endif
-    private static void Throw(string paramName) => throw new System.ArgumentNullException(paramName);
-  }
-
-    public class ArgumentException : System.ArgumentException
-  {
-    public ArgumentException()
-    {
-    }
-
-    public ArgumentException(string message) : base(message)
-    {
-    }
-
-    public ArgumentException(string message, Exception innerException) : base(message, innerException)
-    {
-    }
-
-    public ArgumentException(string message, string paramName) : base(message, paramName)
-    {
-    }
-
-    public ArgumentException(string message, string paramName, Exception innerException) : base(message, paramName, innerException)
-    {
-    }
-
-#if NET5_0_OR_GREATER || NETCOREAPP
-    public static void ThrowIfNull([NotNull] object? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+#if NET6_0_OR_GREATER
+      ArgumentNullException.ThrowIfNull(argument, paramName);
 #else
-    public static void ThrowIfNull(object argument, string paramName = null)
-#endif
-    {
       if (argument is null)
       {
         Throw(paramName);
       }
+#endif
     }
 
-#if !NET7_0_OR_GREATER
     /// <summary>Throws an exception if <paramref name="argument"/> is null or empty.</summary>
     /// <param name="argument">The string argument to validate as non-null and non-empty.</param>
     /// <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
@@ -94,14 +56,9 @@
     public static void ThrowIfNullOrEmpty(string argument, string paramName = null)
 #endif
     {
-      if (string.IsNullOrEmpty(argument))
-      {
-        ThrowNullOrEmptyException(argument, paramName);
-      }
+      ArgumentExceptionEx.ThrowIfNullOrEmpty(argument, paramName);
     }
-#endif
 
-#if !NET8_0_OR_GREATER
     /// <summary>Throws an exception if <paramref name="argument"/> is null, empty, or consists only of white-space characters.</summary>
     /// <param name="argument">The string argument to validate.</param>
     /// <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
@@ -113,59 +70,121 @@
     public static void ThrowIfNullOrWhiteSpace(string argument, string paramName = null)
 #endif
     {
-      if (string.IsNullOrWhiteSpace(argument))
-      {
-        ThrowNullOrWhiteSpaceException(argument, paramName);
-      }
+      ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(argument, paramName);
     }
-#endif
 
 #if NET5_0_OR_GREATER || NETCOREAPP || NETSTANDARD2_1_OR_GREATER
     [DoesNotReturn]
 #endif
-    private static void Throw(string paramName) => throw new System.ArgumentNullException(paramName);
+    private static void Throw(string paramName)
+      => throw new ArgumentNullException(paramName);
+  }
+
+  public class ArgumentExceptionEx : ArgumentException
+  {
+    public ArgumentExceptionEx()
+    {
+    }
+
+    public ArgumentExceptionEx(string message) : base(message)
+    {
+    }
+
+    public ArgumentExceptionEx(string message, Exception innerException) : base(message, innerException)
+    {
+    }
+
+    public ArgumentExceptionEx(string message, string paramName) : base(message, paramName)
+    {
+    }
+
+    public ArgumentExceptionEx(string message, string paramName, Exception innerException) : base(message, paramName, innerException)
+    {
+    }
+
+#if NET5_0_OR_GREATER || NETCOREAPP
+    public static void ThrowIfNull([NotNull] object? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+#else
+    public static void ThrowIfNull(object argument, string paramName = null)
+#endif
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(argument, paramName);
+    }
+
+    /// <summary>Throws an exception if <paramref name="argument"/> is null or empty.</summary>
+    /// <param name="argument">The string argument to validate as non-null and non-empty.</param>
+    /// <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="argument"/> is null.</exception>
+    /// <exception cref="ArgumentException"><paramref name="argument"/> is empty.</exception>
+#if NET5_0_OR_GREATER || NETCOREAPP
+    public static void ThrowIfNullOrEmpty([NotNull] string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+#else
+    public static void ThrowIfNullOrEmpty(string argument, string paramName = null)
+#endif
+    {
+#if NET7_0_OR_GREATER
+      ArgumentException.ThrowIfNullOrEmpty(argument, paramName);
+#else
+      if (string.IsNullOrEmpty(argument))
+      {
+        ThrowNullOrEmptyException(argument, paramName);
+      }
+#endif
+    }
+
+    /// <summary>Throws an exception if <paramref name="argument"/> is null, empty, or consists only of white-space characters.</summary>
+    /// <param name="argument">The string argument to validate.</param>
+    /// <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="argument"/> is null.</exception>
+    /// <exception cref="ArgumentException"><paramref name="argument"/> is empty or consists only of white-space characters.</exception>
+#if NET5_0_OR_GREATER || NETCOREAPP
+    public static void ThrowIfNullOrWhiteSpace([NotNull] string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+#else
+    public static void ThrowIfNullOrWhiteSpace(string argument, string paramName = null)
+#endif
+    {
+#if NET8_0_OR_GREATER
+      ArgumentException.ThrowIfNullOrWhiteSpace(argument, paramName);
+#else
+      if (string.IsNullOrWhiteSpace(argument))
+      {
+        ThrowNullOrWhiteSpaceException(argument, paramName);
+      }
+#endif
+    }
 
 #if NET5_0_OR_GREATER || NETCOREAPP || NETSTANDARD2_1_OR_GREATER
     [DoesNotReturn]
 #endif
     private static void ThrowNullOrEmptyException(string argument, string paramName)
-    {
-      ArgumentNullException.ThrowIfNull(argument, paramName);
-      throw new System.ArgumentException("Argument is NULL or empty", paramName);
-    }
+      => throw new ArgumentException("Argument is NULL or empty", paramName);
 
 #if NET5_0_OR_GREATER || NETCOREAPP || NETSTANDARD2_1_OR_GREATER
     [DoesNotReturn]
 #endif
     private static void ThrowNullOrWhiteSpaceException(string argument, string paramName)
-    {
-      ArgumentNullException.ThrowIfNull(argument, paramName);
-      throw new System.ArgumentException("Argument is NULL or empty or consists of white spaces", paramName);
-    }
+      => throw new ArgumentException("Argument is NULL or empty or consists of white spaces", paramName);
   }
 
-#endif
-
-#if !NET8_0_OR_GREATER
-  public class ArgumentOutOfRangeException : System.ArgumentOutOfRangeException
+  public class ArgumentOutOfRangeExceptionEx : System.ArgumentOutOfRangeException
   {
-    public ArgumentOutOfRangeException()
+    public ArgumentOutOfRangeExceptionEx()
     {
     }
 
-    public ArgumentOutOfRangeException(string paramName) : base(paramName)
+    public ArgumentOutOfRangeExceptionEx(string paramName) : base(paramName)
     {
     }
 
-    public ArgumentOutOfRangeException(string paramName, string message) : base(paramName, message)
+    public ArgumentOutOfRangeExceptionEx(string paramName, string message) : base(paramName, message)
     {
     }
 
-    public ArgumentOutOfRangeException(string message, Exception innerException) : base(message, innerException)
+    public ArgumentOutOfRangeExceptionEx(string message, Exception innerException) : base(message, innerException)
     {
     }
 
-    public ArgumentOutOfRangeException(string paramName, object actualValue, string message) : base(paramName, actualValue, message)
+    public ArgumentOutOfRangeExceptionEx(string paramName, object actualValue, string message) : base(paramName, actualValue, message)
     {
     }
 
@@ -223,7 +242,7 @@
     private static void ThrowNotEqual<T>(T value, T other, string paramName)
       => throw new System.ArgumentOutOfRangeException(paramName, value, $"Value must be equal to {(other?.ToString() ?? "NULL")}");
 
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is zero.</summary>
+    /// <summary>Throws an <see cref="ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is zero.</summary>
     /// <param name="value">The argument to validate as non-zero.</param>
     /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
 #if NET5_0_OR_GREATER || NETCOREAPP
@@ -237,17 +256,22 @@
         where T : IConvertible
 #endif
     {
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
+      ArgumentOutOfRangeException.ThrowIfZero(value, nameof(paramName));
+#elif NET7_0_OR_GREATER
       if (T.IsZero(value))
-#else
-      if (Convert.ToDouble(value) == 0)
-#endif
       {
         ThrowZero(value, paramName);
       }
+#else
+      if (Convert.ToDouble(value) == 0)
+      {
+        ThrowZero(value, paramName);
+      }
+#endif
     }
 
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is negative.</summary>
+    /// <summary>Throws an <see cref="ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is negative.</summary>
     /// <param name="value">The argument to validate as non-negative.</param>
     /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
 #if NET5_0_OR_GREATER || NETCOREAPP
@@ -261,17 +285,22 @@
         where T : IConvertible
 #endif
     {
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
+      ArgumentOutOfRangeException.ThrowIfNegative(value, nameof(paramName));
+#elif NET7_0_OR_GREATER
       if (T.IsNegative(value))
-#else
-      if (Convert.ToDouble(value) < 0)
-#endif
       {
         ThrowNegative(value, paramName);
       }
+#else
+      if (Convert.ToDouble(value) < 0)
+      {
+        ThrowNegative(value, paramName);
+      }
+#endif
     }
 
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is negative or zero.</summary>
+    /// <summary>Throws an <see cref="ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is negative or zero.</summary>
     /// <param name="value">The argument to validate as non-zero or non-negative.</param>
     /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
 #if NET5_0_OR_GREATER || NETCOREAPP
@@ -285,17 +314,22 @@
         where T : IConvertible
 #endif
     {
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
+      ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value, nameof(paramName));
+#elif NET7_0_OR_GREATER
       if (T.IsNegative(value) || T.IsZero(value))
-#else
-      if (Convert.ToDouble(value) <= 0)
-#endif
       {
         ThrowNegativeOrZero(value, paramName);
       }
+#else
+      if (Convert.ToDouble(value) <= 0)
+      {
+        ThrowNegativeOrZero(value, paramName);
+      }
+#endif
     }
 
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is equal to <paramref name="other"/>.</summary>
+    /// <summary>Throws an <see cref="ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is equal to <paramref name="other"/>.</summary>
     /// <param name="value">The argument to validate as not equal to <paramref name="other"/>.</param>
     /// <param name="other">The value to compare with <paramref name="value"/>.</param>
     /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
@@ -305,13 +339,17 @@
     public static void ThrowIfEqual<T>(T value, T other, string paramName = null) where T : IEquatable<T>
 #endif
     {
+#if NET8_0_OR_GREATER
+      ArgumentOutOfRangeException.ThrowIfEqual(value, other, nameof(paramName));
+#else
       if (EqualityComparer<T>.Default.Equals(value, other))
       {
         ThrowEqual(value, other, paramName);
       }
+#endif
     }
 
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is not equal to <paramref name="other"/>.</summary>
+    /// <summary>Throws an <see cref="ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is not equal to <paramref name="other"/>.</summary>
     /// <param name="value">The argument to validate as equal to <paramref name="other"/>.</param>
     /// <param name="other">The value to compare with <paramref name="value"/>.</param>
     /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
@@ -321,13 +359,17 @@
     public static void ThrowIfNotEqual<T>(T value, T other, string paramName = null) where T : IEquatable<T>
 #endif
     {
+#if NET8_0_OR_GREATER
+      ArgumentOutOfRangeException.ThrowIfNotEqual(value, other, nameof(paramName));
+#else
       if (!EqualityComparer<T>.Default.Equals(value, other))
       {
         ThrowNotEqual(value, other, paramName);
       }
+#endif
     }
 
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is greater than <paramref name="other"/>.</summary>
+    /// <summary>Throws an <see cref="ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is greater than <paramref name="other"/>.</summary>
     /// <param name="value">The argument to validate as less or equal than <paramref name="other"/>.</param>
     /// <param name="other">The value to compare with <paramref name="value"/>.</param>
     /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
@@ -338,13 +380,17 @@
 #endif
         where T : IComparable<T>
     {
+#if NET8_0_OR_GREATER
+      ArgumentOutOfRangeException.ThrowIfGreaterThan(value, other, nameof(paramName));
+#else
       if (value.CompareTo(other) > 0)
       {
         ThrowGreater(value, other, paramName);
       }
+#endif
     }
 
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is greater than or equal <paramref name="other"/>.</summary>
+    /// <summary>Throws an <see cref="ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is greater than or equal <paramref name="other"/>.</summary>
     /// <param name="value">The argument to validate as less than <paramref name="other"/>.</param>
     /// <param name="other">The value to compare with <paramref name="value"/>.</param>
     /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
@@ -355,13 +401,17 @@
 #endif
         where T : IComparable<T>
     {
+#if NET8_0_OR_GREATER
+      ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(value, other, nameof(paramName));
+#else
       if (value.CompareTo(other) >= 0)
       {
         ThrowGreaterEqual(value, other, paramName);
       }
+#endif
     }
 
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than <paramref name="other"/>.</summary>
+    /// <summary>Throws an <see cref="ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is less than <paramref name="other"/>.</summary>
     /// <param name="value">The argument to validate as greater than or equal than <paramref name="other"/>.</param>
     /// <param name="other">The value to compare with <paramref name="value"/>.</param>
     /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
@@ -372,13 +422,17 @@
 #endif
         where T : IComparable<T>
     {
+#if NET8_0_OR_GREATER
+      ArgumentOutOfRangeException.ThrowIfLessThan(value, other, nameof(paramName));
+#else
       if (value.CompareTo(other) < 0)
       {
         ThrowLess(value, other, paramName);
       }
+#endif
     }
 
-    /// <summary>Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than or equal <paramref name="other"/>.</summary>
+    /// <summary>Throws an <see cref="ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is less than or equal <paramref name="other"/>.</summary>
     /// <param name="value">The argument to validate as greater than <paramref name="other"/>.</param>
     /// <param name="other">The value to compare with <paramref name="value"/>.</param>
     /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
@@ -389,11 +443,14 @@
 #endif
         where T : IComparable<T>
     {
+#if NET8_0_OR_GREATER
+      ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(value, other, nameof(paramName));
+#else
       if (value.CompareTo(other) <= 0)
       {
         ThrowLessEqual(value, other, paramName);
       }
+#endif
     }
   }
-#endif
-  }
+}

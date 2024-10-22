@@ -76,8 +76,8 @@
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
     public static IEnumerable<TItem> AddRange<TItem>(this ICollection<TItem> source, IEnumerable<TItem> range)
     {
-      ArgumentNullException.ThrowIfNull(source);
-      ArgumentNullException.ThrowIfNull(range);
+      ArgumentNullExceptionEx.ThrowIfNull(source);
+      ArgumentNullExceptionEx.ThrowIfNull(range);
 
       if (source.IsReadOnly)
       {
@@ -112,8 +112,8 @@
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
     public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IDictionary<TKey, TValue> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
     {
-      ArgumentNullException.ThrowIfNull(source);
-      ArgumentNullException.ThrowIfNull(range);
+      ArgumentNullExceptionEx.ThrowIfNull(source);
+      ArgumentNullExceptionEx.ThrowIfNull(range);
 
       if (source.IsReadOnly)
       {
@@ -167,8 +167,8 @@
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
     public static IDictionary<TKey, TValue> RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IDictionary<TKey, TValue> range)
     {
-      ArgumentNullException.ThrowIfNull(source);
-      ArgumentNullException.ThrowIfNull(range);
+      ArgumentNullExceptionEx.ThrowIfNull(source);
+      ArgumentNullExceptionEx.ThrowIfNull(range);
 
       if (source.IsReadOnly)
       {
@@ -196,8 +196,8 @@
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
     public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
     {
-      ArgumentNullException.ThrowIfNull(source);
-      ArgumentNullException.ThrowIfNull(range);
+      ArgumentNullExceptionEx.ThrowIfNull(source);
+      ArgumentNullExceptionEx.ThrowIfNull(range);
 
       if (source.IsReadOnly)
       {
@@ -251,8 +251,8 @@
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
     public static IDictionary<TKey, TValue> RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> range)
     {
-      ArgumentNullException.ThrowIfNull(source);
-      ArgumentNullException.ThrowIfNull(range);
+      ArgumentNullExceptionEx.ThrowIfNull(source);
+      ArgumentNullExceptionEx.ThrowIfNull(range);
 
       if (source.IsReadOnly)
       {
@@ -280,8 +280,8 @@
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
     public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<(TKey Key, TValue Value)> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
     {
-      ArgumentNullException.ThrowIfNull(source);
-      ArgumentNullException.ThrowIfNull(range);
+      ArgumentNullExceptionEx.ThrowIfNull(source);
+      ArgumentNullExceptionEx.ThrowIfNull(range);
 
       if (source.IsReadOnly)
       {
@@ -335,8 +335,8 @@
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
     public static IDictionary<TKey, TValue> RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<(TKey Key, TValue Value)> range)
     {
-      ArgumentNullException.ThrowIfNull(source);
-      ArgumentNullException.ThrowIfNull(range);
+      ArgumentNullExceptionEx.ThrowIfNull(source);
+      ArgumentNullExceptionEx.ThrowIfNull(range);
 
       if (source.IsReadOnly)
       {
@@ -353,12 +353,12 @@
         
     public static TItem[] AddRange<TItem>(this TItem[] destination, IEnumerable<TItem> range, int destinationStartIndex, int rangeStartIndex, int rangeCount)
     {
-      ArgumentNullException.ThrowIfNull(destination, nameof(destination));
-      ArgumentNullException.ThrowIfNull(range, nameof(range));
-      ArgumentOutOfRangeException.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
-      ArgumentOutOfRangeException.ThrowIfNegative(rangeStartIndex, nameof(rangeStartIndex));
-      ArgumentOutOfRangeException.ThrowIfNegative(rangeCount, nameof(rangeCount));
-      ArgumentOutOfRangeException.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
+      ArgumentNullExceptionEx.ThrowIfNull(destination, nameof(destination));
+      ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeStartIndex, nameof(rangeStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeCount, nameof(rangeCount));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
 
       if (destination.IsEmpty())
       {
@@ -369,8 +369,8 @@
             return sourceArray;
           }
 
-          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceArray.Length, nameof(rangeStartIndex));
-          ArgumentOutOfRangeException.ThrowIfGreaterThan(rangeCount, sourceArray.Length - rangeStartIndex, nameof(rangeCount));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceArray.Length, nameof(rangeStartIndex));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeCount, sourceArray.Length - rangeStartIndex, nameof(rangeCount));
 
           destination = new TItem[rangeCount];
           Array.Copy(sourceArray, rangeStartIndex, destination, 0, rangeCount);
@@ -379,8 +379,8 @@
         }
         else if (range is IList<TItem> sourceList)
         {
-          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceList.Count, nameof(rangeStartIndex));
-          ArgumentOutOfRangeException.ThrowIfGreaterThan(rangeCount, sourceList.Count - rangeStartIndex, nameof(rangeCount));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceList.Count, nameof(rangeStartIndex));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeCount, sourceList.Count - rangeStartIndex, nameof(rangeCount));
 
           destination = new TItem[rangeCount];
           int sourceIndex = rangeStartIndex;
@@ -399,8 +399,8 @@
             return sourceArray;
           }
 
-          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceArray.Length, nameof(rangeStartIndex));
-          ArgumentOutOfRangeException.ThrowIfGreaterThan(rangeCount, sourceArray.Length - rangeStartIndex, nameof(rangeCount));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceArray.Length, nameof(rangeStartIndex));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeCount, sourceArray.Length - rangeStartIndex, nameof(rangeCount));
 
           destination = new TItem[rangeCount];
           Array.Copy(sourceArray, rangeStartIndex, destination, 0, rangeCount);
@@ -419,15 +419,15 @@
 
         if (range is TItem[] sourceArray)
         {
-          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceArray.Length, nameof(rangeStartIndex));
-          ArgumentOutOfRangeException.ThrowIfGreaterThan(rangeCount, sourceArray.Length - rangeStartIndex, nameof(rangeCount));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceArray.Length, nameof(rangeStartIndex));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeCount, sourceArray.Length - rangeStartIndex, nameof(rangeCount));
 
           Array.Copy(sourceArray, rangeStartIndex, destination, destinationStartIndex, rangeCount);
         }
         else if (range is IList<TItem> sourceList)
         {
-          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceList.Count, nameof(rangeStartIndex));
-          ArgumentOutOfRangeException.ThrowIfGreaterThan(rangeCount, sourceList.Count - rangeStartIndex, nameof(rangeCount));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceList.Count, nameof(rangeStartIndex));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeCount, sourceList.Count - rangeStartIndex, nameof(rangeCount));
 
           int sourceIndex = rangeStartIndex;
           for (int destinationIndex = destinationStartIndex; destinationIndex < destination.Length; destinationIndex++, sourceIndex++)
@@ -443,8 +443,8 @@
             return sourceArray;
           }
 
-          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceArray.Length, nameof(rangeStartIndex));
-          ArgumentOutOfRangeException.ThrowIfGreaterThan(rangeCount, sourceArray.Length - rangeStartIndex, nameof(rangeCount));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceArray.Length, nameof(rangeStartIndex));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeCount, sourceArray.Length - rangeStartIndex, nameof(rangeCount));
 
           Array.Copy(sourceArray, rangeStartIndex, destination, destinationStartIndex, rangeCount);
         }
@@ -456,13 +456,13 @@
 #if !(NETSTANDARD2_0 || NETFRAMEWORK)
     public static TItem[] AddRange<TItem>(this TItem[] destination, IEnumerable<TItem> source, Range destinationRange, Range sourceRange)
     {
-      ArgumentNullException.ThrowIfNull(destination, nameof(destination));
-      ArgumentNullException.ThrowIfNull(source, nameof(source));
-      ArgumentOutOfRangeException.ThrowIfNegative(destinationRange.Start.Value, nameof(destinationRange.Start));
-      ArgumentOutOfRangeException.ThrowIfNegative(destinationRange.End.Value, nameof(destinationRange.End));
-      ArgumentOutOfRangeException.ThrowIfNegative(sourceRange.Start.Value, nameof(sourceRange.Start));
-      ArgumentOutOfRangeException.ThrowIfNegative(sourceRange.End.Value, nameof(sourceRange.End));
-      ArgumentOutOfRangeException.ThrowIfGreaterThan(destinationRange.Start.Value, destination.Length, nameof(destinationRange.Start));
+      ArgumentNullExceptionEx.ThrowIfNull(destination, nameof(destination));
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(destinationRange.Start.Value, nameof(destinationRange.Start));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(destinationRange.End.Value, nameof(destinationRange.End));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceRange.Start.Value, nameof(sourceRange.Start));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceRange.End.Value, nameof(sourceRange.End));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(destinationRange.Start.Value, destination.Length, nameof(destinationRange.Start));
 
       if (destination.IsEmpty())
       {
@@ -475,10 +475,10 @@
           int sourceCount = sourceRange.GetOffsetAndLength(sourceList.Count).Length;
           int sourceStartIndex = sourceRange.GetOffsetAndLength(sourceList.Count).Offset;
           int destinationStartIndex = destinationRange.GetOffsetAndLength(destination.Length).Offset;
-          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceList.Count, nameof(sourceRange.Start));
-          ArgumentOutOfRangeException.ThrowIfGreaterThan(sourceCount, sourceList.Count - sourceStartIndex, nameof(sourceRange));
-          ArgumentOutOfRangeException.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
-          ArgumentOutOfRangeException.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceList.Count, nameof(sourceRange.Start));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(sourceCount, sourceList.Count - sourceStartIndex, nameof(sourceRange));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
+          ArgumentOutOfRangeExceptionEx.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
 
           Array.Resize(ref destination, sourceCount);
           int sourceIndex = sourceStartIndex;
@@ -494,10 +494,10 @@
           int sourceStartIndex = sourceRange.GetOffsetAndLength(sourceArray.Length).Offset;
           int destinationStartIndex = destinationRange.GetOffsetAndLength(destination.Length).Offset;
 
-          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceArray.Length, nameof(sourceRange.Start));
-          ArgumentOutOfRangeException.ThrowIfGreaterThan(sourceCount, sourceArray.Length - sourceStartIndex, nameof(sourceRange));
-          ArgumentOutOfRangeException.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
-          ArgumentOutOfRangeException.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceArray.Length, nameof(sourceRange.Start));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(sourceCount, sourceArray.Length - sourceStartIndex, nameof(sourceRange));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
+          ArgumentOutOfRangeExceptionEx.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
 
           if (sourceArray.Length == sourceCount)
           {
@@ -521,10 +521,10 @@
           int sourceStartIndex = sourceRange.GetOffsetAndLength(sourceArray.Length).Offset;
           int destinationStartIndex = destinationRange.GetOffsetAndLength(destination.Length).Offset;
 
-          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceArray.Length, nameof(sourceRange.Start));
-          ArgumentOutOfRangeException.ThrowIfGreaterThan(sourceCount, sourceArray.Length - sourceStartIndex, nameof(sourceRange));
-          ArgumentOutOfRangeException.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
-          ArgumentOutOfRangeException.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceArray.Length, nameof(sourceRange.Start));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(sourceCount, sourceArray.Length - sourceStartIndex, nameof(sourceRange));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
+          ArgumentOutOfRangeExceptionEx.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
 
           int newLength = destinationStartIndex + 1 + sourceCount;
           Array.Resize(ref destination, newLength);
@@ -535,10 +535,10 @@
           int sourceCount = sourceRange.GetOffsetAndLength(sourceList.Count).Length;
           int sourceStartIndex = sourceRange.GetOffsetAndLength(sourceList.Count).Offset;
           int destinationStartIndex = destinationRange.GetOffsetAndLength(destination.Length).Offset;
-          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceList.Count, nameof(sourceRange.Start));
-          ArgumentOutOfRangeException.ThrowIfGreaterThan(sourceCount, sourceList.Count - sourceStartIndex, nameof(sourceRange));
-          ArgumentOutOfRangeException.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
-          ArgumentOutOfRangeException.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceList.Count, nameof(sourceRange.Start));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(sourceCount, sourceList.Count - sourceStartIndex, nameof(sourceRange));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
+          ArgumentOutOfRangeExceptionEx.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
 
           int newLength = destinationStartIndex + 1 + sourceCount;
           Array.Resize(ref destination, newLength);
@@ -555,10 +555,10 @@
           int sourceStartIndex = sourceRange.GetOffsetAndLength(sourceArray.Length).Offset;
           int destinationStartIndex = destinationRange.GetOffsetAndLength(destination.Length).Offset;
 
-          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceArray.Length, nameof(sourceRange.Start));
-          ArgumentOutOfRangeException.ThrowIfGreaterThan(sourceCount, sourceArray.Length - sourceStartIndex, nameof(sourceRange));
-          ArgumentOutOfRangeException.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
-          ArgumentOutOfRangeException.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceArray.Length, nameof(sourceRange.Start));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(sourceCount, sourceArray.Length - sourceStartIndex, nameof(sourceRange));
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
+          ArgumentOutOfRangeExceptionEx.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
 
           if (sourceArray.Length == sourceCount)
           {

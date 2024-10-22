@@ -5,13 +5,11 @@
   using System.IO;
   using System.Linq;
   using System.Runtime.CompilerServices;
+  using BionicCode.Utilities.Net;
   using System.Threading;
   using System.Threading.Tasks;
-  using BionicCode.Utilities.Net;
-  using BionicCode.Utilities.Net.UnitTest.Resources;
   using FluentAssertions;
   using Xunit;
-
   public class AsyncCommandTest : IDisposable
   {
     private static bool IsProfilerLoggingEnabled { get; } = true;
@@ -119,20 +117,14 @@
     private bool CanExecuteTestNoParamCommand() => true;
     private void ExecuteTestCommand(string commandParameter)
     {
-      if (commandParameter == null)
-      {
-        throw new ArgumentNullException(nameof(commandParameter));
-      }
+      ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
 
       Thread.Sleep(this.AsyncDelay);
     }
 
     private void ExecuteTestCommandWithExecutionCount(string commandParameter)
     {
-      if (commandParameter == null)
-      {
-        throw new ArgumentNullException(nameof(commandParameter));
-      }
+      ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
 
       _ = Interlocked.Increment(ref this.executionCount);
       Thread.Sleep(this.AsyncDelay);
