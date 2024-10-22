@@ -57,8 +57,8 @@ namespace BionicCode.Utilities.Net.UnitTest
 
     public void Initialize()
     {
-      this.DeepObjectGraph = this.ToDictionary();
-      this.FlatObjectGraph = this.ToFlatDictionary();
+      this.DeepObjectGraph = this.ToDictionary(includeNonPublicMembers: true);
+      this.FlatObjectGraph = this.ToFlatDictionary(includeNonPublicMembers: true);
     }
 
     public int Return12() => 12;
@@ -70,7 +70,7 @@ namespace BionicCode.Utilities.Net.UnitTest
     public ObjectToDictionaryTest(TestObject context) => this.Object = context;
 
     [Fact]
-    public void ReturnsDictionaryFromObject() => _ = this.Object.ToDictionary()
+    public void ReturnsDictionaryFromObject() => _ = this.Object.ToDictionary(includeNonPublicMembers: true)
         .Should().BeOfType(typeof(Dictionary<string, object>));
 
     [Fact]
@@ -108,7 +108,7 @@ namespace BionicCode.Utilities.Net.UnitTest
         .As<Func<int, bool>>()
         .Invoke(4)
         .Should().BeTrue();
-      this.Object.DeepObjectGraph[nameof(this.Object.SuceedingContainsPredicate)]
+      _ = this.Object.DeepObjectGraph[nameof(this.Object.SuceedingContainsPredicate)]
         .As<Func<int, bool>>()
         .Invoke(100)
         .Should().BeFalse();
@@ -140,7 +140,7 @@ namespace BionicCode.Utilities.Net.UnitTest
     {
       _ = this.Object.FlatObjectGraph[nameof(this.Object.Items)]
         .Should().BeOfType(this.Object.Items.GetType());
-      this.Object.FlatObjectGraph[nameof(this.Object.Items)]
+      _ = this.Object.FlatObjectGraph[nameof(this.Object.Items)]
         .Should().NotBeOfType(typeof(IDictionary<string, object>));
     }
 
@@ -156,7 +156,7 @@ namespace BionicCode.Utilities.Net.UnitTest
         .As<Func<int, bool>>()
         .Invoke(4)
         .Should().BeTrue();
-      this.Object.FlatObjectGraph[nameof(this.Object.SuceedingContainsPredicate)]
+      _ = this.Object.FlatObjectGraph[nameof(this.Object.SuceedingContainsPredicate)]
         .As<Func<int, bool>>()
         .Invoke(100)
         .Should().BeFalse();

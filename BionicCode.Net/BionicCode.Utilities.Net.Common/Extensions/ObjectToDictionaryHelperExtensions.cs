@@ -36,14 +36,14 @@
     /// <br/>It creates entries for all <see langword="public"/> instance and class properties of this object. Each entry represents a property as key-value-pair of property name and property value.
     /// <para>To create a flat map of the object graph, use the <see cref="ToFlatDictionary(object)"/></para>
     /// <para>Use the <see cref="IgnoreInObjectGraphAttribute"/> attribute to decorate properties that should be excluded.</para></remarks>
-    public static Dictionary<string, object> ToDictionary(this object instanceToConvert)
+    public static Dictionary<string, object> ToDictionary(this object instanceToConvert, bool includeNonPublicMembers)
     {
-      var resultDictionary = instanceToConvert.GetType()
+      Dictionary<string, object> resultDictionary = instanceToConvert.GetType()
         .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
         .Where(propertyInfo => !IsPropertyIndexer(propertyInfo) && propertyInfo.GetCustomAttribute(typeof(IgnoreInObjectGraphAttribute)) == null)
         .ToDictionary(
           propertyInfo => propertyInfo.Name,
-          propertyInfo => HelperExtensionsCommon.ConvertPropertyToDictionary(propertyInfo, instanceToConvert, isRecursive: true));
+          propertyInfo => HelperExtensionsCommon.ConvertPropertyToDictionary(propertyInfo, instanceToConvert, includeNonPublicMembers, isRecursive: true));
 
       return resultDictionary;
     }
@@ -69,7 +69,7 @@
     /// <remarks>This method only traverses the root of the object's graph and to convert it to a <see cref="Dictionary{TKey, TValue}"/>. <br/>It creates entries for all <see langword="public"/> instance and class properties of this object. Each entry represents a property as key-value-pair of property name (of type <see cref="string"/>) and property value (of type <see cref="object"/>).    
     /// <para>To traverse the complete object graph recursively (to convert every object node i.e. property value to a <see cref="Dictionary{TKey, TValue}"/>), use the <see cref="ToDictionary(object)"/> method.</para>
     /// <para>Use the <see cref="IgnoreInObjectGraphAttribute"/> attribute to decorate properties that should be excluded.</para></remarks>
-    public static Dictionary<string, object> ToFlatDictionary(this object instanceToConvert)
+    public static Dictionary<string, object> ToFlatDictionary(this object instanceToConvert, bool includeNonPublicMembers)
     {
 
 /* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard21)'
@@ -132,12 +132,12 @@ After:
         .Where(propertyInfo => !IsPropertyIndexer(propertyInfo) && propertyInfo.GetCustomAttribute(typeof(IgnoreInObjectGraphAttribute)) == null)
         .ToDictionary(
           propertyInfo => propertyInfo.Name,
-          propertyInfo => HelperExtensionsCommon.ConvertPropertyToDictionary(propertyInfo, instanceToConvert, isRecursive: false));
+          propertyInfo => HelperExtensionsCommon.ConvertPropertyToDictionary(propertyInfo, instanceToConvert, includeNonPublicMembers, isRecursive: false));
 
       return resultDictionary;
     }
 
-    private static object ConvertPropertyToDictionary(PropertyInfo propertyInfo, object owner, bool isRecursive)
+    private static object ConvertPropertyToDictionary(PropertyInfo propertyInfo, object owner, bool includeNonPublicMembers, bool isRecursive)
     {
       Type propertyType = propertyInfo.PropertyType;
       object propertyValue = propertyInfo.GetValue(owner);
@@ -173,67 +173,11 @@ After:
           }
           else if (item is IEnumerable enumerableItem)
           {
-            items.Add(index.ToString(), HelperExtensionsCommon.ConvertIEnumerableToDictionary(enumerableItem));
+            items.Add(index.ToString(), HelperExtensionsCommon.ConvertIEnumerableToDictionary(enumerableItem, includeNonPublicMembers));
           }
           else
           {
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard21)'
-Before:
-            Dictionary<string, object> dictionary = item.ToDictionary();
-After:
-            var dictionary = item.ToDictionary();
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net472)'
-Before:
-            Dictionary<string, object> dictionary = item.ToDictionary();
-After:
-            var dictionary = item.ToDictionary();
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net50)'
-Before:
-            Dictionary<string, object> dictionary = item.ToDictionary();
-After:
-            var dictionary = item.ToDictionary();
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net80)'
-Before:
-            Dictionary<string, object> dictionary = item.ToDictionary();
-After:
-            var dictionary = item.ToDictionary();
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (netstandard20)'
-Before:
-            Dictionary<string, object> dictionary = item.ToDictionary();
-After:
-            var dictionary = item.ToDictionary();
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net48)'
-Before:
-            Dictionary<string, object> dictionary = item.ToDictionary();
-After:
-            var dictionary = item.ToDictionary();
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net60)'
-Before:
-            Dictionary<string, object> dictionary = item.ToDictionary();
-After:
-            var dictionary = item.ToDictionary();
-*/
-
-/* Unmerged change from project 'BionicCode.Utilities.Net.Common (net70)'
-Before:
-            Dictionary<string, object> dictionary = item.ToDictionary();
-After:
-            var dictionary = item.ToDictionary();
-*/
-            var dictionary = item.ToDictionary();
+            Dictionary<string, object> dictionary = item.ToDictionary(includeNonPublicMembers);
             items.Add(index.ToString(), dictionary);
           }
 
@@ -253,11 +197,11 @@ After:
         propertyType.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
       if (properties.Any())
       {
-        var resultDictionary = properties.ToDictionary(
+        Dictionary<string, object> resultDictionary = properties.ToDictionary(
           subtypePropertyInfo => subtypePropertyInfo.Name,
           subtypePropertyInfo => propertyValue == null
             ? null
-            : HelperExtensionsCommon.ConvertPropertyToDictionary(subtypePropertyInfo, propertyValue, isRecursive));
+            : HelperExtensionsCommon.ConvertPropertyToDictionary(subtypePropertyInfo, propertyValue, includeNonPublicMembers, isRecursive));
         resultDictionary.Add("IsCollection", false);
         return resultDictionary;
       }
@@ -265,7 +209,7 @@ After:
       return propertyValue;
     }
 
-    private static Dictionary<string, object> ConvertIEnumerableToDictionary(IEnumerable enumerable)
+    private static Dictionary<string, object> ConvertIEnumerableToDictionary(IEnumerable enumerable, bool includeNonPublicMembers)
     {
       var items = new Dictionary<string, object>();
       int index = 0;
@@ -278,7 +222,7 @@ After:
         }
         else
         {
-          var dictionary = item.ToDictionary();
+          Dictionary<string, object> dictionary = item.ToDictionary(includeNonPublicMembers);
           items.Add(index.ToString(), dictionary);
         }
 

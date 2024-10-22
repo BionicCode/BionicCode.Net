@@ -1,8 +1,11 @@
-﻿using System;
-using System.Runtime.Serialization;
-
-namespace BionicCode.Utilities.Net
+﻿namespace BionicCode.Utilities.Net
 {
+  using System;
+  using System.Diagnostics.CodeAnalysis;
+  using System.Runtime.CompilerServices;
+  using System.Runtime.Serialization;
+  using JetBrains.Annotations;
+
   /// <inheritdoc />
   [Serializable]
   public class WrongEventHandlerSignatureException : System.Exception

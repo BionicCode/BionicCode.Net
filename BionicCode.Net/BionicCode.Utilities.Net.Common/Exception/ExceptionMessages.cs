@@ -2,6 +2,7 @@
 namespace BionicCode.Utilities.Net
 {
   using System;
+  using System.Collections;
 
   internal class ExceptionMessages
   {
@@ -23,6 +24,8 @@ namespace BionicCode.Utilities.Net
     public static string GetMissingGenericTypeArgumentsForAutoDiscoveredGenericTypeExceptionMessage(Type profiledType) => $@"The type {profiledType.ToFullDisplayName(isGenericTypeParameterIncluded: true)} is not configured correctly. A generic type that is decorated with the {typeof(ProfilerAutoDiscoverAttribute).FullName} must also provide the generic type arguments for that type using the attribute's constructor. Open types are not supported.";
     public static string GetMissingGenericTypeArgumentsForAutoDiscoveredGenericTypeExceptionMessage(TypeData profiledType) => $@"The type {profiledType.FullyQualifiedDisplayName} is not configured correctly. A generic type that is decorated with the {typeof(ProfilerAutoDiscoverAttribute).FullName} must also provide the generic type arguments for that type using the attribute's constructor. Open types are not supported.";
     public static string GetArgumentListMismatchExceptionMessage() => $"The argument list provided by the '{nameof(ProfilerMethodArgumentAttribute)}' does not match the signature of the profiled member. The argument list must define the arguments in the same order and of the same type as the parameter list of the profiled member.";
-    public static string GetValueNotSupportedExceptionMessage(object value) => $"The {(value is Enum ? "enum " : string.Empty)}value '{(value is Enum enumValue ? $"{enumValue.GetType().FullName}.{enumValue}" : value)}' is not supported.";  }
+    public static string GetValueNotSupportedExceptionMessage(object value) => $"The {(value is Enum ? "enum " : string.Empty)}value '{(value is Enum enumValue ? $"{enumValue.GetType().FullName}.{enumValue}" : value)}' is not supported.";
+    public static string GetModificationOfReadOnlyCollectionNotSupportedExceptionMessage(IEnumerable collection) => $"The {collection.GetType().ToDisplayName()} is read-only.";
+  }
 }
 

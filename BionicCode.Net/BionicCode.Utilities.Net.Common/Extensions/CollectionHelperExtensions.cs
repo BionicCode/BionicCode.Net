@@ -24,6 +24,18 @@
         : !source.Any();
 
     /// <summary>
+    /// Determines whether an array is empty.
+    /// </summary>
+    /// <typeparam name="TItem"></typeparam>
+    /// <param name="source"></param>
+    /// <returns><see langword="true"/> if <paramref name="source"/> is empty. Otherwise <see langword="false"/></returns>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    public static bool IsEmpty<TItem>(this TItem[] source)
+      => source == null
+        ? throw new ArgumentNullException(nameof(source))
+        : source.Length == 0;
+
+    /// <summary>
     /// Returns a range of elements.
     /// </summary>
     /// <typeparam name="TItem"></typeparam>
@@ -64,19 +76,24 @@
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
     public static IEnumerable<TItem> AddRange<TItem>(this ICollection<TItem> source, IEnumerable<TItem> range)
     {
-      if (source == null)
+      ArgumentNullException.ThrowIfNull(source);
+      ArgumentNullException.ThrowIfNull(range);
+
+      if (source.IsReadOnly)
       {
-        throw new ArgumentNullException(nameof(source));
+        throw new NotSupportedException(ExceptionMessages.GetModificationOfReadOnlyCollectionNotSupportedExceptionMessage(source));
       }
 
-      if (range == null)
+      if (source is List<TItem> sourceList)
       {
-        throw new ArgumentNullException(nameof(range));
+        sourceList.AddRange(range);
       }
-
-      foreach (TItem item in range)
+      else
       {
-        source.Add(item);
+        foreach (TItem item in range)
+        {
+          source.Add(item);
+        }
       }
 
       return source;
@@ -93,21 +110,74 @@
     /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
-    public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IDictionary<TKey, TValue> range)
+    public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IDictionary<TKey, TValue> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
     {
-      if (source == null)
+      ArgumentNullException.ThrowIfNull(source);
+      ArgumentNullException.ThrowIfNull(range);
+
+      if (source.IsReadOnly)
       {
-        throw new ArgumentNullException(nameof(source));
+        throw new NotSupportedException(ExceptionMessages.GetModificationOfReadOnlyCollectionNotSupportedExceptionMessage(source));
       }
 
-      if (range == null)
+      if (mode is AddRangeMode.ThrowOnDuplicateKey)
       {
-        throw new ArgumentNullException(nameof(range));
+        var addedEntries = new List<KeyValuePair<TKey, TValue>>();
+        try
+        {
+          foreach (KeyValuePair<TKey, TValue> item in range)
+          {
+            source.Add(item);
+            addedEntries.Add(item);
+          }
+        }
+        catch (ArgumentException)
+        {
+          _ = source.RemoveRange(addedEntries);
+
+          throw;
+        }
+      }
+      else if (mode is AddRangeMode.SkipDuplicateKey)
+      {
+        foreach (KeyValuePair<TKey, TValue> item in range)
+        {
+          if (source.ContainsKey(item.Key))
+          {
+            continue;
+          }
+
+          source.Add(item);
+        }
+      }
+
+      return source;
+    }
+
+    /// <summary>
+    /// Removes a <see cref="IDictionary{TKey,TValue}"/> from the <see cref="IDictionary{TKey,TValue}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the key.</typeparam>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <param name="source">The <see cref="IDictionary{TKey,TValue}"/> to modify.</param>
+    /// <param name="range">The <see cref="IDictionary{TKey,TValue}"/> to add.</param>
+    /// <returns>The original <see cref="IDictionary{TKey, TValue}"/> this method was invoked on to allow method chaining.</returns>
+    /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+    public static IDictionary<TKey, TValue> RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IDictionary<TKey, TValue> range)
+    {
+      ArgumentNullException.ThrowIfNull(source);
+      ArgumentNullException.ThrowIfNull(range);
+
+      if (source.IsReadOnly)
+      {
+        throw new NotSupportedException(ExceptionMessages.GetModificationOfReadOnlyCollectionNotSupportedExceptionMessage(source));
       }
 
       foreach (KeyValuePair<TKey, TValue> item in range)
       {
-        source.Add(item);
+        _ = source.Remove(item.Key);
       }
 
       return source;
@@ -124,21 +194,74 @@
     /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
-    public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> range)
+    public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
     {
-      if (source == null)
+      ArgumentNullException.ThrowIfNull(source);
+      ArgumentNullException.ThrowIfNull(range);
+
+      if (source.IsReadOnly)
       {
-        throw new ArgumentNullException(nameof(source));
+        throw new NotSupportedException(ExceptionMessages.GetModificationOfReadOnlyCollectionNotSupportedExceptionMessage(source));
       }
 
-      if (range == null)
+      if (mode is AddRangeMode.ThrowOnDuplicateKey)
       {
-        throw new ArgumentNullException(nameof(range));
+        var addedEntries = new List<KeyValuePair<TKey, TValue>>();
+        try
+        {
+          foreach (KeyValuePair<TKey, TValue> item in range)
+          {
+            source.Add(item);
+            addedEntries.Add(item);
+          }
+        }
+        catch (ArgumentException)
+        {
+          _ = source.RemoveRange(addedEntries);
+
+          throw;
+        }
+      }
+      else if (mode is AddRangeMode.SkipDuplicateKey)
+      {
+        foreach (KeyValuePair<TKey, TValue> item in range)
+        {
+          if (source.ContainsKey(item.Key))
+          {
+            continue;
+          }
+
+          source.Add(item);
+        }
+      }
+
+      return source;
+    }
+
+    /// <summary>
+    /// Removes a <see cref="IDictionary{TKey,TValue}"/> from the <see cref="IDictionary{TKey,TValue}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the key.</typeparam>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <param name="source">The <see cref="IDictionary{TKey,TValue}"/> to modify.</param>
+    /// <param name="range">The <see cref="IDictionary{TKey,TValue}"/> to add.</param>
+    /// <returns>The original <see cref="IDictionary{TKey, TValue}"/> this method was invoked on to allow method chaining.</returns>
+    /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+    public static IDictionary<TKey, TValue> RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> range)
+    {
+      ArgumentNullException.ThrowIfNull(source);
+      ArgumentNullException.ThrowIfNull(range);
+
+      if (source.IsReadOnly)
+      {
+        throw new NotSupportedException(ExceptionMessages.GetModificationOfReadOnlyCollectionNotSupportedExceptionMessage(source));
       }
 
       foreach (KeyValuePair<TKey, TValue> item in range)
       {
-        source.Add(item);
+        _ = source.Remove(item.Key);
       }
 
       return source;
@@ -155,25 +278,304 @@
     /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
-    public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<(TKey Key, TValue Value)> range)
+    public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<(TKey Key, TValue Value)> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
     {
-      if (source == null)
+      ArgumentNullException.ThrowIfNull(source);
+      ArgumentNullException.ThrowIfNull(range);
+
+      if (source.IsReadOnly)
       {
-        throw new ArgumentNullException(nameof(source));
+        throw new NotSupportedException(ExceptionMessages.GetModificationOfReadOnlyCollectionNotSupportedExceptionMessage(source));
       }
 
-      if (range == null)
+      if (mode is AddRangeMode.ThrowOnDuplicateKey)
       {
-        throw new ArgumentNullException(nameof(range));
-      }
+        var addedEntries = new List<(TKey Key, TValue Value)>();
+        try
+        {
+          foreach ((TKey Key, TValue Value) item in range)
+          {
+            source.Add(item.Key, item.Value);
+            addedEntries.Add(item);
+          }
+        }
+        catch (ArgumentException)
+        {
+          _ = source.RemoveRange(addedEntries);
 
-      foreach ((TKey Key, TValue Value) in range)
+          throw;
+        }
+      }
+      else if (mode is AddRangeMode.SkipDuplicateKey)
       {
-        source.Add(Key, Value);
+        foreach ((TKey Key, TValue Value) in range)
+        {
+          if (source.ContainsKey(Key))
+          {
+            continue;
+          }
+
+          source.Add(Key, Value);
+        }
       }
 
       return source;
     }
+
+    /// <summary>
+    /// Removes a <see cref="IDictionary{TKey,TValue}"/> from the <see cref="IDictionary{TKey,TValue}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the key.</typeparam>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <param name="source">The <see cref="IDictionary{TKey,TValue}"/> to modify.</param>
+    /// <param name="range">The <see cref="IDictionary{TKey,TValue}"/> to add.</param>
+    /// <returns>The original <see cref="IDictionary{TKey, TValue}"/> this method was invoked on to allow method chaining.</returns>
+    /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+    public static IDictionary<TKey, TValue> RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<(TKey Key, TValue Value)> range)
+    {
+      ArgumentNullException.ThrowIfNull(source);
+      ArgumentNullException.ThrowIfNull(range);
+
+      if (source.IsReadOnly)
+      {
+        throw new NotSupportedException(ExceptionMessages.GetModificationOfReadOnlyCollectionNotSupportedExceptionMessage(source));
+      }
+
+      foreach ((TKey Key, _) in range)
+      {
+        _ = source.Remove(Key);
+      }
+
+      return source;
+    }
+        
+    public static TItem[] AddRange<TItem>(this TItem[] destination, IEnumerable<TItem> range, int destinationStartIndex, int rangeStartIndex, int rangeCount)
+    {
+      ArgumentNullException.ThrowIfNull(destination, nameof(destination));
+      ArgumentNullException.ThrowIfNull(range, nameof(range));
+      ArgumentOutOfRangeException.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
+      ArgumentOutOfRangeException.ThrowIfNegative(rangeStartIndex, nameof(rangeStartIndex));
+      ArgumentOutOfRangeException.ThrowIfNegative(rangeCount, nameof(rangeCount));
+      ArgumentOutOfRangeException.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
+
+      if (destination.IsEmpty())
+      {
+        if (range is TItem[] sourceArray)
+        {
+          if (sourceArray.Length == rangeCount)
+          {
+            return sourceArray;
+          }
+
+          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceArray.Length, nameof(rangeStartIndex));
+          ArgumentOutOfRangeException.ThrowIfGreaterThan(rangeCount, sourceArray.Length - rangeStartIndex, nameof(rangeCount));
+
+          destination = new TItem[rangeCount];
+          Array.Copy(sourceArray, rangeStartIndex, destination, 0, rangeCount);
+
+          return destination;
+        }
+        else if (range is IList<TItem> sourceList)
+        {
+          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceList.Count, nameof(rangeStartIndex));
+          ArgumentOutOfRangeException.ThrowIfGreaterThan(rangeCount, sourceList.Count - rangeStartIndex, nameof(rangeCount));
+
+          destination = new TItem[rangeCount];
+          int sourceIndex = rangeStartIndex;
+          for (int destinationIndex = destinationStartIndex; destinationIndex < destination.Length; destinationIndex++, sourceIndex++)
+          {
+            destination[destinationIndex] = sourceList[sourceIndex];
+          }
+
+          return destination;
+        }
+        else
+        {
+          sourceArray = range.ToArray();
+          if (sourceArray.Length == rangeCount)
+          {
+            return sourceArray;
+          }
+
+          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceArray.Length, nameof(rangeStartIndex));
+          ArgumentOutOfRangeException.ThrowIfGreaterThan(rangeCount, sourceArray.Length - rangeStartIndex, nameof(rangeCount));
+
+          destination = new TItem[rangeCount];
+          Array.Copy(sourceArray, rangeStartIndex, destination, 0, rangeCount);
+
+          return destination;
+        }
+      }
+      else if (!range.Any())
+      {
+        return destination;
+      }
+      else
+      {
+        int newLength = destinationStartIndex + 1 + rangeCount;
+        Array.Resize(ref destination, newLength);
+
+        if (range is TItem[] sourceArray)
+        {
+          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceArray.Length, nameof(rangeStartIndex));
+          ArgumentOutOfRangeException.ThrowIfGreaterThan(rangeCount, sourceArray.Length - rangeStartIndex, nameof(rangeCount));
+
+          Array.Copy(sourceArray, rangeStartIndex, destination, destinationStartIndex, rangeCount);
+        }
+        else if (range is IList<TItem> sourceList)
+        {
+          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceList.Count, nameof(rangeStartIndex));
+          ArgumentOutOfRangeException.ThrowIfGreaterThan(rangeCount, sourceList.Count - rangeStartIndex, nameof(rangeCount));
+
+          int sourceIndex = rangeStartIndex;
+          for (int destinationIndex = destinationStartIndex; destinationIndex < destination.Length; destinationIndex++, sourceIndex++)
+          {
+            destination[destinationIndex] = sourceList[sourceIndex];
+          }
+        }
+        else
+        {
+          sourceArray = range.ToArray();
+          if (sourceArray.Length == rangeCount)
+          {
+            return sourceArray;
+          }
+
+          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceArray.Length, nameof(rangeStartIndex));
+          ArgumentOutOfRangeException.ThrowIfGreaterThan(rangeCount, sourceArray.Length - rangeStartIndex, nameof(rangeCount));
+
+          Array.Copy(sourceArray, rangeStartIndex, destination, destinationStartIndex, rangeCount);
+        }
+      }
+
+      return destination;
+    }
+
+#if !(NETSTANDARD2_0 || NETFRAMEWORK)
+    public static TItem[] AddRange<TItem>(this TItem[] destination, IEnumerable<TItem> source, Range destinationRange, Range sourceRange)
+    {
+      ArgumentNullException.ThrowIfNull(destination, nameof(destination));
+      ArgumentNullException.ThrowIfNull(source, nameof(source));
+      ArgumentOutOfRangeException.ThrowIfNegative(destinationRange.Start.Value, nameof(destinationRange.Start));
+      ArgumentOutOfRangeException.ThrowIfNegative(destinationRange.End.Value, nameof(destinationRange.End));
+      ArgumentOutOfRangeException.ThrowIfNegative(sourceRange.Start.Value, nameof(sourceRange.Start));
+      ArgumentOutOfRangeException.ThrowIfNegative(sourceRange.End.Value, nameof(sourceRange.End));
+      ArgumentOutOfRangeException.ThrowIfGreaterThan(destinationRange.Start.Value, destination.Length, nameof(destinationRange.Start));
+
+      if (destination.IsEmpty())
+      {
+        if (source is TItem[] sourceArray)
+        {
+          destination = sourceArray[sourceRange];
+        }
+        else if (source is IList<TItem> sourceList)
+        {
+          int sourceCount = sourceRange.GetOffsetAndLength(sourceList.Count).Length;
+          int sourceStartIndex = sourceRange.GetOffsetAndLength(sourceList.Count).Offset;
+          int destinationStartIndex = destinationRange.GetOffsetAndLength(destination.Length).Offset;
+          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceList.Count, nameof(sourceRange.Start));
+          ArgumentOutOfRangeException.ThrowIfGreaterThan(sourceCount, sourceList.Count - sourceStartIndex, nameof(sourceRange));
+          ArgumentOutOfRangeException.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
+          ArgumentOutOfRangeException.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
+
+          Array.Resize(ref destination, sourceCount);
+          int sourceIndex = sourceStartIndex;
+          for (int destinationIndex = destinationStartIndex; destinationIndex < destination.Length; destinationIndex++, sourceIndex++)
+          {
+            destination[destinationIndex] = sourceList[sourceIndex];
+          }
+        }
+        else
+        {
+          sourceArray = source.ToArray();
+          int sourceCount = sourceRange.GetOffsetAndLength(sourceArray.Length).Length;
+          int sourceStartIndex = sourceRange.GetOffsetAndLength(sourceArray.Length).Offset;
+          int destinationStartIndex = destinationRange.GetOffsetAndLength(destination.Length).Offset;
+
+          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceArray.Length, nameof(sourceRange.Start));
+          ArgumentOutOfRangeException.ThrowIfGreaterThan(sourceCount, sourceArray.Length - sourceStartIndex, nameof(sourceRange));
+          ArgumentOutOfRangeException.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
+          ArgumentOutOfRangeException.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
+
+          if (sourceArray.Length == sourceCount)
+          {
+            destination = sourceArray;
+          }
+          else
+          {
+            destination = sourceArray[sourceRange];
+          }
+        }
+      }
+      else if (!source.Any())
+      {
+        return destination;
+      }
+      else
+      {
+        if (source is TItem[] sourceArray)
+        {
+          int sourceCount = sourceRange.GetOffsetAndLength(sourceArray.Length).Length;
+          int sourceStartIndex = sourceRange.GetOffsetAndLength(sourceArray.Length).Offset;
+          int destinationStartIndex = destinationRange.GetOffsetAndLength(destination.Length).Offset;
+
+          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceArray.Length, nameof(sourceRange.Start));
+          ArgumentOutOfRangeException.ThrowIfGreaterThan(sourceCount, sourceArray.Length - sourceStartIndex, nameof(sourceRange));
+          ArgumentOutOfRangeException.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
+          ArgumentOutOfRangeException.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
+
+          int newLength = destinationStartIndex + 1 + sourceCount;
+          Array.Resize(ref destination, newLength);
+          Array.Copy(sourceArray[sourceRange], 0, destination, destinationStartIndex, sourceCount);
+        }
+        else if (source is IList<TItem> sourceList)
+        {
+          int sourceCount = sourceRange.GetOffsetAndLength(sourceList.Count).Length;
+          int sourceStartIndex = sourceRange.GetOffsetAndLength(sourceList.Count).Offset;
+          int destinationStartIndex = destinationRange.GetOffsetAndLength(destination.Length).Offset;
+          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceList.Count, nameof(sourceRange.Start));
+          ArgumentOutOfRangeException.ThrowIfGreaterThan(sourceCount, sourceList.Count - sourceStartIndex, nameof(sourceRange));
+          ArgumentOutOfRangeException.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
+          ArgumentOutOfRangeException.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
+
+          int newLength = destinationStartIndex + 1 + sourceCount;
+          Array.Resize(ref destination, newLength);
+          int sourceIndex = sourceStartIndex;
+          for (int destinationIndex = destinationStartIndex; destinationIndex < destination.Length; destinationIndex++, sourceIndex++)
+          {
+            destination[destinationIndex] = sourceList[sourceIndex];
+          }
+        }
+        else
+        {
+          sourceArray = source.ToArray();
+          int sourceCount = sourceRange.GetOffsetAndLength(sourceArray.Length).Length;
+          int sourceStartIndex = sourceRange.GetOffsetAndLength(sourceArray.Length).Offset;
+          int destinationStartIndex = destinationRange.GetOffsetAndLength(destination.Length).Offset;
+
+          ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceArray.Length, nameof(sourceRange.Start));
+          ArgumentOutOfRangeException.ThrowIfGreaterThan(sourceCount, sourceArray.Length - sourceStartIndex, nameof(sourceRange));
+          ArgumentOutOfRangeException.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
+          ArgumentOutOfRangeException.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
+
+          if (sourceArray.Length == sourceCount)
+          {
+            destination = sourceArray;
+          }
+          else
+          {
+            int newLength = destinationStartIndex + 1 + sourceCount;
+            Array.Resize(ref destination, newLength);
+            Array.Copy(sourceArray[sourceRange], 0, destination, destinationStartIndex, sourceCount);
+          }
+        }
+      }
+
+      return destination;
+    }
+#endif
 
     /// <summary>
     /// A non-cached version of <see cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/> for sorted collections.
@@ -275,6 +677,20 @@
       return isFound;
     }
 
-    #endregion
+#if !NET8_0_OR_GREATER
+    public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> source)
+      => source.ToDictionary(entry => entry.Key, entry => entry.Value);
+
+    public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<(TKey Key, TValue Value)> source)
+      => source.ToDictionary(entry => entry.Key, entry => entry.Value);
+#endif
+
+#endregion
+  }
+
+  public enum AddRangeMode
+  {
+    ThrowOnDuplicateKey,
+    SkipDuplicateKey,
   }
 }

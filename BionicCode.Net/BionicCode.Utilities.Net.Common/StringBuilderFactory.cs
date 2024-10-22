@@ -2,6 +2,7 @@
 {
   using System;
   using System.Collections.Generic;
+  using System.Dynamic;
   using System.Linq;
   using System.Text;
   using Microsoft.Extensions.Caching.Memory;
@@ -40,14 +41,15 @@
             entry.Capacity = System.Math.Min(entry.MaxCapacity, capacity);
           }
 
-          return new PooledStringBuilder(entry);
+          return PooledStringBuilder.Create(entry);
         }
       }
 
       StringBuilder stringBuilder = capacity > -1 
         ? new StringBuilder(capacity) 
         : new StringBuilder();
-      return new PooledStringBuilder(stringBuilder);
+
+      return PooledStringBuilder.Create(stringBuilder);
     }
 
     public static PooledStringBuilder GetOrCreateWith(string content)
@@ -114,7 +116,13 @@
       }
     }
 
-    public PooledStringBuilder(StringBuilder stringBuilder) => this.stringBuilder = stringBuilder;
+    public static PooledStringBuilder Create()
+      => StringBuilderFactory.GetOrCreate();
+
+    public static PooledStringBuilder Create(StringBuilder stringBuilder)
+      => new PooledStringBuilder(stringBuilder);
+
+    private PooledStringBuilder(StringBuilder stringBuilder) => this.stringBuilder = stringBuilder;
 
     public PooledStringBuilder Append(string value)
     {
