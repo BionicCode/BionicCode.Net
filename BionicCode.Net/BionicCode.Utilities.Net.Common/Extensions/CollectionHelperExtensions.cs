@@ -61,7 +61,7 @@
     public static IEnumerable<TItem> TakeRange<TItem>(this IEnumerable<TItem> source, Range range)
       => source == null
         ? throw new ArgumentNullException(nameof(source))
-        : source.Skip(range.Start.IsFromEnd ? source.Count() - 1 - range.Start.Value : range.Start.Value).Take(range.End.IsFromEnd ? source.Count() - 1 - range.End.Value : range.End.Value);
+        : source is TItem[] array ? array[range] : source.ToArray()[range];
 #endif
 
     /// <summary>
@@ -70,11 +70,10 @@
     /// <typeparam name="TItem">The type of the item.</typeparam>
     /// <param name="source">The <see cref="ICollection{T}"/> to modify.</param>
     /// <param name="range">The items to add.</param>
-    /// <returns>The original <see cref="IEnumerable{T}"/> this method was invoked on to allow method chaining.</returns>
     /// <remarks>Although this method returns a <see cref="IEnumerable{T}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
-    public static IEnumerable<TItem> AddRange<TItem>(this ICollection<TItem> source, IEnumerable<TItem> range)
+    public static void AddRange<TItem>(this ICollection<TItem> source, IEnumerable<TItem> range)
     {
       ArgumentNullExceptionEx.ThrowIfNull(source);
       ArgumentNullExceptionEx.ThrowIfNull(range);
@@ -95,9 +94,32 @@
           source.Add(item);
         }
       }
-
-      return source;
     }
+
+    ///// <summary>
+    ///// Adds a range of items to the <see cref="ICollection{KeyValuePair{TKey, TItem}}"/>, allowing duplicate keys.
+    ///// </summary>
+    ///// <typeparam name="TItem">The type of the item.</typeparam>
+    ///// <param name="collection">The <see cref="ICollection{T}"/> to modify.</param>
+    ///// <param name="range">The items to add.</param>
+    ///// <remarks>Use <see cref="AddRange{TKey, TValue}(IDictionary{TKey, TValue}, IEnumerable{KeyValuePair{TKey, TValue}}, AddRangeMode)"/> to disallow duplicate keys.</remarks>
+    ///// <exception cref="ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
+    ///// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+    //public static void AddRange<TKey, TItem>(this ICollection<KeyValuePair<TKey, TItem>> collection, IEnumerable<KeyValuePair<TKey, TItem>> range)
+    //{
+    //  ArgumentNullExceptionEx.ThrowIfNull(collection);
+    //  ArgumentNullExceptionEx.ThrowIfNull(range);
+
+    //  if (collection.IsReadOnly)
+    //  {
+    //    throw new NotSupportedException(ExceptionMessages.GetModificationOfReadOnlyCollectionNotSupportedExceptionMessage(collection));
+    //  }
+
+    //  foreach (KeyValuePair<TKey, TItem> item in range)
+    //  {
+    //    collection.Add(item);
+    //  }
+    //}
 
     /// <summary>
     /// Adds a <see cref="IDictionary{TKey,TValue}"/> to the <see cref="IDictionary{TKey,TValue}"/>.
@@ -110,7 +132,7 @@
     /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
-    public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IDictionary<TKey, TValue> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
+    public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IDictionary<TKey, TValue> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
     {
       ArgumentNullExceptionEx.ThrowIfNull(source);
       ArgumentNullExceptionEx.ThrowIfNull(range);
@@ -133,7 +155,7 @@
         }
         catch (ArgumentException)
         {
-          _ = source.RemoveRange(addedEntries);
+          source.RemoveRange(addedEntries);
 
           throw;
         }
@@ -150,8 +172,6 @@
           source.Add(item);
         }
       }
-
-      return source;
     }
 
     /// <summary>
@@ -165,7 +185,7 @@
     /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
-    public static IDictionary<TKey, TValue> RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IDictionary<TKey, TValue> range)
+    public static void RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IDictionary<TKey, TValue> range)
     {
       ArgumentNullExceptionEx.ThrowIfNull(source);
       ArgumentNullExceptionEx.ThrowIfNull(range);
@@ -179,8 +199,6 @@
       {
         _ = source.Remove(item.Key);
       }
-
-      return source;
     }
 
     /// <summary>
@@ -194,7 +212,7 @@
     /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
-    public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
+    public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
     {
       ArgumentNullExceptionEx.ThrowIfNull(source);
       ArgumentNullExceptionEx.ThrowIfNull(range);
@@ -217,7 +235,7 @@
         }
         catch (ArgumentException)
         {
-          _ = source.RemoveRange(addedEntries);
+          source.RemoveRange(addedEntries);
 
           throw;
         }
@@ -234,8 +252,6 @@
           source.Add(item);
         }
       }
-
-      return source;
     }
 
     /// <summary>
@@ -249,7 +265,7 @@
     /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
-    public static IDictionary<TKey, TValue> RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> range)
+    public static void RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> range)
     {
       ArgumentNullExceptionEx.ThrowIfNull(source);
       ArgumentNullExceptionEx.ThrowIfNull(range);
@@ -263,8 +279,6 @@
       {
         _ = source.Remove(item.Key);
       }
-
-      return source;
     }
 
     /// <summary>
@@ -278,7 +292,7 @@
     /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
-    public static IDictionary<TKey, TValue> AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<(TKey Key, TValue Value)> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
+    public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<(TKey Key, TValue Value)> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
     {
       ArgumentNullExceptionEx.ThrowIfNull(source);
       ArgumentNullExceptionEx.ThrowIfNull(range);
@@ -301,7 +315,7 @@
         }
         catch (ArgumentException)
         {
-          _ = source.RemoveRange(addedEntries);
+          source.RemoveRange(addedEntries);
 
           throw;
         }
@@ -318,8 +332,6 @@
           source.Add(Key, Value);
         }
       }
-
-      return source;
     }
 
     /// <summary>
@@ -333,7 +345,7 @@
     /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
-    public static IDictionary<TKey, TValue> RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<(TKey Key, TValue Value)> range)
+    public static void RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<(TKey Key, TValue Value)> range)
     {
       ArgumentNullExceptionEx.ThrowIfNull(source);
       ArgumentNullExceptionEx.ThrowIfNull(range);
@@ -347,10 +359,11 @@
       {
         _ = source.Remove(Key);
       }
-
-      return source;
     }
-        
+
+    public static TItem[] AddRange<TItem>(this TItem[] destination, IEnumerable<TItem> range)
+      => destination.AddRange(range, destination.Length, 0, -1);
+
     public static TItem[] AddRange<TItem>(this TItem[] destination, IEnumerable<TItem> range, int destinationStartIndex, int rangeStartIndex, int rangeCount)
     {
       ArgumentNullExceptionEx.ThrowIfNull(destination, nameof(destination));

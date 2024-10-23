@@ -843,15 +843,15 @@
     //      {
     //        switch (memberInfo)
     //        {
-    //          case Type typeInfo:
-    //            return typeInfo.IsPublic ? AccessModifier.Public
-    //              : typeInfo.IsNestedPrivate ? AccessModifier.Private
-    //              : typeInfo.IsNestedAssembly ? AccessModifier.Internal
-    //              : typeInfo.IsNestedFamily ? AccessModifier.Protected
-    //              : typeInfo.IsNestedPublic ? AccessModifier.Public
-    //              : typeInfo.IsNestedFamORAssem ? AccessModifier.ProtectedInternal
-    //              : typeInfo.IsNestedFamANDAssem ? AccessModifier.PrivateProtected
-    //              : !typeInfo.IsVisible ? AccessModifier.Internal
+    //          case Type type:
+    //            return type.IsPublic ? AccessModifier.Public
+    //              : type.IsNestedPrivate ? AccessModifier.Private
+    //              : type.IsNestedAssembly ? AccessModifier.Internal
+    //              : type.IsNestedFamily ? AccessModifier.Protected
+    //              : type.IsNestedPublic ? AccessModifier.Public
+    //              : type.IsNestedFamORAssem ? AccessModifier.ProtectedInternal
+    //              : type.IsNestedFamANDAssem ? AccessModifier.PrivateProtected
+    //              : !type.IsVisible ? AccessModifier.Internal
     //              : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
     //          case MethodBase methodBaseInfo:
     //            return methodBaseInfo.IsPublic ? AccessModifier.Public
@@ -2613,7 +2613,7 @@
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this Type type)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
       TypeData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return entry.AccessModifier;
@@ -2629,7 +2629,7 @@
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this MethodInfo method)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(method, nameof(method));
 
       MethodData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(method);
       return entry.AccessModifier;
@@ -2645,7 +2645,7 @@
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this ConstructorInfo constructor)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(constructor, nameof(constructor));
 
       ConstructorData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructor);
       return entry.AccessModifier;
@@ -2661,7 +2661,7 @@
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this PropertyInfo property)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(property, nameof(property));
 
       PropertyData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(property);
       return entry.AccessModifier;
@@ -2677,7 +2677,7 @@
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this EventInfo eventInfo)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
 
       EventData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
       return entry.AccessModifier;
@@ -2693,7 +2693,7 @@
     /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
     public static AccessModifier GetAccessModifier(this FieldInfo field)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(field, nameof(field));
 
       FieldData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(field);
       return entry.AccessModifier;
@@ -2780,7 +2780,7 @@
     /// </remarks>
     public static string ToDisplayName(this Type type, bool isGenericTypeParameterIncluded = true)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
       TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return ToDisplayNameInternal(typeData, isFullyQualifiedName: false, isGenericTypeParameterIncluded, isDeclaringTypeIncluded: false);
@@ -2818,7 +2818,7 @@
     /// </remarks>
     public static string ToDisplayName(this ConstructorInfo constructorInfo, bool isDeclaringTypeIncluded = false)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
       ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
       return ToDisplayNameInternal(constructorData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -2837,7 +2837,7 @@
     /// </remarks>
     public static string ToDisplayName(this PropertyInfo propertyInfo, bool isDeclaringTypeIncluded = false)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
       PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
       return ToDisplayNameInternal(propertyData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -2856,7 +2856,7 @@
     /// </remarks>
     public static string ToDisplayName(this FieldInfo fieldInfo, bool isDeclaringTypeIncluded = false)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
       FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
       return ToDisplayNameInternal(fieldData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -2875,7 +2875,7 @@
     /// </remarks>
     public static string ToDisplayName(this ParameterInfo parameterInfo)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
       ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
       return ToDisplayNameInternal(parameterData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: false, isDeclaringTypeIncluded: false);
@@ -2894,7 +2894,7 @@
     /// </remarks>
     public static string ToDisplayName(this EventInfo eventInfo, bool isDeclaringTypeIncluded = false)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
 
       EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
       return ToDisplayNameInternal(eventData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -2913,7 +2913,7 @@
     /// </remarks>
     public static string ToFullDisplayName(this Type type, bool isGenericTypeParameterIncluded = false)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
       TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return ToDisplayNameInternal(typeData, isFullyQualifiedName: true, isGenericTypeParameterIncluded, isDeclaringTypeIncluded: false);
@@ -2951,7 +2951,7 @@
     /// </remarks>
     public static string ToFullDisplayName(this ConstructorInfo constructorInfo, bool isDeclaringTypeIncluded = false)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
       ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
       return ToDisplayNameInternal(constructorData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -2970,7 +2970,7 @@
     /// </remarks>
     public static string ToFullDisplayName(this PropertyInfo propertyInfo, bool isDeclaringTypeIncluded = false)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
       PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
       return ToDisplayNameInternal(propertyData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -2989,7 +2989,7 @@
     /// </remarks>
     public static string ToFullDisplayName(this FieldInfo fieldInfo, bool isDeclaringTypeIncluded = false)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
       FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
       return ToDisplayNameInternal(fieldData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -3008,7 +3008,7 @@
     /// </remarks>
     public static string ToFullDisplayName(this EventInfo eventInfo, bool isDeclaringTypeIncluded = false)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
 
       EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
       return ToDisplayNameInternal(eventData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -3053,8 +3053,8 @@
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, Type type, bool isGenericTypeParameterIncluded = true)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+      ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
       TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), typeData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true);
@@ -3073,8 +3073,8 @@
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, EventInfo eventInfo, bool isDeclaringTypeIncluded = false)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+      ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
 
       EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
       _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), eventData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -3083,8 +3083,8 @@
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, ConstructorInfo constructorInfo, bool isDeclaringTypeIncluded = false)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+      ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
       ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
       _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), constructorData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -3093,8 +3093,8 @@
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, PropertyInfo propertyInfo, bool isDeclaringTypeIncluded = false)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+      ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
       PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
       _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), propertyData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -3103,8 +3103,8 @@
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, ParameterInfo parameterInfo)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+      ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
       ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
       _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), parameterData);
@@ -3113,8 +3113,8 @@
 
     public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, FieldInfo fieldInfo, bool isDeclaringTypeIncluded = false)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+      ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
       FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
       _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), fieldData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -3123,8 +3123,8 @@
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, Type type, bool isGenericTypeParameterIncluded = true)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+      ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
       TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), typeData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true);
@@ -3143,8 +3143,8 @@
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, EventInfo eventInfo, bool isDeclaringTypeIncluded = true)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+      ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
 
       EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
       _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), eventData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -3153,8 +3153,8 @@
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, ConstructorInfo constructorInfo, bool isDeclaringTypeIncluded = true)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+      ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
       ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
       _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), constructorData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -3163,8 +3163,8 @@
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, PropertyInfo propertyInfo, bool isDeclaringTypeIncluded = true)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+      ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
       PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
       _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), propertyData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -3173,8 +3173,8 @@
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, ParameterInfo parameterInfo)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+      ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
       ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
       _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), parameterData);
@@ -3183,8 +3183,8 @@
 
     public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, FieldInfo fieldInfo, bool isDeclaringTypeIncluded = true)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+      ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
       FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
       _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), fieldData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -3511,25 +3511,25 @@
     }
 
     // TODO::Test if checking get() is enough to determine if a property is overridden
-    public static bool IsDelegate(this Type typeInfo)
+    public static bool IsDelegate(this Type type)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
-      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeInfo);
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return typeData.SymbolAttributes.HasFlag(SymbolAttributes.Delegate);
     }
 
-    internal static bool IsDelegateInternal(this Type typeInfo)
+    internal static bool IsDelegateInternal(this Type type)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
-      return HelperExtensionsCommon.DelegateType.IsAssignableFrom(typeInfo);
+      return HelperExtensionsCommon.DelegateType.IsAssignableFrom(type);
     }
 
     // TODO::Test if checking get() is enough to determine if a property is overridden
     public static bool IsOverride(this PropertyInfo propertyInfo)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
       PropertyData memberInfoData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
       return memberInfoData.IsOverride;
@@ -3537,14 +3537,14 @@
 
     internal static bool IsOverrideInternal(this PropertyInfo propertyInfo)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
       return propertyInfo.CanRead ? propertyInfo.GetGetMethod(true).IsOverride() : propertyInfo.GetSetMethod().IsOverride();
     }
 
     public static bool IsConst(this FieldInfo fieldInfo)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
       FieldData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
       return methodData.SymbolAttributes.HasFlag(SymbolAttributes.Constant);
@@ -3564,7 +3564,7 @@
 #if NET
     public static bool IsInitOnly(this PropertyInfo propertyInfo)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
       PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
       return propertyData.SymbolAttributes.HasFlag(SymbolAttributes.InitProperty);
@@ -3625,7 +3625,7 @@
     /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned valueType that would make the valueType awaitable. If this fails too, the method is not awaitable.</remarks>
     public static bool IsAwaitable(this Type type)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
       TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return typeData.IsAwaitable;
@@ -3705,13 +3705,13 @@
     /// <summary>
     /// Extension method to check if a <see cref="Type"/> is static.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="typeInfo">The extended <see cref="Type"/> instance.</param>
-    /// <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="typeInfo"/> is static. Otherwise <see langword="false"/>.</returns>
-    public static bool IsStatic(this Type typeInfo)
+    /// <param genericTypeParameterIdentifier="type">The extended <see cref="Type"/> instance.</param>
+    /// <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="type"/> is static. Otherwise <see langword="false"/>.</returns>
+    public static bool IsStatic(this Type type)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
-      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeInfo);
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return typeData.IsStatic;
     }
 
@@ -3720,7 +3720,7 @@
 
     public static bool IsBuiltInType(this Type type)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
       TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return typeData.IsBuiltInType;
@@ -3745,7 +3745,7 @@
     /// <returns><see langword="true"/> if the <paramref name="parameterInfo"/> represents a <see langword="ref"/> parameter. Otherwise <see langword="false"/>.</returns>
     public static bool IsRef(this ParameterInfo parameterInfo)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
       ParameterData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
       return typeData.IsRef;
@@ -3757,15 +3757,15 @@
     /// <summary>
     /// Extension method that checks if the provided <see cref="Type"/> is qualified to define extension methods.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="typeInfo">The extended <see cref="Type"/> instance.</param>
-    /// <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="typeInfo"/> is allowed to define extension methods. Otherwise <see langword="false"/>.</returns>
+    /// <param genericTypeParameterIdentifier="type">The extended <see cref="Type"/> instance.</param>
+    /// <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="type"/> is allowed to define extension methods. Otherwise <see langword="false"/>.</returns>
     /// <remarks>To be able to define extension methods a class must be static, non-generic, a top level valueType. 
     /// <br/>In addition this method checks if the declaring class and the method are both decorated with the <see cref="ExtensionAttribute"/> which is added by the compiler.</remarks>
-    public static bool CanDeclareExtensionMethods(this Type typeInfo)
+    public static bool CanDeclareExtensionMethods(this Type type)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
-      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeInfo);
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return typeData.CanDeclareExtensionMethod;
     }
 
@@ -3912,7 +3912,7 @@
 #if !NETSTANDARD2_0
     public static bool IsReadOnlyStruct(Type type)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
       TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return typeData.SymbolAttributes.HasFlag(SymbolAttributes.ReadOnlyStruct);
@@ -3934,20 +3934,20 @@
     //  // So search for an extension method named "GetAwaiter" for the return valueType that effectively converts the valueType into an awaitable object.
     //  foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
     //  {
-    //    foreach (TypeInfo typeInfo in assembly.GetExportedTypes())
+    //    foreach (TypeInfo type in assembly.GetExportedTypes())
     //    {
-    //      if (!typeInfo.IsSealed || typeInfo.IsGenericType)
+    //      if (!type.IsSealed || type.IsGenericType)
     //      {
     //        continue;
     //      }
 
-    //      getAwaiterMethodInfo = typeInfo.GetMethod(nameof(Task.GetAwaiter), BindingFlags.Static | BindingFlags.Public, null, new[] { obj.GetType() }, null);
+    //      getAwaiterMethodInfo = type.GetMethod(nameof(Task.GetAwaiter), BindingFlags.Static | BindingFlags.Public, null, new[] { obj.GetType() }, null);
     //      if (getAwaiterMethodInfo != null)
     //      {
     //        return (Task)getAwaiterMethodInfo.Invoke(obj, null);
     //      }
 
-    //      //foreach (MethodInfo extensionMethodCandidate in typeInfo.GetMethods(BindingFlags.Static | BindingFlags.Public))
+    //      //foreach (MethodInfo extensionMethodCandidate in type.GetMethods(BindingFlags.Static | BindingFlags.Public))
     //      //{
     //      //  if (!extensionMethodCandidate.Name.Equals(nameof(Task.GetAwaiter), StringComparison.Ordinal))
     //      //  {
@@ -4228,8 +4228,8 @@
 
     public static dynamic Cast(this object obj, Type type)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
-      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+      ArgumentNullExceptionEx.ThrowIfNull(obj, nameof(obj));
+      ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
       return typeof(HelperExtensionsCommon).GetMethod(nameof(HelperExtensionsCommon.Cast), BindingFlags.Static | BindingFlags.NonPublic, null, new[] { typeof(object) }, null).GetGenericMethodDefinition().MakeGenericMethod(type).Invoke(obj, null);
     }

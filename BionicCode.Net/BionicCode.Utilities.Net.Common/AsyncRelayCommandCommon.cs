@@ -87,7 +87,7 @@ namespace BionicCode.Utilities.Net
     /// <param name="canExecuteNoParam">The execution status handler.</param>
     protected AsyncRelayCommandCommon(Action executeNoParam, Func<bool> canExecuteNoParam)
     {
-      ArgumentNullException.ThrowIfNull(executeNoParam, nameof(executeNoParam));
+      ArgumentNullExceptionEx.ThrowIfNull(executeNoParam, nameof(executeNoParam));
 
       this.executeCancellableNoParamDelegate = cancellationToken => executeNoParam.Invoke();
       this.canExecuteNoParamDelegate = canExecuteNoParam ?? (() => true);
@@ -100,7 +100,7 @@ namespace BionicCode.Utilities.Net
     /// <param name="canExecuteNoParam">The execution status handler.</param>
     protected AsyncRelayCommandCommon(Func<Task> executeAsyncNoParam, Func<bool> canExecuteNoParam)
     {
-      ArgumentNullException.ThrowIfNull(executeAsyncNoParam, nameof(executeAsyncNoParam));
+      ArgumentNullExceptionEx.ThrowIfNull(executeAsyncNoParam, nameof(executeAsyncNoParam));
 
       this.executeCancellableAsyncNoParamDelegate = cancellationToken => executeAsyncNoParam.Invoke();
       this.canExecuteNoParamDelegate = canExecuteNoParam ?? (() => true);
