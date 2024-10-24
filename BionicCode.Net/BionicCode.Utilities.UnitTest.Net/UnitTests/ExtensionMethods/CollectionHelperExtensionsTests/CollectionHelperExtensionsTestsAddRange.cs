@@ -8,6 +8,7 @@
   using FluentAssertions;
   using Xunit;
   using BionicCode.Utilities.Net;
+  using Microsoft.CodeAnalysis.CSharp.Syntax;
 
   public class CollectionHelperExtensionsTestsAddRange
   {
@@ -169,12 +170,98 @@
     }
 
     [Fact]
+    public void AddArray_ToArrayAddRange_MustAppendItemsOrdered()
+    {
+      int[] result = this.ArrayWithFirstRange.AddRange(this.ArrayWithSecondRange);
+
+      _ = result.Should().ContainInConsecutiveOrder(this.ConcatenatedArrayResultOfOrderedAddRange);
+    }
+
+    [Theory]
+    [InlineData(-1, 0, 0)]
+    [InlineData(1, -1, 0)]
+    [InlineData(1, 0, -1)]
+    [InlineData(RangeCount + 1, 0, 0)]
+    [InlineData(1, RangeCount, 0)]
+    [InlineData(1, 0, RangeCount + 1)]
+    [InlineData(1, RangeCount - 1, 2)]
+    public void AddArrayInvalidRange_ToArrayAddRange_MustThrow(int destinationStartIndex, int sourceStartIndex, int sourceCount)
+    {
+      Action action = () => this.ArrayWithFirstRange.AddRange(this.ArrayWithSecondRange, destinationStartIndex, sourceStartIndex, sourceCount);
+
+      _ = action.Should().Throw<ArgumentOutOfRangeException>();
+    }
+
+    [Fact]
     public void AddIEnumerable_ToArrayAddRange_MustAppendItemsOrdered()
     {
-      IEnumerable<KeyValuePair<int, int>> range = this.DictionaryWithSecondRange.ToList();
-      IDictionary<int, int> result = this.DictionaryWithFirstRange.AddRange(range);
+      IEnumerable<int> range = this.ArrayWithSecondRange.Select(item => item);
 
-      _ = result.Should().BeSameAs(this.DictionaryWithFirstRange);
+      int[] result = this.ArrayWithFirstRange.AddRange(range);
+
+      _ = result.Should().ContainInConsecutiveOrder(this.ConcatenatedArrayResultOfOrderedAddRange);
+    }
+
+    [Fact]
+    public void AddList_ToArrayAddRange_MustAppendItemsOrdered()
+    {
+      List<int> range = this.ArrayWithSecondRange.ToList();
+
+      int[] result = this.ArrayWithFirstRange.AddRange(range);
+
+      _ = result.Should().ContainInConsecutiveOrder(this.ConcatenatedArrayResultOfOrderedAddRange);
+    }
+
+    [Fact]
+    public void AddIEnumerable_ToEmptyArrayAddRange_MustReturnNewArray()
+    {
+      IEnumerable<int> range = this.ArrayWithSecondRange.Select(item => item);
+
+      int[] result = this.EmptyArray.AddRange(range);
+
+      _ = result.Should().ContainInConsecutiveOrder(this.ArrayWithSecondRange);
+    }
+
+    [Fact]
+    public void AddList_ToEmptyArrayAddRange_MustReturnNewArray()
+    {
+      List<int> range = this.ArrayWithSecondRange.ToList();
+
+      int[] result = this.EmptyArray.AddRange(range);
+
+      _ = result.Should().ContainInConsecutiveOrder(this.ArrayWithSecondRange);
+    }
+
+    [Fact]
+    public void AddArray_ToEmptyArrayAddRange_MustReturnAddedArray()
+    {
+      int[] result = this.EmptyArray.AddRange(this.ArrayWithSecondRange);
+
+      _ = result.Should().BeSameAs(this.ArrayWithSecondRange);
+    }
+
+    [Fact]
+    public void AddEmptyArray_ToArrayAddRange_MustReturnOriginalArray()
+    {
+      int[] result = this.ArrayWithFirstRange.AddRange(this.EmptyArray);
+
+      _ = result.Should().BeSameAs(this.ArrayWithFirstRange);
+    }
+
+    [Fact]
+    public void AddEmptyList_ToArrayAddRange_MustReturnOriginalArray()
+    {
+      int[] result = this.ArrayWithFirstRange.AddRange(this.EmptyList);
+
+      _ = result.Should().BeSameAs(this.ArrayWithFirstRange);
+    }
+
+    [Fact]
+    public void AddEmptyIEnumerable_ToArrayAddRange_MustReturnOriginalArray()
+    {
+      int[] result = this.ArrayWithFirstRange.AddRange(Enumerable.Empty<int>());
+
+      _ = result.Should().BeSameAs(this.ArrayWithFirstRange);
     }
 
     [Fact]

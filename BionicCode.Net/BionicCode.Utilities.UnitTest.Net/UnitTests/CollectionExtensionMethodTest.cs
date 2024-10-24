@@ -94,7 +94,7 @@ namespace BionicCode.Utilities.Net.UnitTest
     {
       int startIndex = 2;
       int count = 4;
-      this.Context.Items.TakeRange(startIndex, count).Should().Contain(new[] { 2, 3, 4, 5 }, $"StartIndex: {startIndex}; Count: {count}");
+      _ = this.Context.Items.TakeRange(startIndex, count).Should().Contain(new[] { 2, 3, 4, 5 }, $"StartIndex: {startIndex}; Count: {count}");
     }
 
     [Fact]
@@ -120,73 +120,74 @@ namespace BionicCode.Utilities.Net.UnitTest
     [Fact]
     public void LastInSorted_Returns_4_OnSuccess() => this.Context.Items.LastInSorted(this.Context.SuceedingContainsPredicate).Should().Be(4, "the predicate has produced a result.");
 
-    [Fact]
-    public void AddRange__ToCollection_ReturnsOriginalSource()
-    {
-      this.Context.Items.AddRange(this.Context.NewItems).Should().BeSameAs(this.Context.Items);
-      this.Context.Reset();
-    }
+    //[Fact]
+    //public void AddRange__ToCollection_ReturnsOriginalSource()
+    //{
+    //  this.Context.Items.AddRange(this.Context.NewItems).Should().BeSameAs(this.Context.Items);
+    //  this.Context.Reset();
+    //}
 
-    [Fact]
-    public void AddRange_ToCollection_ThrowExceptionOnRangeNull()
-    {
-      ICollection<int> nullRange = null;
-      this.Context.Items
-        .Invoking(source => source.AddRange(nullRange))
-        .Should().ThrowExactly<ArgumentNullException>("range is NULL.");
-    }
+    //[Fact]
+    //public void AddRange_ToCollection_ThrowExceptionOnRangeNull()
+    //{
+    //  ICollection<int> nullRange = null;
+    //  _ = this.Context.Items
+    //    .Invoking(source => source.AddRange(nullRange))
+    //    .Should().ThrowExactly<ArgumentNullException>("range is NULL.");
+    //}
 
-    [Fact]
-    public void AddRange_Dictionary_ToDictionary_ReturnsOriginalSourceWithCountOfSum_ItemsCount_NewItemsCount()
-    {
-      this.Context.ItemTable.AddRange(this.Context.NewTableItemsFromDictionary).Should().HaveCount(this.Context.ItemsCount + this.Context.NewItemsCount);
-      this.Context.Reset();
-    }
+    //[Fact]
+    //public void AddRange_Dictionary_ToDictionary_ReturnsOriginalSourceWithCountOfSum_ItemsCount_NewItemsCount()
+    //{
+    //  this.Context.ItemTable.AddRange(this.Context.NewTableItemsFromDictionary).Should().HaveCount(this.Context.ItemsCount + this.Context.NewItemsCount);
+    //  this.Context.Reset();
+    //}
 
-    [Fact]
-    public void AddRange_Dictionary_ToDictionary_ThrowExceptionOnRangeNull()
-    {
-      IDictionary<int, int> nullRange = null;
-      this.Context.ItemTable
-        .Invoking(source => source.AddRange(nullRange))
-        .Should().ThrowExactly<ArgumentNullException>("range is NULL.");
-    }
+    //[Fact]
+    //public void AddRange_Dictionary_ToDictionary_ThrowExceptionOnRangeNull()
+    //{
+    //  IDictionary<int, int> nullRange = null;
+    //  _ = this.Context.ItemTable
+    //    .Invoking(source => source.AddRange(nullRange))
+    //    .Should().ThrowExactly<ArgumentNullException>("range is NULL.");
+    //}
 
-    [Fact]
-    public void AddRange_TupleCollection_ToDictionary_ReturnsOriginalSourceWithCountOfSum_ItemsCount_NewItemsCount()
-    {
-      this.Context.ItemTable
-        .AddRange(this.Context.NewTableItemsFromTupleCollection)
-        .Should().HaveCount(this.Context.ItemsCount + this.Context.NewItemsCount);
-      this.Context.Reset();
-    }
+    //[Fact]
+    //public void AddRange_TupleCollection_ToDictionary_ReturnsOriginalSourceWithCountOfSum_ItemsCount_NewItemsCount()
+    //{
+    //  this.Context.ItemTable
+    //    .AddRange(this.Context.NewTableItemsFromTupleCollection);
 
-    [Fact]
-    public void AddRange_TupleCollection_ToDictionary_ThrowExceptionOnRangeNull()
-    {
-      IEnumerable<(int, int)> nullRange = null;
-      this.Context.ItemTable
-        .Invoking(source => source.AddRange(nullRange))
-        .Should().ThrowExactly<ArgumentNullException>("range is NULL.");
-    }
+    //    .Should().HaveCount(this.Context.ItemsCount + this.Context.NewItemsCount);
+    //  this.Context.Reset();
+    //}
 
-    [Fact]
-    public void AddRange_KeyValuePairCollection_ToDictionary_ReturnsOriginalSourceWithCountOfSum_ItemsCount_NewItemsCount()
-    {
-      this.Context.ItemTable
-        .AddRange(this.Context.NewTableItemsFromKeyValuePairCollection)
-        .Should().HaveCount(this.Context.ItemsCount + this.Context.NewItemsCount);
-      this.Context.Reset();
-    }
+    //[Fact]
+    //public void AddRange_TupleCollection_ToDictionary_ThrowExceptionOnRangeNull()
+    //{
+    //  IEnumerable<(int, int)> nullRange = null;
+    //  this.Context.ItemTable
+    //    .Invoking(source => source.AddRange(nullRange))
+    //    .Should().ThrowExactly<ArgumentNullException>("range is NULL.");
+    //}
 
-    [Fact]
-    public void AddRange_KeyValuePairCollection_ToDictionary_ThrowExceptionOnRangeNull()
-    {
-      IEnumerable<KeyValuePair<int, int>> nullRange = null;
-      this.Context.ItemTable
-        .Invoking(source => source.AddRange(nullRange))
-        .Should().ThrowExactly<ArgumentNullException>("range is NULL.");
-    }
+    //[Fact]
+    //public void AddRange_KeyValuePairCollection_ToDictionary_ReturnsOriginalSourceWithCountOfSum_ItemsCount_NewItemsCount()
+    //{
+    //  this.Context.ItemTable
+    //    .AddRange(this.Context.NewTableItemsFromKeyValuePairCollection)
+    //    .Should().HaveCount(this.Context.ItemsCount + this.Context.NewItemsCount);
+    //  this.Context.Reset();
+    //}
+
+    //[Fact]
+    //public void AddRange_KeyValuePairCollection_ToDictionary_ThrowExceptionOnRangeNull()
+    //{
+    //  IEnumerable<KeyValuePair<int, int>> nullRange = null;
+    //  this.Context.ItemTable
+    //    .Invoking(source => source.AddRange(nullRange))
+    //    .Should().ThrowExactly<ArgumentNullException>("range is NULL.");
+    //}
 
     public void Dispose()
     {

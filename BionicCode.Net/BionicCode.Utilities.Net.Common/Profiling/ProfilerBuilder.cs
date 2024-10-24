@@ -134,7 +134,7 @@
     /// </remarks>
     public ProfilerBuilder AddAutoDiscoverAssembly(IEnumerable<Assembly> targetAssemblies)
     {
-      _ = this.SourceAssemblies.AddRange(targetAssemblies);
+      this.SourceAssemblies.AddRange(targetAssemblies);
       return this;
     }
 
