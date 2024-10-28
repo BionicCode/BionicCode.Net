@@ -2,7 +2,9 @@
 {
   using System;
   using System.Collections.Generic;
+  using System.Collections.ObjectModel;
   using System.Linq;
+  using System.Text;
 
   /// <summary>
   /// A collection of extension methods for various default types
@@ -56,12 +58,49 @@
     /// <param name="count">The number of elements to take.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> that contains the requested range of the original <paramref name="source"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
-    public static IEnumerable<TItem> TakeRange<TItem>(this IEnumerable<TItem> source, int startIndex, int count)
-      => source == null
-        ? throw new ArgumentNullException(nameof(source))
-        : source.Skip(startIndex).Take(count);
+    public static IEnumerable<TItem> Take<TItem>(this IEnumerable<TItem> source, int startIndex, int count)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(startIndex, nameof(startIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(count, nameof(count));
 
-#if NETSTANDARD2_1 || NET
+#if NET6_0_OR_GREATER
+      if (source.TryGetNonEnumeratedCount(out int sourceLength))
+      {
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(startIndex, sourceLength, nameof(startIndex));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(count, sourceLength - startIndex, nameof(count));
+      }
+#else
+      if (source is ICollection<TItem> collection)
+      {
+        int sourceLength = collection.Count;
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(startIndex, sourceLength, nameof(startIndex));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(count, sourceLength - startIndex, nameof(count));
+      }
+      else if (source is TItem[] array)
+      {
+        int sourceLength = array.Length;
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(startIndex, sourceLength, nameof(startIndex));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(count, sourceLength - startIndex, nameof(count));
+      }
+#endif
+
+      IEnumerator<TItem> enumerator = source.GetEnumerator();
+      int skipCount = startIndex;
+      while (skipCount > 0 && enumerator.MoveNext())
+      {
+        skipCount--;
+      }
+
+      int takeCount = count;
+      while (takeCount > 0 && enumerator.MoveNext())
+      {
+        yield return enumerator.Current;
+        takeCount--;
+      }
+    }
+
+#if !(NET6_0_OR_GREATER || NETFRAMEWORK || NETSTANDARD2_0)
     /// <summary>
     /// Returns a range of elements.
     /// </summary>
@@ -70,11 +109,100 @@
     /// <param name="range">A <see cref="Range"/> to define the range of elements to be taken.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> that contains the requested range of the original <paramref name="source"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
-    public static IEnumerable<TItem> TakeRange<TItem>(this IEnumerable<TItem> source, Range range)
-      => source == null
-        ? throw new ArgumentNullException(nameof(source))
-        : source is TItem[] array ? array[range] : source.ToArray()[range];
+    public static IEnumerable<TItem> Take<TItem>(this IEnumerable<TItem> source, Range range)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+
+      if (source is ICollection<TItem> collection)
+      {
+        int sourceLength = collection.Count;
+        (int startIndex, int count) = range.GetOffsetAndLength(sourceLength);
+        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(startIndex, nameof(startIndex));
+        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(count, nameof(count));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(startIndex, sourceLength, nameof(range.Start));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(count, sourceLength - startIndex, nameof(range));
+
+        foreach (TItem item in source.Take(startIndex, count))
+        {
+          yield return item;
+        }
+      }
+      else if (source is TItem[] array)
+      {
+        int sourceLength = array.Length;
+        (int startIndex, int count) = range.GetOffsetAndLength(sourceLength);
+        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(startIndex, nameof(startIndex));
+        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(count, nameof(count));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(startIndex, sourceLength, nameof(range.Start));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(count, sourceLength - startIndex, nameof(range));
+
+        foreach (TItem item in source.Take(startIndex, count))
+        {
+          yield return item;
+        }
+      }
+      else
+      {
+        if (range.Start.IsFromEnd || range.End.IsFromEnd)
+        {
+          TItem[] sourceArray = source.ToArray();
+          (int Offset, int Length) = range.GetOffsetAndLength(sourceArray.Length);
+          int startIndex = Offset;
+          for (int index = startIndex; index < startIndex + Length; index++)
+          {
+            yield return sourceArray[index];
+          }
+        }
+        else
+        {
+          int skipCount = range.Start.Value;
+          int takeCount = range.End.Value - range.Start.Value + 1;
+          IEnumerator<TItem> sourceEnumerator = source.GetEnumerator();
+          while (skipCount > 0 && sourceEnumerator.MoveNext())
+          {
+            skipCount--;
+          }
+
+          while (takeCount > 0 && sourceEnumerator.MoveNext())
+          {
+            takeCount--;
+            yield return sourceEnumerator.Current;
+          }
+        }
+      }
+    }
 #endif
+
+#if !(NETSTANDARD2_0 || NETFRAMEWORK)
+      /// <summary>
+      /// Returns a range of elements.
+      /// </summary>
+      /// <typeparam name="TItem"></typeparam>
+      /// <param name="source"></param>
+      /// <param name="range">A <see cref="Range"/> to define the range of elements to be taken.</param>
+      /// <returns>An <see cref="IEnumerable{T}"/> that contains the requested range of the original <paramref name="source"/>.</returns>
+      /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+      public static Span<TItem> TakeRange<TItem>(this TItem[] array, Range range)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+
+      return array.AsSpan(range);
+    }
+#endif
+
+    /// Returns a range of elements.
+    /// </summary>
+    /// <typeparam name="TItem"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="range">A <see cref="Range"/> to define the range of elements to be taken.</param>
+    /// <returns>An <see cref="IEnumerable{T}"/> that contains the requested range of the original <paramref name="source"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    public static Span<TItem> TakeRange<TItem>(this TItem[] array, int startIndex, int count)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+
+      return array.AsSpan(startIndex, count);
+    }
 
     /// <summary>
     /// Adds a range of items to the <see cref="ICollection{T}"/>.
@@ -82,7 +210,7 @@
     /// <typeparam name="TItem">The type of the item.</typeparam>
     /// <param name="source">The <see cref="ICollection{T}"/> to modify.</param>
     /// <param name="range">The items to add.</param>
-    /// <remarks>Although this method returns a <see cref="IEnumerable{T}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
+    /// <remarks>Although this method returns a <see cref="IEnumerable{T}"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
     public static void AddRange<TItem>(this ICollection<TItem> source, IEnumerable<TItem> range)
@@ -137,11 +265,11 @@
     /// Adds a <see cref="IDictionary{TKey,TValue}"/> to the <see cref="IDictionary{TKey,TValue}"/>.
     /// </summary>
     /// <typeparam name="TKey">The type of the key.</typeparam>
-    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <typeparam name="TValue">The type of the rangeInfo.</typeparam>
     /// <param name="source">The <see cref="IDictionary{TKey,TValue}"/> to modify.</param>
     /// <param name="range">The <see cref="IDictionary{TKey,TValue}"/> to add.</param>
     /// <returns>The original <see cref="IDictionary{TKey, TValue}"/> this method was invoked on to allow method chaining.</returns>
-    /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
+    /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
     public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IDictionary<TKey, TValue> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
@@ -190,11 +318,11 @@
     /// Removes a <see cref="IDictionary{TKey,TValue}"/> from the <see cref="IDictionary{TKey,TValue}"/>.
     /// </summary>
     /// <typeparam name="TKey">The type of the key.</typeparam>
-    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <typeparam name="TValue">The type of the rangeInfo.</typeparam>
     /// <param name="source">The <see cref="IDictionary{TKey,TValue}"/> to modify.</param>
     /// <param name="range">The <see cref="IDictionary{TKey,TValue}"/> to add.</param>
     /// <returns>The original <see cref="IDictionary{TKey, TValue}"/> this method was invoked on to allow method chaining.</returns>
-    /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
+    /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
     public static void RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IDictionary<TKey, TValue> range)
@@ -217,11 +345,11 @@
     /// Adds a range of <c>IEnumerable&lt;KeyValuePair&lt;TKey,TValue&gt;&gt;</c> to the <see cref="IDictionary{TKey,TValue}"/>.
     /// </summary>
     /// <typeparam name="TKey">The type of the key.</typeparam>
-    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <typeparam name="TValue">The type of the rangeInfo.</typeparam>
     /// <param name="source">The <see cref="IDictionary{TKey,TValue}"/> to modify.</param>
     /// <param name="range">The <c>IEnumerable&lt;KeyValuePair&lt;TKey,TValue&gt;&gt;</c>  to add.</param>
     /// <returns>The original <see cref="IDictionary{TKey, TValue}"/> this method was invoked on to allow method chaining.</returns>
-    /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
+    /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
     public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
@@ -270,11 +398,11 @@
     /// Removes a <see cref="IDictionary{TKey,TValue}"/> from the <see cref="IDictionary{TKey,TValue}"/>.
     /// </summary>
     /// <typeparam name="TKey">The type of the key.</typeparam>
-    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <typeparam name="TValue">The type of the rangeInfo.</typeparam>
     /// <param name="source">The <see cref="IDictionary{TKey,TValue}"/> to modify.</param>
     /// <param name="range">The <see cref="IDictionary{TKey,TValue}"/> to add.</param>
     /// <returns>The original <see cref="IDictionary{TKey, TValue}"/> this method was invoked on to allow method chaining.</returns>
-    /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
+    /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
     public static void RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> range)
@@ -297,11 +425,11 @@
     /// Adds a range of <c>IEnumerable&lt;(TKey Key,TValue Value)&gt;</c> to the <see cref="IDictionary{TKey,TValue}"/>.
     /// </summary>
     /// <typeparam name="TKey">The type of the key.</typeparam>
-    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <typeparam name="TValue">The type of the rangeInfo.</typeparam>
     /// <param name="source">The <see cref="IDictionary{TKey,TValue}"/> to modify.</param>
     /// <param name="range">The <c>IEnumerable&lt;(TKey Key,TValue Value&gt;&gt;</c>  to add.</param>
     /// <returns>The original <see cref="IDictionary{TKey, TValue}"/> this method was invoked on to allow method chaining.</returns>
-    /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
+    /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
     public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<(TKey Key, TValue Value)> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
@@ -350,11 +478,11 @@
     /// Removes a <see cref="IDictionary{TKey,TValue}"/> from the <see cref="IDictionary{TKey,TValue}"/>.
     /// </summary>
     /// <typeparam name="TKey">The type of the key.</typeparam>
-    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <typeparam name="TValue">The type of the rangeInfo.</typeparam>
     /// <param name="source">The <see cref="IDictionary{TKey,TValue}"/> to modify.</param>
     /// <param name="range">The <see cref="IDictionary{TKey,TValue}"/> to add.</param>
     /// <returns>The original <see cref="IDictionary{TKey, TValue}"/> this method was invoked on to allow method chaining.</returns>
-    /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The value is only returned to enable method chaining.</remarks>
+    /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
     public static void RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<(TKey Key, TValue Value)> range)
@@ -378,11 +506,26 @@
       ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
       ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
 
-      AddRangeInternal(ref array, 0, range, 0, -1);
+      TItem[] sourceArray = range.ToArray();
+      InsertRangeInternal(ref array, array.Length, sourceArray, 0, sourceArray.Length);
       return array;
     }
 
-    public static TItem[] AddRange<TItem>(this TItem[] array, IEnumerable<TItem> range, int arrayStartIndex, int rangeStartIndex, int rangeCount)
+    public static TItem[] AddRange<TItem>(this TItem[] array, IEnumerable<TItem> range, int rangeStartIndex, int rangeCount)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+      ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeStartIndex, nameof(rangeStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeCount, nameof(rangeCount));
+
+      TItem[] sourceArray = range.ToArray();
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceArray.Length, nameof(rangeStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeCount, sourceArray.Length - rangeStartIndex, nameof(rangeCount));
+      InsertRangeInternal(ref array, array.Length, sourceArray, rangeStartIndex, rangeCount);
+      return array;
+    }
+
+    public static TItem[] InsertRange<TItem>(this TItem[] array, int arrayStartIndex, IEnumerable<TItem> range, int rangeStartIndex, int rangeCount)
     {
       ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
       ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
@@ -391,7 +534,10 @@
       ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeCount, nameof(rangeCount));
       ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(arrayStartIndex, array.Length, nameof(arrayStartIndex));
 
-      AddRangeInternal(ref array, arrayStartIndex, range, rangeStartIndex, rangeCount);
+      TItem[] sourceArray = range.ToArray();
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceArray.Length, nameof(rangeStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeCount, sourceArray.Length - rangeStartIndex, nameof(rangeCount));
+      InsertRangeInternal(ref array, arrayStartIndex, sourceArray, rangeStartIndex, rangeCount);
       return array;
     }
 
@@ -400,11 +546,24 @@
       ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
       ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
 
-      AddRangeInternal(ref array, array.Length, range, 0, range.Length);
+      InsertRangeInternal(ref array, array.Length, range, 0, range.Length);
       return array;
     }
 
-    public static TItem[] AddRange<TItem>(this TItem[] array, int arrayStartIndex, TItem[] range, int rangeStartIndex, int rangeCount)
+    public static TItem[] AddRange<TItem>(this TItem[] array, TItem[] range, int rangeStartIndex, int rangeCount)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+      ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeStartIndex, nameof(rangeStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeCount, nameof(rangeCount));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, range.Length, nameof(rangeStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeCount, range.Length - rangeStartIndex, nameof(rangeCount));
+
+      InsertRangeInternal(ref array, array.Length, range, rangeStartIndex, rangeCount);
+      return array;
+    }
+
+    public static TItem[] InsertRange<TItem>(this TItem[] array, int arrayStartIndex, TItem[] range, int rangeStartIndex, int rangeCount)
     {
       ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
       ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
@@ -415,7 +574,7 @@
       ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, range.Length, nameof(rangeStartIndex));
       ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeCount, range.Length - rangeStartIndex, nameof(rangeCount));
 
-      AddRangeInternal(ref array, arrayStartIndex, range, rangeStartIndex, rangeCount);
+      InsertRangeInternal(ref array, arrayStartIndex, range, rangeStartIndex, rangeCount);
       return array;
     }
 
@@ -424,11 +583,24 @@
       ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
       ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
 
-      AddRangeInternal(ref array, array.Length, range, 0, range.Count);
+      InsertRangeInternal(ref array, array.Length, range, 0, range.Count);
       return array;
     }
 
-    public static TItem[] AddRange<TItem>(this TItem[] array, int arrayStartIndex, IList<TItem> range, int rangeStartIndex, int rangeCount)
+    public static TItem[] AddRange<TItem>(this TItem[] array, IList<TItem> range, int rangeStartIndex, int rangeCount)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+      ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeStartIndex, nameof(rangeStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeCount, nameof(rangeCount));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, range.Count, nameof(rangeStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeCount, range.Count - rangeStartIndex, nameof(rangeCount));
+
+      InsertRangeInternal(ref array, array.Length, range, rangeStartIndex, rangeCount);
+      return array;
+    }
+
+    public static TItem[] InsertRange<TItem>(this TItem[] array, int arrayStartIndex, IList<TItem> range, int rangeStartIndex, int rangeCount)
     {
       ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
       ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
@@ -439,212 +611,313 @@
       ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, range.Count, nameof(rangeStartIndex));
       ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeCount, range.Count - rangeStartIndex, nameof(rangeCount));
 
-      AddRangeInternal(ref array, arrayStartIndex, range, rangeStartIndex, rangeCount);
+      InsertRangeInternal(ref array, arrayStartIndex, range, rangeStartIndex, rangeCount);
       return array;
     }
 
-    internal static void AddRangeInternal<TItem>(ref TItem[] destination, int destinationStartIndex, TItem[] source, int sourceStartIndex, int sourceCount)
+    internal static void InsertRangeInternal<TItem>(ref TItem[] destination, int destinationStartIndex, TItem[] source, int sourceStartIndex, int sourceCount)
     {
       if (source.IsEmpty())
       {
         return;
       }
 
-      if (sourceCount == -1)
-      {
-        sourceCount = source.Length;
-      }
-
+      int newLength = destination.Length + sourceCount;
       bool isCopyFullSource = source.Length == sourceCount;
-      bool isDestinationEmpty = destination.IsEmpty();
-      bool isOverwritingDestination = isDestinationEmpty || destinationStartIndex == 0;
-      if (isCopyFullSource && isOverwritingDestination)
+      if (destination.IsEmpty())
       {
-        destination = source;
-        return;
-      }
-      else if (isOverwritingDestination)
-      {
-        destination = new TItem[sourceCount];
+        if (isCopyFullSource)
+        {
+          destination = source;
+        }
+        else
+        {
+          Array.Resize(ref destination, newLength);
+          Array.Copy(source, sourceStartIndex, destination, 0, sourceCount);
+        }
       }
       else
       {
-        int newLength = destinationStartIndex + 1 + sourceCount;
-        Array.Resize(ref destination, newLength);
-      }
+        bool isAddRange = destinationStartIndex == destination.Length;
+        if (isAddRange)
+        {
+          Array.Resize(ref destination, newLength);
+          Array.Copy(source, sourceStartIndex, destination, destinationStartIndex, sourceCount);
+        }
+        else
+        {
+          TItem[] enlargedDestination = new TItem[newLength];
+          if (destinationStartIndex > 0)
+          {
+            Array.Copy(destination, 0, enlargedDestination, 0, destinationStartIndex);
+          }
 
-      Array.Copy(source, sourceStartIndex, destination, destinationStartIndex, sourceCount);
+          Array.Copy(source, sourceStartIndex, enlargedDestination, destinationStartIndex, sourceCount);
+          Array.Copy(destination, destinationStartIndex, enlargedDestination, destinationStartIndex + sourceCount, destinationStartIndex);
+        }
+      }
     }
 
-    internal static void AddRangeInternal<TItem>(ref TItem[] destination, int destinationStartIndex, IList<TItem> source, int sourceStartIndex, int sourceCount)
+    internal static void InsertRangeInternal<TItem>(ref TItem[] destination, int destinationStartIndex, IList<TItem> source, int sourceStartIndex, int sourceCount)
     {
       if (source.IsEmpty())
       {
         return;
-      }
-
-      if (sourceCount == -1)
-      {
-        sourceCount = source.Count;
-      }
-
-      bool isCopyFullSource = source.Count == sourceCount;
-      bool isDestinationEmpty = destination.IsEmpty();
-      bool isOverwritingDestination = isDestinationEmpty || destinationStartIndex == 0;
-      if (isCopyFullSource && isOverwritingDestination)
-      {
-        destination = source.ToArray();
-        return;
-      }
-      else if (isOverwritingDestination)
-      {
-        destination = new TItem[sourceCount];
-      }
-      else
-      {
-        int newLength = destinationStartIndex + 1 + sourceCount;
-        Array.Resize(ref destination, newLength);
       }
 
       int sourceIndex = sourceStartIndex;
-      for (int destinationIndex = destinationStartIndex; destinationIndex < destination.Length; destinationIndex++, sourceIndex++)
+      bool isCopyFullSource = source.Count == sourceCount;
+      if (destination.IsEmpty())
       {
-        destination[destinationIndex] = source[sourceIndex];
+        if (source is List<TItem> list)
+        {
+          Array.Resize(ref destination, sourceCount);
+          list.CopyTo(sourceStartIndex, destination, 0, sourceCount);
+        }
+        else if (isCopyFullSource)
+        {
+          destination = source.ToArray();
+        }
+        else
+        {
+          Array.Resize(ref destination, sourceCount);
+          for (int destinationIndex = 0; destinationIndex < destination.Length; destinationIndex++, sourceIndex++)
+          {
+            destination[destinationIndex] = source[sourceIndex];
+          }
+        }
+      }
+      else
+      {
+        int newLength = destination.Length + sourceCount;
+        bool isAddRange = destinationStartIndex == destination.Length;
+        if (isAddRange)
+        {
+          Array.Resize(ref destination, newLength);
+          if (source is List<TItem> list)
+          {
+            list.CopyTo(sourceStartIndex, destination, destinationStartIndex, sourceCount);
+          }
+          else
+          {
+            for (int destinationIndex = destinationStartIndex; destinationIndex < destination.Length; destinationIndex++, sourceIndex++)
+            {
+              destination[destinationIndex] = source[sourceIndex];
+            }
+          }
+        }
+        else
+        {
+          TItem[] enlargedDestination = new TItem[newLength];
+          if (destinationStartIndex > 0)
+          {
+            Array.Copy(destination, 0, enlargedDestination, 0, destinationStartIndex);
+          }
+
+          for (int destinationIndex = destinationStartIndex; destinationIndex < destination.Length; destinationIndex++, sourceIndex++)
+          {
+            destination[destinationIndex] = source[sourceIndex];
+          }
+
+          Array.Copy(destination, destinationStartIndex, enlargedDestination, destinationStartIndex + sourceCount, destinationStartIndex);
+        }
       }
     }
 
-    internal static void AddRangeInternal<TItem>(ref TItem[] destination, int destinationStartIndex, IEnumerable<TItem> source, int sourceStartIndex, int sourceCount)
+#if !(NETSTANDARD2_0 || NETFRAMEWORK)
+
+    public static TItem[] AddRange<TItem>(this TItem[] array, TItem[] source, Range sourceRange)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+
+      int sourceCount = sourceRange.GetOffsetAndLength(source.Length).Length;
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceCount, nameof(sourceCount));
+      int sourceStartIndex = sourceRange.GetOffsetAndLength(source.Length).Offset;
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceStartIndex, nameof(sourceRange.Start));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(sourceStartIndex, source.Length, nameof(sourceRange.Start));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(sourceCount, source.Length - sourceStartIndex, nameof(sourceRange));
+
+      InsertRangeInternal(ref array, array.Length, source, sourceRange);
+      return array;
+    }
+
+    public static TItem[] InsertRange<TItem>(this TItem[] array, int arrayStartIndex, TItem[] source, Range sourceRange)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(arrayStartIndex, nameof(arrayStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(arrayStartIndex, array.Length, nameof(arrayStartIndex));
+
+      int sourceCount = sourceRange.GetOffsetAndLength(source.Length).Length;
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceCount, nameof(sourceCount));
+      int sourceStartIndex = sourceRange.GetOffsetAndLength(source.Length).Offset;
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceStartIndex, nameof(sourceRange.Start));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(sourceStartIndex, source.Length, nameof(sourceRange.Start));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(sourceCount, source.Length - sourceStartIndex, nameof(sourceRange));
+
+      InsertRangeInternal(ref array, arrayStartIndex, source, sourceRange);
+      return array;
+    }
+
+    public static TItem[] AddRange<TItem>(this TItem[] array, IList<TItem> source, Range sourceRange)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+
+      int sourceCount = sourceRange.GetOffsetAndLength(source.Count).Length;
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceCount, nameof(sourceCount));
+      int sourceStartIndex = sourceRange.GetOffsetAndLength(source.Count).Offset;
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceStartIndex, nameof(sourceRange.Start));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(sourceStartIndex, source.Count, nameof(sourceRange.Start));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(sourceCount, source.Count - sourceStartIndex, nameof(sourceRange));
+
+      InsertRangeInternal(ref array, array.Length, source, sourceRange);
+      return array;
+    }
+
+    public static TItem[] InsertRange<TItem>(this TItem[] array, int arrayStartIndex, IList<TItem> source, Range sourceRange)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(arrayStartIndex, nameof(arrayStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(arrayStartIndex, array.Length, nameof(arrayStartIndex));
+
+      int sourceCount = sourceRange.GetOffsetAndLength(source.Count).Length;
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceCount, nameof(sourceCount));
+      int sourceStartIndex = sourceRange.GetOffsetAndLength(source.Count).Offset;
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceStartIndex, nameof(sourceRange.Start));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(sourceStartIndex, source.Count, nameof(sourceRange.Start));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(sourceCount, source.Count - sourceStartIndex, nameof(sourceRange));
+
+      InsertRangeInternal(ref array, arrayStartIndex, source, sourceRange);
+      return array;
+    }
+
+    public static TItem[] AddRange<TItem>(this TItem[] array, IEnumerable<TItem> source, Range sourceRange)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+
+      source = source.Take(sourceRange);
+      InsertRangeInternal(ref array, array.Length, source, sourceRange);
+      return array;
+    }
+
+    public static TItem[] InsertRange<TItem>(this TItem[] array, int arrayStartIndex, IEnumerable<TItem> source, Range sourceRange)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(arrayStartIndex, nameof(arrayStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(arrayStartIndex, array.Length, nameof(arrayStartIndex));
+
+      int sourceCount = sourceRange.GetOffsetAndLength(source.Count).Length;
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceCount, nameof(sourceCount));
+      int sourceStartIndex = sourceRange.GetOffsetAndLength(source.Count).Offset;
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceStartIndex, nameof(sourceRange.Start));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(sourceStartIndex, source.Count, nameof(sourceRange.Start));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(sourceCount, source.Count - sourceStartIndex, nameof(sourceRange));
+
+      InsertRangeInternal(ref array, arrayStartIndex, source, sourceRange);
+      return array;
+    }
+
+    public static TItem[] MoveRange<TItem>(this TItem[] array, Range range, int newIndex)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+
+      (int rangeStartIndex, int rangeLength) = range.GetOffsetAndLength(array.Length);
+      int rangeEndIndex = rangeStartIndex + rangeLength;
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, array.Length, nameof(range.Start));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeEndIndex, array.Length, nameof(range.End));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(newIndex, array.Length, nameof(newIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(newIndex + rangeLength, array.Length, nameof(newIndex));
+
+      ArrayEx.MoveRangeInternal(ref array, rangeStartIndex, rangeLength, newIndex, isResizeEnabled: false);
+      return array;
+    }
+
+    internal static void InsertRangeInternal<TItem>(ref TItem[] destination, int destinationStartIndex, TItem[] source, Range sourceRange)
     {
       if (source.IsEmpty())
       {
         return;
       }
 
-      TItem[] sourceArray = source.ToArray();
-      AddRangeInternal(ref destination, destinationStartIndex, sourceArray, sourceStartIndex, sourceCount);
+      TItem[] sourceArray = source[sourceRange];
+      ArrayEx.Insert(ref destination, destinationStartIndex, sourceArray);
     }
 
-#if !(NETSTANDARD2_0 || NETFRAMEWORK)
-    public static TItem[] AddRange<TItem>(this TItem[] destination, IEnumerable<TItem> source, Range destinationRange, Range sourceRange)
+    internal static void InsertRangeInternal<TItem>(ref TItem[] destination, int destinationStartIndex, IList<TItem> source, Range sourceRange)
+    {
+      if (source.IsEmpty())
+      {
+        return;
+      }
+
+
+      (int sourceStartIndex, int sourceCount) = sourceRange.GetOffsetAndLength(source.Count);
+      InsertRangeInternal(ref destination, destinationStartIndex, source, sourceStartIndex, sourceCount);
+    }
+
+    public static void InsertRangeInternal<TItem>(ref TItem[] destination, int destinationStartIndex, IEnumerable<TItem> source, Range sourceRange)
     {
       ArgumentNullExceptionEx.ThrowIfNull(destination, nameof(destination));
       ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
-      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(destinationRange.Start.Value, nameof(destinationRange.Start));
-      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(destinationRange.End.Value, nameof(destinationRange.End));
       ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceRange.Start.Value, nameof(sourceRange.Start));
       ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceRange.End.Value, nameof(sourceRange.End));
-      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(destinationRange.Start.Value, destination.Length, nameof(destinationRange.Start));
 
-      if (destination.IsEmpty())
+      if (sourceRange.Start.IsFromEnd || sourceRange.End.IsFromEnd)
       {
-        if (source is TItem[] sourceArray)
-        {
-          destination = sourceArray[sourceRange];
-        }
-        else if (source is IList<TItem> sourceList)
-        {
-          int sourceCount = sourceRange.GetOffsetAndLength(sourceList.Count).Length;
-          int sourceStartIndex = sourceRange.GetOffsetAndLength(sourceList.Count).Offset;
-          int destinationStartIndex = destinationRange.GetOffsetAndLength(destination.Length).Offset;
-          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceList.Count, nameof(sourceRange.Start));
-          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(sourceCount, sourceList.Count - sourceStartIndex, nameof(sourceRange));
-          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
-          ArgumentOutOfRangeExceptionEx.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
-
-          Array.Resize(ref destination, sourceCount);
-          int sourceIndex = sourceStartIndex;
-          for (int destinationIndex = destinationStartIndex; destinationIndex < destination.Length; destinationIndex++, sourceIndex++)
-          {
-            destination[destinationIndex] = sourceList[sourceIndex];
-          }
-        }
-        else
-        {
-          sourceArray = source.ToArray();
-          int sourceCount = sourceRange.GetOffsetAndLength(sourceArray.Length).Length;
-          int sourceStartIndex = sourceRange.GetOffsetAndLength(sourceArray.Length).Offset;
-          int destinationStartIndex = destinationRange.GetOffsetAndLength(destination.Length).Offset;
-
-          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceArray.Length, nameof(sourceRange.Start));
-          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(sourceCount, sourceArray.Length - sourceStartIndex, nameof(sourceRange));
-          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
-          ArgumentOutOfRangeExceptionEx.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
-
-          if (destination.Length == destinationStartIndex + sourceCount)
-          {
-            destination = sourceArray;
-          }
-          else
-          {
-            destination = sourceArray[sourceRange];
-          }
-        }
-      }
-      else if (!source.Any())
-      {
-        return destination;
+        TItem[] sourceArray = source.ToArray()[sourceRange];
+        InsertIntoArray(ref destination, destinationStartIndex, sourceArray);
       }
       else
       {
-        if (source is TItem[] sourceArray)
+        int originalDestinationLength = destination.Length;
+        int skipCount = sourceRange.Start.Value;
+        int takeCount = sourceRange.End.Value - skipCount;
+        IEnumerator<TItem> sourceEnumerator = source.GetEnumerator();
+        bool isAddRange = destination.Length == destinationStartIndex;
+        if (destination.IsEmpty())
         {
-          int sourceCount = sourceRange.GetOffsetAndLength(sourceArray.Length).Length;
-          int sourceStartIndex = sourceRange.GetOffsetAndLength(sourceArray.Length).Offset;
-          int destinationStartIndex = destinationRange.GetOffsetAndLength(destination.Length).Offset;
-
-          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceArray.Length, nameof(sourceRange.Start));
-          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(sourceCount, sourceArray.Length - sourceStartIndex, nameof(sourceRange));
-          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
-          ArgumentOutOfRangeExceptionEx.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
-
-          int newLength = destinationStartIndex + 1 + sourceCount;
-          Array.Resize(ref destination, newLength);
-          Array.Copy(sourceArray[sourceRange], 0, destination, destinationStartIndex, sourceCount);
+          Array.Resize(ref destination, takeCount);
         }
-        else if (source is IList<TItem> sourceList)
+        else
         {
-          int sourceCount = sourceRange.GetOffsetAndLength(sourceList.Count).Length;
-          int sourceStartIndex = sourceRange.GetOffsetAndLength(sourceList.Count).Offset;
-          int destinationStartIndex = destinationRange.GetOffsetAndLength(destination.Length).Offset;
-          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceList.Count, nameof(sourceRange.Start));
-          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(sourceCount, sourceList.Count - sourceStartIndex, nameof(sourceRange));
-          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
-          ArgumentOutOfRangeExceptionEx.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
+          int newSize = destination.Length + takeCount;
+          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(takeCount, newSize, nameof(sourceRange));
+          Array.Resize(ref destination, newSize);
+        }
 
-          int newLength = destinationStartIndex + 1 + sourceCount;
-          Array.Resize(ref destination, newLength);
-          int sourceIndex = sourceStartIndex;
-          for (int destinationIndex = destinationStartIndex; destinationIndex < destination.Length; destinationIndex++, sourceIndex++)
+        while (skipCount > 0 && sourceEnumerator.MoveNext())
+        {
+          skipCount--;
+        }
+
+        int destinationIndex = destinationStartIndex;
+        if (isAddRange)
+        {
+          while (takeCount > 0 && sourceEnumerator.MoveNext())
           {
-            destination[destinationIndex] = sourceList[sourceIndex];
+            destination[destinationIndex++] = sourceEnumerator.Current;
+            takeCount--;
           }
         }
         else
         {
-          sourceArray = source.ToArray();
-          int sourceCount = sourceRange.GetOffsetAndLength(sourceArray.Length).Length;
-          int sourceStartIndex = sourceRange.GetOffsetAndLength(sourceArray.Length).Offset;
-          int destinationStartIndex = destinationRange.GetOffsetAndLength(destination.Length).Offset;
-
-          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(sourceStartIndex, sourceArray.Length, nameof(sourceRange.Start));
-          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(sourceCount, sourceArray.Length - sourceStartIndex, nameof(sourceRange));
-          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
-          ArgumentOutOfRangeExceptionEx.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
-
-          if (destination.Length == destinationStartIndex + sourceCount)
+          if (destinationStartIndex > 0)
           {
-            destination = sourceArray;
+            destination[destinationStartIndex..originalDestinationLength].CopyTo(destination, destinationStartIndex + takeCount);
           }
-          else
+
+          while (takeCount > 0 && sourceEnumerator.MoveNext())
           {
-            int newLength = destinationStartIndex + 1 + sourceCount;
-            Array.Resize(ref destination, newLength);
-            Array.Copy(sourceArray[sourceRange], 0, destination, destinationStartIndex, sourceCount);
+            destination[destinationIndex++] = sourceEnumerator.Current;
+            takeCount--;
           }
         }
       }
-
-      return destination;
     }
 #endif
 
