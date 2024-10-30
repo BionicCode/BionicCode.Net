@@ -13,14 +13,14 @@ namespace BionicCode.Utilities.Net.UnitTest
     public const int ItemsCapacity = 50;
     public const int NewItemsCapacity = 10;
 
-    public ICollection<int> Items { get; private set; }
+    public List<int> Items { get; private set; }
     public ICollection<int> ItemsBackup { get; }
     public Dictionary<int, int> ItemTable { get; private set; }
     public Dictionary<int, int> ItemTableBackup { get; }
     public Dictionary<int, int> NewTableItemsFromDictionary { get; }
     public IList<(int Key, int Value)> NewTableItemsFromTupleCollection { get; }
     public IList<KeyValuePair<int, int>> NewTableItemsFromKeyValuePairCollection { get; }
-    public ICollection<int> NewItems { get; }
+    public List<int> NewItems { get; }
     public ICollection<int> EmptyItems { get; }
     public Func<int, bool> FailContainsPredicate => item => item > this.Items.Last();
     public Func<int, bool> SuccessContainsPredicate => item => item < 5;
@@ -98,11 +98,15 @@ namespace BionicCode.Utilities.Net.UnitTest
     public void TakeRange_ReturnsNItems(int startIndex, int count) => this.Context.Items.Take(startIndex, count).Should().HaveCount(count);
 
     [Fact]
-    public void TakeRange_ReturnsItems_2_3_4_5()
+    public void TakeRange_ReturnsItemRange_2To5()
     {
       int startIndex = 2;
       int count = 4;
-      _ = this.Context.Items.Take(startIndex, count).Should().Contain(new[] { 2, 3, 4, 5 }, $"StartIndex: {startIndex}; Count: {count}");
+      IEnumerable<int> reference = this.Context.Items.GetRange(startIndex, count);
+
+      IEnumerable<int> result = this.Context.Items.Take(startIndex, count);
+      
+      _ = result.Should().BeEquivalentTo(reference, $"StartIndex: {startIndex}; Count: {count}");
     }
 
     [Fact]
