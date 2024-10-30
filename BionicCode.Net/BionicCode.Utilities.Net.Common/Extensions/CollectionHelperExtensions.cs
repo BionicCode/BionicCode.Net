@@ -1,6 +1,7 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System;
+  using System.Collections;
   using System.Collections.Generic;
   using System.Collections.ObjectModel;
   using System.Linq;
@@ -92,11 +93,21 @@
         skipCount--;
       }
 
+      if (skipCount > 0)
+      {
+        throw new ArgumentOutOfRangeException(nameof(startIndex));
+      }
+
       int takeCount = count;
       while (takeCount > 0 && enumerator.MoveNext())
       {
         yield return enumerator.Current;
         takeCount--;
+      }
+
+      if (takeCount > 0)
+      {
+        throw new ArgumentOutOfRangeException(nameof(count));
       }
     }
 
@@ -157,16 +168,26 @@
         {
           int skipCount = range.Start.Value;
           int takeCount = range.End.Value - range.Start.Value + 1;
-          IEnumerator<TItem> sourceEnumerator = source.GetEnumerator();
+          using IEnumerator<TItem> sourceEnumerator = source.GetEnumerator();
           while (skipCount > 0 && sourceEnumerator.MoveNext())
           {
             skipCount--;
+          }
+
+          if (skipCount > 0)
+          {
+            throw new ArgumentOutOfRangeException(nameof(range));
           }
 
           while (takeCount > 0 && sourceEnumerator.MoveNext())
           {
             takeCount--;
             yield return sourceEnumerator.Current;
+          }
+
+          if (takeCount > 0)
+          {
+            throw new ArgumentOutOfRangeException(nameof(range));
           }
         }
       }
@@ -186,6 +207,12 @@
     {
       ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
 
+      (int startIndex, int count) = range.GetOffsetAndLength(array.Length);
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(startIndex, nameof(range.Start));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(startIndex, array.Length, nameof(range.Start));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(count, nameof(range));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(count, array.Length - startIndex, nameof(range));
+
       return array.AsSpan(range);
     }
 #endif
@@ -200,6 +227,10 @@
     public static Span<TItem> TakeRange<TItem>(this TItem[] array, int startIndex, int count)
     {
       ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(startIndex, nameof(startIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(startIndex, array.Length, nameof(startIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(count, nameof(count));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(count, array.Length - startIndex, nameof(count));
 
       return array.AsSpan(startIndex, count);
     }
@@ -568,13 +599,13 @@
       ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
       ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
       ArgumentOutOfRangeExceptionEx.ThrowIfNegative(arrayStartIndex, nameof(arrayStartIndex));
-      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeStartIndex, nameof(rangeStartIndex));
-      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeCount, nameof(rangeCount));
       ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(arrayStartIndex, array.Length, nameof(arrayStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeStartIndex, nameof(rangeStartIndex));
       ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, range.Length, nameof(rangeStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeCount, nameof(rangeCount));
       ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeCount, range.Length - rangeStartIndex, nameof(rangeCount));
 
-      InsertRangeInternal(ref array, arrayStartIndex, range, rangeStartIndex, rangeCount);
+      ArrayEx.InsertInternal(ref array, arrayStartIndex, range, rangeStartIndex, rangeCount);
       return array;
     }
 
@@ -613,115 +644,6 @@
 
       InsertRangeInternal(ref array, arrayStartIndex, range, rangeStartIndex, rangeCount);
       return array;
-    }
-
-    internal static void InsertRangeInternal<TItem>(ref TItem[] destination, int destinationStartIndex, TItem[] source, int sourceStartIndex, int sourceCount)
-    {
-      if (source.IsEmpty())
-      {
-        return;
-      }
-
-      int newLength = destination.Length + sourceCount;
-      bool isCopyFullSource = source.Length == sourceCount;
-      if (destination.IsEmpty())
-      {
-        if (isCopyFullSource)
-        {
-          destination = source;
-        }
-        else
-        {
-          Array.Resize(ref destination, newLength);
-          Array.Copy(source, sourceStartIndex, destination, 0, sourceCount);
-        }
-      }
-      else
-      {
-        bool isAddRange = destinationStartIndex == destination.Length;
-        if (isAddRange)
-        {
-          Array.Resize(ref destination, newLength);
-          Array.Copy(source, sourceStartIndex, destination, destinationStartIndex, sourceCount);
-        }
-        else
-        {
-          TItem[] enlargedDestination = new TItem[newLength];
-          if (destinationStartIndex > 0)
-          {
-            Array.Copy(destination, 0, enlargedDestination, 0, destinationStartIndex);
-          }
-
-          Array.Copy(source, sourceStartIndex, enlargedDestination, destinationStartIndex, sourceCount);
-          Array.Copy(destination, destinationStartIndex, enlargedDestination, destinationStartIndex + sourceCount, destinationStartIndex);
-        }
-      }
-    }
-
-    internal static void InsertRangeInternal<TItem>(ref TItem[] destination, int destinationStartIndex, IList<TItem> source, int sourceStartIndex, int sourceCount)
-    {
-      if (source.IsEmpty())
-      {
-        return;
-      }
-
-      int sourceIndex = sourceStartIndex;
-      bool isCopyFullSource = source.Count == sourceCount;
-      if (destination.IsEmpty())
-      {
-        if (source is List<TItem> list)
-        {
-          Array.Resize(ref destination, sourceCount);
-          list.CopyTo(sourceStartIndex, destination, 0, sourceCount);
-        }
-        else if (isCopyFullSource)
-        {
-          destination = source.ToArray();
-        }
-        else
-        {
-          Array.Resize(ref destination, sourceCount);
-          for (int destinationIndex = 0; destinationIndex < destination.Length; destinationIndex++, sourceIndex++)
-          {
-            destination[destinationIndex] = source[sourceIndex];
-          }
-        }
-      }
-      else
-      {
-        int newLength = destination.Length + sourceCount;
-        bool isAddRange = destinationStartIndex == destination.Length;
-        if (isAddRange)
-        {
-          Array.Resize(ref destination, newLength);
-          if (source is List<TItem> list)
-          {
-            list.CopyTo(sourceStartIndex, destination, destinationStartIndex, sourceCount);
-          }
-          else
-          {
-            for (int destinationIndex = destinationStartIndex; destinationIndex < destination.Length; destinationIndex++, sourceIndex++)
-            {
-              destination[destinationIndex] = source[sourceIndex];
-            }
-          }
-        }
-        else
-        {
-          TItem[] enlargedDestination = new TItem[newLength];
-          if (destinationStartIndex > 0)
-          {
-            Array.Copy(destination, 0, enlargedDestination, 0, destinationStartIndex);
-          }
-
-          for (int destinationIndex = destinationStartIndex; destinationIndex < destination.Length; destinationIndex++, sourceIndex++)
-          {
-            destination[destinationIndex] = source[sourceIndex];
-          }
-
-          Array.Copy(destination, destinationStartIndex, enlargedDestination, destinationStartIndex + sourceCount, destinationStartIndex);
-        }
-      }
     }
 
 #if !(NETSTANDARD2_0 || NETFRAMEWORK)
@@ -811,14 +733,47 @@
       ArgumentOutOfRangeExceptionEx.ThrowIfNegative(arrayStartIndex, nameof(arrayStartIndex));
       ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(arrayStartIndex, array.Length, nameof(arrayStartIndex));
 
-      int sourceCount = sourceRange.GetOffsetAndLength(source.Count).Length;
-      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceCount, nameof(sourceCount));
-      int sourceStartIndex = sourceRange.GetOffsetAndLength(source.Count).Offset;
-      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceStartIndex, nameof(sourceRange.Start));
-      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(sourceStartIndex, source.Count, nameof(sourceRange.Start));
-      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(sourceCount, source.Count - sourceStartIndex, nameof(sourceRange));
+      if (source is TItem[] sourceArray)
+      {
+        (int rangeStartIndex, int rangeLength) = sourceRange.GetOffsetAndLength(sourceArray.Length);
+        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeStartIndex, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, sourceArray.Length, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeLength, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeLength, sourceArray.Length, nameof(sourceRange));
+        ArrayEx.InsertInternal(ref array, arrayStartIndex, sourceArray, rangeStartIndex, rangeLength);
+      }
+      else if (source is IList<TItem> list)
+      {
+        (int rangeStartIndex, int rangeLength) = sourceRange.GetOffsetAndLength(list.Count);
+        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeStartIndex, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, list.Count, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeLength, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeLength, array.Length, nameof(sourceRange));
+        ArrayEx.InsertInternal(ref array, arrayStartIndex, list, rangeStartIndex, rangeLength);
+      }
 
-      InsertRangeInternal(ref array, arrayStartIndex, source, sourceRange);
+      if (sourceRange.Start.IsFromEnd || sourceRange.End.IsFromEnd)
+      {
+        int sourceLength;
+        if (source is ICollection<TItem> genericCollection)
+        {
+          sourceLength = genericCollection.Count;
+        }
+        else if (source is ICollection collection)
+        {
+          sourceLength = collection.Count;
+        }
+        else
+        {
+          sourceLength = source.ToArray().Length;
+        }
+
+        (int rangeStartIndex, int rangeLength) = sourceRange.GetOffsetAndLength(sourceLength);
+        sourceRange = rangeStartIndex..(rangeStartIndex + rangeLength);
+      }
+
+      int takeCount = sourceRange.End.Value == 0 ? -1 : sourceRange.End.Value - sourceRange.Start.Value;
+      ArrayEx.InsertInternal(ref array, arrayStartIndex, source, sourceRange.Start.Value, takeCount);
       return array;
     }
 
@@ -833,7 +788,7 @@
       ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(newIndex, array.Length, nameof(newIndex));
       ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(newIndex + rangeLength, array.Length, nameof(newIndex));
 
-      ArrayEx.MoveRangeInternal(ref array, rangeStartIndex, rangeLength, newIndex, isResizeEnabled: false);
+      ArrayEx.MoveInternal(ref array, rangeStartIndex, rangeLength, newIndex, isResizeEnabled: false);
       return array;
     }
 
@@ -857,68 +812,9 @@
 
 
       (int sourceStartIndex, int sourceCount) = sourceRange.GetOffsetAndLength(source.Count);
-      InsertRangeInternal(ref destination, destinationStartIndex, source, sourceStartIndex, sourceCount);
+      ArrayEx.InsertInternal(ref destination, destinationStartIndex, source, sourceStartIndex, sourceCount);
     }
 
-    public static void InsertRangeInternal<TItem>(ref TItem[] destination, int destinationStartIndex, IEnumerable<TItem> source, Range sourceRange)
-    {
-      ArgumentNullExceptionEx.ThrowIfNull(destination, nameof(destination));
-      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
-      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceRange.Start.Value, nameof(sourceRange.Start));
-      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceRange.End.Value, nameof(sourceRange.End));
-
-      if (sourceRange.Start.IsFromEnd || sourceRange.End.IsFromEnd)
-      {
-        TItem[] sourceArray = source.ToArray()[sourceRange];
-        InsertIntoArray(ref destination, destinationStartIndex, sourceArray);
-      }
-      else
-      {
-        int originalDestinationLength = destination.Length;
-        int skipCount = sourceRange.Start.Value;
-        int takeCount = sourceRange.End.Value - skipCount;
-        IEnumerator<TItem> sourceEnumerator = source.GetEnumerator();
-        bool isAddRange = destination.Length == destinationStartIndex;
-        if (destination.IsEmpty())
-        {
-          Array.Resize(ref destination, takeCount);
-        }
-        else
-        {
-          int newSize = destination.Length + takeCount;
-          ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(takeCount, newSize, nameof(sourceRange));
-          Array.Resize(ref destination, newSize);
-        }
-
-        while (skipCount > 0 && sourceEnumerator.MoveNext())
-        {
-          skipCount--;
-        }
-
-        int destinationIndex = destinationStartIndex;
-        if (isAddRange)
-        {
-          while (takeCount > 0 && sourceEnumerator.MoveNext())
-          {
-            destination[destinationIndex++] = sourceEnumerator.Current;
-            takeCount--;
-          }
-        }
-        else
-        {
-          if (destinationStartIndex > 0)
-          {
-            destination[destinationStartIndex..originalDestinationLength].CopyTo(destination, destinationStartIndex + takeCount);
-          }
-
-          while (takeCount > 0 && sourceEnumerator.MoveNext())
-          {
-            destination[destinationIndex++] = sourceEnumerator.Current;
-            takeCount--;
-          }
-        }
-      }
-    }
 #endif
 
     /// <summary>

@@ -12,13 +12,134 @@
   {
     public static void Move<TItem>(ref TItem[] array, int oldIndex, int newIndex)
     {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(oldIndex, nameof(oldIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(oldIndex, array.Length, nameof(oldIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(newIndex, nameof(newIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(newIndex, array.Length, nameof(newIndex));
+
+      if (newIndex == oldIndex || array.IsEmpty())
+      {
+        return;
+      }
+
       TItem item = array[oldIndex];
-      Array.Copy(array, oldIndex + 1, array, oldIndex, newIndex - oldIndex);
+      int numberOfShifts = 1;
+      if (newIndex > oldIndex)
+      {
+        int rangeStartIndex = oldIndex + 1;
+        int rangeLength = newIndex - rangeStartIndex;
+        ShiftRangeLeftInternal(in array, rangeStartIndex, rangeLength, numberOfShifts);
+      }
+      else if (newIndex < oldIndex)
+      {
+        int rangeStartIndex = newIndex;
+        int rangeLength = oldIndex - 1 - newIndex;
+        ShiftRangeRightInternal(array, rangeStartIndex, rangeLength, numberOfShifts);
+      }
+
       array[newIndex] = item;
     }
 
+    public static void Move<TItem>(ref TItem[] array, int oldIndex, int newIndex, bool isMoveOutOfBoundsAllowed)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(oldIndex, nameof(oldIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(oldIndex, array.Length, nameof(oldIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(newIndex, nameof(newIndex));
+      if (!isMoveOutOfBoundsAllowed)
+      {
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(newIndex, array.Length, nameof(newIndex));
+      }
+
+      if (newIndex == oldIndex || array.IsEmpty())
+      {
+        return;
+      }
+
+      if (isMoveOutOfBoundsAllowed && newIndex >= array.Length)
+      {
+        Array.Resize(ref array, newIndex + 1);
+      }
+
+      TItem item = array[oldIndex];
+      int numberOfShifts = 1;
+      if (newIndex > oldIndex)
+      {
+        int rangeStartIndex = oldIndex + 1;
+        int rangeLength = newIndex - rangeStartIndex;
+        ShiftRangeLeftInternal(in array, rangeStartIndex, rangeLength, numberOfShifts);
+      }
+      else if (newIndex < oldIndex)
+      {
+        int rangeStartIndex = newIndex;
+        int rangeLength = oldIndex - 1 - newIndex;
+        ShiftRangeRightInternal(array, rangeStartIndex, rangeLength, numberOfShifts);
+      }
+
+      array[newIndex] = item;
+    }
+
+    public static void ShiftRangeLeft<TItem>(in TItem[] array, int rangeStartIndex, int rangeLength, int numberOfShifts)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeStartIndex, nameof(rangeStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, array.Length, nameof(rangeStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(numberOfShifts, nameof(numberOfShifts));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeStartIndex - numberOfShifts, nameof(numberOfShifts));
+
+      ShiftRangeLeftInternal(in array, rangeStartIndex, rangeLength, numberOfShifts);
+    }
+
+    internal static void ShiftRangeLeftInternal<TItem>(in TItem[] array, int rangeStartIndex, int rangeLength, int numberOfShifts)
+    {
+      if (numberOfShifts == 0 || array.IsEmpty())
+      {
+        return;
+      }
+
+      int newIndex = rangeStartIndex - numberOfShifts;
+      Array.Copy(array, rangeStartIndex, array, newIndex, rangeLength);
+    }
+
+    public static void ShiftRangeRight<TItem>(in TItem[] array, int rangeStartIndex, int rangeLength, int numberOfShifts)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeStartIndex, nameof(rangeStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, array.Length, nameof(rangeStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(numberOfShifts, nameof(numberOfShifts));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex + numberOfShifts, array.Length, nameof(numberOfShifts));
+
+      ShiftRangeRightInternal(in array, rangeStartIndex, rangeLength, numberOfShifts);
+    }
+
+    internal static void ShiftRangeRightInternal<TItem>(in TItem[] array, int rangeStartIndex, int rangeLength, int numberOfShifts)
+    {
+      if (numberOfShifts == 0 || array.IsEmpty())
+      {
+        return;
+      }
+
+      int newIndex = rangeStartIndex + numberOfShifts;
+      Array.Copy(array, rangeStartIndex, array, newIndex, rangeLength);
+    }
+
 #if !(NETSTANDARD2_0 || NETFRAMEWORK)
-    public static void MoveRange<TItem>(ref TItem[] array, Range range, int newIndex, bool isResizeEnabled = false)
+    public static void MoveRange<TItem>(ref TItem[] array, Range range, int newIndex)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+
+      (int rangeStartIndex, int rangeLength) = range.GetOffsetAndLength(array.Length);
+      int rangeEndIndex = rangeStartIndex + rangeLength;
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, array.Length, nameof(range.Start));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeEndIndex, array.Length, nameof(range.End));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(newIndex, array.Length, nameof(newIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(newIndex + rangeLength, array.Length, nameof(newIndex));
+
+      MoveInternal(ref array, rangeStartIndex, rangeLength, newIndex, isResizeEnabled: false);
+    }
+
+    public static void MoveRange<TItem>(ref TItem[] array, Range range, int newIndex, bool isMoveOutOfBoundsAllowed)
     {
       ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
 
@@ -27,17 +148,30 @@
       ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, array.Length, nameof(range.Start));
       ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeEndIndex, array.Length, nameof(range.End));
 
-      if (!isResizeEnabled)
+      if (!isMoveOutOfBoundsAllowed)
       {
         ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(newIndex, array.Length, nameof(newIndex));
         ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(newIndex + rangeLength, array.Length, nameof(newIndex));
       }
 
-      MoveRangeInternal(ref array, rangeStartIndex, rangeLength, newIndex, isResizeEnabled: false);
+      MoveInternal(ref array, rangeStartIndex, rangeLength, newIndex, isMoveOutOfBoundsAllowed);
     }
 #endif
 
-    public static void MoveRange<TItem>(ref TItem[] array, int rangeStartIndex, int rangeLength, int newIndex, bool isResizeEnabled = false)
+    public static void MoveRange<TItem>(ref TItem[] array, int rangeStartIndex, int rangeLength, int newIndex)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
+
+      int rangeEndIndex = rangeStartIndex + rangeLength;
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, array.Length, nameof(rangeStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeEndIndex, array.Length, nameof(rangeLength));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(newIndex, array.Length, nameof(newIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(newIndex + rangeLength, array.Length, nameof(newIndex));
+
+      MoveInternal(ref array, rangeStartIndex, rangeLength, newIndex, isResizeEnabled: false);
+    }
+
+    public static void MoveRange<TItem>(ref TItem[] array, int rangeStartIndex, int rangeLength, int newIndex, bool isMoveOutOfBoundsAllowed)
     {
       ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
 
@@ -45,57 +179,58 @@
       ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, array.Length, nameof(rangeStartIndex));
       ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeEndIndex, array.Length, nameof(rangeLength));
 
-      if (!isResizeEnabled)
+      if (!isMoveOutOfBoundsAllowed)
       {
         ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(newIndex, array.Length, nameof(newIndex));
         ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(newIndex + rangeLength, array.Length, nameof(newIndex));
       }
 
-      MoveRangeInternal(ref array, rangeStartIndex, rangeLength, newIndex, isResizeEnabled);
+      MoveInternal(ref array, rangeStartIndex, rangeLength, newIndex, isMoveOutOfBoundsAllowed);
     }
 
     public static void Insert<TItem>(ref TItem[] destination, int index, TItem item)
     {
-      bool isAddOperation = index == destination.Length;
-      Array.Resize(ref destination, destination.Length + 1);
+      ArgumentNullExceptionEx.ThrowIfNull(destination, nameof(destination));
+      ArgumentNullExceptionEx.ThrowIfNull(item, nameof(item));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(index, nameof(index));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(index, destination.Length, nameof(index));
 
+      int originalDestinationLength = destination.Length;
+      int desiredSize = destination.Length + 1;
+      Array.Resize(ref destination, desiredSize);
+
+      bool isAddOperation = index == destination.Length;
       if (!isAddOperation)
       {
-        Array.Copy(destination, index, destination, index + 1, destination.Length - index);
+        int shiftRangeLength = originalDestinationLength - index;
+        ArrayEx.ShiftRangeRight(in destination, index, shiftRangeLength, 1);
       }
 
       destination[index] = item;
     }
 
-    public static void Insert<TItem>(ref TItem[] destination, int index, TItem[] sourceArray)
+    public static void Insert<TItem>(ref TItem[] destination, int index, TItem[] source)
     {
       ArgumentNullExceptionEx.ThrowIfNull(destination, nameof(destination));
-      ArgumentNullExceptionEx.ThrowIfNull(sourceArray, nameof(sourceArray));
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
       ArgumentOutOfRangeExceptionEx.ThrowIfNegative(index, nameof(index));
       ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(index, destination.Length, nameof(index));
 
-      int sourceCount = sourceArray.Length;
-      int desiredLength = destination.Length + sourceCount;
-      bool isAddRange = index == destination.Length;
-      if (destination.IsEmpty())
-      {
-        destination = sourceArray;
-      }
-      else
-      {
-        if (isAddRange)
-        {
-          Array.Resize(ref destination, desiredLength);
-        }
-        else
-        {
-          int oldItemsToMoveCount = destination.Length - index;
-          int newIndexOfOldItems = index + sourceCount;
-          ArrayEx.MoveRangeInternal(ref destination, index, oldItemsToMoveCount, newIndexOfOldItems, isResizeEnabled: true);
-        }
+      InsertInternal(ref destination, index, source, 0, source.Length);
+    }
 
-        Array.Copy(sourceArray, 0, destination, index, sourceArray.Length);
-      }
+    public static void Insert<TItem>(ref TItem[] destination, int index, TItem[] source, int sourceStartIndex, int sourceCount)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(destination, nameof(destination));
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(index, nameof(index));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(index, destination.Length, nameof(index));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceStartIndex, nameof(sourceStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(sourceStartIndex, source.Length, nameof(sourceStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(sourceCount, nameof(sourceCount));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(sourceCount, source.Length - sourceStartIndex, nameof(sourceCount));
+
+      InsertInternal(ref destination, index, source, sourceStartIndex, sourceCount);
     }
 
     public static void Insert<TItem>(ref TItem[] destination, int destinationStartIndex, IEnumerable<TItem> source, int rangeStartIndex, int rangeLength)
@@ -107,51 +242,7 @@
       ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeStartIndex, nameof(rangeStartIndex));
       ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeLength, nameof(rangeLength));
 
-      int skipCount = rangeStartIndex;
-      int takeCount = rangeLength - skipCount;
-      using (IEnumerator<TItem> sourceEnumerator = source.GetEnumerator())
-      {
-        while (skipCount > 0 && sourceEnumerator.MoveNext())
-        {
-          skipCount--;
-        }
-
-        if (skipCount > 0)
-        {
-          throw new ArgumentOutOfRangeException(nameof(rangeStartIndex));
-        }
-
-        int destinationIndex = destinationStartIndex;
-        bool isAddRange = destination.Length == destinationStartIndex;
-        TItem[] backup = new TItem[destination.Length];
-        destination.CopyTo(backup, 0);
-        if (isAddRange)
-        {
-          int newSize = destination.Length + takeCount;
-          Array.Resize(ref destination, newSize);
-
-          while ((takeCount > 0 || takeCount < 0) && sourceEnumerator.MoveNext())
-          {
-            destination[destinationIndex++] = sourceEnumerator.Current;
-            takeCount--;
-          }
-        }
-        else
-        {
-          ArrayEx.MoveRangeInternal(ref destination, destinationStartIndex, destination.Length - destinationStartIndex, destinationStartIndex + takeCount, isResizeEnabled: true);
-          while ((takeCount > 0 || takeCount < 0) && sourceEnumerator.MoveNext())
-          {
-            destination[destinationIndex++] = sourceEnumerator.Current;
-            takeCount--;
-          }
-        }
-
-        if (takeCount > 0)
-        {
-          destination = backup;
-          throw new ArgumentOutOfRangeException(nameof(rangeLength));
-        }
-      }
+      InsertInternal(ref destination, destinationStartIndex, source, rangeStartIndex, rangeLength);
     }
 
 #if !(NETSTANDARD2_0 || NETFRAMEWORK)
@@ -161,6 +252,25 @@
       ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
       ArgumentOutOfRangeExceptionEx.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
       ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
+
+      if (source is TItem[] array)
+      {
+        (int rangeStartIndex, int rangeLength) = sourceRange.GetOffsetAndLength(array.Length);
+        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeStartIndex, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, array.Length, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeLength, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeLength, destination.Length, nameof(sourceRange));
+        InsertInternal(ref destination, destinationStartIndex, array, rangeStartIndex, rangeLength);
+      }
+      else if (source is IList<TItem> list)
+      {
+        (int rangeStartIndex, int rangeLength) = sourceRange.GetOffsetAndLength(list.Count);
+        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeStartIndex, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, list.Count, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeLength, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeLength, destination.Length, nameof(sourceRange));
+        InsertInternal(ref destination, destinationStartIndex, list, rangeStartIndex, rangeLength);
+      }
 
       if (sourceRange.Start.IsFromEnd || sourceRange.End.IsFromEnd)
       {
@@ -183,53 +293,92 @@
         sourceRange = rangeStartIndex..(rangeStartIndex + rangeLength);
       }
 
-      int skipCount = sourceRange.Start.Value;
-      int takeCount = sourceRange.End.Value == 0 ? -1 : sourceRange.End.Value - skipCount;
-      using IEnumerator<TItem> sourceEnumerator = source.GetEnumerator();
+      int takeCount = sourceRange.End.Value == 0 ? -1 : sourceRange.End.Value - sourceRange.Start.Value;
+      InsertInternal(ref destination, destinationStartIndex, source, sourceRange.Start.Value, takeCount);
+    }
+#endif
 
-      while (skipCount > 0 && sourceEnumerator.MoveNext())
+    internal static void InsertInternal<TItem>(ref TItem[] destination, int index, TItem[] source, int sourceStartIndex, int sourceCount)
+    {
+      if (destination.IsEmpty())
       {
-        skipCount--;
+        destination = source;
       }
-
-      if (skipCount > 0)
+      else
       {
-        throw new ArgumentOutOfRangeException(nameof(sourceRange.Start));
-      }
-
-      int destinationIndex = destinationStartIndex;
-      bool isAddRange = destination.Length == destinationStartIndex;
-      TItem[] backup = new TItem[destination.Length];
-      destination.CopyTo(backup, 0);
-      if (isAddRange)
-      {
-        int newSize = destination.Length + takeCount;
-        Array.Resize(ref destination, newSize);
-
-        while ((takeCount > 0 || takeCount < 0) && sourceEnumerator.MoveNext())
+        int originalDestinationLength = destination.Length;
+        int desiredLength = destination.Length + sourceCount;
+        Array.Resize(ref destination, desiredLength);
+        bool isAddRange = index == destination.Length;
+        if (!isAddRange)
         {
-          destination[destinationIndex++] = sourceEnumerator.Current;
-          takeCount--;
+          int numberOfShifts = sourceCount;
+          int shiftRangeLength = originalDestinationLength - index;
+          ArrayEx.ShiftRangeRightInternal(in destination, index, shiftRangeLength, numberOfShifts);
+        }
+
+        Array.Copy(source, sourceStartIndex, destination, index, source.Length);
+      }
+    }
+
+    internal static void InsertInternal<TItem>(ref TItem[] destination, int destinationStartIndex, IList<TItem> source, int sourceStartIndex, int sourceCount)
+    {
+      if (source.IsEmpty())
+      {
+        return;
+      }
+
+      int sourceIndex = sourceStartIndex;
+      bool isCopyFullSource = source.Count == sourceCount;
+      if (destination.IsEmpty())
+      {
+        if (isCopyFullSource)
+        {
+          destination = source.ToArray();
+        }
+        else if (source is List<TItem> list)
+        {
+          Array.Resize(ref destination, sourceCount);
+          list.CopyTo(sourceStartIndex, destination, 0, sourceCount);
+        }
+        else
+        {
+          Array.Resize(ref destination, sourceCount);
+          for (int destinationIndex = 0; destinationIndex < destination.Length; destinationIndex++, sourceIndex++)
+          {
+            destination[destinationIndex] = source[sourceIndex];
+          }
         }
       }
       else
       {
-        ArrayEx.MoveRangeInternal(ref destination, destinationStartIndex, destination.Length - destinationStartIndex, destinationStartIndex + takeCount, isResizeEnabled: true);
-        while ((takeCount > 0 || takeCount < 0) && sourceEnumerator.MoveNext())
+        int originalDestinationLength = destination.Length;
+        int newLength = destination.Length + sourceCount;
+        Array.Resize(ref destination, newLength);
+
+        bool isAddRange = destinationStartIndex == destination.Length;
+        if (!isAddRange)
         {
-          destination[destinationIndex++] = sourceEnumerator.Current;
-          takeCount--;
+          int numberOfShifts = sourceCount;
+          int shiftRangeLength = originalDestinationLength - destinationStartIndex;
+          ArrayEx.ShiftRangeRightInternal(in destination, destinationStartIndex, shiftRangeLength, numberOfShifts);
+        }
+
+        if (source is List<TItem> list)
+        {
+          list.CopyTo(sourceStartIndex, destination, destinationStartIndex, sourceCount);
+        }
+        else
+        {
+          for (int destinationIndex = destinationStartIndex; destinationIndex < destination.Length; destinationIndex++, sourceIndex++)
+          {
+            destination[destinationIndex] = source[sourceIndex];
+          }
         }
       }
-
-      if (takeCount > 0)
-      {
-        destination = backup;
-        throw new ArgumentOutOfRangeException(nameof(sourceRange));
-      }
     }
-#endif
-    public static void InsertInternal<TItem>(ref TItem[] destination, int destinationStartIndex, IEnumerable<TItem> source, int rangeStartIndex, int rangeLength)
+
+    internal static void InsertInternal<TItem>(ref TItem[] destination, int destinationStartIndex, IEnumerable<TItem> source, int rangeStartIndex, int rangeLength)
     {
       int skipCount = rangeStartIndex;
       int takeCount = rangeLength;
@@ -251,25 +400,24 @@
         bool isAddRange = destination.Length == destinationStartIndex;
         TItem[] backup = new TItem[destination.Length];
         destination.CopyTo(backup, 0);
-        if (isAddRange)
-        {
-          int newSize = destination.Length + takeCount;
-          Array.Resize(ref destination, newSize);
+        int originalDestinationLength = destination.Length;
+        int newSize = destination.Length + takeCount;
+        Array.Resize(ref destination, newSize);
 
-          while ((takeCount > 0 || takeCount < 0) && sourceEnumerator.MoveNext())
-          {
-            destination[destinationIndex++] = sourceEnumerator.Current;
-            takeCount--;
-          }
+        if (!isAddRange)
+        {
         }
         else
         {
-          ArrayEx.MoveRangeInternal(ref destination, destinationStartIndex, destination.Length - destinationStartIndex, destinationStartIndex + takeCount, isResizeEnabled: true);
-          while ((takeCount > 0 || takeCount < 0) && sourceEnumerator.MoveNext())
-          {
-            destination[destinationIndex++] = sourceEnumerator.Current;
-            takeCount--;
-          }
+          int shiftRangeLength = originalDestinationLength - destinationStartIndex;
+          int numberOfShifts = rangeLength;
+          ArrayEx.ShiftRangeRightInternal(in destination, destinationStartIndex, shiftRangeLength, numberOfShifts);
+        }
+
+        while ((takeCount > 0 || takeCount < 0) && sourceEnumerator.MoveNext())
+        {
+          destination[destinationIndex++] = sourceEnumerator.Current;
+          takeCount--;
         }
 
         if (takeCount > 0)
@@ -280,7 +428,7 @@
       }
     }
 
-    internal static void MoveRangeInternal<TItem>(ref TItem[] array, int rangeStartIndex, int rangeLength, int newIndex, bool isResizeEnabled)
+    internal static void MoveInternal<TItem>(ref TItem[] array, int rangeStartIndex, int rangeLength, int newIndex, bool isResizeEnabled)
     {
       if (newIndex == rangeStartIndex || rangeLength == 0 || array.IsEmpty())
       {
@@ -293,36 +441,31 @@
       }
 
       int rangeEndIndex = rangeStartIndex + rangeLength;
+      int numberOfShifts = System.Math.Abs(newIndex - rangeStartIndex);
+      TItem[] items = new TItem[rangeLength];
+      Array.Copy(array, rangeStartIndex, items, 0, rangeLength);
       if (newIndex > rangeStartIndex)
       {
-        ShiftTrailingElementsLeft(array, rangeStartIndex, rangeEndIndex, rangeLength, newIndex);
+        ShiftTrailingElementsLeft(array, rangeEndIndex, numberOfShifts, newIndex);
       }
       else if (newIndex < rangeStartIndex)
       {
-        ShiftPrecedingElementsRight(array, rangeStartIndex, rangeEndIndex, rangeLength, newIndex);
+        ShiftPrecedingElementsRight(array, rangeStartIndex - numberOfShifts, numberOfShifts, newIndex);
       }
-    }
 
-    private static void ShiftTrailingElementsLeft<TItem>(TItem[] array, int rangeStartIndex, int rangeEndIndex, int rangeLength, int newIndex)
-    {
-      int trailingElementsCount = newIndex - rangeStartIndex;
-      int newTrailingElementsStartIndex = rangeStartIndex;
-
-      TItem[] items = new TItem[rangeLength];
-      Array.Copy(array, rangeStartIndex, items, 0, rangeLength);
-      Array.Copy(array, rangeEndIndex, array, newTrailingElementsStartIndex, trailingElementsCount);
       Array.Copy(items, 0, array, newIndex, rangeLength);
     }
 
-    private static void ShiftPrecedingElementsRight<TItem>(TItem[] array, int rangeStartIndex, int rangeEndIndex, int rangeLength, int newIndex)
+    private static void ShiftTrailingElementsLeft<TItem>(in TItem[] array, int rangeStartIndex, int numberOfShifts, int newIndex)
     {
-      int precedingElementsCount = rangeStartIndex - newIndex;
-      int newPrecedingElementsStartIndex = rangeEndIndex - precedingElementsCount;
+      int trailingElementsCount = numberOfShifts;
+      ShiftRangeLeftInternal(in array, rangeStartIndex, trailingElementsCount, numberOfShifts);
+    }
 
-      TItem[] items = new TItem[rangeLength];
-      Array.Copy(array, rangeStartIndex, items, 0, rangeLength);
-      Array.Copy(array, newIndex, array, newPrecedingElementsStartIndex, precedingElementsCount);
-      Array.Copy(items, 0, array, newIndex, rangeLength);
+    private static void ShiftPrecedingElementsRight<TItem>(TItem[] array, int rangeStartIndex, int numberOfShifts, int newIndex)
+    {
+      int precedingElementsCount = numberOfShifts;
+      ShiftRangeRightInternal(in array, rangeStartIndex, precedingElementsCount, numberOfShifts);
     }
   }
 }
