@@ -10,7 +10,7 @@
   using BionicCode.Utilities.Net;
   using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-  public class CollectionHelperExtensionsTestsAddRange
+  public class CollectionHelperExtensionsTestsInsertRange
   {
     public const int RangeCount = 5;
     public const int FirstRangeStart = 0;
@@ -32,7 +32,7 @@
     public Dictionary<int, int> ConcatenatedDictionaryResultOfOrderedAddRange { get; }
     public Dictionary<int, int> NullReferenceDictionary { get; }
 
-    public CollectionHelperExtensionsTestsAddRange() 
+    public CollectionHelperExtensionsTestsInsertRange() 
     {
       IEnumerable<int> firstRange = Enumerable.Range(FirstRangeStart, RangeCount);
       this.CollectionWithFirstRange = firstRange.ToList();
@@ -59,7 +59,7 @@
       this.ConcatenatedArrayResultOfOrderedAddRange = firstRange.Concat(secondRange).ToArray();
     }
 
-    #region AddRange ICollection
+    #region InsertRange ICollection
 
     [Fact]
     public void AddList_ToCollectionAddRange_MustAppendItemsOrdered()
@@ -101,65 +101,9 @@
       _ = action.Should().ThrowExactly<ArgumentNullException>();
     }
 
-    #endregion AddRange ICollection
+    #endregion InsertRange ICollection
 
-    #region AddRange IDictioanary
-
-    [Fact]
-    public void AddIDictionary_ToDictionary_MustAppendItemsOrdered()
-    {
-      this.DictionaryWithFirstRange.AddRange(this.DictionaryWithSecondRange);
-
-      _ = this.DictionaryWithFirstRange.Should().ContainInConsecutiveOrder(this.ConcatenatedDictionaryResultOfOrderedAddRange);
-    }
-
-    [Fact]
-    public void AddIEnumerableKeyValuePair_ToDictionary_MustAppendItemsOrdered()
-    {
-      IEnumerable<KeyValuePair<int, int>> range = this.DictionaryWithSecondRange.ToList();
-
-      this.DictionaryWithFirstRange.AddRange(range);
-
-      _ = this.DictionaryWithFirstRange.Should().ContainInConsecutiveOrder(this.ConcatenatedDictionaryResultOfOrderedAddRange);
-    }
-
-    [Fact]
-    public void AddIEnumerableTuple_ToDictionary_MustAppendItemsOrdered()
-    {
-      IEnumerable<(int Key, int Value)> range = this.DictionaryWithSecondRange.Select(entry => (entry.Key, entry.Value));
-      
-      this.DictionaryWithFirstRange.AddRange(range);
-
-      _ = this.DictionaryWithFirstRange.Should().ContainInConsecutiveOrder(this.ConcatenatedDictionaryResultOfOrderedAddRange);
-    }
-
-    [Fact]
-    public void AddIDictionary_WithDuplicateKeysToDictionary_MustThrow()
-    {
-      Action action = () => this.DictionaryWithFirstRange.AddRange(this.DictionaryWithFirstRange);
-
-      _ = action.Should().Throw<ArgumentException>("because of duplicate keys");
-    }
-
-    [Fact]
-    public void CallIDictionaryExtensionMethodDirectly_PassingNull_MustThrow()
-    {
-      Action action = () => HelperExtensionsCommon.AddRange(this.NullReferenceDictionary, this.DictionaryWithSecondRange);
-
-      _ = action.Should().ThrowExactly<ArgumentNullException>();
-    }
-
-    [Fact]
-    public void CallIDictionaryExtensionMethod_AddNull_MustThrow()
-    {
-      Action action = () => this.DictionaryWithFirstRange.AddRange(this.NullReferenceDictionary);
-
-      _ = action.Should().ThrowExactly<ArgumentNullException>();
-    }
-
-    #endregion AddRange IDictioanary
-
-    #region AddRange Array
+    #region InsertRange Array
 
     [Fact]
     public void AddArray_ToArrayAddRange_MustReturnEnlargedArray()
@@ -178,14 +122,16 @@
     }
 
     [Theory]
-    [InlineData(-1, 0)]
-    [InlineData(0, -1)]
-    [InlineData(RangeCount, 0)]
-    [InlineData(0, RangeCount + 1)]
-    [InlineData(RangeCount - 1, 2)]
-    public void AddArrayInvalidRange_ToArrayAddRange_MustThrow(int sourceStartIndex, int sourceCount)
+    [InlineData(-1, 0, 0)]
+    [InlineData(1, -1, 0)]
+    [InlineData(1, 0, -1)]
+    [InlineData(RangeCount + 1, 0, 0)]
+    [InlineData(1, RangeCount, 0)]
+    [InlineData(1, 0, RangeCount + 1)]
+    [InlineData(1, RangeCount - 1, 2)]
+    public void InsertArrayInvalidRange_ToArray_MustThrow(int destinationStartIndex, int sourceStartIndex, int sourceCount)
     {
-      Action action = () => this.ArrayWithFirstRange.AddRange(this.ArrayWithSecondRange, sourceStartIndex, sourceCount);
+      Action action = () => this.ArrayWithFirstRange.InsertRange(destinationStartIndex, this.ArrayWithSecondRange, sourceStartIndex, sourceCount);
 
       _ = action.Should().Throw<ArgumentOutOfRangeException>();
     }
@@ -280,6 +226,6 @@
       _ = action.Should().ThrowExactly<ArgumentNullException>();
     }
 
-    #endregion AddRange Array
+    #endregion InsertRange Array
   }
 }

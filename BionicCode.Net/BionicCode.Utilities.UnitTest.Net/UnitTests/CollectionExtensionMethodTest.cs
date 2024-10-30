@@ -5,12 +5,14 @@ namespace BionicCode.Utilities.Net.UnitTest
   using System.Linq;
   using BionicCode.Utilities.Net;
   using FluentAssertions;
+  using Microsoft.CodeAnalysis.CSharp.Syntax;
   using Xunit;
 
   public class TestContext
   {
-    public int ItemsCount { get; }
-    public int NewItemsCount { get; }
+    public const int ItemsCapacity = 50;
+    public const int NewItemsCapacity = 10;
+
     public ICollection<int> Items { get; private set; }
     public ICollection<int> ItemsBackup { get; }
     public Dictionary<int, int> ItemTable { get; private set; }
@@ -20,14 +22,11 @@ namespace BionicCode.Utilities.Net.UnitTest
     public IList<KeyValuePair<int, int>> NewTableItemsFromKeyValuePairCollection { get; }
     public ICollection<int> NewItems { get; }
     public ICollection<int> EmptyItems { get; }
-    public Func<int, bool> FailingContainsPredicate => item => item > this.Items.Last();
-    public Func<int, bool> SuceedingContainsPredicate => item => item < 5;
+    public Func<int, bool> FailContainsPredicate => item => item > this.Items.Last();
+    public Func<int, bool> SuccessContainsPredicate => item => item < 5;
 
     public TestContext()
     {
-      this.ItemsCount = 1000;
-      this.NewItemsCount = 10;
-
       this.Items = new List<int>();
       this.ItemsBackup = new List<int>();
       this.NewItems = new List<int>();
@@ -39,7 +38,7 @@ namespace BionicCode.Utilities.Net.UnitTest
       this.NewTableItemsFromTupleCollection = new List<(int, int)>();
       this.NewTableItemsFromKeyValuePairCollection = new List<KeyValuePair<int, int>>();
 
-      for (int count = 0; count < this.ItemsCount; count++)
+      for (int count = 0; count < ItemsCapacity; count++)
       {
         int key = count;
         int value = count * 10;
@@ -49,7 +48,7 @@ namespace BionicCode.Utilities.Net.UnitTest
         this.ItemsBackup.Add(count);
       }
 
-      for (int count = this.ItemsCount; count < this.ItemsCount + this.NewItemsCount; count++)
+      for (int count = ItemsCapacity; count < ItemsCapacity + NewItemsCapacity; count++)
       {
         int key = count;
         int value = count * 10;
@@ -79,46 +78,55 @@ namespace BionicCode.Utilities.Net.UnitTest
     public void IsEmpty_ReturnsFalseForNonEmptyCollection() => this.Context.Items.IsEmpty().Should().BeFalse();
 
     [Theory]
-    [InlineData(2, 4)]
-    [InlineData(20, 4)]
-    [InlineData(40, 4)]
-    public void TakeRange_Returns4Items(int startIndex, int count) => this.Context.Items.TakeRange(startIndex, count).Should().HaveCount(4);
+    [InlineData(-2, 4)]
+    [InlineData(-1, -1)]
+    [InlineData(40, -4)]
+    [InlineData(TestContext.ItemsCapacity, 1)]
+    [InlineData(0, TestContext.ItemsCapacity + 1)]
+    [InlineData(1, TestContext.ItemsCapacity)]
+    public void TakeRange_MustThrow(int startIndex, int count)
+    {
+      Action invalidAction = () => this.Context.Items.Take(startIndex, count).Should().HaveCount(count);
+      _ = invalidAction.Should().Throw<ArgumentOutOfRangeException>();
+    }
 
     [Theory]
     [InlineData(2, 2)]
-    [InlineData(998, 4)]
-    public void TakeRange_Returns2Items(int startIndex, int count) => this.Context.Items.TakeRange(startIndex, count).Should().HaveCount(2);
+    [InlineData(2, 0)]
+    [InlineData(45, 4)]
+    [InlineData(0, TestContext.ItemsCapacity)]
+    public void TakeRange_ReturnsNItems(int startIndex, int count) => this.Context.Items.Take(startIndex, count).Should().HaveCount(count);
 
     [Fact]
     public void TakeRange_ReturnsItems_2_3_4_5()
     {
       int startIndex = 2;
       int count = 4;
-      _ = this.Context.Items.TakeRange(startIndex, count).Should().Contain(new[] { 2, 3, 4, 5 }, $"StartIndex: {startIndex}; Count: {count}");
+      _ = this.Context.Items.Take(startIndex, count).Should().Contain(new[] { 2, 3, 4, 5 }, $"StartIndex: {startIndex}; Count: {count}");
     }
 
     [Fact]
-    public void LastOrDefaultInSorted_ReturnsDefaultValueOnFail() => this.Context.Items.LastOrDefaultInSorted(this.Context.FailingContainsPredicate).Should().Be(default, "the predicate has failed to produce a result.");
+    public void LastOrDefaultInSorted_ReturnsDefaultValueOnFail() => this.Context.Items.LastOrDefaultInSorted(this.Context.FailContainsPredicate).Should().Be(default, "the predicate has failed to produce a result.");
 
     [Fact]
-    public void LastOrDefaultInSorted_NotThrowExceptionOnFail() => this.Context.Items.Invoking(items => items.LastOrDefaultInSorted(this.Context.FailingContainsPredicate)).Should().NotThrow("the predicate has failed to produce a result and returns a default instead of throwing.");
+    public void LastOrDefaultInSorted_NotThrowExceptionOnFail() => this.Context.Items.Invoking(items => items.LastOrDefaultInSorted(this.Context.FailContainsPredicate)).Should().NotThrow("the predicate has failed to produce a result and returns a default instead of throwing.");
 
     [Fact]
-    public void LastOrDefaultInSorted_Returns_4_OnSuccess() => this.Context.Items.LastOrDefaultInSorted(this.Context.SuceedingContainsPredicate).Should().Be(4, "the predicate has produced a result.");
+    public void LastOrDefaultInSorted_Returns_4_OnSuccess() => this.Context.Items.LastOrDefaultInSorted(this.Context.SuccessContainsPredicate).Should().Be(4, "the predicate has produced a result.");
 
     //[Fact]
     //public void LastOrDefaultInSorted_ReturnsFasterThanLastOrDefault_OnSuccess()
     //{
-    //  TimeSpan executionTimeLastOrDefaultInSorted = Profiler.LogAverageTime(() => this.Context.Items.LastOrDefaultInSorted(this.Context.SuceedingContainsPredicate), 10000);
-    //  TimeSpan executionTimeLastOrDefault = Profiler.LogAverageTime(() => this.Context.Items.LastOrDefault(this.Context.SuceedingContainsPredicate), 10000);
+    //  TimeSpan executionTimeLastOrDefaultInSorted = Profiler.LogAverageTime(() => this.Context.Items.LastOrDefaultInSorted(this.Context.SucceedingContainsPredicate), 10000);
+    //  TimeSpan executionTimeLastOrDefault = Profiler.LogAverageTime(() => this.Context.Items.LastOrDefault(this.Context.SucceedingContainsPredicate), 10000);
     //  executionTimeLastOrDefaultInSorted.Should().BeLessThanOrEqualTo(executionTimeLastOrDefault);
     //}
 
     [Fact]
-    public void LastInSorted_ThrowExceptionOnFail() => this.Context.Items.Invoking(items => items.LastInSorted(this.Context.FailingContainsPredicate)).Should().ThrowExactly<InvalidOperationException>("the predicate has failed to produce a result and in this case must throw.");
+    public void LastInSorted_ThrowExceptionOnFail() => this.Context.Items.Invoking(items => items.LastInSorted(this.Context.FailContainsPredicate)).Should().ThrowExactly<InvalidOperationException>("the predicate has failed to produce a result and in this case must throw.");
 
     [Fact]
-    public void LastInSorted_Returns_4_OnSuccess() => this.Context.Items.LastInSorted(this.Context.SuceedingContainsPredicate).Should().Be(4, "the predicate has produced a result.");
+    public void LastInSorted_Returns_4_OnSuccess() => this.Context.Items.LastInSorted(this.Context.SuccessContainsPredicate).Should().Be(4, "the predicate has produced a result.");
 
     //[Fact]
     //public void AddRange__ToCollection_ReturnsOriginalSource()

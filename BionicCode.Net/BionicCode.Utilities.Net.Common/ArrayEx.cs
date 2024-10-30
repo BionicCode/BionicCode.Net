@@ -10,6 +10,8 @@
 
   public static class ArrayEx
   {
+    private const int DynamicGrowCapacity = 10;
+
     public static void Move<TItem>(ref TItem[] array, int oldIndex, int newIndex)
     {
       ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
@@ -34,7 +36,7 @@
       else if (newIndex < oldIndex)
       {
         int rangeStartIndex = newIndex;
-        int rangeLength = oldIndex - 1 - newIndex;
+        int rangeLength = oldIndex - newIndex;
         ShiftRangeRightInternal(array, rangeStartIndex, rangeLength, numberOfShifts);
       }
 
@@ -95,7 +97,7 @@
     {
       Debug.Assert(rangeLength > -1);
       Debug.Assert(rangeLength < array.Length);
-      Debug.Assert(numberOfShifts < array.Length - rangeLength - rangeStartIndex);
+      Debug.Assert(numberOfShifts <= array.Length - rangeLength - rangeStartIndex);
 
       if (numberOfShifts == 0 
         || rangeLength == 0 
@@ -123,7 +125,7 @@
     {
       Debug.Assert(rangeLength > -1);
       Debug.Assert(rangeLength < array.Length);
-      Debug.Assert(numberOfShifts < array.Length - rangeLength - rangeStartIndex);
+      Debug.Assert(numberOfShifts <= array.Length - rangeLength - rangeStartIndex);
 
       if (numberOfShifts == 0
          || rangeLength == 0 
@@ -329,7 +331,12 @@
       Debug.Assert(index > -1);
       Debug.Assert(index <= destination.Length);
       Debug.Assert(sourceStartIndex > -1);
-      Debug.Assert(sourceStartIndex < source.Length);
+      Debug.Assert(sourceStartIndex < source.Length || sourceStartIndex == 0);
+
+      if (source.IsEmpty() || sourceCount == 0)
+      {
+        return;
+      }
 
       if (destination.IsEmpty())
       {
@@ -354,17 +361,17 @@
 
     internal static void InsertInternal<TItem>(ref TItem[] destination, int destinationStartIndex, IList<TItem> source, int sourceStartIndex, int sourceCount)
     {
-      if (source.IsEmpty())
-      {
-        return;
-      }
-
       Debug.Assert(sourceCount > -1);
       Debug.Assert(sourceCount <= source.Count);
       Debug.Assert(destinationStartIndex > -1);
       Debug.Assert(destinationStartIndex <= destination.Length);
       Debug.Assert(sourceStartIndex > -1);
-      Debug.Assert(sourceStartIndex < source.Count);
+      Debug.Assert(sourceStartIndex < source.Count || sourceStartIndex == 0);
+
+      if (source.IsEmpty() || sourceCount == 0)
+      {
+        return;
+      }
 
       int sourceIndex = sourceStartIndex;
       bool isCopyFullSource = source.Count == sourceCount;
@@ -422,6 +429,12 @@
       Debug.Assert(destinationStartIndex <= destination.Length);
       Debug.Assert(rangeLength >= -1);
 
+      if (rangeLength == 0 || !source.Any())
+      {
+        return;
+      }
+
+      bool requiresDynamicAllocation = rangeLength == -1;
       int skipCount = rangeStartIndex;
       int takeCount = rangeLength;
 
@@ -437,28 +450,50 @@
           throw new ArgumentOutOfRangeException(nameof(rangeStartIndex));
         }
 
-        int destinationIndex = destinationStartIndex;
         bool isAddRange = destination.Length == destinationStartIndex;
-        TItem[] backup = new TItem[destination.Length];
-        destination.CopyTo(backup, 0);
         int originalDestinationLength = destination.Length;
-        int newSize = destination.Length + takeCount;
+        TItem[] backup = new TItem[originalDestinationLength];
+        destination.CopyTo(backup, 0);
+        int newSize = requiresDynamicAllocation
+          ? System.Math.Max(DynamicGrowCapacity, destination.Length * 2)
+          : destination.Length + takeCount;
+
+#if NET6_0_OR_GREATER
+        if (newSize > Array.MaxLength)
+        {
+          newSize = Array.MaxLength;
+        }
+#endif
+
         Array.Resize(ref destination, newSize);
 
-        if (!isAddRange)
-        {
-        }
-        else
+        if (!isAddRange && !requiresDynamicAllocation)
         {
           int shiftRangeLength = originalDestinationLength - destinationStartIndex;
           int numberOfShifts = rangeLength;
           ArrayEx.ShiftRangeRightInternal(in destination, destinationStartIndex, shiftRangeLength, numberOfShifts);
         }
 
+        int currentIndex = destinationStartIndex;
+        int addedItemCount = 0;
         while ((takeCount > 0 || takeCount < 0) && sourceEnumerator.MoveNext())
         {
-          destination[destinationIndex++] = sourceEnumerator.Current;
+          if (currentIndex >= destination.Length)
+          {
+            newSize = destination.Length * 2;
+
+#if NET6_0_OR_GREATER
+            if (newSize > Array.MaxLength)
+            {
+              newSize = Array.MaxLength;
+            }
+#endif
+            Array.Resize(ref destination, newSize);
+          }
+
+          destination[currentIndex++] = sourceEnumerator.Current;
           takeCount--;
+          addedItemCount++;
         }
 
         if (takeCount > 0)
@@ -466,6 +501,27 @@
           destination = backup;
           throw new ArgumentOutOfRangeException(nameof(rangeLength));
         }
+
+        if (requiresDynamicAllocation)
+        {
+          int availableSize = destination.Length - currentIndex;
+          int desiredSize = originalDestinationLength - destinationStartIndex;
+          if (desiredSize > availableSize)
+          {
+            int growthRequired = desiredSize - availableSize;
+            Array.Resize(ref destination, destination.Length + growthRequired);
+          }
+
+          Array.Copy(backup, destinationStartIndex, destination, currentIndex, originalDestinationLength - destinationStartIndex);
+          bool hasTrailingUnusedMemory = availableSize > desiredSize;
+          if (hasTrailingUnusedMemory)
+          {
+            int sizeToTrim = availableSize - desiredSize;
+            Array.Resize(ref destination, destination.Length - sizeToTrim);
+          }
+        }
+
+        Debug.Assert(destination.Length == originalDestinationLength + addedItemCount);
       }
     }
 

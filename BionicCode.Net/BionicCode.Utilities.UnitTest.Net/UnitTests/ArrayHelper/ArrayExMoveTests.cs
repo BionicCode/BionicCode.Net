@@ -27,9 +27,9 @@
       int[] expectedResult = this.referenceArray
         .Select(element => element - 1)
         .ToArray();
-      this.referenceArray[0] = this.referenceArray.Last();
+      expectedResult[0] = this.referenceArray.Last();
 
-      ArrayEx.Move(ref this.array, ArrayLength, 0);
+      ArrayEx.Move(ref this.array, ArrayLength - 1, 0);
 
       _ = this.array.Should().BeEquivalentTo(expectedResult);
     }
