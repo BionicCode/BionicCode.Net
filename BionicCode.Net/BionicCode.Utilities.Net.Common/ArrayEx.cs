@@ -93,7 +93,13 @@
 
     internal static void ShiftRangeLeftInternal<TItem>(in TItem[] array, int rangeStartIndex, int rangeLength, int numberOfShifts)
     {
-      if (numberOfShifts == 0 || array.IsEmpty())
+      Debug.Assert(rangeLength > -1);
+      Debug.Assert(rangeLength < array.Length);
+      Debug.Assert(numberOfShifts < array.Length - rangeLength - rangeStartIndex);
+
+      if (numberOfShifts == 0 
+        || rangeLength == 0 
+        || array.IsEmpty())
       {
         return;
       }
@@ -115,7 +121,13 @@
 
     internal static void ShiftRangeRightInternal<TItem>(in TItem[] array, int rangeStartIndex, int rangeLength, int numberOfShifts)
     {
-      if (numberOfShifts == 0 || array.IsEmpty())
+      Debug.Assert(rangeLength > -1);
+      Debug.Assert(rangeLength < array.Length);
+      Debug.Assert(numberOfShifts < array.Length - rangeLength - rangeStartIndex);
+
+      if (numberOfShifts == 0
+         || rangeLength == 0 
+         || array.IsEmpty())
       {
         return;
       }
@@ -246,12 +258,12 @@
     }
 
 #if !(NETSTANDARD2_0 || NETFRAMEWORK)
-    public static void Insert<TItem>(ref TItem[] destination, int destinationStartIndex, IEnumerable<TItem> source, Range sourceRange)
+    public static void Insert<TItem>(ref TItem[] destination, int index, IEnumerable<TItem> source, Range sourceRange)
     {
       ArgumentNullExceptionEx.ThrowIfNull(destination, nameof(destination));
       ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
-      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(destinationStartIndex, nameof(destinationStartIndex));
-      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(destinationStartIndex, destination.Length, nameof(destinationStartIndex));
+      ArgumentOutOfRangeExceptionEx.ThrowIfNegative(index, nameof(index));
+      ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(index, destination.Length, nameof(index));
 
       if (source is TItem[] array)
       {
@@ -260,7 +272,7 @@
         ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, array.Length, nameof(sourceRange));
         ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeLength, nameof(sourceRange));
         ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeLength, destination.Length, nameof(sourceRange));
-        InsertInternal(ref destination, destinationStartIndex, array, rangeStartIndex, rangeLength);
+        InsertInternal(ref destination, index, array, rangeStartIndex, rangeLength);
       }
       else if (source is IList<TItem> list)
       {
@@ -269,37 +281,56 @@
         ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, list.Count, nameof(sourceRange));
         ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeLength, nameof(sourceRange));
         ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeLength, destination.Length, nameof(sourceRange));
-        InsertInternal(ref destination, destinationStartIndex, list, rangeStartIndex, rangeLength);
+        InsertInternal(ref destination, index, list, rangeStartIndex, rangeLength);
       }
-
-      if (sourceRange.Start.IsFromEnd || sourceRange.End.IsFromEnd)
+      else if (source is ICollection<TItem> genericCollection)
       {
-        int sourceLength;
-        if (source is ICollection<TItem> genericCollection)
-        {
-          sourceLength = genericCollection.Count;
-        }
-        else if (source is ICollection collection)
-        {
-          sourceLength = collection.Count;
-        }
-        else
-        {
-          TItem[] sourceArray = source.ToArray();
-          sourceLength = sourceArray.Length;
-        }
+        (int rangeStartIndex, int rangeLength) = sourceRange.GetOffsetAndLength(genericCollection.Count);
+        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeStartIndex, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, genericCollection.Count, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeLength, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeLength, destination.Length, nameof(sourceRange));
 
-        (int rangeStartIndex, int rangeLength) = sourceRange.GetOffsetAndLength(sourceLength);
-        sourceRange = rangeStartIndex..(rangeStartIndex + rangeLength);
+        ArrayEx.InsertInternal(ref destination, destination.Length, source, rangeStartIndex, rangeLength);
       }
+      else if (source is ICollection collection)
+      {
+        (int rangeStartIndex, int rangeLength) = sourceRange.GetOffsetAndLength(collection.Count);
+        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeStartIndex, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(rangeStartIndex, collection.Count, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(rangeLength, nameof(sourceRange));
+        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(rangeLength, destination.Length, nameof(sourceRange));
 
-      int takeCount = sourceRange.End.Value == 0 ? -1 : sourceRange.End.Value - sourceRange.Start.Value;
-      InsertInternal(ref destination, destinationStartIndex, source, sourceRange.Start.Value, takeCount);
+        ArrayEx.InsertInternal(ref destination, destination.Length, source, rangeStartIndex, rangeLength);
+      }
+      else
+      {
+        /* Treat as plain IEnumerable of unknown length */
+
+        // Only calculate length if really required which is when any index of the Range is relative to the collection length
+        if (sourceRange.Start.IsFromEnd || sourceRange.End.IsFromEnd)
+        {
+          int sourceLength = source.ToArray().Length;
+          (int rangeStartIndex, int rangeLength) = sourceRange.GetOffsetAndLength(sourceLength);
+          sourceRange = rangeStartIndex..(rangeStartIndex + rangeLength);
+        }
+
+        int takeCount = sourceRange.End.Value == 0 ? -1 : sourceRange.End.Value - sourceRange.Start.Value;
+
+        ArrayEx.InsertInternal(ref destination, destination.Length, source, sourceRange.Start.Value, takeCount);
+      }
     }
 #endif
 
     internal static void InsertInternal<TItem>(ref TItem[] destination, int index, TItem[] source, int sourceStartIndex, int sourceCount)
     {
+      Debug.Assert(sourceCount > -1);
+      Debug.Assert(sourceCount <= source.Length);
+      Debug.Assert(index > -1);
+      Debug.Assert(index <= destination.Length);
+      Debug.Assert(sourceStartIndex > -1);
+      Debug.Assert(sourceStartIndex < source.Length);
+
       if (destination.IsEmpty())
       {
         destination = source;
@@ -327,6 +358,13 @@
       {
         return;
       }
+
+      Debug.Assert(sourceCount > -1);
+      Debug.Assert(sourceCount <= source.Count);
+      Debug.Assert(destinationStartIndex > -1);
+      Debug.Assert(destinationStartIndex <= destination.Length);
+      Debug.Assert(sourceStartIndex > -1);
+      Debug.Assert(sourceStartIndex < source.Count);
 
       int sourceIndex = sourceStartIndex;
       bool isCopyFullSource = source.Count == sourceCount;
@@ -380,9 +418,12 @@
 
     internal static void InsertInternal<TItem>(ref TItem[] destination, int destinationStartIndex, IEnumerable<TItem> source, int rangeStartIndex, int rangeLength)
     {
+      Debug.Assert(destinationStartIndex > -1);
+      Debug.Assert(destinationStartIndex <= destination.Length);
+      Debug.Assert(rangeLength >= -1);
+
       int skipCount = rangeStartIndex;
       int takeCount = rangeLength;
-      Debug.Assert(takeCount >= -1);
 
       using (IEnumerator<TItem> sourceEnumerator = source.GetEnumerator())
       {
@@ -430,6 +471,13 @@
 
     internal static void MoveInternal<TItem>(ref TItem[] array, int rangeStartIndex, int rangeLength, int newIndex, bool isResizeEnabled)
     {
+      Debug.Assert(rangeStartIndex > -1);
+      Debug.Assert(rangeStartIndex < array.Length);
+      Debug.Assert(rangeLength >= 0);
+      Debug.Assert(rangeLength <= array.Length);
+      Debug.Assert(newIndex > -1);
+      Debug.Assert(newIndex < array.Length);
+
       if (newIndex == rangeStartIndex || rangeLength == 0 || array.IsEmpty())
       {
         return;
