@@ -7,6 +7,7 @@
   using System.Linq;
   using System.Reflection;
   using System.Text;
+  using Microsoft.CodeAnalysis.CSharp.Syntax;
 
   /// <summary>
   /// A collection of extension methods for various default types
@@ -23,9 +24,7 @@
     /// <returns><see langword="true"/> if <paramref name="source"/> is empty. Otherwise <see langword="false"/></returns>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     public static bool IsEmpty<TItem>(this IEnumerable<TItem> source)
-      => source == null
-        ? throw new ArgumentNullException(nameof(source))
-        : !source.Any();
+      => !source.Any();
 
     /// <summary>
     /// Determines whether a sequence is empty.
@@ -34,22 +33,19 @@
     /// <param name="source"></param>
     /// <returns><see langword="true"/> if <paramref name="source"/> is empty. Otherwise <see langword="false"/></returns>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
-    public static bool IsEmpty<TItem>(this ICollection<TItem> source)
-      => source == null
-        ? throw new ArgumentNullException(nameof(source))
-        : source.Count == 0;
+    public static bool IsEmpty(this IEnumerable source)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
 
-    /// <summary>
-    /// Determines whether an array is empty.
-    /// </summary>
-    /// <typeparam name="TItem"></typeparam>
-    /// <param name="source"></param>
-    /// <returns><see langword="true"/> if <paramref name="source"/> is empty. Otherwise <see langword="false"/></returns>
-    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
-    public static bool IsEmpty<TItem>(this TItem[] source)
-      => source == null
-        ? throw new ArgumentNullException(nameof(source))
-        : source.Length == 0;
+      if (source is ICollection collection)
+      {
+        return collection.Count == 0;
+      }
+      else
+      {
+        return !source.GetEnumerator().MoveNext();
+      }
+    }
 
     /// <summary>
     /// Returns a range of elements.
