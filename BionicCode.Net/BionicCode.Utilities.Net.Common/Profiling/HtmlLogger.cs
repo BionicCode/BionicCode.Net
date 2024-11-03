@@ -14,7 +14,6 @@
   using System.Threading.Tasks;
   using System.Collections.Generic;
   using Microsoft.Extensions.Caching.Memory;
-  using System.Web;
 
   internal class HtmlLogger : IProfilerLogger
   {

@@ -86,14 +86,14 @@
     /// Cancels the currently executing command.
     /// </summary>
     /// <remarks>See <see cref="CancellationTokenSource.Cancel()"/> for the exception behavior of this overload.</remarks>
-    void CancelExecuting();
+    void Cancel();
 
     /// <summary>
     /// Cancels the currently executing command.
     /// </summary>
     /// <param name="throwOnFirstException">See <see cref="CancellationTokenSource.Cancel(bool)"/> for the effects of the parameter.</param>
     /// <remarks>See <see cref="CancellationTokenSource.Cancel(bool)"/> for the exception behavior of this overload.</remarks>
-    void CancelExecuting(bool throwOnFirstException);
+    void Cancel(bool throwOnFirstException);
 
     /// <summary>
     /// Cancels all pending command executions.

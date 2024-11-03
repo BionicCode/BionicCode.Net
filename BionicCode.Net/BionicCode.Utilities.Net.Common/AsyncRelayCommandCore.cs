@@ -89,8 +89,8 @@
 
     protected async Task BeginExecuteAsyncCoreAsync(TimeSpan timeout, CancellationToken cancellationToken)
     {
-      // Monitor pending (waiting) commad executions and make them cancellable.
-      // We monotor per reentrant call and not per instance.
+      // Monitor pending (waiting) command executions and make them cancellable.
+      // We monitor per reentrant call and not per instance.
       using (var reentrancyMonitor = new ReentrancyMonitor(this, IncrementPendingCount, DecrementPendingCount))
       {
         try
@@ -139,11 +139,11 @@
     }
 
     /// <inheritdoc />
-    public void CancelExecuting()
-      => CancelExecuting(throwOnFirstException: false);
+    public void Cancel()
+      => Cancel(throwOnFirstException: false);
 
     /// <inheritdoc />
-    public void CancelExecuting(bool throwOnFirstException)
+    public void Cancel(bool throwOnFirstException)
     {
       this.CommandCancellationTokenSource?.Cancel(throwOnFirstException);
       this.IsCancelled = true;
@@ -165,7 +165,7 @@
     public void CancelAll(bool throwOnFirstException)
     {
       CancelPending(throwOnFirstException);
-      CancelExecuting(throwOnFirstException);
+      Cancel(throwOnFirstException);
     }
 
     /// <inheritdoc/>

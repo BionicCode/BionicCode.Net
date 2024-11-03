@@ -90,7 +90,7 @@ namespace BionicCode.Utilities.Net
     protected AsyncRelayCommandCommon(Action<TParam> execute, Predicate<TParam> canExecute)
     {
       if (execute is null)
-      { 
+      {
         throw new ArgumentNullException(nameof(execute));
       }
 
@@ -173,15 +173,15 @@ namespace BionicCode.Utilities.Net
 
       try
       {
+        this.CurrentCancellationToken.ThrowIfCancellationRequested();
         if (this.executeCancellableAsyncDelegate != null)
         {
-          this.CurrentCancellationToken.ThrowIfCancellationRequested();
           await this.executeCancellableAsyncDelegate.Invoke(parameter, this.CurrentCancellationToken);
         }
         else if (this.executeCancellableDelegate != null)
         {
-          this.CurrentCancellationToken.ThrowIfCancellationRequested();
           this.executeCancellableDelegate.Invoke(parameter, this.CurrentCancellationToken);
+          await (this.CurrentCancellationToken.IsCancellationRequested ? Task.FromCanceled(this.CurrentCancellationToken) : Task.CompletedTask);
         }
       }
       finally

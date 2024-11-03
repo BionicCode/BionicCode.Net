@@ -212,7 +212,7 @@
         case SymbolAttributes.ByReference:
         case SymbolAttributes.Init:
         case SymbolAttributes.Constant:
-          return toUpperCase ? "Not a type or member" : "not a type or member";
+          return toUpperCase ? "Not a type or member kind" : "not a type or member kind";
         default:
           throw new NotSupportedException(ExceptionMessages.GetValueNotSupportedExceptionMessage(symbolAttributes));
       }

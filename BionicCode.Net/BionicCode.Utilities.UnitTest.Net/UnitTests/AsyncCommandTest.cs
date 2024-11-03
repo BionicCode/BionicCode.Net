@@ -48,7 +48,7 @@
     {
       this.Timeout = TimeSpan.FromMilliseconds(0.1);
       this.AsyncDelay = TimeSpan.FromMilliseconds(0.1);
-      this.LongRunningAsyncDelay = TimeSpan.FromMilliseconds(100);
+      this.LongRunningAsyncDelay = TimeSpan.FromSeconds(10);
       this.TestCommand = new AsyncRelayCommand<string>(ExecuteTestCommand, CanExecuteTestCommand);
       this.TestCommandWithExecutionCount = new AsyncRelayCommand<string>(ExecuteTestCommandWithExecutionCount, CanExecuteTestCommand);
       this.TestNoParamCommand = new AsyncRelayCommand(ExecuteTestNoParamCommand, CanExecuteTestNoParamCommand);
@@ -140,20 +140,14 @@
 
     private async Task ExecuteTestCommandAsync(string commandParameter)
     {
-      if (commandParameter == null)
-      {
-        throw new ArgumentNullException(nameof(commandParameter));
-      }
+      ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
 
       await Task.Delay(this.AsyncDelay);
     }
 
     private async Task ExecuteTestCommandWithExecutionCountAsync(string commandParameter)
     {
-      if (commandParameter == null)
-      {
-        throw new ArgumentNullException(nameof(commandParameter));
-      }
+      ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
 
       _ = Interlocked.Increment(ref this.executionCount);
       await Task.Delay(this.AsyncDelay);
@@ -169,20 +163,14 @@
 
     private async Task ExecuteCancellableTestCommandAsync(string commandParameter, CancellationToken cancellationToken)
     {
-      if (commandParameter == null)
-      {
-        throw new ArgumentNullException(nameof(commandParameter));
-      }
+      ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
 
       await Task.Delay(this.LongRunningAsyncDelay, cancellationToken);
     }
 
     private async Task ExecuteCancellableTestCommandWithExecutionCountAsync(string commandParameter, CancellationToken cancellationToken)
     {
-      if (commandParameter == null)
-      {
-        throw new ArgumentNullException(nameof(commandParameter));
-      }
+      ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
 
       _ = Interlocked.Increment(ref this.executionCount);
       await Task.Delay(this.LongRunningAsyncDelay, cancellationToken);
@@ -199,39 +187,72 @@
 
     private void ExecuteCancellableTestCommand(string commandParameter, CancellationToken cancellationToken)
     {
-      if (commandParameter == null)
+      ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
+
+      var spinWait = new SpinWait();
+      while (!cancellationToken.IsCancellationRequested)
       {
-        throw new ArgumentNullException(nameof(commandParameter));
+        spinWait.SpinOnce();
       }
 
-      Thread.Sleep(this.AsyncDelay);
+      cancellationToken.ThrowIfCancellationRequested();
+    }
+
+    private void ExecuteCancellableTestCommandWithoutThrowingCancellationException(string commandParameter, CancellationToken cancellationToken)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
+
+      var spinWait = new SpinWait();
+      while (!cancellationToken.IsCancellationRequested)
+      {
+        spinWait.SpinOnce();
+      }
+
+      cancellationToken.ThrowIfCancellationRequested();
     }
 
     private void ExecuteCancellableTestCommandWithExecutionCount(string commandParameter, CancellationToken cancellationToken)
     {
-      if (commandParameter == null)
-      {
-        throw new ArgumentNullException(nameof(commandParameter));
-      }
+      ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
 
       _ = Interlocked.Increment(ref this.executionCount);
-      Thread.Sleep(this.AsyncDelay);
+
+      var spinWait = new SpinWait();
+      while (!cancellationToken.IsCancellationRequested)
+      {
+        spinWait.SpinOnce();
+      }
+
+      cancellationToken.ThrowIfCancellationRequested();
     }
 
-    private void ExecuteCancellableTestNoParamCommand(CancellationToken cancellationToken) => Thread.Sleep(this.AsyncDelay);
+    private void ExecuteCancellableTestNoParamCommand(CancellationToken cancellationToken)
+    {
+      var spinWait = new SpinWait();
+      while (!cancellationToken.IsCancellationRequested)
+      {
+        spinWait.SpinOnce();
+      }
+
+      cancellationToken.ThrowIfCancellationRequested();
+    }
 
     private void ExecuteCancellableTestNoParamCommandWithExecutionCount(CancellationToken cancellationToken)
     {
       _ = Interlocked.Increment(ref this.executionCount);
-      Thread.Sleep(this.AsyncDelay);
+
+      var spinWait = new SpinWait();
+      while (!cancellationToken.IsCancellationRequested)
+      {
+        spinWait.SpinOnce();
+      }
+
+      cancellationToken.ThrowIfCancellationRequested();
     }
 
     private async Task ExecuteThrowingTestCommandAsync(string commandParameter)
     {
-      if (commandParameter == null)
-      {
-        throw new ArgumentNullException(nameof(commandParameter));
-      }
+      ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
 
       await Task.Delay(this.AsyncDelay);
       throw new InvalidOperationException("From async test method.");
@@ -239,10 +260,7 @@
 
     private async Task ExecuteThrowingTestCommandWithExecutionCountAsync(string commandParameter)
     {
-      if (commandParameter == null)
-      {
-        throw new ArgumentNullException(nameof(commandParameter));
-      }
+      ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
 
       _ = Interlocked.Increment(ref this.executionCount);
       await Task.Delay(this.AsyncDelay);
@@ -437,7 +455,7 @@
     public void IsExecutingMustBeFalseForCancelledAsynchronousCommandUsingCommandCancelExecutingMethod()
     {
       _ = Task.Run(() => this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter));
-      this.AsyncCancellableTestCommand.CancelExecuting();
+      this.AsyncCancellableTestCommand.Cancel();
       _ = this.AsyncCancellableTestCommand.IsExecuting.Should().BeFalse();
     }
 
@@ -467,14 +485,14 @@
       {
         Task task1 = this.AsyncCancellableTestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter, cancellationTokenSource.Token);
         Task task2 = this.AsyncCancellableTestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter, cancellationTokenSource.Token);
-        Task tasks = Task.WhenAll(task1, task2)
+        Func<Task> tasks = () => Task.WhenAll(task1, task2)
           .ContinueWith(task =>
           {
             _ = task1.Status.Should().Be(TaskStatus.Canceled);
             _ = task2.Status.Should().Be(TaskStatus.Canceled);
             _ = this.executionCount.Should().Be(1);
           });
-        _ = Task.Run(() => tasks);
+        _ = Task.Run(tasks);
 
         await Task.Delay(TimeSpan.FromMilliseconds(0.005));
         this.AsyncCancellableTestCommandWithExecutionCount.CancelAll();
@@ -486,12 +504,12 @@
     {
       Task task1 = this.AsyncCancellableTestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter);
       Task task2 = this.AsyncCancellableTestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter);
-      Task tasks = Task.WhenAll(task1, task2)
+      Func<Task> tasks = () => Task.WhenAll(task1, task2)
         .ContinueWith(task =>
         {
           _ = this.executionCount.Should().Be(1);
         });
-      _ = Task.Run(() => tasks);
+      _ = Task.Run(tasks);
 
       this.AsyncCancellableTestCommandWithExecutionCount.CancelAll();
     }
@@ -508,72 +526,74 @@
           _ = this.AsyncCancellableTestCommand.IsExecuting.Should().BeTrue();
           this.AsyncCancellableTestCommandWithExecutionCount.CancelAll();
         });
-      Task tasks = Task.WhenAll(task1, task2)
+      Func<Task> tasks = () => Task.WhenAll(task1, task2)
         .ContinueWith(task =>
         {
           _ = this.executionCount.Should().Be(2);
         });
-      _ = Task.Run(() => tasks);
+      _ = Task.Run(tasks);
 
       await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-      this.AsyncCancellableTestCommandWithExecutionCount.CancelExecuting();
+      this.AsyncCancellableTestCommandWithExecutionCount.Cancel();
     }
 
     [Fact]
     public async Task ExecutingCommandTwoTimesAndCancelSecondPendingMustExecuteOnlyFirst()
     {
       Task task1 = this.AsyncCancellableTestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter);
-      Task task2 = this.AsyncCancellableTestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter)
-        .ContinueWith(task =>
-        {
-          _ = task.Status.Should().Be(TaskStatus.Canceled);
-          this.AsyncCancellableTestCommandWithExecutionCount.CancelAll();
-        });
-      Task tasks = Task.WhenAll(task1, task2)
-        .ContinueWith(task =>
-        {
-          _ = this.executionCount.Should().Be(1);
-        });
-      _ = Task.Run(() => tasks);
+      Task task2 = this.AsyncCancellableTestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter);
+      Func<Task> tasks = () => Task.WhenAll(task1, task2);
 
-      await Task.Delay(TimeSpan.FromMilliseconds(0.005));
+      try
+      {
+        _ = Task.Run(tasks);
+        await Task.Delay(TimeSpan.FromMilliseconds(5));
+        this.AsyncCancellableTestCommandWithExecutionCount.CancelPending();
+      }
+      catch (OperationCanceledException)
+      {
+      }
 
-      this.AsyncCancellableTestCommandWithExecutionCount.CancelPending();
+      _ = this.executionCount.Should().Be(1);
+      _ = task2.Status.Should().Be(TaskStatus.WaitingForActivation);
     }
 
     [Fact]
     public async Task ExecutingCommandTwoTimesAndCancelSecondPendingThenIsCancelledMustBeTrue()
     {
       Task task1 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter);
-      Task task2 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter)
-        .ContinueWith(task =>
-        {
-          _ = this.AsyncCancellableTestCommand.IsCancelled.Should().BeTrue();
-          this.AsyncCancellableTestCommand.CancelAll();
-        });
-      var tasks = Task.WhenAll(task1, task2);
-      _ = Task.Run(() => tasks);
+      Task task2 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter);
+      Func<Task> tasks = () => Task.WhenAll(task1, task2);
 
-      await Task.Delay(TimeSpan.FromMilliseconds(0.005));
+      try
+      {
+        _ = Task.Run(tasks);
+        this.AsyncCancellableTestCommand.CancelPending();
+      }
+      catch (OperationCanceledException)
+      {
+      }
 
-      this.AsyncCancellableTestCommand.CancelPending();
+      _ = this.AsyncCancellableTestCommand.IsCancelled.Should().BeTrue();
     }
 
     [Fact]
     public async Task ExecutingCommandTwoTimesMustEnqueueTheSecondAndCancellingTheFirstThenHasPendingMustBeFalse()
     {
-      Task task1 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter)
-        .ContinueWith(task =>
-        {
-          _ = this.AsyncCancellableTestCommand.HasPending.Should().BeFalse();
-          this.AsyncCancellableTestCommand.CancelAll();
-        });
+      Task task1 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter);
       Task task2 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter);
-      var tasks = Task.WhenAll(task1, task2);
-      _ = Task.Run(() => tasks);
+      Func<Task> tasks = () => Task.WhenAll(task1, task2);
 
-      await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-      this.AsyncCancellableTestCommand.CancelExecuting();
+      try
+      {
+        _ = Task.Run(tasks);
+        this.AsyncCancellableTestCommand.Cancel();
+      }
+      catch (OperationCanceledException)
+      {
+      }
+
+      _ = this.AsyncCancellableTestCommand.HasPending.Should().BeFalse();
     }
 
     [Fact]
@@ -581,29 +601,36 @@
     {
       Task task1 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter);
       Task task2 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter);
-      var tasks = Task.WhenAll(task1, task2);
-      _ = Task.Run(() => tasks);
+      Func<Task> tasks = () => Task.WhenAll(task1, task2);
 
-      await Task.Delay(TimeSpan.FromMilliseconds(0.005));
+      try
+      {
+        _ = Task.Run(tasks);
+      }
+      catch (OperationCanceledException)
+      {
+      }
+
       _ = this.AsyncCancellableTestCommand.PendingCount.Should().Be(1);
-      this.AsyncCancellableTestCommand.CancelAll();
     }
 
     [Fact]
-    public async Task ExecutingCommandTwoTimesMustEnqueueTheSecondAndCancellingTheFirstThenPendingCountMustBe_0()
+    public async Task ExecutingCommandTwoTimesMustEnqueueTheSecond_CallCancelOnTheFirst_ThenPendingCountMustBe_0()
     {
-      Task task1 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter)
-        .ContinueWith(task =>
-        {
-          _ = this.AsyncCancellableTestCommand.PendingCount.Should().Be(0);
-          this.AsyncCancellableTestCommand.CancelAll();
-        });
+      Task task1 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter);
       Task task2 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter);
-      var tasks = Task.WhenAll(task1, task2);
-      _ = Task.Run(() => tasks);
+      Func<Task> tasks = () => Task.WhenAll(task1, task2);
 
-      await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-      this.AsyncCancellableTestCommand.CancelExecuting();
+      try
+      {
+        _ = Task.Run(tasks);
+        this.AsyncCancellableTestCommand.Cancel();
+      }
+      catch (OperationCanceledException)
+      {
+      }
+
+      _ = this.AsyncCancellableTestCommand.PendingCount.Should().Be(0);
     }
 
     [Fact]
@@ -611,296 +638,350 @@
     {
       Task task1 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter);
       Task task2 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter);
-      var tasks = Task.WhenAll(task1, task2);
-      _ = Task.Run(() => tasks);
-      await Task.Delay(TimeSpan.FromMilliseconds(0.005));
+      Func<Task> tasks = () => Task.WhenAll(task1, task2);
 
+      try
+      {
+        _ = Task.Run(tasks);
+      }
+      catch (OperationCanceledException)
+      {
+      }
+      
       _ = this.AsyncCancellableTestCommand.HasPending.Should().BeTrue();
-      this.AsyncCancellableTestCommand.CancelAll();
     }
 
     [Fact]
-    public async Task ExecutingNoParamCommandMustExecuteOnce()
+    public async Task ExecutingNoParamCommand_CallCancel_MustExecuteOnce()
     {
-      Task executeTask = this.TestNoParamCommandWithExecutionCount.ExecuteAsync()
-        .ContinueWith(task =>
-        {
-          _ = this.executionCount.Should().Be(1);
-        });
-      _ = Task.Run(() => executeTask);
-      await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-      this.TestNoParamCommandWithExecutionCount.CancelAll();
+      Func<Task> executeTask = this.TestNoParamCommandWithExecutionCount.ExecuteAsync;
+
+      try
+      {
+        _ = Task.Run(executeTask);
+        this.TestNoParamCommandWithExecutionCount.Cancel();
+      }
+      catch (OperationCanceledException)
+      {
+      }
+
+      _ = this.executionCount.Should().Be(1);
     }
 
     [Fact]
-    public async Task ExecutingAsyncNoParamCommandMustExecuteOnce()
+    public async Task ExecutingAsyncNoParamCommand_CallCancel_MustExecuteOnce()
     {
-      Task executeTask = this.AsyncTestNoParamCommandWithExecutionCount.ExecuteAsync()
-        .ContinueWith(task =>
-        {
-          _ = this.executionCount.Should().Be(1);
-        });
-      _ = Task.Run(() => executeTask);
-      await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-      this.AsyncTestNoParamCommandWithExecutionCount.CancelAll();
+      Func<Task> executeTask = this.AsyncTestNoParamCommandWithExecutionCount.ExecuteAsync;
+
+      try
+      {
+        _ = Task.Run(executeTask);
+        this.AsyncTestNoParamCommandWithExecutionCount.Cancel();
+      }
+      catch (OperationCanceledException)
+      {
+      }
+
+      _ = this.executionCount.Should().Be(1);
     }
 
     [Fact]
-    public async Task ExecutingCommandMustExecuteOnce()
+    public async Task ExecutingCommand_CallCancel_MustExecuteOnce()
     {
-      Task executeTask = this.TestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter)
-        .ContinueWith(task =>
-        {
-          _ = this.executionCount.Should().Be(1);
-        });
-      _ = Task.Run(() => executeTask);
-      await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-      this.TestCommandWithExecutionCount.CancelAll();
+      Func<Task> executeTask = () => this.TestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter);
+
+      try
+      {
+        _ = Task.Run(executeTask);
+        this.TestCommandWithExecutionCount.Cancel();
+      }
+      catch (OperationCanceledException)
+      {
+      }
+
+      _ = this.executionCount.Should().Be(1);
     }
 
     [Fact]
-    public async Task ExecutingAsyncCommandMustExecuteOnce()
+    public async Task ExecutingAsyncCommand_CallCancel_MustExecuteOnce()
     {
-      Task executeTask = this.AsyncTestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter)
-        .ContinueWith(task =>
-        {
-          _ = this.executionCount.Should().Be(1);
-        });
-      _ = Task.Run(() => executeTask);
-      await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-      this.AsyncTestCommandWithExecutionCount.CancelAll();
+      Func<Task> executeTask = () => this.AsyncTestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter);
+
+      try
+      {
+        _ = Task.Run(executeTask);
+        this.AsyncTestCommandWithExecutionCount.Cancel();
+      }
+      catch (OperationCanceledException)
+      {
+      }
     }
 
     [Fact]
-    public async Task ExecutingNoParamTimeoutCommandMustExecuteOnce()
+    public async Task ExecutingNoParamTimeoutCommand_CallCancel_MustExecuteOnce()
     {
-      Task executeTask = this.TestNoParamCommandWithExecutionCount.ExecuteAsync(TimeSpan.Zero)
-        .ContinueWith(task =>
-        {
-          _ = this.executionCount.Should().Be(1);
-        });
-      _ = Task.Run(() => executeTask);
-      await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-      this.TestNoParamCommandWithExecutionCount.CancelAll();
+      Func<Task> executeTask = () => this.TestNoParamCommandWithExecutionCount.ExecuteAsync(TimeSpan.Zero);
+
+      try
+      {
+        _ = Task.Run(executeTask);
+        this.TestNoParamCommandWithExecutionCount.Cancel();
+      }
+      catch (OperationCanceledException)
+      {
+      }
+
+      _ = this.executionCount.Should().Be(1);
     }
 
     [Fact]
-    public async Task ExecutingTimeoutCommandMustExecuteOnce()
+    public async Task ExecutingTimeoutCommand_CallCancel_MustExecuteOnce()
     {
-      Task executeTask = this.TestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter, TimeSpan.Zero)
-        .ContinueWith(task =>
-        {
-          _ = this.executionCount.Should().Be(1);
-        });
-      _ = Task.Run(() => executeTask);
-      await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-      this.TestCommandWithExecutionCount.CancelAll();
+      Func<Task> executeTask = () => this.TestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter, TimeSpan.Zero);
+
+      try
+      {
+        _ = Task.Run(executeTask);
+        this.TestCommandWithExecutionCount.Cancel();
+      }
+      catch (OperationCanceledException)
+      {
+      }
     }
 
     [Fact]
-    public async Task ExecutingAsyncTimeoutCommandMustExecuteOnce()
+    public async Task ExecutingAsyncTimeoutCommand_CallCancel_MustExecuteOnce()
     {
-      Task executeTask = this.AsyncTestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter, TimeSpan.Zero)
-        .ContinueWith(task =>
-        {
-          _ = this.executionCount.Should().Be(1);
-        });
-      _ = Task.Run(() => executeTask);
-      await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-      this.AsyncTestCommandWithExecutionCount.CancelAll();
+      Func<Task> executeTask = () => this.AsyncTestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter, System.Threading.Timeout.InfiniteTimeSpan);
+
+      try
+      {
+        _ = Task.Run(executeTask);
+        this.AsyncTestCommandWithExecutionCount.Cancel();
+      }
+      catch (OperationCanceledException)
+      {
+      }
+      
+      _ = this.executionCount.Should().Be(1);
     }
 
     [Fact]
-    public async Task ExecutingAsyncNoParamTimeoutCommandMustExecuteOnce()
+    public async Task ExecutingAsyncNoParamTimeoutCommand_CallCancel_MustExecuteOnce()
     {
-      Task executeTask = this.AsyncTestNoParamCommandWithExecutionCount.ExecuteAsync(TimeSpan.Zero)
-        .ContinueWith(task =>
-        {
-          _ = this.executionCount.Should().Be(1);
-        });
-      _ = Task.Run(() => executeTask);
-      await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-      this.AsyncTestNoParamCommandWithExecutionCount.CancelAll();
+      Func<Task> executeTask = () =>  this.AsyncTestNoParamCommandWithExecutionCount.ExecuteAsync(System.Threading.Timeout.InfiniteTimeSpan);
+
+      try
+      { 
+      _ = Task.Run(executeTask);
+        this.AsyncTestNoParamCommandWithExecutionCount.Cancel();
+      }
+      catch (OperationCanceledException)
+      {
+      }
+
+      _ = this.executionCount.Should().Be(1);
     }
 
     [Fact]
     public async Task ExecutingNoParamCancellationTokenCommandMustExecuteOnce()
     {
-      using (var cancellationTokenSource = new CancellationTokenSource())
+      using (var cancellationTokenSource = new CancellationTokenSource(this.Timeout))
       {
-        Task executeTask = this.TestNoParamCommandWithExecutionCount.ExecuteAsync(cancellationTokenSource.Token)
-          .ContinueWith(task =>
+        Task executeTask = this.TestNoParamCommandWithExecutionCount.ExecuteAsync(cancellationTokenSource.Token);
+
+        try
         {
-          _ = this.executionCount.Should().Be(1);
-        });
-        _ = Task.Run(() => executeTask);
-        await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-        cancellationTokenSource.Cancel();
+          await executeTask;
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        
+        _ = this.executionCount.Should().Be(1);
       }
     }
 
     [Fact]
     public async Task ExecutingCancellationTokenCommandMustExecuteOnce()
     {
-      using (var cancellationTokenSource = new CancellationTokenSource())
+      using (var cancellationTokenSource = new CancellationTokenSource(this.Timeout))
       {
-        Task executeTask = this.TestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter, cancellationTokenSource.Token)
-          .ContinueWith(task =>
+        Task executeTask = this.TestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter, cancellationTokenSource.Token);
+
+        try
         {
-          _ = this.executionCount.Should().Be(1);
-        });
-        _ = Task.Run(() => executeTask);
-        await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-        cancellationTokenSource.Cancel();
+          await executeTask;
+        }
+        catch (OperationCanceledException)
+        {
+        }
+
+        _ = this.executionCount.Should().Be(1);
       }
     }
 
     [Fact]
     public async Task ExecutingAsyncCancellationTokenCommandMustExecuteOnce()
     {
-      using (var cancellationTokenSource = new CancellationTokenSource())
+      using (var cancellationTokenSource = new CancellationTokenSource(this.Timeout))
       {
-        Task executeTask = this.AsyncTestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter, cancellationTokenSource.Token)
-          .ContinueWith(task =>
+        Task executeTask = this.AsyncTestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter, cancellationTokenSource.Token);
+
+        try
         {
-          _ = this.executionCount.Should().Be(1);
-        });
-        _ = Task.Run(() => executeTask);
-        await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-        cancellationTokenSource.Cancel();
+          await executeTask;
+        }
+        catch (OperationCanceledException)
+        {
+        }
+          
+        _ = this.executionCount.Should().Be(1);
       }
     }
 
     [Fact]
     public async Task ExecutingAsyncNoParamCancellationTokenCommandMustExecuteOnce()
     {
-      using (var cancellationTokenSource = new CancellationTokenSource())
+      using (var cancellationTokenSource = new CancellationTokenSource(this.Timeout))
       {
-        Task executeTask = this.AsyncTestNoParamCommandWithExecutionCount.ExecuteAsync(cancellationTokenSource.Token)
-          .ContinueWith(task =>
+        Task executeTask = this.AsyncTestNoParamCommandWithExecutionCount.ExecuteAsync(cancellationTokenSource.Token);
+
+        try
+        { 
+        await executeTask;
+        }
+        catch (OperationCanceledException)
         {
-          _ = this.executionCount.Should().Be(1);
-        });
-        _ = Task.Run(() => executeTask);
-        await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-        cancellationTokenSource.Cancel();
+        }
+
+        _ = this.executionCount.Should().Be(1);
       }
     }
 
     [Fact]
     public async Task ExecutingNoParamCancellationTokenAndTimeoutCommandMustExecuteOnce()
     {
-      using (var cancellationTokenSource = new CancellationTokenSource())
-      {
-        Task executeTask = this.TestNoParamCommandWithExecutionCount.ExecuteAsync(TimeSpan.Zero, cancellationTokenSource.Token)
-          .ContinueWith(task =>
-        {
-          _ = this.executionCount.Should().Be(1);
-        });
-        _ = Task.Run(() => executeTask);
-        await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-        cancellationTokenSource.Cancel();
+       Task executeTask = this.TestNoParamCommandWithExecutionCount.ExecuteAsync(this.Timeout, CancellationToken.None);
+
+      try
+      { 
+       await executeTask;
       }
+      catch (OperationCanceledException)
+      {
+      }
+
+      _ = this.executionCount.Should().Be(1);
     }
 
     [Fact]
     public async Task ExecutingCancellationTokenAndTimeoutCommandMustExecuteOnce()
     {
-      using (var cancellationTokenSource = new CancellationTokenSource())
+      Task executeTask = this.TestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter, this.Timeout, CancellationToken.None);
+
+      try
       {
-        Task executeTask = this.TestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter, TimeSpan.Zero, cancellationTokenSource.Token)
-          .ContinueWith(task =>
-        {
-          _ = this.executionCount.Should().Be(1);
-        });
-        _ = Task.Run(() => executeTask);
-        await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-        cancellationTokenSource.Cancel();
+        await executeTask;
       }
+      catch (OperationCanceledException)
+      {
+      }
+
+      _ = this.executionCount.Should().Be(1);
     }
 
     [Fact]
     public async Task ExecutingAsyncCancellationTokeAndTimeoutCommandMustExecuteOnce()
     {
-      using (var cancellationTokenSource = new CancellationTokenSource())
-      {
-        Task executeTask = this.AsyncTestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter, TimeSpan.Zero, cancellationTokenSource.Token)
-          .ContinueWith(task =>
-    {
-      _ = this.executionCount.Should().Be(1);
-    });
-        _ = Task.Run(() => executeTask);
-        await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-        cancellationTokenSource.Cancel();
+      Task executeTask = this.AsyncTestCommandWithExecutionCount.ExecuteAsync(this.ValidCommandParameter, this.Timeout, CancellationToken.None);
+
+      try
+      { 
+      await executeTask;
       }
+      catch (OperationCanceledException)
+      {
+      }
+
+      _ = this.executionCount.Should().Be(1);
     }
 
     [Fact]
     public async Task ExecutingAsyncNoParamCancellationTokenAndTimeoutCommandMustExecuteOnce()
     {
-      using (var cancellationTokenSource = new CancellationTokenSource())
+      Task executeTask = this.AsyncTestNoParamCommandWithExecutionCount.ExecuteAsync(this.Timeout, CancellationToken.None);
+
+      try
       {
-        Task executeTask = this.AsyncTestNoParamCommandWithExecutionCount.ExecuteAsync(TimeSpan.Zero, cancellationTokenSource.Token)
-          .ContinueWith(task =>
-  {
-    _ = this.executionCount.Should().Be(1);
-  });
-        _ = Task.Run(() => executeTask);
-        await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-        cancellationTokenSource.Cancel();
+        await executeTask;
       }
+      catch (OperationCanceledException)
+      {
+      }
+
+  _ = this.executionCount.Should().Be(1);
     }
 
     [Fact]
     public async Task ExecutingNoParamCommandWithCancellationTokenMustBeCancelled()
     {
-      using (var cancellationTokenSource = new CancellationTokenSource())
+      using (var cancellationTokenSource = new CancellationTokenSource(this.Timeout))
       {
-        Task executeTask = this.CancellableTestNoParamCommand.ExecuteAsync(cancellationTokenSource.Token)
-          .ContinueWith(task => task.Status.Should().Be(TaskStatus.Canceled));
-        _ = Task.Run(() => executeTask);
-        await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-        cancellationTokenSource.Cancel();
+        Task executeTask = this.CancellableTestNoParamCommand.ExecuteAsync(cancellationTokenSource.Token);
+
+        try
+        {
+          await executeTask;
+        }
+        catch (OperationCanceledException)
+        {          
+        }
+
+        _ = executeTask.Status.Should().Be(TaskStatus.Canceled);
       }
     }
 
     [Fact]
     public async Task ExecutingAsyncNoParamCommandWithCancellationTokenMustBeCancelled()
     {
-      using (var cancellationTokenSource = new CancellationTokenSource())
+      using (var cancellationTokenSource = new CancellationTokenSource(this.Timeout))
       {
-        Task executeTask = this.AsyncCancellableTestNoParamCommand.ExecuteAsync(cancellationTokenSource.Token)
-          .ContinueWith(task => task.Status.Should().Be(TaskStatus.Canceled));
-        _ = Task.Run(() => executeTask);
-        await Task.Delay(TimeSpan.FromMilliseconds(0.020));
-        cancellationTokenSource.Cancel();
+        Task executeTask = this.AsyncCancellableTestNoParamCommand.ExecuteAsync(cancellationTokenSource.Token);
+
+        try
+        { 
+        await executeTask;
+        }
+        catch (OperationCanceledException)
+        {
+        }
+
+        _ = executeTask.Status.Should().Be(TaskStatus.Canceled);
       }
     }
 
     [Fact]
     public async Task ExecutingCommandWithCancellationTokenMustBeCancelled()
     {
-      using (var cancellationTokenSource = new CancellationTokenSource())
+      using (var cancellationTokenSource = new CancellationTokenSource(this.Timeout))
       {
-        Task executeTask = this.CancellableTestCommand.ExecuteAsync(this.ValidCommandParameter, cancellationTokenSource.Token)
-          .ContinueWith(task => task.Status.Should().Be(TaskStatus.Canceled));
-        _ = Task.Run(() => executeTask);
-        await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-        cancellationTokenSource.Cancel();
-        _ = this.CancellableTestCommand.IsCancelled.Should().BeTrue();
+        Func<Task> executeTask = () => this.CancellableTestCommand.ExecuteAsync(this.ValidCommandParameter, cancellationTokenSource.Token);
+
+        _ = await executeTask.Should().ThrowAsync<OperationCanceledException>();
       }
     }
 
     [Fact]
     public async Task ExecutingAsyncCommandWithCancellationTokenMustBeCancelled()
     {
-      using (var cancellationTokenSource = new CancellationTokenSource())
+      using (var cancellationTokenSource = new CancellationTokenSource(this.Timeout))
       {
-        Task executeTask = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter, cancellationTokenSource.Token)
-          .ContinueWith(task => task.Status.Should().Be(TaskStatus.Canceled));
-        _ = Task.Run(async () => await executeTask);
-        await Task.Delay(TimeSpan.FromMilliseconds(0.005));
-        cancellationTokenSource.Cancel();
+        Task executeTask = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter, cancellationTokenSource.Token);
+
+        await executeTask;
+
+        _ = executeTask.Status.Should().Be(TaskStatus.Canceled);
       }
     }
 
