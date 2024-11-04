@@ -47,15 +47,20 @@
       public static void CancelAll(object monitorOwner)
         => CancelAll(monitorOwner, false);
 
-      public static void CancelAll(object monitorOwner, bool throwOnFirstException)
+      public static bool CancelAll(object monitorOwner, bool throwOnFirstException)
       {
+        bool hasCancelledActions = false;
+
         if (ReentrancyMonitor.CancellationTokenSourceMap.TryGetValue(monitorOwner, out ReentrancyMonitorEntry reentrancyMonitorEntry))
         {
           foreach (CancellationTokenSource cancellationTokenSource in reentrancyMonitorEntry.CancellationTokenSources)
           {
             cancellationTokenSource.Cancel(throwOnFirstException);
+            hasCancelledActions = true;
           }
         }
+
+        return hasCancelledActions;
       }
 
       private void Enter()

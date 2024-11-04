@@ -73,6 +73,10 @@
     /// <inheritdoc />
     public event EventHandler ExecutingCommandCancelled;
     /// <inheritdoc />
+    public event EventHandler Executing;
+    /// <inheritdoc />
+    public event EventHandler Executed;
+    /// <inheritdoc />
     public event EventHandler PendingCommandCancelled;
     /// <inheritdoc />
     public event PropertyChangedEventHandler PropertyChanged;
@@ -104,13 +108,16 @@
       }
 
       this.IsExecuting = true;
-
+      this.IsCancelled = false;
+      
       this.CommandCancellationTokenSource = new CancellationTokenSource(timeout);
       this.MergedCommandCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(
           cancellationToken,
           this.CommandCancellationTokenSource.Token);
       this.CurrentCancellationToken = this.MergedCommandCancellationTokenSource.Token;
       this.CurrentCancellationToken.ThrowIfCancellationRequested();
+
+      OnExecuting();
     }
 
     protected void EndExecuteAyncCore()
@@ -122,6 +129,7 @@
       this.IsExecuting = false;
       this.IsCancelled = this.CurrentCancellationToken.IsCancellationRequested;
       _ = this.ExecuteCommandSemaphore.Release();
+      OnExecuted();
     }
 
     internal void DecrementPendingCount()
@@ -150,22 +158,29 @@
     }
 
     /// <inheritdoc />
-    public void CancelPending()
+    public bool CancelPending()
       => CancelPending(throwOnFirstException: false);
 
     /// <inheritdoc />
-    public void CancelPending(bool throwOnFirstException)
+    public bool CancelPending(bool throwOnFirstException)
       => ReentrancyMonitor.CancelAll(this, throwOnFirstException);
 
     /// <inheritdoc />
-    public void CancelAll()
+    public bool CancelAll()
       => CancelAll(throwOnFirstException: false);
 
     /// <inheritdoc />
-    public void CancelAll(bool throwOnFirstException)
+    public bool CancelAll(bool throwOnFirstException)
     {
-      CancelPending(throwOnFirstException);
-      Cancel(throwOnFirstException);
+      bool hasCancelledActions = CancelPending(throwOnFirstException);
+
+      if (!this.IsCancelled)
+      {
+        hasCancelledActions = true;
+        Cancel(throwOnFirstException);
+      }
+
+      return hasCancelledActions;
     }
 
     /// <inheritdoc/>
@@ -191,16 +206,28 @@
       => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
     /// <summary>
-    /// Raises the <see cref="IAsyncRelayCommandCommon.PendingCommandCancelled"/> event.
+    /// Raises the <see cref="IAsyncRelayCommandCore.PendingCommandCancelled"/> event.
     /// </summary>
     protected virtual void OnPendingCommandsCancelled()
       => this.PendingCommandCancelled?.Invoke(this, EventArgs.Empty);
 
     /// <summary>
-    /// Raises the <see cref="IAsyncRelayCommandCommon.ExecutingCommandCancelled"/> event.
+    /// Raises the <see cref="IAsyncRelayCommandCore.ExecutingCommandCancelled"/> event.
     /// </summary>
     protected virtual void OnExecutingCommandCancelled()
       => this.ExecutingCommandCancelled?.Invoke(this, EventArgs.Empty);
+
+    /// <summary>
+    /// Raises the <see cref="IAsyncRelayCommandCore.Executing"/> event.
+    /// </summary>
+    protected virtual void OnExecuting()
+      => this.Executing?.Invoke(this, EventArgs.Empty);
+
+    /// <summary>
+    /// Raises the <see cref="IAsyncRelayCommandCore.Executed"/> event.
+    /// </summary>
+    protected virtual void OnExecuted()
+      => this.Executed?.Invoke(this, EventArgs.Empty);
 
     protected virtual void Dispose(bool disposing)
     {

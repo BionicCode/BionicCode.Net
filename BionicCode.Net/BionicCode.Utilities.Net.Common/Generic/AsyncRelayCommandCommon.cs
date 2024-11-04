@@ -169,10 +169,10 @@ namespace BionicCode.Utilities.Net
     /// <inheritdoc />
     public async Task ExecuteAsync(TParam parameter, TimeSpan timeout, CancellationToken cancellationToken)
     {
-      await BeginExecuteAsyncCoreAsync(timeout, cancellationToken);
-
       try
       {
+        await BeginExecuteAsyncCoreAsync(timeout, cancellationToken);
+
         this.CurrentCancellationToken.ThrowIfCancellationRequested();
         if (this.executeCancellableAsyncDelegate != null)
         {
@@ -181,7 +181,7 @@ namespace BionicCode.Utilities.Net
         else if (this.executeCancellableDelegate != null)
         {
           this.executeCancellableDelegate.Invoke(parameter, this.CurrentCancellationToken);
-          await (this.CurrentCancellationToken.IsCancellationRequested ? Task.FromCanceled(this.CurrentCancellationToken) : Task.CompletedTask);
+          //await (this.CurrentCancellationToken.IsCancellationRequested ? Task.FromCanceled(this.CurrentCancellationToken) : Task.CompletedTask);
         }
       }
       finally

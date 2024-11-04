@@ -9,7 +9,18 @@
   /// Defines the shared core functionality of the different implementations.
   /// </summary>
   public interface IAsyncRelayCommandCore : INotifyPropertyChanged
-  { 
+  {
+    /// <summary>
+    /// Event is raised to signal that the command is executing.
+    /// </summary>
+    /// <remarks>Observe the <see cref="Executed"/> event to get notified when execution has completed.</remarks>
+    event EventHandler Executing;
+
+    /// <summary>
+    /// Event is raised to signal that the command has completed execution.
+    /// </summary>
+    /// <remarks>Observe the <see cref="Executing"/> event to get notified when execution has started.</remarks>
+    event EventHandler Executed;
     /// <summary>
     /// Event is raised after a pending command has been cancelled.
     /// </summary>
@@ -72,15 +83,17 @@
     /// <summary>
     /// Cancels all pending and executing commands.
     /// </summary>
+    /// <returns><see langword="true"/> if any pending task was cancelled. Otherwise <see langword="false"/>.</returns>
     /// <remarks>See <see cref="CancellationTokenSource.Cancel()"/> for the exception behavior of this overload.</remarks>
-    void CancelAll();
+    bool CancelAll();
 
     /// <summary>
     /// Cancels all pending and executing commands.
     /// </summary>
     /// <param name="throwOnFirstException">See <see cref="CancellationTokenSource.Cancel(bool)"/> for the effects of the parameter.</param>
+    /// <returns><see langword="true"/> if any pending task was cancelled. Otherwise <see langword="false"/>.</returns>
     /// <remarks>See <see cref="CancellationTokenSource.Cancel(bool)"/> for the exception behavior of this overload.</remarks>
-    void CancelAll(bool throwOnFirstException);
+    bool CancelAll(bool throwOnFirstException);
 
     /// <summary>
     /// Cancels the currently executing command.
@@ -98,15 +111,17 @@
     /// <summary>
     /// Cancels all pending command executions.
     /// </summary>    
+    /// <returns><see langword="true"/> if any pending task was cancelled. Otherwise <see langword="false"/>.</returns>
     /// <remarks>See <see cref="CancellationTokenSource.Cancel()"/> for the exception behavior of this overload.</remarks>
-    void CancelPending();
+    bool CancelPending();
 
     /// <summary>
     /// Cancels all pending command executions.
     /// </summary>    
     /// <param name="throwOnFirstException">See <see cref="CancellationTokenSource.Cancel(bool)"/> for the effects of the parameter.</param>
+    /// <returns><see langword="true"/> if any pending task was cancelled. Otherwise <see langword="false"/>.</returns>
     /// <remarks>See <see cref="CancellationTokenSource.Cancel(bool)"/> for the exception behavior of this overload.</remarks>
-    void CancelPending(bool throwOnFirstException);
+    bool CancelPending(bool throwOnFirstException);
 
     /// <summary>
     /// Raises the <seealso cref="ICommand.CanExecuteChanged"/> event of this particular command only.
