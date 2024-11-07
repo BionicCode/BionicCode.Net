@@ -27,13 +27,6 @@ namespace BionicCode.Utilities.Net
     private readonly Func<CancellationToken, Task> executeCancellableAsyncNoParamDelegate;
 
     /// <summary>
-    /// The registered parameterless synchronous execute delegate that supports cancellation.
-    /// </summary>
-    /// <value>
-    /// A delegate that supports cancellation, but takes no command parameter and returns void.</value>
-    private readonly Action<CancellationToken> executeCancellableNoParamDelegate;
-
-    /// <summary>
     /// The registered parameterless CanExecute delegate.
     /// </summary>
     /// <value>
@@ -130,6 +123,9 @@ namespace BionicCode.Utilities.Net
 
     #endregion Constructors
 
+
+    public override bool IsAsync => this.executeCancellableAsyncNoParamDelegate != null;
+
     /// <summary>
     ///   Determines whether this AsyncRelayCommandCommon can execute.
     /// </summary>
@@ -167,11 +163,6 @@ namespace BionicCode.Utilities.Net
         {
           this.CurrentCancellationToken.ThrowIfCancellationRequested();
           await this.executeCancellableAsyncNoParamDelegate.Invoke(this.CurrentCancellationToken);
-        }
-        else if (this.executeCancellableNoParamDelegate != null)
-        {
-          this.CurrentCancellationToken.ThrowIfCancellationRequested();
-          this.executeCancellableNoParamDelegate.Invoke(this.CurrentCancellationToken);
         }
       }
       finally

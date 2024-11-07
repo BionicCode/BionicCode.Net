@@ -25,13 +25,6 @@ namespace BionicCode.Utilities.Net
     private readonly Func<TParam, CancellationToken, Task> executeCancellableAsyncDelegate;
 
     /// <summary>
-    /// The registered execute delegate that accepts a parameter of <typeparamref name="TParam"/>.
-    /// </summary>
-    /// <value>
-    /// A delegate that supports cancellation and takes a command parameter of <typeparamref name="TParam"/> and returns a <see cref="Task"/>.</value>
-    private readonly Action<TParam, CancellationToken> executeCancellableDelegate;
-
-    /// <summary>
     /// The registered CanExecute delegate that accepts a parameter of <typeparamref name="TParam"/>.
     /// </summary>
     /// <value>
@@ -39,27 +32,6 @@ namespace BionicCode.Utilities.Net
     private readonly Func<TParam, bool> canExecuteDelegate;
 
     #region Constructors
-
-    /// <summary>
-    ///   Creates a new synchronous command that can always execute (<see cref="CanExecute"/> will always return <c>true</c>)
-    ///   <br/> and accepts a command parameter of type <typeparamref name="TParam"/>.
-    /// </summary>
-    /// <param name="execute">The execute handler.</param>
-    protected AsyncRelayCommandCommon(Action<TParam> execute)
-      : this(execute, param => true)
-    {
-    }
-
-    /// <summary>
-    ///   Creates a new synchronous command that can always execute (<see cref="CanExecute"/> will always return <c>true</c>) 
-    ///   <br/>and accepts a command parameter of type <typeparamref name="TParam"/>
-    ///   <br/>and supports cancellation.
-    /// </summary>
-    /// <param name="execute">The execute handler.</param>
-    protected AsyncRelayCommandCommon(Action<TParam, CancellationToken> execute)
-      : this(execute, param => true)
-    {
-    }
 
     /// <summary>
     ///   Creates a new asynchronous command that can always execute (<see cref="CanExecute"/> will always return <c>true</c>) 
@@ -80,22 +52,6 @@ namespace BionicCode.Utilities.Net
     protected AsyncRelayCommandCommon(Func<TParam, Task> executeAsync)
       : this(executeAsync, param => true)
     {
-    }
-
-    /// <summary>
-    ///   Creates a new synchronous command that accepts a command parameter of type <typeparamref name="TParam"/>.
-    /// </summary>
-    /// <param name="execute">The execute handler.</param>
-    /// <param name="canExecute">The can execute handler.</param>
-    protected AsyncRelayCommandCommon(Action<TParam> execute, Predicate<TParam> canExecute)
-    {
-      if (execute is null)
-      {
-        throw new ArgumentNullException(nameof(execute));
-      }
-
-      this.executeCancellableDelegate = (commandParameter, cancellationToken) => execute.Invoke(commandParameter);
-      this.canExecuteDelegate = param => canExecute?.Invoke(param) ?? true;
     }
 
     /// <summary>
@@ -130,23 +86,9 @@ namespace BionicCode.Utilities.Net
       this.canExecuteDelegate = canExecute?.ToFunc();
     }
 
-    /// <summary>
-    ///   Creates a new synchronous command that supports cancellation and accepts a command parameter of type <typeparamref name="TParam"/>.
-    /// </summary>
-    /// <param name="execute">The execute handler.</param>
-    /// <param name="canExecute">The can execute handler.</param>
-    protected AsyncRelayCommandCommon(Action<TParam, CancellationToken> execute, Predicate<TParam> canExecute)
-    {
-      if (execute is null)
-      {
-        throw new ArgumentNullException(nameof(execute));
-      }
-
-      this.executeCancellableDelegate = execute;
-      this.canExecuteDelegate = canExecute?.ToFunc();
-    }
-
     #endregion Constructors
+
+    public override bool IsAsync => this.executeCancellableAsyncDelegate != null;
 
     /// <summary>
     ///   Determines whether this AsyncRelayCommandCommon can execute.
@@ -177,11 +119,6 @@ namespace BionicCode.Utilities.Net
         if (this.executeCancellableAsyncDelegate != null)
         {
           await this.executeCancellableAsyncDelegate.Invoke(parameter, this.CurrentCancellationToken);
-        }
-        else if (this.executeCancellableDelegate != null)
-        {
-          this.executeCancellableDelegate.Invoke(parameter, this.CurrentCancellationToken);
-          //await (this.CurrentCancellationToken.IsCancellationRequested ? Task.FromCanceled(this.CurrentCancellationToken) : Task.CompletedTask);
         }
       }
       finally

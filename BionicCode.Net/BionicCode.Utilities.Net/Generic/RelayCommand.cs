@@ -1,10 +1,8 @@
-namespace BionicCode.Utilities.Net
+﻿namespace BionicCode.Utilities.Net
 {
   using System;
   using System.ComponentModel;
-  using System.Runtime.CompilerServices;
   using System.Threading;
-  using System.Threading.Tasks;
   using System.Windows.Input;
 
   /// <summary>
@@ -15,27 +13,27 @@ namespace BionicCode.Utilities.Net
   ///   <seealso cref="System.Windows.Input.ICommand" />
   /// </summary>
   /// <remarks><c>AsyncRelayCommand</c> implements <see cref="System.Windows.Input.ICommand" />. In case the <see cref="AsyncRelayCommand{TParam}"/> is executed explicitly, especially with an asynchronous command handler registered, it is highly recommended to invoke the awaitable <see cref="AsyncRelayCommandCommon.ExecuteAsync()"/> or its overloads instead.</remarks>
-  public partial class AsyncRelayCommand : AsyncRelayCommandCommon, IAsyncRelayCommand
+  public partial class RelayCommand<TParam> : RelayCommandCommon<TParam>, IRelayCommand<TParam>
   {
     #region Constructors
 
     /// <inheritdoc />
-    public AsyncRelayCommand(Func<Task> executeAsyncNoParam) : base(executeAsyncNoParam)
+    public RelayCommand(Action<TParam> execute) : base(execute)
     {
     }
 
     /// <inheritdoc />
-    public AsyncRelayCommand(Func<CancellationToken, Task> executeAsyncNoParam) : base(executeAsyncNoParam)
+    public RelayCommand(Action<TParam, CancellationToken> execute) : base(execute)
     {
     }
 
     /// <inheritdoc />
-    public AsyncRelayCommand(Func<Task> executeAsyncNoParam, Func<bool> canExecuteNoParam) : base(executeAsyncNoParam, canExecuteNoParam)
+    public RelayCommand(Action<TParam> execute, Func<TParam, bool> canExecute) : base(execute, canExecute)
     {
     }
 
     /// <inheritdoc />
-    public AsyncRelayCommand(Func<CancellationToken, Task> executeAsync, Func<bool> canExecute) : base(executeAsync, canExecute)
+    public RelayCommand(Action<TParam, CancellationToken> execute, Func<TParam, bool> canExecute) : base(execute, canExecute)
     {
     }
 

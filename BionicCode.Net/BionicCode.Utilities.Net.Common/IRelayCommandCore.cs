@@ -8,7 +8,7 @@
   /// <summary>
   /// Defines the shared core functionality of the different implementations.
   /// </summary>
-  public interface IAsyncRelayCommandCore : INotifyPropertyChanged
+  public interface IRelayCommandCore : INotifyPropertyChanged
   {
     /// <summary>
     /// Event is raised to signal that the command is executing.
@@ -59,15 +59,6 @@
     /// </summary>
     /// <value><c>true</c> if the last command execution was cancelled. Otherwise <c>false</c>.</value>
     bool IsCancelled { get; }
-    /// <summary>
-    /// Flags whether this command actually has an async delegate registered.
-    /// </summary>
-    /// <value><see langword="true"/> if the command has been created with an async delegate. Otherwise <c>false</c>.</value>
-    /// <remarks>
-    /// If the value is <see langword="false"/> calling the synchronous <see cref="ICommand.Execute(object)"/> is safe.
-    /// <para/>Note that the WPF platform does not support async commands and will therefore not await anything. It will simply call the synchronous <see cref="ICommand.Execute(object)"/>
-    /// </remarks>
-    bool IsAsync { get; }
 
     /// <summary>
     /// Return whether the command has pending executions.

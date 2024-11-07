@@ -5,11 +5,12 @@
   using System.Runtime.CompilerServices;
   using System.Threading;
   using static BionicCode.Utilities.Net.AsyncRelayCommandCommon;
-  using System.Threading.Tasks;
   using System.Windows.Input;
 
-  public abstract class AsyncRelayCommandCore : IAsyncRelayCommandCore, IDisposable
+  public abstract class RelayCommandCore : IRelayCommandCore, IDisposable
   {
+    private const int MaxDegreeOfParallelism = 1;
+
     private SemaphoreSlim ExecuteCommandSemaphore => this.executeCommandSemaphoreFactory.Value;
     private readonly Lazy<SemaphoreSlim> executeCommandSemaphoreFactory;
     private CancellationToken currentCancellationToken;
@@ -17,8 +18,6 @@
     private bool isExecuting;
     private int pendingCount;
     private bool disposedValue;
-
-    public abstract bool IsAsync { get; }
 
     /// <inheritdoc />
     public bool CanBeCanceled => this.CurrentCancellationToken.CanBeCanceled;
@@ -57,7 +56,6 @@
       }
     }
 
-    private const int MaxDegreeOfParallelism = 1;
     /// <inheritdoc/>
     public int PendingCount
     {
@@ -90,10 +88,10 @@
     public event EventHandler CanExecuteChanged;
 #endif
 
-    protected AsyncRelayCommandCore() => this.executeCommandSemaphoreFactory = new Lazy<SemaphoreSlim>(() 
-      => new SemaphoreSlim(AsyncRelayCommandCore.MaxDegreeOfParallelism, AsyncRelayCommandCore.MaxDegreeOfParallelism), isThreadSafe: true);
+    protected RelayCommandCore() => this.executeCommandSemaphoreFactory = new Lazy<SemaphoreSlim>(()
+      => new SemaphoreSlim(RelayCommandCore.MaxDegreeOfParallelism, RelayCommandCore.MaxDegreeOfParallelism), isThreadSafe: true);
 
-    protected async Task BeginExecuteAsyncCoreAsync(TimeSpan timeout, CancellationToken cancellationToken)
+    protected async void BeginExecuteCore(TimeSpan timeout, CancellationToken cancellationToken)
     {
       // Monitor pending (waiting) command executions and make them cancellable.
       // We monitor per reentrant call and not per instance.
@@ -111,7 +109,7 @@
 
       this.IsExecuting = true;
       this.IsCancelled = false;
-      
+
       this.CommandCancellationTokenSource = new CancellationTokenSource(timeout);
       this.MergedCommandCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(
           cancellationToken,
@@ -122,7 +120,7 @@
       OnExecuting();
     }
 
-    protected void EndExecuteAyncCore()
+    protected void EndExecuteCore()
     {
       this.CommandCancellationTokenSource.Dispose();
       this.CommandCancellationTokenSource = null;
