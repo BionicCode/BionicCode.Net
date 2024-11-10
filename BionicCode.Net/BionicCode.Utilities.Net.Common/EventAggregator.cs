@@ -8,6 +8,7 @@
   using System;
   using System.Collections.Concurrent;
   using System.Collections.Generic;
+  using System.Diagnostics.Tracing;
   using System.Linq;
   using System.Reflection;
   using System.Runtime.CompilerServices;
@@ -29,12 +30,14 @@
     #region Implementation of IEventAggregator
 
     /// <inheritdoc />
+    public bool TryRegisterObservable(object eventSource, params string[] eventNames)
+      => TryRegisterObservable(eventSource, (IEnumerable<string>)eventNames);
+
+    /// <inheritdoc />
     public bool TryRegisterObservable(object eventSource, IEnumerable<string> eventNames)
     {
-      if (object.Equals(eventSource, default))
-      {
-        return false;
-      }
+      ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
+      ArgumentNullExceptionEx.ThrowIfNull(eventNames, nameof(eventNames));
 
       foreach (string eventName in eventNames.Distinct())
       {
@@ -68,6 +71,50 @@
 
       return true;
     }
+
+#if NET || NETSTANDARD2_1_OR_GREATER || NETCOREAPP
+    /// <inheritdoc />
+    public bool TryRemoveObservable(Type eventSourceType, bool removeEventObservers = false, params string[] eventNames)
+      => TryRemoveObservable(eventSourceType, eventNames, removeEventObservers);
+
+    /// <inheritdoc />
+    public bool TryRemoveObservable(Type eventSourceType, IEnumerable<string> eventNames, bool removeEventObservers = false)
+    {
+      bool hasRemovedObservable = false;
+      var entries = (IEnumerable<KeyValuePair<object, List<(EventInfo, Delegate)>>>)this.EventPublisherTable.Where(entry => entry.Key.GetType() == eventSourceType);
+      
+      foreach (KeyValuePair<object, List<(EventInfo, Delegate)>> entry in entries)
+      {
+        object eventSource = entry.Key;
+        List <(EventInfo EventInfo, Delegate Handler)> publisherHandlerInfos = entry.Value;
+        foreach (string eventName in eventNames)
+        {
+          (EventInfo EventInfo, Delegate Handler) publisherHandlerInfo = publisherHandlerInfos.FirstOrDefault(
+            handlerInfo => handlerInfo.EventInfo.Name.Equals(eventName, StringComparison.Ordinal));
+
+          publisherHandlerInfo.EventInfo?.RemoveEventHandler(eventSource, publisherHandlerInfo.Handler);
+          hasRemovedObservable = publisherHandlerInfos.Remove(publisherHandlerInfo);
+
+          if (removeEventObservers)
+          {
+            _ = TryRemoveAllObservers(eventName, eventSource.GetType());
+          }
+        }
+
+        if (!publisherHandlerInfos.Any())
+        {
+          _ = this.EventPublisherTable.Remove(eventSource);
+        }
+      }
+
+      return hasRemovedObservable;
+    }
+
+#endif
+
+    /// <inheritdoc />
+    public bool TryRemoveObservable(object eventSource, bool removeEventObservers = false, params string[] eventNames)
+      => TryRemoveObservable(eventSource, eventNames, removeEventObservers);
 
     /// <inheritdoc />
     public bool TryRemoveObservable(object eventSource, IEnumerable<string> eventNames, bool removeEventObservers = false)
@@ -371,7 +418,7 @@
       return result;
     }
 
-    #endregion Implementation of IEventAggregator
+#endregion Implementation of IEventAggregator
 
     private bool TryRegisterObserverInternal(
       Delegate eventHandler,

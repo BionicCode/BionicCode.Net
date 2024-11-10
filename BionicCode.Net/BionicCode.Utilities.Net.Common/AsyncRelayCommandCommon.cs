@@ -36,25 +36,6 @@ namespace BionicCode.Utilities.Net
     #region Constructors
 
     /// <summary>
-    ///   Creates a new parameterless synchronous command that can always execute (<see cref="CanExecute()"/> will always return <c>true</c>).
-    /// </summary>
-    /// <param name="executeNoParam">The awaitable execution handler.</param>
-    protected AsyncRelayCommandCommon(Action executeNoParam)
-      : this(executeNoParam, () => true)
-    {
-    }
-
-    /// <summary>
-    ///   Creates a new parameterless synchronous command that can always execute (<see cref="CanExecute()"/> will always return <c>true</c>)
-    ///   <br/>and supports cancellation.
-    /// </summary>
-    /// <param name="executeNoParam">The awaitable execution handler.</param>
-    protected AsyncRelayCommandCommon(Action<CancellationToken> executeNoParam)
-      : this(executeNoParam, () => true)
-    {
-    }
-
-    /// <summary>
     ///   Creates a new parameterless asynchronous command that can always execute (<see cref="CanExecute()"/> will always return <c>true</c>).
     /// </summary>
     /// <param name="executeAsyncNoParam">The awaitable execution handler.</param>
@@ -71,19 +52,6 @@ namespace BionicCode.Utilities.Net
     protected AsyncRelayCommandCommon(Func<CancellationToken, Task> executeAsyncNoParam)
       : this(executeAsyncNoParam, () => true)
     {
-    }
-
-    /// <summary>
-    ///   Creates a new parameterless synchronous command.
-    /// </summary>
-    /// <param name="executeNoParam">The execution handler.</param>
-    /// <param name="canExecuteNoParam">The execution status handler.</param>
-    protected AsyncRelayCommandCommon(Action executeNoParam, Func<bool> canExecuteNoParam)
-    {
-      ArgumentNullExceptionEx.ThrowIfNull(executeNoParam, nameof(executeNoParam));
-
-      this.executeCancellableNoParamDelegate = cancellationToken => executeNoParam.Invoke();
-      this.canExecuteNoParamDelegate = canExecuteNoParam ?? (() => true);
     }
 
     /// <summary>
@@ -107,17 +75,6 @@ namespace BionicCode.Utilities.Net
     protected AsyncRelayCommandCommon(Func<CancellationToken, Task> executeAsync, Func<bool> canExecute)
     {
       this.executeCancellableAsyncNoParamDelegate = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
-      this.canExecuteNoParamDelegate = canExecute ?? (() => true);
-    }
-
-    /// <summary>
-    ///   Creates a new parameterless synchronous command that supports cancellation.
-    /// </summary>
-    /// <param name="executeCancellable">The awaitable execution handler.</param>
-    /// <param name="canExecute">The can execute handler.</param>
-    protected AsyncRelayCommandCommon(Action<CancellationToken> executeCancellable, Func<bool> canExecute)
-    {
-      this.executeCancellableNoParamDelegate = executeCancellable ?? throw new ArgumentNullException(nameof(executeCancellable));
       this.canExecuteNoParamDelegate = canExecute ?? (() => true);
     }
 
