@@ -79,21 +79,28 @@
       {
         ArgumentOutOfRangeExceptionEx.ThrowIfNegative(index, nameof(index));
         ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(index, this.Count, nameof(index));
-        return items[index];
+
+        WeakReference<object> reference = this.Items[index];
+        bool isAlive = reference.TryGetTarget(out object target);
+        if (isAlive)
+        {
+          return (TItem)target;
+        }
+        else if (!isAlive)
+        {
+          RemoveItem(index);
+        }
+
+        return null;
       }
 
       set
       {
         ArgumentOutOfRangeExceptionEx.ThrowIfNegative(index, nameof(index));
         ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(index, this.Count, nameof(index));
-        if (items.IsReadOnly)
+        if (this.IsReadOnly)
         {
-          ThrowHelper.ThrowNotSupportedException(ExceptionResource.NotSupported_ReadOnlyCollection);
-        }
-
-        if ((uint)index >= (uint)items.Count)
-        {
-          ThrowHelper.ThrowArgumentOutOfRange_IndexMustBeLessException();
+          throw new NotSupportedException("Collection is read-only");
         }
 
         SetItem(index, value);
@@ -146,6 +153,12 @@
     }
 
     public bool IsReadOnly { get; }
+
+    public bool TryGet(int index, out TItem item)
+    {
+      item = this[index];
+      return item != null;
+    }
 
     public void Add(TItem item)
     {
