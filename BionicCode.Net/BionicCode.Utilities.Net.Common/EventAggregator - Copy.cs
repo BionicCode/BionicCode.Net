@@ -23,7 +23,7 @@
     public event EventHandler<ExanpleArgs> SomeOtherEvent;
   }
   /// <inheritdoc />
-  public class EventAggregatorNew : IEventAggregator
+  public class EventAggregatorNew<TSource> : IEventAggregator
   {
     /// <summary>
     /// Default constructor.
@@ -32,7 +32,7 @@
     {
       this.EventHandlerTable = new ConcurrentDictionary<string, List<Delegate>>();
       this.EventHandlerSynchronizationContextTable = new ConcurrentDictionary<Delegate, SynchronizationContext>();
-      this.EventPublisherTable = new ConditionalWeakTable<object, List<(EventInfo EventInfo, Delegate Handler)>>();
+      //this.EventPublisherTable = new ConditionalWeakTable<object, List<(EventInfo EventInfo, Delegate Handler)>>();
     }
     
     private void OnEventHandler(object sender, EventArgs e)
@@ -50,25 +50,44 @@
     #region Implementation of IEventAggregator
 
     /// <inheritdoc />
-    public bool TryRegisterObservable(object eventSource, params string[] eventNames)
+    public bool TryRegisterObservable(TSource eventSource, params string[] eventNames)
       => TryRegisterObservable(eventSource, (IEnumerable<string>)eventNames);
 
     /// <inheritdoc />
-    public bool TryRegisterObservable(object eventSource, IEnumerable<string> eventNames)
+    public bool TryRegisterObservable(TSource eventSource, IEnumerable<string> eventNames)
     {
       ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
       ArgumentNullExceptionEx.ThrowIfNull(eventNames, nameof(eventNames));
 
+      Type eventSourceType = eventSource.GetType();
+      Delegate eventSourceHandler = null;
       foreach (string eventName in eventNames.Distinct())
       {
+        var key = new EventHandlerTableKey(eventName, eventSourceType);
+        if (EventAggregatorNew<TSource>.GeneratedEventHandlerTable.TryGetValue(key, out EventHandlerTableEntry entry))
+        {
+          if (!entry.EventSourceInstances.TryGetTarget(out object target))
+          {
+            // Reuse entry with new instance
+            entry.EventSourceInstances.SetTarget(eventSource);
+            entry.SourceEventInfo.AddEventHandler(eventSource, entry.GeneratedHandler);
+            continue;
+          }
+
+          if (ReferenceEquals(target, eventSource))
+          {
+            entry.SourceEventInfo.AddEventHandler(eventSource, entry.GeneratedHandler);
+            continue;
+          }
+        }
+
         EventInfo eventInfo = eventSource.GetType()
           .GetEvent(
             eventName,
             BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy)
           ?? throw new ArgumentException($"The event {eventName} was not found on the event source {eventSource.GetType().FullName} or on its declaring base type.");
 
-        Delegate eventSourceHandler = null;
-        Type eventHandlerType = eventInfo.GetRaiseMethod.EventHandlerType;
+        Type eventHandlerType = eventInfo.EventHandlerType;
         if (eventHandlerType == typeof(EventHandler))
         {
           eventSourceHandler = new EventHandler(OnEventHandler);
@@ -103,42 +122,53 @@
               closedHandlerMethod = GetType().GetMethod(nameof(OnEventHandlerCustom)).MakeGenericMethod(typeArguments);
             }
           }
-
-            if (closedHandlerMethod != null)
+          else
+          {
+            MethodInfo invocator = eventHandlerType.GetMethod("Invoke");
+            ParameterInfo[] eventHandlerParameters = invocator.GetParameters();
+            if (eventHandlerParameters.Length == 2)
             {
-              eventSourceHandler = Delegate.CreateDelegate(
-                eventHandlerType,
-                this,
-                closedHandlerMethod);
+              Type[] parameterTypes = eventHandlerParameters.Select(parameter => parameter.ParameterType).ToArray();
+              closedHandlerMethod = GetType().GetMethod(nameof(OnEventHandlerCustom)).MakeGenericMethod(parameterTypes);
             }
             else
             {
-              MethodInfo invocator = eventHandlerType.GetMethod("Invoke");
-              ParameterInfo[] eventHandlerParameters = invocator.GetParameters();
-              var expressionParameters = new List<ParameterExpression>();
-              foreach (ParameterInfo parameter in eventHandlerParameters)
-              {
-                ParameterExpression expressionParameter = Expression.Parameter(parameter.ParameterType, parameter.Name);
-                expressionParameters.Add(expressionParameter);
-              }
-
-              IEnumerable<UnaryExpression> castedExpressionParameters = expressionParameters.Select(parameter => Expression.TypeAs(parameter, typeof(object)));
-              NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), castedExpressionParameters);
-              MethodCallExpression method = Expression.Call(GetType().GetMethod(nameof(OnEventHandlerCustomUnspecified)), argsArray);
-              eventSourceHandler = Expression.Lambda(method, expressionParameters).Compile();
-
-            // TODO::Store dynamic delegate based on event source type and event name to reduce performance costs
+              eventSourceHandler = GenerateEventHandler(eventHandlerParameters);
             }
           }
-        
 
-        List<(EventInfo EventInfo, Delegate Handler)> publishers = this.EventPublisherTable.GetOrCreateValue(eventSource);
-        publishers.Add((eventInfo, eventSourceHandler));
+          if (closedHandlerMethod != null)
+          {
+            eventSourceHandler = Delegate.CreateDelegate(
+              eventHandlerType,
+              this,
+              closedHandlerMethod);
+          }
+        }
 
+        entry = new EventHandlerTableEntry(eventSourceHandler, eventInfo, eventSource);
+        _ = EventAggregatorNew.GeneratedEventHandlerTable.TryAdd(key, entry);
         eventInfo.AddEventHandler(eventSource, eventSourceHandler);
       }
 
       return true;
+    }
+
+    private Delegate GenerateEventHandler(ParameterInfo[] eventHandlerParameters)
+    {
+      Delegate eventSourceHandler;
+      var expressionParameters = new List<ParameterExpression>();
+      foreach (ParameterInfo parameter in eventHandlerParameters)
+      {
+        ParameterExpression expressionParameter = Expression.Parameter(parameter.ParameterType, parameter.Name);
+        expressionParameters.Add(expressionParameter);
+      }
+
+      IEnumerable<UnaryExpression> castedExpressionParameters = expressionParameters.Select(parameter => Expression.TypeAs(parameter, typeof(object)));
+      NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), castedExpressionParameters);
+      MethodCallExpression method = Expression.Call(GetType().GetMethod(nameof(OnEventHandlerCustomUnspecified)), argsArray);
+      eventSourceHandler = Expression.Lambda(method, expressionParameters).Compile();
+      return eventSourceHandler;
     }
 
 #if NET || NETSTANDARD2_1_OR_GREATER || NETCOREAPP
@@ -150,29 +180,28 @@
     public bool TryRemoveObservable(Type eventSourceType, IEnumerable<string> eventNames, bool removeEventObservers = false)
     {
       bool hasRemovedObservable = false;
-      var entries = (IEnumerable<KeyValuePair<object, List<(EventInfo, Delegate)>>>)this.EventPublisherTable.Where(entry => entry.Key.GetType() == eventSourceType);
-      
-      foreach (KeyValuePair<object, List<(EventInfo, Delegate)>> entry in entries)
+      foreach (string eventName in eventNames)
       {
-        object eventSource = entry.Key;
-        List <(EventInfo EventInfo, Delegate Handler)> publisherHandlerInfos = entry.Value;
-        foreach (string eventName in eventNames)
+        var key = new EventHandlerTableKey(eventName, eventSourceType);
+        if (!EventAggregatorNew.GeneratedEventHandlerTable.TryRemove(key, out IList<EventHandlerTableEntry> entriesPerInstance) || entriesPerInstance.IsEmpty())
         {
-          (EventInfo EventInfo, Delegate Handler) publisherHandlerInfo = publisherHandlerInfos.FirstOrDefault(
-            handlerInfo => handlerInfo.EventInfo.Name.Equals(eventName, StringComparison.Ordinal));
+          continue;
+        }
 
-          publisherHandlerInfo.EventInfo?.RemoveEventHandler(eventSource, publisherHandlerInfo.Handler);
-          hasRemovedObservable = publisherHandlerInfos.Remove(publisherHandlerInfo);
+        foreach (EventHandlerTableEntry instanceEntry in entriesPerInstance)
+        {
+          if (!instanceEntry.EventSourceInstances.TryGetTarget(out object instance))
+          {
+            continue;
+          }
+
+          instanceEntry.SourceEventInfo.RemoveEventHandler(instance, instanceEntry.GeneratedHandler);
+          hasRemovedObservable = true;
 
           if (removeEventObservers)
           {
-            _ = TryRemoveAllObservers(eventName, eventSource.GetType());
+            _ = TryRemoveAllObservers(eventName, instance.GetType());
           }
-        }
-
-        if (!publisherHandlerInfos.Any())
-        {
-          _ = this.EventPublisherTable.Remove(eventSource);
         }
       }
 
@@ -189,28 +218,23 @@
     public bool TryRemoveObservable(object eventSource, IEnumerable<string> eventNames, bool removeEventObservers = false)
     {
       bool hasRemovedObservable = false;
-      if (!this.EventPublisherTable.TryGetValue(eventSource, out List<(EventInfo EventInfo, Delegate Handler)> publisherHandlerInfos))
-      {
-        return false;
-      }
-
+      Type eventSourceType = eventSource.GetType();
       foreach (string eventName in eventNames)
       {
-        (EventInfo EventInfo, Delegate Handler) publisherHandlerInfo = publisherHandlerInfos.FirstOrDefault(
-          handlerInfo => handlerInfo.EventInfo.Name.Equals(eventName, StringComparison.Ordinal));
+        var key = new EventHandlerTableKey(eventName, eventSourceType);
+        if (!EventAggregatorNew.GeneratedEventHandlerTable.TryRemove(key, out EventHandlerTableEntry entry) 
+          || (entry.EventSourceInstances.TryGetTarget(out object target) && !ReferenceEquals(target, eventSource)))
+        {
+          continue;
+        }
 
-        publisherHandlerInfo.EventInfo?.RemoveEventHandler(eventSource, publisherHandlerInfo.Handler);
-        hasRemovedObservable = publisherHandlerInfos.Remove(publisherHandlerInfo);
+        entry.SourceEventInfo.RemoveEventHandler(eventSource, entry.GeneratedHandler);
+        hasRemovedObservable = true;
 
         if (removeEventObservers)
         {
           _ = TryRemoveAllObservers(eventName, eventSource.GetType());
         }
-      }
-
-      if (!publisherHandlerInfos.Any())
-      {
-        _ = this.EventPublisherTable.Remove(eventSource);
       }
 
       return hasRemovedObservable;
@@ -221,12 +245,13 @@
     {
       bool hasRemovedObservable = false;
 
-      if (this.EventPublisherTable.TryGetValue(eventSource, out List<(EventInfo EventInfo, Delegate Handler)> handlerInfo))
+      foreach (KeyValuePair<EventHandlerTableKey, EventHandlerTableEntry> entry in EventAggregatorNew.GeneratedEventHandlerTable)
       {
-        _ = this.EventPublisherTable.Remove(eventSource);
-
-        handlerInfo.ForEach(publisherHandlerInfo => publisherHandlerInfo.EventInfo.RemoveEventHandler(eventSource, publisherHandlerInfo.Handler));
-        hasRemovedObservable = true;
+        if (entry.Value.EventSourceInstances.TryGetTarget(out object target) && ReferenceEquals(target, eventSource))
+        {
+          entry.Value.SourceEventInfo.RemoveEventHandler(target, entry.Value.GeneratedHandler);
+          hasRemovedObservable = true;
+        }
       }
 
       if (removeObserversOfEvents)
@@ -639,8 +664,9 @@
 
     private string CreateFullyQualifiedEventIdOfSpecificSource(Type eventSource, string eventName) => eventSource.AssemblyQualifiedName.ToLowerInvariant() + "." + eventSource.FullName.ToLowerInvariant() + "." + eventName;
 
+    private static ConcurrentDictionary<EventHandlerTableKey, EventHandlerTableEntry> GeneratedEventHandlerTable { get; } = new ConcurrentDictionary<EventHandlerTableKey, EventHandlerTableEntry>();
     private ConcurrentDictionary<string, List<Delegate>> EventHandlerTable { get; }
     private ConcurrentDictionary<Delegate, SynchronizationContext> EventHandlerSynchronizationContextTable { get; }
-    private ConditionalWeakTable<object, List<(EventInfo EventInfo, Delegate Handler)>> EventPublisherTable { get; }
+    //private ConditionalWeakTable<object, List<(EventInfo EventInfo, Delegate Handler)>> EventPublisherTable { get; }
   }
 }
