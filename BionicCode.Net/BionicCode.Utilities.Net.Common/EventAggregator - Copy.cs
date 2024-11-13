@@ -15,12 +15,12 @@
   using System.Runtime.CompilerServices;
   using System.Threading;
 
-  class ExanpleArgs : EventArgs
+  class ExampleArgs : EventArgs
   { }
   class Example
   {
     public event Action<string, int, DateTime> SomeEvent;
-    public event EventHandler<ExanpleArgs> SomeOtherEvent;
+    public event EventHandler<ExampleArgs> SomeOtherEvent;
   }
   /// <inheritdoc />
   public class EventAggregatorNew<TSource> : IEventAggregator
@@ -34,18 +34,14 @@
       this.EventHandlerSynchronizationContextTable = new ConcurrentDictionary<Delegate, SynchronizationContext>();
       //this.EventPublisherTable = new ConditionalWeakTable<object, List<(EventInfo EventInfo, Delegate Handler)>>();
     }
-    
-    private void OnEventHandler(object sender, EventArgs e)
+
+    private void OnEventHandlerGeneric<TSender, TEventArgs>(TSender sender, TEventArgs e)
     { }
 
-    private void OnEventHandlerGeneric<TEventArgs>(object sender, TEventArgs e)
-    { }
-
-    private void OnEventHandlerCustom<TSender, TEventArgs>(TSender sender, TEventArgs e)
-    { }
-
-    private static void OnEventHandlerCustomUnspecified(params object[] args)
-    { }
+    private static void OnEventHandlerCustomDynamicSignature(params object[] args)
+    {
+      // TODO::Invoke client handler using reflection
+    }
 
     #region Implementation of IEventAggregator
 
@@ -60,7 +56,7 @@
       ArgumentNullExceptionEx.ThrowIfNull(eventNames, nameof(eventNames));
 
       Type eventSourceType = eventSource.GetType();
-      Delegate eventSourceHandler = null;
+      Delegate sourceEventHandler = null;
       foreach (string eventName in eventNames.Distinct())
       {
         var key = new EventHandlerTableKey(eventName, eventSourceType);
@@ -86,42 +82,46 @@
           .GetEvent(
             eventName,
             BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy)
-          ?? throw new ArgumentException($"The event {eventName} was not found on the event source {eventSource.GetType().FullName} or on its declaring base type.");
+          ?? throw new ArgumentException($"The event {eventName} was not found on the event source {eventSource.GetType().FullName} or on its declaring base eventHandlerGenericTypeDefinition.");
 
         Type eventHandlerType = eventInfo.EventHandlerType;
+        Type eventHandlerGenericTypeDefinition = eventHandlerType.GetGenericTypeDefinition();
         if (eventHandlerType == typeof(EventHandler))
         {
-          eventSourceHandler = new EventHandler(OnEventHandler);
+          EventHandler eventHandler = OnEventHandlerGeneric;
+          WeakEventManager<object, EventArgs>.AddEventHandler(eventSource, eventName, eventHandler);
         }
         else if (eventHandlerType == typeof(EventHandler<EventArgs>))
         {
-          eventSourceHandler = new EventHandler<EventArgs>(OnEventHandler);
+          EventHandler<EventArgs> eventHandlerGeneric = OnEventHandlerGeneric;
+          WeakEventManager<object, EventArgs>.AddEventHandler(eventSource, eventName, eventHandlerGeneric);
         }
         else if (eventHandlerType == typeof(Action<object, EventArgs>))
         {
-          eventSourceHandler = new Action<object, EventArgs>(OnEventHandler);
+          Action<object, EventArgs> action = OnEventHandlerGeneric;
+          WeakEventManager<object, EventArgs>.AddEventHandler(eventSource, eventName, action);
+        }
+        else if (eventHandlerType == typeof(EventHandler<object>))
+        {
+          EventHandler<object> eventHandlerGeneric = OnEventHandlerGeneric;
+          WeakEventManager<object, object>.AddEventHandler(eventSource, eventName, eventHandlerGeneric);
+        }
+        else if (eventHandlerType == typeof(Action<object, object>))
+        {
+          Action<object, object> action = OnEventHandlerGeneric;
+          WeakEventManager<object, object>.AddEventHandler(eventSource, eventName, action);
         }
         else
         {
           MethodInfo closedHandlerMethod = null;
-          if (eventHandlerType.IsGenericType)
+          Type eventArgsType = null;
+          Type eventHandlerSourceType = null;
+          if ((eventHandlerGenericTypeDefinition == typeof(EventHandler<>)))
           {
             Type[] typeArguments = eventHandlerType.GetGenericArguments();
-            if (eventHandlerType.GetGenericTypeDefinition() == typeof(EventHandler<>))
-            {
-              if (typeof(EventArgs).IsAssignableFrom(typeArguments[0]))
-              {
-                closedHandlerMethod = GetType().GetMethod(nameof(OnEventHandler));
-              }
-              else
-              {
-                closedHandlerMethod = GetType().GetMethod(nameof(OnEventHandlerGeneric)).MakeGenericMethod(typeArguments);
-              }
-            }
-            else if (typeArguments.Length == 2)
-            {
-              closedHandlerMethod = GetType().GetMethod(nameof(OnEventHandlerCustom)).MakeGenericMethod(typeArguments);
-            }
+              closedHandlerMethod = GetType().GetMethod(nameof(OnEventHandlerGeneric)).MakeGenericMethod(typeArguments);
+              eventHandlerSourceType = typeof(object);
+              eventArgsType = typeArguments[0];
           }
           else
           {
@@ -130,25 +130,28 @@
             if (eventHandlerParameters.Length == 2)
             {
               Type[] parameterTypes = eventHandlerParameters.Select(parameter => parameter.ParameterType).ToArray();
-              closedHandlerMethod = GetType().GetMethod(nameof(OnEventHandlerCustom)).MakeGenericMethod(parameterTypes);
+              closedHandlerMethod = GetType().GetMethod(nameof(OnEventHandlerGeneric)).MakeGenericMethod(parameterTypes);
+              eventHandlerSourceType = parameterTypes[0];
+              eventArgsType = parameterTypes[1];
             }
             else
             {
-              eventSourceHandler = GenerateEventHandler(eventHandlerParameters);
+              sourceEventHandler = GenerateEventHandler(eventHandlerParameters);
+              eventHandlerSourceType = eventHandlerParameters[0].ParameterType;
+              eventArgsType = typeof(object[]);
             }
           }
 
           if (closedHandlerMethod != null)
           {
-            eventSourceHandler = Delegate.CreateDelegate(
+            sourceEventHandler = Delegate.CreateDelegate(
               eventHandlerType,
               this,
               closedHandlerMethod);
           }
-        }
 
-        WeakEventManager<
-        entry.SourceEventInfo.AddEventHandler(eventSource, eventSourceHandler);
+          _ = typeof(WeakEventManager<,>).MakeGenericType(eventHandlerSourceType, eventArgsType).GetMethod("AddEventHandler").Invoke(null, new object[] { eventSource, eventName, sourceEventHandler });
+        }
       }
 
       return true;
@@ -166,7 +169,7 @@
 
       IEnumerable<UnaryExpression> castedExpressionParameters = expressionParameters.Select(parameter => Expression.TypeAs(parameter, typeof(object)));
       NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), castedExpressionParameters);
-      MethodCallExpression method = Expression.Call(GetType().GetMethod(nameof(OnEventHandlerCustomUnspecified)), argsArray);
+      MethodCallExpression method = Expression.Call(GetType().GetMethod(nameof(OnEventHandlerCustomDynamicSignature)), argsArray);
       eventSourceHandler = Expression.Lambda(method, expressionParameters).Compile();
       return eventSourceHandler;
     }

@@ -60,6 +60,34 @@
       this.eventListenerHandlerMap = new ConditionalWeakTable<object, HashSet<Action<TEventSource, TEventArgs>>>();
     }
 
+    public static void AddEventHandler(Type eventSourceType, Type eventArgsType, string eventName, Delegate handler)
+    {
+      Type handlerType = handler.GetType();
+      Type genericHandlerTypeDefinition = handlerType.GetGenericTypeDefinition();
+      if (genericHandlerTypeDefinition == typeof(EventHandler<>))
+      {
+        AddEventHandler(eventSource, eventName, eventHandler);
+        return;
+      }
+
+      MethodInfo invokeMethod = handler.GetType().GetMethod("Invoke");
+      Action<TEventSource, TEventArgs> eventHandlerInvocator;
+      if (invokeMethod != null)
+      {
+        eventHandlerInvocator = (sender, e) => _ = invokeMethod.Invoke(handler, new object[] { sender, e });
+      }
+      else
+      {
+        eventHandlerInvocator = (sender, e) => _ = handler.DynamicInvoke(sender, e);
+      }
+
+      // If the event handler is a static method, the delegate's target is NULL.
+      // In this case, we need to provide a placeholder for the WeakTable entry.
+      object eventListener = handler.Target ?? DummyEventListenerForStaticEventHandlers.Instance;
+
+      RegisterClientHandler(eventListener, eventHandlerInvocator, handler, eventSource, eventName);
+    }
+
     public static void AddEventHandler(TEventSource eventSource, string eventName, Delegate handler)
     {
       if (handler is EventHandler eventHandler)
@@ -89,6 +117,17 @@
     public static void AddEventHandler(TEventSource eventSource, string eventName, EventHandler<TEventArgs> handler)
     {
       Action<TEventSource, TEventArgs> eventHandlerInvocator = (sender, e) => handler.Invoke(sender, e);
+
+      // If the event handler is a static method, the delegate's target is NULL.
+      // In this case, we need to provide a placeholder for the WeakTable entry.
+      object eventListener = handler.Target ?? DummyEventListenerForStaticEventHandlers.Instance;
+
+      RegisterClientHandler(eventListener, eventHandlerInvocator, handler, eventSource, eventName);
+    }
+
+    public static void AddEventHandler(TEventSource eventSource, string eventName, Action<TEventSource, TEventArgs> handler)
+    {
+      Action<TEventSource, TEventArgs> eventHandlerInvocator = handler;
 
       // If the event handler is a static method, the delegate's target is NULL.
       // In this case, we need to provide a placeholder for the WeakTable entry.
@@ -216,8 +255,8 @@
       {
         handlerInvocatorList = new HashSet<Action<TEventSource, TEventArgs>>();
         weakEventManager.eventListenerHandlerMap.Add(eventListener, handlerInvocatorList);
-        WeakReference<object> eventListsnerWeakReference = ManagedWeakTable.GetOrCreateWeakReference(eventListener);
-        _ = weakEventManager.EventListeners.Add(eventListsnerWeakReference);
+        WeakReference<object> eventListenerWeakReference = ManagedWeakTable.GetOrCreateWeakReference(eventListener);
+        _ = weakEventManager.EventListeners.Add(eventListenerWeakReference);
         weakEventManager.StartListeningInternal(eventSource);
       }
 
