@@ -10,8 +10,10 @@
   using System.Collections.Concurrent;
   using System.Collections.Generic;
   using System.Collections.ObjectModel;
+  using System.ComponentModel;
   using System.Linq;
   using System.Reflection;
+  using System.Runtime.CompilerServices;
   using System.Xml.Linq;
 
   internal readonly struct EventHandlerTableEntry : IEquatable<EventHandlerTableEntry>
@@ -69,7 +71,7 @@
     }
   }
 
-  internal class WeakReferenceCollection<TItem> : ICollection<TItem> where TItem : class
+  internal class WeakReferenceCollection<TItem> : ICollection<TItem>, INotifyPropertyChanged where TItem : class
   {
     protected IList<WeakReference<object>> Items { get; }
 
@@ -86,12 +88,14 @@
         {
           return (TItem)target;
         }
-        else if (!isAlive)
+        else 
         {
           RemoveItem(index);
-        }
+          OnCountChanged();
+          OnIndexerChanged();
 
-        return null;
+          return null;
+        }
       }
 
       set
@@ -106,6 +110,21 @@
         SetItem(index, value);
       }
     }
+
+    public int Count
+    {
+      get
+      {
+        PurgeDeadReferences();
+        return this.Items.Count;
+      }
+    }
+
+    public bool IsReadOnly { get; }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    #region Constructors
 
     public WeakReferenceCollection()
     {
@@ -143,16 +162,7 @@
       this.IsReadOnly = isReadOnly;
     }
 
-    public int Count
-    {
-      get
-      {
-        PurgeDeadReferences();
-        return this.Items.Count;
-      }
-    }
-
-    public bool IsReadOnly { get; }
+    #endregion Constructors
 
     public bool TryGet(int index, out TItem item)
     {
@@ -169,6 +179,8 @@
 
       int index = this.Items.Count;
       InsertItem(index, item);
+      OnCountChanged();
+      OnIndexerChanged();
     }
 
     public void Clear()
@@ -178,11 +190,19 @@
         throw new NotSupportedException("Collection is read-only");
       }
 
+      bool hasChanges = this.Items.Any();
+
       ClearItems();
+      if (hasChanges)
+      {
+        OnCountChanged();
+        OnIndexerChanged();
+      }
     }
 
     public bool Contains(TItem item)
     {
+      bool hasCountChanged = false;
       for (int index = this.Items.Count - 1; index >= 0; index--)
       {
         WeakReference<object> reference = this.Items[index];
@@ -194,7 +214,14 @@
         else if (!isAlive)
         {
           RemoveItem(index);
+          hasCountChanged = true;
         }
+      }
+
+      if (hasCountChanged)
+      {
+        OnCountChanged();
+        OnIndexerChanged();
       }
 
       return false;
@@ -219,17 +246,26 @@
 
     public IEnumerator<TItem> GetEnumerator()
     {
+      WeakReference<object>[] items = this.Items.ToArray();
+      bool hasCountChanged = false;
       for (int index = 0; index < this.Items.Count; index++)
       {
-        WeakReference<object> reference = this.Items[index];
+        WeakReference<object> reference = items[index];
         if (reference.TryGetTarget(out object target))
         {
           yield return (TItem)target;
         }
         else
         {
-          this.hasDeadReferences = true;
+          RemoveItem(index);
+          hasCountChanged = true;
         }
+      }
+
+      if (hasCountChanged)
+      {
+        OnCountChanged();
+        OnIndexerChanged();
       }
     }
 
@@ -240,6 +276,7 @@
         throw new NotSupportedException("Collection is read-only");
       }
 
+      bool hasCountChanged = false;
       for (int index = this.Items.Count - 1; index >= 0; index--)
       {
         WeakReference<object> reference = this.Items[index];
@@ -247,12 +284,22 @@
         if (isAlive && ReferenceEquals(item, target))
         {
           RemoveItem(index);
+          OnCountChanged();
+          OnIndexerChanged();
+
           return true;
         }
         else if (!isAlive)
         {
           RemoveItem(index);
+          hasCountChanged = true;
         }
+      }
+
+      if (hasCountChanged)
+      {
+        OnCountChanged();
+        OnIndexerChanged();
       }
 
       return false;
@@ -283,8 +330,18 @@
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+      => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+    protected virtual void OnCountChanged()
+      => this.PropertyChanged?.Invoke(this, Common.CountPropertyChangedEventArgs);
+
+    protected virtual void OnIndexerChanged()
+      => this.PropertyChanged?.Invoke(this, Common.IndexerPropertyChangedEventArgs);
+
     private void PurgeDeadReferences()
     {
+      bool hasCountChanged = false;
       for (int index = this.Items.Count - 1; index >= 0; index--)
       {
         WeakReference<object> reference = this.Items[index];
@@ -292,7 +349,14 @@
         if (!isAlive)
         {
           RemoveItem(index);
+          hasCountChanged = true;
         }
+      }
+
+      if (hasCountChanged)
+      {
+        OnCountChanged();
+        OnIndexerChanged();
       }
     }
   }
