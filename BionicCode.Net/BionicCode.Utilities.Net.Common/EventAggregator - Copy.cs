@@ -64,22 +64,23 @@
       foreach (string eventName in eventNames.Distinct())
       {
         var key = new EventHandlerTableKey(eventName, eventSourceType);
-        if (EventAggregatorNew<TSource>.GeneratedEventHandlerTable.TryGetValue(key, out EventHandlerTableEntry entry))
+        if (EventAggregatorNew<TSource>.SourceEventInfoTable.TryGetValue(key, out EventInfoTableEntry entry))
         {
-          if (!entry.EventSourceInstances.TryGetTarget(out object target))
+          if (entry.EventSourceInstances.Contains(eventSource))
           {
-            // Reuse entry with new instance
-            entry.EventSourceInstances.SetTarget(eventSource);
-            entry.SourceEventInfo.AddEventHandler(eventSource, entry.GeneratedHandler);
             continue;
           }
-
-          if (ReferenceEquals(target, eventSource))
+          else
           {
+            entry.EventSourceInstances.Add(eventSource);
             entry.SourceEventInfo.AddEventHandler(eventSource, entry.GeneratedHandler);
+
             continue;
           }
         }
+
+        entry = new EventInfoTableEntry(eventSource);
+        _ = EventAggregatorNew<TSource>.SourceEventInfoTable.TryAdd(key, entry);
 
         EventInfo eventInfo = eventSource.GetType()
           .GetEvent(
@@ -146,9 +147,8 @@
           }
         }
 
-        entry = new EventHandlerTableEntry(eventSourceHandler, eventInfo, eventSource);
-        _ = EventAggregatorNew.GeneratedEventHandlerTable.TryAdd(key, entry);
-        eventInfo.AddEventHandler(eventSource, eventSourceHandler);
+        WeakEventManager<
+        entry.SourceEventInfo.AddEventHandler(eventSource, eventSourceHandler);
       }
 
       return true;
@@ -183,12 +183,12 @@
       foreach (string eventName in eventNames)
       {
         var key = new EventHandlerTableKey(eventName, eventSourceType);
-        if (!EventAggregatorNew.GeneratedEventHandlerTable.TryRemove(key, out IList<EventHandlerTableEntry> entriesPerInstance) || entriesPerInstance.IsEmpty())
+        if (!EventAggregatorNew.GeneratedEventHandlerTable.TryRemove(key, out IList<EventInfoTableEntry> entriesPerInstance) || entriesPerInstance.IsEmpty())
         {
           continue;
         }
 
-        foreach (EventHandlerTableEntry instanceEntry in entriesPerInstance)
+        foreach (EventInfoTableEntry instanceEntry in entriesPerInstance)
         {
           if (!instanceEntry.EventSourceInstances.TryGetTarget(out object instance))
           {
@@ -222,14 +222,16 @@
       foreach (string eventName in eventNames)
       {
         var key = new EventHandlerTableKey(eventName, eventSourceType);
-        if (!EventAggregatorNew.GeneratedEventHandlerTable.TryRemove(key, out EventHandlerTableEntry entry) 
-          || (entry.EventSourceInstances.TryGetTarget(out object target) && !ReferenceEquals(target, eventSource)))
+        if (!EventAggregatorNew<TSource>.SourceEventInfoTable.TryGetValue(key, out EventInfoTableEntry entry))
         {
           continue;
         }
 
-        entry.SourceEventInfo.RemoveEventHandler(eventSource, entry.GeneratedHandler);
-        hasRemovedObservable = true;
+        if (entry.EventSourceInstances.Remove(eventSource))
+        {
+          entry.SourceEventInfo.RemoveEventHandler(eventSource, entry.GeneratedHandler);
+          hasRemovedObservable = true;
+        }
 
         if (removeEventObservers)
         {
@@ -245,11 +247,11 @@
     {
       bool hasRemovedObservable = false;
 
-      foreach (KeyValuePair<EventHandlerTableKey, EventHandlerTableEntry> entry in EventAggregatorNew.GeneratedEventHandlerTable)
+      foreach (KeyValuePair<EventHandlerTableKey, EventInfoTableEntry> entry in EventAggregatorNew<TSource>.SourceEventInfoTable)
       {
-        if (entry.Value.EventSourceInstances.TryGetTarget(out object target) && ReferenceEquals(target, eventSource))
+        if (entry.Value.EventSourceInstances.Contains(eventSource))
         {
-          entry.Value.SourceEventInfo.RemoveEventHandler(target, entry.Value.GeneratedHandler);
+          entry.Value.SourceEventInfo.RemoveEventHandler(eventSource, entry.Value.GeneratedHandler);
           hasRemovedObservable = true;
         }
       }
@@ -664,7 +666,7 @@
 
     private string CreateFullyQualifiedEventIdOfSpecificSource(Type eventSource, string eventName) => eventSource.AssemblyQualifiedName.ToLowerInvariant() + "." + eventSource.FullName.ToLowerInvariant() + "." + eventName;
 
-    private static ConcurrentDictionary<EventHandlerTableKey, EventHandlerTableEntry> GeneratedEventHandlerTable { get; } = new ConcurrentDictionary<EventHandlerTableKey, EventHandlerTableEntry>();
+    private static ConcurrentDictionary<EventHandlerTableKey, EventInfoTableEntry> SourceEventInfoTable { get; } = new ConcurrentDictionary<EventHandlerTableKey, EventInfoTableEntry>();
     private ConcurrentDictionary<string, List<Delegate>> EventHandlerTable { get; }
     private ConcurrentDictionary<Delegate, SynchronizationContext> EventHandlerSynchronizationContextTable { get; }
     //private ConditionalWeakTable<object, List<(EventInfo EventInfo, Delegate Handler)>> EventPublisherTable { get; }
