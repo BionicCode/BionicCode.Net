@@ -18,19 +18,29 @@
 
   internal class EventInfoTableEntry
   {
+    private bool? isStaticEvent;
+
     public EventInfoTableEntry(Delegate generatedHandler, EventInfo sourceEventInfo, object eventSource)
     {
-      this.GeneratedHandler = generatedHandler;
-      this.SourceEventInfo = sourceEventInfo;
-      this.EventSourceInstances = new WeakCollection<object>() { eventSource };
+      this.Handler = generatedHandler;
+      this.EventInfo = sourceEventInfo;
+      this.EventSourceInstances = new WeakCollection<object>();
+      if (eventSource != null)
+      {
+        this.EventSourceInstances.Add(eventSource);
+      }
     }
 
     public EventInfoTableEntry(object eventSource) : this(null, null, eventSource)
     {
     }
 
-    public Delegate GeneratedHandler { get; }
-    public EventInfo SourceEventInfo { get; }
+    public bool IsStaticEvent => this.EventInfo is null 
+      ? throw new InvalidOperationException($"The {nameof(this.EventInfo)} property is NULL") 
+      : (bool)(this.isStaticEvent ?? (this.isStaticEvent = this.EventInfo.GetAddMethod().IsStatic)); 
+    public Delegate Handler { get; set; }
+    public EventInfo EventInfo { get; set; }
+    public string EventName => this.EventInfo?.Name ?? string.Empty;
     public WeakCollection<object> EventSourceInstances { get; }
   }
 }

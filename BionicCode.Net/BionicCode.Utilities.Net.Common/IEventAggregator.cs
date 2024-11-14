@@ -183,24 +183,110 @@
     bool TryRegisterGlobalObserver<TEventArgs>(EventHandler<TEventArgs> eventHandler, SynchronizationContext synchronizationContext);
 
     /// <summary>
-    /// Unregister the event publisher for a collection of specified events.
+    /// Unregisters all static events of the event publisher. This method overload ignores all instance events by default. 
+    /// <br/>If configured to include instance events then all event source instances of the specified type are removed.
     /// </summary>
-    /// <param name="eventSource">The event publisher instance.</param>
-    /// <param name="eventNames">The names of the events to unregister.</param>
-    /// <param name="removeEventObservers">If <c>true</c> removes all event listenerHandlerMap of the specified events. The value is <c>false</c> by default.</param>
-    /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
-    bool TryRemoveObservable(
-      object eventSource,
-      IEnumerable<string> eventNames,
-      bool removeEventObservers = false);
+    /// <param name="eventSourceType">The type of the event source for the static event.</param>
+    /// <param name="removeAllEventObservers">Optional. If <see langword="true"/> removes all event listeners. The value is <see langword="false"/> by default.</param>
+    /// <param name="includeInstanceEvents">Optional. If <see langword="true"/> all static and instance events will be removed. In case of instance events, this will essentially unregister the instance events of all registered event sources of type <paramref name="eventSourceType"/>. 
+    /// If <see langword="false"/> only static events will be removed. The default is <see langword="false"/>.</param>
+    /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
+    bool TryRemoveObservable(Type eventSourceType, bool removeAllEventObservers = false, bool includeInstanceEvents = false);
 
     /// <summary>
-    /// Unregister the event publisher for all events.
+    /// Unregisters the specified static events of the event publisher. This method overload ignores all instance events by default. 
+    /// <br/>If configured to include instance events then all event source instances of the specified type are removed.
+    /// </summary>
+    /// <param name="eventSourceType">The type of the event source for the static event.</param>
+    /// <param name="eventNames">The names of the events to unregister. Pass <see langword="null"/> to unregister all static events.</param>
+    /// <param name="removeAllEventObservers">Optional. If <see langword="true"/> removes all event listeners of the specified events. The value is <see langword="false"/> by default.</param>
+    /// <param name="includeInstanceEvents">Optional. If <see langword="true"/> all static and instance events that match an event name contained in <paramref name="eventNames"/> will be removed. In case of instance events, this will essentially unregister the instance events of all registered event sources of type <paramref name="eventSourceType"/>. 
+    /// If <see langword="false"/> only static events will be removed. The default is <see langword="false"/>.</param>
+    /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
+    bool TryRemoveObservable(Type eventSourceType, bool removeAllEventObservers = false, bool includeInstanceEvents = false, params string[] eventNames);
+
+    /// <summary>
+    /// Unregisters the specified static events of the event publisher. This method overload ignores all instance events by default. 
+    /// <br/>If configured to include instance events then all event source instances of the specified type are removed.
+    /// </summary>
+    /// <param name="eventSourceType">The type of the event source for the static event.</param>
+    /// <param name="eventNames">The names of the events to unregister. Pass <see langword="null"/> to unregister all static events.</param>
+    /// <param name="removeAllEventObservers">Optional. If <see langword="true"/> removes all event listeners of the specified events. The value is <see langword="false"/> by default.</param>
+    /// <param name="includeInstanceEvents">Optional. If <see langword="true"/> all static and instance events that match an event name contained in <paramref name="eventNames"/> will be removed. In case of instance events, this will essentially unregister the instance events of all registered event sources that of type <paramref name="eventSourceType"/>. If <see langword="false"/> only static events will be removed. The default is <see langword="false"/>.</param>
+    /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
+    bool TryRemoveObservable(Type eventSourceType, IEnumerable<string> eventNames, bool removeAllEventObservers = false, bool includeInstanceEvents = false);
+
+    /// <summary>
+    /// Unregisters all static events of the event publisher. This method overload ignores all instance events by default. 
+    /// <br/>If configured to include instance events then all event source instances of the specified type are removed.
+    /// </summary>
+    /// <typeparam name="TEventSource">The type of the event source for the static event. If <paramref name="includeInstanceEvents"/> is <see langword="true"/> then this is the type of all event source instances.</typeparam>
+    /// <param name="removeAllEventObservers">Optional. If <see langword="true"/> removes all event listeners. The value is <see langword="false"/> by default.</param>
+    /// <param name="includeInstanceEvents">Optional. If <see langword="true"/> all static and instance events will be removed. In case of instance events, this will essentially unregister the instance events of all registered event sources of type <typeparamref name="TEventSource"/>. 
+    /// If <see langword="false"/> only static events will be removed. The default is <see langword="false"/>.</param>
+    /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
+    bool TryRemoveObservable<TEventSource>(bool removeAllEventObservers = false, bool includeInstanceEvents = false);
+
+    /// <summary>
+    /// Unregisters the specified static events of the event publisher. This method overload ignores all instance events by default. 
+    /// <br/>If configured to include instance events then all event source instances of the specified type are removed.
+    /// </summary>
+    /// <typeparam name="TEventSource">The type of the event source for the static event. If <paramref name="includeInstanceEvents"/> is <see langword="true"/> then this is the type of all event source instances.</typeparam>
+    /// <param name="eventNames">The names of the events to unregister. Pass <see langword="null"/> to unregister all static events.</param>
+    /// <param name="removeAllEventObservers">Optional. If <see langword="true"/> removes all event listeners of the specified events. The value is <see langword="false"/> by default.</param>
+    /// <param name="includeInstanceEvents">Optional. If <see langword="true"/> all static and instance events that match an event name contained in <paramref name="eventNames"/> will be removed. In case of instance events, this will essentially unregister the instance events of all registered event sources that of type <typeparamref name="TEventSource"/>. If <see langword="false"/> only static events will be removed. The default is <see langword="false"/>.</param>
+    /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
+    bool TryRemoveObservable<TEventSource>(bool removeAllEventObservers = false, bool includeInstanceEvents = false, params string[] eventNames);
+
+    /// <summary>
+    /// Unregisters the specified static events of the event publisher. This method overload ignores all instance events by default. 
+    /// <br/>If configured to include instance events then all event source instances of the specified type are removed.
+    /// </summary>
+    /// <typeparam name="TEventSource">The type of the event source for the static event. If <paramref name="includeInstanceEvents"/> is <see langword="true"/> then this is the type of all event source instances.</typeparam>
+    /// <param name="eventNames">The names of the events to unregister. Pass <see langword="null"/> to unregister all static events.</param>
+    /// <param name="removeAllEventObservers">Optional. If <see langword="true"/> removes all event listeners of the specified events. The value is <see langword="false"/> by default.</param>
+    /// <param name="includeInstanceEvents">Optional. If <see langword="true"/> all static and instance events that match an event name contained in <paramref name="eventNames"/> will be removed. In case of instance events, this will essentially unregister the instance events of all registered event sources that of type <typeparamref name="TEventSource"/>. If <see langword="false"/> only static events will be removed. The default is <see langword="false"/>.</param>
+    /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
+    bool TryRemoveObservable<TEventSource>(IEnumerable<string> eventNames, bool removeAllEventObservers = false, bool includeInstanceEvents = false);
+
+    /// <summary>
+    /// Unregister the specified events of the event publisher.This method overload ignores all static events by default. 
+    /// <br/>Can be configured to include static events.
+    /// </summary>
+    /// <param name="eventSource">The event publisher instance. </param>
+    /// <param name="eventNames">The names of the events to unregister. Pass <see langword="null"/> to unregister all events</param>
+    /// <param name="removeAllEventObservers">Optional. If <see langword="true"/> removes all event listeners of the specified events. The value is <see langword="false"/> by default.</param>
+    /// <param name="includeStaticEvents">Optional. If <see langword="true"/> all static and instance events that match an event name contained in <paramref name="eventNames"/> will be removed. If <see langword="false"/> only instance events will be removed. The default is <see langword="false"/>.</param>
+    /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
+    /// <exception cref="ArgumentNullException">The <paramref name="eventSource"/> is <see langword="null"/>.</exception>
+    /// <remarks>Use <see cref="TryRemoveObservable{TEventSource}(IEnumerable{string}, bool, bool)"/> or <see cref="TryRemoveObservable(Type, IEnumerable{string}, bool, bool)"/> to remove static events.</remarks>
+    /// <br/>Alternatively, set <paramref name="includeStaticEvents"/> to <see langword="true"/>.</remarks>
+    bool TryRemoveObservable(object eventSource, IEnumerable<string> eventNames, bool removeAllEventObservers = false, bool includeStaticEvents = false);
+
+    /// <summary>
+    /// Unregister the specified events of the event publisher.This method overload ignores all static events by default. 
+    /// <br/>Can be configured to include static events.
+    /// </summary>
+    /// <param name="eventNames">The names of the events to unregister. Pass <see langword="null"/> to unregister all static events.</param>
+    /// <param name="eventSource">The event publisher instance.</param>
+    /// <param name="removeAllEventObservers">Optional. If <see langword="true"/> removes all event listeners of the specified events. The value is <see langword="false"/> by default.</param>
+    /// <param name="includeStaticEvents">Optional. If <see langword="true"/> all static and instance events that match an event name contained in <paramref name="eventNames"/> will be removed. If <see langword="false"/> only instance events will be removed. The default is <see langword="false"/>.</param>
+    /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
+    /// <remarks>Use <see cref="TryRemoveObservable{TEventSource}(bool, bool, string[])"/> or <see cref="TryRemoveObservable(Type, bool, bool, string[])"/> to remove static events.</remarks>
+    /// <br/>Alternatively, set <paramref name="includeStaticEvents"/> to <see langword="true"/>.</remarks>
+    bool TryRemoveObservable(object eventSource, bool removeAllEventObservers = false, bool includeStaticEvents = false, params string[] eventNames);
+
+    /// <summary>
+    /// Unregister all events of the event publisher.This method overload ignores all static events by default. 
+    /// <br/>Can be configured to include static events.
     /// </summary>
     /// <param name="eventSource">The event publisher instance.</param>
-    /// <param name="removeEventObservers">If <c>true</c> removes all event listenerHandlerMap of the specified events. The value is <c>false</c> by default.</param>
-    /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
-    bool TryRemoveObservable(object eventSource, bool removeEventObservers = false);
+    /// <param name="removeAllEventObservers">Optional. If <see langword="true"/> removes all event listeners of the specified events. The value is <see langword="false"/> by default.</param>
+    /// <param name="includeStaticEvents">Optional. If <see langword="true"/> all static and instance events will be removed. If <see langword="false"/> only instance events will be removed. The default is <see langword="false"/>.</param>
+    /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
+    /// <remarks>Use <see cref="TryRemoveObservable{TEventSource}(bool, bool)"/> or <see cref="TryRemoveObservable(Type, bool, bool)"/> to remove static events. 
+    /// <br/>Alternatively, set <paramref name="includeStaticEvents"/> to <see langword="true"/>.</remarks>
+    bool TryRemoveObservable(object eventSource, bool removeAllEventObservers = false, bool includeStaticEvents = false);
 
     /// <summary>
     /// Removes the event handler for a specified event of a certain event publisher type.

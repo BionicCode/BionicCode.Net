@@ -23,12 +23,12 @@
     public event EventHandler<ExampleArgs> SomeOtherEvent;
   }
   /// <inheritdoc />
-  public class EventAggregatorNew<TSource> : IEventAggregator
+  public class WeakEventAggregator : IEventAggregator
   {
     /// <summary>
     /// Default constructor.
     /// </summary>
-    public EventAggregatorNew()
+    public WeakEventAggregator()
     {
       this.EventHandlerTable = new ConcurrentDictionary<string, List<Delegate>>();
       this.EventHandlerSynchronizationContextTable = new ConcurrentDictionary<Delegate, SynchronizationContext>();
@@ -46,11 +46,11 @@
     #region Implementation of IEventAggregator
 
     /// <inheritdoc />
-    public bool TryRegisterObservable(TSource eventSource, params string[] eventNames)
+    public bool TryRegisterObservable(object eventSource, params string[] eventNames)
       => TryRegisterObservable(eventSource, (IEnumerable<string>)eventNames);
 
     /// <inheritdoc />
-    public bool TryRegisterObservable(TSource eventSource, IEnumerable<string> eventNames)
+    public bool TryRegisterObservable(object eventSource, IEnumerable<string> eventNames)
     {
       ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
       ArgumentNullExceptionEx.ThrowIfNull(eventNames, nameof(eventNames));
@@ -60,7 +60,7 @@
       foreach (string eventName in eventNames.Distinct())
       {
         var key = new EventHandlerTableKey(eventName, eventSourceType);
-        if (EventAggregatorNew<TSource>.SourceEventInfoTable.TryGetValue(key, out EventInfoTableEntry entry))
+        if (WeakEventAggregator.SourceEventInfoTable.TryGetValue(key, out EventInfoTableEntry entry))
         {
           if (entry.EventSourceInstances.Contains(eventSource))
           {
@@ -69,53 +69,58 @@
           else
           {
             entry.EventSourceInstances.Add(eventSource);
-            entry.SourceEventInfo.AddEventHandler(eventSource, entry.GeneratedHandler);
+            entry.EventInfo.AddEventHandler(eventSource, entry.Handler);
 
             continue;
           }
         }
 
         entry = new EventInfoTableEntry(eventSource);
-        _ = EventAggregatorNew<TSource>.SourceEventInfoTable.TryAdd(key, entry);
+        _ = WeakEventAggregator.SourceEventInfoTable.TryAdd(key, entry);
 
-        EventInfo eventInfo = eventSource.GetType()
+        entry.EventInfo = eventSource.GetType()
           .GetEvent(
             eventName,
             BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy)
           ?? throw new ArgumentException($"The event {eventName} was not found on the event source {eventSource.GetType().FullName} or on its declaring base eventHandlerGenericTypeDefinition.");
 
-        Type eventHandlerType = eventInfo.EventHandlerType;
-        Type eventHandlerGenericTypeDefinition = eventHandlerType.GetGenericTypeDefinition();
+        Type eventHandlerType = entry.EventInfo.EventHandlerType;
         if (eventHandlerType == typeof(EventHandler))
         {
           EventHandler eventHandler = OnEventHandlerGeneric;
           WeakEventManager<object, EventArgs>.AddEventHandler(eventSource, eventName, eventHandler);
+          entry.Handler = eventHandler;
         }
         else if (eventHandlerType == typeof(EventHandler<EventArgs>))
         {
-          EventHandler<EventArgs> eventHandlerGeneric = OnEventHandlerGeneric;
-          WeakEventManager<object, EventArgs>.AddEventHandler(eventSource, eventName, eventHandlerGeneric);
+          EventHandler<EventArgs> eventHandler = OnEventHandlerGeneric;
+          WeakEventManager<object, EventArgs>.AddEventHandler(eventSource, eventName, eventHandler);
+          entry.Handler = eventHandler;
         }
         else if (eventHandlerType == typeof(Action<object, EventArgs>))
         {
-          Action<object, EventArgs> action = OnEventHandlerGeneric;
-          WeakEventManager<object, EventArgs>.AddEventHandler(eventSource, eventName, action);
+          Action<object, EventArgs> eventHandler = OnEventHandlerGeneric;
+          WeakEventManager<object, EventArgs>.AddEventHandler(eventSource, eventName, eventHandler);
+          entry.Handler = eventHandler;
         }
         else if (eventHandlerType == typeof(EventHandler<object>))
         {
-          EventHandler<object> eventHandlerGeneric = OnEventHandlerGeneric;
-          WeakEventManager<object, object>.AddEventHandler(eventSource, eventName, eventHandlerGeneric);
+          EventHandler<object> eventHandler = OnEventHandlerGeneric;
+          WeakEventManager<object, object>.AddEventHandler(eventSource, eventName, eventHandler);
+          entry.Handler = eventHandler;
         }
         else if (eventHandlerType == typeof(Action<object, object>))
         {
-          Action<object, object> action = OnEventHandlerGeneric;
-          WeakEventManager<object, object>.AddEventHandler(eventSource, eventName, action);
+          Action<object, object> eventHandler = OnEventHandlerGeneric;
+          WeakEventManager<object, object>.AddEventHandler(eventSource, eventName, eventHandler);
+          entry.Handler = eventHandler;
         }
         else
         {
           MethodInfo closedHandlerMethod = null;
           Type eventArgsType = null;
           Type eventHandlerSourceType = null;
+          Type eventHandlerGenericTypeDefinition = eventHandlerType.GetGenericTypeDefinition();
           if ((eventHandlerGenericTypeDefinition == typeof(EventHandler<>)))
           {
             Type[] typeArguments = eventHandlerType.GetGenericArguments();
@@ -150,7 +155,10 @@
               closedHandlerMethod);
           }
 
-          _ = typeof(WeakEventManager<,>).MakeGenericType(eventHandlerSourceType, eventArgsType).GetMethod("AddEventHandler").Invoke(null, new object[] { eventSource, eventName, sourceEventHandler });
+          entry.Handler = sourceEventHandler;
+          Type closedWeakEventManagerType = typeof(WeakEventManager<,>).MakeGenericType(eventHandlerSourceType, eventArgsType);
+          MethodInfo weakEventManagerAddHandlerMethodInfo = closedWeakEventManagerType.GetMethod("AddEventHandler");
+          _ = weakEventManagerAddHandlerMethodInfo.Invoke(null, new object[] { eventSource, eventName, sourceEventHandler });
         }
       }
 
@@ -174,36 +182,88 @@
       return eventSourceHandler;
     }
 
-#if NET || NETSTANDARD2_1_OR_GREATER || NETCOREAPP
     /// <inheritdoc />
-    public bool TryRemoveObservable(Type eventSourceType, bool removeEventObservers = false, params string[] eventNames)
-      => TryRemoveObservable(eventSourceType, eventNames, removeEventObservers);
+    public bool TryRemoveObservable(Type eventSourceType, bool removeEventObservers = false, bool includeInstanceEvents = false)
+      => TryRemoveObservableInternal(null, eventSourceType, null, removeEventObservers, includeInstanceEvents, includeStaticEvents: true);
 
     /// <inheritdoc />
-    public bool TryRemoveObservable(Type eventSourceType, IEnumerable<string> eventNames, bool removeEventObservers = false)
+    public bool TryRemoveObservable(Type eventSourceType, bool removeEventObservers = false, bool includeInstanceEvents = false, params string[] eventNames)
+      => TryRemoveObservableInternal(null, eventSourceType, eventNames, removeEventObservers, includeInstanceEvents, includeStaticEvents: true);
+
+    /// <inheritdoc />
+    public bool TryRemoveObservable(Type eventSourceType, IEnumerable<string> eventNames, bool removeEventObservers = false, bool includeInstanceEvents = false)
+      => TryRemoveObservableInternal(null, eventSourceType, eventNames, removeEventObservers, includeInstanceEvents, includeStaticEvents: true);
+
+    /// <inheritdoc />
+    public bool TryRemoveObservable<TEventSource>(bool removeEventObservers = false, bool includeInstanceEvents = false)
+      => TryRemoveObservableInternal(null, typeof(TEventSource), null, removeEventObservers, includeInstanceEvents, includeStaticEvents: true);
+
+    /// <inheritdoc />
+    public bool TryRemoveObservable<TEventSource>(bool removeEventObservers = false, bool includeInstanceEvents = false, params string[] eventNames)
+      => TryRemoveObservableInternal(null, typeof(TEventSource), eventNames, removeEventObservers, includeInstanceEvents, includeStaticEvents: true);
+
+    /// <inheritdoc />
+    public bool TryRemoveObservable<TEventSource>(IEnumerable<string> eventNames, bool removeEventObservers = false, bool includeInstanceEvents = false)
+      => TryRemoveObservableInternal(null, typeof(TEventSource), eventNames, removeEventObservers, includeInstanceEvents, includeStaticEvents: true);
+
+    /// <inheritdoc />
+    public bool TryRemoveObservable(object eventSource, bool removeAllEventObservers = false, bool includeStaticEvents = false, params string[] eventNames)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
+      return TryRemoveObservableInternal(eventSource, eventSource.GetType(), eventNames, removeAllEventObservers, includeInstanceEvents: true, includeStaticEvents);
+    }
+
+    /// <inheritdoc />
+    public bool TryRemoveObservable(object eventSource, IEnumerable<string> eventNames, bool removeAllEventObservers = false, bool includeStaticEvents = false)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
+      return TryRemoveObservableInternal(eventSource, eventSource.GetType(), eventNames, removeAllEventObservers, includeInstanceEvents: true, includeStaticEvents);
+    }
+
+    /// <inheritdoc />
+    public bool TryRemoveObservable(object eventSource, bool removeAllObserversOfEvents = false, bool includeStaticEvents = false)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
+      return TryRemoveObservableInternal(eventSource, eventSource.GetType(), null, removeAllObserversOfEvents, includeInstanceEvents: true, includeStaticEvents);
+    }
+
+    private bool TryRemoveObservableInternal(object eventSource, Type eventSourceType, IEnumerable<string> eventNames, bool removeAllEventObservers, bool includeInstanceEvents, bool includeStaticEvents)
     {
       bool hasRemovedObservable = false;
+
+      if (eventNames is null)
+      {
+        eventNames = eventSourceType.GetEvents()
+          .Select(eventInfo => eventInfo.Name);
+      }
+
       foreach (string eventName in eventNames)
       {
         var key = new EventHandlerTableKey(eventName, eventSourceType);
-        if (!EventAggregatorNew.GeneratedEventHandlerTable.TryRemove(key, out IList<EventInfoTableEntry> entriesPerInstance) || entriesPerInstance.IsEmpty())
+        if (!WeakEventAggregator.SourceEventInfoTable.TryGetValue(key, out EventInfoTableEntry entry))
         {
           continue;
         }
 
-        foreach (EventInfoTableEntry instanceEntry in entriesPerInstance)
+        if (entry.IsStaticEvent)
         {
-          if (!instanceEntry.EventSourceInstances.TryGetTarget(out object instance))
-          {
-            continue;
-          }
-
-          instanceEntry.SourceEventInfo.RemoveEventHandler(instance, instanceEntry.GeneratedHandler);
+          RemoveHandlerInternal(eventName, entry.EventInfo.EventHandlerType, entry.Handler, null);
           hasRemovedObservable = true;
-
-          if (removeEventObservers)
+        }
+        else if (includeInstanceEvents)
+        {
+          IEnumerable<object> eventSourceInstances = eventSource is null
+            ? (IEnumerable<object>)entry.EventSourceInstances
+            : new object[1] { eventSource };
+          foreach (object eventSourceInstance in eventSourceInstances)
           {
-            _ = TryRemoveAllObservers(eventName, instance.GetType());
+            hasRemovedObservable = true;
+            RemoveHandlerInternal(eventName, entry.EventInfo.EventHandlerType, entry.Handler, eventSourceInstance);
+
+            if (removeAllEventObservers)
+            {
+              _ = TryRemoveAllObservers(eventName, instance.GetType());
+            }
           }
         }
       }
@@ -211,60 +271,53 @@
       return hasRemovedObservable;
     }
 
-#endif
-
-    /// <inheritdoc />
-    public bool TryRemoveObservable(object eventSource, bool removeEventObservers = false, params string[] eventNames)
-      => TryRemoveObservable(eventSource, eventNames, removeEventObservers);
-
-    /// <inheritdoc />
-    public bool TryRemoveObservable(object eventSource, IEnumerable<string> eventNames, bool removeEventObservers = false)
+    private void RemoveHandlerInternal(string eventName, Type eventHandlerType, Delegate handler, object eventSourceInstance)
     {
-      bool hasRemovedObservable = false;
-      Type eventSourceType = eventSource.GetType();
-      foreach (string eventName in eventNames)
+      if (eventHandlerType == typeof(EventHandler)
+        || eventHandlerType == typeof(EventHandler<EventArgs>)
+        || eventHandlerType == typeof(Action<object, EventArgs>))
       {
-        var key = new EventHandlerTableKey(eventName, eventSourceType);
-        if (!EventAggregatorNew<TSource>.SourceEventInfoTable.TryGetValue(key, out EventInfoTableEntry entry))
-        {
-          continue;
-        }
-
-        if (entry.EventSourceInstances.Remove(eventSource))
-        {
-          entry.SourceEventInfo.RemoveEventHandler(eventSource, entry.GeneratedHandler);
-          hasRemovedObservable = true;
-        }
-
-        if (removeEventObservers)
-        {
-          _ = TryRemoveAllObservers(eventName, eventSource.GetType());
-        }
+        WeakEventManager<object, EventArgs>.RemoveEventHandler(eventSourceInstance, eventName, handler);
       }
-
-      return hasRemovedObservable;
-    }
-
-    /// <inheritdoc />
-    public bool TryRemoveObservable(object eventSource, bool removeObserversOfEvents = false)
-    {
-      bool hasRemovedObservable = false;
-
-      foreach (KeyValuePair<EventHandlerTableKey, EventInfoTableEntry> entry in EventAggregatorNew<TSource>.SourceEventInfoTable)
+      else if (eventHandlerType == typeof(EventHandler<object>)
+        || eventHandlerType == typeof(Action<object, object>))
       {
-        if (entry.Value.EventSourceInstances.Contains(eventSource))
-        {
-          entry.Value.SourceEventInfo.RemoveEventHandler(eventSource, entry.Value.GeneratedHandler);
-          hasRemovedObservable = true;
-        }
+        WeakEventManager<object, object>.RemoveEventHandler(eventSourceInstance, eventName, handler);
       }
-
-      if (removeObserversOfEvents)
+      else
       {
-        _ = TryRemoveAllObservers(eventSource.GetType());
-      }
+        MethodInfo closedHandlerMethod = null;
+        Type eventArgsType = null;
+        Type eventHandlerSourceType = null;
+        Type eventHandlerGenericTypeDefinition = eventHandlerType.GetGenericTypeDefinition();
+        if ((eventHandlerGenericTypeDefinition == typeof(EventHandler<>)))
+        {
+          Type[] typeArguments = eventHandlerType.GetGenericArguments();
+          closedHandlerMethod = GetType().GetMethod(nameof(OnEventHandlerGeneric)).MakeGenericMethod(typeArguments);
+          eventHandlerSourceType = typeof(object);
+          eventArgsType = typeArguments[0];
+        }
+        else
+        {
+          MethodInfo invocator = eventHandlerType.GetMethod("Invoke");
+          ParameterInfo[] eventHandlerParameters = invocator.GetParameters();
+          if (eventHandlerParameters.Length == 2)
+          {
+            Type[] parameterTypes = eventHandlerParameters.Select(parameter => parameter.ParameterType).ToArray();
+            eventHandlerSourceType = parameterTypes[0];
+            eventArgsType = parameterTypes[1];
+          }
+          else
+          {
+            eventHandlerSourceType = eventHandlerParameters[0].ParameterType;
+            eventArgsType = typeof(object[]);
+          }
+        }
 
-      return hasRemovedObservable;
+        Type closedWeakEventManagerType = typeof(WeakEventManager<,>).MakeGenericType(eventHandlerSourceType, eventArgsType);
+        MethodInfo weakEventManagerAddHandlerMethodInfo = closedWeakEventManagerType.GetMethod("RemoveEventHandler");
+        _ = weakEventManagerAddHandlerMethodInfo.Invoke(null, new object[] { eventSourceInstance, eventName, handler });
+      }
     }
 
     /// <inheritdoc />
