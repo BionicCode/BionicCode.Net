@@ -46,140 +46,31 @@
     #region Implementation of IEventAggregator
 
     /// <inheritdoc />
-    public bool TryRegisterObservable(object eventSource, params string[] eventNames)
-      => TryRegisterObservable(eventSource, (IEnumerable<string>)eventNames);
+    public void RegisterObservable(object eventSource, params string[] eventNames)
+      => RegisterObservable(eventSource, (IEnumerable<string>)eventNames);
 
     /// <inheritdoc />
-    public bool TryRegisterObservable(object eventSource, IEnumerable<string> eventNames)
+    public void RegisterObservable(object eventSource, IEnumerable<string> eventNames)
     {
       ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
       ArgumentNullExceptionEx.ThrowIfNull(eventNames, nameof(eventNames));
 
       Type eventSourceType = eventSource.GetType();
-      Delegate sourceEventHandler = null;
-      foreach (string eventName in eventNames.Distinct())
+      foreach (string eventName in eventNames)
       {
         var key = new EventInfoTableKey(eventName, eventSourceType);
-        if (WeakEventAggregator.SourceEventInfoTable.TryGetValue(key, out EventInfoTableEntry entry))
+        if (!WeakEventAggregator.SourceEventInfoTable.TryGetValue(key, out EventInfoTableEntry entry))
         {
-          if (entry.EventSourceInstances.Contains(eventSource))
-          {
-            continue;
-          }
-          else
-          {
-            entry.EventSourceInstances.Add(eventSource);
-            entry.EventInfo.AddEventHandler(eventSource, entry.Handler);
-
-            continue;
-          }
-        }
-
-        entry = new EventInfoTableEntry(eventSource);
-        _ = WeakEventAggregator.SourceEventInfoTable.TryAdd(key, entry);
-
-        entry.EventInfo = eventSource.GetType()
-          .GetEvent(
+          EventInfo eventInfo = eventSourceType.GetEvent(
             eventName,
             BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy)
-          ?? throw new ArgumentException($"The event {eventName} was not found on the event source {eventSource.GetType().FullName} or on its declaring base eventHandlerGenericTypeDefinition.");
+              ?? throw new ArgumentException($"The event {eventName} was not found on the event source {eventSource.GetType().FullName} or on its declaring base eventHandlerGenericTypeDefinition.");
+          entry = new EventInfoTableEntry(eventInfo);
+          _ = WeakEventAggregator.SourceEventInfoTable.TryAdd(key, entry);
+        }
 
-        Type eventHandlerType = entry.EventInfo.EventHandlerType;
-        if (eventHandlerType == typeof(EventHandler))
-        {
-          EventHandler eventHandler = OnEventHandlerGeneric;
-          WeakEventManager<object, EventArgs>.AddEventHandler(eventSource, eventName, eventHandler);
-          entry.Handler = eventHandler;
-        }
-        else if (eventHandlerType == typeof(EventHandler<EventArgs>))
-        {
-          EventHandler<EventArgs> eventHandler = OnEventHandlerGeneric;
-          WeakEventManager<object, EventArgs>.AddEventHandler(eventSource, eventName, eventHandler);
-          entry.Handler = eventHandler;
-        }
-        else if (eventHandlerType == typeof(Action<object, EventArgs>))
-        {
-          Action<object, EventArgs> eventHandler = OnEventHandlerGeneric;
-          WeakEventManager<object, EventArgs>.AddEventHandler(eventSource, eventName, eventHandler);
-          entry.Handler = eventHandler;
-        }
-        else if (eventHandlerType == typeof(EventHandler<object>))
-        {
-          EventHandler<object> eventHandler = OnEventHandlerGeneric;
-          WeakEventManager<object, object>.AddEventHandler(eventSource, eventName, eventHandler);
-          entry.Handler = eventHandler;
-        }
-        else if (eventHandlerType == typeof(Action<object, object>))
-        {
-          Action<object, object> eventHandler = OnEventHandlerGeneric;
-          WeakEventManager<object, object>.AddEventHandler(eventSource, eventName, eventHandler);
-          entry.Handler = eventHandler;
-        }
-        else
-        {
-          MethodInfo closedHandlerMethod = null;
-          Type eventArgsType = null;
-          Type eventHandlerSourceType = null;
-          Type eventHandlerGenericTypeDefinition = eventHandlerType.GetGenericTypeDefinition();
-          if ((eventHandlerGenericTypeDefinition == typeof(EventHandler<>)))
-          {
-            Type[] typeArguments = eventHandlerType.GetGenericArguments();
-              closedHandlerMethod = GetType().GetMethod(nameof(OnEventHandlerGeneric)).MakeGenericMethod(typeArguments);
-              eventHandlerSourceType = typeof(object);
-              eventArgsType = typeArguments[0];
-          }
-          else
-          {
-            MethodInfo invocator = eventHandlerType.GetMethod("Invoke");
-            ParameterInfo[] eventHandlerParameters = invocator.GetParameters();
-            if (eventHandlerParameters.Length == 2)
-            {
-              Type[] parameterTypes = eventHandlerParameters.Select(parameter => parameter.ParameterType).ToArray();
-              closedHandlerMethod = GetType().GetMethod(nameof(OnEventHandlerGeneric)).MakeGenericMethod(parameterTypes);
-              eventHandlerSourceType = parameterTypes[0];
-              eventArgsType = parameterTypes[1];
-            }
-            else
-            {
-              sourceEventHandler = GenerateEventHandler(eventHandlerParameters);
-              eventHandlerSourceType = eventHandlerParameters[0].ParameterType;
-              eventArgsType = typeof(object[]);
-            }
-          }
-
-          if (closedHandlerMethod != null)
-          {
-            sourceEventHandler = Delegate.CreateDelegate(
-              eventHandlerType,
-              this,
-              closedHandlerMethod);
-          }
-
-          entry.Handler = sourceEventHandler;
-          Type closedWeakEventManagerType = typeof(WeakEventManager<,>).MakeGenericType(eventHandlerSourceType, eventArgsType);
-          MethodInfo weakEventManagerAddHandlerMethodInfo = closedWeakEventManagerType.GetMethod("AddEventHandler");
-          _ = weakEventManagerAddHandlerMethodInfo.Invoke(null, new object[] { eventSource, eventName, sourceEventHandler });
-        }
+        entry.AddEventSource(eventSource);
       }
-
-      return true;
-    }
-
-    private Delegate GenerateEventHandler(ParameterInfo[] eventHandlerParameters)
-    {
-      Delegate eventSourceHandler;
-      var expressionParameters = new List<ParameterExpression>();
-      foreach (ParameterInfo parameter in eventHandlerParameters)
-      {
-        ParameterExpression expressionParameter = Expression.Parameter(parameter.ParameterType, parameter.Name);
-        expressionParameters.Add(expressionParameter);
-      }
-
-      IEnumerable<UnaryExpression> castedExpressionParameters = expressionParameters.Select(parameter => Expression.TypeAs(parameter, typeof(object)));
-      NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), castedExpressionParameters);
-      MethodCallExpression method = Expression.Call(GetType().GetMethod(nameof(OnEventHandlerCustomDynamicSignature)), argsArray);
-      eventSourceHandler = Expression.Lambda(method, expressionParameters).Compile();
-      return eventSourceHandler;
     }
 
     /// <inheritdoc />
@@ -561,6 +452,22 @@
       Type normalizedEventHandlerType = NormalizeEventHandlerType<TEventArgs>(eventHandler.GetType());
       string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfGlobalSource(normalizedEventHandlerType, string.Empty);
       return TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName, synchronizationContext);
+    }
+
+    /// <inheritdoc />
+    public void RemoveObserver<TEventSource>(string eventName, Delegate eventHandler)
+    {
+      var key = new EventInfoTableKey(eventName, typeof(TEventSource));
+      if (!WeakEventAggregator.SourceEventInfoTable.TryGetValue(key, out EventInfoTableEntry entry))
+      {
+        return;
+      }
+
+
+      string fullyQualifiedEventIdOfSpecificSource =
+        CreateFullyQualifiedEventIdOfSpecificSource(eventSourceType, eventName);
+      _ = this.EventHandlerSynchronizationContextTable.TryRemove(eventHandler, out _);
+      return this.EventHandlerTable.TryRemove(fullyQualifiedEventIdOfSpecificSource, out _);
     }
 
     /// <inheritdoc />

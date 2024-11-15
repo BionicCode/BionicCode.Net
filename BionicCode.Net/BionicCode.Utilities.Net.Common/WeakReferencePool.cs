@@ -11,6 +11,7 @@
   internal static class WeakReferencePool
   {
     private static Queue<WeakReference<object>> WeakReferences { get; } = new Queue<WeakReference<object>>();
+
     public static void Add(WeakReference<object> weakReference)
     {
       weakReference.SetTarget(null);

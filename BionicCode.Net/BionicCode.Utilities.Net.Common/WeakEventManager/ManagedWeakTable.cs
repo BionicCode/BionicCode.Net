@@ -12,7 +12,6 @@
 
     protected static readonly Dictionary<Type, HashSet<ManagedWeakTableEntry>> ItemsInternal = new Dictionary<Type, HashSet<ManagedWeakTableEntry>>();
 
-    private static readonly Queue<WeakReference<object>> WeakReferencePool = new Queue<WeakReference<object>>();
     private static readonly TimeSpan PurgeInterval = TimeSpan.FromSeconds(10);
     internal static readonly object SyncLockInternal = new object();
     private static bool IsPurgeActive;
@@ -24,26 +23,13 @@
     {
       lock (ManagedWeakTable.SyncLockInternal)
       {
-        WeakReference<object> weakReference;
-        if (ManagedWeakTable.WeakReferencePool.Any())
-        {
-          weakReference = ManagedWeakTable.WeakReferencePool.Dequeue();
-          weakReference.SetTarget(reference);
-        }
-        else
-        {
-          weakReference = new WeakReference<object>(reference, trackResurrection: false);
-        }
-
+        WeakReference<object> weakReference = WeakReferencePool.GetOrCreate(reference);
         return weakReference;
       }
     }
 
-    public static void RecycleWeakReference(WeakReference<object> weakReference)
-    {
-      weakReference.SetTarget(null);
-      ManagedWeakTable.WeakReferencePool.Enqueue(weakReference);
-    }
+    public static void RecycleWeakReference(WeakReference<object> weakReference) 
+      => WeakReferencePool.Add(weakReference);
 
     protected static void AddEntries(IEnumerable<ManagedWeakTableEntry> entries)
     {

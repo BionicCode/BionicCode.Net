@@ -6,7 +6,7 @@
 
   internal abstract class ManagedWeakTableEntry : IPurgeable
   {
-    public WeakReference<object> EventSource { get; }
+    public WeakReference<object> EventSource { get; private set; }
     public Type EventSourceType { get; }
     public string EventName { get; }
     public bool IsRecycled { get; private set; }
@@ -48,6 +48,7 @@
     private void RecycleInternal()
     {
       RecycleWeakReference(this.EventSource);
+      this.EventSource = null;
       this.IsRecycled = true;
     }
 
@@ -58,7 +59,6 @@
         return;
       }
 
-      weakReference.SetTarget(null);
       ManagedWeakTable.RecycleWeakReference(weakReference);
     }
   }
