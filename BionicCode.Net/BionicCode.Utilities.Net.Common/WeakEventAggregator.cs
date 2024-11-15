@@ -59,7 +59,7 @@
       Delegate sourceEventHandler = null;
       foreach (string eventName in eventNames.Distinct())
       {
-        var key = new EventHandlerTableKey(eventName, eventSourceType);
+        var key = new EventInfoTableKey(eventName, eventSourceType);
         if (WeakEventAggregator.SourceEventInfoTable.TryGetValue(key, out EventInfoTableEntry entry))
         {
           if (entry.EventSourceInstances.Contains(eventSource))
@@ -239,7 +239,7 @@
 
       foreach (string eventName in eventNames)
       {
-        var key = new EventHandlerTableKey(eventName, eventSourceType);
+        var key = new EventInfoTableKey(eventName, eventSourceType);
         if (!WeakEventAggregator.SourceEventInfoTable.TryGetValue(key, out EventInfoTableEntry entry))
         {
           continue;
@@ -252,19 +252,25 @@
         }
         else if (includeInstanceEvents)
         {
-          IEnumerable<object> eventSourceInstances = eventSource is null
-            ? (IEnumerable<object>)entry.EventSourceInstances
-            : new object[1] { eventSource };
-          foreach (object eventSourceInstance in eventSourceInstances)
+          if (eventSource is null)
           {
-            hasRemovedObservable = true;
-            RemoveHandlerInternal(eventName, entry.EventInfo.EventHandlerType, entry.Handler, eventSourceInstance);
-
-            if (removeAllEventObservers)
-            {
-              _ = TryRemoveAllObservers(eventName, instance.GetType());
-            }
+            entry.RemoveAllEventSources();
           }
+          else
+          {
+            entry.RemoveEventSource(eventSource);
+          }
+
+          //foreach (object eventSourceInstance in eventSourceInstances)
+          //{
+          //  hasRemovedObservable = true;
+          //  RemoveHandlerInternal(eventName, entry.EventInfo.EventHandlerType, entry.Handler, eventSourceInstance);
+
+          //  if (removeAllEventObservers)
+          //  {
+          //    _ = TryRemoveAllObservers(eventName, instance.GetType());
+          //  }
+          //}
         }
       }
 
@@ -321,39 +327,137 @@
     }
 
     /// <inheritdoc />
-    public bool TryRegisterObserver(string eventName, Type eventSourceType, Delegate eventHandler)
+    public void RegisterObserver<TEventSource>(string eventName, Delegate eventHandler)
     {
-      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfSpecificSource(eventSourceType, eventName);
-      return TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName);
+      ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
+      ArgumentNullExceptionEx.ThrowIfNull(eventHandler, nameof(eventHandler));
+
+      RegisterObserverInternal<TEventSource>(eventName, eventHandler, false, null);
     }
 
     /// <inheritdoc />
-    public bool TryRegisterObserver(string eventName, Type eventSourceType, Delegate eventHandler, bool isMarshalEventToCurrentThreadEnabled)
+    public void RegisterObserver<TEventSource>(string eventName, Delegate eventHandler, bool executeOnCurrentSynchronizationContext)
     {
-      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfSpecificSource(eventSourceType, eventName);
-      return isMarshalEventToCurrentThreadEnabled
-        ? TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName, SynchronizationContext.Current)
-        : TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName);
+      ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
+      ArgumentNullExceptionEx.ThrowIfNull(eventHandler, nameof(eventHandler));
+
+      RegisterObserverInternal<TEventSource>(eventName, eventHandler, executeOnCurrentSynchronizationContext, null);
     }
 
     /// <inheritdoc />
-    public bool TryRegisterObserver(string eventName, Type eventSourceType, Delegate eventHandler, SynchronizationContext synchronizationContext)
+    public void RegisterObserver<TEventSource>(string eventName, Delegate eventHandler, SynchronizationContext synchronizationContext)
     {
-      string fullyQualifiedEventName = CreateFullyQualifiedEventIdOfSpecificSource(eventSourceType, eventName);
-      return TryRegisterObserverInternal(eventHandler, fullyQualifiedEventName, synchronizationContext);
+      ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
+      ArgumentNullExceptionEx.ThrowIfNull(eventHandler, nameof(eventHandler));
+      ArgumentNullExceptionEx.ThrowIfNull(synchronizationContext, nameof(synchronizationContext));
+
+      RegisterObserverInternal<TEventSource>(eventName, eventHandler, false, synchronizationContext);
     }
 
-    /// <inheritdoc />
-    public bool TryRegisterObserver<TEventArgs>(string eventName, Type eventSourceType, EventHandler<TEventArgs> eventHandler)
-      => TryRegisterObserver(eventName, eventSourceType, (Delegate)eventHandler);
+    public void RegisterObserverInternal<TEventSource>(string eventName, Delegate eventHandler, bool executeOnCurrentSynchronizationContext, SynchronizationContext synchronizationContext)
+    {
+      Type eventSourceType = typeof(TEventSource);
+      var key = new EventInfoTableKey(eventName, eventSourceType);
+      if (!WeakEventAggregator.SourceEventInfoTable.TryGetValue(key, out EventInfoTableEntry entry))
+      {
+        EventInfo eventInfo = eventSourceType.GetEvent(
+          eventName,
+          BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+        ?? throw new ArgumentException($"The event {eventName} was not found on the event source {eventSourceType.FullName} or on its declaring base eventHandlerGenericTypeDefinition.");
+        entry = new EventInfoTableEntry(eventInfo);
+      }
 
-    /// <inheritdoc />
-    public bool TryRegisterObserver<TEventArgs>(string eventName, Type eventSourceType, EventHandler<TEventArgs> eventHandler, bool isMarshalEventToCurrentThreadEnabled)
-      => TryRegisterObserver(eventName, eventSourceType, (Delegate)eventHandler, isMarshalEventToCurrentThreadEnabled);
+      Action<object> subscribeDelegate;
+      Action<object> unsubscribeDelegate;
+      ThrowIfEventHandlerInvalid(entry, eventHandler);
 
-    /// <inheritdoc />
-    public bool TryRegisterObserver<TEventArgs>(string eventName, Type eventSourceType, EventHandler<TEventArgs> eventHandler, SynchronizationContext synchronizationContext)
-      => TryRegisterObserver(eventName, eventSourceType, (Delegate)eventHandler, synchronizationContext);
+      Type eventHandlerType = eventHandler.GetType();
+      if (eventHandlerType == typeof(EventHandler)
+        || eventHandlerType == typeof(EventHandler<EventArgs>)
+        || eventHandlerType == typeof(Action<object, EventArgs>))
+      {
+        if (synchronizationContext != null)
+        {
+          subscribeDelegate = eventSource => WeakEventManager<TEventSource, EventArgs>.AddEventHandler((TEventSource)eventSource, eventName, eventHandler, synchronizationContext);
+        }
+        else
+        {
+          subscribeDelegate = eventSource => WeakEventManager<TEventSource, EventArgs>.AddEventHandler((TEventSource)eventSource, eventName, eventHandler, executeOnCurrentSynchronizationContext: executeOnCurrentSynchronizationContext);
+        }
+
+        unsubscribeDelegate = eventSource => WeakEventManager<TEventSource, EventArgs>.RemoveEventHandler((TEventSource)eventSource, eventName, eventHandler);
+      }
+      else if (eventHandlerType == typeof(EventHandler<object>)
+        || eventHandlerType == typeof(Action<object, object>))
+      {
+        if (synchronizationContext != null)
+        {
+          subscribeDelegate = eventSource => WeakEventManager<TEventSource, object>.AddEventHandler((TEventSource)eventSource, eventName, eventHandler, synchronizationContext);
+        }
+        else
+        {
+          subscribeDelegate = eventSource => WeakEventManager<TEventSource, object>.AddEventHandler((TEventSource)eventSource, eventName, eventHandler, executeOnCurrentSynchronizationContext: executeOnCurrentSynchronizationContext);
+        }
+
+        unsubscribeDelegate = eventSource => WeakEventManager<TEventSource, object>.RemoveEventHandler((TEventSource)eventSource, eventName, eventHandler);
+      }
+      else
+      {
+        Type eventArgsType = null;
+        Type eventHandlerSourceType = typeof(TEventSource);
+        Type eventHandlerGenericTypeDefinition = eventHandlerType.GetGenericTypeDefinition();
+        if (eventHandlerGenericTypeDefinition == typeof(EventHandler<>))
+        {
+          Type[] typeArguments = eventHandlerType.GetGenericArguments();
+          eventArgsType = typeArguments[0];
+        }
+        else
+        {
+          MethodInfo invocator = eventHandlerType.GetMethod("Invoke");
+          ParameterInfo[] eventHandlerParameters = invocator.GetParameters();
+          eventArgsType = typeof(object[]);
+        }
+
+        Type closedWeakEventManagerType = typeof(WeakEventManager<,>).MakeGenericType(eventHandlerSourceType, eventArgsType);
+        MethodInfo weakEventManagerAddHandlerMethodInfo = closedWeakEventManagerType.GetMethod("AddEventHandler");
+        if (synchronizationContext != null)
+        {
+          subscribeDelegate = eventSource => _ = weakEventManagerAddHandlerMethodInfo.Invoke(null, new object[] { eventSource, eventName, eventHandler, synchronizationContext });
+        }
+        else
+        {
+          subscribeDelegate = eventSource => _ = weakEventManagerAddHandlerMethodInfo.Invoke(null, new object[] { eventSource, eventName, eventHandler, executeOnCurrentSynchronizationContext });
+        }
+
+        MethodInfo weakEventManagerRemoveHandlerMethodInfo = closedWeakEventManagerType.GetMethod("RemoveEventHandler");
+        unsubscribeDelegate = eventSource => _ = weakEventManagerRemoveHandlerMethodInfo.Invoke(null, new object[] { eventSource, eventName, eventHandler });
+      }
+
+      entry.AddRegistration(subscribeDelegate);
+    }
+
+    private void ThrowIfEventHandlerInvalid(EventInfoTableEntry entry, Delegate eventHandler)
+    {
+      ParameterInfo[] invocatorParameters = entry.InvocatorMethod.GetParameters();
+      ParameterInfo[] eventHandlerParameters = eventHandler.GetType().GetMethod("Invoke")?.GetParameters();
+      if (eventHandlerParameters != null)
+      {
+        if (invocatorParameters.Length != eventHandlerParameters.Length)
+        {
+          throw new EventHandlerMismatchException($"Wrong event handler signature. The parameter count of the registered event handler does not match the event delegate {entry.EventInfo.EventHandlerType.FullName}.");
+        }
+
+        for (int index = 0; index < invocatorParameters.Length; index++)
+        {
+          Type invocatorParameterType = invocatorParameters[index].ParameterType;
+          Type eventHandlerParameterType = eventHandlerParameters[index].ParameterType;
+          if (!eventHandlerParameterType.IsAssignableFrom(invocatorParameterType))
+          {
+            throw new EventHandlerMismatchException($"Wrong event handler signature. The parameter type at index {index} of the registered event handler does not match the event delegate {entry.EventInfo.EventHandlerType.FullName}. Found type {eventHandlerParameterType.FullName}. Expected type {invocatorParameterType.FullName}.");
+          }
+        }
+      }
+    }
 
     /// <inheritdoc />
     public bool TryRegisterGlobalObserver(string eventName, Delegate eventHandler)
@@ -722,7 +826,7 @@
 
     private string CreateFullyQualifiedEventIdOfSpecificSource(Type eventSource, string eventName) => eventSource.AssemblyQualifiedName.ToLowerInvariant() + "." + eventSource.FullName.ToLowerInvariant() + "." + eventName;
 
-    private static ConcurrentDictionary<EventHandlerTableKey, EventInfoTableEntry> SourceEventInfoTable { get; } = new ConcurrentDictionary<EventHandlerTableKey, EventInfoTableEntry>();
+    private static ConcurrentDictionary<EventInfoTableKey, EventInfoTableEntry> SourceEventInfoTable { get; } = new ConcurrentDictionary<EventInfoTableKey, EventInfoTableEntry>();
     private ConcurrentDictionary<string, List<Delegate>> EventHandlerTable { get; }
     private ConcurrentDictionary<Delegate, SynchronizationContext> EventHandlerSynchronizationContextTable { get; }
     //private ConditionalWeakTable<object, List<(EventInfo EventInfo, Delegate Handler)>> EventPublisherTable { get; }

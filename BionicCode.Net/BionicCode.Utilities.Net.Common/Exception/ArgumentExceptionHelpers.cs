@@ -32,7 +32,7 @@
 #if NET5_0_OR_GREATER || NETCOREAPP
     public static void ThrowIfNull([NotNull] object? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
 #else
-    public static void ThrowIfNull(object argument, string paramName = null)
+    public static void ThrowIfNull(object argument, string paramName)
 #endif
     {
 #if NET6_0_OR_GREATER
@@ -53,7 +53,7 @@
 #if NET5_0_OR_GREATER || NETCOREAPP
     public static void ThrowIfNullOrEmpty([NotNull] string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
 #else
-    public static void ThrowIfNullOrEmpty(string argument, string paramName = null)
+    public static void ThrowIfNullOrEmpty(string argument, string paramName)
 #endif
     {
       ArgumentExceptionEx.ThrowIfNullOrEmpty(argument, paramName);
@@ -67,7 +67,7 @@
 #if NET5_0_OR_GREATER || NETCOREAPP
     public static void ThrowIfNullOrWhiteSpace([NotNull] string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
 #else
-    public static void ThrowIfNullOrWhiteSpace(string argument, string paramName = null)
+    public static void ThrowIfNullOrWhiteSpace(string argument, string paramName)
 #endif
     {
       ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(argument, paramName);
@@ -105,7 +105,7 @@
 #if NET5_0_OR_GREATER || NETCOREAPP
     public static void ThrowIfNull([NotNull] object? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
 #else
-    public static void ThrowIfNull(object argument, string paramName = null)
+    public static void ThrowIfNull(object argument, string paramName)
 #endif
     {
       ArgumentNullExceptionEx.ThrowIfNull(argument, paramName);
@@ -119,7 +119,7 @@
 #if NET5_0_OR_GREATER || NETCOREAPP
     public static void ThrowIfNullOrEmpty([NotNull] string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
 #else
-    public static void ThrowIfNullOrEmpty(string argument, string paramName = null)
+    public static void ThrowIfNullOrEmpty(string argument, string paramName)
 #endif
     {
 #if NET7_0_OR_GREATER
@@ -140,7 +140,7 @@
 #if NET5_0_OR_GREATER || NETCOREAPP
     public static void ThrowIfNullOrWhiteSpace([NotNull] string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
 #else
-    public static void ThrowIfNullOrWhiteSpace(string argument, string paramName = null)
+    public static void ThrowIfNullOrWhiteSpace(string argument, string paramName)
 #endif
     {
 #if NET8_0_OR_GREATER
@@ -248,7 +248,7 @@
 #if NET5_0_OR_GREATER || NETCOREAPP
     public static void ThrowIfZero<T>(T value, [CallerArgumentExpression(nameof(value))] string? paramName = null)
 #else
-    public static void ThrowIfZero<T>(T value, string paramName = null)
+    public static void ThrowIfZero<T>(T value, string paramName)
 #endif
 #if NET7_0_OR_GREATER
         where T : INumberBase<T>
@@ -277,7 +277,7 @@
 #if NET5_0_OR_GREATER || NETCOREAPP
     public static void ThrowIfNegative<T>(T value, [CallerArgumentExpression(nameof(value))] string? paramName = null)
 #else
-    public static void ThrowIfNegative<T>(T value, string paramName = null)
+    public static void ThrowIfNegative<T>(T value, string paramName)
 #endif
 #if NET7_0_OR_GREATER
         where T : INumberBase<T>
@@ -306,7 +306,7 @@
 #if NET5_0_OR_GREATER || NETCOREAPP
     public static void ThrowIfNegativeOrZero<T>(T value, [CallerArgumentExpression(nameof(value))] string? paramName = null)
 #else
-    public static void ThrowIfNegativeOrZero<T>(T value, string paramName = null)
+    public static void ThrowIfNegativeOrZero<T>(T value, string paramName)
 #endif
 #if NET7_0_OR_GREATER
         where T : INumberBase<T>
