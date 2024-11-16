@@ -8,19 +8,19 @@
   using System;
   using System.Collections.Generic;
 
-  internal readonly struct EventInfoTableKey : IEquatable<EventInfoTableKey>
+  internal readonly struct EventInfoTableKey<TEventSource> : IEquatable<EventInfoTableKey<TEventSource>>
   {
-    public EventInfoTableKey(string eventName, Type eventSourceType)
+    public EventInfoTableKey(string eventName)
     {
       this.EventName = eventName;
-      this.EventSourceType = eventSourceType;
+      this.EventSourceType = typeof(TEventSource);
     }
 
     public string EventName { get; }
     public Type EventSourceType { get; }
 
-    public bool Equals(EventInfoTableKey other) => other.EventName.Equals(this.EventName, StringComparison.OrdinalIgnoreCase) && other.EventSourceType.Equals(this.EventSourceType);
-    public override bool Equals(object obj) => obj is EventInfoTableKey key && Equals(key);
+    public bool Equals(EventInfoTableKey<TEventSource> other) => other.EventName.Equals(this.EventName, StringComparison.OrdinalIgnoreCase) && other.EventSourceType.Equals(this.EventSourceType);
+    public override bool Equals(object obj) => obj is EventInfoTableKey<TEventSource> key && Equals(key);
 
     public override int GetHashCode()
     {
@@ -30,7 +30,7 @@
       return hashCode;
     }
 
-    public static bool operator ==(EventInfoTableKey first, EventInfoTableKey second) => first.Equals(second);
-    public static bool operator !=(EventInfoTableKey first, EventInfoTableKey second) => !first.Equals(second);
+    public static bool operator ==(EventInfoTableKey<TEventSource> first, EventInfoTableKey<TEventSource> second) => first.Equals(second);
+    public static bool operator !=(EventInfoTableKey<TEventSource> first, EventInfoTableKey<TEventSource> second) => !first.Equals(second);
   }
 }

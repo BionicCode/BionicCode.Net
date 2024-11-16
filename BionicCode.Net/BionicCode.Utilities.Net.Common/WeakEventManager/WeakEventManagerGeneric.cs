@@ -8,9 +8,10 @@
   using System.Linq.Expressions;
   using System.Reflection;
   using System.Runtime.CompilerServices;
+  using System.Runtime.Remoting.Messaging;
   using System.Threading;
 
-  public class WeakEventManager<TEventSource, TEventArgs> : WeakEventManager
+  public class WeakEventManager<TEventSource> : WeakEventManager
   {
     internal class ClientHandlerInfo : IDisposable
     {
@@ -173,47 +174,63 @@
 
     public static void AddEventHandler(TEventSource eventSource, string eventName, Delegate handler, SynchronizationContext synchronizationContext)
     {
+      Type eventhandlerType = handler.GetType();
       if (handler is EventHandler eventHandler)
       {
         AddEventHandler(eventSource, eventName, eventHandler, synchronizationContext);
         return;
       }
-
-      MethodInfo invokeMethod = handler.GetType().GetMethod("Invoke");
-      Action<TEventSource, TEventArgs> eventHandlerInvocator;
-      if (invokeMethod != null)
+      else if (eventhandlerType.IsGenericType && eventhandlerType.GetGenericTypeDefinition() == typeof(EventHandler<>))
       {
-        eventHandlerInvocator = (sender, e) => _ = invokeMethod.Invoke(handler, new object[] { sender, e });
+        Type argsType = eventhandlerType.GetGenericArguments()[0];
+        Type[] methodParameters = new Type[] { typeof(TEventSource), typeof(string), typeof(EventHandler<>), typeof(SynchronizationContext) };
+        _ = typeof(WeakEventManager<>).GetMethod("AddEventHandler", methodParameters)
+          .MakeGenericMethod(argsType)
+          .Invoke(null, new object[] { eventSource, eventName, eventhandlerType, synchronizationContext });
+      }
+      else if (eventhandlerType.IsGenericType && eventhandlerType.GetGenericTypeDefinition() == typeof(Action<,>))
+      {
+        Type senderType = eventhandlerType.GetGenericArguments()[0];
+        Type argsType = eventhandlerType.GetGenericArguments()[1];
+        Type[] methodParameters = new Type[] { typeof(TEventSource), typeof(string), typeof(Action<,>), typeof(SynchronizationContext) };
+        _ = typeof(WeakEventManager<>).GetMethod("AddEventHandler", methodParameters)
+          .MakeGenericMethod(senderType, argsType)
+          .Invoke(null, new object[] { eventSource, eventName, eventhandlerType, synchronizationContext });
       }
       else
       {
-        eventHandlerInvocator = (sender, e) => _ = handler.DynamicInvoke(sender, e);
+        Action<object, object, ClientHandlerInfo> eventHandlerInvocator = (sender, e, handlerInfo) =>
+          {
+            if (handlerInfo.TryGetClientHandler(out Delegate clientHandler))
+            {
+              //MethodInfo invokeMethod = clientHandler.GetType().GetMethod("Invoke");
+              //_ = invokeMethod.Invoke(clientHandler.Target, new object[] { e });
+              _ = clientHandler.DynamicInvoke(e);
+            }
+          };
+
+        // If the event handler is a static method, the delegate's target is NULL.
+        // In this case, we need to provide a placeholder for the WeakTable entry.
+        object eventListener = handler.Target ?? DummyEventListenerForStaticEventHandlers.Instance;
+
+        RegisterClientHandler(eventListener, eventHandlerInvocator, handler, eventSource, eventName, synchronizationContext);
       }
-
-      // If the event handler is a static method, the delegate's target is NULL.
-      // In this case, we need to provide a placeholder for the WeakTable entry.
-      object eventListener = handler.Target ?? DummyEventListenerForStaticEventHandlers.Instance;
-
-      RegisterClientHandler(eventListener, eventHandlerInvocator, handler, eventSource, eventName, synchronizationContext);
     }
 
-    public static void AddEventHandler(TEventSource eventSource, string eventName, EventHandler<TEventArgs> handler, SynchronizationContext synchronizationContext)
-    {
-      Action<TEventSource, TEventArgs> eventHandlerInvocator = (sender, e) => handler.Invoke(sender, e);
-
-      // If the event handler is a static method, the delegate's target is NULL.
-      // In this case, we need to provide a placeholder for the WeakTable entry.
-      object eventListener = handler.Target ?? DummyEventListenerForStaticEventHandlers.Instance;
-
-      RegisterClientHandler(eventListener, eventHandlerInvocator, handler, eventSource, eventName, synchronizationContext);
-    }
-
-    public static void AddEventHandler(TEventSource eventSource, string eventName, EventHandler<TEventArgs> handler, bool executeOnCurrentSynchronizationContext = false)
+    public static void AddEventHandler<TEventArgs>(TEventSource eventSource, string eventName, EventHandler<TEventArgs> handler, bool executeOnCurrentSynchronizationContext = false)
       => AddEventHandler(eventSource, eventName, handler, executeOnCurrentSynchronizationContext ? SynchronizationContext.Current : null);
 
-    public static void AddEventHandler(TEventSource eventSource, string eventName, Action<TEventSource, TEventArgs> handler, SynchronizationContext synchronizationContext)
+    public static void AddEventHandler<TEventArgs>(TEventSource eventSource, string eventName, EventHandler<TEventArgs> handler, SynchronizationContext synchronizationContext)
     {
-      Action<TEventSource, TEventArgs> eventHandlerInvocator = handler;
+      Action<object, object, ClientHandlerInfo> eventHandlerInvocator =
+        (sender, e, handlerInfo) =>
+        {
+          if (handlerInfo.TryGetClientHandler(out Delegate clientHandler))
+          {
+            var eventHandler = (EventHandler<TEventArgs>)clientHandler;
+            eventHandler.Invoke(sender, (TEventArgs)e);
+          }
+        };
 
       // If the event handler is a static method, the delegate's target is NULL.
       // In this case, we need to provide a placeholder for the WeakTable entry.
@@ -222,12 +239,42 @@
       RegisterClientHandler(eventListener, eventHandlerInvocator, handler, eventSource, eventName, synchronizationContext);
     }
 
-    public static void AddEventHandler(TEventSource eventSource, string eventName, Action<TEventSource, TEventArgs> handler, bool executeOnCurrentSynchronizationContext = false)
+    public static void AddEventHandler<TSender, TEventArgs>(TEventSource eventSource, string eventName, Action<TSender, TEventArgs> handler, bool executeOnCurrentSynchronizationContext = false)
       => AddEventHandler(eventSource, eventName, handler, executeOnCurrentSynchronizationContext ? SynchronizationContext.Current : null);
 
-    private static void AddEventHandler(TEventSource eventSource, string eventName, EventHandler handler, SynchronizationContext synchronizationContext)
+    public static void AddEventHandler<TSender, TEventArgs>(TEventSource eventSource, string eventName, Action<TSender, TEventArgs> handler, SynchronizationContext synchronizationContext)
     {
-      Action<TEventSource, TEventArgs> eventHandlerInvocator = (sender, e) => handler.Invoke(sender, e as EventArgs);
+      Action<object, object, ClientHandlerInfo> eventHandlerInvocator =
+        (sender, e, handlerInfo) =>
+        {
+          if (handlerInfo.TryGetClientHandler(out Delegate clientHandler))
+          {
+            var eventHandler = (Action<TSender, TEventArgs>)clientHandler;
+            eventHandler.Invoke((TSender)sender, (TEventArgs)e);
+          }
+        };
+
+      // If the event handler is a static method, the delegate's target is NULL.
+      // In this case, we need to provide a placeholder for the WeakTable entry.
+      object eventListener = handler.Target ?? DummyEventListenerForStaticEventHandlers.Instance;
+
+      RegisterClientHandler(eventListener, eventHandlerInvocator, handler, eventSource, eventName, synchronizationContext);
+    }
+
+    public static void AddEventHandler(TEventSource eventSource, string eventName, EventHandler handler, bool executeOnCurrentSynchronizationContext = false)
+      => AddEventHandler(eventSource, eventName, handler, executeOnCurrentSynchronizationContext ? SynchronizationContext.Current : null);
+
+    public static void AddEventHandler(TEventSource eventSource, string eventName, EventHandler handler, SynchronizationContext synchronizationContext)
+    {
+      Action<object, object, ClientHandlerInfo> eventHandlerInvocator =
+        (sender, e, handlerInfo) =>
+        {
+          if (handlerInfo.TryGetClientHandler(out Delegate clientHandler))
+          {
+            var eventHandler = (EventHandler)clientHandler;
+            eventHandler.Invoke(sender, e as EventArgs);
+          }
+        };
 
       // If the event handler is a static method, the delegate's target is NULL.
       // In this case, we need to provide a placeholder for the WeakTable entry.
@@ -313,7 +360,7 @@
       }
     }
 
-    private static void RegisterClientHandler(object eventListener, Action<TEventSource, TEventArgs> eventHandlerInvocator, Delegate originalHandler, TEventSource eventSource, string eventName, SynchronizationContext capturedSynchronizationContext)
+    private static void RegisterClientHandler(object eventListener, Action<object, object, ClientHandlerInfo> eventHandlerInvocator, Delegate originalHandler, TEventSource eventSource, string eventName, SynchronizationContext capturedSynchronizationContext)
     {
       // Use BindingFlags.FlattenHierarchy to also get base type static events via the subclass (but only public)
       EventInfo eventInfo = typeof(TEventSource).GetEvent(eventName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
@@ -324,8 +371,8 @@
 
       ThrowIfInvalidHandler(eventInfo, originalHandler);
 
-      WeakEventManager<TEventSource, TEventArgs> weakEventManager;
-      weakEventManager = WeakEventManagerTable.GetOrCreateWeakEventManager<TEventSource, TEventArgs>(eventSource, eventName, eventInfo);
+      WeakEventManager<TEventSource> weakEventManager;
+      weakEventManager = WeakEventManagerTable.GetOrCreateWeakEventManager<TEventSource>(eventSource, eventName, eventInfo);
       
       if (weakEventManager.IsPurged)
       {
@@ -350,12 +397,12 @@
       weakEventManager.ListenerReaderWriterLock.ExitWriteLock();
     }
 
-    public static void RemoveEventHandler(TEventSource eventSource, string eventName, EventHandler<TEventArgs> handler)
-      => RemoveEventHandler(eventSource, eventName, (Delegate)handler);
+    //public static void RemoveEventHandler(TEventSource eventSource, string eventName, EventHandler<TEventArgs> handler)
+    //  => RemoveEventHandler(eventSource, eventName, (Delegate)handler);
 
     public static void RemoveEventHandler(TEventSource eventSource, string eventName, Delegate handler)
     {
-      if (!WeakEventManagerTable.TryGetWeakEventManager(eventSource, eventName, out WeakEventManager<TEventSource, TEventArgs> weakEventManager))
+      if (!WeakEventManagerTable.TryGetWeakEventManager(eventSource, eventName, out WeakEventManager<TEventSource> weakEventManager))
       {
         unregisteredEventHandlerCount++;
         Debug.WriteLine("Unable to remove event handler because event source has expired");
@@ -453,7 +500,7 @@
     public void StartListening(TEventSource eventSource)
       => StartListeningInternal(eventSource);
 
-    private void OnStronglyTypedEvent<TSender>(TSender sender, TEventArgs e)
+    private void OnStronglyTypedEvent<TSender, TEventArgs>(TSender sender, TEventArgs e)
     {
       if (this.IsPurged)
       {
@@ -480,15 +527,17 @@
               continue;
             }
 
+            var invocator = (Action <object, object, ClientHandlerInfo>)clientHandler;
+
             Debug.WriteLine($"Invoke client handler. Client: {eventListener.GetType().FullName}; Event handler #: {eventCounter++}; Event source: {sender?.GetType().FullName ?? "STATIC"}");
             
             if (handlerInfo.ClientContext != null)
             {
-              handlerInfo.ClientContext.Send(state => InvokeClientHandler(clientHandler, sender, e), null);
+              handlerInfo.ClientContext.Send(state => invocator.Invoke(sender, e, handlerInfo), null);
             }
             else
             {
-              InvokeClientHandler(clientHandler, sender, e);
+              invocator.Invoke(sender, e, handlerInfo);
             }
           }
         }
@@ -548,7 +597,7 @@
     //  this.ListenerReaderWriterLock.ExitReadLock();
     //}
 
-    private void InvokeClientHandler<TSender>(Delegate clientHandler,  TSender sender, TEventArgs e)
+    private void InvokeClientHandler<TSender, TEventArgs>(Delegate clientHandler,  TSender sender, TEventArgs e)
     {
       if (clientHandler is EventHandler defaultEventHandler)
       {
@@ -600,15 +649,16 @@
               continue;
             }
 
+            var invocator = (Action<object, object, ClientHandlerInfo>)clientHandler;
             Debug.WriteLine($"Invoke client handler. Client: {eventListener.GetType().FullName}; Event handler #: {eventCounter++}; Event source: unknown, because handler was dynamically generated as client handler does not follow C# conventions.");
 
             if (handlerInfo.ClientContext != null)
             {
-              handlerInfo.ClientContext.Send(state => InvokeUnconventionalClientHandler(clientHandler, args), null);
+              handlerInfo.ClientContext.Send(state => invocator.Invoke(null, args, handlerInfo), null);
             }
             else
             {
-              InvokeUnconventionalClientHandler(clientHandler, args);
+              invocator.Invoke(null, args, handlerInfo);
             }
           }
         }

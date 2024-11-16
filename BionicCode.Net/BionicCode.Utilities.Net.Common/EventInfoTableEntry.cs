@@ -18,7 +18,59 @@
   using System.Runtime.CompilerServices;
   using System.Xml.Linq;
 
-  internal class EventInfoTableEntry
+  internal class RegistrationCommandEventHandler<TEventSource> : RegistrationCommand<TEventSource>
+  {
+    public RegistrationCommandEventHandler(EventHandler clientHandler, string eventName) : base(clientHandler, eventName)
+    {
+    }
+
+    public override void RegisterDelegate(TEventSource eventSource) 
+      => WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, (EventHandler)this.ClientHandler);
+
+    public override void UnregisterDelegate(TEventSource eventSource) 
+      => WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, this.ClientHandler);
+  }
+
+  internal class RegistrationCommandEventHandlerGeneric<TEventSource, TEventArgs> : RegistrationCommand<TEventSource>
+  {
+    public RegistrationCommandEventHandlerGeneric(EventHandler<TEventArgs> clientHandler, string eventName) : base(clientHandler, eventName)
+    {
+    }
+
+    public override void RegisterDelegate(TEventSource eventSource) 
+      => WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, (EventHandler<TEventArgs>)this.ClientHandler);
+
+    public override void UnregisterDelegate(TEventSource eventSource) 
+      => WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, (EventHandler<TEventArgs>)this.ClientHandler);
+  }
+
+  internal class RegistrationCommandAction<TEventSource, TSender, TEventArgs> : RegistrationCommand<TEventSource>
+  {
+    public RegistrationCommandAction(Action<TSender, TEventArgs> clientHandler, string eventName) : base(clientHandler, eventName)
+    {
+    }
+
+    public override void RegisterDelegate(TEventSource eventSource)
+      => WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, (Action<TSender, TEventArgs>)this.ClientHandler);
+
+    public override void UnregisterDelegate(TEventSource eventSource)
+      => WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, (Action<TSender, TEventArgs>)this.ClientHandler);
+  }
+
+  internal class RegistrationCommandAnonymous<TEventSource> : RegistrationCommand<TEventSource>
+  {
+    public RegistrationCommandAnonymous(Delegate clientHandler, string eventName) : base(clientHandler, eventName)
+    {
+    }
+
+    public override void RegisterDelegate(TEventSource eventSource) 
+      => WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, this.ClientHandler);
+
+    public override void UnregisterDelegate(TEventSource eventSource) 
+      => WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, this.ClientHandler);
+  }
+
+  internal class EventInfoTableEntry<TEventSource>
   {
     private bool? isStaticEvent;
 
@@ -34,7 +86,7 @@
       }
     }
 
-    public EventInfoTableEntry(object eventSource) : this(null, null, eventSource)
+    public EventInfoTableEntry(TEventSource eventSource) : this(null, null, eventSource)
     {
       Debug.Assert(eventSource != null);
     }
@@ -44,7 +96,7 @@
       Debug.Assert(eventInfo != null);
     }
 
-    public void AddRegistration(Action<object> registrationDelegate)
+    public void AddRegistration(IRegistrationCommand<TEventSource> registrationCommand)
       => this.registrationService.AddSubscribeDelegate(registrationDelegate);
 
     public void RemoveRegistration(Action<object> registrationDelegate)
