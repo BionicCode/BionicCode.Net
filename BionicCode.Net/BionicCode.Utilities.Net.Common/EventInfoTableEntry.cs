@@ -16,59 +16,8 @@
   using System.Linq;
   using System.Reflection;
   using System.Runtime.CompilerServices;
+  using System.Threading;
   using System.Xml.Linq;
-
-  internal class RegistrationCommandEventHandler<TEventSource> : RegistrationCommand<TEventSource>
-  {
-    public RegistrationCommandEventHandler(EventHandler clientHandler, string eventName) : base(clientHandler, eventName)
-    {
-    }
-
-    public override void RegisterDelegate(TEventSource eventSource) 
-      => WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, (EventHandler)this.ClientHandler);
-
-    public override void UnregisterDelegate(TEventSource eventSource) 
-      => WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, this.ClientHandler);
-  }
-
-  internal class RegistrationCommandEventHandlerGeneric<TEventSource, TEventArgs> : RegistrationCommand<TEventSource>
-  {
-    public RegistrationCommandEventHandlerGeneric(EventHandler<TEventArgs> clientHandler, string eventName) : base(clientHandler, eventName)
-    {
-    }
-
-    public override void RegisterDelegate(TEventSource eventSource) 
-      => WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, (EventHandler<TEventArgs>)this.ClientHandler);
-
-    public override void UnregisterDelegate(TEventSource eventSource) 
-      => WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, (EventHandler<TEventArgs>)this.ClientHandler);
-  }
-
-  internal class RegistrationCommandAction<TEventSource, TSender, TEventArgs> : RegistrationCommand<TEventSource>
-  {
-    public RegistrationCommandAction(Action<TSender, TEventArgs> clientHandler, string eventName) : base(clientHandler, eventName)
-    {
-    }
-
-    public override void RegisterDelegate(TEventSource eventSource)
-      => WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, (Action<TSender, TEventArgs>)this.ClientHandler);
-
-    public override void UnregisterDelegate(TEventSource eventSource)
-      => WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, (Action<TSender, TEventArgs>)this.ClientHandler);
-  }
-
-  internal class RegistrationCommandAnonymous<TEventSource> : RegistrationCommand<TEventSource>
-  {
-    public RegistrationCommandAnonymous(Delegate clientHandler, string eventName) : base(clientHandler, eventName)
-    {
-    }
-
-    public override void RegisterDelegate(TEventSource eventSource) 
-      => WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, this.ClientHandler);
-
-    public override void UnregisterDelegate(TEventSource eventSource) 
-      => WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, this.ClientHandler);
-  }
 
   internal class EventInfoTableEntry<TEventSource>
   {
@@ -79,10 +28,10 @@
       this.Handler = generatedHandler;
       this.EventInfo = sourceEventInfo;
       this.eventName = this.EventInfo.Name;
-      this.registrationService = new WeakEventRegistrationService();
+      this.RegistrationService = new WeakEventRegistrationService<TEventSource>();
       if (eventSource != null)
       {
-        this.registrationService.AddInstance(eventSource);
+        this.RegistrationService.AddSourceInstance(eventSource);
       }
     }
 
@@ -96,20 +45,20 @@
       Debug.Assert(eventInfo != null);
     }
 
-    public void AddRegistration(IRegistrationCommand<TEventSource> registrationCommand)
-      => this.registrationService.AddSubscribeDelegate(registrationDelegate);
+    //public void AddRegistration(IClientEventHandlerRegistrar<TEventSource> registrationCommand)
+    //  => this.RegistrationService.AddSubscribeDelegate(registrationDelegate);
 
-    public void RemoveRegistration(Action<object> registrationDelegate)
-      => this.registrationService.RemoveRegistration(registrationDelegate);
+    //public void Unregister(Action<object> registrationDelegate)
+    //  => this.RegistrationService.RemoveRegistration(registrationDelegate);
 
-    public void AddEventSource(object eventSource)
-      => this.registrationService.AddInstance(eventSource);
+    //public void AddEventSource(object eventSource)
+    //  => this.RegistrationService.AddInstance(eventSource);
 
-    public void RemoveEventSource(object eventSource)
-      => this.registrationService.RemoveInstance(eventSource);
+    //public void RemoveEventSource(object eventSource)
+    //  => this.RegistrationService.RemoveInstance(eventSource);
 
-    public void RemoveAllEventSources()
-      => this.registrationService.ClearInstances();
+    //public void RemoveAllEventSources()
+    //  => this.RegistrationService.ClearInstances();
 
     public bool IsStaticEvent => this.EventInfo is null 
       ? throw new InvalidOperationException($"The {nameof(this.EventInfo)} property is NULL") 
@@ -127,75 +76,6 @@
       ? throw new InvalidOperationException($"The {nameof(this.EventInfo)} property is NULL")
       : this.EventInfo.Name);
 
-    private readonly WeakEventRegistrationService registrationService;
-  }
-
-  internal class WeakEventRegistrationService
-  {
-    private readonly WeakCollection<object> eventSourceInstances;
-    private readonly List<Action<object>> subscribeDelegates;
-    private readonly List<Action<object>> unsubscribeDelegates;
-    private readonly object syncLock;
-
-    public WeakEventRegistrationService()
-    {
-      this.eventSourceInstances = new WeakCollection<object>();
-      this.subscribeDelegates = new List<Action<object>>();
-      this.unsubscribeDelegates = new List<Action<object>>();
-      this.syncLock = new object();
-    }
-
-    public void AddInstance(object instance)
-    {
-      lock (this.syncLock)
-      {
-        this.eventSourceInstances.Add(instance);
-        foreach (Action<object> subscribeDelegateDelegate in this.subscribeDelegates)
-        {
-          subscribeDelegateDelegate.Invoke(instance);
-        }
-      }
-    }
-
-    public void RemoveInstance(object instance)
-    {
-      lock (this.syncLock)
-      {
-        _ = this.eventSourceInstances.Remove(instance);
-        foreach (Action<object> unsubscribeDelegateDelegate in this.unsubscribeDelegates)
-        {
-          unsubscribeDelegateDelegate.Invoke(instance);
-        }
-      }
-    }
-
-    public void AddSubscribeDelegate(Action<object> subscribeDelegate)
-    {
-      lock (this.syncLock)
-      {
-        this.subscribeDelegates.Add(subscribeDelegate);
-        foreach (object instance in this.eventSourceInstances)
-        {
-          subscribeDelegate.Invoke(instance);
-        }
-      }
-    }
-
-      public void AddUnsubscribeDelegate(Action<object> unsubscribeDelegate)
-      {
-
-        throw new NotImplementedException();
-      }
-
-    public void RemoveRegistration(Action<object> instanceRegistrationDelegate)
-    {
-      lock (this.syncLock)
-      {
-        _ = this.subscribeDelegates.Remove(instanceRegistrationDelegate);
-      }
-    }
-
-    internal void ClearInstances() 
-      => this.eventSourceInstances.Clear();
+    public WeakEventRegistrationService<TEventSource> RegistrationService { get; }
   }
 }

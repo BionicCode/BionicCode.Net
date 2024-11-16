@@ -46,11 +46,11 @@
     #region Implementation of IEventAggregator
 
     /// <inheritdoc />
-    public void RegisterObservable(object eventSource, params string[] eventNames)
+    public void RegisterObservable<TEventSource>(object eventSource, params string[] eventNames)
       => RegisterObservable(eventSource, (IEnumerable<string>)eventNames);
 
     /// <inheritdoc />
-    public void RegisterObservable(object eventSource, IEnumerable<string> eventNames)
+    public void RegisterObservable<TEventSource>(TEventSource eventSource, IEnumerable<string> eventNames)
     {
       ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
       ArgumentNullExceptionEx.ThrowIfNull(eventNames, nameof(eventNames));
@@ -58,18 +58,19 @@
       Type eventSourceType = eventSource.GetType();
       foreach (string eventName in eventNames)
       {
-        var key = new EventInfoTableKey(eventName, eventSourceType);
-        if (!WeakEventAggregator.SourceEventInfoTable.TryGetValue(key, out EventInfoTableEntry entry))
+        var key = new EventInfoTableKey<TEventSource>(eventName);
+        if (!(WeakEventAggregator.SourceEventInfoTable.TryGetValue(key, out object entry)
+          && entry is EventInfoTableEntry<TEventSource> eventInfoTableEntry))
         {
           EventInfo eventInfo = eventSourceType.GetEvent(
             eventName,
             BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy)
               ?? throw new ArgumentException($"The event {eventName} was not found on the event source {eventSource.GetType().FullName} or on its declaring base eventHandlerGenericTypeDefinition.");
-          entry = new EventInfoTableEntry(eventInfo);
-          _ = WeakEventAggregator.SourceEventInfoTable.TryAdd(key, entry);
+          eventInfoTableEntry = new EventInfoTableEntry<TEventSource>(eventInfo);
+          _ = WeakEventAggregator.SourceEventInfoTable.TryAdd(key, eventInfoTableEntry);
         }
 
-        entry.AddEventSource(eventSource);
+        eventInfoTableEntry.RegistrationService.AddSourceInstance(eventSource);
       }
     }
 
@@ -118,10 +119,8 @@
       return TryRemoveObservableInternal(eventSource, eventSource.GetType(), null, removeAllObserversOfEvents, includeInstanceEvents: true, includeStaticEvents);
     }
 
-    private bool TryRemoveObservableInternal<TEventSource>(TEventSource eventSource, Type eventSourceType, IEnumerable<string> eventNames, bool removeAllEventObservers, bool includeInstanceEvents, bool includeStaticEvents)
+    private void RemoveObservableInternal<TEventSource>(TEventSource eventSource, Type eventSourceType, IEnumerable<string> eventNames, bool removeAllEventObservers, bool includeInstanceEvents, bool includeStaticEvents)
     {
-      bool hasRemovedObservable = false;
-
       if (eventNames is null)
       {
         eventNames = eventSourceType.GetEvents()
@@ -131,91 +130,72 @@
       foreach (string eventName in eventNames)
       {
         var key = new EventInfoTableKey<TEventSource>(eventName);
-        if (!WeakEventAggregator.SourceEventInfoTable.TryGetValue(key, out EventInfoTableEntry entry))
+        if (!(WeakEventAggregator.SourceEventInfoTable.TryGetValue(key, out object entry)
+          && entry is EventInfoTableEntry<TEventSource> eventInfoTableEntry))
         {
           continue;
         }
 
-        if (entry.IsStaticEvent)
-        {
-          RemoveHandlerInternal(eventName, entry.EventInfo.EventHandlerType, entry.Handler, null);
-          hasRemovedObservable = true;
-        }
-        else if (includeInstanceEvents)
-        {
-          if (eventSource is null)
-          {
-            entry.RemoveAllEventSources();
-          }
-          else
-          {
-            entry.RemoveEventSource(eventSource);
-          }
-
-          //foreach (object eventSourceInstance in eventSourceInstances)
-          //{
-          //  hasRemovedObservable = true;
-          //  RemoveHandlerInternal(eventName, entry.EventInfo.EventHandlerType, entry.Handler, eventSourceInstance);
-
-          //  if (removeAllEventObservers)
-          //  {
-          //    _ = TryRemoveAllObservers(eventName, instance.GetType());
-          //  }
-          //}
-        }
-      }
-
-      return hasRemovedObservable;
-    }
-
-    private void RemoveHandlerInternal(string eventName, Type eventHandlerType, Delegate handler, object eventSourceInstance)
-    {
-      if (eventHandlerType == typeof(EventHandler)
-        || eventHandlerType == typeof(EventHandler<EventArgs>)
-        || eventHandlerType == typeof(Action<object, EventArgs>))
-      {
-        WeakEventManager<object, EventArgs>.RemoveEventHandler(eventSourceInstance, eventName, handler);
-      }
-      else if (eventHandlerType == typeof(EventHandler<object>)
-        || eventHandlerType == typeof(Action<object, object>))
-      {
-        WeakEventManager<object, object>.RemoveEventHandler(eventSourceInstance, eventName, handler);
-      }
-      else
-      {
-        MethodInfo closedHandlerMethod = null;
-        Type eventArgsType = null;
-        Type eventHandlerSourceType = null;
-        Type eventHandlerGenericTypeDefinition = eventHandlerType.GetGenericTypeDefinition();
-        if ((eventHandlerGenericTypeDefinition == typeof(EventHandler<>)))
-        {
-          Type[] typeArguments = eventHandlerType.GetGenericArguments();
-          closedHandlerMethod = GetType().GetMethod(nameof(OnEventHandlerGeneric)).MakeGenericMethod(typeArguments);
-          eventHandlerSourceType = typeof(object);
-          eventArgsType = typeArguments[0];
-        }
-        else
-        {
-          MethodInfo invocator = eventHandlerType.GetMethod("Invoke");
-          ParameterInfo[] eventHandlerParameters = invocator.GetParameters();
-          if (eventHandlerParameters.Length == 2)
-          {
-            Type[] parameterTypes = eventHandlerParameters.Select(parameter => parameter.ParameterType).ToArray();
-            eventHandlerSourceType = parameterTypes[0];
-            eventArgsType = parameterTypes[1];
-          }
-          else
-          {
-            eventHandlerSourceType = eventHandlerParameters[0].ParameterType;
-            eventArgsType = typeof(object[]);
-          }
-        }
-
-        Type closedWeakEventManagerType = typeof(WeakEventManager<,>).MakeGenericType(eventHandlerSourceType, eventArgsType);
-        MethodInfo weakEventManagerAddHandlerMethodInfo = closedWeakEventManagerType.GetMethod("RemoveEventHandler");
-        _ = weakEventManagerAddHandlerMethodInfo.Invoke(null, new object[] { eventSourceInstance, eventName, handler });
+        eventInfoTableEntry.RegistrationService.RemoveSourceInstance(eventSource);
       }
     }
+
+    //private void RemoveHandlerInternal<TEventSource>(string eventName, Type eventHandlerType, Delegate handler, object eventSourceInstance)
+    //{
+    //  var key = new EventInfoTableKey<TEventSource>(eventName);
+    //  if (!(WeakEventAggregator.SourceEventInfoTable.TryGetValue(key, out object entry) 
+    //    && entry is EventInfoTableEntry<TEventSource> eventInfoTableEntry))
+    //  {
+    //    return;
+    //  }
+
+    //  eventInfoTableEntry.RemoveRegistration
+    //    if (eventHandlerType == typeof(EventHandler)
+    //    || eventHandlerType == typeof(EventHandler<EventArgs>)
+    //    || eventHandlerType == typeof(Action<object, EventArgs>))
+    //  {
+    //    WeakEventManager<object, EventArgs>.RemoveEventHandler(eventSourceInstance, eventName, handler);
+    //  }
+    //  else if (eventHandlerType == typeof(EventHandler<object>)
+    //    || eventHandlerType == typeof(Action<object, object>))
+    //  {
+    //    WeakEventManager<object, object>.RemoveEventHandler(eventSourceInstance, eventName, handler);
+    //  }
+    //  else
+    //  {
+    //    MethodInfo closedHandlerMethod = null;
+    //    Type eventArgsType = null;
+    //    Type eventHandlerSourceType = null;
+    //    Type eventHandlerGenericTypeDefinition = eventHandlerType.GetGenericTypeDefinition();
+    //    if ((eventHandlerGenericTypeDefinition == typeof(EventHandler<>)))
+    //    {
+    //      Type[] typeArguments = eventHandlerType.GetGenericArguments();
+    //      closedHandlerMethod = GetType().GetMethod(nameof(OnEventHandlerGeneric)).MakeGenericMethod(typeArguments);
+    //      eventHandlerSourceType = typeof(object);
+    //      eventArgsType = typeArguments[0];
+    //    }
+    //    else
+    //    {
+    //      MethodInfo invocator = eventHandlerType.GetMethod("Invoke");
+    //      ParameterInfo[] eventHandlerParameters = invocator.GetParameters();
+    //      if (eventHandlerParameters.Length == 2)
+    //      {
+    //        Type[] parameterTypes = eventHandlerParameters.Select(parameter => parameter.ParameterType).ToArray();
+    //        eventHandlerSourceType = parameterTypes[0];
+    //        eventArgsType = parameterTypes[1];
+    //      }
+    //      else
+    //      {
+    //        eventHandlerSourceType = eventHandlerParameters[0].ParameterType;
+    //        eventArgsType = typeof(object[]);
+    //      }
+    //    }
+
+    //    Type closedWeakEventManagerType = typeof(WeakEventManager<>).MakeGenericType(eventHandlerSourceType);
+    //    MethodInfo weakEventManagerAddHandlerMethodInfo = closedWeakEventManagerType.GetMethod("RemoveEventHandler");
+    //    _ = weakEventManagerAddHandlerMethodInfo.Invoke(null, new object[] { eventSourceInstance, eventName, handler });
+    //  }
+    //}
 
     /// <inheritdoc />
     public void RegisterObserver<TEventSource>(string eventName, Delegate eventHandler)
@@ -248,46 +228,45 @@
     public void RegisterObserverInternal<TEventSource>(string eventName, Delegate eventHandler, bool executeOnCurrentSynchronizationContext, SynchronizationContext synchronizationContext)
     {
       Type eventSourceType = typeof(TEventSource);
-      var key = new EventInfoTableKey(eventName, eventSourceType);
-      if (!WeakEventAggregator.SourceEventInfoTable.TryGetValue(key, out EventInfoTableEntry entry))
+      var key = new EventInfoTableKey<TEventSource>(eventName);
+      if (!(WeakEventAggregator.SourceEventInfoTable.TryGetValue(key, out object entry) && entry is EventInfoTableEntry<TEventSource> eventInfoTableEntry))
       {
         EventInfo eventInfo = eventSourceType.GetEvent(
           eventName,
           BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy)
         ?? throw new ArgumentException($"The event {eventName} was not found on the event source {eventSourceType.FullName} or on its declaring base eventHandlerGenericTypeDefinition.");
-        entry = new EventInfoTableEntry(eventInfo);
+        eventInfoTableEntry = new EventInfoTableEntry<TEventSource>(eventInfo);
+        _ = WeakEventAggregator.SourceEventInfoTable.TryAdd(key, eventInfo);
       }
 
-      Action<object, Delegate> subscribeDelegate;
-      Action<object> unsubscribeDelegate;
-      ThrowIfEventHandlerInvalid(entry, eventHandler);
+      ThrowIfEventHandlerInvalid(eventInfoTableEntry, eventHandler);
 
       Type eventHandlerType = eventHandler.GetType();
-      IRegistrationCommand<TEventSource> registrationCommand;
+      IClientEventHandlerRegistrar<TEventSource> clientEventHandlerRegistrar;
       bool isGenericEventHandler = eventHandlerType.IsGenericType;
       Type eventHandlerTypeDefinition = isGenericEventHandler ? eventHandlerType.GetGenericTypeDefinition() : null;
       if (eventHandlerType == typeof(EventHandler))
       {
-        registrationCommand = new RegistrationCommandEventHandler<TEventSource>((EventHandler)eventHandler, eventName);
+        clientEventHandlerRegistrar = new EventHandlerRegistrar<TEventSource>((EventHandler)eventHandler, eventName, synchronizationContext);
       }
       else if (isGenericEventHandler && eventHandlerTypeDefinition == typeof(EventHandler<>))
       {
         Type eventArgsType = eventHandlerType.GetGenericArguments()[0];
-        registrationCommand = (IRegistrationCommand<TEventSource>)typeof(RegistrationCommandEventHandlerGeneric<,>).MakeGenericType(typeof(TEventSource), eventArgsType)
+        clientEventHandlerRegistrar = (IClientEventHandlerRegistrar<TEventSource>)typeof(EventHandlerGenericRegistrar<,>).MakeGenericType(typeof(TEventSource), eventArgsType)
           .GetConstructor(new Type[] { eventHandlerType, typeof(string) })
-          .Invoke(new object[] { eventHandler, eventName });
+          .Invoke(new object[] { eventHandler, eventName, synchronizationContext });
       }
       else if (isGenericEventHandler && eventHandlerTypeDefinition == typeof(Action<,>))
       {
         Type eventSenderType = eventHandlerType.GetGenericArguments()[0];
         Type eventArgsType = eventHandlerType.GetGenericArguments()[1];
-        registrationCommand = (IRegistrationCommand<TEventSource>)typeof(RegistrationCommandAction<,,>).MakeGenericType(typeof(TEventSource), eventSenderType, eventArgsType)
+        clientEventHandlerRegistrar = (IClientEventHandlerRegistrar<TEventSource>)typeof(ActionRegistrar<,,>).MakeGenericType(typeof(TEventSource), eventSenderType, eventArgsType)
           .GetConstructor(new Type[] { eventHandlerType, typeof(string) })
-          .Invoke(new object[] { eventHandler, eventName });
+          .Invoke(new object[] { eventHandler, eventName, synchronizationContext });
       }
       else
       {
-        registrationCommand = new RegistrationCommandAnonymous<TEventSource>(eventHandler, eventName);
+        clientEventHandlerRegistrar = new AnonymousDelegateRegistrar<TEventSource>(eventHandler, eventName);
         //Type eventArgsType = null;
         //Type eventHandlerSourceType = typeof(TEventSource);
         //Type eventHandlerGenericTypeDefinition = eventHandlerType.GetGenericTypeDefinition();
@@ -318,10 +297,10 @@
         //unsubscribeDelegate = eventSource => _ = weakEventManagerRemoveHandlerMethodInfo.Invoke(null, new object[] { eventSource, eventName, eventHandler });
       }
 
-      entry.AddRegistration(subscribeDelegate);
+      eventInfoTableEntry.RegistrationService.RegisterHandler(clientEventHandlerRegistrar);
     }
 
-    private void ThrowIfEventHandlerInvalid(EventInfoTableEntry entry, Delegate eventHandler)
+    private void ThrowIfEventHandlerInvalid<TEventSource>(EventInfoTableEntry<TEventSource> entry, Delegate eventHandler)
     {
       ParameterInfo[] invocatorParameters = entry.InvocatorMethod.GetParameters();
       ParameterInfo[] eventHandlerParameters = eventHandler.GetType().GetMethod("Invoke")?.GetParameters();

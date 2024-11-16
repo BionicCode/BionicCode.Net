@@ -1,8 +1,11 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-  internal interface IRegistrationCommand<TEventSource>
+  using System;
+
+  internal interface IClientEventHandlerRegistrar<TEventSource>
   {
     void RegisterDelegate(TEventSource eventSource);
     void UnregisterDelegate(TEventSource eventSource);
+    bool ContainsDelegate(Delegate handler);
   }
 }

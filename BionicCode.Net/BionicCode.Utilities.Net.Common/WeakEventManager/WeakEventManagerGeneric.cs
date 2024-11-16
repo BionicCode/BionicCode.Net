@@ -8,7 +8,7 @@
   using System.Linq.Expressions;
   using System.Reflection;
   using System.Runtime.CompilerServices;
-  using System.Runtime.Remoting.Messaging;
+  using System.Runtime.InteropServices;
   using System.Threading;
 
   public class WeakEventManager<TEventSource> : WeakEventManager
@@ -118,10 +118,14 @@
     private ReaderWriterLockSlim ListenerReaderWriterLock { get; }
     private string EventName { get; }
 
-    internal WeakEventManager(string eventName, EventInfo eventInfo)
+    internal WeakEventManager(string eventName)
     {
       // Use BindingFlags.FlattenHierarchy to also get base type static events via the subclass (but only public)
-      this.EventSourceEventInfo = eventInfo;
+      this.EventSourceEventInfo = typeof(TEventSource).GetEvent(eventName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+      if (this.EventSourceEventInfo is null)
+      {
+        throw new ArgumentException($"The specified event '{eventName}' on event source type '{typeof(TEventSource).FullName}' could not be found. Please check the provided event name, event source type.");
+      }
 
       Type eventHandlerType = this.EventSourceEventInfo.EventHandlerType;
       MethodInfo invocator = eventHandlerType.GetMethod("Invoke");
@@ -162,8 +166,8 @@
       }
 
       IEnumerable<UnaryExpression> castedExpressionParameters = expressionParameters.Select(parameter => Expression.TypeAs(parameter, typeof(object)));
-      NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), castedExpressionParameters);
-      MethodCallExpression method = Expression.Call(GetType().GetMethod(nameof(OnEventHandlerCustomDynamicSignature)), argsArray);
+      //NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), castedExpressionParameters);
+      MethodCallExpression method = Expression.Call(GetType().GetMethod(nameof(OnEventHandlerCustomDynamicSignature)), castedExpressionParameters);
       eventSourceHandler = Expression.Lambda(method, expressionParameters).Compile();
 
       return eventSourceHandler;
@@ -305,40 +309,40 @@
       }
     }
 
-    private static void ThrowIfInvalidHandler(EventInfo eventInfo, Delegate handler)
+    private static void ThrowIfInvalidHandler(EventInfo eventInfo, Delegate clientHandler)
     {
       MethodInfo eventDelegateInvokeMethod = eventInfo.EventHandlerType.GetMethod("Invoke");
-      ParameterInfo[] eventDelegateMethodParameters = eventDelegateInvokeMethod.GetParameters();
+      ParameterInfo[] eventDelegateParameters = eventDelegateInvokeMethod.GetParameters();
 
       /* Validate the event */
 
-      if (eventDelegateMethodParameters.Length != 2)
-      {
-        throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToSignatureName(), eventInfo.EventHandlerType.ToSignatureName(), $"the parameter count is {eventDelegateMethodParameters.Length} instead of 2"));
-      }
+      //if (eventDelegateMethodParameters.Length != 2)
+      //{
+      //  throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToSignatureName(), eventInfo.EventHandlerType.ToSignatureName(), $"the parameter count is {eventDelegateMethodParameters.Length} instead of 2"));
+      //}
 
-      if (!(eventDelegateMethodParameters[0].ParameterType == typeof(TEventSource) 
-        || eventDelegateMethodParameters[0].ParameterType == typeof(object)))
-      {
-        throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToSignatureName(), eventInfo.EventHandlerType.ToSignatureName(), $"the parameter at index '0' is not of type {nameof(TEventSource)} or {typeof(object).FullName}"));
-      }
+      //if (!(eventDelegateMethodParameters[0].ParameterType == typeof(TEventSource) 
+      //  || eventDelegateMethodParameters[0].ParameterType == typeof(object)))
+      //{
+      //  throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToSignatureName(), eventInfo.EventHandlerType.ToSignatureName(), $"the parameter at index '0' is not of type {nameof(TEventSource)} or {typeof(object).FullName}"));
+      //}
 
       //if (!typeof(EventArgs).IsAssignableFrom(eventDelegateMethodParameters[1].ParameterType))
       //{
       //  throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToSignatureName(), eventInfo.EventHandlerType.ToSignatureName(), $"the parameter at index '1' is not of type or derived from type {typeof(EventArgs).FullName}"));
       //}
 
-      if (eventDelegateMethodParameters[1].ParameterType != typeof(TEventArgs))
-      {
-        throw new EventDelegateMismatchException(string.Format(EventDelegateSignatureMismatchWrongGenericClassTypeParameterExceptionMessage, nameof(TEventArgs), eventInfo.Name, typeof(TEventArgs), eventDelegateMethodParameters[1].ParameterType.FullName));
-      }
+      //if (eventDelegateMethodParameters[1].ParameterType != typeof(TEventArgs))
+      //{
+      //  throw new EventDelegateMismatchException(string.Format(EventDelegateSignatureMismatchWrongGenericClassTypeParameterExceptionMessage, nameof(TEventArgs), eventInfo.Name, typeof(TEventArgs), eventDelegateMethodParameters[1].ParameterType.FullName));
+      //}
 
-      MethodInfo eventHandlerMethod = handler.Method;
-      ParameterInfo[] eventHandlerMethodParameters = eventHandlerMethod.GetParameters();
+      MethodInfo eventHandlerMethod = clientHandler.Method;
+      ParameterInfo[] clientHandlerParameters = eventHandlerMethod.GetParameters();
 
       /* Validate the event EventHandler */
 
-      if (eventDelegateMethodParameters.Length != eventHandlerMethodParameters.Length)
+      if (eventDelegateParameters.Length != clientHandlerParameters.Length)
       {
         throw new EventHandlerMismatchException(string.Format(HandlerDelegateSignatureMismatchExceptionMessage, 
           eventInfo.EventHandlerType.ToSignatureName(),
@@ -346,10 +350,10 @@
           $"Invalid parameter count."));
       }
 
-      for (int parameterIndex = 0; parameterIndex < eventDelegateMethodParameters.Length; parameterIndex++)
+      for (int parameterIndex = 0; parameterIndex < eventDelegateParameters.Length; parameterIndex++)
       {
-        Type eventDelegateParameterType = eventDelegateMethodParameters[parameterIndex].ParameterType;
-        Type eventHandlerParameterType = eventHandlerMethodParameters[parameterIndex].ParameterType;
+        Type eventDelegateParameterType = eventDelegateParameters[parameterIndex].ParameterType;
+        Type eventHandlerParameterType = clientHandlerParameters[parameterIndex].ParameterType;
         if (!eventHandlerParameterType.IsAssignableFrom(eventDelegateParameterType))
         {
           throw new EventHandlerMismatchException(string.Format(HandlerDelegateSignatureMismatchExceptionMessage,
@@ -362,17 +366,8 @@
 
     private static void RegisterClientHandler(object eventListener, Action<object, object, ClientHandlerInfo> eventHandlerInvocator, Delegate originalHandler, TEventSource eventSource, string eventName, SynchronizationContext capturedSynchronizationContext)
     {
-      // Use BindingFlags.FlattenHierarchy to also get base type static events via the subclass (but only public)
-      EventInfo eventInfo = typeof(TEventSource).GetEvent(eventName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-      if (eventInfo is null)
-      {
-        throw new ArgumentException($"The specified event '{eventName}' on event source type '{typeof(TEventSource).FullName}' could not be found. Please check the provided event name, event source type.");
-      }
-
-      ThrowIfInvalidHandler(eventInfo, originalHandler);
-
-      WeakEventManager<TEventSource> weakEventManager;
-      weakEventManager = WeakEventManagerTable.GetOrCreateWeakEventManager<TEventSource>(eventSource, eventName, eventInfo);
+      WeakEventManager<TEventSource> weakEventManager = WeakEventManagerTable.GetOrCreateWeakEventManager(eventSource, eventName);
+      ThrowIfInvalidHandler(weakEventManager.EventSourceEventInfo, originalHandler);
       
       if (weakEventManager.IsPurged)
       {
@@ -494,11 +489,21 @@
       this.IsPurged = true;
     }
 
-    public void StopListening(TEventSource eventSource)
-      => StopListeningInternal(eventSource);
+    public static void StopListening(TEventSource eventSource, string eventName)
+    {
+      if (WeakEventManagerTable.TryGetWeakEventManager(eventSource, eventName, out WeakEventManager<TEventSource> weakEventManager))
+      {
+        weakEventManager.StopListeningInternal(eventSource);
+      }
+    }
 
-    public void StartListening(TEventSource eventSource)
-      => StartListeningInternal(eventSource);
+    public static void StartListening(TEventSource eventSource, string eventName)
+    {
+      if (WeakEventManagerTable.TryGetWeakEventManager(eventSource, eventName, out WeakEventManager<TEventSource> weakEventManager))
+      {
+        weakEventManager.StartListeningInternal(eventSource);
+      }
+    }
 
     private void OnStronglyTypedEvent<TSender, TEventArgs>(TSender sender, TEventArgs e)
     {
@@ -597,30 +602,30 @@
     //  this.ListenerReaderWriterLock.ExitReadLock();
     //}
 
-    private void InvokeClientHandler<TSender, TEventArgs>(Delegate clientHandler,  TSender sender, TEventArgs e)
-    {
-      if (clientHandler is EventHandler defaultEventHandler)
-      {
-        defaultEventHandler.Invoke(sender, e as EventArgs);
-      }
-      else if (clientHandler is EventHandler<TEventArgs> genericDefaultEventHandler)
-      {
-        genericDefaultEventHandler.Invoke(sender, e);
-      }
-      else if (clientHandler is Action<TSender, TEventArgs> actionDelegate)
-      {
-        actionDelegate.Invoke(sender, e);
-      }
-      else
-      {
-        _ = clientHandler.DynamicInvoke(e);
-      }
-    }
+    //private void InvokeClientHandler<TSender, TEventArgs>(Delegate clientHandler,  TSender sender, TEventArgs e)
+    //{
+    //  if (clientHandler is EventHandler defaultEventHandler)
+    //  {
+    //    defaultEventHandler.Invoke(sender, e as EventArgs);
+    //  }
+    //  else if (clientHandler is EventHandler<TEventArgs> genericDefaultEventHandler)
+    //  {
+    //    genericDefaultEventHandler.Invoke(sender, e);
+    //  }
+    //  else if (clientHandler is Action<TSender, TEventArgs> actionDelegate)
+    //  {
+    //    actionDelegate.Invoke(sender, e);
+    //  }
+    //  else
+    //  {
+    //    _ = clientHandler.DynamicInvoke(e);
+    //  }
+    //}
 
-    private void InvokeUnconventionalClientHandler(Delegate clientHandler, params object[] e)
-    {
-      _ = clientHandler.DynamicInvoke(e);
-    }
+    //private void InvokeUnconventionalClientHandler(Delegate clientHandler, params object[] e)
+    //{
+    //  _ = clientHandler.DynamicInvoke(e);
+    //}
 
     private void OnEventHandlerCustomDynamicSignature(params object[] args)
     {
