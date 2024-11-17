@@ -2,7 +2,9 @@
 {
   using System;
   using System.Collections;
+  using System.Collections.Frozen;
   using System.Collections.Generic;
+  using System.Collections.Immutable;
   using System.Collections.ObjectModel;
   using System.Linq;
   using System.Reflection;
@@ -14,6 +16,16 @@
   /// </summary>
   public static partial class HelperExtensionsCommon
   {
+    internal static FrozenSet<Type> ImmutableFrameworkCollections { get; }
+
+    static HelperExtensionsCommon()
+    {
+      IEnumerable<Type> immutableTypeInterfaces = Assembly.GetAssembly(typeof(IImmutableList<>))
+        .GetExportedTypes()
+        .Where(type => type.Name.StartsWith("Immutable", StringComparison.Ordinal));
+      ImmutableFrameworkCollections = immutableTypeInterfaces.ToFrozenSet();
+    }
+
     #region Collection
 
     /// <summary>
@@ -240,13 +252,18 @@
     /// <typeparam name="TItem">The type of the item.</typeparam>
     /// <param name="source">The <see cref="ICollection{T}"/> to modify.</param>
     /// <param name="range">The items to add.</param>
-    /// <remarks>Although this method returns a <see cref="IEnumerable{T}"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="NotSupportedException"><paramref name="source"/> is an immutable collection type or <paramref name="source"/> is a read-only collection.</exception>
     public static void AddRange<TItem>(this ICollection<TItem> source, IEnumerable<TItem> range)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(source);
-      ArgumentNullExceptionEx.ThrowIfNull(range);
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+      ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
+
+      if (HelperExtensionsCommon.ImmutableFrameworkCollections.Contains(source.GetType()))
+      {
+        throw new NotSupportedException(ExceptionMessages.GetModificationOfImmutableCollectionNotSupportedExceptionMessage(source));
+      }
 
       if (source.IsReadOnly)
       {
@@ -267,6 +284,124 @@
     }
 
     /// <summary>
+    /// Removes a range of items to the <see cref="ICollection{T}"/>.
+    /// </summary>
+    /// <typeparam name="TItem">The type of the item.</typeparam>
+    /// <param name="source">The <see cref="ICollection{T}"/> to modify.</param>
+    /// <param name="range">The items to add.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="NotSupportedException"><paramref name="source"/> is an immutable collection type or <paramref name="source"/> is a read-only collection.</exception>
+    public static void RemoveRange<TItem>(this ICollection<TItem> source, IEnumerable<TItem> range)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+      ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
+
+      if (HelperExtensionsCommon.ImmutableFrameworkCollections.Contains(source.GetType()))
+      {
+        throw new NotSupportedException(ExceptionMessages.GetModificationOfImmutableCollectionNotSupportedExceptionMessage(source));
+      }
+
+      if (source.IsReadOnly)
+      {
+        throw new NotSupportedException(ExceptionMessages.GetModificationOfReadOnlyCollectionNotSupportedExceptionMessage(source));
+      }
+
+      foreach (TItem item in range)
+      {
+        _ = source.Remove(item);
+      }
+    }
+
+    /// <summary>
+    /// Adds a range of items to the <see cref="Stack{T}"/>.
+    /// </summary>
+    /// <typeparam name="TItem">The type of the item.</typeparam>
+    /// <param name="source">The <see cref="Stack{T}"/> to modify.</param>
+    /// <param name="range">The items to add.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="NotSupportedException"><paramref name="source"/> is an immutable collection type or <paramref name="source"/> is a read-only collection.</exception>
+    public static void AddRange<TItem>(this Stack<TItem> source, IEnumerable<TItem> range)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+      ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
+
+      if (source is IImmutableStack<TItem>)
+      {
+        throw new NotSupportedException(ExceptionMessages.GetModificationOfImmutableCollectionNotSupportedExceptionMessage(source));
+      }
+
+      foreach (TItem item in range)
+      {
+        source.Push(item);
+      }
+    }
+
+    ///// <summary>
+    ///// Removes a range of items to the <see cref="Stack{T}"/>.
+    ///// </summary>
+    ///// <typeparam name="TItem">The type of the item.</typeparam>
+    ///// <param name="source">The <see cref="Stack{T}"/> to modify.</param>
+    ///// <param name="range">The items to add.</param>
+    ///// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    ///// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+    ///// <exception cref="NotSupportedException"><paramref name="source"/> is an immutable collection type or <paramref name="source"/> is a read-only collection.</exception>
+    //public static void RemoveRange<TItem>(this Stack<TItem> source, IEnumerable<TItem> range)
+    //{
+    //  ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+    //  ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
+
+    //  if (source is IImmutableStack<TItem>)
+    //  {
+    //    throw new NotSupportedException(ExceptionMessages.GetModificationOfImmutableCollectionNotSupportedExceptionMessage(source));
+    //  }
+
+    //  var itemsToKeep = new List<TItem>();
+    //  foreach (TItem itemToRemove in range)
+    //  {
+    //    TItem item = source.Pop();
+    //    if (itemToRemove.Equals(item))
+    //    {
+    //      continue;
+    //    }
+
+    //    itemsToKeep.Add(item);
+    //  }
+
+    //  for (int i = itemsToKeep.Count - 1; i >= 0; i--)
+    //  {
+    //    TItem item = itemsToKeep[i];
+    //    source.Push(item);
+    //  }
+    //}
+
+    /// <summary>
+    /// Adds a range of items to the <see cref="Queue{T}"/>.
+    /// </summary>
+    /// <typeparam name="TItem">The type of the item.</typeparam>
+    /// <param name="source">The <see cref="Queue{T}"/> to modify.</param>
+    /// <param name="range">The items to add.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="NotSupportedException"><paramref name="source"/> is an immutable collection type or <paramref name="source"/> is a read-only collection.</exception>
+    public static void AddRange<TItem>(this Queue<TItem> source, IEnumerable<TItem> range)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+      ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
+
+      if (source is IImmutableQueue<TItem>)
+      {
+        throw new NotSupportedException(ExceptionMessages.GetModificationOfImmutableCollectionNotSupportedExceptionMessage(source));
+      }
+
+      foreach (TItem item in range)
+      {
+        source.Enqueue(item);
+      }
+    }
+
+    /// <summary>
     /// Adds a <see cref="IDictionary{TKey,TValue}"/> to the <see cref="IDictionary{TKey,TValue}"/>.
     /// </summary>
     /// <typeparam name="TKey">The type of the key.</typeparam>
@@ -277,10 +412,11 @@
     /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="NotSupportedException"><paramref name="source"/> is a read-only collection.</exception>
     public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IDictionary<TKey, TValue> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(source);
-      ArgumentNullExceptionEx.ThrowIfNull(range);
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+      ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
 
       if (source.IsReadOnly)
       {
@@ -330,10 +466,11 @@
     /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="NotSupportedException"><paramref name="source"/> is a read-only collection.</exception>
     public static void RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IDictionary<TKey, TValue> range)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(source);
-      ArgumentNullExceptionEx.ThrowIfNull(range);
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+      ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
 
       if (source.IsReadOnly)
       {
@@ -357,10 +494,11 @@
     /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="NotSupportedException"><paramref name="source"/> is a read-only collection.</exception>
     public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(source);
-      ArgumentNullExceptionEx.ThrowIfNull(range);
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+      ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
 
       if (source.IsReadOnly)
       {
@@ -410,10 +548,11 @@
     /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="NotSupportedException"><paramref name="source"/> is a read-only collection.</exception>
     public static void RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> range)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(source);
-      ArgumentNullExceptionEx.ThrowIfNull(range);
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+      ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
 
       if (source.IsReadOnly)
       {
@@ -437,10 +576,11 @@
     /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="NotSupportedException"><paramref name="source"/> is a read-only collection.</exception>
     public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<(TKey Key, TValue Value)> range, AddRangeMode mode = AddRangeMode.ThrowOnDuplicateKey)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(source);
-      ArgumentNullExceptionEx.ThrowIfNull(range);
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+      ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
 
       if (source.IsReadOnly)
       {
@@ -490,10 +630,11 @@
     /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="NotSupportedException"><paramref name="source"/> is a read-only collection.</exception>
     public static void RemoveRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<(TKey Key, TValue Value)> range)
     {
-      ArgumentNullExceptionEx.ThrowIfNull(source);
-      ArgumentNullExceptionEx.ThrowIfNull(range);
+      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+      ArgumentNullExceptionEx.ThrowIfNull(range, nameof(range));
 
       if (source.IsReadOnly)
       {

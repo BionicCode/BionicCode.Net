@@ -6,6 +6,7 @@
   #endregion
 
   using System;
+  using System.Diagnostics.Tracing;
   using System.Threading;
 
   internal class AnonymousDelegateRegistrar<TEventSource> : ClientEventHandlerRegistrar<TEventSource>

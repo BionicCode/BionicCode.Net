@@ -13,8 +13,7 @@
         WeakEventManager<TEventSource> weakEventManager = null;
 
         // If the event is a static event, the eventSource is NULL.
-        // In this case, we need to provide a placeholder for the WeakTable entry.
-        if (!ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry(eventSource == null ? DummyEventSourceForStaticEventHandlers.Instance : (object)eventSource, eventName, out EntryInfo<WeakManagerTableEntry> entryInfo))
+        if (!ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry(eventSource, eventName, out EntryInfo<WeakManagerTableEntry> entryInfo))
         {
           weakEventManager = new WeakEventManager<TEventSource>(eventName);
           var tableEntry = new WeakManagerTableEntry(eventSource, typeof(TEventSource), eventName, weakEventManager);
@@ -35,8 +34,7 @@
       lock (ManagedWeakTable.SyncLockInternal)
       {
         // If the event is a static event, the eventSource is NULL.
-        // In this case, we need to provide a placeholder for the WeakTable entry.
-        if (ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry(eventSource == null ? DummyEventSourceForStaticEventHandlers.Instance : (object)eventSource, eventName, out EntryInfo<WeakManagerTableEntry> entryInfo))
+        if (ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry(eventSource, eventName, out EntryInfo<WeakManagerTableEntry> entryInfo))
         {
           weakEventManager = (WeakEventManager<TEventSource>)entryInfo.Entry.WeakEventManager;
         }
@@ -51,8 +49,7 @@
       lock (ManagedWeakTable.SyncLockInternal)
       {
         // If the event is a static event, the eventSource is NULL.
-        // In this case, we need to provide a placeholder for the WeakTable entry.
-        if (ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry(eventSource ?? DummyEventSourceForStaticEventHandlers.Instance, eventName, out EntryInfo<WeakManagerTableEntry> entryInfo))
+        if (ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry(eventSource, eventName, out EntryInfo<WeakManagerTableEntry> entryInfo))
         {
           _ = ManagedWeakTable.RemoveEntry(entryInfo.Entry);
         }

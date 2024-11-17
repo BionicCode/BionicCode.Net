@@ -26,6 +26,7 @@ namespace BionicCode.Utilities.Net
     public static string GetArgumentListMismatchExceptionMessage() => $"The argument list provided by the '{nameof(ProfilerMethodArgumentAttribute)}' does not match the signature of the profiled member. The argument list must define the arguments in the same order and of the same type as the parameter list of the profiled member.";
     public static string GetValueNotSupportedExceptionMessage(object value) => $"The {(value is Enum ? "enum " : string.Empty)}value '{(value is Enum enumValue ? $"{enumValue.GetType().FullName}.{enumValue}" : value)}' is not supported.";
     public static string GetModificationOfReadOnlyCollectionNotSupportedExceptionMessage(IEnumerable collection) => $"The {collection.GetType().ToDisplayName()} is read-only.";
+    public static string GetModificationOfImmutableCollectionNotSupportedExceptionMessage(IEnumerable collection) => $"The {collection.GetType().ToDisplayName()} is immutable.";
   }
 }
 

@@ -2,10 +2,11 @@
 {
   using System;
 
-  internal interface IClientEventHandlerRegistrar<TEventSource>
+  internal interface IClientEventHandlerRegistrar
   {
-    void RegisterDelegate(TEventSource eventSource);
-    void UnregisterDelegate(TEventSource eventSource);
+    string EventName { get; }
+    void RegisterDelegate(object eventSource);
+    void UnregisterDelegate(object eventSource);
     bool ContainsDelegate(Delegate handler);
   }
 }

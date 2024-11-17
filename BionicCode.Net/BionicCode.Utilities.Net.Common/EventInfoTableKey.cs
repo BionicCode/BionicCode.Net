@@ -7,20 +7,25 @@
 
   using System;
   using System.Collections.Generic;
+  using System.Collections.Immutable;
+  using System.Linq;
 
-  internal readonly struct EventInfoTableKey<TEventSource> : IEquatable<EventInfoTableKey<TEventSource>>
+  internal readonly struct EventInfoTableKey : IEquatable<EventInfoTableKey>
   {
-    public EventInfoTableKey(string eventName)
+    public EventInfoTableKey(string eventName, Type eventSourceType)
     {
       this.EventName = eventName;
-      this.EventSourceType = typeof(TEventSource);
+      this.EventSourceType = eventSourceType;
+      this.typeHierarchyFactory = new Lazy<ImmutableHashSet<Type>>(() => ImmutableHashSet.CreateRange(eventSourceType.GetTypeHierarchy(includeInterfaces: true)));
     }
 
     public string EventName { get; }
     public Type EventSourceType { get; }
+    private readonly Lazy<ImmutableHashSet<Type>> typeHierarchyFactory;
+    public ImmutableHashSet<Type> TypeHierarchy => this.typeHierarchyFactory.Value;
 
-    public bool Equals(EventInfoTableKey<TEventSource> other) => other.EventName.Equals(this.EventName, StringComparison.OrdinalIgnoreCase) && other.EventSourceType.Equals(this.EventSourceType);
-    public override bool Equals(object obj) => obj is EventInfoTableKey<TEventSource> key && Equals(key);
+    public bool Equals(EventInfoTableKey other) => other.EventName.Equals(this.EventName, StringComparison.OrdinalIgnoreCase) && other.EventSourceType.Equals(this.EventSourceType);
+    public override bool Equals(object obj) => obj is EventInfoTableKey key && Equals(key);
 
     public override int GetHashCode()
     {
@@ -30,7 +35,7 @@
       return hashCode;
     }
 
-    public static bool operator ==(EventInfoTableKey<TEventSource> first, EventInfoTableKey<TEventSource> second) => first.Equals(second);
-    public static bool operator !=(EventInfoTableKey<TEventSource> first, EventInfoTableKey<TEventSource> second) => !first.Equals(second);
+    public static bool operator ==(EventInfoTableKey first, EventInfoTableKey second) => first.Equals(second);
+    public static bool operator !=(EventInfoTableKey first, EventInfoTableKey second) => !first.Equals(second);
   }
 }

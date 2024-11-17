@@ -173,6 +173,11 @@
       return eventSourceHandler;
     }
 
+    internal static WeakEventManager<TEventSource> Create(Type eventSourceType)
+    {
+      typeof(WeakEventManager<>).MakeGenericType(eventSourceType)
+    }
+
     public static void AddEventHandler(TEventSource eventSource, string eventName, Delegate handler, bool executeOnCurrentSynchronizationContext = false)
       => AddEventHandler(eventSource, eventName, handler, executeOnCurrentSynchronizationContext ? SynchronizationContext.Current : null);
 

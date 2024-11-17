@@ -23,9 +23,8 @@
   {
     private bool? isStaticEvent;
 
-    public EventInfoTableEntry(Delegate generatedHandler, EventInfo sourceEventInfo, object eventSource)
+    public EventInfoTableEntry(EventInfo sourceEventInfo, object eventSource)
     {
-      this.Handler = generatedHandler;
       this.EventInfo = sourceEventInfo;
       this.eventName = this.EventInfo.Name;
       this.RegistrationService = new WeakEventRegistrationService<TEventSource>();
@@ -35,12 +34,12 @@
       }
     }
 
-    public EventInfoTableEntry(TEventSource eventSource) : this(null, null, eventSource)
+    public EventInfoTableEntry(TEventSource eventSource) : this(null, eventSource)
     {
       Debug.Assert(eventSource != null);
     }
 
-    public EventInfoTableEntry(EventInfo eventInfo) : this(null, eventInfo, null)
+    public EventInfoTableEntry(EventInfo eventInfo) : this(eventInfo, null)
     {
       Debug.Assert(eventInfo != null);
     }
@@ -64,7 +63,6 @@
       ? throw new InvalidOperationException($"The {nameof(this.EventInfo)} property is NULL") 
       : (bool)(this.isStaticEvent ?? (this.isStaticEvent = this.EventInfo.GetAddMethod().IsStatic)); 
 
-    public Delegate Handler { get; set; }
     public EventInfo EventInfo { get; set; }
     public MethodBase InvocatorMethod => this.EventInfo is null 
       ? throw new InvalidOperationException($"The property {nameof(this.EventInfo)} is NULL.") 
@@ -76,6 +74,6 @@
       ? throw new InvalidOperationException($"The {nameof(this.EventInfo)} property is NULL")
       : this.EventInfo.Name);
 
-    public WeakEventRegistrationService<TEventSource> RegistrationService { get; }
+    //public WeakEventRegistrationService<TEventSource> RegistrationService { get; }
   }
 }

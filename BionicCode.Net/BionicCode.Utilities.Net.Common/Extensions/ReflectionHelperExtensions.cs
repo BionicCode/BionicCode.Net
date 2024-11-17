@@ -2424,8 +2424,8 @@
       if (propertyData.CanWrite)
       {
         bool isInitProperty = propertyData.SymbolAttributes.HasFlag(SymbolAttributes.InitProperty);
-        string accessor = isInitProperty 
-          ? "init" 
+        string accessor = isInitProperty
+          ? "init"
           : "set";
         var propertySet = new SymbolComponentInfo(accessor, isKeyword: true);
         if (HelperExtensionsCommon.AccessModifierComparer.Compare(propertyData.SetAccessorAccessModifier, propertyData.AccessModifier) < 0)
@@ -2764,6 +2764,50 @@
       AccessModifier propertyAccessModifier = (AccessModifier)System.Math.Min((int)getMethodModifier, (int)setMethodModifier);
 
       return (propertyAccessModifier, getMethodModifier, setMethodModifier);
+    }
+
+    /// <summary>
+    /// Get the ordered subtype hierarchy of a specified type, starting from the root type.
+    /// </summary>
+    /// <param name="type">The type of which the hierarchy to return.</param>
+    /// <param name="includeInterfaces"><see langword="true"/> if interfaces should be included. Otherwise <see langword="false"/>. The default is <see langword="false"/>.</param>
+    /// <returns>The ordered subtypes of <paramref name="type"/> starting with the root. If <paramref name="includeInterfaces"/> is <see langword="true"/> then the result also contains all inherited interfaces. 
+    /// <br/>If <paramref name="type"/> does not have an inheritance tree or does not implement any interfaces or is of type <see cref="object"/> or a value type (<see cref="Type.IsValueType"/> returns <see langword="true"/>) then an empty <c>IEnumerable&lt;Type&gt;</c> is returned.</returns>
+    /// <remarks>The type <see cref="object"/> (the root type for reference types) and the type <see cref="ValueType"/> (the base type for value types) are not included in the hierarchy.
+    /// <br/>This means, if <paramref name="type"/> is of type <see cref="object"/> or a value type (<see cref="Type.IsValueType"/> returns <see langword="true"/>) then an empty <c>IEnumerable&lt;Type&gt;</c> is returned.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"
+    public static IEnumerable<Type> GetTypeHierarchy(this Type type, bool includeInterfaces = false)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+
+      if (type == typeof(object) || type.IsValueType)
+      {
+        return Type.EmptyTypes;
+      }
+
+      if (type.IsInterface)
+      {
+        return includeInterfaces
+          ? type.GetInterfaces()
+          : Type.EmptyTypes;
+      }
+
+      Type subType = type;
+      var subTypes = new Stack<Type>();
+      while (subType.BaseType != null
+        && subType.BaseType != typeof(object))
+      {
+        subType = subType.BaseType;
+        subTypes.Push(subType);
+      }
+
+      if (includeInterfaces)
+      {
+        subTypes.AddRange(type.GetInterfaces());
+      }
+
+      return subTypes;
     }
 
     /// <summary>
@@ -4307,9 +4351,9 @@
         bool hasNextCharacter = resultBuilder.Length > characterIndex + 1;
         char textCharacter = resultBuilder[characterIndex];
         char nextTextCharacter = hasNextCharacter
-          ? resultBuilder[characterIndex + 1] 
+          ? resultBuilder[characterIndex + 1]
           : default;
-        if (delimiterSet.Contains(textCharacter) 
+        if (delimiterSet.Contains(textCharacter)
           && (textCharacter == '&' && hasNextCharacter && nextTextCharacter != 'n' || !hasNextCharacter)
           || isWrappingAtCasing && char.IsUpper(textCharacter))
         {
