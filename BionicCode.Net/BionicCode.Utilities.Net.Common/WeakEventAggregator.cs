@@ -26,14 +26,6 @@
       this.registrationService = new WeakEventRegistrationService();
     }
 
-    private void OnEventHandlerGeneric<TSender, TEventArgs>(TSender sender, TEventArgs e)
-    { }
-
-    private static void OnEventHandlerCustomDynamicSignature(params object[] args)
-    {
-      // TODO::Invoke client handler using reflection
-    }
-
     #region Implementation of IEventAggregator
 
     /// <inheritdoc />
