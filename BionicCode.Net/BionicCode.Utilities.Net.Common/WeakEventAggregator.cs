@@ -26,7 +26,7 @@
       this.registrationService = new WeakEventRegistrationService();
     }
 
-    #region Implementation of IEventAggregator
+    #region Implementation of IWeakEventAggregator
 
     /// <inheritdoc />
     public void StartBroadcasting(object eventSource)
@@ -210,7 +210,7 @@
       }
     }
 
-#endregion Implementation of IEventAggregator
+    #endregion Implementation of IWeakEventAggregator
 
     private readonly WeakEventRegistrationService registrationService;
   }
