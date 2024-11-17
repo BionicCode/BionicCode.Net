@@ -18,7 +18,12 @@
     {
     }
 
-    public override void RegisterDelegate(TEventSource eventSource) 
-      => WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, (EventHandler)this.ClientHandler, this.SynchronizationContext);
+    public override void RegisterDelegate(TEventSource eventSource)
+    {
+      if (TryGetClientHandler(out Delegate clientHandler))
+      {
+        WeakEventManager<TEventSource>.AddEventHandler(eventSource, this.EventName, (EventHandler)clientHandler, this.SynchronizationContext);
+      }
+    }
   }
 }
