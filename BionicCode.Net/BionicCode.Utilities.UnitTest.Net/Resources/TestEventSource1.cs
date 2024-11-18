@@ -5,8 +5,8 @@
 
   public delegate void TestEventHandler(object sender, TestEventArgs e);
   public delegate void StronglyTypedTestEventHandler<TSender, TEventArgs>(TSender sender, TEventArgs e);
-  public delegate void WrongSignatureTooManyParametersTestEventHandler(object sender, TestEventArgs e, int value);
-  public delegate void WrongSignatureInvalidSenderTypeTestEventHandler(int sender, TestEventArgs e);
+  public delegate void CustomSignatureMoreThanTwoParametersTestEventHandler(object sender, TestEventArgs e, int value);
+  public delegate void CustomSignatureTwoParametersTestEventHandler(int sender, TestEventArgs e);
 
   public class TestEventArgs : EventArgs
   {
@@ -29,16 +29,16 @@
     event TestEventHandler CustomHandlerTestEventForStaticHandlers;
     event EventHandler<TestEventArgs> GenericTestEvent;
     event EventHandler<TestEventArgs> GenericTestEventForStaticHandlers;
-    event WrongSignatureTooManyParametersTestEventHandler WrongSignatureTooManyParametersTestEvent;
-    event WrongSignatureInvalidSenderTypeTestEventHandler WrongSignatureInvalidSenderTypeTestEvent;
+    event CustomSignatureMoreThanTwoParametersTestEventHandler CustomSignatureThreeParametersTestEvent;
+    event CustomSignatureTwoParametersTestEventHandler CustomSignatureTwoParametersTestEvent;
 
     void OnTestEvent();
     void OnGenericTestEvent();
     void OnGenericTestEventForStaticHandlers();
     void OnCustomHandlerTestEvent();
     void OnCustomHandlerTestEventForStaticHandlers();
-    void OnWrongSignatureTooManyParametersTestEvent(); 
-    void OnWrongSignatureInvalidSenderTypeTestEvent();
+    void OnCustomSignatureThreeParametersTestEvent(); 
+    void OnCustomSignatureTwoParametersTestEvent();
     void OnStringEventArgsTestEvent();
     void RaiseAll();
   }
@@ -50,8 +50,8 @@
     public event EventHandler<TestEventArgs> GenericTestEventForStaticHandlers;
     public event TestEventHandler CustomHandlerTestEvent;
     public event TestEventHandler CustomHandlerTestEventForStaticHandlers;
-    public event WrongSignatureTooManyParametersTestEventHandler WrongSignatureTooManyParametersTestEvent;
-    public event WrongSignatureInvalidSenderTypeTestEventHandler WrongSignatureInvalidSenderTypeTestEvent;
+    public event CustomSignatureMoreThanTwoParametersTestEventHandler CustomSignatureThreeParametersTestEvent;
+    public event CustomSignatureTwoParametersTestEventHandler CustomSignatureTwoParametersTestEvent;
 
     public virtual void OnTestEvent() => this.TestEvent?.Invoke(this, EventArgs.Empty);
 
@@ -60,8 +60,8 @@
 
     public virtual void OnCustomHandlerTestEvent() => this.CustomHandlerTestEvent?.Invoke(this, new TestEventArgs());
     public virtual void OnCustomHandlerTestEventForStaticHandlers() => this.CustomHandlerTestEventForStaticHandlers?.Invoke(this, new TestEventArgs());
-    public virtual void OnWrongSignatureTooManyParametersTestEvent() => this.WrongSignatureTooManyParametersTestEvent?.Invoke(this, new TestEventArgs(), 99);
-    public virtual void OnWrongSignatureInvalidSenderTypeTestEvent() => this.WrongSignatureInvalidSenderTypeTestEvent?.Invoke(99, new TestEventArgs());
+    public virtual void OnCustomSignatureThreeParametersTestEvent() => this.CustomSignatureThreeParametersTestEvent?.Invoke(this, new TestEventArgs(), 99);
+    public virtual void OnCustomSignatureTwoParametersTestEvent() => this.CustomSignatureTwoParametersTestEvent?.Invoke(99, new TestEventArgs());
     public abstract void OnStringEventArgsTestEvent();
 
     public virtual void RaiseAll()

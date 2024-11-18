@@ -27,11 +27,6 @@
     {
       this.EventInfo = sourceEventInfo;
       this.eventName = this.EventInfo.Name;
-      this.RegistrationService = new WeakEventRegistrationService<TEventSource>();
-      if (eventSource != null)
-      {
-        this.RegistrationService.AddSourceInstance(eventSource);
-      }
     }
 
     public EventInfoTableEntry(TEventSource eventSource) : this(null, eventSource)

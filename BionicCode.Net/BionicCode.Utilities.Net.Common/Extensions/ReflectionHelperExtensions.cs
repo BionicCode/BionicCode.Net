@@ -1646,7 +1646,8 @@
       // Set return valueType
       if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))
       {
-        delegateReturnTypeData = typeData.DelegateInvokeMethodData.ReturnTypeData;
+        delegateInvocatorData = typeData.DelegateInvokeMethodData;
+        delegateReturnTypeData = delegateInvocatorData.ReturnTypeData;
         _ = signatureNameBuilder.AppendDisplayNameInternal(delegateReturnTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
           .Append(' ');
       }

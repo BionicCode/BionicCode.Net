@@ -6,7 +6,7 @@
 
   internal sealed class WeakEventManagerTable : ManagedWeakTable<WeakManagerTableEntry>
   {
-    public static WeakEventManager<TEventSource> GetOrCreateWeakEventManager<TEventSource>(TEventSource eventSource, string eventName)
+    public static WeakEventManager<TEventSource> GetOrCreateWeakEventManager<TEventSource>(object eventSource, string eventName)
     {
       lock (ManagedWeakTable.SyncLockInternal)
       {
@@ -28,7 +28,7 @@
       }
     }
 
-    public static bool TryGetWeakEventManager<TEventSource>(TEventSource eventSource, string eventName, out WeakEventManager<TEventSource> weakEventManager)
+    public static bool TryGetWeakEventManager<TEventSource>(object eventSource, string eventName, out WeakEventManager<TEventSource> weakEventManager)
     {
       weakEventManager = null;
       lock (ManagedWeakTable.SyncLockInternal)

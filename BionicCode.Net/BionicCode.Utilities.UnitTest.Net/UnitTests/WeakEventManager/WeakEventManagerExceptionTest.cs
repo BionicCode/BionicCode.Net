@@ -23,31 +23,31 @@
     [Fact]
     public async Task RegisterEvent_SpecifiyUndefinedEvent_ShouldThrowException()
     {
-      _ = this.Invoking(testEnvironment => WeakEventManager<TestEventSource1, TestEventArgs>.AddEventHandler(this.EventSource1, "Undefined Event", OnNonGenericTestEventFromTestEventSource1)).Should().Throw<ArgumentException>();
+      _ = this.Invoking(testEnvironment => WeakEventManager<TestEventSource1>.AddEventHandler(this.EventSource1, "Undefined Event", OnNonGenericTestEventFromTestEventSource1)).Should().Throw<ArgumentException>();
     }
 
     [Fact]
     public async Task RegisterEvent_EventDelegateWithInvalidSignatureTooManyParameters_ShouldThrowException()
     {
-      _ = this.Invoking(testEnvironment => WeakEventManager<TestEventSource1, TestEventArgs>.AddEventHandler(this.EventSource1, nameof(TestEventSource1.WrongSignatureTooManyParametersTestEvent), OnNonGenericTestEventFromTestEventSource1)).Should().Throw<EventDelegateNotSupportedException>().Which.Message.Should().Contain("because the parameter count");
+      _ = this.Invoking(testEnvironment => WeakEventManager<TestEventSource1>.AddEventHandler(this.EventSource1, nameof(TestEventSource1.CustomSignatureThreeParametersTestEvent), OnNonGenericTestEventFromTestEventSource1)).Should().Throw<EventDelegateNotSupportedException>().Which.Message.Should().Contain("because the parameter count");
     }
 
     [Fact]
     public async Task RegisterEvent_EventDelegateWithInvalidSignatureWrongSenderType_ShouldThrowException()
     {
-      _ = this.Invoking(testEnvironment => WeakEventManager<TestEventSource1, TestEventArgs>.AddEventHandler(this.EventSource1, nameof(TestEventSource1.WrongSignatureInvalidSenderTypeTestEvent), OnNonGenericTestEventFromTestEventSource1)).Should().Throw<EventDelegateNotSupportedException>().Which.Message.Should().Contain("because the parameter at index '0' is not of type");
+      _ = this.Invoking(testEnvironment => WeakEventManager<TestEventSource1>.AddEventHandler(this.EventSource1, nameof(TestEventSource1.CustomSignatureTwoParametersTestEvent), OnNonGenericTestEventFromTestEventSource1)).Should().Throw<EventDelegateNotSupportedException>().Which.Message.Should().Contain("because the parameter at index '0' is not of type");
     }
 
     [Fact]
     public async Task RegisterEvent_EventDelegateWithInvalidSignatureWrongEventArgsType_ShouldThrowException()
     {
-      _ = this.Invoking(testEnvironment => WeakEventManager<TestEventSource1, TestEventArgs>.AddEventHandler(this.EventSource1, nameof(TestEventSource1.TestEvent), OnNonGenericTestEventFromTestEventSource1)).Should().Throw<EventDelegateMismatchException>();
+      _ = this.Invoking(testEnvironment => WeakEventManager<TestEventSource1>.AddEventHandler(this.EventSource1, nameof(TestEventSource1.TestEvent), OnNonGenericTestEventFromTestEventSource1)).Should().Throw<EventDelegateMismatchException>();
     }
 
     [Fact]
     public async Task RegisterEvent_EventDelegateWithWrongTEventArgs_ShouldThrowEventDelegateMismatchException()
     {
-      _ = this.Invoking(testEnvironment => WeakEventManager<TestEventSource1, TestEventArgs>.AddEventHandler(this.EventSource1, nameof(TestEventSource1.TestEvent), OnNonGenericTestEventFromTestEventSource1)).Should().Throw<EventDelegateMismatchException>().Which.Message.Should().Contain("Event delegate signature mismatch. The provided generic type argument");
+      _ = this.Invoking(testEnvironment => WeakEventManager<TestEventSource1>.AddEventHandler(this.EventSource1, nameof(TestEventSource1.TestEvent), OnNonGenericTestEventFromTestEventSource1)).Should().Throw<EventDelegateMismatchException>().Which.Message.Should().Contain("Event delegate signature mismatch. The provided generic type argument");
     }
 
     #endregion Event validation
@@ -242,7 +242,7 @@
       _ = e.Should().BeOfType<TestEventArgs>();
     }
 
-    private void OnTestEventFromTestEventSourceWrongSignature(object sender, TestEventArgs e, int value)
+    private void OnTestEventFromTestEventSourceThreeParameterSignature(object sender, TestEventArgs e, int value)
     {
       eventHandlerInvocationCount++;
       _ = sender.Should().BeOfType<TestEventSource1>();
