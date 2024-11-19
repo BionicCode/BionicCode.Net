@@ -101,6 +101,9 @@
     public override string ShortCompactSignature
       => this.Name;
 
+    public override string RuntimeShortSignature
+      => this.Name;
+
     public override string FullyQualifiedSignature
       => this.Name;
 

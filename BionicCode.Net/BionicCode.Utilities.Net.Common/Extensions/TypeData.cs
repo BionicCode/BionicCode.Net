@@ -16,6 +16,7 @@
     private bool? isAwaitable;
     private string signature;
     private string shortSignature;
+    private string runtimeShortSignature;
     private string shortCompactSignature;
     private string fullyQualifiedSignature;
     private bool? isStatic;
@@ -172,16 +173,19 @@
       => this.comapactSymbolComponentInfo ?? (this.comapactSymbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isCompact: true));
 
     public override string Signature
-      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: false));
+      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: false, isRuntimeSymbol: false));
 
     public override string ShortSignature
-      => this.shortSignature ?? (this.shortSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: false));
+      => this.shortSignature ?? (this.shortSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: false, isRuntimeSymbol: false));
 
     public override string ShortCompactSignature
-      => this.shortCompactSignature ?? (this.shortCompactSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: true));
+      => this.shortCompactSignature ?? (this.shortCompactSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: true, isRuntimeSymbol: false));
+
+    public override string RuntimeShortSignature
+      => this.runtimeShortSignature ?? (this.runtimeShortSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: false, isRuntimeSymbol: true));
 
     public override string FullyQualifiedSignature
-      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isCompact: true));
+      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isCompact: true, isRuntimeSymbol: false));
 
     public override string DisplayName
       => this.displayName ?? (this.displayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false));

@@ -1,6 +1,7 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System;
+  using System.Collections.Concurrent;
   using System.Collections.Generic;
   using System.Diagnostics;
   using System.Reflection;
@@ -14,7 +15,7 @@
     protected static int registeredEventHandlerCount;
     protected static int unregisteredEventHandlerCount;
 #endif
-    internal static Dictionary<TypeData, MethodData> ProxyEventHandlerPool { get; } = new Dictionary<TypeData, MethodData>();
+    internal static ConcurrentDictionary<TypeData, MethodData> ProxyEventHandlerPool { get; } = new ConcurrentDictionary<TypeData, MethodData>();
     public bool IsListening { get; private set; }
     public bool IsPurged { get; protected set; }
     protected Delegate ProxyEventHandler { get; set; }

@@ -111,7 +111,7 @@
     }
 
     /// <inheritdoc /> 
-    public void StartListening<TEventSource>(string eventName, Delegate eventHandler)
+    public void StartListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler) where TDelegate : Delegate
     {
       ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
       ArgumentNullExceptionEx.ThrowIfNull(eventHandler, nameof(eventHandler));
@@ -120,7 +120,7 @@
     }
 
     /// <inheritdoc /> 
-    public void StartListening<TEventSource>(string eventName, Delegate eventHandler, bool executeOnCurrentSynchronizationContext)
+    public void StartListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler, bool executeOnCurrentSynchronizationContext) where TDelegate : Delegate
     {
       ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
       ArgumentNullExceptionEx.ThrowIfNull(eventHandler, nameof(eventHandler));
@@ -132,7 +132,7 @@
     }
 
     /// <inheritdoc /> 
-    public void StartListening<TEventSource>(string eventName, Delegate eventHandler, SynchronizationContext synchronizationContext)
+    public void StartListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler, SynchronizationContext synchronizationContext) where TDelegate : Delegate
     {
       ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
       ArgumentNullExceptionEx.ThrowIfNull(eventHandler, nameof(eventHandler));
@@ -179,7 +179,7 @@
     /// <inheritdoc />
     /// <exception cref="ArgumentNullException">The <paramref name="eventHandler"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">The <paramref name="eventName"/> is <see langword="null"/> or an empty string.</exception>
-    public void StopListening<TEventSource>(string eventName, Delegate eventHandler)
+    public void StopListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler) where TDelegate : Delegate
     {
       ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
       ArgumentNullExceptionEx.ThrowIfNull(eventHandler, nameof(eventHandler));

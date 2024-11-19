@@ -102,12 +102,52 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
+    public static string ToRuntimeSignatureName(this MethodInfo methodInfo)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+
+      MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+      return methodData.RuntimeShortSignature;
+    }
+
+    /// <summary>
+    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
+    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <returns>
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// </returns>
+    /// <remarks>
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// </remarks>
     public static string ToSignatureName(this Type type)
     {
       ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
       TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return typeData.FullyQualifiedSignature;
+    }
+
+    /// <summary>
+    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
+    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <returns>
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// </returns>
+    /// <remarks>
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// </remarks>
+    public static string ToRuntimeSignatureName(this Type type)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+      return typeData.RuntimeShortSignature;
     }
 
     /// <summary>
@@ -142,12 +182,52 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
+    public static string ToRuntimeSignatureName(this FieldInfo fieldInfo)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+
+      FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+      return fieldData.RuntimeShortSignature;
+    }
+
+    /// <summary>
+    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
+    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <returns>
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// </returns>
+    /// <remarks>
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// </remarks>
     public static string ToSignatureName(this PropertyInfo propertyInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
       PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
       return propertyData.FullyQualifiedSignature;
+    }
+
+    /// <summary>
+    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
+    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <returns>
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// </returns>
+    /// <remarks>
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// </remarks>
+    public static string ToRuntimeSignatureName(this PropertyInfo propertyInfo)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
+
+      PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+      return propertyData.RuntimeShortSignature;
     }
 
     /// <summary>
@@ -182,12 +262,52 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
+    public static string ToRuntimeSignatureName(this ConstructorInfo constructorInfo)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
+
+      ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+      return constructorData.RuntimeShortSignature;
+    }
+
+    /// <summary>
+    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
+    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <returns>
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// </returns>
+    /// <remarks>
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// </remarks>
     public static string ToSignatureName(this EventInfo eventInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
 
       EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
       return eventData.FullyQualifiedSignature;
+    }
+
+    /// <summary>
+    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
+    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <returns>
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// </returns>
+    /// <remarks>
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// </remarks>
+    public static string ToRuntimeSignatureName(this EventInfo eventInfo)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
+
+      EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+      return eventData.RuntimeShortSignature;
     }
 
     /// <summary>
@@ -222,12 +342,52 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
+    public static string ToRuntimeSignatureShortName(this MethodInfo methodInfo)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+
+      MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+      return methodData.RuntimeShortSignature;
+    }
+
+    /// <summary>
+    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
+    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <returns>
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// </returns>
+    /// <remarks>
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// </remarks>
     public static string ToSignatureShortName(this Type type)
     {
       ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
       TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
       return typeData.Signature;
+    }
+
+    /// <summary>
+    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
+    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <returns>
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// </returns>
+    /// <remarks>
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// </remarks>
+    public static string ToRuntimeSignatureShortName(this Type type)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+
+      TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+      return typeData.RuntimeShortSignature;
     }
 
     /// <summary>
@@ -262,12 +422,52 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
+    public static string ToRuntimeSignatureShortName(this FieldInfo fieldInfo)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+
+      FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+      return fieldData.RuntimeShortSignature;
+    }
+
+    /// <summary>
+    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
+    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <returns>
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// </returns>
+    /// <remarks>
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// </remarks>
     public static string ToSignatureShortName(this PropertyInfo propertyInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
       PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
       return propertyData.Signature;
+    }
+
+    /// <summary>
+    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
+    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <returns>
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// </returns>
+    /// <remarks>
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// </remarks>
+    public static string ToRuntimeSignatureShortName(this PropertyInfo propertyInfo)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
+
+      PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+      return propertyData.RuntimeShortSignature;
     }
 
     /// <summary>
@@ -302,12 +502,52 @@
     /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
     /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
     /// </remarks>
+    public static string ToRuntimeSignatureShortName(this ConstructorInfo constructorInfo)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
+
+      ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+      return constructorData.RuntimeShortSignature;
+    }
+
+    /// <summary>
+    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
+    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <returns>
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// </returns>
+    /// <remarks>
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// </remarks>
     public static string ToSignatureShortName(this EventInfo eventInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
 
       EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
       return eventData.Signature;
+    }
+
+    /// <summary>
+    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+    /// </summary>
+    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
+    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <returns>
+    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// </returns>
+    /// <remarks>
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
+    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// </remarks>
+    public static string ToRuntimeSignatureShortName(this EventInfo eventInfo)
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
+
+      EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+      return eventData.RuntimeShortSignature;
     }
 
     #region REMOVE AFTER BENCHMARK COMPARISON!!!
@@ -1273,21 +1513,21 @@
     //    }
     #endregion REMOVE AFTER BENCHMARK COMPARISON!!!
 
-    internal static string ToSignatureNameInternal(PropertyData propertyData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
+    internal static string ToSignatureNameInternal(PropertyData propertyData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact, bool isRuntimeSymbol)
     {
       SymbolAttributes symbolAttributes = propertyData.SymbolAttributes;
-      IEnumerable<CustomAttributeData> customAttributesData = propertyData.AttributeData;
       PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
-#if !NETSTANDARD2_0
-      if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+      if (!(isRuntimeSymbol || isCompact))
       {
-        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute));
-      }
-#endif
+        IEnumerable<CustomAttributeData> customAttributesData = propertyData.AttributeData;
 
-      if (!isCompact)
-      {
+#if !NETSTANDARD2_0
+        if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+        {
+          customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute));
+        }
+#endif
         _ = signatureNameBuilder.AppendCustomAttributes(customAttributesData, isAppendNewLineEnabled: true);
       }
 
@@ -1324,8 +1564,14 @@
           .Append(' ');
       }
 
+      TypeData propertyTypeData = propertyData.PropertyTypeData;
+      if (!isRuntimeSymbol && propertyTypeData.IsGenericType && !propertyTypeData.IsGenericTypeDefinition)
+      {
+        propertyTypeData = propertyTypeData.GenericTypeDefinitionData;
+      }
+
       // Set return valueType
-      _ = signatureNameBuilder.AppendDisplayNameInternal(propertyData.PropertyTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
+      _ = signatureNameBuilder.AppendDisplayNameInternal(propertyTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
         .Append(' ');
 
       // Member name
@@ -1418,22 +1664,20 @@
       return fullMemberName;
     }
 
-    internal static string ToSignatureNameInternal(EventData eventData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
+    internal static string ToSignatureNameInternal(EventData eventData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact, bool isRuntimeSymbol)
     {
       SymbolAttributes symbolAttributes = eventData.SymbolAttributes;
-      IEnumerable<CustomAttributeData> customAttributesData = eventData.AttributeData;
+      PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+      if (!(isRuntimeSymbol || isCompact))
+      {
+        IEnumerable<CustomAttributeData> customAttributesData = eventData.AttributeData;
 
 #if !NETSTANDARD2_0
-      if (symbolAttributes.HasFlag(SymbolAttributes.Final))
-      {
-        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType);
-      }
+        if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+        {
+          customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType);
+        }
 #endif
-
-      PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
-
-      if (!isCompact)
-      {
         _ = signatureNameBuilder.AppendCustomAttributes(customAttributesData, isAppendNewLineEnabled: true);
       }
 
@@ -1468,10 +1712,16 @@
           .Append(' ');
       }
 
+      TypeData eventHandlerTypeData = eventData.EventHandlerTypeData;
+      if (!isRuntimeSymbol && eventHandlerTypeData.IsGenericType && !eventHandlerTypeData.IsGenericTypeDefinition)
+      {
+        eventHandlerTypeData = eventHandlerTypeData.GenericTypeDefinitionData;
+      }
+
       _ = signatureNameBuilder
         .Append("event")
         .Append(' ')
-        .AppendDisplayNameInternal(eventData.EventHandlerTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
+        .AppendDisplayNameInternal(eventHandlerTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
         .Append(' ');
 
       _ = signatureNameBuilder.AppendDisplayNameInternal(eventData, isFullyQualifiedName, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded)
@@ -1483,22 +1733,21 @@
       return fullMemberName;
     }
 
-    internal static string ToSignatureNameInternal(FieldData fieldData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
+    internal static string ToSignatureNameInternal(FieldData fieldData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact, bool isRuntimeSymbol)
     {
       SymbolAttributes symbolAttributes = fieldData.SymbolAttributes;
-      IEnumerable<CustomAttributeData> customAttributesData = fieldData.AttributeData;
-
-#if !NETSTANDARD2_0
-      if (symbolAttributes.HasFlag(SymbolAttributes.Final))
-      {
-        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
-      }
-#endif
-
       PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
-      if (!isCompact)
+      if (!(isRuntimeSymbol || isCompact))
       {
+        IEnumerable<CustomAttributeData> customAttributesData = fieldData.AttributeData;
+
+#if !NETSTANDARD2_0
+        if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+        {
+          customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
+        }
+#endif
         _ = signatureNameBuilder.AppendCustomAttributes(customAttributesData, isAppendNewLineEnabled: true);
       }
 
@@ -1537,7 +1786,13 @@
         }
       }
 
-      _ = signatureNameBuilder.AppendDisplayNameInternal(fieldData.FieldTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
+      TypeData fieldTypeData = fieldData.FieldTypeData;
+      if (!isRuntimeSymbol && fieldTypeData.IsGenericType && !fieldTypeData.IsGenericTypeDefinition)
+      {
+        fieldTypeData = fieldTypeData.GenericTypeDefinitionData;
+      }
+
+      _ = signatureNameBuilder.AppendDisplayNameInternal(fieldTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
         .Append(' ');
 
       _ = signatureNameBuilder.AppendDisplayNameInternal(fieldData, isFullyQualifiedName, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded)
@@ -1549,27 +1804,29 @@
       return fullMemberName;
     }
 
-    internal static string ToSignatureNameInternal(TypeData typeData, bool isFullyQualifiedName, bool isCompact)
+    internal static string ToSignatureNameInternal(TypeData typeData, bool isFullyQualifiedName, bool isCompact, bool isRuntimeSymbol)
     {
-      if (typeData.IsGenericType && !typeData.IsGenericTypeDefinition)
-      {
-        typeData = typeData.GenericTypeDefinitionData;
-      }
-
       SymbolAttributes symbolAttributes = typeData.SymbolAttributes;
-      IEnumerable<CustomAttributeData> customAttributesData = typeData.AttributeData;
       PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+      if (!isRuntimeSymbol)
+      {
+        if (typeData.IsGenericType && !typeData.IsGenericTypeDefinition)
+        {
+          typeData = typeData.GenericTypeDefinitionData;
+        }
+
+        if (!isCompact)
+        {
+          IEnumerable<CustomAttributeData> customAttributesData = typeData.AttributeData;
 
 #if !NETSTANDARD2_0
-      if (symbolAttributes.HasFlag(SymbolAttributes.Final))
-      {
-        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
-      }
+          if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+          {
+            customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
+          }
 #endif
-
-      if (!isCompact)
-      {
-        _ = signatureNameBuilder.AppendCustomAttributes(customAttributesData, isAppendNewLineEnabled: true);
+          _ = signatureNameBuilder.AppendCustomAttributes(customAttributesData, isAppendNewLineEnabled: true);
+        }
       }
 
       AccessModifier accessModifier = typeData.AccessModifier;
@@ -1641,13 +1898,17 @@
       }
 
       MethodData delegateInvocatorData = null;
-      TypeData delegateReturnTypeData = null;
 
       // Set return valueType
       if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))
       {
         delegateInvocatorData = typeData.DelegateInvokeMethodData;
-        delegateReturnTypeData = delegateInvocatorData.ReturnTypeData;
+        TypeData delegateReturnTypeData = delegateInvocatorData.ReturnTypeData;
+        if (!isRuntimeSymbol && delegateReturnTypeData.IsGenericType && !delegateReturnTypeData.IsGenericTypeDefinition)
+        {
+          delegateReturnTypeData = delegateReturnTypeData.GenericTypeDefinitionData;
+        }
+
         _ = signatureNameBuilder.AppendDisplayNameInternal(delegateReturnTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
           .Append(' ');
       }
@@ -1664,8 +1925,11 @@
         {
           foreach (ParameterData parameterData in parameters)
           {
-            IList<CustomAttributeData> attributes = parameterData.AttributeData;
-            _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false);
+            if (!isRuntimeSymbol)
+            {
+              IList<CustomAttributeData> attributes = parameterData.AttributeData;
+              _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false);
+            }
 
             if (parameterData.IsRef)
             {
@@ -1697,7 +1961,7 @@
         signatureNameBuilder = signatureNameBuilder.AppendInheritanceSignature(typeData, isFullyQualifiedName);
       }
 
-      if (!isCompact && typeData.IsGenericType)
+      if (!isCompact && !isRuntimeSymbol)
       {
         TypeData[] genericTypeParameterDefinitions = typeData.GenericTypeArguments;
         if (genericTypeParameterDefinitions.Length > 0)
@@ -1719,31 +1983,33 @@
       return fullMemberName;
     }
 
-    internal static string ToSignatureNameInternal(MethodData methodData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
+    internal static string ToSignatureNameInternal(MethodData methodData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact, bool isRuntimeSymbol)
     {
       Debug.WriteLine($"Generating method signature");
 
       SymbolComponentInfo symbolComponents = null;
-
-      if (methodData.IsGenericMethod && !methodData.IsGenericMethodDefinition)
-      {
-        methodData = methodData.GenericMethodDefinitionData;
-      }
-
-      SymbolAttributes symbolAttributes = methodData.SymbolAttributes;
-      IEnumerable<CustomAttributeData> customAttributesData = methodData.AttributeData;
       PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+      SymbolAttributes symbolAttributes = methodData.SymbolAttributes;
+
+      if (!isRuntimeSymbol)
+      {
+        if (methodData.IsGenericMethod && !methodData.IsGenericMethodDefinition)
+        {
+          methodData = methodData.GenericMethodDefinitionData;
+        }
+
+        if (!isCompact)
+        {
+          IEnumerable<CustomAttributeData> customAttributesData = methodData.AttributeData;
 
 #if !NETSTANDARD2_0
-      if (symbolAttributes.HasFlag(SymbolAttributes.Final))
-      {
-        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType);
-      }
+          if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+          {
+            customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType);
+          }
 #endif
-
-      if (!isCompact)
-      {
-        _ = signatureNameBuilder.AppendCustomAttributes(customAttributesData, isAppendNewLineEnabled: true);
+          _ = signatureNameBuilder.AppendCustomAttributes(customAttributesData, isAppendNewLineEnabled: true);
+        }
       }
 
       AccessModifier accessModifier = methodData.AccessModifier;
@@ -1810,7 +2076,13 @@
       }
 #endif
 
-      _ = signatureNameBuilder.AppendDisplayNameInternal(methodData.ReturnTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
+      TypeData returnTypeData = methodData.ReturnTypeData;
+      if (!isRuntimeSymbol && returnTypeData.IsGenericType && !returnTypeData.IsGenericTypeDefinition)
+      {
+        returnTypeData = returnTypeData.GenericTypeDefinitionData;
+      }
+
+      _ = signatureNameBuilder.AppendDisplayNameInternal(returnTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
         .Append(' ');
 
       // Member name
@@ -1830,8 +2102,12 @@
         for (int parameterIndex = 0; parameterIndex < parameters.Length; parameterIndex++)
         {
           ParameterData parameterData = parameters[parameterIndex];
-          IList<CustomAttributeData> attributes = parameterData.AttributeData;
-          _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false);
+
+          if (!isRuntimeSymbol)
+          {
+            IList<CustomAttributeData> attributes = parameterData.AttributeData;
+            _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false);
+          }
 
           if (parameterData.IsRef)
           {
@@ -1858,7 +2134,7 @@
           .Append(')');
       }
 
-      if (!isCompact && methodData.IsGenericMethod)
+      if (!isCompact && !isRuntimeSymbol)
       {
         TypeData[] genericTypeParameterDefinitions = methodData.GenericTypeArguments;
         if (genericTypeParameterDefinitions.Length > 0)
@@ -1877,21 +2153,22 @@
       return fullMemberName;
     }
 
-    internal static string ToSignatureNameInternal(ConstructorData constructorData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
+    internal static string ToSignatureNameInternal(ConstructorData constructorData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact, bool isRuntimeSymbol)
     {
       SymbolAttributes symbolAttributes = constructorData.SymbolAttributes;
-      IEnumerable<CustomAttributeData> customAttributesData = constructorData.AttributeData;
       PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
-#if !NETSTANDARD2_0
-      if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+      if (!(isRuntimeSymbol || isCompact))
       {
-        customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType);
-      }
+        IEnumerable<CustomAttributeData> customAttributesData = constructorData.AttributeData;
+
+#if !NETSTANDARD2_0
+        if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+        {
+          customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType);
+        }
 #endif
 
-      if (!isCompact)
-      {
         _ = signatureNameBuilder.AppendCustomAttributes(customAttributesData, isAppendNewLineEnabled: true);
       }
 
@@ -1919,8 +2196,11 @@
       {
         foreach (ParameterData parameterData in parameters)
         {
-          IList<CustomAttributeData> attributes = parameterData.AttributeData;
-          _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false);
+          if (!isRuntimeSymbol)
+          {
+            IList<CustomAttributeData> attributes = parameterData.AttributeData;
+            _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false);
+          }
 
           if (parameterData.IsRef)
           {
@@ -3326,12 +3606,10 @@
       }
 
       // Could be an open generic valueType. Therefore we need to obtain all definitions.
-      TypeData[] genericTypeParameterDefinitions;
-      TypeData[] genericTypeArguments;
-      genericTypeArguments = methodData.GenericTypeArguments;
-      genericTypeParameterDefinitions = methodData.IsGenericMethodDefinition
+      TypeData[] genericTypeArguments = methodData.GenericTypeArguments;
+      TypeData[] genericTypeParameterDefinitions = methodData.IsGenericMethodDefinition
         ? methodData.GenericTypeArguments
-        : methodData.GenericMethodDefinitionData.GenericTypeArguments;
+        : Array.Empty<TypeData>();
 
       AppendGenericParameters(nameBuilder, isFullyQualified, genericTypeParameterDefinitions, genericTypeArguments);
       return nameBuilder;
@@ -3345,12 +3623,10 @@
       }
 
       // Could be an open generic valueType. Therefore we need to obtain all definitions.
-      TypeData[] genericTypeParameterDefinitions;
-      TypeData[] genericTypeArguments;
-      genericTypeArguments = typeData.GenericTypeArguments;
-      genericTypeParameterDefinitions = typeData.IsGenericTypeDefinition
+      TypeData[] genericTypeArguments = typeData.GenericTypeArguments;
+      TypeData[] genericTypeParameterDefinitions = typeData.IsGenericTypeDefinition
         ? typeData.GenericTypeArguments
-        : typeData.GenericTypeDefinitionData.GenericTypeArguments;
+        : Array.Empty<TypeData>();
 
       AppendGenericParameters(nameBuilder, isFullyQualified, genericTypeParameterDefinitions, genericTypeArguments);
       return nameBuilder;

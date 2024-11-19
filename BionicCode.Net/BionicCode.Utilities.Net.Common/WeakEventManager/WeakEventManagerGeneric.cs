@@ -1,6 +1,7 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System;
+  using System.Collections;
   using System.Collections.Generic;
   using System.ComponentModel;
   using System.Diagnostics;
@@ -14,31 +15,93 @@
 
   public class WeakEventManager<TEventSource> : WeakEventManager
   {
-    internal class ClientHandlerInfo : IDisposable
+    internal class ClientHandlerInfoCollection : IEnumerable<ClientHandlerInfo>
     {
-      public bool IsDisposed { get; private set; }
+      public int Count => this.items.Count;
+      private readonly List<ClientHandlerInfo> items;
 
-      public ClientHandlerInfo(Delegate clientHandler, TEventSource eventSource, SynchronizationContext clientContext)
+      public ClientHandlerInfoCollection()
       {
-        WeakReference<object> clientHandlerWeakReference = WeakReferencePool.GetOrCreate(clientHandler);
-        this.ClientHandler = clientHandlerWeakReference;
-        WeakReference<object> eventSourceWeakReference = WeakReferencePool.GetOrCreate(eventSource);
-        this.EventSource = eventSourceWeakReference;
-        this.ClientContext = clientContext;
+        this.items = new List<ClientHandlerInfo>();
       }
+
+      public IEnumerable<ClientHandlerInfo> EnumerateSafe()
+      {
+        var itemsCopy = this.items.ToList();
+        for (int index = itemsCopy.Count - 1; index >= 0; index--)
+        {
+          ClientHandlerInfo item = itemsCopy[index];
+          if (item.IsClientHandlerAlive)
+          {
+            yield return item;
+          }
+        }
+      }
+
+      public void Add(ClientHandlerInfo clientHandlerInfo)
+      {
+        StartListeningToItem(clientHandlerInfo);
+        this.items.Add(clientHandlerInfo);
+      }
+
+      public void Remove(ClientHandlerInfo clientHandlerInfo) 
+        => clientHandlerInfo.Dispose();
 
       public void Clear()
       {
-        WeakReferencePool.Add(this.ClientHandler);
-        this.ClientHandler = null;
-        WeakReferencePool.Add(this.EventSource);
-        this.EventSource = null;
+        for (int index = this.items.Count - 1; index >= 0; index--)
+        {
+          ClientHandlerInfo item = this.items[index];
+          StopListeningToItem(item);
+          item.Dispose();
+          this.items.RemoveAt(index);
+        }
       }
+
+      private void OnItemDisposed(object sender, EventArgs e)
+      {
+        var item = (ClientHandlerInfo)sender;
+        StopListeningToItem(item);
+        _ = this.items.Remove(item);
+      }
+
+      private void StartListeningToItem(ClientHandlerInfo clientHandlerInfo) 
+        => clientHandlerInfo.Disposed += OnItemDisposed;
+
+      private void StopListeningToItem(ClientHandlerInfo clientHandlerInfo)
+        => clientHandlerInfo.Disposed -= OnItemDisposed;
+
+      IEnumerator<ClientHandlerInfo> IEnumerable<ClientHandlerInfo>.GetEnumerator()
+      {
+        foreach (ClientHandlerInfo item in EnumerateSafe())
+        {
+          yield return item;
+        }
+      }
+
+      IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<ClientHandlerInfo>)this).GetEnumerator();
+    }
+
+    internal class ClientHandlerInfo : IDisposable
+    {
+      public ClientHandlerInfo(Delegate clientHandler, Action<object, object, ClientHandlerInfo> clientAdapterHandler, TEventSource eventSource, SynchronizationContext clientContext)
+      {
+        this.ClientHandler = WeakReferencePool.GetOrCreate(clientHandler);
+        this.EventSource = WeakReferencePool.GetOrCreate(eventSource);
+        this.ClientAdapterHandler = clientAdapterHandler;
+        this.ClientContext = clientContext;
+      }
+
+      private void OnDisposed()
+        => this.Disposed?.Invoke(this, EventArgs.Empty);
+
+      public void Clear()
+        => Dispose();
 
       public bool TryGetClientHandler(out Delegate handler)
       {
         handler = null;
-        if (this.ClientHandler is null)
+        if (this.IsDisposed || this.ClientHandler is null)
         {
           return false;
         }
@@ -49,8 +112,7 @@
         }
         else
         {
-          WeakReferencePool.Add(this.ClientHandler);
-          this.ClientHandler = null;
+          Dispose();
         }
 
         return handler != null;
@@ -59,7 +121,7 @@
       public bool TryGetEventSource(out TEventSource eventSource)
       {
         eventSource = default;
-        if (this.EventSource is null)
+        if (this.IsDisposed || this.EventSource is null)
         {
           return false;
         }
@@ -70,16 +132,19 @@
         }
         else
         {
-          WeakReferencePool.Add(this.EventSource);
-          this.EventSource = null;
+          Dispose();
         }
 
         return eventSource != null;
       }
 
+      public event EventHandler Disposed;
+      public bool IsDisposed { get; private set; }
       private WeakReference<object> ClientHandler { get; set; }
+      public Action<object, object, ClientHandlerInfo> ClientAdapterHandler { get; }
       private WeakReference<object> EventSource { get; set; }
       public SynchronizationContext ClientContext { get; }
+      public bool IsClientHandlerAlive => !this.IsDisposed && TryGetClientHandler(out _) && TryGetEventSource(out _);
 
       protected virtual void Dispose(bool disposing)
       {
@@ -87,12 +152,16 @@
         {
           if (disposing)
           {
-            Clear();
+            WeakReferencePool.Add(this.ClientHandler);
+            this.ClientHandler = null;
+            WeakReferencePool.Add(this.EventSource);
+            this.EventSource = null;
           }
 
           // TODO: free unmanaged resources (unmanaged objects) and override finalizer
           // TODO: set large fields to null
           this.IsDisposed = true;
+          OnDisposed();
         }
       }
 
@@ -115,16 +184,16 @@
     private const string HandlerDelegateSignatureMismatchExceptionMessage = "Event handler delegate signature mismatch. Expected signature as required from event source: '{0}'. Found signature on provided event handler: '{1}'. Because: {2}";
     private const string InternalDelegateSignatureMismatchExceptionMessage = "Internal exception: Event handler delegate signature mismatch. Expected signature as required from event source: '{0}'. Found signature on provided event handler: '{1}'.";
     private const string EventDelegateSignatureMismatchWrongGenericClassTypeParameterExceptionMessage = "Event delegate signature mismatch. The provided generic type argument '{0}' does not match the type found on the specified event '{1}'. The provided generic type argument '{0}' is '{2}'. But the type found on the event delegate is '{3}'.";
-    private readonly ConditionalWeakTable<object, HashSet<ClientHandlerInfo>> eventListenerHandlerMap;
+    private readonly ConditionalWeakTable<object, ClientHandlerInfoCollection> eventListenerHandlerMap;
     private ReaderWriterLockSlim ListenerReaderWriterLock { get; }
     private string EventName { get; }
 
-    private static readonly MethodInfo genericHandlerMethod = typeof(WeakEventManager<>).GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.Instance | BindingFlags.NonPublic);
+    private static readonly MethodInfo genericHandlerMethod = typeof(WeakEventManager<TEventSource>).GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.Instance | BindingFlags.NonPublic);
 
     internal WeakEventManager(string eventName)
     {
-      // Use BindingFlags.FlattenHierarchy to also get base type static events via the subclass (but only public)
-      this.EventSourceEventInfo = typeof(TEventSource).GetEvent(eventName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+      // Use BindingFlags.FlattenHierarchy to also get base type static events via the subclass (including protected events of the hierarchy and private events of the current type)
+      this.EventSourceEventInfo = typeof(TEventSource).GetEvent(eventName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
       if (this.EventSourceEventInfo is null)
       {
         throw new ArgumentException($"The specified event '{eventName}' on event source type '{typeof(TEventSource).FullName}' could not be found. Please check the provided event name, event source type.");
@@ -134,22 +203,24 @@
       TypeData eventHandlerTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventHandlerType);
       if (!WeakEventManager<TEventSource>.ProxyEventHandlerPool.TryGetValue(eventHandlerTypeData, out MethodData handlerMethodData))
       {
-      MethodData invocatorData = eventHandlerTypeData.DelegateInvokeMethodData;
-      ParameterData[] eventHandlerParameters = invocatorData.Parameters;
-        MethodInfo handlerMethodInfo =    WeakEventManager<TEventSource>.genericHandlerMethod.MakeGenericMethod(eventHandlerParameters[0].ParameterTypeData.GetType(), eventHandlerParameters[1].ParameterTypeData.GetType());
+        MethodData invocatorData = eventHandlerTypeData.DelegateInvokeMethodData;
+        ParameterData[] eventHandlerParameters = invocatorData.Parameters;
+        MethodInfo handlerMethodInfo = WeakEventManager<TEventSource>.genericHandlerMethod.MakeGenericMethod(eventHandlerParameters[0].ParameterTypeData.GetType(), eventHandlerParameters[1].ParameterTypeData.GetType());
 
         handlerMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(handlerMethodInfo);
+        _ = WeakEventManager<TEventSource>.ProxyEventHandlerPool.TryAdd(eventHandlerTypeData, handlerMethodData);
       }
-      if (eventHandlerParameters.Length == 2)
+
+      if (handlerMethodData.Parameters.Length == 2)
       {
         try
         {
           Debug.WriteLine("OnStronglyTypedEvent attached to event source");
-          this.ProxyEventHandler = Delegate.CreateDelegate(eventHandlerType, this, handlerMethod);
+          this.ProxyEventHandler = Delegate.CreateDelegate(eventHandlerType, this, handlerMethodData.GetMethodInfo());
         }
         catch (ArgumentException e)
         {
-          string exceptionMessage = string.Format(InternalDelegateSignatureMismatchExceptionMessage, eventHandlerType.ToSignatureName(), GetType().GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.NonPublic | BindingFlags.Instance).ToSignatureName());
+          string exceptionMessage = string.Format(InternalDelegateSignatureMismatchExceptionMessage, eventHandlerType.ToRuntimeSignatureShortName(), GetType().GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.NonPublic | BindingFlags.Instance).ToRuntimeSignatureShortName());
 
           throw new EventHandlerMismatchException(exceptionMessage, e);
         }
@@ -157,12 +228,15 @@
       else
       {
         Debug.WriteLine("Dynamically generated source event handler attached to event source");
+        ParameterInfo[] eventHandlerParameters = handlerMethodData.Parameters
+          .Select(parameterData => parameterData.ParameterInfo)
+          .ToArray();
         this.ProxyEventHandler = GenerateEventHandler(eventHandlerParameters);
       }
 
       this.EventName = eventName;
       this.ListenerReaderWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
-      this.eventListenerHandlerMap = new ConditionalWeakTable<object, HashSet<ClientHandlerInfo>>();
+      this.eventListenerHandlerMap = new ConditionalWeakTable<object, ClientHandlerInfoCollection>();
     }
 
     private Delegate GenerateEventHandler(ParameterInfo[] eventHandlerParameters)
@@ -358,13 +432,13 @@
       }
     }
 
-    private static void RegisterClientHandler(Action<object, object, ClientHandlerInfo> eventHandlerInvocator, Delegate originalHandler, TEventSource eventSource, string eventName, SynchronizationContext capturedSynchronizationContext)
+    private static void RegisterClientHandler(Action<object, object, ClientHandlerInfo> clientHandlerAdapterInvocator, Delegate clientHandler, TEventSource eventSource, string eventName, SynchronizationContext capturedSynchronizationContext)
     {
       // If the event handler is a static method, the delegate's target is NULL.
       // In this case, we need to provide a placeholder for the WeakTable entry.
-      object eventListener = originalHandler.Target ?? DummyEventListenerForStaticEventHandlers.Instance;
+      object eventListener = clientHandler.Target ?? DummyEventListenerForStaticEventHandlers.Instance;
       WeakEventManager<TEventSource> weakEventManager = WeakEventManagerTable.GetOrCreateWeakEventManager<TEventSource>(eventSource, eventName);
-      ThrowIfInvalidHandler(weakEventManager.EventSourceEventInfo, originalHandler);
+      ThrowIfInvalidHandler(weakEventManager.EventSourceEventInfo, clientHandler);
       
       if (weakEventManager.IsPurged)
       {
@@ -372,17 +446,17 @@
       }
 
       weakEventManager.ListenerReaderWriterLock.EnterWriteLock();
-      if (!weakEventManager.eventListenerHandlerMap.TryGetValue(eventListener, out HashSet<ClientHandlerInfo> clientHandlerInfos))
+      if (!weakEventManager.eventListenerHandlerMap.TryGetValue(eventListener, out ClientHandlerInfoCollection clientHandlerInfos))
       {
-        clientHandlerInfos = new HashSet<ClientHandlerInfo>();
+        clientHandlerInfos = new ClientHandlerInfoCollection();
         weakEventManager.eventListenerHandlerMap.Add(eventListener, clientHandlerInfos);
         WeakReference<object> eventListenerWeakReference = ManagedWeakTable.GetOrCreateWeakReference(eventListener);
         _ = weakEventManager.EventListeners.Add(eventListenerWeakReference);
         weakEventManager.StartListeningInternal(eventSource);
       }
 
-      var clientHandlerInfo = new ClientHandlerInfo(eventHandlerInvocator, eventSource, capturedSynchronizationContext);
-      _ = clientHandlerInfos.Add(clientHandlerInfo);
+      var clientHandlerInfo = new ClientHandlerInfo(clientHandler, clientHandlerAdapterInvocator, eventSource, capturedSynchronizationContext);
+      clientHandlerInfos.Add(clientHandlerInfo);
 
 #if DEBUG
       Debug.WriteLine(">>> Add event handler");
@@ -411,16 +485,13 @@
       }
 
       object eventListener = handler.Target ?? DummyEventListenerForStaticEventHandlers.Instance;
-      if (weakEventManager.eventListenerHandlerMap.TryGetValue(eventListener, out HashSet<ClientHandlerInfo> clientHandlerInfos))
+      if (weakEventManager.eventListenerHandlerMap.TryGetValue(eventListener, out ClientHandlerInfoCollection clientHandlerInfos))
       {
-        List<ClientHandlerInfo> handlerInfos = clientHandlerInfos.ToList();
         var delegateEqualityComparer = new DelegateSignatureEqualityComparer();
-        foreach (ClientHandlerInfo handlerInfo in handlerInfos)
+        foreach (ClientHandlerInfo handlerInfo in clientHandlerInfos.EnumerateSafe())
         {
           if (!handlerInfo.TryGetClientHandler(out Delegate eventHandler))
           {
-            _ = clientHandlerInfos.Remove(handlerInfo);
-            handlerInfo.Dispose();
             continue;
           }
 
@@ -446,9 +517,8 @@
 
           if (delegateEqualityComparer.Equals(eventHandler, handler))
           {
-            bool isRemoved = clientHandlerInfos.Remove(handlerInfo);
+            clientHandlerInfos.Remove(handlerInfo);
             handlerInfo.Dispose();
-            Debug.Assert(isRemoved);
             Debug.WriteLine("<<< Removed event handler");
 
 #if DEBUG
@@ -480,18 +550,19 @@
     {
       Debug.WriteLine($"WeakEventManager internal purge. Is listening: {this.IsListening}");
       Debug.WriteLine($"Stopping WeakEventManager and clearing {this.EventListeners.Count} event listener entries from {nameof(this.eventListenerHandlerMap)}");
-#if NETSTANDARD2_1_OR_GREATER || NET
-      this.eventListenerHandlerMap.Clear();
-#else
+
       foreach (WeakReference<object> reference in this.EventListeners)
       {
         if (reference.TryGetTarget(out object evenListener))
         {
+          if (this.eventListenerHandlerMap.TryGetValue(evenListener, out ClientHandlerInfoCollection clientHandlerInfos))
+          {
+            clientHandlerInfos.Clear();
+          }
           _ = this.eventListenerHandlerMap.Remove(evenListener);
           ManagedWeakTable.RecycleWeakReference(reference);
         }
       }
-#endif
 
       this.EventListeners.Clear();
       this.ListenerReaderWriterLock.Dispose();
@@ -531,27 +602,30 @@
           continue;
         }
 
-        if (this.eventListenerHandlerMap.TryGetValue(eventListener, out HashSet<ClientHandlerInfo> clientHandlerInfos))
+        if (this.eventListenerHandlerMap.TryGetValue(eventListener, out ClientHandlerInfoCollection clientHandlerInfos))
         {
-          foreach (ClientHandlerInfo handlerInfo in clientHandlerInfos)
+          foreach (ClientHandlerInfo handlerInfo in clientHandlerInfos.EnumerateSafe())
           {
-            if (!handlerInfo.TryGetClientHandler(out Delegate clientHandler))
+            if (!handlerInfo.IsClientHandlerAlive)
             {
               Debug.WriteLine($"Skip client handler invocation because the client's delegate has been garbage collected. Client: {eventListener.GetType().FullName}; Event handler #: {eventCounter++}; Event source: {sender?.GetType().FullName ?? "STATIC"}");
+              if (clientHandlerInfos.IsEmpty())
+              {
+                _ = this.eventListenerHandlerMap.Remove(eventListener);
+              }
+
               continue;
             }
-
-            var invocator = (Action <object, object, ClientHandlerInfo>)clientHandler;
 
             Debug.WriteLine($"Invoke client handler. Client: {eventListener.GetType().FullName}; Event handler #: {eventCounter++}; Event source: {sender?.GetType().FullName ?? "STATIC"}");
             
             if (handlerInfo.ClientContext != null)
             {
-              handlerInfo.ClientContext.Send(state => invocator.Invoke(sender, e, handlerInfo), null);
+              handlerInfo.ClientContext.Send(state => handlerInfo.ClientAdapterHandler.Invoke(sender, e, handlerInfo), null);
             }
             else
             {
-              invocator.Invoke(sender, e, handlerInfo);
+              handlerInfo.ClientAdapterHandler.Invoke(sender, e, handlerInfo);
             }
           }
         }
@@ -653,26 +727,30 @@
           continue;
         }
 
-        if (this.eventListenerHandlerMap.TryGetValue(eventListener, out HashSet<ClientHandlerInfo> clientHandlerInfos))
+        if (this.eventListenerHandlerMap.TryGetValue(eventListener, out ClientHandlerInfoCollection clientHandlerInfos))
         {
-          foreach (ClientHandlerInfo handlerInfo in clientHandlerInfos)
+          foreach (ClientHandlerInfo handlerInfo in clientHandlerInfos.EnumerateSafe())
           {
-            if (!handlerInfo.TryGetClientHandler(out Delegate clientHandler))
+            if (!handlerInfo.IsClientHandlerAlive)
             {
               Debug.WriteLine($"Skip client handler invocation because the client's delegate has been garbage collected. Client: {eventListener.GetType().FullName}; Event handler #: {eventCounter++}; Event source: unknown, because handler was dynamically generated as client handler does not follow C# conventions.");
+              if (clientHandlerInfos.IsEmpty())
+              {
+                _ = this.eventListenerHandlerMap.Remove(eventListener);
+              }
+
               continue;
             }
 
-            var invocator = (Action<object, object, ClientHandlerInfo>)clientHandler;
             Debug.WriteLine($"Invoke client handler. Client: {eventListener.GetType().FullName}; Event handler #: {eventCounter++}; Event source: unknown, because handler was dynamically generated as client handler does not follow C# conventions.");
 
             if (handlerInfo.ClientContext != null)
             {
-              handlerInfo.ClientContext.Send(state => invocator.Invoke(null, args, handlerInfo), null);
+              handlerInfo.ClientContext.Send(state => handlerInfo.ClientAdapterHandler.Invoke(null, args, handlerInfo), null);
             }
             else
             {
-              invocator.Invoke(null, args, handlerInfo);
+              handlerInfo.ClientAdapterHandler.Invoke(null, args, handlerInfo);
             }
           }
         }

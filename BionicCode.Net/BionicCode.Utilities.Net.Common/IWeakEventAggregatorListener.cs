@@ -18,7 +18,7 @@
     /// <exception cref="ArgumentNullException">The <paramref name="eventHandler"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">The <paramref name="eventName"/> is <see langword="null"/> or an empty string.</exception>
 
-    void StartListening<TEventSource>(string eventName, Delegate eventHandler);
+    void StartListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler) where TDelegate : Delegate;
 
     /// <summary>
     /// Registers an event delegate, with a random signature that does not follow the common C# event practices, to handle a specific event published by a specific observable type.
@@ -32,7 +32,7 @@
     /// <exception cref="EventHandlerMismatchException">The signature of the event handler and the event are incompatible.</exception>   
     /// <exception cref="ArgumentNullException">The <paramref name="eventHandler"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">The <paramref name="eventName"/> is <see langword="null"/> or an empty string.</exception>
-    void StartListening<TEventSource>(string eventName, Delegate eventHandler, bool isMarshalEventToCurrentThreadEnabled);
+    void StartListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler, bool isMarshalEventToCurrentThreadEnabled) where TDelegate : Delegate;
 
     /// <summary>
     /// Registers an event delegate, with a random signature that does not follow the common C# event practices, to handle a specific event published by a specific observable type.
@@ -47,7 +47,7 @@
     /// <exception cref="ArgumentNullException">The <paramref name="eventHandler"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException">The <paramref name="synchronizationContext"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">The <paramref name="eventName"/> is <see langword="null"/> or an empty string.</exception>
-    void StartListening<TEventSource>(string eventName, Delegate eventHandler, SynchronizationContext synchronizationContext);
+    void StartListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler, SynchronizationContext synchronizationContext) where TDelegate : Delegate;
 
     /// <summary>
     /// Removes the event handler for a specified event of a certain event publisher type.
@@ -57,6 +57,6 @@
     /// <param name="eventHandler">The event handler to remove.</param>    
     /// /// <exception cref="ArgumentNullException">The <paramref name="eventHandler"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">The <paramref name="eventName"/> is <see langword="null"/> or an empty string.</exception>
-    void StopListening<TEventSource>(string eventName, Delegate eventHandler);
+    void StopListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler) where TDelegate : Delegate;
   }
 }
