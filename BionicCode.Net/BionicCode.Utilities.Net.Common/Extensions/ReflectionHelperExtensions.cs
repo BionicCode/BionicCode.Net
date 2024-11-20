@@ -71,37 +71,40 @@
 
 
     /// <summary>
-    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    /// Extension method to convert generic and non-generic method names to a readable full signature display name without the namespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="methodInfo">The <see cref="MethodInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol without the namespace, that includes the type, name, attributes, generic type constraints and parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the method name <c>"Run"</c> becomes <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(MethodInfo)"/>, this <see cref="ToSignatureName(MethodInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+    /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
     public static string ToSignatureName(this MethodInfo methodInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
-
       MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
       return methodData.FullyQualifiedSignature;
     }
 
     /// <summary>
-    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    /// Extension method to convert generic and non-generic method names to a readable runtime signature display name without the namespace and where all generic type parameters are replaced with their resolved runtime type arguments.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="methodInfo">The <see cref="MethodInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the return type, method name and parameters where all generic type parameters are replaced with their resolved runtime type arguments.
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the method name <c>"Run"</c> becomes <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToSignatureName(MethodInfo)"/>, this <see cref="ToRuntimeSignatureName(MethodInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+    /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
     public static string ToRuntimeSignatureName(this MethodInfo methodInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
@@ -113,15 +116,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="type">The <see cref="Type"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the class name <c>"Task"</c> becomes <c>"public class Task&lt;TResult&gt;"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1).
+    /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(Type)"/>, this <see cref="ToSignatureName(Type)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+    /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
     public static string ToSignatureName(this Type type)
     {
       ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
@@ -131,17 +136,19 @@
     }
 
     /// <summary>
-    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    /// Extension method to convert generic and non-generic type names to a readable runtime signature display name without the namespace and where all generic type parameters are replaced with their resolved runtime type arguments.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="type">The <see cref="Type"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the access modifiers, type identifier, type name and inheritance list, where all generic type parameters are replaced with their resolved runtime type arguments.
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the class name <c>"Task"</c> becomes <c>"public class Task&lt;int&gt;"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToSignatureName(Type)"/>, this <see cref="ToRuntimeSignatureName(Type)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+    /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
     public static string ToRuntimeSignatureName(this Type type)
     {
       ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
@@ -153,15 +160,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the field name <c>"currentTask"</c> becomes <c>"private static readonly Task&lt;TResult&gt; currentTask;"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(FieldInfo)"/>, this <see cref="ToSignatureName(FieldInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+    /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
     public static string ToSignatureName(this FieldInfo fieldInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
@@ -171,17 +180,19 @@
     }
 
     /// <summary>
-    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    /// Extension method to convert generic and non-generic field names to a readable runtime signature display name without the namespace and where all generic type parameters are replaced with their resolved runtime type arguments.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the access modifier, keywords, field type and field name and parameters where all generic type parameters are replaced with their resolved runtime type arguments.
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the field name <c>"currentTask"</c> becomes <c>"private static readonly Task&lt;int&gt; currentTask;"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToSignatureName(FieldInfo)"/>, this <see cref="ToRuntimeSignatureName(FieldInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+    /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
     public static string ToRuntimeSignatureName(this FieldInfo fieldInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
@@ -193,15 +204,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="propertyInfo">The <see cref="PropertyInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the property name <c>"CurrentTask"</c> becomes <c>"public Task&lt;TResult&gt; CurrentTask { get; set; }"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(PropertyInfo)"/>, this <see cref="ToSignatureName(PropertyInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+    /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     public static string ToSignatureName(this PropertyInfo propertyInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
@@ -211,17 +224,19 @@
     }
 
     /// <summary>
-    /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+    /// Extension method to convert generic and non-generic property names to a readable runtime signature display name without the namespace and where all generic type parameters are replaced with their resolved runtime type arguments.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="propertyInfo">The <see cref="PropertyInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the access modifier, property type, property name and accessors where all generic type parameters are replaced with their resolved runtime type arguments.
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the property name <c>"CurrentTask"</c> becomes <c>"public Task&lt;int&gt; CurrentTask { get; set; }"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToSignatureName(PropertyInfo)"/>, this <see cref="ToRuntimeSignatureName(PropertyInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+    /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     public static string ToRuntimeSignatureName(this PropertyInfo propertyInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
@@ -233,15 +248,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="constructorInfo">The <see cref="ConstructorInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the constructor name <c>"Task"</c> becomes <c>"public Task(Func&lt;T&gt; func);"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(ConstructorInfo)"/>, this <see cref="ToSignatureName(ConstructorInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+    /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
     public static string ToSignatureName(this ConstructorInfo constructorInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
@@ -253,15 +270,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="constructorInfo">The <see cref="ConstructorInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the constructor name <c>"Task"</c> becomes <c>"public Task(Func&lt;int&gt; func);"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToSignatureName(ConstructorInfo)"/>, this <see cref="ToRuntimeSignatureName(ConstructorInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+    /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
     public static string ToRuntimeSignatureName(this ConstructorInfo constructorInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
@@ -273,15 +292,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="eventInfo">The <see cref="EventInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the event name <c>"PropertyChanged"</c> becomes <c>"public event PropertyCHangedEventHandler PropertyChanged;"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(EventInfo)"/>, this <see cref="ToSignatureName(EventInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+    /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
     public static string ToSignatureName(this EventInfo eventInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
@@ -293,15 +314,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="eventInfo">The <see cref="EventInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the event name <c>"PropertyChanged"</c> becomes <c>"public event PropertyCHangedEventHandler PropertyChanged;"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToSignatureName(EventInfo)"/>, this <see cref="ToRuntimeSignatureName(EventInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+    /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
     public static string ToRuntimeSignatureName(this EventInfo eventInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
@@ -313,15 +336,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="methodInfo">The <see cref="MethodInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the method name <c>"Run"</c> becomes <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(MethodInfo)"/>, this <see cref="ToSignatureName(MethodInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+    /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
     public static string ToSignatureShortName(this MethodInfo methodInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
@@ -333,15 +358,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="methodInfo">The <see cref="MethodInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the method name <c>"Run"</c> becomes <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToSignatureName(MethodInfo)"/>, this <see cref="ToRuntimeSignatureName(MethodInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+    /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
     public static string ToRuntimeSignatureShortName(this MethodInfo methodInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
@@ -353,15 +380,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="type">The <see cref="Type"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the class name <c>"Task"</c> becomes <c>"public class Task&lt;int&gt;"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(Type)"/>, this <see cref="ToSignatureName(Type)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+    /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
     public static string ToSignatureShortName(this Type type)
     {
       ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
@@ -373,15 +402,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="type">The <see cref="Type"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the class name <c>"Task"</c> becomes <c>"public class Task&lt;int&gt;"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToSignatureName(Type)"/>, this <see cref="ToRuntimeSignatureName(Type)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+    /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
     public static string ToRuntimeSignatureShortName(this Type type)
     {
       ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
@@ -393,15 +424,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the field name <c>"currentTask"</c> becomes <c>"private readonly Task&lt;TResult&gt; currentTask;"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(FieldInfo)"/>, this <see cref="ToSignatureName(FieldInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+    /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
     public static string ToSignatureShortName(this FieldInfo fieldInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
@@ -413,15 +446,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the field name <c>"currentTask"</c> becomes <c>"private readonly Task&lt;int&gt; currentTask;"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToSignatureName(FieldInfo)"/>, this <see cref="ToRuntimeSignatureName(FieldInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+    /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
     public static string ToRuntimeSignatureShortName(this FieldInfo fieldInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
@@ -433,15 +468,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="propertyInfo">The <see cref="PropertyInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the property name <c>"CurrentTask"</c> becomes <c>"public Task&lt;TResult&gt; CurrentTask { get; set; }"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(PropertyInfo)"/>, this <see cref="ToSignatureName(PropertyInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+    /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     public static string ToSignatureShortName(this PropertyInfo propertyInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
@@ -453,15 +490,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="propertyInfo">The <see cref="PropertyInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the property name <c>"CurrentTask"</c> becomes <c>"public Task&lt;int&gt; CurrentTask { get; set; }"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToSignatureName(PropertyInfo)"/>, this <see cref="ToRuntimeSignatureName(PropertyInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+    /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     public static string ToRuntimeSignatureShortName(this PropertyInfo propertyInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
@@ -473,15 +512,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="constructorInfo">The <see cref="ConstructorInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the constructor name <c>"Task"</c> becomes <c>"public Task(Func&lt;TResult&gt; func);"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(ConstructorInfo)"/>, this <see cref="ToSignatureName(ConstructorInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+    /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
     public static string ToSignatureShortName(this ConstructorInfo constructorInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
@@ -493,15 +534,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="constructorInfo">The <see cref="ConstructorInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the constructor name <c>"Task"</c> becomes <c>"public Task(Func&lt;int&gt; func);"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToSignatureName(ConstructorInfo)"/>, this <see cref="ToRuntimeSignatureName(ConstructorInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+    /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
     public static string ToRuntimeSignatureShortName(this ConstructorInfo constructorInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
@@ -513,15 +556,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="eventInfo">The <see cref="EventInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the event name <c>"MyEvent"</c> becomes <c>"public event EventHandler&lt;T&gt; MyEvent;"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(EventInfo)"/>, this <see cref="ToSignatureName(EventInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+    /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
     public static string ToSignatureShortName(this EventInfo eventInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
@@ -533,15 +578,17 @@
     /// <summary>
     /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
     /// </summary>
-    /// <param genericTypeParameterIdentifier="propertyInfo">The <see cref="PropertyInfo"/> to extend.</param>
-    /// <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+    /// <param name="eventInfo">The <see cref="EventInfo"/> object to generate the symbol signature for.</param>
     /// <returns>
-    /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+    /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+    /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the event name <c>"MyEvent"</c> becomes <c>"public event EventHandler&lt;EventArgs&gt; MyEvent;"</c>.
     /// </returns>
     /// <remarks>
-    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-    /// <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+    /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+    /// <br/>Opposed to the counterpart <see cref="ToSignatureName(EventInfo)"/>, this <see cref="ToRuntimeSignatureName(EventInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+    /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
     public static string ToRuntimeSignatureShortName(this EventInfo eventInfo)
     {
       ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));

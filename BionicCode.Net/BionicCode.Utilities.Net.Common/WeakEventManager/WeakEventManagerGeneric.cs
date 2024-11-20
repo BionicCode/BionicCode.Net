@@ -180,23 +180,44 @@
       }
     }
 
-    private const string EventDelegateNotSupportedExceptionMessage = "The event delegate must follow the common design guidelines for .NET CLR events that is: two parameters, typed and ordered as follows: delegate(sender, e) where parameter 'sender' is either of type {0} or {1} and where parameter 'e' is of type {2} or {3}, where {3} must be a subclass of {2}. For example: {4}. Events that deviate from this common event guidelines are currently not supported. The found event delegate signature '{5}' violates these guidelines, because {6}.";
+    private const string EventDelegateNotSupportedExceptionMessage = "The event delegate must follow the common design guidelines for .NET CLR events that is: two parameters, typed and ordered as follows: delegate(sender, e) where parameter 'sender' is either of genericTypeDefinition {0} or {1} and where parameter 'e' is of genericTypeDefinition {2} or {3}, where {3} must be a subclass of {2}. For example: {4}. Events that deviate from this common event guidelines are currently not supported. The found event delegate signature '{5}' violates these guidelines, because {6}.";
     private const string HandlerDelegateSignatureMismatchExceptionMessage = "Event handler delegate signature mismatch. Expected signature as required from event source: '{0}'. Found signature on provided event handler: '{1}'. Because: {2}";
     private const string InternalDelegateSignatureMismatchExceptionMessage = "Internal exception: Event handler delegate signature mismatch. Expected signature as required from event source: '{0}'. Found signature on provided event handler: '{1}'.";
-    private const string EventDelegateSignatureMismatchWrongGenericClassTypeParameterExceptionMessage = "Event delegate signature mismatch. The provided generic type argument '{0}' does not match the type found on the specified event '{1}'. The provided generic type argument '{0}' is '{2}'. But the type found on the event delegate is '{3}'.";
+    private const string EventDelegateSignatureMismatchWrongGenericClassTypeParameterExceptionMessage = "Event delegate signature mismatch. The provided generic genericTypeDefinition argument '{0}' does not match the genericTypeDefinition found on the specified event '{1}'. The provided generic genericTypeDefinition argument '{0}' is '{2}'. But the genericTypeDefinition found on the event delegate is '{3}'.";
     private readonly ConditionalWeakTable<object, ClientHandlerInfoCollection> eventListenerHandlerMap;
     private ReaderWriterLockSlim ListenerReaderWriterLock { get; }
     private string EventName { get; }
 
-    private static readonly MethodInfo genericHandlerMethod = typeof(WeakEventManager<TEventSource>).GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.Instance | BindingFlags.NonPublic);
+    private static readonly MethodData genericHandlerMethodData;
+    private static readonly MethodData addHandlerEventHandlerMethodData;
+    private static readonly MethodData addHandlerEventHandlerGenericMethodData;
+    private static readonly MethodData addHandlerActionMethodData;
+
+    static WeakEventManager()
+    {
+      MethodInfo methodInfo = typeof(WeakEventManager<TEventSource>).GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.Instance | BindingFlags.NonPublic);
+      genericHandlerMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+
+      Type[] methodParameters = new Type[] { typeof(TEventSource), typeof(string), typeof(Action<,>), typeof(SynchronizationContext) };
+      methodInfo = typeof(WeakEventManager<>).GetMethod("AddEventHandler", methodParameters);
+      addHandlerActionMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+
+      methodParameters = new Type[] { typeof(TEventSource), typeof(string), typeof(EventHandler<>), typeof(SynchronizationContext) };
+      methodInfo = typeof(WeakEventManager<>).GetMethod("AddEventHandler", methodParameters);
+      addHandlerEventHandlerGenericMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+
+      methodParameters = new Type[] { typeof(TEventSource), typeof(string), typeof(EventHandler), typeof(SynchronizationContext) };
+      methodInfo = typeof(WeakEventManager<>).GetMethod("AddEventHandler", methodParameters);
+      addHandlerEventHandlerMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+    }
 
     internal WeakEventManager(string eventName)
     {
-      // Use BindingFlags.FlattenHierarchy to also get base type static events via the subclass (including protected events of the hierarchy and private events of the current type)
+      // Use BindingFlags.FlattenHierarchy to also get base genericTypeDefinition static events via the subclass (including protected events of the hierarchy and private events of the current genericTypeDefinition)
       this.EventSourceEventInfo = typeof(TEventSource).GetEvent(eventName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
       if (this.EventSourceEventInfo is null)
       {
-        throw new ArgumentException($"The specified event '{eventName}' on event source type '{typeof(TEventSource).FullName}' could not be found. Please check the provided event name, event source type.");
+        throw new ArgumentException($"The specified event '{eventName}' on event source genericTypeDefinition '{typeof(TEventSource).FullName}' could not be found. Please check the provided event name, event source genericTypeDefinition.");
       }
 
       Type eventHandlerType = this.EventSourceEventInfo.EventHandlerType;
@@ -205,7 +226,7 @@
       {
         MethodData invocatorData = eventHandlerTypeData.DelegateInvokeMethodData;
         ParameterData[] eventHandlerParameters = invocatorData.Parameters;
-        MethodInfo handlerMethodInfo = WeakEventManager<TEventSource>.genericHandlerMethod.MakeGenericMethod(eventHandlerParameters[0].ParameterTypeData.GetType(), eventHandlerParameters[1].ParameterTypeData.GetType());
+        MethodInfo handlerMethodInfo = WeakEventManager<TEventSource>.genericHandlerMethodData.GetMethodInfo().MakeGenericMethod(eventHandlerParameters[0].ParameterTypeData.GetType(), eventHandlerParameters[1].ParameterTypeData.GetType());
 
         handlerMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(handlerMethodInfo);
         _ = WeakEventManager<TEventSource>.ProxyEventHandlerPool.TryAdd(eventHandlerTypeData, handlerMethodData);
@@ -257,10 +278,28 @@
       return eventSourceHandler;
     }
 
-    public static void AddEventHandler(TEventSource eventSource, string eventName, Delegate handler, bool executeOnCurrentSynchronizationContext = false)
-      => AddEventHandler(eventSource, eventName, handler, executeOnCurrentSynchronizationContext ? SynchronizationContext.Current : null);
+    private Delegate GenerateAddEventHandlerInvocator(ParameterInfo[] eventHandlerParameters)
+    {
+      Delegate eventSourceHandler;
+      var expressionParameters = new List<ParameterExpression>();
+      foreach (ParameterInfo parameter in eventHandlerParameters)
+      {
+        ParameterExpression expressionParameter = Expression.Parameter(parameter.ParameterType, parameter.Name);
+        expressionParameters.Add(expressionParameter);
+      }
 
-    public static void AddEventHandler(TEventSource eventSource, string eventName, Delegate handler, SynchronizationContext synchronizationContext)
+      IEnumerable<UnaryExpression> castedExpressionParameters = expressionParameters.Select(parameter => Expression.TypeAs(parameter, typeof(object)));
+      //NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), castedExpressionParameters);
+      MethodCallExpression method = Expression.Call(GetType().GetMethod(nameof(OnEventHandlerCustomDynamicSignature)), castedExpressionParameters);
+      eventSourceHandler = Expression.Lambda(method, expressionParameters).Compile();
+
+      return eventSourceHandler;
+    }
+
+    public static void AddCustomEventHandler<TEvent>(TEventSource eventSource, string eventName, TEvent handler, bool executeOnCurrentSynchronizationContext = false) where TEvent : Delegate
+      => AddCustomEventHandler(eventSource, eventName, handler, executeOnCurrentSynchronizationContext ? SynchronizationContext.Current : null);
+
+    public static void AddCustomEventHandler<TEvent>(TEventSource eventSource, string eventName, TEvent handler, SynchronizationContext synchronizationContext) where TEvent : Delegate
     {
       Type eventhandlerType = handler.GetType();
       if (handler is EventHandler eventHandler)
@@ -268,13 +307,38 @@
         AddEventHandler(eventSource, eventName, eventHandler, synchronizationContext);
         return;
       }
-      else if (eventhandlerType.IsGenericType && eventhandlerType.GetGenericTypeDefinition() == typeof(EventHandler<>))
+      else if (eventhandlerType.IsGenericType)
       {
-        Type argsType = eventhandlerType.GetGenericArguments()[0];
-        Type[] methodParameters = new Type[] { typeof(TEventSource), typeof(string), typeof(EventHandler<>), typeof(SynchronizationContext) };
-        _ = typeof(WeakEventManager<>).GetMethod("AddEventHandler", methodParameters)
-          .MakeGenericMethod(argsType)
-          .Invoke(null, new object[] { eventSource, eventName, eventhandlerType, synchronizationContext });
+        Type[] genericTypeArguments = eventhandlerType.GetGenericArguments();
+        Type genericTypeDefinition = eventhandlerType.GetGenericTypeDefinition();
+
+        if (genericTypeDefinition == typeof(EventHandler<>))
+        {
+          Type argsType = genericTypeArguments[0];
+        _ = addHandlerEventHandlerGenericMethodData.GetMethodInfo().MakeGenericMethod(argsType)
+            .Invoke(null, new object[] { eventSource, eventName, handler, synchronizationContext });
+        }
+        else if (genericTypeDefinition == typeof(Action<,>))
+        {
+          Type senderType = genericTypeArguments[0];
+          Type argsType = genericTypeArguments[1];
+          _ = addHandlerActionMethodData.GetMethodInfo().MakeGenericMethod(senderType, argsType)
+            .Invoke(null, new object[] { eventSource, eventName, handler, synchronizationContext });
+        }
+        else
+        {
+          Action<object, object, ClientHandlerInfo> eventHandlerInvocator = (sender, e, handlerInfo) =>
+            {
+              if (handlerInfo.TryGetClientHandler(out Delegate clientHandler))
+              {
+                //MethodInfo invokeMethod = clientHandler.GetType().GetMethod("Invoke");
+                //_ = invokeMethod.Invoke(clientHandler.Target, new object[] { e });
+                _ = clientHandler.DynamicInvoke(e);
+              }
+            };
+
+          RegisterClientHandler(eventHandlerInvocator, handler, eventSource, eventName, synchronizationContext);
+        }
       }
       else if (eventhandlerType.IsGenericType && eventhandlerType.GetGenericTypeDefinition() == typeof(Action<,>))
       {
@@ -392,12 +456,12 @@
       //if (!(eventDelegateMethodParameters[0].ParameterType == typeof(TEventSource) 
       //  || eventDelegateMethodParameters[0].ParameterType == typeof(object)))
       //{
-      //  throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToSignatureName(), eventInfo.EventHandlerType.ToSignatureName(), $"the parameter at index '0' is not of type {nameof(TEventSource)} or {typeof(object).FullName}"));
+      //  throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToSignatureName(), eventInfo.EventHandlerType.ToSignatureName(), $"the parameter at index '0' is not of genericTypeDefinition {nameof(TEventSource)} or {typeof(object).FullName}"));
       //}
 
       //if (!typeof(EventArgs).IsAssignableFrom(eventDelegateMethodParameters[1].ParameterType))
       //{
-      //  throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToSignatureName(), eventInfo.EventHandlerType.ToSignatureName(), $"the parameter at index '1' is not of type or derived from type {typeof(EventArgs).FullName}"));
+      //  throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToSignatureName(), eventInfo.EventHandlerType.ToSignatureName(), $"the parameter at index '1' is not of genericTypeDefinition or derived from genericTypeDefinition {typeof(EventArgs).FullName}"));
       //}
 
       //if (eventDelegateMethodParameters[1].ParameterType != typeof(TEventArgs))
@@ -427,7 +491,7 @@
           throw new EventHandlerMismatchException(string.Format(HandlerDelegateSignatureMismatchExceptionMessage,
             eventInfo.EventHandlerType.ToSignatureName(),
             eventHandlerMethod.ToSignatureName(),
-            $"Unable to cast parameter of type {eventDelegateParameterType.FullName} at parameter index {parameterIndex} of the event delegate to type {eventHandlerParameterType.FullName} at parameter index {parameterIndex} of the provided event handler."));
+            $"Unable to cast parameter of genericTypeDefinition {eventDelegateParameterType.FullName} at parameter index {parameterIndex} of the event delegate to genericTypeDefinition {eventHandlerParameterType.FullName} at parameter index {parameterIndex} of the provided event handler."));
         }
       }
     }

@@ -35,7 +35,7 @@
     public abstract string FullyQualifiedDisplayName { get; }
 
     /// <summary>
-    /// Signature with namespace, the declaring type (in case of a member), attributes, generic type parameters and generic type parameter constraints.
+    /// Signature including the namespace, the declaring type (in case of a member), attributes, generic type parameters and generic type parameter constraints.
     /// </summary>
     public abstract string FullyQualifiedSignature { get; }
 
@@ -59,7 +59,13 @@
     /// <br/>This returns the constructed runtime signature for generic symbols where generic type parameters are replaced by their actual constructed runtime types (<c>Action&lt;T&gt;</c> becomes <c>Action&lt;int&gt;</c>)
     /// </summary>
     public abstract string RuntimeShortSignature { get; }
-      
+
+    ///// <summary>
+    ///// Signature including the namespace and the declaring type (in case of a member), but without attributes and generic type parameter constraints, but with generic type parameters.
+    ///// <br/>This returns the constructed runtime signature for generic symbols where generic type parameters are replaced by their actual constructed runtime types (<c>Action&lt;T&gt;</c> becomes <c>Action&lt;int&gt;</c>)
+    ///// </summary>
+    //public abstract string RuntimeSignature { get; }
+
 
     /// <summary>
     /// The individual components that make the signature.
