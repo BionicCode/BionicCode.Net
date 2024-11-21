@@ -15,175 +15,6 @@
 
   public class WeakEventManager<TEventSource> : WeakEventManager
   {
-    internal class ClientHandlerInfoCollection : IEnumerable<ClientHandlerInfo>
-    {
-      public int Count => this.items.Count;
-      private readonly List<ClientHandlerInfo> items;
-
-      public ClientHandlerInfoCollection()
-      {
-        this.items = new List<ClientHandlerInfo>();
-      }
-
-      public IEnumerable<ClientHandlerInfo> EnumerateSafe()
-      {
-        var itemsCopy = this.items.ToList();
-        for (int index = itemsCopy.Count - 1; index >= 0; index--)
-        {
-          ClientHandlerInfo item = itemsCopy[index];
-          if (item.IsClientHandlerAlive)
-          {
-            yield return item;
-          }
-        }
-      }
-
-      public void Add(ClientHandlerInfo clientHandlerInfo)
-      {
-        StartListeningToItem(clientHandlerInfo);
-        this.items.Add(clientHandlerInfo);
-      }
-
-      public void Remove(ClientHandlerInfo clientHandlerInfo) 
-        => clientHandlerInfo.Dispose();
-
-      public void Clear()
-      {
-        for (int index = this.items.Count - 1; index >= 0; index--)
-        {
-          ClientHandlerInfo item = this.items[index];
-          StopListeningToItem(item);
-          item.Dispose();
-          this.items.RemoveAt(index);
-        }
-      }
-
-      private void OnItemDisposed(object sender, EventArgs e)
-      {
-        var item = (ClientHandlerInfo)sender;
-        StopListeningToItem(item);
-        _ = this.items.Remove(item);
-      }
-
-      private void StartListeningToItem(ClientHandlerInfo clientHandlerInfo) 
-        => clientHandlerInfo.Disposed += OnItemDisposed;
-
-      private void StopListeningToItem(ClientHandlerInfo clientHandlerInfo)
-        => clientHandlerInfo.Disposed -= OnItemDisposed;
-
-      IEnumerator<ClientHandlerInfo> IEnumerable<ClientHandlerInfo>.GetEnumerator()
-      {
-        foreach (ClientHandlerInfo item in EnumerateSafe())
-        {
-          yield return item;
-        }
-      }
-
-      IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<ClientHandlerInfo>)this).GetEnumerator();
-    }
-
-    internal class ClientHandlerInfo : IDisposable
-    {
-      public ClientHandlerInfo(Delegate clientHandler, Action<object, object, ClientHandlerInfo> clientAdapterHandler, TEventSource eventSource, SynchronizationContext clientContext)
-      {
-        this.ClientHandler = WeakReferencePool.GetOrCreate(clientHandler);
-        this.EventSource = WeakReferencePool.GetOrCreate(eventSource);
-        this.ClientAdapterHandler = clientAdapterHandler;
-        this.ClientContext = clientContext;
-      }
-
-      private void OnDisposed()
-        => this.Disposed?.Invoke(this, EventArgs.Empty);
-
-      public void Clear()
-        => Dispose();
-
-      public bool TryGetClientHandler(out Delegate handler)
-      {
-        handler = null;
-        if (this.IsDisposed || this.ClientHandler is null)
-        {
-          return false;
-        }
-
-        if (this.ClientHandler.TryGetTarget(out object target) && target is Delegate clientHandler)
-        {
-          handler = clientHandler;
-        }
-        else
-        {
-          Dispose();
-        }
-
-        return handler != null;
-      }
-
-      public bool TryGetEventSource(out TEventSource eventSource)
-      {
-        eventSource = default;
-        if (this.IsDisposed || this.EventSource is null)
-        {
-          return false;
-        }
-
-        if (this.EventSource.TryGetTarget(out object target) && target is TEventSource livingEventSource)
-        {
-          eventSource = livingEventSource;
-        }
-        else
-        {
-          Dispose();
-        }
-
-        return eventSource != null;
-      }
-
-      public event EventHandler Disposed;
-      public bool IsDisposed { get; private set; }
-      private WeakReference<object> ClientHandler { get; set; }
-      public Action<object, object, ClientHandlerInfo> ClientAdapterHandler { get; }
-      private WeakReference<object> EventSource { get; set; }
-      public SynchronizationContext ClientContext { get; }
-      public bool IsClientHandlerAlive => !this.IsDisposed && TryGetClientHandler(out _) && TryGetEventSource(out _);
-
-      protected virtual void Dispose(bool disposing)
-      {
-        if (!this.IsDisposed)
-        {
-          if (disposing)
-          {
-            WeakReferencePool.Add(this.ClientHandler);
-            this.ClientHandler = null;
-            WeakReferencePool.Add(this.EventSource);
-            this.EventSource = null;
-          }
-
-          // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-          // TODO: set large fields to null
-          this.IsDisposed = true;
-          OnDisposed();
-        }
-      }
-
-      // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-      // ~ClientHandlerInfo()
-      // {
-      //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-      //     Dispose(disposing: false);
-      // }
-
-      public void Dispose()
-      {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
-      }
-    }
-
-    private const string EventDelegateNotSupportedExceptionMessage = "The event delegate must follow the common design guidelines for .NET CLR events that is: two parameters, typed and ordered as follows: delegate(sender, e) where parameter 'sender' is either of genericTypeDefinition {0} or {1} and where parameter 'e' is of genericTypeDefinition {2} or {3}, where {3} must be a subclass of {2}. For example: {4}. Events that deviate from this common event guidelines are currently not supported. The found event delegate signature '{5}' violates these guidelines, because {6}.";
-    private const string HandlerDelegateSignatureMismatchExceptionMessage = "Event handler delegate signature mismatch. Expected signature as required from event source: '{0}'. Found signature on provided event handler: '{1}'. Because: {2}";
-    private const string InternalDelegateSignatureMismatchExceptionMessage = "Internal exception: Event handler delegate signature mismatch. Expected signature as required from event source: '{0}'. Found signature on provided event handler: '{1}'.";
-    private const string EventDelegateSignatureMismatchWrongGenericClassTypeParameterExceptionMessage = "Event delegate signature mismatch. The provided generic genericTypeDefinition argument '{0}' does not match the genericTypeDefinition found on the specified event '{1}'. The provided generic genericTypeDefinition argument '{0}' is '{2}'. But the genericTypeDefinition found on the event delegate is '{3}'.";
     private readonly ConditionalWeakTable<object, ClientHandlerInfoCollection> eventListenerHandlerMap;
     private ReaderWriterLockSlim ListenerReaderWriterLock { get; }
     private string EventName { get; }
@@ -278,20 +109,40 @@
       return eventSourceHandler;
     }
 
-    private Delegate GenerateAddEventHandlerInvocator(ParameterInfo[] eventHandlerParameters)
+    private Action<TEventSource, string, Delegate, SynchronizationContext> GenerateAddEventHandlerInvocator(Type clientHandlerType)
     {
-      Delegate eventSourceHandler;
-      var expressionParameters = new List<ParameterExpression>();
-      foreach (ParameterInfo parameter in eventHandlerParameters)
+      MethodInfo addHandlerInvocator = null;
+      (Type Type, string Name)[] parameters = null;
+
+      if (clientHandlerType.IsGenericType)
       {
-        ParameterExpression expressionParameter = Expression.Parameter(parameter.ParameterType, parameter.Name);
-        expressionParameters.Add(expressionParameter);
+        Type[] genericTypeArguments = clientHandlerType.GetGenericArguments();
+        Type genericTypeDefinition = clientHandlerType.GetGenericTypeDefinition();
+        if (genericTypeDefinition == typeof(EventHandler<>))
+        {
+          Type argsType = genericTypeArguments[0];
+          addHandlerInvocator = addHandlerEventHandlerGenericMethodData.GetMethodInfo().MakeGenericMethod(argsType);
+          parameters = new (Type, string)[] { (typeof(object), "senderType"), (argsType, "eventArgsType" };
+        }
+        else if (genericTypeDefinition == typeof(Action<,>))
+        {
+          Type senderType = genericTypeArguments[0];
+          Type argsType = genericTypeArguments[1];
+          addHandlerInvocator = addHandlerActionMethodData.GetMethodInfo().MakeGenericMethod(senderType, argsType);
+          parameters = new (Type, string)[] { (senderType, "senderType"), (argsType, "eventArgsType" };
+        }
       }
 
-      IEnumerable<UnaryExpression> castedExpressionParameters = expressionParameters.Select(parameter => Expression.TypeAs(parameter, typeof(object)));
-      //NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), castedExpressionParameters);
-      MethodCallExpression method = Expression.Call(GetType().GetMethod(nameof(OnEventHandlerCustomDynamicSignature)), castedExpressionParameters);
-      eventSourceHandler = Expression.Lambda(method, expressionParameters).Compile();
+      var expressionParameters = new List<ParameterExpression>()
+      {
+        Expression.Parameter(typeof(TEventSource), "eventSource"),
+        Expression.Parameter(typeof(TEventSource), "eventName"),
+        Expression.Parameter(clientHandlerType, "clientHandler"),
+        Expression.Parameter(typeof(SynchronizationContext), "synchronizationContext"),
+      };
+      
+      MethodCallExpression method = Expression.Call(addHandlerInvocator, expressionParameters);
+      Action<TEventSource, string, Delegate, SynchronizationContext> eventSourceHandler = Expression.Lambda<Action<TEventSource, string, Delegate, SynchronizationContext>>(method, expressionParameters).Compile();
 
       return eventSourceHandler;
     }
@@ -383,10 +234,10 @@
       RegisterClientHandler(eventHandlerInvocator, handler, eventSource, eventName, synchronizationContext);
     }
 
-    public static void AddEventHandler<TSender, TEventArgs>(TEventSource eventSource, string eventName, Action<TSender, TEventArgs> handler, bool executeOnCurrentSynchronizationContext = false)
-      => AddEventHandler(eventSource, eventName, handler, executeOnCurrentSynchronizationContext ? SynchronizationContext.Current : null);
+    public static void AddActionHandler<TSender, TEventArgs>(TEventSource eventSource, string eventName, Action<TSender, TEventArgs> handler, bool executeOnCurrentSynchronizationContext = false)
+      => AddActionHandler(eventSource, eventName, handler, executeOnCurrentSynchronizationContext ? SynchronizationContext.Current : null);
 
-    public static void AddEventHandler<TSender, TEventArgs>(TEventSource eventSource, string eventName, Action<TSender, TEventArgs> handler, SynchronizationContext synchronizationContext)
+    public static void AddActionHandler<TSender, TEventArgs>(TEventSource eventSource, string eventName, Action<TSender, TEventArgs> handler, SynchronizationContext synchronizationContext)
     {
       Action<object, object, ClientHandlerInfo> eventHandlerInvocator =
         (sender, e, handlerInfo) =>
