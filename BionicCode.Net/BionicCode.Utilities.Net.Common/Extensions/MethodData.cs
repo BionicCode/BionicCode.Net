@@ -60,6 +60,15 @@
     protected override MemberInfo GetMemberInfo() 
       => GetMethodInfo();
 
+    public MethodData MakeGenericMethodData(params Type[] typeArguments)
+    {
+      MethodInfo genericMethodInfo = GetMethodInfo().MakeGenericMethod(typeArguments);
+      return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(genericMethodInfo);
+    }
+
+    public MethodInfo MakeGenericMethodInfo(params Type[] typeArguments) 
+      => GetMethodInfo().MakeGenericMethod(typeArguments);
+
     public object Invoke(object target, params object[] arguments)
     {
       if (this.invocator is null)

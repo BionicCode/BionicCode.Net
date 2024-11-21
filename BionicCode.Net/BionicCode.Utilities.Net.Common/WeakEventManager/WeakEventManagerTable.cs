@@ -6,7 +6,7 @@
 
   internal sealed class WeakEventManagerTable : ManagedWeakTable<WeakManagerTableEntry>
   {
-    public static WeakEventManager<TEventSource> GetOrCreateWeakEventManager<TEventSource>(object eventSource, string eventName)
+    public static WeakEventManager<TEventSource> GetOrCreateWeakEventManager<TEventSource>(object eventSource, string eventName, bool isCustomClientDelegate)
     {
       lock (ManagedWeakTable.SyncLockInternal)
       {
@@ -15,7 +15,7 @@
         // If the event is a static event, the eventSource is NULL.
         if (!ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry(eventSource, eventName, out EntryInfo<WeakManagerTableEntry> entryInfo))
         {
-          weakEventManager = new WeakEventManager<TEventSource>(eventName);
+          weakEventManager = new WeakEventManager<TEventSource>(eventName, isCustomClientDelegate);
           var tableEntry = new WeakManagerTableEntry(eventSource, typeof(TEventSource), eventName, weakEventManager);
           ManagedWeakTable.AddEntry(tableEntry);
         }

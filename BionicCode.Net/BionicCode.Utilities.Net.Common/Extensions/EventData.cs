@@ -51,6 +51,12 @@
       ? (this.accessModifier = HelperExtensionsCommon.GetAccessModifierInternal(this))
       : this.accessModifier;
 
+    public void AddEventHandler(object eventSource, Delegate handler)
+      => GetEventInfo().AddEventHandler(eventSource, handler);
+
+    public void RemoveEventHandler(object eventSoource, Delegate handler)
+      => GetEventInfo().RemoveEventHandler(eventSoource, handler);
+
     public MethodData AddMethodData 
       => this.addMethodData ?? (this.addMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(this.GetEventInfo().GetAddMethod(true)));
 

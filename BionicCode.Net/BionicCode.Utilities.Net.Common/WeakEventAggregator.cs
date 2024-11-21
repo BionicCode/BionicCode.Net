@@ -187,27 +187,27 @@
       this.registrationService.UnregisterHandler<TEventSource>(eventName, eventHandler);
     }
 
-    private void ThrowIfEventHandlerInvalid<TEventSource>(EventInfoTableEntry<TEventSource> entry, Delegate eventHandler)
+    private void ThrowIfEventHandlerInvalid<TEventSource>(EventInfoTableEntry entry, Delegate eventHandler)
     {
-      ParameterInfo[] invocatorParameters = entry.InvocatorMethod.GetParameters();
-      ParameterInfo[] eventHandlerParameters = eventHandler.GetType().GetMethod("Invoke")?.GetParameters();
-      if (eventHandlerParameters != null)
-      {
-        if (invocatorParameters.Length != eventHandlerParameters.Length)
-        {
-          throw new EventHandlerMismatchException($"Wrong event handler signature. The parameter count of the registered event handler does not match the event delegate {entry.EventInfo.EventHandlerType.FullName}.");
-        }
+      //ParameterInfo[] invocatorParameters = entry.InvocatorMethod.GetParameters();
+      //ParameterInfo[] eventHandlerParameters = eventHandler.GetType().GetMethod("Invoke")?.GetParameters();
+      //if (eventHandlerParameters != null)
+      //{
+      //  if (invocatorParameters.Length != eventHandlerParameters.Length)
+      //  {
+      //    throw new EventHandlerMismatchException($"Wrong event handler signature. The parameter count of the registered event handler does not match the event delegate {entry.EventInfo.EventHandlerType.FullName}.");
+      //  }
 
-        for (int index = 0; index < invocatorParameters.Length; index++)
-        {
-          Type invocatorParameterType = invocatorParameters[index].ParameterType;
-          Type eventHandlerParameterType = eventHandlerParameters[index].ParameterType;
-          if (!eventHandlerParameterType.IsAssignableFrom(invocatorParameterType))
-          {
-            throw new EventHandlerMismatchException($"Wrong event handler signature. The parameter eventHandlerTypeDefinition at index {index} of the registered event handler does not match the event delegate {entry.EventInfo.EventHandlerType.FullName}. Found eventHandlerTypeDefinition {eventHandlerParameterType.FullName}. Expected eventHandlerTypeDefinition {invocatorParameterType.FullName}.");
-          }
-        }
-      }
+      //  for (int index = 0; index < invocatorParameters.Length; index++)
+      //  {
+      //    Type invocatorParameterType = invocatorParameters[index].ParameterType;
+      //    Type eventHandlerParameterType = eventHandlerParameters[index].ParameterType;
+      //    if (!eventHandlerParameterType.IsAssignableFrom(invocatorParameterType))
+      //    {
+      //      throw new EventHandlerMismatchException($"Wrong event handler signature. The parameter eventHandlerTypeDefinition at index {index} of the registered event handler does not match the event delegate {entry.EventInfo.EventHandlerType.FullName}. Found eventHandlerTypeDefinition {eventHandlerParameterType.FullName}. Expected eventHandlerTypeDefinition {invocatorParameterType.FullName}.");
+      //    }
+      //  }
+      //}
     }
 
     #endregion Implementation of IWeakEventAggregator

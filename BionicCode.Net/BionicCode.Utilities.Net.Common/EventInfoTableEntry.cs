@@ -19,56 +19,15 @@
   using System.Threading;
   using System.Xml.Linq;
 
-  internal class EventInfoTableEntry<TEventSource>
+  internal class EventInfoTableEntry
   {
-    private bool? isStaticEvent;
-
-    public EventInfoTableEntry(EventInfo sourceEventInfo, object eventSource)
+    public EventInfoTableEntry(EventData eventData, Delegate eventHandler)
     {
-      this.EventInfo = sourceEventInfo;
-      this.eventName = this.EventInfo.Name;
+      this.EventData = eventData;
+      this.EventHandler = eventHandler;
     }
 
-    public EventInfoTableEntry(TEventSource eventSource) : this(null, eventSource)
-    {
-      Debug.Assert(eventSource != null);
-    }
-
-    public EventInfoTableEntry(EventInfo eventInfo) : this(eventInfo, null)
-    {
-      Debug.Assert(eventInfo != null);
-    }
-
-    //public void AddRegistration(IClientEventHandlerRegistrar<TEventSource> registrationCommand)
-    //  => this.RegistrationService.AddSubscribeDelegate(registrationDelegate);
-
-    //public void Unregister(Action<object> registrationDelegate)
-    //  => this.RegistrationService.RemoveRegistration(registrationDelegate);
-
-    //public void AddEventSource(object eventSource)
-    //  => this.RegistrationService.AddInstance(eventSource);
-
-    //public void RemoveEventSource(object eventSource)
-    //  => this.RegistrationService.RemoveInstance(eventSource);
-
-    //public void RemoveAllEventSources()
-    //  => this.RegistrationService.ClearInstances();
-
-    public bool IsStaticEvent => this.EventInfo is null 
-      ? throw new InvalidOperationException($"The {nameof(this.EventInfo)} property is NULL") 
-      : (bool)(this.isStaticEvent ?? (this.isStaticEvent = this.EventInfo.GetAddMethod().IsStatic)); 
-
-    public EventInfo EventInfo { get; set; }
-    public MethodBase InvocatorMethod => this.EventInfo is null 
-      ? throw new InvalidOperationException($"The property {nameof(this.EventInfo)} is NULL.") 
-      : MethodInfo.GetMethodFromHandle((this.invocatorHandle ?? (this.invocatorHandle = this.EventInfo.EventHandlerType.GetMethod("invoke").MethodHandle)).Value);
-
-    private RuntimeMethodHandle? invocatorHandle;
-    private readonly string eventName;
-    public string EventName => this.eventName ?? (this.EventInfo is null
-      ? throw new InvalidOperationException($"The {nameof(this.EventInfo)} property is NULL")
-      : this.EventInfo.Name);
-
-    //public WeakEventRegistrationService<TEventSource> RegistrationService { get; }
+    public EventData EventData { get; }
+    public Delegate EventHandler { get; }
   }
 }

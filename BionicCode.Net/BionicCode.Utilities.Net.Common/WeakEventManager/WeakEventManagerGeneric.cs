@@ -23,6 +23,7 @@
     private static readonly MethodData addHandlerEventHandlerMethodData;
     private static readonly MethodData addHandlerEventHandlerGenericMethodData;
     private static readonly MethodData addHandlerActionMethodData;
+    private static readonly MethodData addHandlerCustomMethodData;
 
     static WeakEventManager()
     {
@@ -30,7 +31,7 @@
       genericHandlerMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
 
       Type[] methodParameters = new Type[] { typeof(TEventSource), typeof(string), typeof(Action<,>), typeof(SynchronizationContext) };
-      methodInfo = typeof(WeakEventManager<>).GetMethod("AddEventHandler", methodParameters);
+      methodInfo = typeof(WeakEventManager<>).GetMethod("AddActionHandler", methodParameters);
       addHandlerActionMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
 
       methodParameters = new Type[] { typeof(TEventSource), typeof(string), typeof(EventHandler<>), typeof(SynchronizationContext) };
@@ -40,64 +41,65 @@
       methodParameters = new Type[] { typeof(TEventSource), typeof(string), typeof(EventHandler), typeof(SynchronizationContext) };
       methodInfo = typeof(WeakEventManager<>).GetMethod("AddEventHandler", methodParameters);
       addHandlerEventHandlerMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+
+      methodParameters = new Type[] { typeof(TEventSource), typeof(string), typeof(Delegate), typeof(SynchronizationContext) };
+      methodInfo = typeof(WeakEventManager<>).GetMethod("AddCustomHandler", methodParameters);
+      addHandlerEventHandlerMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
     }
 
-    internal WeakEventManager(string eventName)
+    internal WeakEventManager(string eventName, bool isCustomClientDelegate)
     {
-      // Use BindingFlags.FlattenHierarchy to also get base genericTypeDefinition static events via the subclass (including protected events of the hierarchy and private events of the current genericTypeDefinition)
-      this.EventSourceEventInfo = typeof(TEventSource).GetEvent(eventName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-      if (this.EventSourceEventInfo is null)
+      var key = new EventInfoTableKey(eventName, typeof(TEventSource));
+      if (!WeakEventManager.EventInfoTable.TryGetValue(key, out EventInfoTableEntry tableEntry))
       {
-        throw new ArgumentException($"The specified event '{eventName}' on event source genericTypeDefinition '{typeof(TEventSource).FullName}' could not be found. Please check the provided event name, event source genericTypeDefinition.");
-      }
+        // Use BindingFlags.FlattenHierarchy to also get base genericTypeDefinition static events via the subclass (including protected events of the hierarchy and private events of the current genericTypeDefinition)
+        EventInfo eventInfo = typeof(TEventSource).GetEvent(eventName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+        EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
 
-      Type eventHandlerType = this.EventSourceEventInfo.EventHandlerType;
-      TypeData eventHandlerTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventHandlerType);
-      if (!WeakEventManager<TEventSource>.ProxyEventHandlerPool.TryGetValue(eventHandlerTypeData, out MethodData handlerMethodData))
-      {
+        TypeData eventHandlerTypeData = eventData.EventHandlerTypeData;
         MethodData invocatorData = eventHandlerTypeData.DelegateInvokeMethodData;
         ParameterData[] eventHandlerParameters = invocatorData.Parameters;
-        MethodInfo handlerMethodInfo = WeakEventManager<TEventSource>.genericHandlerMethodData.GetMethodInfo().MakeGenericMethod(eventHandlerParameters[0].ParameterTypeData.GetType(), eventHandlerParameters[1].ParameterTypeData.GetType());
+        Delegate proxySourceEventHandler = null;
 
-        handlerMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(handlerMethodInfo);
-        _ = WeakEventManager<TEventSource>.ProxyEventHandlerPool.TryAdd(eventHandlerTypeData, handlerMethodData);
-      }
-
-      if (handlerMethodData.Parameters.Length == 2)
-      {
-        try
+        if (!isCustomClientDelegate
+          && invocatorData.Parameters.Length == 2)
         {
-          Debug.WriteLine("OnStronglyTypedEvent attached to event source");
-          this.ProxyEventHandler = Delegate.CreateDelegate(eventHandlerType, this, handlerMethodData.GetMethodInfo());
+          try
+          {
+            Debug.WriteLine("OnStronglyTypedEvent attached to event source");
+            MethodInfo proxySourceEventHandlerMethodInfo = WeakEventManager<TEventSource>.genericHandlerMethodData.MakeGenericMethodInfo(eventHandlerParameters[0].ParameterTypeData.GetType(), eventHandlerParameters[1].ParameterTypeData.GetType());
+            proxySourceEventHandler = Delegate.CreateDelegate(eventInfo.EventHandlerType, this, proxySourceEventHandlerMethodInfo);
+          }
+          catch (ArgumentException e)
+          {
+            string exceptionMessage = string.Format(InternalDelegateSignatureMismatchExceptionMessage, eventData.RuntimeShortSignature, GetType().GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.NonPublic | BindingFlags.Instance).ToRuntimeSignatureShortName());
+
+            throw new EventHandlerMismatchException(exceptionMessage, e);
+          }
         }
-        catch (ArgumentException e)
+        else
         {
-          string exceptionMessage = string.Format(InternalDelegateSignatureMismatchExceptionMessage, eventHandlerType.ToRuntimeSignatureShortName(), GetType().GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.NonPublic | BindingFlags.Instance).ToRuntimeSignatureShortName());
-
-          throw new EventHandlerMismatchException(exceptionMessage, e);
+          Debug.WriteLine("Dynamically generated source event handler attached to event source");
+          proxySourceEventHandler = GenerateEventHandler(eventHandlerParameters);
         }
-      }
-      else
-      {
-        Debug.WriteLine("Dynamically generated source event handler attached to event source");
-        ParameterInfo[] eventHandlerParameters = handlerMethodData.Parameters
-          .Select(parameterData => parameterData.ParameterInfo)
-          .ToArray();
-        this.ProxyEventHandler = GenerateEventHandler(eventHandlerParameters);
+
+        tableEntry = new EventInfoTableEntry(eventData, proxySourceEventHandler);
+        _ = WeakEventManager.EventInfoTable.TryAdd(key, tableEntry);
       }
 
+      this.ProxyEventHandler = tableEntry.EventHandler;
       this.EventName = eventName;
       this.ListenerReaderWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
       this.eventListenerHandlerMap = new ConditionalWeakTable<object, ClientHandlerInfoCollection>();
     }
 
-    private Delegate GenerateEventHandler(ParameterInfo[] eventHandlerParameters)
+    private Delegate GenerateEventHandler(ParameterData[] eventHandlerParameters)
     {
       Delegate eventSourceHandler;
       var expressionParameters = new List<ParameterExpression>();
-      foreach (ParameterInfo parameter in eventHandlerParameters)
+      foreach (ParameterData parameter in eventHandlerParameters)
       {
-        ParameterExpression expressionParameter = Expression.Parameter(parameter.ParameterType, parameter.Name);
+        ParameterExpression expressionParameter = Expression.Parameter(parameter.ParameterTypeData.GetType(), parameter.Name);
         expressionParameters.Add(expressionParameter);
       }
 
@@ -109,10 +111,10 @@
       return eventSourceHandler;
     }
 
-    private Action<TEventSource, string, Delegate, SynchronizationContext> GenerateAddEventHandlerInvocator(Type clientHandlerType)
+    private static bool TryGenerateAddEventHandlerInvocator(Type clientHandlerType, out Action<object, string, Delegate, SynchronizationContext> addHandlerInvocator)
     {
-      MethodInfo addHandlerInvocator = null;
-      (Type Type, string Name)[] parameters = null;
+      addHandlerInvocator = null;
+      MethodInfo invocator;
 
       if (clientHandlerType.IsGenericType)
       {
@@ -121,16 +123,22 @@
         if (genericTypeDefinition == typeof(EventHandler<>))
         {
           Type argsType = genericTypeArguments[0];
-          addHandlerInvocator = addHandlerEventHandlerGenericMethodData.GetMethodInfo().MakeGenericMethod(argsType);
-          parameters = new (Type, string)[] { (typeof(object), "senderType"), (argsType, "eventArgsType" };
+          invocator = addHandlerEventHandlerGenericMethodData.GetMethodInfo().MakeGenericMethod(argsType);
         }
         else if (genericTypeDefinition == typeof(Action<,>))
         {
           Type senderType = genericTypeArguments[0];
           Type argsType = genericTypeArguments[1];
-          addHandlerInvocator = addHandlerActionMethodData.GetMethodInfo().MakeGenericMethod(senderType, argsType);
-          parameters = new (Type, string)[] { (senderType, "senderType"), (argsType, "eventArgsType" };
+          invocator = addHandlerActionMethodData.GetMethodInfo().MakeGenericMethod(senderType, argsType);
         }
+        else
+        {
+          return false;
+        }
+      }
+      else
+      {
+        return false;
       }
 
       var expressionParameters = new List<ParameterExpression>()
@@ -141,85 +149,64 @@
         Expression.Parameter(typeof(SynchronizationContext), "synchronizationContext"),
       };
       
-      MethodCallExpression method = Expression.Call(addHandlerInvocator, expressionParameters);
-      Action<TEventSource, string, Delegate, SynchronizationContext> eventSourceHandler = Expression.Lambda<Action<TEventSource, string, Delegate, SynchronizationContext>>(method, expressionParameters).Compile();
+      MethodCallExpression method = Expression.Call(invocator, expressionParameters);
+      addHandlerInvocator = Expression.Lambda<Action<object, string, Delegate, SynchronizationContext>>(method, expressionParameters).Compile();
 
-      return eventSourceHandler;
+      return true;
     }
 
-    public static void AddCustomEventHandler<TEvent>(TEventSource eventSource, string eventName, TEvent handler, bool executeOnCurrentSynchronizationContext = false) where TEvent : Delegate
-      => AddCustomEventHandler(eventSource, eventName, handler, executeOnCurrentSynchronizationContext ? SynchronizationContext.Current : null);
+    public static void AddEventHandler<TEvent>(TEventSource eventSource, string eventName, TEvent handler, bool executeOnCurrentSynchronizationContext = false) where TEvent : Delegate
+      => AddEventHandler(eventSource, eventName, handler, executeOnCurrentSynchronizationContext ? SynchronizationContext.Current : null);
 
-    public static void AddCustomEventHandler<TEvent>(TEventSource eventSource, string eventName, TEvent handler, SynchronizationContext synchronizationContext) where TEvent : Delegate
+    public static void AddEventHandler<TEvent>(TEventSource eventSource, string eventName, TEvent handler, SynchronizationContext synchronizationContext) where TEvent : Delegate
     {
-      Type eventhandlerType = handler.GetType();
       if (handler is EventHandler eventHandler)
       {
         AddEventHandler(eventSource, eventName, eventHandler, synchronizationContext);
         return;
       }
-      else if (eventhandlerType.IsGenericType)
+
+      Type eventHandlerType = handler.GetType();
+      if (!WeakEventManager.AddClientHandlerInvocators.TryGetValue(eventHandlerType, out (Action<object, string, Delegate, SynchronizationContext> AddHandlerInvocator, bool UseAddCustomHandlerMethod) addHandlerInvocatorInfo))
       {
-        Type[] genericTypeArguments = eventhandlerType.GetGenericArguments();
-        Type genericTypeDefinition = eventhandlerType.GetGenericTypeDefinition();
-
-        if (genericTypeDefinition == typeof(EventHandler<>))
-        {
-          Type argsType = genericTypeArguments[0];
-        _ = addHandlerEventHandlerGenericMethodData.GetMethodInfo().MakeGenericMethod(argsType)
-            .Invoke(null, new object[] { eventSource, eventName, handler, synchronizationContext });
-        }
-        else if (genericTypeDefinition == typeof(Action<,>))
-        {
-          Type senderType = genericTypeArguments[0];
-          Type argsType = genericTypeArguments[1];
-          _ = addHandlerActionMethodData.GetMethodInfo().MakeGenericMethod(senderType, argsType)
-            .Invoke(null, new object[] { eventSource, eventName, handler, synchronizationContext });
-        }
-        else
-        {
-          Action<object, object, ClientHandlerInfo> eventHandlerInvocator = (sender, e, handlerInfo) =>
-            {
-              if (handlerInfo.TryGetClientHandler(out Delegate clientHandler))
-              {
-                //MethodInfo invokeMethod = clientHandler.GetType().GetMethod("Invoke");
-                //_ = invokeMethod.Invoke(clientHandler.Target, new object[] { e });
-                _ = clientHandler.DynamicInvoke(e);
-              }
-            };
-
-          RegisterClientHandler(eventHandlerInvocator, handler, eventSource, eventName, synchronizationContext);
-        }
+        bool isSuccessful = TryGenerateAddEventHandlerInvocator(eventHandlerType, out Action<object, string, Delegate, SynchronizationContext> addHandlerInvocator);
+        addHandlerInvocatorInfo = (addHandlerInvocator, UseAddCustomHandlerMethod: !isSuccessful);
+        _ = WeakEventManager.AddClientHandlerInvocators.TryAdd(eventHandlerType, addHandlerInvocatorInfo);
       }
-      else if (eventhandlerType.IsGenericType && eventhandlerType.GetGenericTypeDefinition() == typeof(Action<,>))
+
+      if (addHandlerInvocatorInfo.UseAddCustomHandlerMethod)
       {
-        Type senderType = eventhandlerType.GetGenericArguments()[0];
-        Type argsType = eventhandlerType.GetGenericArguments()[1];
-        Type[] methodParameters = new Type[] { typeof(TEventSource), typeof(string), typeof(Action<,>), typeof(SynchronizationContext) };
-        _ = typeof(WeakEventManager<>).GetMethod("AddEventHandler", methodParameters)
-          .MakeGenericMethod(senderType, argsType)
-          .Invoke(null, new object[] { eventSource, eventName, eventhandlerType, synchronizationContext });
+        AddCustomHandler(eventSource, eventName, handler, synchronizationContext);
       }
       else
       {
-        Action<object, object, ClientHandlerInfo> eventHandlerInvocator = (sender, e, handlerInfo) =>
-          {
-            if (handlerInfo.TryGetClientHandler(out Delegate clientHandler))
-            {
-              //MethodInfo invokeMethod = clientHandler.GetType().GetMethod("Invoke");
-              //_ = invokeMethod.Invoke(clientHandler.Target, new object[] { e });
-              _ = clientHandler.DynamicInvoke(e);
-            }
-          };
-
-        RegisterClientHandler(eventHandlerInvocator, handler, eventSource, eventName, synchronizationContext);
+        addHandlerInvocatorInfo.AddHandlerInvocator.Invoke(eventSource, eventName, handler, synchronizationContext);
       }
     }
 
-    public static void AddEventHandler<TEventArgs>(TEventSource eventSource, string eventName, EventHandler<TEventArgs> handler, bool executeOnCurrentSynchronizationContext = false)
-      => AddEventHandler(eventSource, eventName, handler, executeOnCurrentSynchronizationContext ? SynchronizationContext.Current : null);
+    //public static void AddCustomHandler<TEvent>(TEventSource eventSource, string eventName, TEvent handler, bool executeOnCurrentSynchronizationContext = false) where TEvent : Delegate
+    //  => AddCustomEventHandler(eventSource, eventName, handler, executeOnCurrentSynchronizationContext ? SynchronizationContext.Current : null);
 
-    public static void AddEventHandler<TEventArgs>(TEventSource eventSource, string eventName, EventHandler<TEventArgs> handler, SynchronizationContext synchronizationContext)
+    private static void AddCustomHandler(object eventSource, string eventName, Delegate handler, SynchronizationContext synchronizationContext)
+    {
+
+      Action<object, object, ClientHandlerInfo> eventHandlerInvocator = (sender, e, handlerInfo) =>
+      {
+        if (handlerInfo.TryGetClientHandler(out Delegate clientHandler))
+        {
+          //MethodInfo invokeMethod = clientHandler.GetType().GetMethod("Invoke");
+          //_ = invokeMethod.Invoke(clientHandler.Target, new object[] { e });
+          _ = clientHandler.DynamicInvoke(e);
+        }
+      };
+
+      RegisterClientHandler(eventHandlerInvocator, handler, isCustomClientDelegate: false, (TEventSource)eventSource, eventName, synchronizationContext);
+    }
+
+    //public static void AddEventHandler<TEventArgs>(TEventSource eventSource, string eventName, EventHandler<TEventArgs> handler, bool executeOnCurrentSynchronizationContext = false)
+    //  => AddEventHandler(eventSource, eventName, handler, executeOnCurrentSynchronizationContext ? SynchronizationContext.Current : null);
+
+    private static void AddEventHandler<TEventArgs>(TEventSource eventSource, string eventName, EventHandler<TEventArgs> handler, SynchronizationContext synchronizationContext)
     {
       Action<object, object, ClientHandlerInfo> eventHandlerInvocator =
         (sender, e, handlerInfo) =>
@@ -231,13 +218,13 @@
           }
         };
 
-      RegisterClientHandler(eventHandlerInvocator, handler, eventSource, eventName, synchronizationContext);
+      RegisterClientHandler(eventHandlerInvocator, handler, isCustomClientDelegate: false, eventSource, eventName, synchronizationContext);
     }
 
-    public static void AddActionHandler<TSender, TEventArgs>(TEventSource eventSource, string eventName, Action<TSender, TEventArgs> handler, bool executeOnCurrentSynchronizationContext = false)
-      => AddActionHandler(eventSource, eventName, handler, executeOnCurrentSynchronizationContext ? SynchronizationContext.Current : null);
+    //public static void AddActionHandler<TSender, TEventArgs>(TEventSource eventSource, string eventName, Action<TSender, TEventArgs> handler, bool executeOnCurrentSynchronizationContext = false)
+    //  => AddActionHandler(eventSource, eventName, handler, executeOnCurrentSynchronizationContext ? SynchronizationContext.Current : null);
 
-    public static void AddActionHandler<TSender, TEventArgs>(TEventSource eventSource, string eventName, Action<TSender, TEventArgs> handler, SynchronizationContext synchronizationContext)
+    private static void AddActionHandler<TSender, TEventArgs>(TEventSource eventSource, string eventName, Action<TSender, TEventArgs> handler, SynchronizationContext synchronizationContext)
     {
       Action<object, object, ClientHandlerInfo> eventHandlerInvocator =
         (sender, e, handlerInfo) =>
@@ -249,13 +236,13 @@
           }
         };
 
-      RegisterClientHandler(eventHandlerInvocator, handler, eventSource, eventName, synchronizationContext);
+      RegisterClientHandler(eventHandlerInvocator, handler, isCustomClientDelegate: false, eventSource, eventName, synchronizationContext);
     }
 
-    public static void AddEventHandler(TEventSource eventSource, string eventName, EventHandler handler, bool executeOnCurrentSynchronizationContext = false)
-      => AddEventHandler(eventSource, eventName, handler, executeOnCurrentSynchronizationContext ? SynchronizationContext.Current : null);
+    //public static void AddEventHandler(TEventSource eventSource, string eventName, EventHandler handler, bool executeOnCurrentSynchronizationContext = false)
+    //  => AddEventHandler(eventSource, eventName, handler, executeOnCurrentSynchronizationContext ? SynchronizationContext.Current : null);
 
-    public static void AddEventHandler(TEventSource eventSource, string eventName, EventHandler handler, SynchronizationContext synchronizationContext)
+    private static void AddEventHandler(TEventSource eventSource, string eventName, EventHandler handler, SynchronizationContext synchronizationContext)
     {
       Action<object, object, ClientHandlerInfo> eventHandlerInvocator =
         (sender, e, handlerInfo) =>
@@ -267,7 +254,7 @@
           }
         };
 
-      RegisterClientHandler(eventHandlerInvocator, handler, eventSource, eventName, synchronizationContext);
+      RegisterClientHandler(eventHandlerInvocator, handler, isCustomClientDelegate: false, eventSource, eventName, synchronizationContext);
     }
 
 #if NET
@@ -327,7 +314,7 @@
 
       if (eventDelegateParameters.Length != clientHandlerParameters.Length)
       {
-        throw new EventHandlerMismatchException(string.Format(HandlerDelegateSignatureMismatchExceptionMessage, 
+        throw new EventHandlerMismatchException(string.Format(WeakEventManager.HandlerDelegateSignatureMismatchExceptionMessage, 
           eventInfo.EventHandlerType.ToSignatureName(),
           eventHandlerMethod.ToSignatureName(),
           $"Invalid parameter count."));
@@ -339,7 +326,7 @@
         Type eventHandlerParameterType = clientHandlerParameters[parameterIndex].ParameterType;
         if (!eventHandlerParameterType.IsAssignableFrom(eventDelegateParameterType))
         {
-          throw new EventHandlerMismatchException(string.Format(HandlerDelegateSignatureMismatchExceptionMessage,
+          throw new EventHandlerMismatchException(string.Format(WeakEventManager.HandlerDelegateSignatureMismatchExceptionMessage,
             eventInfo.EventHandlerType.ToSignatureName(),
             eventHandlerMethod.ToSignatureName(),
             $"Unable to cast parameter of genericTypeDefinition {eventDelegateParameterType.FullName} at parameter index {parameterIndex} of the event delegate to genericTypeDefinition {eventHandlerParameterType.FullName} at parameter index {parameterIndex} of the provided event handler."));
@@ -347,13 +334,13 @@
       }
     }
 
-    private static void RegisterClientHandler(Action<object, object, ClientHandlerInfo> clientHandlerAdapterInvocator, Delegate clientHandler, TEventSource eventSource, string eventName, SynchronizationContext capturedSynchronizationContext)
+    private static void RegisterClientHandler(Action<object, object, ClientHandlerInfo> clientHandlerAdapterInvocator, Delegate clientHandler, bool isCustomClientDelegate, TEventSource eventSource, string eventName, SynchronizationContext capturedSynchronizationContext)
     {
       // If the event handler is a static method, the delegate's target is NULL.
       // In this case, we need to provide a placeholder for the WeakTable entry.
       object eventListener = clientHandler.Target ?? DummyEventListenerForStaticEventHandlers.Instance;
-      WeakEventManager<TEventSource> weakEventManager = WeakEventManagerTable.GetOrCreateWeakEventManager<TEventSource>(eventSource, eventName);
-      ThrowIfInvalidHandler(weakEventManager.EventSourceEventInfo, clientHandler);
+      WeakEventManager<TEventSource> weakEventManager = WeakEventManagerTable.GetOrCreateWeakEventManager<TEventSource>(eventSource, eventName, isCustomClientDelegate);
+      ThrowIfInvalidHandler(weakEventManager.EventSourceEventData.GetEventInfo(), clientHandler);
       
       if (weakEventManager.IsPurged)
       {
@@ -370,7 +357,7 @@
         weakEventManager.StartListeningInternal(eventSource);
       }
 
-      var clientHandlerInfo = new ClientHandlerInfo(clientHandler, clientHandlerAdapterInvocator, eventSource, capturedSynchronizationContext);
+      var clientHandlerInfo = new ClientHandlerInfo(clientHandler, clientHandlerAdapterInvocator, capturedSynchronizationContext);
       clientHandlerInfos.Add(clientHandlerInfo);
 
 #if DEBUG

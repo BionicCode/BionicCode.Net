@@ -143,7 +143,7 @@
     [Fact]
     public async Task RegisterEvent_EventDelegateWithEventArgsTypeNotDeriveFromEventArgsClass_ShouldInvokeClientHandlerOnce()
     {
-      WeakEventManager<TestEventSource1>.AddCustomEventHandler(this.EventSource1, nameof(TestEventSource1.StringEventArgsTestEvent), OnStronglyTypedSenderAndStringEventArgsFromTestEventSource);
+      WeakEventManager<TestEventSource1>.AddEventHandler(this.EventSource1, nameof(TestEventSource1.StringEventArgsTestEvent), OnStronglyTypedSenderAndStringEventArgsFromTestEventSource);
 
       this.EventSource1.OnStringEventArgsTestEvent();
 
