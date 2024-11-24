@@ -13,7 +13,7 @@
         WeakEventManager<TEventSource> weakEventManager = null;
 
         // If the event is a static event, the eventSource is NULL.
-        if (!ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry(eventSource, eventName, out EntryInfo<WeakManagerTableEntry> entryInfo))
+        if (!ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry<TEventSource>(eventSource, eventName, out EntryInfo<WeakManagerTableEntry> entryInfo))
         {
           weakEventManager = new WeakEventManager<TEventSource>(eventName, isCustomClientDelegate);
           var tableEntry = new WeakManagerTableEntry(eventSource, typeof(TEventSource), eventName, weakEventManager);
@@ -34,7 +34,7 @@
       lock (ManagedWeakTable.SyncLockInternal)
       {
         // If the event is a static event, the eventSource is NULL.
-        if (ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry(eventSource, eventName, out EntryInfo<WeakManagerTableEntry> entryInfo))
+        if (ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry<TEventSource>(eventSource, eventName, out EntryInfo<WeakManagerTableEntry> entryInfo))
         {
           weakEventManager = (WeakEventManager<TEventSource>)entryInfo.Entry.WeakEventManager;
         }
@@ -43,13 +43,13 @@
       }
     }
 
-    public static void RemoveWeakEventManager(object eventSource, string eventName)
+    public static void RemoveWeakEventManager<TEventSource>(TEventSource eventSource, string eventName)
     {
       Debug.WriteLine("RemoveWeakEventManager API call");
       lock (ManagedWeakTable.SyncLockInternal)
       {
         // If the event is a static event, the eventSource is NULL.
-        if (ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry(eventSource, eventName, out EntryInfo<WeakManagerTableEntry> entryInfo))
+        if (ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry<TEventSource>(eventSource, eventName, out EntryInfo<WeakManagerTableEntry> entryInfo))
         {
           _ = ManagedWeakTable.RemoveEntry(entryInfo.Entry);
         }

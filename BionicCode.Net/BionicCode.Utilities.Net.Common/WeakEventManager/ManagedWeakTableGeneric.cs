@@ -7,13 +7,13 @@
 
   internal abstract partial class ManagedWeakTable<TEntry> : ManagedWeakTable where TEntry : ManagedWeakTableEntry
   {
-    protected static bool TryGetEntry(object eventSource, string eventName, out EntryInfo<TEntry> entryInfo)
+    protected static bool TryGetEntry<TEventSource>(object eventSource, string eventName, out EntryInfo<TEntry> entryInfo)
     {
       entryInfo = default;
 
       lock (ManagedWeakTable.SyncLockInternal)
       {
-        Type eventSourceType = eventSource.GetType();
+        Type eventSourceType = typeof(TEventSource);
         if (!ManagedWeakTable.ItemsInternal.TryGetValue(eventSourceType, out HashSet<ManagedWeakTableEntry> entries))
         {
           return false;

@@ -16,13 +16,10 @@
     {
       this.EventName = eventName;
       this.EventSourceType = eventSourceType;
-      this.typeHierarchyFactory = new Lazy<ImmutableHashSet<Type>>(() => ImmutableHashSet.CreateRange(eventSourceType.GetTypeHierarchy(includeInterfaces: true)));
     }
 
     public string EventName { get; }
     public Type EventSourceType { get; }
-    private readonly Lazy<ImmutableHashSet<Type>> typeHierarchyFactory;
-    public ImmutableHashSet<Type> TypeHierarchy => this.typeHierarchyFactory.Value;
 
     public bool Equals(EventInfoTableKey other) => other.EventName.Equals(this.EventName, StringComparison.OrdinalIgnoreCase) && other.EventSourceType.Equals(this.EventSourceType);
     public override bool Equals(object obj) => obj is EventInfoTableKey key && Equals(key);

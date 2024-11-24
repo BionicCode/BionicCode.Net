@@ -20,19 +20,19 @@
     protected const string HandlerDelegateSignatureMismatchExceptionMessage = "Event handler delegate signature mismatch. Expected signature as required from event source: '{0}'. Found signature on provided event handler: '{1}'. Because: {2}";
     protected const string InternalDelegateSignatureMismatchExceptionMessage = "Internal exception: Event handler delegate signature mismatch. Expected signature as required from event source: '{0}'. Found signature on provided event handler: '{1}'.";
     protected const string EventDelegateSignatureMismatchWrongGenericClassTypeParameterExceptionMessage = "Event delegate signature mismatch. The provided generic genericTypeDefinition argument '{0}' does not match the genericTypeDefinition found on the specified event '{1}'. The provided generic genericTypeDefinition argument '{0}' is '{2}'. But the genericTypeDefinition found on the event delegate is '{3}'.";
-   
+
 #if DEBUG
     protected static int registeredEventHandlerCount;
     protected static int unregisteredEventHandlerCount;
 #endif
 
-    internal static ConcurrentDictionary<EventInfoTableKey, EventInfoTableEntry> EventInfoTable { get; } = new ConcurrentDictionary<EventInfoTableKey, EventInfoTableEntry>();
-    internal static ConcurrentDictionary<TypeData, MethodData> ProxyEventHandlerPool { get; } = new ConcurrentDictionary<TypeData, MethodData>();
-    internal static ConcurrentDictionary<Type, (Action<object, string, Delegate, SynchronizationContext> AddHandlerInvocator, bool UseAddCustomHandlerMethod)> AddClientHandlerInvocators { get; } = new ConcurrentDictionary<Type, (Action<object, string, Delegate, SynchronizationContext> AddHandlerInvocator, bool UseAddCustomHandlerMethod)>();
+    private protected static ConcurrentDictionary<EventInfoTableKey, EventInfoTableEntry> EventInfoTable { get; } = new ConcurrentDictionary<EventInfoTableKey, EventInfoTableEntry>();
+    private protected static ConcurrentDictionary<TypeData, MethodData> ProxyEventHandlerPool { get; } = new ConcurrentDictionary<TypeData, MethodData>();
+    protected static ConcurrentDictionary<AddClientHandlerInvocatorTableKey, AddClientHandlerInvocatorTableEntry> AddClientHandlerInvocators { get; } = new ConcurrentDictionary<AddClientHandlerInvocatorTableKey, AddClientHandlerInvocatorTableEntry>();
     public bool IsListening { get; private set; }
     public bool IsPurged { get; protected set; }
     protected Delegate ProxyEventHandler { get; set; }
-    protected private EventData EventSourceEventData { get; set; }
+    private protected EventData EventSourceEventData { get; set; }
     protected HashSet<WeakReference<object>> EventListeners { get; }
 
     protected WeakEventManager()
@@ -197,6 +197,52 @@
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
       }
+    }
+
+    protected readonly struct AddClientHandlerInvocatorTableKey : IEquatable<AddClientHandlerInvocatorTableKey>
+    {
+      public AddClientHandlerInvocatorTableKey(Type eventSourceType, Type eventHandlerType)
+      {
+        this.EventSourceType = eventSourceType;
+        this.EventHandlerType = eventHandlerType;
+      }
+
+      public Type EventHandlerType { get; }
+      public Type EventSourceType { get; }
+
+      public bool Equals(AddClientHandlerInvocatorTableKey other) => other.EventHandlerType.Equals(this.EventHandlerType) && other.EventSourceType.Equals(this.EventSourceType);
+      public override bool Equals(object obj) => obj is AddClientHandlerInvocatorTableKey key && Equals(key);
+
+      public override int GetHashCode()
+      {
+        int hashCode = 433094870;
+        hashCode = hashCode * -1521134295 + EqualityComparer<Type>.Default.GetHashCode(this.EventHandlerType);
+        hashCode = hashCode * -1521134295 + EqualityComparer<Type>.Default.GetHashCode(this.EventSourceType);
+        return hashCode;
+      }
+
+      public static bool operator ==(AddClientHandlerInvocatorTableKey first, AddClientHandlerInvocatorTableKey second) => first.Equals(second);
+      public static bool operator !=(AddClientHandlerInvocatorTableKey first, AddClientHandlerInvocatorTableKey second) => !first.Equals(second);
+    }
+
+    protected class AddClientHandlerInvocatorTableEntry
+    {
+      private readonly Delegate addHandlerInvocator;
+
+      public AddClientHandlerInvocatorTableEntry(Delegate addHandlerInvocator, bool useAddCustomHandlerMethod, Type eventSourceType)
+      {
+        this.addHandlerInvocator = addHandlerInvocator;
+        this.UseAddCustomHandlerMethod = useAddCustomHandlerMethod;
+        this.EventSourceType = eventSourceType;
+      }
+
+      public Action<TEventSource, string, Delegate, SynchronizationContext> GetAddHandlerInvocator<TEventSource>()
+        => typeof(TEventSource) != this.EventSourceType 
+          ? throw new ArgumentException($"Type mismatch for generic type argument {nameof(TEventSource)}. Expected: {this.EventSourceType.FullName}; Found: {typeof(TEventSource).FullName}.") 
+          : (Action<TEventSource, string, Delegate, SynchronizationContext>)this.addHandlerInvocator;
+
+      public bool UseAddCustomHandlerMethod { get; }
+      public Type EventSourceType { get; }
     }
   }
 }
