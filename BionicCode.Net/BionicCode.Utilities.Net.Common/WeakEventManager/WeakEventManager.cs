@@ -28,14 +28,14 @@
 
     private protected static ConcurrentDictionary<EventInfoTableKey, EventInfoTableEntry> EventInfoTable { get; } = new ConcurrentDictionary<EventInfoTableKey, EventInfoTableEntry>();
     private protected static ConcurrentDictionary<TypeData, MethodData> ProxyEventHandlerPool { get; } = new ConcurrentDictionary<TypeData, MethodData>();
-    protected static ConcurrentDictionary<AddClientHandlerInvocatorTableKey, AddClientHandlerInvocatorTableEntry> AddClientHandlerInvocators { get; } = new ConcurrentDictionary<AddClientHandlerInvocatorTableKey, AddClientHandlerInvocatorTableEntry>();
+    protected static ConcurrentDictionary<AddClientHandlerInvocatorTableKey, AddClientHandlerInvocatorTableEntry> AddClientHandlerInvocatorTable { get; } = new ConcurrentDictionary<AddClientHandlerInvocatorTableKey, AddClientHandlerInvocatorTableEntry>();
     public bool IsListening { get; private set; }
     public bool IsPurged { get; protected set; }
     protected Delegate ProxyEventHandler { get; set; }
     private protected EventData EventSourceEventData { get; set; }
     protected HashSet<WeakReference<object>> EventListeners { get; }
 
-    protected WeakEventManager()
+    protected WeakEventManager() 
       => this.EventListeners = new HashSet<WeakReference<object>>();
 
     internal abstract void Purge();

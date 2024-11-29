@@ -79,32 +79,12 @@
             <value>
             A delegate that supports cancellation, but takes no command parameter and returns a <see cref="T:System.Threading.Tasks.Task"/>.</value>
         </member>
-        <member name="F:BionicCode.Utilities.Net.AsyncRelayCommandCommon.executeCancellableNoParamDelegate">
-            <summary>
-            The registered parameterless synchronous execute delegate that supports cancellation.
-            </summary>
-            <value>
-            A delegate that supports cancellation, but takes no command parameter and returns void.</value>
-        </member>
         <member name="F:BionicCode.Utilities.Net.AsyncRelayCommandCommon.canExecuteNoParamDelegate">
             <summary>
             The registered parameterless CanExecute delegate.
             </summary>
             <value>
             <c>true</c> if the command can execute, otherwise <c>false</c>.</value>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.#ctor(System.Action)">
-            <summary>
-              Creates a new parameterless synchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.CanExecute"/> will always return <c>true</c>).
-            </summary>
-            <param name="executeNoParam">The awaitable execution handler.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.#ctor(System.Action{System.Threading.CancellationToken})">
-            <summary>
-              Creates a new parameterless synchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.CanExecute"/> will always return <c>true</c>)
-              <br/>and supports cancellation.
-            </summary>
-            <param name="executeNoParam">The awaitable execution handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.#ctor(System.Func{System.Threading.Tasks.Task})">
             <summary>
@@ -119,13 +99,6 @@
             </summary>
             <param name="executeAsyncNoParam">The awaitable execution handler.</param>
         </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.#ctor(System.Action,System.Func{System.Boolean})">
-            <summary>
-              Creates a new parameterless synchronous command.
-            </summary>
-            <param name="executeNoParam">The execution handler.</param>
-            <param name="canExecuteNoParam">The execution status handler.</param>
-        </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.#ctor(System.Func{System.Threading.Tasks.Task},System.Func{System.Boolean})">
             <summary>
               Creates a parameterless new asynchronous command.
@@ -138,13 +111,6 @@
               Creates a new parameterless asynchronous command that supports cancellation and does not take a command parameter.
             </summary>
             <param name="executeAsync">The awaitable execution handler.</param>
-            <param name="canExecute">The can execute handler.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.#ctor(System.Action{System.Threading.CancellationToken},System.Func{System.Boolean})">
-            <summary>
-              Creates a new parameterless synchronous command that supports cancellation.
-            </summary>
-            <param name="executeCancellable">The awaitable execution handler.</param>
             <param name="canExecute">The can execute handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.CanExecute">
@@ -197,13 +163,16 @@
         <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCore.IsExecuting">
             <inheritdoc/>
         </member>
-        <member name="F:BionicCode.Utilities.Net.AsyncRelayCommandCore.MaxDegreeOfParallelism">
-            <inheritdoc/>
-        </member>
         <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCore.PendingCount">
             <inheritdoc/>
         </member>
         <member name="E:BionicCode.Utilities.Net.AsyncRelayCommandCore.ExecutingCommandCancelled">
+            <inheritdoc />
+        </member>
+        <member name="E:BionicCode.Utilities.Net.AsyncRelayCommandCore.Executing">
+            <inheritdoc />
+        </member>
+        <member name="E:BionicCode.Utilities.Net.AsyncRelayCommandCore.Executed">
             <inheritdoc />
         </member>
         <member name="E:BionicCode.Utilities.Net.AsyncRelayCommandCore.PendingCommandCancelled">
@@ -215,10 +184,10 @@
         <member name="E:BionicCode.Utilities.Net.AsyncRelayCommandCore.CanExecuteChanged">
             <inheritdoc />
         </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.CancelExecuting">
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.Cancel">
             <inheritdoc />
         </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.CancelExecuting(System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.Cancel(System.Boolean)">
             <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.CancelPending">
@@ -253,12 +222,22 @@
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.OnPendingCommandsCancelled">
             <summary>
-            Raises the <see cref="!:IAsyncRelayCommandCommon.PendingCommandCancelled"/> event.
+            Raises the <see cref="E:BionicCode.Utilities.Net.IAsyncRelayCommandCore.PendingCommandCancelled"/> event.
             </summary>
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.OnExecutingCommandCancelled">
             <summary>
-            Raises the <see cref="!:IAsyncRelayCommandCommon.ExecutingCommandCancelled"/> event.
+            Raises the <see cref="E:BionicCode.Utilities.Net.IAsyncRelayCommandCore.ExecutingCommandCancelled"/> event.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.OnExecuting">
+            <summary>
+            Raises the <see cref="E:BionicCode.Utilities.Net.IAsyncRelayCommandCore.Executing"/> event.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCore.OnExecuted">
+            <summary>
+            Raises the <see cref="E:BionicCode.Utilities.Net.IAsyncRelayCommandCore.Executed"/> event.
             </summary>
         </member>
         <member name="T:BionicCode.Utilities.Net.IgnoreAttribute">
@@ -521,6 +500,163 @@
             Removes all objects from the <see cref="T:System.Collections.Generic.Queue`1"/>.
             </summary>
         </member>
+        <member name="T:BionicCode.Utilities.Net.WeakCollection`1">
+            <summary>
+            Collection that internally wraps its items into <see cref="T:System.WeakReference`1"/>.
+            </summary>
+            <typeparam name="TItem">The type of the items.</typeparam>
+            <remarks>
+            <para>
+            The collection internally maintains its weak references in that it removes those that have been garbage collected.
+            As a result the collection's count is not constant and can change any time when a weak reference is no longer alive (which is when the target of that reference has been garbage collected).
+            </para>
+            <para>
+            Calling <see cref="P:BionicCode.Utilities.Net.WeakCollection`1.Count"/> is an O(n) operation as it will remove all dead weak references in <see langword="orderby"/>to return the correct count.
+            </para>
+            <para>
+            This collection implements <see cref="T:System.ComponentModel.INotifyPropertyChanged"/> to enable clients to listen to the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event to get notified when the <see cref="P:BionicCode.Utilities.Net.WeakCollection`1.Count"/> property has changed.
+            </para>
+            <para>
+            Call <see cref="M:BionicCode.Utilities.Net.WeakCollection`1.IsAlive(System.Int32)"/> to know if an item is still alive.
+            </para>
+            <para>
+            Call <see cref="M:BionicCode.Utilities.Net.WeakCollection`1.TryGet(System.Int32,`0@)"/> to conveniently retrieve an item if it is still alive.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.WeakCollection`1.Item(System.Int32)">
+            <summary>
+            Gets or sets the element at the specified index.
+            </summary>
+            <param name="index">The zero-based index of the element to get or set.</param>
+            <value>The element at the specified index if the object is still alive. Otherwise <see langword="null"/>.</value>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <list type="bullet">
+            <item>The <paramref name="index"/> is greater than or equal to the count of the current <see cref="T:BionicCode.Utilities.Net.WeakCollection`1"/>.</item>
+            <item>The <paramref name="index"/> is negative.</item>
+            </list>
+            </exception>
+            <exception cref="T:System.NotSupportedException">The collection is read-only and <see cref="P:BionicCode.Utilities.Net.WeakCollection`1.IsReadOnly"/> returns <see langword="true"/>.</exception>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.WeakCollection`1.Count">
+            <summary>
+            Returns the item count of this collection.
+            </summary>
+            <remarks>
+            Accessing the <see cref="P:BionicCode.Utilities.Net.WeakCollection`1.Count"/> property is an O(n) operation as it will remove all dead weak references in order to return the correct count.
+            </remarks>
+            <value>The updated number of items that are alive and contained in this collection.</value>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.WeakCollection`1.IsReadOnly">
+            <summary>
+            Indicates whether the collection is read-only or not.
+            </summary>
+            <remarks>
+            Read-only state can only be changed by calling the appropriate constructor that either takes a <see langword="bool"/> or <see langword="abstract"/> collection where <see cref="P:System.Collections.Generic.ICollection`1.IsReadOnly"/> returns <see langword="true"/>.
+            </remarks>
+            <value>Returns <see langword="true"/> if this collection can't be modified. Otherwise <see langword="false"/>.</value>
+        </member>
+        <!-- Badly formed XML comment ignored for member "E:BionicCode.Utilities.Net.WeakCollection`1.PropertyChanged" -->
+        <member name="M:BionicCode.Utilities.Net.WeakCollection`1.TryGet(System.Int32,`0@)">
+            <summary>
+            Attempts to get the object at the specified index, if the object is still alive.
+            </summary>
+            <param name="index">The zero-based index of the item to return.</param>
+            <param name="item">The object <see langword="if"/>alive; otherwise <see langword="null"/></param>
+            <returns><see langword="true"/> if the object is alive. Otherwise <see langword="false"/>.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <list type="bullet">
+            <item>The <paramref name="index"/> is greater than or equal the count of the current <see cref="T:BionicCode.Utilities.Net.WeakCollection`1"/>.</item>
+            <item>The <paramref name="index"/> is negative.</item>
+            </list></exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakCollection`1.IsAlive(System.Int32)">
+            <summary>
+            Checks whether the item at a particular index is still alive.
+            </summary>
+            <param name="index">The zero-based index of the item to check.</param>
+            <returns>Returns <see langword="true"/> if the item is still alive and therefore not yet garbage collected. Otherwise <see langword="false"/>.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <list type="bullet">
+            <item>The <paramref name="index"/> is greater than or equal the count of the current <see cref="T:BionicCode.Utilities.Net.WeakCollection`1"/>.</item>
+            <item>The <paramref name="index"/> is negative.</item>
+            </list></exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakCollection`1.Add(`0)">
+            <summary>
+            Adds a new item. The item is stored as a <see cref="T:System.WeakReference"/> internally to allow it to get garbage collected. Duplicate items are allowed.
+            </summary>
+            <param name="item">The item to add to the collection.</param>
+            <exception cref="T:System.NotSupportedException">The collection is read-only and <see cref="P:BionicCode.Utilities.Net.WeakCollection`1.IsReadOnly"/> returns <see langword="true"/>.</exception>
+            <remarks>
+            The <see cref="T:BionicCode.Utilities.Net.WeakCollection`1"/> only keeps weak references to its items. Therefore it will not keep items alive that are not referenced by a strong reference in the scope of the client.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakCollection`1.Clear">
+            <summary>
+            Clears the collection.
+            </summary>
+            <exception cref="T:System.NotSupportedException">The collection is read-only and <see cref="P:BionicCode.Utilities.Net.WeakCollection`1.IsReadOnly"/> returns <see langword="true"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakCollection`1.Contains(`0)">
+            <summary>
+            Determines whether the <see cref="T:BionicCode.Utilities.Net.WeakCollection`1"/> contains a specific value.
+            </summary>
+            <param name="item">The object to locate in the <see cref="T:BionicCode.Utilities.Net.WeakCollection`1"/>. The value can be <see langword="null"/>.</param>
+            <returns><see langword="true"/> if <paramref name="item"/> is found and alive in the <see cref="T:BionicCode.Utilities.Net.WeakCollection`1"/>. Otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakCollection`1.CopyTo(`0[],System.Int32)">
+            <summary>
+            Copies the elements of the <see cref="T:BionicCode.Utilities.Net.WeakCollection`1"/> to an <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
+            </summary>
+            <param name="array">The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements copied from <see cref="T:BionicCode.Utilities.Net.WeakCollection`1"/>. The <see cref="T:System.Array"/> must have zero-based indexing.</param>
+            <param name="arrayIndex">The zero-based index in <paramref name="array"/> at which copying begins.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <list type="bullet">
+            <item>The <paramref name="arrayIndex"/> is greater than or equal the length of <paramref name="array"/>.</item>
+            <item>The <paramref name="arrayIndex"/> results in insufficient length of <paramref name="array"/>.</item>
+            <item>The <paramref name="arrayIndex"/> is negative.</item>
+            </list></exception>
+            <exception cref="T:System.ArgumentException"><paramref name="array"/> is too small.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakCollection`1.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through a collection.
+            </summary>
+            <returns>An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakCollection`1.Remove(`0)">
+            <summary>
+            Removes the first occurrence of a specific object from the <see cref="T:BionicCode.Utilities.Net.WeakCollection`1"/>.
+            </summary>
+            <param name="item">The object to remove from the <see cref="T:BionicCode.Utilities.Net.WeakCollection`1"/>.</param>
+            <returns><see langword="true"/> if item was successfully removed from the <see cref="T:BionicCode.Utilities.Net.WeakCollection`1"/>; otherwise, <see langword="false"/>. 
+            This method also returns <see langword="false"/> if item is not found in the original <see cref="T:BionicCode.Utilities.Net.WeakCollection`1"/>.</returns>
+            <exception cref="T:System.NotSupportedException">The collection is read-only and <see cref="P:BionicCode.Utilities.Net.WeakCollection`1.IsReadOnly"/> returns <see langword="true"/>.</exception>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.Common">
+            <summary>
+            Describes lifetime scope of object instances
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Common.IndexerName">
+            <summary>
+            The default CLR indexer property name <c>"Item[]"</c>.
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Common.CountPropertyChangedEventArgs">
+            <summary>
+            <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> for the <see cref="P:System.Collections.ICollection.Count"/> property.
+            </summary>
+            <remarks>Uses the property name <c>"Count"</c> for the <see cref="P:System.Collections.ICollection.Count"/> property.</remarks>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.Common.IndexerPropertyChangedEventArgs">
+            <summary>
+            <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> for an indexer property.
+            </summary>
+            <remarks>Uses the default property name provided by <see cref="F:BionicCode.Utilities.Net.Common.IndexerName"/>. You should not use this event args object if you have overridden the default CLR indexer property name (e.g. by decorating the indexer property with the IndexerNameAttribute.</remarks>
+        </member>
         <member name="T:BionicCode.Utilities.Net.PropertyValidationDelegate`1">
             <summary>
             A delegate that can be passed to a <see cref="M:BionicCode.Utilities.Net.ViewModelCommon.TrySetValue``1(``0,System.Func{``0,System.ValueTuple{System.Boolean,System.Collections.Generic.IEnumerable{System.Object}}},``0@,System.String)"/> and overload to provide a custom validation method.
@@ -634,7 +770,19 @@
             Default constructor.
             </summary>
         </member>
+        <member name="M:BionicCode.Utilities.Net.EventAggregator.TryRegisterObservable(System.Object,System.String[])">
+            <inheritdoc />
+        </member>
         <member name="M:BionicCode.Utilities.Net.EventAggregator.TryRegisterObservable(System.Object,System.Collections.Generic.IEnumerable{System.String})">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.EventAggregator.TryRemoveObservable(System.Type,System.Boolean,System.String[])">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.EventAggregator.TryRemoveObservable(System.Type,System.Collections.Generic.IEnumerable{System.String},System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.EventAggregator.TryRemoveObservable(System.Object,System.Boolean,System.String[])">
             <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.EventAggregator.TryRemoveObservable(System.Object,System.Collections.Generic.IEnumerable{System.String},System.Boolean)">
@@ -888,9 +1036,42 @@
             <typeparam name="TItem">The type of the item.</typeparam>
             <param name="source">The <see cref="T:System.Collections.Generic.ICollection`1"/> to modify.</param>
             <param name="range">The items to add.</param>
-            <remarks>Although this method returns a <see cref="T:System.Collections.Generic.IEnumerable`1"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
             <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
             <exception cref="T:System.ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="source"/> is an immutable collection type or <paramref name="source"/> is a read-only collection.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.RemoveRange``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Removes a range of items to the <see cref="T:System.Collections.Generic.ICollection`1"/>.
+            </summary>
+            <typeparam name="TItem">The type of the item.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.ICollection`1"/> to modify.</param>
+            <param name="range">The items to add.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="source"/> is an immutable collection type or <paramref name="source"/> is a read-only collection.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.AddRange``1(System.Collections.Generic.Stack{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Adds a range of items to the <see cref="T:System.Collections.Generic.Stack`1"/>.
+            </summary>
+            <typeparam name="TItem">The type of the item.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.Stack`1"/> to modify.</param>
+            <param name="range">The items to add.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="source"/> is an immutable collection type or <paramref name="source"/> is a read-only collection.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.AddRange``1(System.Collections.Generic.Queue{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Adds a range of items to the <see cref="T:System.Collections.Generic.Queue`1"/>.
+            </summary>
+            <typeparam name="TItem">The type of the item.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.Queue`1"/> to modify.</param>
+            <param name="range">The items to add.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="source"/> is an immutable collection type or <paramref name="source"/> is a read-only collection.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.AddRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IDictionary{``0,``1},BionicCode.Utilities.Net.AddRangeMode)">
             <summary>
@@ -904,6 +1085,7 @@
             <remarks>Although this method returns a <see cref="T:System.Collections.Generic.IDictionary`2"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
             <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
             <exception cref="T:System.ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="source"/> is a read-only collection.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.RemoveRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IDictionary{``0,``1})">
             <summary>
@@ -917,6 +1099,7 @@
             <remarks>Although this method returns a <see cref="T:System.Collections.Generic.IDictionary`2"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
             <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
             <exception cref="T:System.ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="source"/> is a read-only collection.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.AddRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{``0,``1}},BionicCode.Utilities.Net.AddRangeMode)">
             <summary>
@@ -930,6 +1113,7 @@
             <remarks>Although this method returns a <see cref="T:System.Collections.Generic.IDictionary`2"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
             <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
             <exception cref="T:System.ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="source"/> is a read-only collection.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.RemoveRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{``0,``1}})">
             <summary>
@@ -943,6 +1127,7 @@
             <remarks>Although this method returns a <see cref="T:System.Collections.Generic.IDictionary`2"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
             <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
             <exception cref="T:System.ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="source"/> is a read-only collection.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.AddRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IEnumerable{System.ValueTuple{``0,``1}},BionicCode.Utilities.Net.AddRangeMode)">
             <summary>
@@ -956,6 +1141,7 @@
             <remarks>Although this method returns a <see cref="T:System.Collections.Generic.IDictionary`2"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
             <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
             <exception cref="T:System.ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="source"/> is a read-only collection.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.RemoveRange``2(System.Collections.Generic.IDictionary{``0,``1},System.Collections.Generic.IEnumerable{System.ValueTuple{``0,``1}})">
             <summary>
@@ -969,6 +1155,7 @@
             <remarks>Although this method returns a <see cref="T:System.Collections.Generic.IDictionary`2"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
             <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
             <exception cref="T:System.ArgumentNullException"><paramref name="range"/> parameter is <see langword="null"/>.</exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="source"/> is a read-only collection.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.LastOrDefaultInSorted``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
             <summary>
@@ -1167,171 +1354,387 @@
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.MethodInfo)">
             <summary>
-            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+            Extension method to convert generic and non-generic method names to a readable full signature display name without the namespace.
             </summary>
-            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
-            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <param name="methodInfo">The <see cref="T:System.Reflection.MethodInfo"/> object to generate the symbol signature for.</param>
             <returns>
-            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable signature of the symbol without the namespace, that includes the type, name, attributes, generic type constraints and parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the method name <c>"Run"</c> becomes <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
             </returns>
             <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.MethodInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.MethodInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+            to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
             </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.MethodInfo)">
+            <summary>
+            Extension method to convert generic and non-generic method names to a readable runtime signature display name without the namespace and where all generic type parameters are replaced with their resolved runtime type arguments.
+            </summary>
+            <param name="methodInfo">The <see cref="T:System.Reflection.MethodInfo"/> object to generate the symbol signature for.</param>
+            <returns>
+            A readable signature of the symbol, that includes the return type, method name and parameters where all generic type parameters are replaced with their resolved runtime type arguments.
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the method name <c>"Run"</c> becomes <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.MethodInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.MethodInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+            to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Type)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
             </summary>
-            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
-            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <param name="type">The <see cref="T:System.Type"/> object to generate the symbol signature for.</param>
             <returns>
-            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the class name <c>"Task"</c> becomes <c>"public class Task&lt;TResult&gt;"</c>.
             </returns>
             <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1).
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Type)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Type)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+            to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
             </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Type)">
+            <summary>
+            Extension method to convert generic and non-generic type names to a readable runtime signature display name without the namespace and where all generic type parameters are replaced with their resolved runtime type arguments.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> object to generate the symbol signature for.</param>
+            <returns>
+            A readable signature of the symbol, that includes the access modifiers, type identifier, type name and inheritance list, where all generic type parameters are replaced with their resolved runtime type arguments.
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the class name <c>"Task"</c> becomes <c>"public class Task&lt;int&gt;"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Type)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Type)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+            to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.FieldInfo)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
             </summary>
-            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
-            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> object to generate the symbol signature for.</param>
             <returns>
-            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the field name <c>"currentTask"</c> becomes <c>"private static readonly Task&lt;TResult&gt; currentTask;"</c>.
             </returns>
             <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.FieldInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.FieldInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+            to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
             </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.FieldInfo)">
+            <summary>
+            Extension method to convert generic and non-generic field names to a readable runtime signature display name without the namespace and where all generic type parameters are replaced with their resolved runtime type arguments.
+            </summary>
+            <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> object to generate the symbol signature for.</param>
+            <returns>
+            A readable signature of the symbol, that includes the access modifier, keywords, field type and field name and parameters where all generic type parameters are replaced with their resolved runtime type arguments.
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the field name <c>"currentTask"</c> becomes <c>"private static readonly Task&lt;int&gt; currentTask;"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.FieldInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.FieldInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+            to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.PropertyInfo)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
             </summary>
-            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
-            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> object to generate the symbol signature for.</param>
             <returns>
-            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the property name <c>"CurrentTask"</c> becomes <c>"public Task&lt;TResult&gt; CurrentTask { get; set; }"</c>.
             </returns>
             <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.PropertyInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.PropertyInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+            to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
             </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.PropertyInfo)">
+            <summary>
+            Extension method to convert generic and non-generic property names to a readable runtime signature display name without the namespace and where all generic type parameters are replaced with their resolved runtime type arguments.
+            </summary>
+            <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> object to generate the symbol signature for.</param>
+            <returns>
+            A readable signature of the symbol, that includes the access modifier, property type, property name and accessors where all generic type parameters are replaced with their resolved runtime type arguments.
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the property name <c>"CurrentTask"</c> becomes <c>"public Task&lt;int&gt; CurrentTask { get; set; }"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.PropertyInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.PropertyInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+            to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.ConstructorInfo)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
             </summary>
-            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
-            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <param name="constructorInfo">The <see cref="T:System.Reflection.ConstructorInfo"/> object to generate the symbol signature for.</param>
             <returns>
-            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the constructor name <c>"Task"</c> becomes <c>"public Task(Func&lt;T&gt; func);"</c>.
             </returns>
             <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.ConstructorInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.ConstructorInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+            to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
             </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.ConstructorInfo)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+            </summary>
+            <param name="constructorInfo">The <see cref="T:System.Reflection.ConstructorInfo"/> object to generate the symbol signature for.</param>
+            <returns>
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the constructor name <c>"Task"</c> becomes <c>"public Task(Func&lt;int&gt; func);"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.ConstructorInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.ConstructorInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+            to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.EventInfo)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
             </summary>
-            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
-            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <param name="eventInfo">The <see cref="T:System.Reflection.EventInfo"/> object to generate the symbol signature for.</param>
             <returns>
-            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the event name <c>"PropertyChanged"</c> becomes <c>"public event PropertyCHangedEventHandler PropertyChanged;"</c>.
             </returns>
             <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.EventInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.EventInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+            to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
             </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.EventInfo)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+            </summary>
+            <param name="eventInfo">The <see cref="T:System.Reflection.EventInfo"/> object to generate the symbol signature for.</param>
+            <returns>
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the event name <c>"PropertyChanged"</c> becomes <c>"public event PropertyCHangedEventHandler PropertyChanged;"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.EventInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.EventInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+            to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Reflection.MethodInfo)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
             </summary>
-            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
-            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <param name="methodInfo">The <see cref="T:System.Reflection.MethodInfo"/> object to generate the symbol signature for.</param>
             <returns>
-            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the method name <c>"Run"</c> becomes <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
             </returns>
             <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.MethodInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.MethodInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+            to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
             </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureShortName(System.Reflection.MethodInfo)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <param name="methodInfo">The <see cref="T:System.Reflection.MethodInfo"/> object to generate the symbol signature for.</param>
+            <returns>
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the method name <c>"Run"</c> becomes <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.MethodInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.MethodInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+            to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Type)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
             </summary>
-            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
-            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <param name="type">The <see cref="T:System.Type"/> object to generate the symbol signature for.</param>
             <returns>
-            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the class name <c>"Task"</c> becomes <c>"public class Task&lt;int&gt;"</c>.
             </returns>
             <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Type)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Type)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+            to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
             </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureShortName(System.Type)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> object to generate the symbol signature for.</param>
+            <returns>
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the class name <c>"Task"</c> becomes <c>"public class Task&lt;int&gt;"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Type)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Type)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+            to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Reflection.FieldInfo)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
             </summary>
-            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
-            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> object to generate the symbol signature for.</param>
             <returns>
-            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the field name <c>"currentTask"</c> becomes <c>"private readonly Task&lt;TResult&gt; currentTask;"</c>.
             </returns>
             <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.FieldInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.FieldInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+            to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
             </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureShortName(System.Reflection.FieldInfo)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> object to generate the symbol signature for.</param>
+            <returns>
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the field name <c>"currentTask"</c> becomes <c>"private readonly Task&lt;int&gt; currentTask;"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.FieldInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.FieldInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+            to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Reflection.PropertyInfo)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
             </summary>
-            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
-            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> object to generate the symbol signature for.</param>
             <returns>
-            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the property name <c>"CurrentTask"</c> becomes <c>"public Task&lt;TResult&gt; CurrentTask { get; set; }"</c>.
             </returns>
             <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.PropertyInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.PropertyInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+            to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
             </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureShortName(System.Reflection.PropertyInfo)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> object to generate the symbol signature for.</param>
+            <returns>
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the property name <c>"CurrentTask"</c> becomes <c>"public Task&lt;int&gt; CurrentTask { get; set; }"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.PropertyInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.PropertyInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+            to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Reflection.ConstructorInfo)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
             </summary>
-            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
-            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <param name="constructorInfo">The <see cref="T:System.Reflection.ConstructorInfo"/> object to generate the symbol signature for.</param>
             <returns>
-            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the constructor name <c>"Task"</c> becomes <c>"public Task(Func&lt;TResult&gt; func);"</c>.
             </returns>
             <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.ConstructorInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.ConstructorInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+            to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
             </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureShortName(System.Reflection.ConstructorInfo)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <param name="constructorInfo">The <see cref="T:System.Reflection.ConstructorInfo"/> object to generate the symbol signature for.</param>
+            <returns>
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the constructor name <c>"Task"</c> becomes <c>"public Task(Func&lt;int&gt; func);"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.ConstructorInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.ConstructorInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+            to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Reflection.EventInfo)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
             </summary>
-            <param genericTypeParameterIdentifier="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> to extend.</param>
-            <param genericTypeParameterIdentifier="isPropertyGet"><see langword="true"/> when the get() of the property should be used or <see langword="false"/> to use the set() method..</param>
+            <param name="eventInfo">The <see cref="T:System.Reflection.EventInfo"/> object to generate the symbol signature for.</param>
             <returns>
-            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the event name <c>"MyEvent"</c> becomes <c>"public event EventHandler&lt;T&gt; MyEvent;"</c>.
             </returns>
             <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic valueType parameters to construct the full signature genericTypeParameterIdentifier like <c>"public static Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Action action);"</c>.
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.EventInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.EventInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
+            to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
             </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureShortName(System.Reflection.EventInfo)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+            </summary>
+            <param name="eventInfo">The <see cref="T:System.Reflection.EventInfo"/> object to generate the symbol signature for.</param>
+            <returns>
+            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the event name <c>"MyEvent"</c> becomes <c>"public event EventHandler&lt;EventArgs&gt; MyEvent;"</c>.
+            </returns>
+            <remarks>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
+            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Reflection.EventInfo)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Reflection.EventInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+            to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetAccessModifier(System.Type)">
             <summary>
@@ -1393,6 +1796,7 @@
             <exception cref="T:System.NotSupportedException">The valueType provided by the <paramref genericTypeParameterIdentifier="valueType"/> is not supported.</exception>
             <remarks>For a <see cref="T:System.Reflection.PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
         </member>
+        <!-- Badly formed XML comment ignored for member "M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetTypeHierarchy(System.Type,System.Boolean)" -->
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayName(System.Type,System.Boolean)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
@@ -1673,7 +2077,7 @@
         </member>
         <member name="P:BionicCode.Utilities.Net.SymbolInfoData.FullyQualifiedSignature">
             <summary>
-            Signature with namespace, the declaring type (in case of a member), attributes, generic type parameters and generic type parameter constraints.
+            Signature including the namespace, the declaring type (in case of a member), attributes, generic type parameters and generic type parameter constraints.
             </summary>
         </member>
         <member name="P:BionicCode.Utilities.Net.SymbolInfoData.Signature">
@@ -1689,6 +2093,17 @@
         <member name="P:BionicCode.Utilities.Net.SymbolInfoData.ShortCompactSignature">
             <summary>
             Signature without namespace and the declaring type (in case of a member), attributes and generic type parameter constraints, but with generic type parameters.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.SymbolInfoData.RuntimeShortSignature">
+            <summary>
+            Signature without namespace and the declaring type (in case of a member), attributes and generic type parameter constraints, but with generic type parameters.
+            <br/>This returns the constructed runtime signature for generic symbols where generic type parameters are replaced by their actual constructed runtime types (<c>Action&lt;T&gt;</c> becomes <c>Action&lt;int&gt;</c>)
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.SymbolInfoData.SymbolComponentInfo">
+            <summary>
+            The individual components that make the signature.
             </summary>
         </member>
         <member name="T:BionicCode.Utilities.Net.FactoryMode">
@@ -1733,34 +2148,12 @@
             <value>
             A delegate that supports cancellation and takes a command parameter of <typeparamref name="TParam"/> and returns a <see cref="T:System.Threading.Tasks.Task"/>.</value>
         </member>
-        <member name="F:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.executeCancellableDelegate">
-            <summary>
-            The registered execute delegate that accepts a parameter of <typeparamref name="TParam"/>.
-            </summary>
-            <value>
-            A delegate that supports cancellation and takes a command parameter of <typeparamref name="TParam"/> and returns a <see cref="T:System.Threading.Tasks.Task"/>.</value>
-        </member>
         <member name="F:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.canExecuteDelegate">
             <summary>
             The registered CanExecute delegate that accepts a parameter of <typeparamref name="TParam"/>.
             </summary>
             <value>
             <c>true</c> if the command can execute, otherwise <c>false</c>.</value>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Action{`0})">
-            <summary>
-              Creates a new synchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecute(`0)"/> will always return <c>true</c>)
-              <br/> and accepts a command parameter of type <typeparamref name="TParam"/>.
-            </summary>
-            <param name="execute">The execute handler.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Action{`0,System.Threading.CancellationToken})">
-            <summary>
-              Creates a new synchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecute(`0)"/> will always return <c>true</c>) 
-              <br/>and accepts a command parameter of type <typeparamref name="TParam"/>
-              <br/>and supports cancellation.
-            </summary>
-            <param name="execute">The execute handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Func{`0,System.Threading.CancellationToken,System.Threading.Tasks.Task})">
             <summary>
@@ -1777,13 +2170,6 @@
             </summary>
             <param name="executeAsync">The awaitable execute handler.</param>
         </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Action{`0},System.Predicate{`0})">
-            <summary>
-              Creates a new synchronous command that accepts a command parameter of type <typeparamref name="TParam"/>.
-            </summary>
-            <param name="execute">The execute handler.</param>
-            <param name="canExecute">The can execute handler.</param>
-        </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Func{`0,System.Threading.Tasks.Task},System.Predicate{`0})">
             <summary>
               Creates a new asynchronous command that accepts a command parameter of type <typeparamref name="TParam"/>.
@@ -1796,13 +2182,6 @@
               Creates a new asynchronous command that supports cancellation and accepts a command parameter of <typeparamref name="TParam"/>.
             </summary>
             <param name="executeAsync">The awaitable execute handler.</param>
-            <param name="canExecute">The can execute handler.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.#ctor(System.Action{`0,System.Threading.CancellationToken},System.Predicate{`0})">
-            <summary>
-              Creates a new synchronous command that supports cancellation and accepts a command parameter of type <typeparamref name="TParam"/>.
-            </summary>
-            <param name="execute">The execute handler.</param>
             <param name="canExecute">The can execute handler.</param>
         </member>
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.CanExecute(`0)">
@@ -2108,6 +2487,78 @@
             </summary>
             <value>The lifetime scope  <see cref="F:BionicCode.Utilities.Net.FactoryMode.Singleton"/> of the created object instances</value>
         </member>
+        <member name="T:BionicCode.Utilities.Net.IRelayCommandCommon`1">
+            <summary>
+            An interface to define a reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand"/> with support for async/await command delegates and data binding (implements <see cref="T:System.ComponentModel.INotifyPropertyChanged"/>). 
+            <br/>Enables instant creation of an ICommand without implementing the ICommand interface for each command.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IRelayCommandCommon`1.CanExecute(`0)">
+            <summary>
+            Checks if the <see cref="T:System.Windows.Input.ICommand"/> can execute based on the command parameter.
+            </summary>
+            <param name="parameter">The command parameter.</param>
+            <returns><c>true</c> when the <see cref="T:System.Windows.Input.ICommand"/> can execute, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IRelayCommandCommon`1.Execute(`0)">
+            <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+            <param name="parameter">
+              Data used by the command. If the command does not require data to be passed,
+              this object can be set to null.
+            </param>
+            <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.  
+            </remarks>
+            <exception cref="T:System.OperationCanceledException">If the executing command delegate was cancelled.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IRelayCommandCommon`1.Execute(`0,System.Threading.CancellationToken)">
+            <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+            <param name="parameter">
+              Data used by the command. If the command does not require data to be passed,
+              this object can be set to null.
+            </param>
+            <param name="cancellationToken">An instance of <seealso cref="T:System.Threading.CancellationToken"/> to cancel the executing command delegate.</param>
+            <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.  
+            </remarks>
+            <exception cref="T:System.OperationCanceledException">If the executing command delegate was cancelled.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IRelayCommandCommon`1.Execute(`0,System.TimeSpan)">
+            <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+            <param name="parameter">
+              Data used by the command. If the command does not require data to be passed,
+              this object can be set to null.
+            </param>
+            <param name="timeout">A <seealso cref="T:System.TimeSpan"/> to specify the timeout of the operation. 
+            <br/>A value of <see cref="F:System.Threading.Timeout.InfiniteTimeSpan"/> (or a <see cref="T:System.TimeSpan"/> that represents -1) will specifiy an infinite time out. 
+            <br/>A value of <see cref="F:System.TimeSpan.Zero"/> will cancel the operation immediately.</param>
+            <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.  
+            </remarks>
+            <exception cref="T:System.OperationCanceledException">If the executing command delegate was cancelled.</exception>
+            <exception cref="T:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx"><paramref name="timeout>>"/>.<see cref="P:System.TimeSpan.TotalMilliseconds"/> is less than -1 or greater than <see cref="F:System.Int32.MaxValue"/> (or <see cref="F:System.UInt32.MaxValue"/> - 1 on some versions of .NET). 
+            <br/>Note that this upper bound is more restrictive than <see cref="F:System.TimeSpan.MaxValue"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IRelayCommandCommon`1.Execute(`0,System.TimeSpan,System.Threading.CancellationToken)">
+            <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+            <param name="parameter">
+              Data used by the command. If the command does not require data to be passed,
+              this object can be set to null.
+            </param>
+            <param name="timeout">A <seealso cref="T:System.TimeSpan"/> to specify the timeout of the operation. 
+            <br/>A value of <see cref="F:System.Threading.Timeout.InfiniteTimeSpan"/> (or a <see cref="T:System.TimeSpan"/> that represents -1) will specifiy an infinite time out. 
+            <br/>A value of <see cref="F:System.TimeSpan.Zero"/> will cancel the operation immediately.</param>
+            <param name="cancellationToken">An instance of <seealso cref="T:System.Threading.CancellationToken"/> to cancel the executing command delegate.</param>
+            <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.  
+            </remarks>
+            <exception cref="T:System.OperationCanceledException">If the executing command delegate was cancelled.</exception>
+            <exception cref="T:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx"><paramref name="timeout>>"/>.TotalMilliseconds is less than -1 or greater than <see cref="F:System.Int32.MaxValue"/> (or <see cref="F:System.UInt32.MaxValue"/> - 1 on some versions of .NET). Note that this upper bound is more restrictive than <see cref="F:System.TimeSpan.MaxValue"/>.</exception>
+        </member>
         <member name="T:BionicCode.Utilities.Net.NullObjectFactory`1">
             <summary>
             Implementation of <see cref="T:BionicCode.Utilities.Net.INullObject"/> and <see cref="T:BionicCode.Utilities.Net.IFactory`1"/>. Used to create an instance of a <see cref="T:BionicCode.Utilities.Net.INullObject"/> where <see cref="P:BionicCode.Utilities.Net.INullObject.IsNull"/> is set to <c>true</c> by default.
@@ -2137,6 +2588,111 @@
             <inheritdoc />
         </member>
         <member name="M:BionicCode.Utilities.Net.NullObjectFactory`1.CreateInstance(System.Object[])">
+            <inheritdoc />
+        </member>
+        <member name="T:BionicCode.Utilities.Net.RelayCommandCommon`1">
+            <summary>
+            A reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand"/>. 
+            <br/>Enables instant creation of an ICommand without implementing the ICommand interface for each command.
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.RelayCommandCommon`1.executeCancellableDelegate">
+            <summary>
+            The registered execute delegate that accepts a parameter of <typeparamref name="TParam"/>.
+            </summary>
+            <value>
+            A delegate that supports cancellation and takes a command parameter of <typeparamref name="TParam"/> and returns a <see cref="T:System.Threading.Tasks.Task"/>.</value>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.RelayCommandCommon`1.canExecuteDelegate">
+            <summary>
+            The registered CanExecute delegate that accepts a parameter of <typeparamref name="TParam"/>.
+            </summary>
+            <value>
+            <c>true</c> if the command can execute, otherwise <c>false</c>.</value>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon`1.#ctor(System.Action{`0})">
+            <summary>
+              Creates a new synchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.RelayCommandCommon`1.CanExecute(`0)"/> will always return <c>true</c>)
+              <br/> and accepts a command parameter of type <typeparamref name="TParam"/>.
+            </summary>
+            <param name="execute">The execute handler.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon`1.#ctor(System.Action)">
+            <summary>
+              Creates a new synchronous parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.RelayCommandCommon`1.CanExecute(`0)"/> will always return <c>true</c>)
+              <br/> and accepts a command parameter of type <typeparamref name="TParam"/>.
+            </summary>
+            <param name="execute">The execute handler.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon`1.#ctor(System.Action{System.Threading.CancellationToken})">
+            <summary>
+              Creates a new parameterless synchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.RelayCommandCommon`1.CanExecute(`0)"/> will always return <c>true</c>) 
+              <br/>and accepts a command parameter of type <typeparamref name="TParam"/>
+              <br/>and supports cancellation.
+            </summary>
+            <param name="execute">The execute handler.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon`1.#ctor(System.Action,System.Func{System.Boolean})">
+            <summary>
+              Creates a new synchronous command that accepts a command parameter of type <typeparamref name="TParam"/>.
+            </summary>
+            <param name="execute">The execute handler.</param>
+            <param name="canExecute">The can execute handler.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon`1.#ctor(System.Action{System.Threading.CancellationToken},System.Func{System.Boolean})">
+            <summary>
+              Creates a new synchronous command that supports cancellation and accepts a command parameter of type <typeparamref name="TParam"/>.
+            </summary>
+            <param name="execute">The execute handler.</param>
+            <param name="canExecute">The can execute handler.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon`1.#ctor(System.Action{`0,System.Threading.CancellationToken})">
+            <summary>
+              Creates a new synchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.RelayCommandCommon`1.CanExecute(`0)"/> will always return <c>true</c>) 
+              <br/>and accepts a command parameter of type <typeparamref name="TParam"/>
+              <br/>and supports cancellation.
+            </summary>
+            <param name="execute">The execute handler.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon`1.#ctor(System.Action{`0},System.Func{`0,System.Boolean})">
+            <summary>
+              Creates a new synchronous command that accepts a command parameter of type <typeparamref name="TParam"/>.
+            </summary>
+            <param name="execute">The execute handler.</param>
+            <param name="canExecute">The can execute handler.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon`1.#ctor(System.Action{`0,System.Threading.CancellationToken},System.Func{`0,System.Boolean})">
+            <summary>
+              Creates a new synchronous command that supports cancellation and accepts a command parameter of type <typeparamref name="TParam"/>.
+            </summary>
+            <param name="execute">The execute handler.</param>
+            <param name="canExecute">The can execute handler.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon`1.CanExecute(`0)">
+            <summary>
+              Determines whether this AsyncRelayCommandCommon can execute.
+            </summary>
+            <param name="parameter">
+              Data used by the command. 
+            </param>
+            <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon`1.Execute(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon`1.Execute(`0,System.TimeSpan)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon`1.Execute(`0,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon`1.Execute(`0,System.TimeSpan,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon`1.System#Windows#Input#ICommand#CanExecute(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon`1.System#Windows#Input#ICommand#Execute(System.Object)">
             <inheritdoc />
         </member>
         <member name="T:BionicCode.Utilities.Net.ValueChangedEventArgs`1">
@@ -2204,7 +2760,7 @@
             </summary>
             <param name="cancellationToken">An instance of <seealso cref="T:System.Threading.CancellationToken"/> to cancel the executing command delegate.</param>
             <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.
-            <para>Only one command is executed at time. Sucessive command invocations are enqueued and run after the currently executing delegate has completed
+            <para>Only one command is executed at time. Successive command invocations are enqueued and run after the currently executing delegate has completed
             <br/> or was cancelled. Query <see cref="P:BionicCode.Utilities.Net.IAsyncRelayCommandCore.HasPending"/> to know if the command has pending delegate executions and <see cref="!:PendingCount"/> to knwo the number of pending delegate executions.</para>
             </remarks>
             <exception cref="T:System.OperationCanceledException">If executing command delegate was cancelled.</exception>
@@ -2214,10 +2770,10 @@
               Executes the AsyncRelayCommand on the current command target asynchronously.
             </summary>
             <param name="timeout">A <seealso cref="T:System.TimeSpan"/> to specify the timeout of the operation. 
-            <br/>A value of <see cref="F:System.Threading.Timeout.InfiniteTimeSpan"/> (or a <see cref="T:System.TimeSpan"/> that represents -1) will specifiy an infinite time out. 
+            <br/>A value of <see cref="F:System.Threading.Timeout.InfiniteTimeSpan"/> (or a <see cref="T:System.TimeSpan"/> that represents -1) will specify an infinite time out. 
             <br/>A value of <see cref="F:System.TimeSpan.Zero"/> will cancel the operation immediately.</param>
             <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.  
-            <para>Only one command is executed at time. Sucessive command invocations are enqueued and run after the currently executing delegate has completed
+            <para>Only one command is executed at time. Successive command invocations are enqueued and run after the currently executing delegate has completed
             <br/> or was cancelled. Query <see cref="P:BionicCode.Utilities.Net.IAsyncRelayCommandCore.HasPending"/> to know if the command has pending delegate executions and <see cref="!:PendingCount"/> to knwo the number of pending delegate executions.</para>
             </remarks>
             <exception cref="T:System.OperationCanceledException">If the executing command delegate was cancelled.</exception>
@@ -2227,7 +2783,7 @@
               Executes the AsyncRelayCommand on the current command target asynchronously.
             </summary>
             <param name="timeout">A <seealso cref="T:System.TimeSpan"/> to specify the timeout of the operation. 
-            <br/>A value of <see cref="F:System.Threading.Timeout.InfiniteTimeSpan"/> (or a <see cref="T:System.TimeSpan"/> that represents -1) will specifiy an infinite time out. 
+            <br/>A value of <see cref="F:System.Threading.Timeout.InfiniteTimeSpan"/> (or a <see cref="T:System.TimeSpan"/> that represents -1) will specify an infinite time out. 
             <br/>A value of <see cref="F:System.TimeSpan.Zero"/> will cancel the operation immediately.</param>
             <param name="cancellationToken">An instance of <seealso cref="T:System.Threading.CancellationToken"/> to cancel the executing command delegate.</param>
             <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.  
@@ -2239,6 +2795,18 @@
             <summary>
             Defines the shared core functionality of the different implementations.
             </summary>
+        </member>
+        <member name="E:BionicCode.Utilities.Net.IAsyncRelayCommandCore.Executing">
+            <summary>
+            Event is raised to signal that the command is executing.
+            </summary>
+            <remarks>Observe the <see cref="E:BionicCode.Utilities.Net.IAsyncRelayCommandCore.Executed"/> event to get notified when execution has completed.</remarks>
+        </member>
+        <member name="E:BionicCode.Utilities.Net.IAsyncRelayCommandCore.Executed">
+            <summary>
+            Event is raised to signal that the command has completed execution.
+            </summary>
+            <remarks>Observe the <see cref="E:BionicCode.Utilities.Net.IAsyncRelayCommandCore.Executing"/> event to get notified when execution has started.</remarks>
         </member>
         <member name="E:BionicCode.Utilities.Net.IAsyncRelayCommandCore.PendingCommandCancelled">
             <summary>
@@ -2267,6 +2835,16 @@
             </summary>
             <value><c>true</c> if the last command execution was cancelled. Otherwise <c>false</c>.</value>
         </member>
+        <member name="P:BionicCode.Utilities.Net.IAsyncRelayCommandCore.IsAsync">
+            <summary>
+            Flags whether this command actually has an async delegate registered.
+            </summary>
+            <value><see langword="true"/> if the command has been created with an async delegate. Otherwise <c>false</c>.</value>
+            <remarks>
+            If the value is <see langword="false"/> calling the synchronous <see cref="M:System.Windows.Input.ICommand.Execute(System.Object)"/> is safe.
+            <para/>Note that the WPF platform does not support async commands and will therefore not await anything. It will simply call the synchronous <see cref="M:System.Windows.Input.ICommand.Execute(System.Object)"/>
+            </remarks>
+        </member>
         <member name="P:BionicCode.Utilities.Net.IAsyncRelayCommandCore.HasPending">
             <summary>
             Return whether the command has pending executions.
@@ -2291,6 +2869,7 @@
             <summary>
             Cancels all pending and executing commands.
             </summary>
+            <returns><see langword="true"/> if any pending task was cancelled. Otherwise <see langword="false"/>.</returns>
             <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel"/> for the exception behavior of this overload.</remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCore.CancelAll(System.Boolean)">
@@ -2298,15 +2877,16 @@
             Cancels all pending and executing commands.
             </summary>
             <param name="throwOnFirstException">See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the effects of the parameter.</param>
+            <returns><see langword="true"/> if any pending task was cancelled. Otherwise <see langword="false"/>.</returns>
             <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the exception behavior of this overload.</remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCore.CancelExecuting">
+        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCore.Cancel">
             <summary>
             Cancels the currently executing command.
             </summary>
             <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel"/> for the exception behavior of this overload.</remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCore.CancelExecuting(System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCore.Cancel(System.Boolean)">
             <summary>
             Cancels the currently executing command.
             </summary>
@@ -2317,6 +2897,7 @@
             <summary>
             Cancels all pending command executions.
             </summary>    
+            <returns><see langword="true"/> if any pending task was cancelled. Otherwise <see langword="false"/>.</returns>
             <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel"/> for the exception behavior of this overload.</remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCore.CancelPending(System.Boolean)">
@@ -2324,6 +2905,7 @@
             Cancels all pending command executions.
             </summary>    
             <param name="throwOnFirstException">See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the effects of the parameter.</param>
+            <returns><see langword="true"/> if any pending task was cancelled. Otherwise <see langword="false"/>.</returns>
             <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the exception behavior of this overload.</remarks>
         </member>
         <member name="M:BionicCode.Utilities.Net.IAsyncRelayCommandCore.InvalidateCommand">
@@ -2333,18 +2915,15 @@
         </member>
         <member name="T:BionicCode.Utilities.Net.IEventAggregator">
             <summary>
-            Allows listening to events without introducing direct coupling between observer and observable. The observer can handle events withou introducing a dependency to the event source.
+            Allows listening to events without introducing direct coupling between observer and observable. The observer can handle events without introducing a dependency to the event source.
             </summary>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterObservable(System.Object,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="T:BionicCode.Utilities.Net.IEventAggregatorListener">
             <summary>
-            Register a type as event source.
+            The encapsulated listener-side API for the <see cref="T:BionicCode.Utilities.Net.EventAggregator"/>.
             </summary>
-            <param name="eventSource">The publisher instance.</param>
-            <param name="eventNames">A collection of event names that define the observed events of the <paramref name="eventSource"/></param>
-            <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver(System.String,System.Type,System.Delegate)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterObserver(System.String,System.Type,System.Delegate)">
             <summary>
             Registers an event delegate to handle a specific event published by a specific observable type.
             </summary>
@@ -2353,7 +2932,7 @@
             <param name="eventHandler">A delegate that handles the specified event.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver(System.String,System.Type,System.Delegate,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterObserver(System.String,System.Type,System.Delegate,System.Boolean)">
             <summary>
             Registers an event delegate to handle a specific event published by a specific observable type.
             </summary>
@@ -2363,7 +2942,7 @@
             <param name="isMarshalEventToCurrentThreadEnabled"><c>true</c> if the current <see cref="T:System.Threading.SynchronizationContext"/> should be captured to execute the event handler.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver(System.String,System.Type,System.Delegate,System.Threading.SynchronizationContext)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterObserver(System.String,System.Type,System.Delegate,System.Threading.SynchronizationContext)">
             <summary>
             Registers an event delegate to handle a specific event published by a specific observable type.
             </summary>
@@ -2373,7 +2952,7 @@
             <param name="synchronizationContext">The <see cref="T:System.Threading.SynchronizationContext"/> that the event delegate is to be executed on.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver``1(System.String,System.Type,System.EventHandler{``0})">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterObserver``1(System.String,System.Type,System.EventHandler{``0})">
             <summary>
             Registers an event delegate to handle a specific event published by a specific observable type.
             </summary>
@@ -2383,7 +2962,7 @@
             <param name="eventHandler">A delegate that handles the specified event.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver``1(System.String,System.Type,System.EventHandler{``0},System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterObserver``1(System.String,System.Type,System.EventHandler{``0},System.Boolean)">
             <summary>
             Registers an event delegate to handle a specific event published by a specific observable type.
             </summary>
@@ -2394,7 +2973,7 @@
             <param name="isMarshalEventToCurrentThreadEnabled"><c>true</c> if the current <see cref="T:System.Threading.SynchronizationContext"/> should be captured to execute the event handler.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterObserver``1(System.String,System.Type,System.EventHandler{``0},System.Threading.SynchronizationContext)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterObserver``1(System.String,System.Type,System.EventHandler{``0},System.Threading.SynchronizationContext)">
             <summary>
             Registers an event delegate to handle a specific event published by a specific observable type.
             </summary>
@@ -2405,7 +2984,7 @@
             <param name="synchronizationContext">The <see cref="T:System.Threading.SynchronizationContext"/> that the event delegate is to be executed on.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.String,System.Delegate)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterGlobalObserver(System.String,System.Delegate)">
             <summary>
             Register an event delegate to handle a specific event which could be published by any type.
             </summary>
@@ -2413,7 +2992,7 @@
             <param name="eventHandler">A delegate that handles the specified event.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.String,System.Delegate,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterGlobalObserver(System.String,System.Delegate,System.Boolean)">
             <summary>
             Register an event delegate to handle a specific event which could be published by any type.
             </summary>
@@ -2422,7 +3001,7 @@
             <param name="isMarshalEventToCurrentThreadEnabled"><c>true</c> if the current <see cref="T:System.Threading.SynchronizationContext"/> should be captured to execute the event handler.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.String,System.Delegate,System.Threading.SynchronizationContext)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterGlobalObserver(System.String,System.Delegate,System.Threading.SynchronizationContext)">
             <summary>
             Register an event delegate to handle a specific event which could be published by any type.
             </summary>
@@ -2431,7 +3010,7 @@
             <param name="synchronizationContext">The <see cref="T:System.Threading.SynchronizationContext"/> that the event delegate is to be executed on.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver``1(System.String,System.EventHandler{``0})">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterGlobalObserver``1(System.String,System.EventHandler{``0})">
             <summary>
             Register an event delegate to handle a specific event which could be published by any type.
             </summary>
@@ -2440,7 +3019,7 @@
             <param name="eventHandler">A delegate that handles the specified event.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver``1(System.String,System.EventHandler{``0},System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterGlobalObserver``1(System.String,System.EventHandler{``0},System.Boolean)">
             <summary>
             Register an event delegate to handle a specific event which could be published by any type.
             </summary>
@@ -2450,7 +3029,7 @@
             <param name="isMarshalEventToCurrentThreadEnabled"><c>true</c> if the current <see cref="T:System.Threading.SynchronizationContext"/> should be captured to execute the event handler.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver``1(System.String,System.EventHandler{``0},System.Threading.SynchronizationContext)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterGlobalObserver``1(System.String,System.EventHandler{``0},System.Threading.SynchronizationContext)">
             <summary>
             Register an event delegate to handle a specific event which could be published by any type.
             </summary>
@@ -2460,14 +3039,14 @@
             <param name="synchronizationContext">The <see cref="T:System.Threading.SynchronizationContext"/> that the event delegate is to be executed on.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.Delegate)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterGlobalObserver(System.Delegate)">
             <summary>
             Registers a handler for any registered event source with a compatible event delegate signature.
             </summary>
             <param name="eventHandler">A delegate that handles the specified event.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.Delegate,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterGlobalObserver(System.Delegate,System.Boolean)">
             <summary>
             Registers a handler for any registered event source with a compatible event delegate signature.
             </summary>
@@ -2475,7 +3054,7 @@
             <param name="isMarshalEventToCurrentThreadEnabled"><c>true</c> if the current <see cref="T:System.Threading.SynchronizationContext"/> should be captured to execute the event handler.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver(System.Delegate,System.Threading.SynchronizationContext)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterGlobalObserver(System.Delegate,System.Threading.SynchronizationContext)">
             <summary>
             Registers a handler for any registered event source with a compatible event delegate signature.
             </summary>
@@ -2483,7 +3062,7 @@
             <param name="synchronizationContext">The <see cref="T:System.Threading.SynchronizationContext"/> that the event delegate is to be executed on.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver``1(System.EventHandler{``0})">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterGlobalObserver``1(System.EventHandler{``0})">
             <summary>
             Registers a handler for any registered event source with a compatible event delegate signature.
             </summary>
@@ -2491,7 +3070,7 @@
             <param name="eventHandler">A delegate that handles the specified event.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver``1(System.EventHandler{``0},System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterGlobalObserver``1(System.EventHandler{``0},System.Boolean)">
             <summary>
             Registers a handler for any registered event source with a compatible event delegate signature.
             </summary>
@@ -2500,7 +3079,7 @@
             <param name="isMarshalEventToCurrentThreadEnabled"><c>true</c> if the current <see cref="T:System.Threading.SynchronizationContext"/> should be captured to execute the event handler.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRegisterGlobalObserver``1(System.EventHandler{``0},System.Threading.SynchronizationContext)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRegisterGlobalObserver``1(System.EventHandler{``0},System.Threading.SynchronizationContext)">
             <summary>
             Registers a handler for any registered event source with a compatible event delegate signature.
             </summary>
@@ -2509,24 +3088,7 @@
             <param name="synchronizationContext">The <see cref="T:System.Threading.SynchronizationContext"/> that the event delegate is to be executed on.</param>
             <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRemoveObservable(System.Object,System.Collections.Generic.IEnumerable{System.String},System.Boolean)">
-            <summary>
-            Unregister the event publisher for a collection of specified events.
-            </summary>
-            <param name="eventSource">The event publisher instance.</param>
-            <param name="eventNames">The names of the events to unregister.</param>
-            <param name="removeEventObservers">If <c>true</c> removes all event listenerHandlerMap of the specified events. The value is <c>false</c> by default.</param>
-            <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRemoveObservable(System.Object,System.Boolean)">
-            <summary>
-            Unregister the event publisher for all events.
-            </summary>
-            <param name="eventSource">The event publisher instance.</param>
-            <param name="removeEventObservers">If <c>true</c> removes all event listenerHandlerMap of the specified events. The value is <c>false</c> by default.</param>
-            <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRemoveObserver(System.String,System.Type,System.Delegate)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRemoveObserver(System.String,System.Type,System.Delegate)">
             <summary>
             Removes the event handler for a specified event of a certain event publisher type.
             </summary>
@@ -2535,7 +3097,7 @@
             <param name="eventHandler">The event handler to remove.</param>
             <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRemoveObserver``1(System.String,System.Type,System.EventHandler{``0})">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRemoveObserver``1(System.String,System.Type,System.EventHandler{``0})">
             <summary>
             Removes the event handler for a specified event of a certain event publisher type.
             </summary>
@@ -2545,14 +3107,14 @@
             <param name="eventHandler">The event handler to remove.</param>
             <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRemoveAllObservers(System.String)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRemoveAllObservers(System.String)">
             <summary>
             Removes all event handlers for a specified event no matter event publisher type.
             </summary>
             <param name="eventName">The event name of the event that the delegate is handling.</param>
             <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRemoveAllObservers(System.String,System.Type)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRemoveAllObservers(System.String,System.Type)">
             <summary>
             Removes all event handlers for a specific event publisher type and specific event.
             </summary>
@@ -2560,14 +3122,14 @@
             <param name="eventSourceType">The type of the event publisher.</param>
             <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRemoveAllObservers(System.Type)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRemoveAllObservers(System.Type)">
             <summary>
             Removes all event handlers for a specified event publisher type.
             </summary>
             <param name="eventSourceType">The type of the event publisher.</param>
             <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRemoveGlobalObserver(System.String,System.Delegate)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRemoveGlobalObserver(System.String,System.Delegate)">
             <summary>
             Removes the event handler for a specified event no matter the event publisher type.
             </summary>
@@ -2575,7 +3137,7 @@
             <param name="eventHandler">The event handler to remove</param>
             <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRemoveGlobalObserver``1(System.String,System.EventHandler{``0})">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRemoveGlobalObserver``1(System.String,System.EventHandler{``0})">
             <summary>
             Removes the event handler for a specified event no matter the event publisher type.
             </summary>
@@ -2584,19 +3146,49 @@
             <param name="eventHandler">The event handler to remove</param>
             <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRemoveGlobalObserver(System.Delegate)">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRemoveGlobalObserver(System.Delegate)">
             <summary>
             Removes the event handler for all registered events with a compatible event delegate signature.
             </summary>
             <param name="eventHandler">The event handler to remove.</param>
             <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:BionicCode.Utilities.Net.IEventAggregator.TryRemoveGlobalObserver``1(System.EventHandler{``0})">
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorListener.TryRemoveGlobalObserver``1(System.EventHandler{``0})">
             <summary>
             Removes the event handler for all registered events with a compatible event delegate signature.
             </summary>
             <typeparam name="TEventArgs">The type of the event args object.</typeparam>
             <param name="eventHandler">The event handler to remove.</param>
+            <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.IEventAggregatorPublisher">
+            <summary>
+            The encapsulated publisher-side API for the <see cref="T:BionicCode.Utilities.Net.EventAggregator"/>.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorPublisher.TryRegisterObservable(System.Object,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Register a type as event source.
+            </summary>
+            <param name="eventSource">The publisher instance.</param>
+            <param name="eventNames">A collection of event names that define the observed events of the <paramref name="eventSource"/></param>
+            <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorPublisher.TryRemoveObservable(System.Object,System.Collections.Generic.IEnumerable{System.String},System.Boolean)">
+            <summary>
+            Unregister the event publisher for a collection of specified events.
+            </summary>
+            <param name="eventSource">The event publisher instance.</param>
+            <param name="eventNames">The names of the events to unregister.</param>
+            <param name="removeEventObservers">If <c>true</c> removes all event listeners of the specified events. The value is <c>false</c> by default.</param>
+            <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IEventAggregatorPublisher.TryRemoveObservable(System.Object,System.Boolean)">
+            <summary>
+            Unregister the event publisher for all events.
+            </summary>
+            <param name="eventSource">The event publisher instance.</param>
+            <param name="removeEventObservers">If <c>true</c> removes all event listeners of the specified events. The value is <c>false</c> by default.</param>
             <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
         </member>
         <member name="T:BionicCode.Utilities.Net.IInitializable">
@@ -2980,6 +3572,173 @@
             .nonarchive
             </summary>
         </member>
+        <member name="T:BionicCode.Utilities.Net.IRelayCommandCommon">
+            <summary>
+            An interface to define a reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand"/> with support for async/await command delegates and data binding (implements <see cref="T:System.ComponentModel.INotifyPropertyChanged"/>). 
+            <br/>Enables instant creation of an ICommand without implementing the ICommand interface for each command.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IRelayCommandCommon.CanExecute">
+            <summary>
+            Checks if the <see cref="T:System.Windows.Input.ICommand"/> can execute.
+            </summary>
+            <returns><c>true</c> when the <see cref="T:System.Windows.Input.ICommand"/> can execute, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IRelayCommandCommon.Execute">
+            <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+            <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IRelayCommandCommon.Execute(System.Threading.CancellationToken)">
+            <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+            <param name="cancellationToken">An instance of <seealso cref="T:System.Threading.CancellationToken"/> to cancel the executing command delegate.</param>
+            <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.
+            <para>Only one command is executed at time. Successive command invocations are enqueued and run after the currently executing delegate has completed
+            <br/> or was cancelled. Query <see cref="P:BionicCode.Utilities.Net.IAsyncRelayCommandCore.HasPending"/> to know if the command has pending delegate executions and <see cref="!:PendingCount"/> to knwo the number of pending delegate executions.</para>
+            </remarks>
+            <exception cref="T:System.OperationCanceledException">If executing command delegate was cancelled.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IRelayCommandCommon.Execute(System.TimeSpan)">
+            <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+            <param name="timeout">A <seealso cref="T:System.TimeSpan"/> to specify the timeout of the operation. 
+            <br/>A value of <see cref="F:System.Threading.Timeout.InfiniteTimeSpan"/> (or a <see cref="T:System.TimeSpan"/> that represents -1) will specifiy an infinite time out. 
+            <br/>A value of <see cref="F:System.TimeSpan.Zero"/> will cancel the operation immediately.</param>
+            <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.  
+            <para>Only one command is executed at time. Successive command invocations are enqueued and run after the currently executing delegate has completed
+            <br/> or was cancelled. Query <see cref="P:BionicCode.Utilities.Net.IAsyncRelayCommandCore.HasPending"/> to know if the command has pending delegate executions and <see cref="!:PendingCount"/> to knwo the number of pending delegate executions.</para>
+            </remarks>
+            <exception cref="T:System.OperationCanceledException">If the executing command delegate was cancelled.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IRelayCommandCommon.Execute(System.TimeSpan,System.Threading.CancellationToken)">
+            <summary>
+              Executes the AsyncRelayCommand on the current command target asynchronously.
+            </summary>
+            <param name="timeout">A <seealso cref="T:System.TimeSpan"/> to specify the timeout of the operation. 
+            <br/>A value of <see cref="F:System.Threading.Timeout.InfiniteTimeSpan"/> (or a <see cref="T:System.TimeSpan"/> that represents -1) will specifiy an infinite time out. 
+            <br/>A value of <see cref="F:System.TimeSpan.Zero"/> will cancel the operation immediately.</param>
+            <param name="cancellationToken">An instance of <seealso cref="T:System.Threading.CancellationToken"/> to cancel the executing command delegate.</param>
+            <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.  
+            </remarks>
+            <exception cref="T:System.OperationCanceledException">If the executing command delegate was cancelled.</exception>
+            <exception cref="T:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx"><paramref name="timeout>>"/>.TotalMilliseconds is less than -1 or greater than <see cref="F:System.Int32.MaxValue"/> (or <see cref="F:System.UInt32.MaxValue"/> - 1 on some versions of .NET). Note that this upper bound is more restrictive than <see cref="F:System.TimeSpan.MaxValue"/>.</exception>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.IRelayCommandCore">
+            <summary>
+            Defines the shared core functionality of the different implementations.
+            </summary>
+        </member>
+        <member name="E:BionicCode.Utilities.Net.IRelayCommandCore.Executing">
+            <summary>
+            Event is raised to signal that the command is executing.
+            </summary>
+            <remarks>Observe the <see cref="E:BionicCode.Utilities.Net.IRelayCommandCore.Executed"/> event to get notified when execution has completed.</remarks>
+        </member>
+        <member name="E:BionicCode.Utilities.Net.IRelayCommandCore.Executed">
+            <summary>
+            Event is raised to signal that the command has completed execution.
+            </summary>
+            <remarks>Observe the <see cref="E:BionicCode.Utilities.Net.IRelayCommandCore.Executing"/> event to get notified when execution has started.</remarks>
+        </member>
+        <member name="E:BionicCode.Utilities.Net.IRelayCommandCore.PendingCommandCancelled">
+            <summary>
+            Event is raised after a pending command has been cancelled.
+            </summary>
+        </member>
+        <member name="E:BionicCode.Utilities.Net.IRelayCommandCore.ExecutingCommandCancelled">
+            <summary>
+            Event is raised if the executing command handler has been cancelled.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.IRelayCommandCore.IsExecuting">
+            <summary>
+            A flag to signal if the asynchronous operation has completed.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.IRelayCommandCore.CanBeCanceled">
+            <summary>
+            Returns whether the command can be cancelled.
+            </summary>
+            <value><c>true</c> if cancellation is allowed. Otherwise <c>false</c>.</value>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.IRelayCommandCore.IsCancelled">
+            <summary>
+            Returns whether the command's executing operation was cancelled.
+            </summary>
+            <value><c>true</c> if the last command execution was cancelled. Otherwise <c>false</c>.</value>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.IRelayCommandCore.HasPending">
+            <summary>
+            Return whether the command has pending executions.
+            </summary>
+            <remarks>Only one command is executed at time. Sucessive command invocations are enqueued and run after the currently executing delegate has completed
+            <br/> or was cancelled.</remarks>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.IRelayCommandCore.PendingCount">
+            <summary>
+            Returns the number of pending command delegate executions.
+            </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.IRelayCommandCore.CurrentCancellationToken">
+            <summary>
+            The currently used <see cref="T:System.Threading.CancellationToken"/>.
+            </summary>
+            <value>A <see cref="T:System.Threading.CancellationToken"/> instance currently in use during the command execution.</value>
+            <remarks>This property can be used to query the state of the cancellation or to register a cancellation callback by calling <see cref="M:System.Threading.CancellationToken.Register(System.Action)"/>.
+            <br/>The instance will change for each command execution.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IRelayCommandCore.CancelAll">
+            <summary>
+            Cancels all pending and executing commands.
+            </summary>
+            <returns><see langword="true"/> if any pending task was cancelled. Otherwise <see langword="false"/>.</returns>
+            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel"/> for the exception behavior of this overload.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IRelayCommandCore.CancelAll(System.Boolean)">
+            <summary>
+            Cancels all pending and executing commands.
+            </summary>
+            <param name="throwOnFirstException">See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the effects of the parameter.</param>
+            <returns><see langword="true"/> if any pending task was cancelled. Otherwise <see langword="false"/>.</returns>
+            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the exception behavior of this overload.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IRelayCommandCore.Cancel">
+            <summary>
+            Cancels the currently executing command.
+            </summary>
+            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel"/> for the exception behavior of this overload.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IRelayCommandCore.Cancel(System.Boolean)">
+            <summary>
+            Cancels the currently executing command.
+            </summary>
+            <param name="throwOnFirstException">See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the effects of the parameter.</param>
+            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the exception behavior of this overload.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IRelayCommandCore.CancelPending">
+            <summary>
+            Cancels all pending command executions.
+            </summary>    
+            <returns><see langword="true"/> if any pending task was cancelled. Otherwise <see langword="false"/>.</returns>
+            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel"/> for the exception behavior of this overload.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IRelayCommandCore.CancelPending(System.Boolean)">
+            <summary>
+            Cancels all pending command executions.
+            </summary>    
+            <param name="throwOnFirstException">See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the effects of the parameter.</param>
+            <returns><see langword="true"/> if any pending task was cancelled. Otherwise <see langword="false"/>.</returns>
+            <remarks>See <see cref="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)"/> for the exception behavior of this overload.</remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IRelayCommandCore.InvalidateCommand">
+            <summary>
+            Raises the <seealso cref="E:System.Windows.Input.ICommand.CanExecuteChanged"/> event of this particular command only.
+            </summary>
+        </member>
         <member name="T:BionicCode.Utilities.Net.IValueInverter">
             <summary>
             Provide an implementation to invert an object or objects.
@@ -3000,6 +3759,117 @@
             <param name="value"></param>
             <exception cref="T:System.InvalidOperationException"></exception>
             <returns>The inverted value.</returns>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.IWeakEventAggregatorListener">
+            <summary>
+            Interface that encapsulates the listener side API. For example, use this interface to constrain the access to the provided the <see cref="T:BionicCode.Utilities.Net.WeakEventAggregator"/> e.g., in context of dependency injection.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IWeakEventAggregatorListener.StartListening``2(System.String,``1)">
+            <summary>
+            Registers an event delegate, with a random signature that does not follow the common C# event practices, to handle a specific event published by a specific observable type.
+            </summary>
+            <param name="eventName">The name of the observed event.</param>
+            <typeparam name="TEventSource">The type of the event publisher object. This can be any derived type like a class or interface.</typeparam>
+            <param name="eventHandler">A delegate that handles the specified event.</param>
+            <exception cref="T:BionicCode.Utilities.Net.EventHandlerMismatchException">The signature of the event handler and the event are incompatible.</exception>   
+            <exception cref="T:System.ArgumentNullException">The <paramref name="eventHandler"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException">The <paramref name="eventName"/> is <see langword="null"/> or an empty string.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IWeakEventAggregatorListener.StartListening``2(System.String,``1,System.Boolean)">
+            <summary>
+            Registers an event delegate, with a random signature that does not follow the common C# event practices, to handle a specific event published by a specific observable type.
+            <br/>This overload supports marshaling to the current thread by capturing the <see cref="T:System.Threading.SynchronizationContext"/> of the caller.
+            </summary>
+            <param name="eventName">The name of the observed event.</param>
+            <typeparam name="TEventSource">The type of the event publisher object. This can be any derived type like a class or interface.</typeparam>
+            <param name="eventHandler">A delegate that handles the specified event.</param>
+            <param name="isMarshalEventToCurrentThreadEnabled"><see langword="true"/> if the current <see cref="T:System.Threading.SynchronizationContext"/> should be captured to execute the event handler.</param>
+            <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
+            <exception cref="T:BionicCode.Utilities.Net.EventHandlerMismatchException">The signature of the event handler and the event are incompatible.</exception>   
+            <exception cref="T:System.ArgumentNullException">The <paramref name="eventHandler"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException">The <paramref name="eventName"/> is <see langword="null"/> or an empty string.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IWeakEventAggregatorListener.StartListening``2(System.String,``1,System.Threading.SynchronizationContext)">
+            <summary>
+            Registers an event delegate, with a random signature that does not follow the common C# event practices, to handle a specific event published by a specific observable type.
+            <br/>This overload supports marshaling to the specified <see cref="T:System.Threading.SynchronizationContext"/>.
+            </summary>
+            <param name="eventName">The name of the observed event.</param>
+            <typeparam name="TEventSource">The type of the event publisher object. This can be any derived type like a class or interface.</typeparam>
+            <param name="eventHandler">A delegate that handles the specified event.</param>
+            <param name="synchronizationContext">The <see cref="T:System.Threading.SynchronizationContext"/> that the event delegate is to be executed on.</param>
+            <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
+            <exception cref="T:BionicCode.Utilities.Net.EventHandlerMismatchException">The signature of the event handler and the event are incompatible.</exception>   
+            <exception cref="T:System.ArgumentNullException">The <paramref name="eventHandler"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="synchronizationContext"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException">The <paramref name="eventName"/> is <see langword="null"/> or an empty string.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IWeakEventAggregatorListener.StopListening``2(System.String,``1)">
+            <summary>
+            Removes the event handler for a specified event of a certain event publisher type.
+            </summary>
+            <param name="eventName">The event name of the event that the delegate is handling.</param>
+            <typeparam name="TEventSource">The type of the event publisher object. This can be any derived type like a class or interface.</typeparam>
+            <param name="eventHandler">The event handler to remove.</param>    
+            /// <exception cref="T:System.ArgumentNullException">The <paramref name="eventHandler"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException">The <paramref name="eventName"/> is <see langword="null"/> or an empty string.</exception>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.IWeakEventAggregatorPublisher">
+            <summary>
+            Interface that encapsulates the publisher side API. For example, use this interface to constrain the access to the provided the <see cref="T:BionicCode.Utilities.Net.WeakEventAggregator"/> e.g., in context of dependency injection.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IWeakEventAggregatorPublisher.StartBroadcasting(System.Object,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Register an object as event source for a  specified event.
+            </summary>
+            <param name="eventSource">The event publisher instance.</param>
+            <param name="eventNames">A collection of event names that specify the published events of the <paramref name="eventSource"/>.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="eventSource"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="eventNames"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IWeakEventAggregatorPublisher.StartBroadcasting(System.Object,System.String[])">
+            <summary>
+            Register an object as event source for a specified event.
+            </summary>
+            <param name="eventSource">The event publisher instance.</param>
+            <param name="eventNames">A collection of event names that specify the published events of the <paramref name="eventSource"/>.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="eventSource"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="eventNames"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IWeakEventAggregatorPublisher.StartBroadcasting(System.Object)">
+            <summary>
+            Register an object as event source for all its events.
+            </summary>
+            <param name="eventSource">The event publisher instance.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="eventSource"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IWeakEventAggregatorPublisher.StopBroadcasting(System.Object,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Unregister the specified events of the event publisher.This method overload ignores all static events by default. 
+            <br/>Can be configured to include static events.
+            </summary>
+            <param name="eventSource">The event publisher instance. </param>
+            <param name="eventNames">The names of the events to unregister. Pass <see langword="null"/> to unregister all events</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="eventSource"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="eventNames"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IWeakEventAggregatorPublisher.StopBroadcasting(System.Object,System.String[])">
+            <summary>
+            Stops broadcasting the specified events of the event publisher.
+            </summary>
+            <param name="eventNames">The names of the events to unregister. Pass <see langword="null"/> to unregister all static events.</param>
+            <param name="eventSource">The event publisher instance.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="eventSource"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="eventNames"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.IWeakEventAggregatorPublisher.StopBroadcasting(System.Object)">
+            <summary>
+            Stops all events of the event publisher.
+            </summary>
+            <param name="eventSource">The event publisher instance.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="eventSource"/> is <see langword="null"/>.</exception>
         </member>
         <member name="T:BionicCode.Utilities.Net.Math">
             <summary>
@@ -3830,6 +4700,174 @@
             <param name="callerLineNumber">The line number (optional and not required).</param>
             <returns>The line number of the caller at which the current context was called.</returns>
             <remarks>Passing a <paramref name="callerLineNumber"/> argument is not required as thie value is actually retrieved via refelection.</remarks>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.RelayCommandCommon">
+            <summary>
+            A reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand"/>. 
+            <br/>Enables instant creation of an ICommand without implementing the ICommand interface for each command.
+            </summary>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.RelayCommandCommon.executeCancellableDelegate">
+            <summary>
+            The registered execute delegate that accepts a parameter of <typeparamref name="TParam"/>.
+            </summary>
+            <value>
+            A delegate that supports cancellation and takes a command parameter of <typeparamref name="TParam"/> and returns a <see cref="T:System.Threading.Tasks.Task"/>.</value>
+        </member>
+        <member name="F:BionicCode.Utilities.Net.RelayCommandCommon.canExecuteDelegate">
+            <summary>
+            The registered CanExecute delegate that accepts a parameter of <typeparamref name="TParam"/>.
+            </summary>
+            <value>
+            <c>true</c> if the command can execute, otherwise <c>false</c>.</value>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon.#ctor(System.Action)">
+            <summary>
+              Creates a new synchronous parameterless command that can always execute (<see cref="M:BionicCode.Utilities.Net.RelayCommandCommon.CanExecute"/> will always return <c>true</c>)
+              <br/> and accepts a command parameter of type <typeparamref name="TParam"/>.
+            </summary>
+            <param name="execute">The execute handler.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon.#ctor(System.Action{System.Threading.CancellationToken})">
+            <summary>
+              Creates a new parameterless synchronous command that can always execute (<see cref="M:BionicCode.Utilities.Net.RelayCommandCommon.CanExecute"/> will always return <c>true</c>) 
+              <br/>and accepts a command parameter of type <typeparamref name="TParam"/>
+              <br/>and supports cancellation.
+            </summary>
+            <param name="execute">The execute handler.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon.#ctor(System.Action,System.Func{System.Boolean})">
+            <summary>
+              Creates a new synchronous command that accepts a command parameter of type <typeparamref name="TParam"/>.
+            </summary>
+            <param name="execute">The execute handler.</param>
+            <param name="canExecute">The can execute handler.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon.#ctor(System.Action{System.Threading.CancellationToken},System.Func{System.Boolean})">
+            <summary>
+              Creates a new synchronous command that supports cancellation and accepts a command parameter of type <typeparamref name="TParam"/>.
+            </summary>
+            <param name="execute">The execute handler.</param>
+            <param name="canExecute">The can execute handler.</param>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon.CanExecute">
+            <summary>
+              Determines whether this AsyncRelayCommandCommon can execute.
+            </summary>
+            <param name="parameter">
+              Data used by the command. 
+            </param>
+            <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon.Execute">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon.Execute(System.TimeSpan)">
+            <inheritdoc />    
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon.Execute(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon.Execute(System.TimeSpan,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon.System#Windows#Input#ICommand#CanExecute(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCommon.System#Windows#Input#ICommand#Execute(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="P:BionicCode.Utilities.Net.RelayCommandCore.CanBeCanceled">
+            <inheritdoc />
+        </member>
+        <member name="P:BionicCode.Utilities.Net.RelayCommandCore.CurrentCancellationToken">
+            <inheritdoc />
+        </member>
+        <member name="P:BionicCode.Utilities.Net.RelayCommandCore.HasPending">
+            <inheritdoc/>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.RelayCommandCore.IsCancelled">
+            <inheritdoc/>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.RelayCommandCore.IsExecuting">
+            <inheritdoc/>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.RelayCommandCore.PendingCount">
+            <inheritdoc/>
+        </member>
+        <member name="E:BionicCode.Utilities.Net.RelayCommandCore.ExecutingCommandCancelled">
+            <inheritdoc />
+        </member>
+        <member name="E:BionicCode.Utilities.Net.RelayCommandCore.Executing">
+            <inheritdoc />
+        </member>
+        <member name="E:BionicCode.Utilities.Net.RelayCommandCore.Executed">
+            <inheritdoc />
+        </member>
+        <member name="E:BionicCode.Utilities.Net.RelayCommandCore.PendingCommandCancelled">
+            <inheritdoc />
+        </member>
+        <member name="E:BionicCode.Utilities.Net.RelayCommandCore.PropertyChanged">
+            <inheritdoc />
+        </member>
+        <member name="E:BionicCode.Utilities.Net.RelayCommandCore.CanExecuteChanged">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCore.Cancel">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCore.Cancel(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCore.CancelPending">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCore.CancelPending(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCore.CancelAll">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCore.CancelAll(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCore.InvalidateCommand">
+            <inheritdoc/>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCore.OnCanExecuteChanged">
+            <summary>
+            Raises the <see cref="E:System.Windows.Input.ICommand.CanExecuteChanged"/> event.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCore.OnCanExecuteChanged(System.Object,System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Windows.Input.ICommand.CanExecuteChanged"/> event.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCore.OnPropertyChanged(System.String)">
+            <summary>
+            Raises the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCore.OnPendingCommandsCancelled">
+            <summary>
+            Raises the <see cref="E:BionicCode.Utilities.Net.IAsyncRelayCommandCore.PendingCommandCancelled"/> event.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCore.OnExecutingCommandCancelled">
+            <summary>
+            Raises the <see cref="E:BionicCode.Utilities.Net.IAsyncRelayCommandCore.ExecutingCommandCancelled"/> event.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCore.OnExecuting">
+            <summary>
+            Raises the <see cref="E:BionicCode.Utilities.Net.IAsyncRelayCommandCore.Executing"/> event.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.RelayCommandCore.OnExecuted">
+            <summary>
+            Raises the <see cref="E:BionicCode.Utilities.Net.IAsyncRelayCommandCore.Executed"/> event.
+            </summary>
         </member>
         <member name="M:BionicCode.Utilities.Net.Inch.GetHashCode">
             <inheritdoc/>
@@ -5813,6 +6851,46 @@
             </summary>
             <param name="propertyName"></param>
         </member>
+        <member name="T:BionicCode.Utilities.Net.WeakEventAggregator">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakEventAggregator.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakEventAggregator.StartBroadcasting(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakEventAggregator.StartBroadcasting(System.Object,System.String[])">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakEventAggregator.StartBroadcasting(System.Object,System.Collections.Generic.IEnumerable{System.String})">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakEventAggregator.StopBroadcasting(System.Object,System.String[])">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakEventAggregator.StopBroadcasting(System.Object,System.Collections.Generic.IEnumerable{System.String})">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakEventAggregator.StopBroadcasting(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakEventAggregator.StartListening``2(System.String,``1)">
+            <inheritdoc /> 
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakEventAggregator.StartListening``2(System.String,``1,System.Boolean)">
+            <inheritdoc /> 
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakEventAggregator.StartListening``2(System.String,``1,System.Threading.SynchronizationContext)">
+            <inheritdoc /> 
+        </member>
+        <member name="M:BionicCode.Utilities.Net.WeakEventAggregator.StopListening``2(System.String,``1)">
+            <inheritdoc />
+            <exception cref="T:System.ArgumentNullException">The <paramref name="eventHandler"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException">The <paramref name="eventName"/> is <see langword="null"/> or an empty string.</exception>
+        </member>
         <member name="T:BionicCode.Utilities.Net.DelegateSignatureEqualityComparer">
             <summary>
             Compares two delegates for equality.
@@ -5962,12 +7040,12 @@
             Provides a base class for the event manager that is used in the weak event pattern. The manager adds and removes listenerHandlerMap for events (or callbacks) that also use the pattern.
             </summary>
         </member>
-        <member name="T:BionicCode.Utilities.Net.WeakEventManager`2.DummyEventListenerForStaticEventHandlers">
+        <member name="T:BionicCode.Utilities.Net.DummyEventListenerForStaticEventHandlers">
             <summary>
             Event listener for static events (eventListenerHandlerMap that don't have a instance as target) used as key for storing static handlers in a table.
             </summary>
         </member>
-        <member name="T:BionicCode.Utilities.Net.WeakEventManager`2.DummyEventSourceForStaticEventHandlers">
+        <member name="T:BionicCode.Utilities.Net.DummyEventSourceForStaticEventHandlers">
             <summary>
             Event listener for static events (eventListenerHandlerMap that don't have a instance as target) used as key for storing static handlers in a table.
             </summary>

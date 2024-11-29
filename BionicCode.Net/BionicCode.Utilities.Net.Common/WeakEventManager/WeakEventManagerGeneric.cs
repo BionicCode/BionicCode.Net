@@ -14,16 +14,23 @@
   using System.Threading;
   public class WeakEventManager<TEventSource> : WeakEventManager
   {
+    public string EventName { get; }
     private readonly ConditionalWeakTable<object, ClientHandlerInfoCollection> eventListenerHandlerMap;
     private ReaderWriterLockSlim ListenerReaderWriterLock { get; }
-    private string EventName { get; }
+    private static object SyncLock { get; }
 
     private static readonly MethodData genericHandlerMethodData;
+    private static readonly MethodData customHandlerMethodData;
 
     static WeakEventManager()
     {
+      SyncLock = new object();
+
       MethodInfo methodInfo = typeof(WeakEventManager<TEventSource>).GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.Instance | BindingFlags.NonPublic);
       genericHandlerMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+      
+      methodInfo = typeof(WeakEventManager<TEventSource>).GetMethod(nameof(OnEventHandlerCustomDynamicSignature), BindingFlags.Instance | BindingFlags.NonPublic);
+      customHandlerMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
     }
 
     internal WeakEventManager(string eventName, bool isCustomClientDelegate)
@@ -84,8 +91,9 @@
       }
 
       IEnumerable<UnaryExpression> castedExpressionParameters = expressionParameters.Select(parameter => Expression.TypeAs(parameter, typeof(object)));
-      //NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), castedExpressionParameters);
-      MethodCallExpression method = Expression.Call(GetType().GetMethod(nameof(OnEventHandlerCustomDynamicSignature)), castedExpressionParameters);
+      NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), castedExpressionParameters);
+      ConstantExpression target = Expression.Constant(this);
+      MethodCallExpression method = Expression.Call(target, WeakEventManager<TEventSource>.customHandlerMethodData.GetMethodInfo(), argsArray);
       eventSourceHandler = Expression.Lambda(method, expressionParameters).Compile();
 
       return eventSourceHandler;
@@ -137,29 +145,32 @@
 
     public static void AddEventHandler<TEventHandler>(TEventSource eventSource, string eventName, TEventHandler handler, SynchronizationContext synchronizationContext) where TEventHandler : Delegate
     {
-      if (handler is EventHandler eventHandler)
+      lock (WeakEventManager<TEventSource>.SyncLock)
       {
-        AddEventHandler(eventSource, eventName, eventHandler, synchronizationContext);
-        return;
-      }
+        if (handler is EventHandler eventHandler)
+        {
+          AddEventHandler(eventSource, eventName, eventHandler, synchronizationContext);
+          return;
+        }
 
-      Type eventHandlerType = handler.GetType();
-      var key = new AddClientHandlerInvocatorTableKey(typeof(TEventSource), eventHandlerType);
-      if (!WeakEventManager.AddClientHandlerInvocators.TryGetValue(key, out AddClientHandlerInvocatorTableEntry addHandlerInvocatorInfo))
-      {
-        bool isSuccessful = TryGenerateAddEventHandlerInvocator(eventHandlerType, out Action<TEventSource, string, Delegate, SynchronizationContext> addHandlerInvocator);
-        addHandlerInvocatorInfo = new AddClientHandlerInvocatorTableEntry(addHandlerInvocator, useAddCustomHandlerMethod: !isSuccessful, typeof(TEventSource));
-        _ = WeakEventManager.AddClientHandlerInvocators.TryAdd(key, addHandlerInvocatorInfo);
-      }
+        Type eventHandlerType = handler.GetType();
+        var key = new AddClientHandlerInvocatorTableKey(typeof(TEventSource), eventHandlerType);
+        if (!WeakEventManager.AddClientHandlerInvocatorTable.TryGetValue(key, out AddClientHandlerInvocatorTableEntry addHandlerInvocatorInfo))
+        {
+          bool isSuccessful = TryGenerateAddEventHandlerInvocator(eventHandlerType, out Action<TEventSource, string, Delegate, SynchronizationContext> addHandlerInvocator);
+          addHandlerInvocatorInfo = new AddClientHandlerInvocatorTableEntry(addHandlerInvocator, useAddCustomHandlerMethod: !isSuccessful, typeof(TEventSource));
+          _ = WeakEventManager.AddClientHandlerInvocatorTable.TryAdd(key, addHandlerInvocatorInfo);
+        }
 
-      if (addHandlerInvocatorInfo.UseAddCustomHandlerMethod)
-      {
-        AddCustomHandler(eventSource, eventName, handler, synchronizationContext);
-      }
-      else
-      {
-        Action<TEventSource, string, Delegate, SynchronizationContext> addHandlerInvocator = addHandlerInvocatorInfo.GetAddHandlerInvocator<TEventSource>();
-        addHandlerInvocator.Invoke(eventSource, eventName, handler, synchronizationContext);
+        if (addHandlerInvocatorInfo.UseAddCustomHandlerMethod)
+        {
+          AddCustomHandler(eventSource, eventName, handler, synchronizationContext);
+        }
+        else
+        {
+          Action<TEventSource, string, Delegate, SynchronizationContext> addHandlerInvocator = addHandlerInvocatorInfo.GetAddHandlerInvocator<TEventSource>();
+          addHandlerInvocator.Invoke(eventSource, eventName, handler, synchronizationContext);
+        } 
       }
     }
 
@@ -168,7 +179,6 @@
 
     private static void AddCustomHandler(object eventSource, string eventName, Delegate handler, SynchronizationContext synchronizationContext)
     {
-
       Action<object, object, ClientHandlerInfo> eventHandlerInvocator = (sender, e, handlerInfo) =>
       {
         if (handlerInfo.TryGetClientHandler(out Delegate clientHandler))
@@ -179,7 +189,7 @@
         }
       };
 
-      RegisterClientHandler(eventHandlerInvocator, handler, isCustomClientDelegate: false, (TEventSource)eventSource, eventName, synchronizationContext);
+      RegisterClientHandler(eventHandlerInvocator, handler, isCustomClientDelegate: true, (TEventSource)eventSource, eventName, synchronizationContext);
     }
 
     //public static void AddEventHandler<TEventArgs>(TEventSource eventSource, string eventName, EventHandler<TEventArgs> handler, bool executeOnCurrentSynchronizationContext = false)
@@ -363,74 +373,77 @@
         ? DummyEventSourceForStaticEventHandlers.Instance
         : (object)eventSource;
 
-      if (!WeakEventManagerTable.TryGetWeakEventManager(adjustedEventSource, eventName, out WeakEventManager<TEventSource> weakEventManager))
+      lock (WeakEventManager<TEventSource>.SyncLock)
       {
-#if DEBUG
-        unregisteredEventHandlerCount++;
-        Debug.WriteLine("Unable to remove event handler because event source has expired");
-#endif
-        return;
-      }
-
-      object eventListener = handler.Target ?? DummyEventListenerForStaticEventHandlers.Instance;
-      if (weakEventManager.eventListenerHandlerMap.TryGetValue(eventListener, out ClientHandlerInfoCollection clientHandlerInfos))
-      {
-        var delegateEqualityComparer = new DelegateSignatureEqualityComparer();
-        foreach (ClientHandlerInfo handlerInfo in clientHandlerInfos.EnumerateSafe())
+        if (!WeakEventManagerTable.TryGetWeakEventManager(adjustedEventSource, eventName, out WeakEventManager<TEventSource> weakEventManager))
         {
-          if (!handlerInfo.TryGetClientHandler(out Delegate eventHandler))
-          {
-            continue;
-          }
+#if DEBUG
+          unregisteredEventHandlerCount++;
+          Debug.WriteLine("Unable to remove event handler because event source has expired");
+#endif
+          return;
+        }
 
-          // Check if the delegate is a closure (created to capture the WeakEventManger's TEventSource and TEventArgs)
-          if (eventHandler.Target != null 
-            && eventHandler.Target.GetType() != eventListener.GetType() 
-            && eventHandler.Target.GetType() != typeof(Delegate))
+        object eventListener = handler.Target ?? DummyEventListenerForStaticEventHandlers.Instance;
+        if (weakEventManager.eventListenerHandlerMap.TryGetValue(eventListener, out ClientHandlerInfoCollection clientHandlerInfos))
+        {
+          var delegateEqualityComparer = new DelegateSignatureEqualityComparer();
+          foreach (ClientHandlerInfo handlerInfo in clientHandlerInfos.EnumerateSafe())
           {
-            FieldInfo handlerField = eventHandler.Target.GetType().GetField("handler");
-            if (handlerField is null)
+            if (!handlerInfo.TryGetClientHandler(out Delegate eventHandler))
             {
               continue;
             }
 
-            object originalHandler = handlerField.GetValue(eventHandler.Target);
-            if (!(originalHandler is Delegate invocatorDelegate))
+            // Check if the delegate is a closure (created to capture the WeakEventManger's TEventSource and TEventArgs)
+            if (eventHandler.Target != null
+              && eventHandler.Target.GetType() != eventListener.GetType()
+              && eventHandler.Target.GetType() != typeof(Delegate))
             {
-              continue;
+              FieldInfo handlerField = eventHandler.Target.GetType().GetField("handler");
+              if (handlerField is null)
+              {
+                continue;
+              }
+
+              object originalHandler = handlerField.GetValue(eventHandler.Target);
+              if (!(originalHandler is Delegate invocatorDelegate))
+              {
+                continue;
+              }
+
+              eventHandler = invocatorDelegate;
             }
 
-            eventHandler = invocatorDelegate;
-          }
-
-          if (delegateEqualityComparer.Equals(eventHandler, handler))
-          {
-            clientHandlerInfos.Remove(handlerInfo);
-            handlerInfo.Dispose();
-            Debug.WriteLine("<<< Removed event handler");
+            if (delegateEqualityComparer.Equals(eventHandler, handler))
+            {
+              clientHandlerInfos.Remove(handlerInfo);
+              handlerInfo.Dispose();
+              Debug.WriteLine("<<< Removed event handler");
 
 #if DEBUG
-            unregisteredEventHandlerCount++;
-            Debug.WriteLine($"Registered event handlers: {registeredEventHandlerCount}; Unregistered event handlers: {unregisteredEventHandlerCount}");
+              unregisteredEventHandlerCount++;
+              Debug.WriteLine($"Registered event handlers: {registeredEventHandlerCount}; Unregistered event handlers: {unregisteredEventHandlerCount}");
 #endif
 
-            break;
+              break;
+            }
+          }
+
+          if (clientHandlerInfos.Count == 0)
+          {
+            bool isListenerRemoved = weakEventManager.eventListenerHandlerMap.Remove(eventListener)
+              && (weakEventManager.EventListeners.RemoveWhere(reference => reference.TryGetTarget(out object listener) && ReferenceEquals(listener, eventListener)) > 0);
+
+            Debug.Assert(isListenerRemoved);
           }
         }
 
-        if (clientHandlerInfos.Count == 0)
+        if (!weakEventManager.EventListeners.Any())
         {
-          bool isListenerRemoved = weakEventManager.eventListenerHandlerMap.Remove(eventListener)
-            && (weakEventManager.EventListeners.RemoveWhere(reference => reference.TryGetTarget(out object listener) && ReferenceEquals(listener, eventListener)) > 0);
-
-          Debug.Assert(isListenerRemoved);
-        }
-      }
-
-      if (!weakEventManager.EventListeners.Any())
-      {
-        Debug.WriteLine("Empty handler list ==> call End Service from RemoveEventHandler() API");
-        weakEventManager.EndService(adjustedEventSource);
+          Debug.WriteLine("Empty handler list ==> call End Service from RemoveEventHandler() API");
+          weakEventManager.EndService(adjustedEventSource);
+        } 
       }
     }
 
@@ -657,7 +670,7 @@
     {
       Debug.WriteLine("End Service called");
       StopListeningInternal(eventSource);
-      WeakEventManagerTable.RemoveWeakEventManager(eventSource, this.EventName);
+      WeakEventManagerTable.RemoveWeakEventManager<TEventSource>(eventSource, this.EventName);
     }
   }
 

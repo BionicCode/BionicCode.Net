@@ -11,13 +11,15 @@
       lock (ManagedWeakTable.SyncLockInternal)
       {
         WeakEventManager<TEventSource> weakEventManager = null;
+        Type eventSourceType = typeof(TEventSource);
+        var key = new ManagedWeakTableKey(eventName, eventSourceType);
 
         // If the event is a static event, the eventSource is NULL.
-        if (!ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry<TEventSource>(eventSource, eventName, out EntryInfo<WeakManagerTableEntry> entryInfo))
+        if (!ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry<TEventSource>(key, eventSource, out EntryInfo<WeakManagerTableEntry> entryInfo))
         {
           weakEventManager = new WeakEventManager<TEventSource>(eventName, isCustomClientDelegate);
           var tableEntry = new WeakManagerTableEntry(eventSource, typeof(TEventSource), eventName, weakEventManager);
-          ManagedWeakTable.AddEntry(tableEntry);
+          ManagedWeakTable.AddEntry(key, tableEntry);
         }
         else
         {
@@ -33,8 +35,10 @@
       weakEventManager = null;
       lock (ManagedWeakTable.SyncLockInternal)
       {
+        Type eventSourceType = typeof(TEventSource);
+        var key = new ManagedWeakTableKey(eventName, eventSourceType);
         // If the event is a static event, the eventSource is NULL.
-        if (ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry<TEventSource>(eventSource, eventName, out EntryInfo<WeakManagerTableEntry> entryInfo))
+        if (ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry<TEventSource>(key, eventSource, out EntryInfo<WeakManagerTableEntry> entryInfo))
         {
           weakEventManager = (WeakEventManager<TEventSource>)entryInfo.Entry.WeakEventManager;
         }
@@ -43,15 +47,18 @@
       }
     }
 
-    public static void RemoveWeakEventManager<TEventSource>(TEventSource eventSource, string eventName)
+    public static void RemoveWeakEventManager<TEventSource>(object eventSource, string eventName)
     {
       Debug.WriteLine("RemoveWeakEventManager API call");
       lock (ManagedWeakTable.SyncLockInternal)
       {
+        Type eventSourceType = typeof(TEventSource);
+        var key = new ManagedWeakTableKey(eventName, eventSourceType);
+
         // If the event is a static event, the eventSource is NULL.
-        if (ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry<TEventSource>(eventSource, eventName, out EntryInfo<WeakManagerTableEntry> entryInfo))
+        if (ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry<TEventSource>(key, eventSource, out EntryInfo<WeakManagerTableEntry> entryInfo))
         {
-          _ = ManagedWeakTable.RemoveEntry(entryInfo.Entry);
+          _ = ManagedWeakTable.RemoveEntry(key, entryInfo.Entry);
         }
       }
     }

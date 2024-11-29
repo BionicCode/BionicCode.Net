@@ -6,32 +6,19 @@
 
   internal abstract class ManagedWeakTableEntry : IPurgeable
   {
-    public WeakReference<object> EventSource { get; private set; }
-    public Type EventSourceType { get; }
+    public WeakReference<object> ReferenceTarget { get; private set; }
+    public Type ReferenceTargetType { get; }
     public string EventName { get; }
     public bool IsRecycled { get; private set; }
     public abstract bool IsPurged { get; protected set; }
 
-    protected ManagedWeakTableEntry(object eventSource, Type eventSourceType, string eventName)
+    protected ManagedWeakTableEntry(object referenceTarget, Type referenceTargetType)
     {
-      if (eventSourceType is null)
-      {
-        throw new ArgumentNullException(nameof(eventSourceType));
-      }
+      ArgumentNullExceptionEx.ThrowIfNull(referenceTargetType, nameof(referenceTargetType));
+      ArgumentNullExceptionEx.ThrowIfNull(referenceTarget, nameof(referenceTarget));
 
-      if (eventName is null)
-      {
-        throw new ArgumentNullException(nameof(eventName));
-      }
-
-      if (string.IsNullOrWhiteSpace(eventName))
-      {
-        throw new ArgumentException("No valid event name", nameof(eventName));
-      }
-
-      this.EventSource = InitializeWeakReference(eventSource);
-      this.EventSourceType = eventSourceType;
-      this.EventName = eventName;
+      this.ReferenceTarget = InitializeWeakReference(referenceTarget);
+      this.ReferenceTargetType = referenceTargetType;
     }
 
     public abstract bool TryPurge(bool isForced);
@@ -47,8 +34,8 @@
 
     private void RecycleInternal()
     {
-      RecycleWeakReference(this.EventSource);
-      this.EventSource = null;
+      RecycleWeakReference(this.ReferenceTarget);
+      this.ReferenceTarget = null;
       this.IsRecycled = true;
     }
 

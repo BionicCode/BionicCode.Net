@@ -10,7 +10,7 @@
   {
     internal static int Count;
 
-    protected static readonly Dictionary<Type, HashSet<ManagedWeakTableEntry>> ItemsInternal = new Dictionary<Type, HashSet<ManagedWeakTableEntry>>();
+    protected static readonly Dictionary<ManagedWeakTableKey, HashSet<ManagedWeakTableEntry>> ItemsInternal = new Dictionary<ManagedWeakTableKey, HashSet<ManagedWeakTableEntry>>();
 
     private static readonly TimeSpan PurgeInterval = TimeSpan.FromSeconds(10);
     internal static readonly object SyncLockInternal = new object();
@@ -31,28 +31,28 @@
     public static void RecycleWeakReference(WeakReference<object> weakReference) 
       => WeakReferencePool.Add(weakReference);
 
-    protected static void AddEntries(IEnumerable<ManagedWeakTableEntry> entries)
+    protected static void AddEntries(ManagedWeakTableKey key, IEnumerable<ManagedWeakTableEntry> entries)
     {
       foreach (ManagedWeakTableEntry entry in entries)
       {
-        AddEntry(entry);
+        AddEntry(key, entry);
       }
     }
 
-    protected static void AddEntry(ManagedWeakTableEntry entry)
+    protected static void AddEntry(ManagedWeakTableKey key, ManagedWeakTableEntry entry)
     {
       lock (ManagedWeakTable.SyncLockInternal)
       {
         ManagedWeakTable.Count++;
         Debug.WriteLine($"-------- WeakTable add entry via API. Current entry count: {Count}");
-        if (ManagedWeakTable.ItemsInternal.TryGetValue(entry.EventSourceType, out HashSet<ManagedWeakTableEntry> existingEntries))
+        if (ManagedWeakTable.ItemsInternal.TryGetValue(key, out HashSet<ManagedWeakTableEntry> existingEntries))
         {
           _ = existingEntries.Add(entry);
         }
         else
         {
           existingEntries = new HashSet<ManagedWeakTableEntry>() { entry };
-          ManagedWeakTable.ItemsInternal.Add(entry.EventSourceType, existingEntries);
+          ManagedWeakTable.ItemsInternal.Add(key, existingEntries);
         }
 
         if (!ManagedWeakTable.IsPurgeActive && ManagedWeakTable.HasEntry)
@@ -63,13 +63,13 @@
       }
     }
 
-    protected static bool RemoveEntry(ManagedWeakTableEntry entry)
+    protected static bool RemoveEntry(ManagedWeakTableKey key, ManagedWeakTableEntry entry)
     {
       lock (ManagedWeakTable.SyncLockInternal)
       {
         bool hasRemovedItem = false;
 
-        if (ManagedWeakTable.ItemsInternal.TryGetValue(entry.EventSourceType, out HashSet<ManagedWeakTableEntry> existingEntries))
+        if (ManagedWeakTable.ItemsInternal.TryGetValue(key, out HashSet<ManagedWeakTableEntry> existingEntries))
         {
           ManagedWeakTable.Count--;
           Debug.WriteLine($"-------- WeakTable remove entry via API. Current entry count: {Count}");
@@ -81,7 +81,7 @@
 
           if (!existingEntries.Any())
           {
-            _ = ManagedWeakTable.ItemsInternal.Remove(entry.EventSourceType);
+            _ = ManagedWeakTable.ItemsInternal.Remove(key);
           }
         }
 
@@ -96,7 +96,7 @@
         var internalItems = ManagedWeakTable.ItemsInternal.ToList();
         for (int entryIndex = ManagedWeakTable.ItemsInternal.Count - 1; entryIndex >= 0; entryIndex--)
         {
-          KeyValuePair<Type, HashSet<ManagedWeakTableEntry>> internalItemsEntry = internalItems[entryIndex];
+          KeyValuePair<ManagedWeakTableKey, HashSet<ManagedWeakTableEntry>> internalItemsEntry = internalItems[entryIndex];
           HashSet<ManagedWeakTableEntry> managedTableEntries = internalItemsEntry.Value;
           foreach (ManagedWeakTableEntry managedWeakTableEntry in managedTableEntries)
           {

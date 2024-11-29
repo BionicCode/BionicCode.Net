@@ -5,11 +5,15 @@
 
   internal class WeakManagerTableEntry : ManagedWeakTableEntry
   {
+    public string EventName { get; }
     public WeakEventManager WeakEventManager { get; }
     public override bool IsPurged { get; protected set; }
 
-    public WeakManagerTableEntry(object eventSource, Type eventSourceType, string eventName, WeakEventManager weakEventManager) : base(eventSource, eventSourceType, eventName)
-      => this.WeakEventManager = weakEventManager;
+    public WeakManagerTableEntry(object eventSource, Type eventSourceType, string eventName, WeakEventManager weakEventManager) : base(eventSource, eventSourceType)
+    {
+      this.EventName = eventName;
+      this.WeakEventManager = weakEventManager;
+    }
 
     public override void Recycle()
     {
@@ -22,7 +26,7 @@
       Debug.WriteLine($"TryPurge called for WeakEventManager (event source)");
 
       if (this.IsRecycled || this.IsPurged
-        || (!isForced && this.EventSource.TryGetTarget(out _)))
+        || (!isForced && this.ReferenceTarget.TryGetTarget(out _)))
       {
         return false;
       }
