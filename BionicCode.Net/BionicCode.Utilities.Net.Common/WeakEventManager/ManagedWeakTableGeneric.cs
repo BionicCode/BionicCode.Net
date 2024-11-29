@@ -2,6 +2,7 @@
 {
   using System;
   using System.Collections.Generic;
+  using System.Collections.Immutable;
   using System.Diagnostics;
   using System.Linq;
 
@@ -11,17 +12,18 @@
     {
       entryInfo = default;
 
-      lock (ManagedWeakTable.SyncLockInternal)
+      try
       {
+        ManagedWeakTable.TableLock.EnterUpgradeableReadLock();
+
         if (!ManagedWeakTable.ItemsInternal.TryGetValue(key, out HashSet<ManagedWeakTableEntry> entries))
         {
           return false;
         }
 
-        var tableEntries = entries.ToList();
-        for (int entryIndex = 0; entryIndex < tableEntries.Count; entryIndex++)
+        var tableEntries = entries.ToImmutableHashSet();
+        foreach (ManagedWeakTableEntry managedWeakTableEntry in tableEntries)
         {
-          ManagedWeakTableEntry managedWeakTableEntry = tableEntries[entryIndex];
           if (!(managedWeakTableEntry is TEntry tableEntry))
           {
             continue;
@@ -31,36 +33,49 @@
           {
             if (ReferenceEquals(entryEventSource, eventSource))
             {
-              entryInfo = new EntryInfo<TEntry>(tableEntry, entries);
+              entryInfo = new EntryInfo<TEntry>(tableEntry, tableEntries);
               return true;
             }
           }
           else
           {
-            // ManagedReference was garbage collected and is therefore eligible for recycling
-            Debug.WriteLine("Failed to get entry because entry is expired ==> Recycle ");
-            if (tableEntry is IPurgeable purgeableEntry)
+            try
             {
-              _ = purgeableEntry.TryPurge(isForced: true);
-            }
-            else
-            {
-              tableEntry.Recycle();
-            }
+              ManagedWeakTable.TableLock.EnterWriteLock();
 
-            bool isRemoved = entries.Remove(managedWeakTableEntry);
-            Debug.Assert(isRemoved);
+              // ManagedReference was garbage collected and is therefore eligible for recycling
+              Debug.WriteLine("Failed to get entry because entry is expired ==> Recycle ");
+              if (tableEntry is IPurgeable purgeableEntry)
+              {
+                _ = purgeableEntry.TryPurge(isForced: true);
+              }
+              else
+              {
+                tableEntry.Recycle();
+              }
 
-            if (!entries.Any())
-            {
-              isRemoved = ManagedWeakTable.ItemsInternal.Remove(key);
+              bool isRemoved = entries.Remove(managedWeakTableEntry);
               Debug.Assert(isRemoved);
+
+              if (!entries.Any())
+              {
+                isRemoved = ManagedWeakTable.ItemsInternal.Remove(key);
+                Debug.Assert(isRemoved);
+              }
+            }
+            finally
+            {
+              ManagedWeakTable.TableLock.ExitWriteLock();
             }
           }
         }
-      }
 
-      return false;
+        return false;
+      }
+      finally
+      {
+        ManagedWeakTable.TableLock.ExitUpgradeableReadLock();
+      }
     }
   }
 }

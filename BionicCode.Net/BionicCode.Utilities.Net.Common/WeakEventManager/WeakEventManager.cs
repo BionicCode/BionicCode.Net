@@ -58,6 +58,9 @@
       this.EventSourceEventData.RemoveEventHandler(eventSource, this.ProxyEventHandler);
       this.IsListening = false;
     }
+
+    #region ClientHandlerInfoCollection
+
     internal class ClientHandlerInfoCollection : IEnumerable<ClientHandlerInfo>
     {
       public int Count => this.items.Count;
@@ -124,6 +127,10 @@
 
       IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<ClientHandlerInfo>)this).GetEnumerator();
     }
+
+    #endregion ClientHandlerInfoCollection
+    
+    #region ClientHandlerInfoCollection
 
     internal class ClientHandlerInfo : IDisposable
     {
@@ -199,6 +206,10 @@
       }
     }
 
+    #endregion ClientHandlerInfoCollection
+
+    #region AddClientHandlerInvocatorTableKey
+
     protected readonly struct AddClientHandlerInvocatorTableKey : IEquatable<AddClientHandlerInvocatorTableKey>
     {
       public AddClientHandlerInvocatorTableKey(Type eventSourceType, Type eventHandlerType)
@@ -225,6 +236,10 @@
       public static bool operator !=(AddClientHandlerInvocatorTableKey first, AddClientHandlerInvocatorTableKey second) => !first.Equals(second);
     }
 
+    #endregion AddClientHandlerInvocatorTableKey
+
+    #region AddClientHandlerInvocatorTableEntry
+
     protected class AddClientHandlerInvocatorTableEntry
     {
       private readonly Delegate addHandlerInvocator;
@@ -237,12 +252,14 @@
       }
 
       public Action<TEventSource, string, Delegate, SynchronizationContext> GetAddHandlerInvocator<TEventSource>()
-        => typeof(TEventSource) != this.EventSourceType 
-          ? throw new ArgumentException($"Type mismatch for generic type argument {nameof(TEventSource)}. Expected: {this.EventSourceType.FullName}; Found: {typeof(TEventSource).FullName}.") 
+        => typeof(TEventSource) != this.EventSourceType
+          ? throw new ArgumentException($"Type mismatch for generic type argument {nameof(TEventSource)}. Expected: {this.EventSourceType.FullName}; Found: {typeof(TEventSource).FullName}.")
           : (Action<TEventSource, string, Delegate, SynchronizationContext>)this.addHandlerInvocator;
 
       public bool UseAddCustomHandlerMethod { get; }
       public Type EventSourceType { get; }
     }
+
+    #endregion AddClientHandlerInvocatorTableEntry
   }
 }
