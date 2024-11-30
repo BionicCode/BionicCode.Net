@@ -16,7 +16,7 @@
   {
     public string EventName { get; }
     private readonly ConditionalWeakTable<object, ClientHandlerInfoCollection> eventListenerHandlerMap;
-    private ReaderWriterLockSlim ListenerReaderWriterLock { get; }
+    private ReaderWriterLockSlim ListenerReaderWriterLock { get; set; }
     private static object SyncLock { get; }
 
     private static readonly MethodData genericHandlerMethodData;
@@ -28,22 +28,24 @@
 
       MethodInfo methodInfo = typeof(WeakEventManager<TEventSource>).GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.Instance | BindingFlags.NonPublic);
       genericHandlerMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-      
+
       methodInfo = typeof(WeakEventManager<TEventSource>).GetMethod(nameof(OnEventHandlerCustomDynamicSignature), BindingFlags.Instance | BindingFlags.NonPublic);
       customHandlerMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
     }
 
     internal WeakEventManager(string eventName, bool isCustomClientDelegate)
     {
+      this.ListenerReaderWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+      this.eventListenerHandlerMap = new ConditionalWeakTable<object, ClientHandlerInfoCollection>();
+
       var key = new EventInfoTableKey(eventName, typeof(TEventSource));
       if (!WeakEventManager.EventInfoTable.TryGetValue(key, out EventInfoTableEntry tableEntry))
       {
         // Use BindingFlags.FlattenHierarchy to also get base genericTypeDefinition static events via the subclass (including protected events of the hierarchy and private events of the current genericTypeDefinition)
         EventInfo eventInfo = typeof(TEventSource).GetEvent(eventName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-        this.EventSourceEventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
-        Debug.Assert(this.EventSourceEventData != null);
+        EventData eventSourceEventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
 
-        TypeData eventHandlerTypeData = this.EventSourceEventData.EventHandlerTypeData;
+        TypeData eventHandlerTypeData = eventSourceEventData.EventHandlerTypeData;
         MethodData invocatorData = eventHandlerTypeData.DelegateInvokeMethodData;
         ParameterData[] eventHandlerParameters = invocatorData.Parameters;
         Delegate proxySourceEventHandler = null;
@@ -59,7 +61,7 @@
           }
           catch (ArgumentException e)
           {
-            string exceptionMessage = string.Format(InternalDelegateSignatureMismatchExceptionMessage, this.EventSourceEventData.RuntimeShortSignature, GetType().GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.NonPublic | BindingFlags.Instance).ToRuntimeSignatureShortName());
+            string exceptionMessage = string.Format(InternalDelegateSignatureMismatchExceptionMessage, eventSourceEventData.RuntimeShortSignature, GetType().GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.NonPublic | BindingFlags.Instance).ToRuntimeSignatureShortName());
 
             throw new EventHandlerMismatchException(exceptionMessage, e);
           }
@@ -70,14 +72,17 @@
           proxySourceEventHandler = GenerateEventHandler(eventHandlerParameters);
         }
 
-        tableEntry = new EventInfoTableEntry(this.EventSourceEventData, proxySourceEventHandler);
+        tableEntry = new EventInfoTableEntry(eventSourceEventData, proxySourceEventHandler);
         _ = WeakEventManager.EventInfoTable.TryAdd(key, tableEntry);
       }
 
+      this.EventSourceEventData = tableEntry.EventData;
+      Debug.Assert(this.EventSourceEventData != null);
+
       this.ProxyEventHandler = tableEntry.EventHandler;
+      Debug.Assert(this.ProxyEventHandler != null);
+
       this.EventName = eventName;
-      this.ListenerReaderWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
-      this.eventListenerHandlerMap = new ConditionalWeakTable<object, ClientHandlerInfoCollection>();
     }
 
     private Delegate GenerateEventHandler(ParameterData[] eventHandlerParameters)
@@ -170,7 +175,7 @@
         {
           Action<TEventSource, string, Delegate, SynchronizationContext> addHandlerInvocator = addHandlerInvocatorInfo.GetAddHandlerInvocator<TEventSource>();
           addHandlerInvocator.Invoke(eventSource, eventName, handler, synchronizationContext);
-        } 
+        }
       }
     }
 
@@ -303,7 +308,7 @@
 
       if (eventDelegateParameters.Length != clientHandlerParameters.Length)
       {
-        throw new EventHandlerMismatchException(string.Format(WeakEventManager.HandlerDelegateSignatureMismatchExceptionMessage, 
+        throw new EventHandlerMismatchException(string.Format(WeakEventManager.HandlerDelegateSignatureMismatchExceptionMessage,
           eventInfo.EventHandlerType.ToSignatureName(),
           eventHandlerMethod.ToSignatureName(),
           $"Invalid parameter count."));
@@ -332,28 +337,56 @@
         eventSource = DummyEventSourceForStaticEventHandlers.Instance;
       }
 
-      WeakEventManager<TEventSource> weakEventManager = WeakEventManagerTable.GetOrCreateWeakEventManager<TEventSource>(eventSource, eventName, isCustomClientDelegate);
-      if (weakEventManager.IsPurged)
+      WeakEventManager<TEventSource> weakEventManager;
+      lock (ManagedWeakTable.TableLock)
       {
-        return;
+        weakEventManager = WeakEventManagerTable.GetOrCreateWeakEventManager<TEventSource>(eventSource, eventName, isCustomClientDelegate);
+        ThrowIfInvalidHandler(weakEventManager.EventSourceEventData.GetEventInfo(), clientHandler);
+
+        weakEventManager.RegisterHandler(clientHandlerAdapterInvocator, clientHandler, eventSource, capturedSynchronizationContext);
       }
+    }
 
-      ThrowIfInvalidHandler(weakEventManager.EventSourceEventData.GetEventInfo(), clientHandler);
+    //public static void RemoveEventHandler(TEventSource eventSource, string eventName, EventHandler<TEventArgs> handler)
+    //  => RemoveEventHandler(eventSource, eventName, (Delegate)handler);
 
+    public static void RemoveEventHandler(TEventSource eventSource, string eventName, Delegate handler)
+    {
+      object adjustedEventSource = eventSource == null
+        ? DummyEventSourceForStaticEventHandlers.Instance
+        : (object)eventSource;
+
+      lock (ManagedWeakTable.TableLock)
+      {
+        if (!WeakEventManagerTable.TryGetWeakEventManager(adjustedEventSource, eventName, out WeakEventManager<TEventSource> weakEventManager))
+        {
+#if DEBUG
+          unregisteredEventHandlerCount++;
+          Debug.WriteLine("Unable to remove event handler because event source has expired");
+#endif
+          return;
+        }
+
+        weakEventManager.RemoveHandler(handler, adjustedEventSource);
+      }
+    }
+
+    private void RegisterHandler(Action<object, object, ClientHandlerInfo> clientHandlerAdapterInvocator, Delegate clientHandler, object eventSource, SynchronizationContext capturedSynchronizationContext)
+    {
       try
       {
-        weakEventManager.ListenerReaderWriterLock.EnterWriteLock();
+        this.ListenerReaderWriterLock.EnterWriteLock();
 
         // If the event handler is a static method, the delegate's target is NULL.
         // In this case, we need to provide a placeholder for the WeakTable entry.
         object eventListener = clientHandler.Target ?? DummyEventListenerForStaticEventHandlers.Instance;
-        if (!weakEventManager.eventListenerHandlerMap.TryGetValue(eventListener, out ClientHandlerInfoCollection clientHandlerInfos))
+        if (!this.eventListenerHandlerMap.TryGetValue(eventListener, out ClientHandlerInfoCollection clientHandlerInfos))
         {
           clientHandlerInfos = new ClientHandlerInfoCollection();
-          weakEventManager.eventListenerHandlerMap.Add(eventListener, clientHandlerInfos);
+          this.eventListenerHandlerMap.Add(eventListener, clientHandlerInfos);
           WeakReference<object> eventListenerWeakReference = ManagedWeakTable.GetOrCreateWeakReference(eventListener);
-          _ = weakEventManager.EventListeners.Add(eventListenerWeakReference);
-          weakEventManager.StartListeningInternal(eventSource);
+          _ = this.EventListeners.Add(eventListenerWeakReference);
+          this.StartListeningInternal(eventSource);
         }
 
         var clientHandlerInfo = new ClientHandlerInfo(clientHandler, clientHandlerAdapterInvocator, capturedSynchronizationContext);
@@ -367,34 +400,19 @@
       }
       finally
       {
-        weakEventManager.ListenerReaderWriterLock.ExitWriteLock();
+        this.ListenerReaderWriterLock.ExitWriteLock();
       }
     }
 
-    //public static void RemoveEventHandler(TEventSource eventSource, string eventName, EventHandler<TEventArgs> handler)
-    //  => RemoveEventHandler(eventSource, eventName, (Delegate)handler);
 
-    public static void RemoveEventHandler(TEventSource eventSource, string eventName, Delegate handler)
+    private void RemoveHandler(Delegate handler, object eventSource)
     {
-      object adjustedEventSource = eventSource == null
-        ? DummyEventSourceForStaticEventHandlers.Instance
-        : (object)eventSource;
-
-      if (!WeakEventManagerTable.TryGetWeakEventManager(adjustedEventSource, eventName, out WeakEventManager<TEventSource> weakEventManager))
-      {
-#if DEBUG
-        unregisteredEventHandlerCount++;
-        Debug.WriteLine("Unable to remove event handler because event source has expired");
-#endif
-        return;
-      }
-
       try
       {
-        weakEventManager.ListenerReaderWriterLock.EnterWriteLock();
+        this.ListenerReaderWriterLock.EnterWriteLock();
 
         object eventListener = handler.Target ?? DummyEventListenerForStaticEventHandlers.Instance;
-        if (weakEventManager.eventListenerHandlerMap.TryGetValue(eventListener, out ClientHandlerInfoCollection clientHandlerInfos))
+        if (this.eventListenerHandlerMap.TryGetValue(eventListener, out ClientHandlerInfoCollection clientHandlerInfos))
         {
           var delegateEqualityComparer = new DelegateSignatureEqualityComparer();
           foreach (ClientHandlerInfo handlerInfo in clientHandlerInfos.EnumerateSafe())
@@ -441,27 +459,32 @@
 
           if (clientHandlerInfos.Count == 0)
           {
-            bool isListenerRemoved = weakEventManager.eventListenerHandlerMap.Remove(eventListener)
-              && (weakEventManager.EventListeners.RemoveWhere(reference => reference.TryGetTarget(out object listener) && ReferenceEquals(listener, eventListener)) > 0);
+            bool isListenerRemoved = this.eventListenerHandlerMap.Remove(eventListener)
+              && (this.EventListeners.RemoveWhere(reference => reference.TryGetTarget(out object listener) && ReferenceEquals(listener, eventListener)) > 0);
 
             Debug.Assert(isListenerRemoved);
           }
         }
 
-        if (!weakEventManager.EventListeners.Any())
+        if (!this.EventListeners.Any())
         {
           Debug.WriteLine("Empty handler list ==> call End Service from RemoveEventHandler() API");
-          weakEventManager.EndService(adjustedEventSource);
+          EndService(eventSource);
         }
       }
       finally
       {
-        weakEventManager.ListenerReaderWriterLock.ExitWriteLock();
+        this.ListenerReaderWriterLock.ExitWriteLock();
       }
     }
 
     internal override void Purge()
     {
+      if (this.IsPurged)
+      {
+        return;
+      }
+
       bool hasLocalLockAcquired = false;
       if (!this.ListenerReaderWriterLock.IsWriteLockHeld)
       {
@@ -494,11 +517,7 @@
         this.ListenerReaderWriterLock.ExitWriteLock();
       }
 
-      if (!this.ListenerReaderWriterLock.IsReadLockHeld && this.ListenerReaderWriterLock.WaitingReadCount == 0
-        && !this.ListenerReaderWriterLock.IsWriteLockHeld && this.ListenerReaderWriterLock.WaitingWriteCount == 0)
-      {
-        this.ListenerReaderWriterLock.Dispose();
-      }
+      _ = TryDisposeLock();
     }
 
     public static void StopListening(TEventSource eventSource, string eventName)
@@ -585,13 +604,9 @@
       finally
       {
         this.ListenerReaderWriterLock.ExitUpgradeableReadLock();
-        if (this.IsPurged)
-        {
-          this.ListenerReaderWriterLock.Dispose();
-        }
+        _ = TryDisposeLock();
       }
     }
-
     private void OnEventHandlerCustomDynamicSignature(params object[] args)
     {
       if (this.IsPurged)
@@ -659,10 +674,7 @@
       finally
       {
         this.ListenerReaderWriterLock.ExitUpgradeableReadLock();
-        if (this.IsPurged)
-        {
-          this.ListenerReaderWriterLock.Dispose();
-        }
+        _ = TryDisposeLock();
       }
     }
 
@@ -671,7 +683,29 @@
       Debug.WriteLine("End Service called");
       StopListeningInternal(eventSource);
       WeakEventManagerTable.RemoveWeakEventManager<TEventSource>(eventSource, this.EventName);
+      if (!this.IsPurged)
+      {
+        Purge();
+      }
+
+      _ = TryDisposeLock();
     }
+
+    private bool TryDisposeLock()
+    {
+      if (this.IsPurged
+        && !this.ListenerReaderWriterLock.IsReadLockHeld && this.ListenerReaderWriterLock.WaitingReadCount == 0
+        && !this.ListenerReaderWriterLock.IsWriteLockHeld && this.ListenerReaderWriterLock.WaitingWriteCount == 0)
+      {
+        this.ListenerReaderWriterLock?.Dispose();
+        this.ListenerReaderWriterLock = null;
+
+        return true;
+      }
+
+      return false;
+    }
+
   }
 
   /// <summary>

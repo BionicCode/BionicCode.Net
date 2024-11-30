@@ -14,7 +14,7 @@
 
       try
       {
-        ManagedWeakTable.TableLock.EnterUpgradeableReadLock();
+        ManagedWeakTable.TableLockInternal.EnterUpgradeableReadLock();
 
         if (!ManagedWeakTable.ItemsInternal.TryGetValue(key, out HashSet<ManagedWeakTableEntry> entries))
         {
@@ -41,7 +41,7 @@
           {
             try
             {
-              ManagedWeakTable.TableLock.EnterWriteLock();
+              ManagedWeakTable.TableLockInternal.EnterWriteLock();
 
               // ManagedReference was garbage collected and is therefore eligible for recycling
               Debug.WriteLine("Failed to get entry because entry is expired ==> Recycle ");
@@ -65,7 +65,7 @@
             }
             finally
             {
-              ManagedWeakTable.TableLock.ExitWriteLock();
+              ManagedWeakTable.TableLockInternal.ExitWriteLock();
             }
           }
         }
@@ -74,7 +74,7 @@
       }
       finally
       {
-        ManagedWeakTable.TableLock.ExitUpgradeableReadLock();
+        ManagedWeakTable.TableLockInternal.ExitUpgradeableReadLock();
       }
     }
   }

@@ -16,7 +16,10 @@
     internal static readonly object SyncLockInternal = new object();
     private static bool IsPurgeActive;
     private static Timer PurgeTimer;
-    protected static ReaderWriterLockSlim TableLock { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+    protected static ReaderWriterLockSlim TableLockInternal = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+
+    private static readonly object tableLock = new object();
+    public static object TableLock => ManagedWeakTable.tableLock;
 
     public static bool HasEntry => ItemsInternal.Any();
 
@@ -36,7 +39,7 @@
     {
       try
       {
-        ManagedWeakTable.TableLock.EnterWriteLock();
+        ManagedWeakTable.TableLockInternal.EnterWriteLock();
 
         foreach (ManagedWeakTableEntry entry in entries)
         {
@@ -45,7 +48,7 @@
       }
       finally
       {
-        ManagedWeakTable.TableLock.ExitWriteLock();
+        ManagedWeakTable.TableLockInternal.ExitWriteLock();
       }
     }
 
@@ -53,13 +56,13 @@
     {
       try
       {
-        ManagedWeakTable.TableLock.EnterWriteLock();
+        ManagedWeakTable.TableLockInternal.EnterWriteLock();
 
         AddEntryInternal(key, entry);
       }
       finally
       {
-        ManagedWeakTable.TableLock.ExitWriteLock();
+        ManagedWeakTable.TableLockInternal.ExitWriteLock();
       }
     }
 
@@ -86,7 +89,7 @@
     {
       try
       {
-        ManagedWeakTable.TableLock.EnterWriteLock();
+        ManagedWeakTable.TableLockInternal.EnterWriteLock();
 
         bool hasRemovedItem = false;
         if (ManagedWeakTable.ItemsInternal.TryGetValue(key, out HashSet<ManagedWeakTableEntry> existingEntries))
@@ -109,7 +112,7 @@
       }
       finally
       {
-        ManagedWeakTable.TableLock.ExitWriteLock();
+        ManagedWeakTable.TableLockInternal.ExitWriteLock();
       }
     }
 
@@ -117,7 +120,7 @@
     {
       try
       {
-        ManagedWeakTable.TableLock.EnterUpgradeableReadLock();
+        ManagedWeakTable.TableLockInternal.EnterUpgradeableReadLock();
 
         var internalItems = ManagedWeakTable.ItemsInternal.ToList();
         for (int entryIndex = ManagedWeakTable.ItemsInternal.Count - 1; entryIndex >= 0; entryIndex--)
@@ -130,7 +133,7 @@
             {
               try
               {
-                ManagedWeakTable.TableLock.EnterWriteLock();
+                ManagedWeakTable.TableLockInternal.EnterWriteLock();
 
                 bool isRemoved = ManagedWeakTable.ItemsInternal[internalItemsEntry.Key].Remove(managedWeakTableEntry);
                 Debug.Assert(isRemoved);
@@ -138,7 +141,7 @@
               }
               finally
               {
-                ManagedWeakTable.TableLock.ExitWriteLock();
+                ManagedWeakTable.TableLockInternal.ExitWriteLock();
               }
             }
           }
@@ -147,14 +150,14 @@
           {
             try
             {
-              ManagedWeakTable.TableLock.EnterWriteLock();
+              ManagedWeakTable.TableLockInternal.EnterWriteLock();
 
               Debug.WriteLine($"========= Purge completed... =========");
               _ = ManagedWeakTable.ItemsInternal.Remove(internalItemsEntry.Key);
             }
             finally
             {
-              ManagedWeakTable.TableLock.ExitWriteLock();
+              ManagedWeakTable.TableLockInternal.ExitWriteLock();
             }
           }
         }
@@ -167,7 +170,7 @@
       }
       finally
       {
-        ManagedWeakTable.TableLock.ExitUpgradeableReadLock();
+        ManagedWeakTable.TableLockInternal.ExitUpgradeableReadLock();
       }
     }
 

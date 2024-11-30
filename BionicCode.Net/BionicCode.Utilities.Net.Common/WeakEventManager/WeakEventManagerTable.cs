@@ -13,8 +13,14 @@
       var key = new ManagedWeakTableKey(eventName, eventSourceType);
 
       // If the event is a static event, the eventSource is NULL.
-      if (!ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry<TEventSource>(key, eventSource, out EntryInfo<WeakManagerTableEntry> entryInfo))
+      if (!ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry<TEventSource>(key, eventSource, out EntryInfo<WeakManagerTableEntry> entryInfo) 
+        || entryInfo.Entry.IsPurged)
       {
+        if (entryInfo?.Entry.IsPurged ?? false  )
+        {
+          _ = ManagedWeakTable.RemoveEntry(key, entryInfo.Entry);
+        }
+
         weakEventManager = new WeakEventManager<TEventSource>(eventName, isCustomClientDelegate);
         var tableEntry = new WeakManagerTableEntry(eventSource, typeof(TEventSource), eventName, weakEventManager);
         ManagedWeakTable.AddEntry(key, tableEntry);
