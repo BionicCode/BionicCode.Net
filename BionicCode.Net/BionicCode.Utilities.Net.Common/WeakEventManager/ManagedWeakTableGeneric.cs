@@ -6,7 +6,7 @@
   using System.Diagnostics;
   using System.Linq;
 
-  internal abstract partial class ManagedWeakTable<TEntry> : ManagedWeakTable where TEntry : ManagedWeakTableEntry
+  internal abstract class ManagedWeakTable<TEntry> : ManagedWeakTable where TEntry : ManagedWeakTableEntry
   {
     protected static bool TryGetEntry<TEventSource>(ManagedWeakTableKey key, object eventSource, out EntryInfo<TEntry> entryInfo)
     {

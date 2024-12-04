@@ -28,6 +28,7 @@
       if (this.IsRecycled || this.IsPurged
         || (!isForced && this.ReferenceTarget.TryGetTarget(out _)))
       {
+        Debug.WriteLine($"Nothing to purge here (event source)");
         return false;
       }
 

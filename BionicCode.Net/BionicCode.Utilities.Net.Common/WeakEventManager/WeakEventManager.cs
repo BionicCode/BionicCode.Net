@@ -22,6 +22,8 @@
     protected const string EventDelegateSignatureMismatchWrongGenericClassTypeParameterExceptionMessage = "Event delegate signature mismatch. The provided generic genericTypeDefinition argument '{0}' does not match the genericTypeDefinition found on the specified event '{1}'. The provided generic genericTypeDefinition argument '{0}' is '{2}'. But the genericTypeDefinition found on the event delegate is '{3}'.";
 
 #if DEBUG
+    private static int instanceCounter;
+    private int instanceNumber;
     protected static int registeredEventHandlerCount;
     protected static int unregisteredEventHandlerCount;
 #endif
@@ -35,8 +37,14 @@
     private protected EventData EventSourceEventData { get; set; }
     protected HashSet<WeakReference<object>> EventListeners { get; }
 
-    protected WeakEventManager() 
-      => this.EventListeners = new HashSet<WeakReference<object>>();
+    protected WeakEventManager()
+    {
+      this.EventListeners = new HashSet<WeakReference<object>>();
+
+#if DEBUG
+      this.instanceNumber = ++instanceCounter;
+#endif
+    }
 
     internal abstract void Purge();
 

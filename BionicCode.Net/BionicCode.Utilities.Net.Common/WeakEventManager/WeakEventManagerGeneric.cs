@@ -5,6 +5,7 @@
   using System.Collections.Generic;
   using System.ComponentModel;
   using System.Diagnostics;
+  using System.Diagnostics.Tracing;
   using System.Linq;
   using System.Linq.Expressions;
   using System.Reflection;
@@ -12,6 +13,7 @@
   using System.Runtime.CompilerServices;
   using System.Runtime.InteropServices;
   using System.Threading;
+
   public class WeakEventManager<TEventSource> : WeakEventManager
   {
     public string EventName { get; }
@@ -361,13 +363,12 @@
         if (!WeakEventManagerTable.TryGetWeakEventManager(adjustedEventSource, eventName, out WeakEventManager<TEventSource> weakEventManager))
         {
 #if DEBUG
-          unregisteredEventHandlerCount++;
-          Debug.WriteLine("Unable to remove event handler because event source has expired");
+          Debug.WriteLine("Unable to remove event handler because event source has expired or the event was never registered.");
 #endif
           return;
         }
 
-        weakEventManager.RemoveHandler(handler, adjustedEventSource);
+        weakEventManager.UnregisterHandler(handler, adjustedEventSource);
       }
     }
 
@@ -386,7 +387,7 @@
           this.eventListenerHandlerMap.Add(eventListener, clientHandlerInfos);
           WeakReference<object> eventListenerWeakReference = ManagedWeakTable.GetOrCreateWeakReference(eventListener);
           _ = this.EventListeners.Add(eventListenerWeakReference);
-          this.StartListeningInternal(eventSource);
+          StartListeningInternal(eventSource);
         }
 
         var clientHandlerInfo = new ClientHandlerInfo(clientHandler, clientHandlerAdapterInvocator, capturedSynchronizationContext);
@@ -404,8 +405,7 @@
       }
     }
 
-
-    private void RemoveHandler(Delegate handler, object eventSource)
+    private void UnregisterHandler(Delegate handler, object eventSource)
     {
       try
       {
@@ -540,6 +540,7 @@
     {
       if (this.IsPurged)
       {
+        EndService(sender);
         return;
       }
 
@@ -599,7 +600,6 @@
         {
           EndService(sender);
         }
-
       }
       finally
       {
@@ -607,10 +607,12 @@
         _ = TryDisposeLock();
       }
     }
+
     private void OnEventHandlerCustomDynamicSignature(params object[] args)
     {
       if (this.IsPurged)
       {
+        EndService(sender);
         return;
       }
 
