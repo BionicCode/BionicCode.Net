@@ -1,22 +1,18 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System;
-  using System.Collections;
   using System.Collections.Generic;
-  using System.ComponentModel;
   using System.Diagnostics;
-  using System.Diagnostics.Tracing;
   using System.Linq;
   using System.Linq.Expressions;
   using System.Reflection;
-  using System.Reflection.Metadata;
   using System.Runtime.CompilerServices;
-  using System.Runtime.InteropServices;
   using System.Threading;
 
   public class WeakEventManager<TEventSource> : WeakEventManager
   {
     public string EventName { get; }
+
     private readonly ConditionalWeakTable<object, ClientHandlerInfoCollection> eventListenerHandlerMap;
     private ReaderWriterLockSlim ListenerReaderWriterLock { get; set; }
     private static object SyncLock { get; }
@@ -492,28 +488,28 @@
         hasLocalLockAcquired = true;
       }
 
-        Debug.WriteLine($"WeakEventManager internal purge. Is listening: {this.IsListening}");
-        Debug.WriteLine($"Stopping WeakEventManager and clearing {this.EventListeners.Count} event listener entries from {nameof(this.eventListenerHandlerMap)}");
+      Debug.WriteLine($"WeakEventManager internal purge. Is listening: {this.IsListening}");
+      Debug.WriteLine($"Stopping WeakEventManager and clearing {this.EventListeners.Count} event listener entries from {nameof(this.eventListenerHandlerMap)}");
 
-        foreach (WeakReference<object> reference in this.EventListeners)
+      foreach (WeakReference<object> reference in this.EventListeners)
+      {
+        if (reference.TryGetTarget(out object evenListener))
         {
-          if (reference.TryGetTarget(out object evenListener))
+          if (this.eventListenerHandlerMap.TryGetValue(evenListener, out ClientHandlerInfoCollection clientHandlerInfos))
           {
-            if (this.eventListenerHandlerMap.TryGetValue(evenListener, out ClientHandlerInfoCollection clientHandlerInfos))
-            {
-              clientHandlerInfos.Clear();
-            }
-
-            _ = this.eventListenerHandlerMap.Remove(evenListener);
-            ManagedWeakTable.RecycleWeakReference(reference);
+            clientHandlerInfos.Clear();
           }
-        }
 
-        this.EventListeners.Clear();
-        this.IsPurged = true;
+          _ = this.eventListenerHandlerMap.Remove(evenListener);
+          ManagedWeakTable.RecycleWeakReference(reference);
+        }
+      }
+
+      this.EventListeners.Clear();
+      this.IsPurged = true;
 
       if (hasLocalLockAcquired)
-      { 
+      {
         this.ListenerReaderWriterLock.ExitWriteLock();
       }
 
@@ -610,10 +606,16 @@
 
     private void OnEventHandlerCustomDynamicSignature(params object[] args)
     {
+      var tableKey = new ManagedWeakTableKey(this.EventName, typeof(TEventSource));
+      if (!(ManagedWeakTable.TryGetEntry(this.EventSourceId, tableKey, out ManagedWeakTableEntry entry)
+        && entry.TryGetReferenceTarget(out object eventSource)))
+      {
+        return;
+      }
+
       if (this.IsPurged)
       {
-        EndService(sender);
-        return;
+        EndService(eventSource);
       }
 
       Debug.WriteLine($"Invoke deliver event handler");
@@ -670,7 +672,7 @@
         bool hasListeners = this.EventListeners.Any();
         if (!hasListeners)
         {
-          EndService(null);
+          EndService(eventSource);
         }
       }
       finally

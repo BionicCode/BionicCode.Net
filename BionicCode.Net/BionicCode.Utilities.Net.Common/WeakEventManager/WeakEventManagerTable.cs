@@ -2,8 +2,10 @@
 {
   using System;
   using System.Diagnostics;
-  using System.Reflection;
 
+  /// <summary>
+  /// Stores one WeakEventManger per event source instance and per event name
+  /// </summary>
   internal sealed class WeakEventManagerTable : ManagedWeakTable<WeakManagerTableEntry>
   {
     public static WeakEventManager<TEventSource> GetOrCreateWeakEventManager<TEventSource>(object eventSource, string eventName, bool isCustomClientDelegate)
@@ -13,12 +15,13 @@
       var key = new ManagedWeakTableKey(eventName, eventSourceType);
 
       // If the event is a static event, the eventSource is NULL.
-      if (!ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry<TEventSource>(key, eventSource, out EntryInfo<WeakManagerTableEntry> entryInfo) 
+      if (!ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry<TEventSource>(key, eventSource, out EntryInfo<WeakManagerTableEntry> entryInfo)
         || entryInfo.Entry.IsPurged)
       {
-        if (entryInfo?.Entry.IsPurged ?? false  )
+        if (entryInfo?.Entry.IsPurged ?? false)
         {
-          _ = ManagedWeakTable.RemoveEntry(key, entryInfo.Entry);
+          bool hasRemoved = ManagedWeakTable.RemoveEntry(key, entryInfo.Entry);
+          Debug.Assert(hasRemoved);
         }
 
         weakEventManager = new WeakEventManager<TEventSource>(eventName, isCustomClientDelegate);

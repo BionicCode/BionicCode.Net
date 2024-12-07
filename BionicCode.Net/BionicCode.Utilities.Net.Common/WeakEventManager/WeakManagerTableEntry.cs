@@ -9,11 +9,14 @@
     public WeakEventManager WeakEventManager { get; }
     public override bool IsPurged { get; protected set; }
 
-    public WeakManagerTableEntry(object eventSource, Type eventSourceType, string eventName, WeakEventManager weakEventManager) : base(eventSource, eventSourceType)
+    public WeakManagerTableEntry(object eventSource, Type eventSourceType, string eventName, WeakEventManager weakEventManager) : base(eventSource, eventSourceType, weakEventManager.EventSourceId)
     {
       this.EventName = eventName;
       this.WeakEventManager = weakEventManager;
     }
+
+    public bool TryGetEventSource(out object eventSource)
+      => TryGetReferenceTarget(out eventSource);
 
     public override void Recycle()
     {
@@ -26,7 +29,7 @@
       Debug.WriteLine($"TryPurge called for WeakEventManager (event source)");
 
       if (this.IsRecycled || this.IsPurged
-        || (!isForced && this.ReferenceTarget.TryGetTarget(out _)))
+        || (!isForced && this.IsAlive))
       {
         Debug.WriteLine($"Nothing to purge here (event source)");
         return false;

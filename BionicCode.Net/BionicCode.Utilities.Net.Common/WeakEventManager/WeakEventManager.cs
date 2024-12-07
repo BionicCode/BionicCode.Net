@@ -28,6 +28,8 @@
     protected static int unregisteredEventHandlerCount;
 #endif
 
+    internal Guid EventSourceId { get; }
+
     private protected static ConcurrentDictionary<EventInfoTableKey, EventInfoTableEntry> EventInfoTable { get; } = new ConcurrentDictionary<EventInfoTableKey, EventInfoTableEntry>();
     private protected static ConcurrentDictionary<TypeData, MethodData> ProxyEventHandlerPool { get; } = new ConcurrentDictionary<TypeData, MethodData>();
     protected static ConcurrentDictionary<AddClientHandlerInvocatorTableKey, AddClientHandlerInvocatorTableEntry> AddClientHandlerInvocatorTable { get; } = new ConcurrentDictionary<AddClientHandlerInvocatorTableKey, AddClientHandlerInvocatorTableEntry>();
@@ -40,6 +42,7 @@
     protected WeakEventManager()
     {
       this.EventListeners = new HashSet<WeakReference<object>>();
+      this.EventSourceId = new Guid();
 
 #if DEBUG
       this.instanceNumber = ++instanceCounter;

@@ -11,15 +11,21 @@
     public string EventName { get; }
     public bool IsRecycled { get; private set; }
     public abstract bool IsPurged { get; protected set; }
+    public bool IsAlive => this.ReferenceTarget?.TryGetTarget(out _) ?? false;
+    public Guid Id { get; }
 
-    protected ManagedWeakTableEntry(object referenceTarget, Type referenceTargetType)
+    protected ManagedWeakTableEntry(object referenceTarget, Type referenceTargetType, Guid id)
     {
       ArgumentNullExceptionEx.ThrowIfNull(referenceTargetType, nameof(referenceTargetType));
       ArgumentNullExceptionEx.ThrowIfNull(referenceTarget, nameof(referenceTarget));
 
       this.ReferenceTarget = InitializeWeakReference(referenceTarget);
       this.ReferenceTargetType = referenceTargetType;
+      this.Id = id;
     }
+
+    public bool TryGetReferenceTarget(out object referenceTarget)
+      => this.ReferenceTarget.TryGetTarget(out referenceTarget);
 
     public abstract bool TryPurge(bool isForced);
 

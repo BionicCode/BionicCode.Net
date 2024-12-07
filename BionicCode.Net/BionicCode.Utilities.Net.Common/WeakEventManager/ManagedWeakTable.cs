@@ -32,8 +32,34 @@
       }
     }
 
-    public static void RecycleWeakReference(WeakReference<object> weakReference) 
+    public static void RecycleWeakReference(WeakReference<object> weakReference)
       => WeakReferencePool.Add(weakReference);
+
+    public static bool TryGetEntry(Guid eventSourceId, ManagedWeakTableKey key, out ManagedWeakTableEntry entry)
+    {
+      try
+      {
+        ManagedWeakTable.TableLockInternal.EnterReadLock();
+        entry = null;
+        if (ManagedWeakTable.ItemsInternal.TryGetValue(key, out HashSet<ManagedWeakTableEntry> entries))
+        {
+          foreach (ManagedWeakTableEntry tableEntry in entries)
+          {
+            if (tableEntry.Id.Equals(eventSourceId))
+            {
+              entry = tableEntry;
+              return true;
+            }
+          }
+        }
+
+        return false;
+      }
+      finally
+      {
+        ManagedWeakTable.TableLockInternal.ExitReadLock();
+      }
+    }
 
     protected static void AddEntries(ManagedWeakTableKey key, IEnumerable<ManagedWeakTableEntry> entries)
     {

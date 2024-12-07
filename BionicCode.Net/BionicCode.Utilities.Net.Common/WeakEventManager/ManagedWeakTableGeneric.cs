@@ -29,9 +29,9 @@
             continue;
           }
 
-          if (tableEntry.ReferenceTarget.TryGetTarget(out object entryEventSource))
+          if (tableEntry.TryGetReferenceTarget(out object referenceTarget))
           {
-            if (ReferenceEquals(entryEventSource, eventSource))
+            if (ReferenceEquals(referenceTarget, eventSource))
             {
               entryInfo = new EntryInfo<TEntry>(tableEntry, tableEntries);
               return true;
