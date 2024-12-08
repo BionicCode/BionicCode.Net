@@ -22,8 +22,8 @@
     protected const string EventDelegateSignatureMismatchWrongGenericClassTypeParameterExceptionMessage = "Event delegate signature mismatch. The provided generic genericTypeDefinition argument '{0}' does not match the genericTypeDefinition found on the specified event '{1}'. The provided generic genericTypeDefinition argument '{0}' is '{2}'. But the genericTypeDefinition found on the event delegate is '{3}'.";
 
 #if DEBUG
-    private static int instanceCounter;
-    private int instanceNumber;
+    internal static int InstanceCounter { get; private set; }
+    internal int InstanceNumber { get; }
     protected static int registeredEventHandlerCount;
     protected static int unregisteredEventHandlerCount;
 #endif
@@ -45,7 +45,7 @@
       this.EventSourceId = new Guid();
 
 #if DEBUG
-      this.instanceNumber = ++instanceCounter;
+      this.InstanceNumber = ++InstanceCounter;
 #endif
     }
 
@@ -58,14 +58,21 @@
         return;
       }
 
-      Debug.WriteLine($"WeakEventManager starts listening to {eventSource.GetType().FullName}");
+#if DEBUG
+      Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Start listening to {eventSource.GetType().FullName}.");
+      Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Attaching proxy handler for {(this.ProxyEventHandler.Target is WeakEventManager manager ? $"WeakEventManager instance #{manager.InstanceNumber}" : this.ProxyEventHandler.Target.GetType().FullName)}.");
+#endif
+
       this.EventSourceEventData.AddEventHandler(eventSource, this.ProxyEventHandler);
       this.IsListening = true;
     }
 
     internal void StopListeningInternal(object eventSource)
     {
-      Debug.WriteLine($"WeakEventManager stops listening to {eventSource.GetType().FullName}");
+#if DEBUG
+      Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Stop listening to {eventSource.GetType().FullName}.");
+#endif
+
       this.EventSourceEventData.RemoveEventHandler(eventSource, this.ProxyEventHandler);
       this.IsListening = false;
     }

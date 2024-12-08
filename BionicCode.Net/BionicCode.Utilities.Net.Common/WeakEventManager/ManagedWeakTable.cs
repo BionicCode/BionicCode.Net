@@ -95,7 +95,11 @@
     private static void AddEntryInternal(ManagedWeakTableKey key, ManagedWeakTableEntry entry)
     {
       ManagedWeakTable.Count++;
-      Debug.WriteLine($"-------- WeakTable add entry via API. Current entry count: {Count}");
+
+#if DEBUG
+      Debug.WriteLine($"WeakEventManager instance #{(entry.TryGetReferenceTarget(out object referenceTarget) && referenceTarget is WeakEventManager manager ? manager.InstanceNumber : -1)} of {WeakEventManager.InstanceCounter}: -------- WeakTable ADD entry via API. Current entry count: {Count}.");
+#endif
+
       if (!ManagedWeakTable.ItemsInternal.TryGetValue(key, out HashSet<ManagedWeakTableEntry> existingEntries))
       {
         existingEntries = new HashSet<ManagedWeakTableEntry>();
@@ -121,7 +125,10 @@
         if (ManagedWeakTable.ItemsInternal.TryGetValue(key, out HashSet<ManagedWeakTableEntry> existingEntries))
         {
           ManagedWeakTable.Count--;
-          Debug.WriteLine($"-------- WeakTable remove entry via API. Current entry count: {Count}");
+
+#if DEBUG
+          Debug.WriteLine($"WeakEventManager instance #{(entry is WeakManagerTableEntry managerTableEntry ? managerTableEntry.WeakEventManagerInstanceNumber : -1)} of {WeakEventManager.InstanceCounter}: -------- WeakTable REMOVE entry via API. Current entry count: {Count}.");
+#endif
 
           hasRemovedItem = existingEntries.Remove(entry);
           Debug.Assert(hasRemovedItem);
@@ -163,7 +170,10 @@
 
                 bool isRemoved = ManagedWeakTable.ItemsInternal[internalItemsEntry.Key].Remove(managedWeakTableEntry);
                 Debug.Assert(isRemoved);
-                Debug.WriteLine($"Purged... {managedWeakTableEntry.GetType().Name}. Is removed from table: {isRemoved}");
+
+#if DEBUG
+                Debug.WriteLine($"WeakEventManager instance #{(managedWeakTableEntry is WeakManagerTableEntry managerTableEntry ? managerTableEntry.WeakEventManagerInstanceNumber : -1)} of {WeakEventManager.InstanceCounter}: -------- WeakTable PURGED entry via purge timer. Current entry count: {Count}.");
+#endif
               }
               finally
               {

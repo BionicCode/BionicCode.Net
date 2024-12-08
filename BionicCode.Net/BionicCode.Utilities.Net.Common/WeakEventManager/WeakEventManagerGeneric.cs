@@ -3,6 +3,7 @@
   using System;
   using System.Collections.Generic;
   using System.Diagnostics;
+  using System.Diagnostics.Tracing;
   using System.Linq;
   using System.Linq.Expressions;
   using System.Reflection;
@@ -41,44 +42,49 @@
       {
         // Use BindingFlags.FlattenHierarchy to also get base genericTypeDefinition static events via the subclass (including protected events of the hierarchy and private events of the current genericTypeDefinition)
         EventInfo eventInfo = typeof(TEventSource).GetEvent(eventName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+        if (eventInfo is null)
+        {
+          throw new ArgumentException($"Unable to find event '{eventName}'. The provided event name must specify an event that must be public, protected (including inherited members) or private and defined on the current TEventSource {typeof(TEventSource).FullName}.", nameof(eventName));
+        }
+
         EventData eventSourceEventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
 
-        TypeData eventHandlerTypeData = eventSourceEventData.EventHandlerTypeData;
-        MethodData invocatorData = eventHandlerTypeData.DelegateInvokeMethodData;
-        ParameterData[] eventHandlerParameters = invocatorData.Parameters;
-        Delegate proxySourceEventHandler = null;
-
-        if (!isCustomClientDelegate
-          && invocatorData.Parameters.Length == 2)
-        {
-          try
-          {
-            Debug.WriteLine("OnStronglyTypedEvent attached to event source");
-            MethodInfo proxySourceEventHandlerMethodInfo = WeakEventManager<TEventSource>.genericHandlerMethodData.MakeGenericMethodInfo(eventHandlerParameters[0].ParameterTypeData.GetType(), eventHandlerParameters[1].ParameterTypeData.GetType());
-            proxySourceEventHandler = Delegate.CreateDelegate(eventInfo.EventHandlerType, this, proxySourceEventHandlerMethodInfo);
-          }
-          catch (ArgumentException e)
-          {
-            string exceptionMessage = string.Format(InternalDelegateSignatureMismatchExceptionMessage, eventSourceEventData.RuntimeShortSignature, GetType().GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.NonPublic | BindingFlags.Instance).ToRuntimeSignatureShortName());
-
-            throw new EventHandlerMismatchException(exceptionMessage, e);
-          }
-        }
-        else
-        {
-          Debug.WriteLine("Dynamically generated source event handler attached to event source");
-          proxySourceEventHandler = GenerateEventHandler(eventHandlerParameters);
-        }
-
-        tableEntry = new EventInfoTableEntry(eventSourceEventData, proxySourceEventHandler);
+        tableEntry = new EventInfoTableEntry(eventSourceEventData);
         _ = WeakEventManager.EventInfoTable.TryAdd(key, tableEntry);
+      }
+
+      TypeData eventHandlerTypeData = tableEntry.EventData.EventHandlerTypeData;
+      MethodData invocatorData = eventHandlerTypeData.DelegateInvokeMethodData;
+      ParameterData[] eventHandlerParameters = invocatorData.Parameters;
+      Delegate proxySourceEventHandler = null;
+
+      if (!isCustomClientDelegate
+        && invocatorData.Parameters.Length == 2)
+      {
+        try
+        {
+          Debug.WriteLine("OnStronglyTypedEvent attached to event source");
+          MethodInfo proxySourceEventHandlerMethodInfo = WeakEventManager<TEventSource>.genericHandlerMethodData.MakeGenericMethodInfo(eventHandlerParameters[0].ParameterTypeData.GetType(), eventHandlerParameters[1].ParameterTypeData.GetType());
+          proxySourceEventHandler = Delegate.CreateDelegate(tableEntry.EventData.EventHandlerTypeData.GetType(), this, proxySourceEventHandlerMethodInfo);
+        }
+        catch (ArgumentException e)
+        {
+          string exceptionMessage = string.Format(InternalDelegateSignatureMismatchExceptionMessage, tableEntry.EventData.RuntimeShortSignature, GetType().GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.NonPublic | BindingFlags.Instance).ToRuntimeSignatureShortName());
+
+          throw new EventHandlerMismatchException(exceptionMessage, e);
+        }
+      }
+      else
+      {
+        Debug.WriteLine("Dynamically generated source event handler attached to event source");
+        proxySourceEventHandler = GenerateEventHandler(eventHandlerParameters);
       }
 
       this.EventSourceEventData = tableEntry.EventData;
       Debug.Assert(this.EventSourceEventData != null);
 
-      this.ProxyEventHandler = tableEntry.EventHandler;
-      Debug.Assert(this.ProxyEventHandler != null);
+      this.ProxyEventHandler = proxySourceEventHandler;
+      Debug.Assert(this.ProxyEventHandler != null && ReferenceEquals(this, this.ProxyEventHandler.Target));
 
       this.EventName = eventName;
     }
@@ -359,7 +365,7 @@
         if (!WeakEventManagerTable.TryGetWeakEventManager(adjustedEventSource, eventName, out WeakEventManager<TEventSource> weakEventManager))
         {
 #if DEBUG
-          Debug.WriteLine("Unable to remove event handler because event source has expired or the event was never registered.");
+          Debug.WriteLine($"WeakEventManager instance #{weakEventManager?.InstanceNumber ?? -1} of {WeakEventManager.InstanceCounter}: Unable to remove event handler because event source has expired or the event was never registered.");
 #endif
           return;
         }
@@ -390,9 +396,9 @@
         clientHandlerInfos.Add(clientHandlerInfo);
 
 #if DEBUG
-        Debug.WriteLine(">>> Add event handler");
+        Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: >>> Add event handler.");
         registeredEventHandlerCount++;
-        Debug.WriteLine($"Registered event handlers: {registeredEventHandlerCount}; Unregistered event handlers: {unregisteredEventHandlerCount}");
+        Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Registered event handlers: {registeredEventHandlerCount}; Unregistered event handlers: {unregisteredEventHandlerCount}.");
 #endif
       }
       finally
@@ -442,11 +448,11 @@
             {
               clientHandlerInfos.Remove(handlerInfo);
               handlerInfo.Dispose();
-              Debug.WriteLine("<<< Removed event handler");
 
 #if DEBUG
+              Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: <<< Removed event handler.");
               unregisteredEventHandlerCount++;
-              Debug.WriteLine($"Registered event handlers: {registeredEventHandlerCount}; Unregistered event handlers: {unregisteredEventHandlerCount}");
+              Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Registered event handlers: {registeredEventHandlerCount}; Unregistered event handlers: {unregisteredEventHandlerCount}.");
 #endif
 
               break;
@@ -459,12 +465,16 @@
               && (this.EventListeners.RemoveWhere(reference => reference.TryGetTarget(out object listener) && ReferenceEquals(listener, eventListener)) > 0);
 
             Debug.Assert(isListenerRemoved);
+            Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Retained event handlers in collection: {this.EventListeners.Count}.");
           }
         }
 
         if (!this.EventListeners.Any())
         {
-          Debug.WriteLine("Empty handler list ==> call End Service from RemoveEventHandler() API");
+
+#if DEBUG
+          Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Empty handler list ==> call End Service from RemoveEventHandler() API.");
+#endif
           EndService(eventSource);
         }
       }
@@ -488,8 +498,10 @@
         hasLocalLockAcquired = true;
       }
 
-      Debug.WriteLine($"WeakEventManager internal purge. Is listening: {this.IsListening}");
-      Debug.WriteLine($"Stopping WeakEventManager and clearing {this.EventListeners.Count} event listener entries from {nameof(this.eventListenerHandlerMap)}");
+#if DEBUG
+      Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Internal purge called. Is listening: {this.IsListening}.");
+      Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Stopping WeakEventManager and clearing {this.EventListeners.Count} event listener entries from {nameof(this.eventListenerHandlerMap)}.");
+#endif
 
       foreach (WeakReference<object> reference in this.EventListeners)
       {
@@ -534,13 +546,20 @@
 
     private void OnStronglyTypedEvent<TSender, TEventArgs>(TSender sender, TEventArgs e)
     {
+#if DEBUG
+      Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Invoking proxy event handler and deliver event to client.");
+#endif
+
       if (this.IsPurged)
       {
+#if DEBUG
+        Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Invoked proxy event handler of already purged WeakEventManager instance.");
+#endif
+
         EndService(sender);
         return;
       }
 
-      Debug.WriteLine($"Invoke deliver event handler");
       int eventCounter = 0;
       try
       {
@@ -563,7 +582,10 @@
                 {
                   this.ListenerReaderWriterLock.EnterWriteLock();
 
-                  Debug.WriteLine($"Skip client handler invocation because the client's delegate has been garbage collected. Client: {eventListener.GetType().FullName}; Event handler #: {eventCounter++}; Event source: {sender?.GetType().FullName ?? "STATIC"}");
+#if DEBUG
+                  Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Skip client handler invocation because the client's delegate has been garbage collected. Client: {eventListener.GetType().FullName}; Event handler #: {eventCounter++}; Event source: {sender?.GetType().FullName ?? "STATIC"}");
+#endif
+
                   if (clientHandlerInfos.IsEmpty())
                   {
                     _ = this.eventListenerHandlerMap.Remove(eventListener);
@@ -577,7 +599,9 @@
                 }
               }
 
-              Debug.WriteLine($"Invoke client handler. Client: {eventListener.GetType().FullName}; Event handler #: {eventCounter++}; Event source: {sender?.GetType().FullName ?? "STATIC"}");
+#if DEBUG
+              Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Invoke client handler. Client: {eventListener.GetType().FullName}; Event handler #: {eventCounter++}; Event source: {sender?.GetType().FullName ?? "STATIC"}");
+#endif
 
               if (handlerInfo.ClientContext != null)
               {
@@ -606,6 +630,10 @@
 
     private void OnEventHandlerCustomDynamicSignature(params object[] args)
     {
+#if DEBUG
+      Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Invoking proxy event handler and deliver event to client.");
+#endif
+
       var tableKey = new ManagedWeakTableKey(this.EventName, typeof(TEventSource));
       if (!(ManagedWeakTable.TryGetEntry(this.EventSourceId, tableKey, out ManagedWeakTableEntry entry)
         && entry.TryGetReferenceTarget(out object eventSource)))
@@ -615,10 +643,13 @@
 
       if (this.IsPurged)
       {
+#if DEBUG
+        Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Invoked proxy event handler of already purged WeakEventManager instance.");
+#endif
+
         EndService(eventSource);
       }
 
-      Debug.WriteLine($"Invoke deliver event handler");
       int eventCounter = 0;
       try
       {
@@ -641,7 +672,10 @@
                 {
                   this.ListenerReaderWriterLock.EnterWriteLock();
 
-                  Debug.WriteLine($"Skip client handler invocation because the client's delegate has been garbage collected. Client: {eventListener.GetType().FullName}; Event handler #: {eventCounter++}; Event source: unknown, because handler was dynamically generated as client handler does not follow C# conventions.");
+#if DEBUG
+                  Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Skip client handler invocation because the client's delegate has been garbage collected. Client: {eventListener.GetType().FullName}; Event handler #: {eventCounter++}; Event source: unknown from custom event delegate.");
+#endif
+
                   if (clientHandlerInfos.IsEmpty())
                   {
                     _ = this.eventListenerHandlerMap.Remove(eventListener);
@@ -655,7 +689,9 @@
                 }
               }
 
-              Debug.WriteLine($"Invoke client handler. Client: {eventListener.GetType().FullName}; Event handler #: {eventCounter++}; Event source: unknown, because handler was dynamically generated as client handler does not follow C# conventions.");
+#if DEBUG
+              Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Invoke client handler. Client: {eventListener.GetType().FullName}; Event handler #: {eventCounter++}; Event source: unknown from custom event delegate.");
+#endif
 
               if (handlerInfo.ClientContext != null)
               {
@@ -684,9 +720,12 @@
 
     private void EndService(object eventSource)
     {
-      Debug.WriteLine("End Service called");
+
+#if DEBUG
+      Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: End Service called.");
+#endif
       StopListeningInternal(eventSource);
-      WeakEventManagerTable.RemoveWeakEventManager<TEventSource>(eventSource, this.EventName);
+      WeakEventManagerTable.RemoveWeakEventManager<TEventSource>(this.EventSourceId, this.EventName);
       if (!this.IsPurged)
       {
         Purge();
@@ -709,7 +748,6 @@
 
       return false;
     }
-
   }
 
   /// <summary>

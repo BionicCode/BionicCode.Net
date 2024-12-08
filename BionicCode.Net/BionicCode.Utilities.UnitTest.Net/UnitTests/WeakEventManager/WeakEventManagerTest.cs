@@ -158,14 +158,11 @@
       _ = eventHandlerInvocationCount.Should().Be(1);
     }
 
-    private TaskCompletionSource eventCompletionSource;
     [Fact]
     public async Task HandleEvent_EventHandlerGeneric_ShouldInvokeHandlerOnce()
     {
       WeakEventManager<TestEventSource1>.AddEventHandler(this.EventSource1, nameof(TestEventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1);
-      eventCompletionSource = new TaskCompletionSource();
       this.EventSource1.OnGenericTestEvent();
-      //await eventCompletionSource.Task;
 
       _ = eventHandlerInvocationCount.Should().Be(1);
     }
@@ -352,7 +349,6 @@
     {
       eventHandlerInvocationCount++;
       _ = sender.Should().BeOfType<TestEventSource1>();
-      this.eventCompletionSource.SetResult();
     }
 
     private void OnNonGenericTestEventFromTestEventSource1(object sender, EventArgs e)

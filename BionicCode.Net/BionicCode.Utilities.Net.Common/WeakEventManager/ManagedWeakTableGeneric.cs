@@ -8,7 +8,7 @@
 
   internal abstract class ManagedWeakTable<TEntry> : ManagedWeakTable where TEntry : ManagedWeakTableEntry
   {
-    protected static bool TryGetEntry<TEventSource>(ManagedWeakTableKey key, object eventSource, out EntryInfo<TEntry> entryInfo)
+    protected static bool TryGetEntry(ManagedWeakTableKey key, object eventSource, out EntryInfo<TEntry> entryInfo)
     {
       entryInfo = default;
 
@@ -44,7 +44,7 @@
               ManagedWeakTable.TableLockInternal.EnterWriteLock();
 
               // ManagedReference was garbage collected and is therefore eligible for recycling
-              Debug.WriteLine("Failed to get entry because entry is expired ==> Recycle ");
+              Debug.WriteLine($"Failed to get entry for event '{key.ReferenceTargetId}' because entry is expired ==> Purge and Recycle ");
               if (tableEntry is IPurgeable purgeableEntry)
               {
                 _ = purgeableEntry.TryPurge(isForced: true);

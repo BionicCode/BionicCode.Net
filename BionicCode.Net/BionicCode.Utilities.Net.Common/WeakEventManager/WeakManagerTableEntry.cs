@@ -9,10 +9,18 @@
     public WeakEventManager WeakEventManager { get; }
     public override bool IsPurged { get; protected set; }
 
+#if DEBUG
+    public int WeakEventManagerInstanceNumber { get; }
+#endif
+
     public WeakManagerTableEntry(object eventSource, Type eventSourceType, string eventName, WeakEventManager weakEventManager) : base(eventSource, eventSourceType, weakEventManager.EventSourceId)
     {
       this.EventName = eventName;
       this.WeakEventManager = weakEventManager;
+
+#if DEBUG
+      this.WeakEventManagerInstanceNumber = weakEventManager.InstanceNumber;
+#endif
     }
 
     public bool TryGetEventSource(out object eventSource)
@@ -20,22 +28,33 @@
 
     public override void Recycle()
     {
-      Debug.WriteLine($"######## Recycling WeakEventManger ########");
+#if DEBUG
+      Debug.WriteLine($"WeakEventManager instance #{this.WeakEventManagerInstanceNumber} of {WeakEventManager.InstanceCounter}: ######## Recycling WeakEventManger ########.");
+#endif
+
       base.Recycle();
     }
 
     public override bool TryPurge(bool isForced)
     {
-      Debug.WriteLine($"TryPurge called for WeakEventManager (event source)");
+#if DEBUG
+      Debug.WriteLine($"WeakEventManager instance #{this.WeakEventManagerInstanceNumber} of {WeakEventManager.InstanceCounter}: TryPurge called for WeakEventManager (event source).");
+#endif
 
       if (this.IsRecycled || this.IsPurged
         || (!isForced && this.IsAlive))
       {
-        Debug.WriteLine($"Nothing to purge here (event source)");
+#if DEBUG
+        Debug.WriteLine($"WeakEventManager instance #{this.WeakEventManagerInstanceNumber} of {WeakEventManager.InstanceCounter}: Nothing to purge here (event source).");
+#endif
+
         return false;
       }
 
-      Debug.WriteLine($"******** Purging event source (weak event manager)...Forced: {isForced} ********");
+#if DEBUG
+      Debug.WriteLine($"WeakEventManager instance #{this.WeakEventManagerInstanceNumber} of {WeakEventManager.InstanceCounter}: ******** Purging event source (weak event manager)...Forced: {isForced} ********.");
+#endif
+
       this.WeakEventManager.Purge();
       Recycle();
 

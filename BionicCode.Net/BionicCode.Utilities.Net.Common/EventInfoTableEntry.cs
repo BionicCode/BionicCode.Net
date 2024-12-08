@@ -9,13 +9,11 @@
 
   internal class EventInfoTableEntry
   {
-    public EventInfoTableEntry(EventData eventData, Delegate eventHandler)
+    public EventInfoTableEntry(EventData eventData)
     {
       this.EventData = eventData;
-      this.EventHandler = eventHandler;
     }
 
     public EventData EventData { get; }
-    public Delegate EventHandler { get; }
   }
 }
