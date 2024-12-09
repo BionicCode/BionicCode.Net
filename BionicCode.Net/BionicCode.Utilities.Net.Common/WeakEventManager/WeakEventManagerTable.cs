@@ -15,7 +15,8 @@
       var key = new ManagedWeakTableKey(eventName, eventSourceType);
 
       // If the event is a static event, the eventSource is NULL.
-      if (!ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry(key, eventSource, out EntryInfo<WeakManagerTableEntry> entryInfo)
+      object adjustedEventSource = eventSource ?? DummyEventSourceForStaticEventHandlers.Instance;
+      if (!ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry(key, adjustedEventSource, out EntryInfo<WeakManagerTableEntry> entryInfo)
         || entryInfo.Entry.IsPurged)
       {
         if (entryInfo?.Entry.IsPurged ?? false)
@@ -29,7 +30,7 @@
         }
 
         weakEventManager = new WeakEventManager<TEventSource>(eventName, isCustomClientDelegate);
-        var tableEntry = new WeakManagerTableEntry(eventSource, typeof(TEventSource), eventName, weakEventManager);
+        var tableEntry = new WeakManagerTableEntry(adjustedEventSource, typeof(TEventSource), eventName, weakEventManager);
         ManagedWeakTable.AddEntry(key, tableEntry);
 #if DEBUG
         Debug.WriteLine($"WeakEventManager instance #{weakEventManager.InstanceNumber} of {WeakEventManager.InstanceCounter}: Created NEW from weak table in GetOrCreateWeakEventManger().");
@@ -51,8 +52,10 @@
       weakEventManager = null;
       Type eventSourceType = typeof(TEventSource);
       var key = new ManagedWeakTableKey(eventName, eventSourceType);
+
       // If the event is a static event, the eventSource is NULL.
-      if (ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry(key, eventSource, out EntryInfo<WeakManagerTableEntry> entryInfo))
+      object adjustedEventSource = eventSource ?? DummyEventSourceForStaticEventHandlers.Instance;
+      if (ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry(key, adjustedEventSource, out EntryInfo<WeakManagerTableEntry> entryInfo))
       {
         weakEventManager = (WeakEventManager<TEventSource>)entryInfo.Entry.WeakEventManager;
 

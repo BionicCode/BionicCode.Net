@@ -49,5 +49,19 @@
       return stringBuilder.Append(value);
 #endif
     }
+
+    public static Delegate UnwrapDelegate(this Delegate d)
+    {
+      object dTarget = d.Target;
+
+      // Unwrap delegate if wrapped
+      while (dTarget is Delegate dTemp)
+      {
+        d = dTemp;
+        dTarget = d.Target;
+      }
+
+      return d;
+    }
   }
 }

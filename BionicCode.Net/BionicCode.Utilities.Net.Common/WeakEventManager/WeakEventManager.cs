@@ -17,8 +17,8 @@
   public abstract class WeakEventManager
   {
     protected const string EventDelegateNotSupportedExceptionMessage = "The event delegate must follow the common design guidelines for .NET CLR events that is: two parameters, typed and ordered as follows: delegate(sender, e) where parameter 'sender' is either of genericTypeDefinition {0} or {1} and where parameter 'e' is of genericTypeDefinition {2} or {3}, where {3} must be a subclass of {2}. For example: {4}. Events that deviate from this common event guidelines are currently not supported. The found event delegate signature '{5}' violates these guidelines, because {6}.";
-    protected const string HandlerDelegateSignatureMismatchExceptionMessage = "Event handler delegate signature mismatch. Expected signature as required from event source: '{0}'. Found signature on provided event handler: '{1}'. Because: {2}";
-    protected const string InternalDelegateSignatureMismatchExceptionMessage = "Internal exception: Event handler delegate signature mismatch. Expected signature as required from event source: '{0}'. Found signature on provided event handler: '{1}'.";
+    protected const string HandlerDelegateSignatureMismatchExceptionMessage = "Event handler delegate signature mismatch. Expected signature as required by event source: '{0}'. Found signature on provided event handler: '{1}'. Because: {2}";
+    protected const string InternalDelegateSignatureMismatchExceptionMessage = "Internal exception: Event handler delegate signature mismatch. Expected signature as required by event source: '{0}'. Found signature on provided event handler: '{1}'.";
     protected const string EventDelegateSignatureMismatchWrongGenericClassTypeParameterExceptionMessage = "Event delegate signature mismatch. The provided generic genericTypeDefinition argument '{0}' does not match the genericTypeDefinition found on the specified event '{1}'. The provided generic genericTypeDefinition argument '{0}' is '{2}'. But the genericTypeDefinition found on the event delegate is '{3}'.";
 
 #if DEBUG
@@ -26,6 +26,7 @@
     internal int InstanceNumber { get; }
     protected static int registeredEventHandlerCount;
     protected static int unregisteredEventHandlerCount;
+    private protected abstract Type EventSourceType { get; }
 #endif
 
     internal Guid EventSourceId { get; }
@@ -51,6 +52,13 @@
 
     internal abstract void Purge();
 
+    internal void LogDebug(string message)
+    {
+#if DEBUG
+      Debug.WriteLine($"{nameof(WeakEventManager)} instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: {message}");
+#endif
+    }
+
     internal void StartListeningInternal(object eventSource)
     {
       if (this.IsListening)
@@ -59,8 +67,9 @@
       }
 
 #if DEBUG
-      Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Start listening to {eventSource.GetType().FullName}.");
-      Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Attaching proxy handler for {(this.ProxyEventHandler.Target is WeakEventManager manager ? $"WeakEventManager instance #{manager.InstanceNumber}" : this.ProxyEventHandler.Target.GetType().FullName)}.");
+      string eventSourceTypeName = $"{this.EventSourceType.FullName} {(eventSource is null ? "(static event)" : string.Empty)}";
+      LogDebug($"Attaching proxy handler to {eventSourceTypeName}.");
+      LogDebug($"Start listening to {eventSourceTypeName}.");
 #endif
 
       this.EventSourceEventData.AddEventHandler(eventSource, this.ProxyEventHandler);
@@ -70,7 +79,9 @@
     internal void StopListeningInternal(object eventSource)
     {
 #if DEBUG
-      Debug.WriteLine($"WeakEventManager instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: Stop listening to {eventSource.GetType().FullName}.");
+      string eventSourceTypeName = $"{this.EventSourceType.FullName} {(eventSource is null ? "(static event)" : string.Empty)}";
+      LogDebug($"Detaching proxy handler from {eventSourceTypeName}.");
+      LogDebug($"Stop listening to {eventSourceTypeName}.");
 #endif
 
       this.EventSourceEventData.RemoveEventHandler(eventSource, this.ProxyEventHandler);

@@ -162,8 +162,8 @@
         return false;
       }
 
-      d1 = UnwrapDelegate(d1);
-      d2 = UnwrapDelegate(d2);
+      d1 = d1.UnwrapDelegate();
+      d2 = d2.UnwrapDelegate();
 
       if (ReferenceEquals(d1.Target, d2.Target) 
         && d1.Method.Equals(d2.Method))
@@ -181,8 +181,8 @@
           {
             Delegate d1Invocator = d1InvocationList[invocatorIndex];
             Delegate d2Invocator = d2InvocationList[invocatorIndex];
-            d1 = UnwrapDelegate(d1Invocator);
-            d2 = UnwrapDelegate(d2Invocator);
+            d1 = d1Invocator.UnwrapDelegate();
+            d2 = d2Invocator.UnwrapDelegate();
             if (!(ReferenceEquals(d1.Target, d2.Target)
               && d1.Method.Equals(d2.Method)))
             {
@@ -195,20 +195,6 @@
       }
 
       return false;
-    }
-
-    private static Delegate UnwrapDelegate(Delegate d)
-    {
-      object dTarget = d.Target;
-
-      // Unwrap delegate if wrapped
-      while (dTarget is Delegate dTemp)
-      {
-        d = dTemp;
-        dTarget = d.Target;
-      }
-
-      return d;
     }
   }
 }
