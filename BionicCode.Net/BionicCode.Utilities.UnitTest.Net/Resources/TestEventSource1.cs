@@ -13,6 +13,22 @@
 
   }
 
+  public class TestEventListener
+  {
+    private Action invocationCounter;
+
+    public void Initialize(Action invocationCounter, WeakEventManagerTests.EventHandlerRegistrationManager registrationManager, TestEventSource1 eventSource)
+    {
+      this.invocationCounter = invocationCounter;
+      _ = registrationManager.RegisterEventHandler<Action<object, EventArgs>>(eventSource, nameof(TestEventSource1.TestEvent), OnGenericAllPurposeEventHandler);
+    }
+
+    public void OnGenericAllPurposeEventHandler<TSender, TEventArgs>(TSender sender, TEventArgs e)
+    {
+      this.invocationCounter.Invoke();
+    }
+  }
+
   public interface ITestEventSource<TEventSource> : ITestEventSource
   {
     event StronglyTypedTestEventHandler<TEventSource, TestEventArgs> StronglyTypedCustomHandlerTestEvent;

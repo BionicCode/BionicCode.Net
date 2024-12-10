@@ -80,18 +80,23 @@
       _ = eventHandlerInvocationCount.Should().Be(0);
     }
 
-    //[Fact]
-    //public void UnregisterEventHandler_AllEventTypes_MustLeaveEmptyManagedWeakTable()
-    //{
-    //  RegisterAllEventHandlersEventSource1();
-    //  RegisterAllEventHandlersEventSource2();
-    //  this.registrationManager.UnregisterAllEventHandlers();
-      
-    //  this.EventSource1.RaiseAll();
-    //  this.EventSource2.RaiseAll();
+    [Fact]
+    public void RegisteredHander_GarbageCollectListener_MustSucceed()
+    {
+        int invocationCounter = 0;
+      {
+        var listener = new TestEventListener();
+        listener.Initialize(() => ++invocationCounter, this.registrationManager, this.EventSource1);
+        listener = null;
+      }
+      //_ = this.registrationManager.RegisterEventHandler<Action<object, EventArgs>>(this.EventSource1, nameof(TestEventSource1.TestEvent), listener.OnGenericAllPurposeEventHandler);
+     
+      ForceGC();
+      GC.WaitForPendingFinalizers();
+      this.EventSource1.OnTestEvent();
 
-    //  _ = ManagedWeakTable.Count.Should().Be(0);
-    //}
+      _ = invocationCounter.Should().Be(1);
+    }
 
     [Fact]
     public async Task RegisterEvent_EventDelegateWithEventArgsTypeNotDeriveFromEventArgsClass_ShouldInvokeClientHandlerOnce()
