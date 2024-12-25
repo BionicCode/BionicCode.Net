@@ -463,8 +463,15 @@
 
           if (clientHandlerInfos.Count == 0)
           {
+            WeakReference<object> eventListenerWeakReference = this.EventListeners.FirstOrDefault(reference => reference.TryGetTarget(out object listener) && ReferenceEquals(listener, eventListener));
+            if (eventListenerWeakReference != null)
+            {
+              this.EventListeners.Remove(eventListenerWeakReference);
+              ManagedWeakTable.RecycleWeakReference(eventListenerWeakReference);
+            }
+
             bool isListenerRemoved = this.eventListenerHandlerMap.Remove(eventListener)
-              && (this.EventListeners.RemoveWhere(reference => reference.TryGetTarget(out object listener) && ReferenceEquals(listener, eventListener)) > 0);
+              && eventListenerWeakReference != null;
 
             Debug.Assert(isListenerRemoved);
             LogDebug($"Retained event handlers in collection: {this.EventListeners.Count}.");
@@ -559,10 +566,14 @@
       {
         this.ListenerReaderWriterLock.EnterUpgradeableReadLock();
 
-        foreach (WeakReference<object> eventListenerReference in this.EventListeners)
+        HashSet<WeakReference<object>> eventListeners = this.EventListeners;
+        foreach (WeakReference<object> eventListenerReference in eventListeners)
         {
           if (!eventListenerReference.TryGetTarget(out object eventListener))
           {
+            _ = this.EventListeners.Remove(eventListenerReference);
+            ManagedWeakTable.RecycleWeakReference(eventListenerReference);
+
             continue;
           }
 
@@ -718,7 +729,8 @@
     {
       if (this.IsPurged
         && !this.ListenerReaderWriterLock.IsReadLockHeld && this.ListenerReaderWriterLock.WaitingReadCount == 0
-        && !this.ListenerReaderWriterLock.IsWriteLockHeld && this.ListenerReaderWriterLock.WaitingWriteCount == 0)
+        && !this.ListenerReaderWriterLock.IsWriteLockHeld && this.ListenerReaderWriterLock.WaitingWriteCount == 0
+        && !this.ListenerReaderWriterLock.IsUpgradeableReadLockHeld && this.ListenerReaderWriterLock.WaitingUpgradeCount == 0)
       {
         this.ListenerReaderWriterLock?.Dispose();
         this.ListenerReaderWriterLock = null;

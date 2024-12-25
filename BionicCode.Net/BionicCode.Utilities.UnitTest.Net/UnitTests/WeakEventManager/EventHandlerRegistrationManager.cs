@@ -28,6 +28,12 @@
       return eventHandlerInfo;
     }
 
+    public void RegisterEventHandlerWithoutEventSource<TEventHandler>(TestEventSource1 eventSource, string eventName, TEventHandler eventHandler) where TEventHandler : Delegate
+    {
+      WeakEventManager<TestEventSource1>.AddEventHandler(eventSource, eventName, eventHandler);
+      //++this.RegisteredEventHandlerCount;
+    }
+
     public EventHandlerInfo<TestEventSource2> RegisterEventHandler<TEventHandler>(TestEventSource2 eventSource, string eventName, TEventHandler eventHandler) where TEventHandler : Delegate
     {
       WeakEventManager<TestEventSource2>.AddEventHandler(eventSource, eventName, eventHandler);

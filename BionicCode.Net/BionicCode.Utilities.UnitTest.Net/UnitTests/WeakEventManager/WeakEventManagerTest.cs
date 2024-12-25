@@ -5,18 +5,19 @@
   using System.Diagnostics;
   using System.Diagnostics.Tracing;
   using System.Linq;
+  using System.Runtime.CompilerServices;
   using System.Threading.Tasks;
   using BionicCode.Utilities.Net;
   using BionicCode.Utilities.Net.UnitTest.Resources;
   using FluentAssertions;
   using FluentAssertions.Specialized;
+  using Microsoft.CodeAnalysis;
   using Xunit;
 
   public class WeakEventManagerTest : IDisposable
   {
     public WeakEventManagerTest()
     {
-      ForceGC();
       this.EventSource1 = new TestEventSource1();
       this.EventSource2 = new TestEventSource2();
       eventHandlerInvocationCount = 0;
@@ -81,21 +82,33 @@
     }
 
     [Fact]
-    public void RegisteredHander_GarbageCollectListener_MustSucceed()
+    public void RegisteredHander_GarbageCollectListenerWhileEventSourceIsAlive_MustSucceed()
     {
-        int invocationCounter = 0;
-      {
-        var listener = new TestEventListener();
-        listener.Initialize(() => ++invocationCounter, this.registrationManager, this.EventSource1);
-        listener = null;
-      }
-      //_ = this.registrationManager.RegisterEventHandler<Action<object, EventArgs>>(this.EventSource1, nameof(TestEventSource1.TestEvent), listener.OnGenericAllPurposeEventHandler);
-     
-      ForceGC();
-      GC.WaitForPendingFinalizers();
-      this.EventSource1.OnTestEvent();
+      WeakReference<TestEventListener> weakReferenceToListener;
+      TestEventListener strongReferenceToListener;
+      InitializeGcTest(nameof(TestEventSource1.TestEvent), out weakReferenceToListener, out strongReferenceToListener);
 
-      _ = invocationCounter.Should().Be(1);
+      GcEx.ForceFullGC();
+      this.EventSource1?.OnTestEvent();
+
+      // Garbage collect the listener by discarding the strong reference
+      strongReferenceToListener = null;
+      GcEx.ForceFullGC();
+
+      // This must not raise any events as the listener is expected to be garbage collected at this point
+      this.EventSource1?.OnTestEvent();
+
+      _ = weakReferenceToListener.TryGetTarget(out _).Should().BeFalse();
+      _ = eventHandlerInvocationCount.Should().Be(1);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void InitializeGcTest(string eventName, out WeakReference<TestEventListener> weakReferenceToListener, out TestEventListener strongReferenceToListener)
+    {
+      Action invocationCounterInvocator = () => ++eventHandlerInvocationCount;
+      strongReferenceToListener = new TestEventListener();
+      weakReferenceToListener = new WeakReference<TestEventListener>(strongReferenceToListener);
+      strongReferenceToListener.InitializeWeakEventTest(invocationCounterInvocator, this.registrationManager, this.EventSource1, eventName);
     }
 
     [Fact]
@@ -112,6 +125,7 @@
     public async Task HandleEvent_EventHandlerGeneric_ShouldInvokeHandlerOnce()
     {
       _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1);
+      
       this.EventSource1.OnGenericTestEvent();
 
       _ = eventHandlerInvocationCount.Should().Be(1);
@@ -495,20 +509,11 @@
       eventHandlerInvocationCount++;
       _ = sender.Should().BeOfType<TestEventSource1>();
       _ = e.Should().BeOfType<EventArgs>();
-    }
-
-    private void ForceGC()
-    {
-      for (int i = 0; i < 10; i++)
-      {
-        GC.Collect(2, GCCollectionMode.Forced, true);
-        GC.WaitForPendingFinalizers();
-      }
-    }
+    }    
 
     private readonly EventHandlerRegistrationManager registrationManager;
-    private TestEventSource1 EventSource1 { get; }
-    private TestEventSource2 EventSource2 { get; }
+    private TestEventSource1 EventSource1 { get; set; }
+    private TestEventSource2 EventSource2 { get; set; }
     private static int eventHandlerInvocationCount;
     private bool disposedValue;
     private static bool IsDisposing { get; set; }
@@ -522,7 +527,7 @@
         {
           this.registrationManager.UnregisterAllEventHandlers();
           eventHandlerInvocationCount = 0;
-          ForceGC();
+          GcEx.ForceFullGC();
         }
 
         disposedValue = true;

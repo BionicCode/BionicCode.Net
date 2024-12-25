@@ -15,17 +15,26 @@
 
   public class TestEventListener
   {
-    private Action invocationCounter;
+    public int EventHandlerInvocationCount { get; private set; }
 
-    public void Initialize(Action invocationCounter, WeakEventManagerTests.EventHandlerRegistrationManager registrationManager, TestEventSource1 eventSource)
+    private Action eventAction;
+
+    public void Initialize(Action eventAction, WeakEventManagerTests.EventHandlerRegistrationManager registrationManager, TestEventSource1 eventSource)
     {
-      this.invocationCounter = invocationCounter;
       _ = registrationManager.RegisterEventHandler<Action<object, EventArgs>>(eventSource, nameof(TestEventSource1.TestEvent), OnGenericAllPurposeEventHandler);
+      this.eventAction = eventAction;
+    }
+
+    public void InitializeWeakEventTest(Action eventAction, WeakEventManagerTests.EventHandlerRegistrationManager registrationManager, TestEventSource1 eventSource, string eventName)
+    {
+      registrationManager.RegisterEventHandlerWithoutEventSource<Action<object, EventArgs>>(eventSource, eventName, OnGenericAllPurposeEventHandler);
+      this.eventAction = eventAction;
     }
 
     public void OnGenericAllPurposeEventHandler<TSender, TEventArgs>(TSender sender, TEventArgs e)
     {
-      this.invocationCounter.Invoke();
+      ++this.EventHandlerInvocationCount;
+      this.eventAction?.Invoke();
     }
   }
 
