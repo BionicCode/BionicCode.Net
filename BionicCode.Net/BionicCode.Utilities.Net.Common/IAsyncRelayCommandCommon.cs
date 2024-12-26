@@ -7,8 +7,8 @@
   using System.Windows.Input;
 
   /// <summary>
-  /// An interface to define a reusable command that encapsulates the implementation of <see cref="ICommand"/> with support for async/await command delegates and data binding (implements <see cref="INotifyPropertyChanged"/>). 
-  /// <br/>Enables instant creation of an ICommand without implementing the ICommand interface for each command.
+  /// An interface to define a reusable asynchronous command that encapsulates the implementation of <see cref="ICommand"/> with support for async/await command delegates and data binding (implements <see cref="INotifyPropertyChanged"/>). 
+  /// <br/>Enables instant creation of an <see cref="ICommand"/> without implementing the <see cref="ICommand"/> interface for each command.
   /// </summary>
   public interface IAsyncRelayCommandCommon : IAsyncRelayCommandCore, ICommand
   {

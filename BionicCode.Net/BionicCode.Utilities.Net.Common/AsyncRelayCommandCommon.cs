@@ -24,7 +24,7 @@ namespace BionicCode.Utilities.Net
     /// </summary>
     /// <value>
     /// A delegate that supports cancellation, but takes no command parameter and returns a <see cref="Task"/>.</value>
-    private readonly Func<CancellationToken, Task> executeCancellableAsyncNoParamDelegate;
+    private readonly Func<CancellationToken, Task> cancellableAsyncNoParamExecuteDelegate;
 
     /// <summary>
     /// The registered parameterless CanExecute delegate.
@@ -63,7 +63,7 @@ namespace BionicCode.Utilities.Net
     {
       ArgumentNullExceptionEx.ThrowIfNull(executeAsyncNoParam, nameof(executeAsyncNoParam));
 
-      this.executeCancellableAsyncNoParamDelegate = cancellationToken => executeAsyncNoParam.Invoke();
+      this.cancellableAsyncNoParamExecuteDelegate = cancellationToken => executeAsyncNoParam.Invoke();
       this.canExecuteNoParamDelegate = canExecuteNoParam ?? (() => true);
     }
 
@@ -74,14 +74,11 @@ namespace BionicCode.Utilities.Net
     /// <param name="canExecute">The can execute handler.</param>
     protected AsyncRelayCommandCommon(Func<CancellationToken, Task> executeAsync, Func<bool> canExecute)
     {
-      this.executeCancellableAsyncNoParamDelegate = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
+      this.cancellableAsyncNoParamExecuteDelegate = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
       this.canExecuteNoParamDelegate = canExecute ?? (() => true);
     }
 
     #endregion Constructors
-
-
-    public override bool IsAsync => this.executeCancellableAsyncNoParamDelegate != null;
 
     /// <summary>
     ///   Determines whether this AsyncRelayCommandCommon can execute.
@@ -110,23 +107,10 @@ namespace BionicCode.Utilities.Net
     /// </remarks>
     /// <exception cref="OperationCanceledException">If the executing command delegate was cancelled.</exception>
     /// <exception cref="ArgumentOutOfRangeExceptionEx"><paramref name="timeout>"/>.TotalMilliseconds is less than -1 or greater than <see cref="int.MaxValue"/> (or <see cref="uint.MaxValue"/> - 1 on some versions of .NET). Note that this upper bound is more restrictive than <see cref="TimeSpan.MaxValue"/>.</exception>
-    public virtual async Task ExecuteAsync(TimeSpan timeout, CancellationToken cancellationToken)
-    {
-      await BeginExecuteAsyncCoreAsync(timeout, cancellationToken);
+    public virtual async Task ExecuteAsync(TimeSpan timeout, CancellationToken cancellationToken) => await ExecuteAsync(Timeout.InfiniteTimeSpan, timeout, cancellationToken);
 
-      try
-      {
-        if (this.executeCancellableAsyncNoParamDelegate != null)
-        {
-          this.CurrentCancellationToken.ThrowIfCancellationRequested();
-          await this.executeCancellableAsyncNoParamDelegate.Invoke(this.CurrentCancellationToken);
-        }
-      }
-      finally
-      {
-        EndExecuteAyncCore();
-      }
-    }
+    public virtual async Task ExecuteAsync(TimeSpan pendingTimeout, TimeSpan executingTimeout, CancellationToken cancellationToken) 
+      => await ExecuteCoreAsync(this.cancellableAsyncNoParamExecuteDelegate, pendingTimeout, executingTimeout, cancellationToken);
 
     #region ICommand implementation
 

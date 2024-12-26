@@ -16,7 +16,7 @@
     /// </summary>
     /// <value>
     /// A delegate that supports cancellation and takes a command parameter of <typeparamref name="TParam"/> and returns a <see cref="Task"/>.</value>
-    private readonly Action<TParam, CancellationToken> executeCancellableDelegate;
+    private readonly Action<TParam, CancellationToken> cancellableExecuteDelegate;
 
     /// <summary>
     /// The registered CanExecute delegate that accepts a parameter of <typeparamref name="TParam"/>.
@@ -46,7 +46,7 @@
     {
       ArgumentNullExceptionEx.ThrowIfNull(execute, nameof(execute));
 
-      this.executeCancellableDelegate = (commandParameter, cancellationToken) => execute.Invoke();
+      this.cancellableExecuteDelegate = (commandParameter, cancellationToken) => execute.Invoke();
       this.canExecuteDelegate = commandParameter => true;
     }
 
@@ -60,7 +60,7 @@
     {
       ArgumentNullExceptionEx.ThrowIfNull(execute, nameof(execute));
 
-      this.executeCancellableDelegate = (commandParameter, cancellationToken) => execute.Invoke(cancellationToken);
+      this.cancellableExecuteDelegate = (commandParameter, cancellationToken) => execute.Invoke(cancellationToken);
       this.canExecuteDelegate = commandParameter => true;
     }
 
@@ -73,7 +73,7 @@
     {
       ArgumentNullExceptionEx.ThrowIfNull(execute, nameof(execute));
 
-      this.executeCancellableDelegate = (commandParameter, cancellationToken) => execute.Invoke();
+      this.cancellableExecuteDelegate = (commandParameter, cancellationToken) => execute.Invoke();
       this.canExecuteDelegate = commandParameter => canExecute?.Invoke() ?? true;
     }
 
@@ -86,7 +86,7 @@
     {
       ArgumentNullExceptionEx.ThrowIfNull(execute, nameof(execute));
 
-      this.executeCancellableDelegate = (commandParameter, cancellationToken) => execute.Invoke(cancellationToken);
+      this.cancellableExecuteDelegate = (commandParameter, cancellationToken) => execute.Invoke(cancellationToken);
       this.canExecuteDelegate = commandParameter => canExecute?.Invoke() ?? true;
     }
 
@@ -110,7 +110,7 @@
     {
       ArgumentNullExceptionEx.ThrowIfNull(execute, nameof(execute));
 
-      this.executeCancellableDelegate = (commandParameter, cancellationToken) => execute.Invoke(commandParameter);
+      this.cancellableExecuteDelegate = (commandParameter, cancellationToken) => execute.Invoke(commandParameter);
       this.canExecuteDelegate = canExecute;
     }
 
@@ -123,7 +123,7 @@
     {
       ArgumentNullExceptionEx.ThrowIfNull(execute, nameof(execute));
 
-      this.executeCancellableDelegate = execute;
+      this.cancellableExecuteDelegate = execute;
       this.canExecuteDelegate = canExecute;
     }
 
@@ -148,20 +148,10 @@
     public void Execute(TParam parameter, CancellationToken cancellationToken) => Execute(parameter, Timeout.InfiniteTimeSpan, cancellationToken);
 
     /// <inheritdoc />
-    public  void Execute(TParam parameter, TimeSpan timeout, CancellationToken cancellationToken)
-    {
-      try
-      {
-        BeginExecuteCore(timeout, cancellationToken);
+    public void Execute(TParam parameter, TimeSpan timeout, CancellationToken cancellationToken) => Execute(parameter, Timeout.InfiniteTimeSpan, timeout, cancellationToken);
 
-        this.CurrentCancellationToken.ThrowIfCancellationRequested();
-        this.executeCancellableDelegate?.Invoke(parameter, this.CurrentCancellationToken);
-      }
-      finally
-      {
-        EndExecuteCore();
-      }
-    }
+    public  void Execute(TParam parameter, TimeSpan pendingTimeout, TimeSpan executingTimeout, CancellationToken cancellationToken)
+      => ExecuteCore(ct => this.cancellableExecuteDelegate?.Invoke(parameter, ct), pendingTimeout, executingTimeout, cancellationToken);
 
     #region ICommand implementation
 #if NET

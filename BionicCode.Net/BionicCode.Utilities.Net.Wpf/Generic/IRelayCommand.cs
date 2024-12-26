@@ -1,13 +1,9 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-  using System;
-  using System.ComponentModel;
-  using System.Threading;
-  using System.Threading.Tasks;
   using System.Windows.Input;
 
   /// <inheritdoc/>
-  public interface IAsyncRelayCommand<TParam> : IAsyncRelayCommandCommon<TParam>
+  public interface IRelayCommand<TParam> : IRelayCommandCommon<TParam>
   {
 #if !NETSTANDARD
     /// <summary>

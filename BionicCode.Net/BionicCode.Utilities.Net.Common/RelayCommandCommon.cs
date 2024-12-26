@@ -85,9 +85,6 @@
     /// <summary>
     ///   Determines whether this AsyncRelayCommandCommon can execute.
     /// </summary>
-    /// <param name="parameter">
-    ///   Data used by the command. 
-    /// </param>
     /// <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
     public bool CanExecute() => this.canExecuteDelegate.Invoke();
 

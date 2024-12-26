@@ -22,7 +22,7 @@ namespace BionicCode.Utilities.Net
     /// </summary>
     /// <value>
     /// A delegate that supports cancellation and takes a command parameter of <typeparamref name="TParam"/> and returns a <see cref="Task"/>.</value>
-    private readonly Func<TParam, CancellationToken, Task> executeCancellableAsyncDelegate;
+    private readonly Func<TParam, CancellationToken, Task> cancellableAsyncExecuteDelegate;
 
     /// <summary>
     /// The registered CanExecute delegate that accepts a parameter of <typeparamref name="TParam"/>.
@@ -59,15 +59,15 @@ namespace BionicCode.Utilities.Net
     /// </summary>
     /// <param name="executeAsync">The awaitable execute handler.</param>
     /// <param name="canExecute">The can execute handler.</param>
-    protected AsyncRelayCommandCommon(Func<TParam, Task> executeAsync, Predicate<TParam> canExecute)
+    protected AsyncRelayCommandCommon(Func<TParam, Task> executeAsync, Func<TParam, bool> canExecute)
     {
       if (executeAsync is null)
       {
         throw new ArgumentNullException(nameof(executeAsync));
       }
 
-      this.executeCancellableAsyncDelegate = (commandParameter, cancellationToken) => executeAsync.Invoke(commandParameter);
-      this.canExecuteDelegate = canExecute?.ToFunc();
+      this.cancellableAsyncExecuteDelegate = (commandParameter, cancellationToken) => executeAsync.Invoke(commandParameter);
+      this.canExecuteDelegate = canExecute;
     }
 
     /// <summary>
@@ -75,20 +75,18 @@ namespace BionicCode.Utilities.Net
     /// </summary>
     /// <param name="executeAsync">The awaitable execute handler.</param>
     /// <param name="canExecute">The can execute handler.</param>
-    protected AsyncRelayCommandCommon(Func<TParam, CancellationToken, Task> executeAsync, Predicate<TParam> canExecute)
+    protected AsyncRelayCommandCommon(Func<TParam, CancellationToken, Task> executeAsync, Func<TParam, bool> canExecute)
     {
       if (executeAsync is null)
       {
         throw new ArgumentNullException(nameof(executeAsync));
       }
 
-      this.executeCancellableAsyncDelegate = executeAsync;
-      this.canExecuteDelegate = canExecute?.ToFunc();
+      this.cancellableAsyncExecuteDelegate = executeAsync;
+      this.canExecuteDelegate = canExecute;
     }
 
     #endregion Constructors
-
-    public override bool IsAsync => this.executeCancellableAsyncDelegate != null;
 
     /// <summary>
     ///   Determines whether this AsyncRelayCommandCommon can execute.
@@ -109,23 +107,10 @@ namespace BionicCode.Utilities.Net
     public async Task ExecuteAsync(TParam parameter, CancellationToken cancellationToken) => await ExecuteAsync(parameter, Timeout.InfiniteTimeSpan, cancellationToken);
 
     /// <inheritdoc />
-    public async Task ExecuteAsync(TParam parameter, TimeSpan timeout, CancellationToken cancellationToken)
-    {
-      try
-      {
-        await BeginExecuteAsyncCoreAsync(timeout, cancellationToken);
+    public async Task ExecuteAsync(TParam parameter, TimeSpan timeout, CancellationToken cancellationToken) => await ExecuteAsync(parameter, Timeout.InfiniteTimeSpan, timeout, cancellationToken);
 
-        this.CurrentCancellationToken.ThrowIfCancellationRequested();
-        if (this.executeCancellableAsyncDelegate != null)
-        {
-          await this.executeCancellableAsyncDelegate.Invoke(parameter, this.CurrentCancellationToken);
-        }
-      }
-      finally
-      {
-        EndExecuteAyncCore();
-      }
-    }
+    public async Task ExecuteAsync(TParam parameter, TimeSpan pendingTimeout, TimeSpan executingTimeout, CancellationToken cancellationToken)
+      => await ExecuteCoreAsync(ct => this.cancellableAsyncExecuteDelegate(parameter, ct), pendingTimeout, executingTimeout, cancellationToken);
 
     #region ICommand implementation
 #if NET
