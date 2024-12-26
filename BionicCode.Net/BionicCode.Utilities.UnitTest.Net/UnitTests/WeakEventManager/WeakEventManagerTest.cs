@@ -110,12 +110,13 @@
     [Fact]
     public async Task InvokeEventOnBackgroundThread_PassingSynchronizationContext_MustInvokeEventHandlerOnOriginalThread()
     {
-      var currentSynchronizationContext = new TestEnvironmentSynchronizationContext();
-      SynchronizationContext.SetSynchronizationContext(currentSynchronizationContext);
-      _ = this.registrationManager.RegisterEventHandlerWithSynchronizationContext(this.EventSource1, nameof(this.EventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1, currentSynchronizationContext);
-      int currentThreadId = currentSynchronizationContext.ManagedThreadId;
+      this.currentSynchronizationContext = new TestEnvironmentSynchronizationContext();
+      SynchronizationContext.SetSynchronizationContext(this.currentSynchronizationContext);
+      _ = this.registrationManager.RegisterEventHandlerWithSynchronizationContext(this.EventSource1, nameof(this.EventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1, this.currentSynchronizationContext);
+      int currentThreadId = this.currentSynchronizationContext.ManagedThreadId;
 
       await Task.Run(this.EventSource1.OnGenericTestEvent);
+      await this.currentSynchronizationContext?.ShutdownAsync();
 
       _ = eventHandlerInvocationThreadId.Should().Be(currentThreadId);
     }
@@ -123,14 +124,14 @@
     [Fact]
     public async Task InvokeEventOnBackgroundThread_CapturingSynchronizationContext_MustInvokeEventHandlerOnOriginalThread()
     {
-      var currentSynchronizationContext = new TestEnvironmentSynchronizationContext();
-      SynchronizationContext.SetSynchronizationContext(currentSynchronizationContext);
+      this.currentSynchronizationContext = new TestEnvironmentSynchronizationContext();
+      SynchronizationContext.SetSynchronizationContext(this.currentSynchronizationContext);
       currentSynchronizationContext.Send(state => _ = this.registrationManager.RegisterEventHandlerWithCurrentSynchronizationContext(this.EventSource1, nameof(this.EventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1), null);
+      int currentThreadId = this.currentSynchronizationContext.ManagedThreadId;
 
-      int currentThreadId = currentSynchronizationContext.ManagedThreadId;
+      await Task.Factory.StartNew(this.EventSource1.OnGenericTestEvent, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+      await this.currentSynchronizationContext?.ShutdownAsync();
 
-      await Task.Run(this.EventSource1.OnGenericTestEvent);
-      
       _ = eventHandlerInvocationThreadId.Should().Be(currentThreadId);
     }
 
@@ -602,6 +603,8 @@
     private static int eventHandlerInvocationCount;
     private static int eventHandlerInvocationThreadId;
     private bool disposedValue;
+    private TestEnvironmentSynchronizationContext currentSynchronizationContext;
+
     private static bool IsDisposing { get; set; }
 
     protected virtual void Dispose(bool disposing)
@@ -611,6 +614,7 @@
         WeakEventManagerTest.IsDisposing = true;
         if (disposing)
         {
+          this.currentSynchronizationContext = null;
           this.registrationManager.UnregisterAllEventHandlers();
           eventHandlerInvocationCount = 0;
           eventHandlerInvocationThreadId = -1;
@@ -630,52 +634,59 @@
     }
   }
 
-  internal class TestEnvironmentSynchronizationContext : SynchronizationContext, BionicCode.Utilities.Net.idispos
+  internal class TestEnvironmentSynchronizationContext : SynchronizationContext
   {
     public int ManagedThreadId { get; }
-    private readonly Channel<Action> unitOfWorkItemsChannel;
-    private readonly ChannelWriter<Action> unitOfWorkItemsWriter;
-    private readonly ChannelReader<Action> unitOfWorkItemsReader;
     private bool isShutdown;
     private readonly BlockingCollection<Action> unitOfWorkItems;
+    private readonly TaskCompletionSource completionSource;
+    private readonly TaskCompletionSource<bool> unitOfWorkExecutedCompletionSource;
+    private readonly object syncLock;
+    private bool unitOfWorkExecuted;
+    private bool canExecuteUnitOfWork;
 
     public TestEnvironmentSynchronizationContext()
     {
+      this.syncLock = new object();
+      this.completionSource = new TaskCompletionSource();
+      this.unitOfWorkExecutedCompletionSource = new TaskCompletionSource<bool>();
+      this.unitOfWorkExecutedCompletionSource.SetResult(true);
       this.unitOfWorkItems = new BlockingCollection<Action>();
-      var unboundedChannelOptions = new UnboundedChannelOptions()
-      {
-        SingleReader = true,
-        SingleWriter = true,
-      };
 
-      this.unitOfWorkItemsChannel = Channel.CreateUnbounded<Action>(unboundedChannelOptions);
-      this.unitOfWorkItemsWriter = this.unitOfWorkItemsChannel.Writer;
-      this.unitOfWorkItemsReader = this.unitOfWorkItemsChannel.Reader;
       var mainThread = new Thread(OnMessageLoopStarted);
       this.ManagedThreadId = mainThread.ManagedThreadId;
       mainThread.Start();
     }
 
-    public void Shutdown() => this.unitOfWorkItemsWriter.Complete();
+    public async Task ShutdownAsync()
+    {
+      this.unitOfWorkItems.CompleteAdding();
+      await this.completionSource.Task;
+    }
 
-    private async void OnMessageLoopStarted(object obj)
+    private void OnMessageLoopStarted(object obj)
     {
       while (!this.unitOfWorkItems.IsCompleted)
       {
-        if (this.unitOfWorkItems.TryTake(out Action unitOfWorkItem))
+        lock (this.syncLock)
         {
-          unitOfWorkItem.Invoke();
+          if (this.canExecuteUnitOfWork && this.unitOfWorkItems.TryTake(out Action unitOfWorkItem))
+          {
+            unitOfWorkItem.Invoke();
+            this.unitOfWorkExecuted = true;
+          } 
         }
       }
-
+      
       this.isShutdown = true;
+      this.unitOfWorkItems.Dispose();
+      this.completionSource.SetResult();
     }
 
     public override SynchronizationContext CreateCopy() => base.CreateCopy();
     public override void OperationCompleted() => base.OperationCompleted();
     public override void OperationStarted() => base.OperationStarted();
-    public override void Post(SendOrPostCallback d, object state) => Send(d, state);
-    public override void Send(SendOrPostCallback d, object state)
+    public override void Post(SendOrPostCallback d, object state)
     {
       if (this.isShutdown)
       {
@@ -683,7 +694,31 @@
       }
 
       this.unitOfWorkItems.Add(() => d.Invoke(state));
-      //_ = this.unitOfWorkItemsWriter.TryWrite(() => d.Invoke(state));
+    }
+
+    public override void Send(SendOrPostCallback d, object state)
+    {
+      if (this.isShutdown)
+      {
+        throw new InvalidOperationException("SynchronizationContext has been shutdown.");
+      }
+
+      lock (this.syncLock)
+      {
+        this.canExecuteUnitOfWork = false;
+        this.unitOfWorkExecuted = false;
+      }
+
+      this.unitOfWorkItems.Add(() => d.Invoke(state));
+      lock (this.syncLock)
+      {
+        this.canExecuteUnitOfWork = true; 
+      }
+
+      while (!this.unitOfWorkExecuted) 
+      {
+        ;
+      }
     }
 
     public override int Wait(IntPtr[] waitHandles, bool waitAll, int millisecondsTimeout) => base.Wait(waitHandles, waitAll, millisecondsTimeout);
