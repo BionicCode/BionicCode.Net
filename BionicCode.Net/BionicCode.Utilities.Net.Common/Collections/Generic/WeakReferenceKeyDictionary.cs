@@ -19,13 +19,13 @@
 //        this.Id = Guid.NewGuid();
 //        this.HashCode = hashCode;
 //        this.Key = keyValuePair.Key;
-//        this.Value = keyValuePair.Value;
+//        this.ExecuteDelegate = keyValuePair.ExecuteDelegate;
 //        this.KeyValuePair = keyValuePair;
 //      }
 
 //      public int HashCode { get; set; }
 //      public TKey Key { get; set; }
-//      public TValue Value { get; set; }
+//      public TValue ExecuteDelegate { get; set; }
 //      public KeyValuePair<TKey, TValue> KeyValuePair { get; set; }
 //      public Guid Id { get; set; }
 //    }
@@ -52,7 +52,7 @@
 //    {
 //      foreach (KeyValuePair<TKey, Entry> keyValuePair in this.Entries)
 //      {
-//        yield return keyValuePair.Value.KeyValuePair;
+//        yield return keyValuePair.ExecuteDelegate.KeyValuePair;
 //      }
 //    }
 
@@ -114,7 +114,7 @@
 //    {
 //      for (var index = arrayIndex; index < this.Entries.Count; index++)
 //      {
-//        Entry entry = this.Entries.ElementAt(index).Value;
+//        Entry entry = this.Entries.ElementAt(index).ExecuteDelegate;
 //        array[index] = entry.KeyValuePair;
 //      }
 //      if (this.IsAutoPurgeFinalizedItemsEnabled)
@@ -215,7 +215,7 @@
 //    {
 //      if (this.Entries.TryGetValue(key, out Entry entry))
 //      {
-//        value = entry.Value;
+//        value = entry.ExecuteDelegate;
 //        return true;
 //      }
 
@@ -237,7 +237,7 @@
 //      int hashCode = target.GetHashCode();
 //      if (this.TargetTable.TryGetValue(hashCode, out List<Entry> bucket))
 //      {
-//        value = bucket.FirstOrDefault(entry => entry.Key.Target.Equals(target)).Value;
+//        value = bucket.FirstOrDefault(entry => entry.Key.Target.Equals(target)).ExecuteDelegate;
 //        return true;
 //      }
 //      return false;
@@ -270,7 +270,7 @@
 
 //    /// <inheritdoc />
 //    public ICollection<TValue> Values => new ReadOnlyCollection<TValue>(
-//      this.Entries.Values.Select(entry => entry.Value).ToList());
+//      this.Entries.Values.Select(entry => entry.ExecuteDelegate).ToList());
 
 //    #endregion
 
@@ -280,7 +280,7 @@
 //      for (var index = this.TargetTable.Count - 1; index >= 0; index--)
 //      {
 //        KeyValuePair<int, List<Entry>> keyValuePair = this.TargetTable.ElementAt(index);
-//        List<Entry> bucket = keyValuePair.Value;
+//        List<Entry> bucket = keyValuePair.ExecuteDelegate;
 //        for (var bucketIndex = bucket.Count - 1; bucketIndex >= 0; bucketIndex--)
 //        {
 //          Entry entry = bucket[bucketIndex];

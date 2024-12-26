@@ -6,25 +6,25 @@
   using System.Threading;
   using static BionicCode.Utilities.Net.AsyncRelayCommandCommon;
   using System.Windows.Input;
+  using System.Collections.Concurrent;
 
-  public abstract class RelayCommandCore : IRelayCommandCore, IDisposable
+  public abstract class RelayCommandCore : IRelayCommandCore
   {
     private const int MaxDegreeOfParallelism = 1;
 
-    private SemaphoreSlim ExecuteCommandSemaphore => this.executeCommandSemaphoreFactory.Value;
-    private readonly Lazy<SemaphoreSlim> executeCommandSemaphoreFactory;
+    private readonly object syncLock = new object();
+    private readonly ConcurrentQueue<PendingCommandInfo> executeQueue = new ConcurrentQueue<PendingCommandInfo>();
     private CancellationToken currentCancellationToken;
     private bool isCancelled;
     private bool isExecuting;
     private int pendingCount;
-    private bool disposedValue;
 
     /// <inheritdoc />
     public bool CanBeCanceled => this.CurrentCancellationToken.CanBeCanceled;
 
     /// <inheritdoc />
     public CancellationToken CurrentCancellationToken
-    {
+    {      
       get => this.currentCancellationToken;
       internal set
       {
@@ -88,48 +88,86 @@
     public event EventHandler CanExecuteChanged;
 #endif
 
-    protected RelayCommandCore() => this.executeCommandSemaphoreFactory = new Lazy<SemaphoreSlim>(()
-      => new SemaphoreSlim(RelayCommandCore.MaxDegreeOfParallelism, RelayCommandCore.MaxDegreeOfParallelism), isThreadSafe: true);
-
-    protected async void BeginExecuteCore(TimeSpan timeout, CancellationToken cancellationToken)
+    protected void ExecuteCore(Action<CancellationToken> executeDelegate, TimeSpan pendingTimeout, TimeSpan executingTimeout, CancellationToken cancellationToken)
     {
-      // Monitor pending (waiting) command executions and make them cancellable.
-      // We monitor per reentrant call and not per instance.
-      using (var reentrancyMonitor = new ReentrancyMonitor(this, IncrementPendingCount, DecrementPendingCount))
+      var pendingInfo = new PendingCommandInfo(pendingTimeout, DateTime.Now, executeDelegate, executingTimeout, cancellationToken);
+
+      lock (this.syncLock)
       {
-        try
+        if (this.IsExecuting)
         {
-          _ = await this.ExecuteCommandSemaphore.WaitAsync(timeout, reentrancyMonitor.CancellationTokenSource.Token);
+          this.executeQueue.Enqueue(pendingInfo);
+          IncrementPendingCount();
+
+          return;
         }
-        catch (OperationCanceledException)
+
+        this.IsExecuting = true;
+      }
+
+        ExecuteInternal(pendingInfo);
+    }
+
+    private void ExecuteInternal(PendingCommandInfo pendingCommandInfo)
+    {
+      try
+      {
+        DateTime timestamp = DateTime.Now;
+        if (pendingCommandInfo.CancellationToken.IsCancellationRequested)
         {
-          OnPendingCommandsCancelled();
+          OnPendingCommandCancelled();
+          return;
+        }
+
+        TimeSpan elapsedPendingTime = timestamp.Subtract(pendingCommandInfo.Timestamp);
+        if (pendingCommandInfo.PendingTimeout > Timeout.InfiniteTimeSpan && elapsedPendingTime > pendingCommandInfo.PendingTimeout)
+        {
+          OnPendingCommandCancelled();
+          return;
+        }
+
+        this.IsExecuting = true;
+        this.IsCancelled = false;
+
+        this.CommandCancellationTokenSource = new CancellationTokenSource(pendingCommandInfo.ExecutingTimeout);
+        this.MergedCommandCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(
+            pendingCommandInfo.CancellationToken,
+            this.CommandCancellationTokenSource.Token);
+        this.CurrentCancellationToken = this.MergedCommandCancellationTokenSource.Token;
+
+        this.CurrentCancellationToken.ThrowIfCancellationRequested();
+
+        OnExecuting();
+        pendingCommandInfo.ExecuteDelegate?.Invoke(this.CurrentCancellationToken);
+      }
+      finally
+      {
+        EndExecuteCore();
+      }
+    }
+
+    internal void EndExecuteCore()
+    {
+      this.CommandCancellationTokenSource?.Dispose();
+      this.CommandCancellationTokenSource = null;
+      this.MergedCommandCancellationTokenSource?.Dispose();
+      this.MergedCommandCancellationTokenSource = null;
+      OnExecuted();
+
+      PendingCommandInfo pendingInfo;
+      lock (this.syncLock)
+      {
+        if (!this.executeQueue.TryDequeue(out pendingInfo))
+        {
+          this.IsExecuting = false;
+          this.IsCancelled = this.CurrentCancellationToken.IsCancellationRequested;
+
+          return;
         }
       }
 
-      this.IsExecuting = true;
-      this.IsCancelled = false;
-
-      this.CommandCancellationTokenSource = new CancellationTokenSource(timeout);
-      this.MergedCommandCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(
-          cancellationToken,
-          this.CommandCancellationTokenSource.Token);
-      this.CurrentCancellationToken = this.MergedCommandCancellationTokenSource.Token;
-      this.CurrentCancellationToken.ThrowIfCancellationRequested();
-
-      OnExecuting();
-    }
-
-    protected void EndExecuteCore()
-    {
-      this.CommandCancellationTokenSource.Dispose();
-      this.CommandCancellationTokenSource = null;
-      this.MergedCommandCancellationTokenSource.Dispose();
-      this.MergedCommandCancellationTokenSource = null;
-      this.IsExecuting = false;
-      this.IsCancelled = this.CurrentCancellationToken.IsCancellationRequested;
-      _ = this.ExecuteCommandSemaphore.Release();
-      OnExecuted();
+      DecrementPendingCount();
+      ExecuteInternal(pendingInfo);
     }
 
     internal void DecrementPendingCount()
@@ -153,17 +191,30 @@
     /// <inheritdoc />
     public void Cancel(bool throwOnFirstException)
     {
+      if (!this.CanBeCanceled)
+      {
+        return;
+      }
+
       this.CommandCancellationTokenSource?.Cancel(throwOnFirstException);
       this.IsCancelled = true;
     }
 
     /// <inheritdoc />
     public bool CancelPending()
-      => CancelPending(throwOnFirstException: false);
+    {
+      lock (this.syncLock)
+      {
+        bool hasCancelledPending = this.HasPending;
+        while (this.executeQueue.TryDequeue(out _))
+        {
+          DecrementPendingCount();
+          OnPendingCommandCancelled();
+        }
 
-    /// <inheritdoc />
-    public bool CancelPending(bool throwOnFirstException)
-      => ReentrancyMonitor.CancelAll(this, throwOnFirstException);
+        return hasCancelledPending;
+      }
+    }
 
     /// <inheritdoc />
     public bool CancelAll()
@@ -172,9 +223,9 @@
     /// <inheritdoc />
     public bool CancelAll(bool throwOnFirstException)
     {
-      bool hasCancelledActions = CancelPending(throwOnFirstException);
+      bool hasCancelledActions = CancelPending();
 
-      if (!this.IsCancelled)
+      if (this.CanBeCanceled && !this.IsCancelled)
       {
         hasCancelledActions = true;
         Cancel(throwOnFirstException);
@@ -208,7 +259,7 @@
     /// <summary>
     /// Raises the <see cref="IAsyncRelayCommandCore.PendingCommandCancelled"/> event.
     /// </summary>
-    protected virtual void OnPendingCommandsCancelled()
+    protected virtual void OnPendingCommandCancelled()
       => this.PendingCommandCancelled?.Invoke(this, EventArgs.Empty);
 
     /// <summary>
@@ -228,36 +279,5 @@
     /// </summary>
     protected virtual void OnExecuted()
       => this.Executed?.Invoke(this, EventArgs.Empty);
-
-    protected virtual void Dispose(bool disposing)
-    {
-      if (!disposedValue)
-      {
-        if (disposing)
-        {
-          this.ExecuteCommandSemaphore?.Dispose();
-          this.CommandCancellationTokenSource?.Dispose();
-          this.MergedCommandCancellationTokenSource?.Dispose();
-        }
-
-        // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-        // TODO: set large fields to null
-        disposedValue = true;
-      }
-    }
-
-    // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-    // ~AsyncRelayCommandCore()
-    // {
-    //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-    //     Dispose(disposing: false);
-    // }
-
-    public void Dispose()
-    {
-      // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-      Dispose(disposing: true);
-      GC.SuppressFinalize(this);
-    }
   }
 }

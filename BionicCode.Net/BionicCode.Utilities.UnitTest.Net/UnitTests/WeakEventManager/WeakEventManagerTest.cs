@@ -1,17 +1,21 @@
 ﻿namespace BionicCode.Utilities.Net.UnitTest.WeakEventManagerTests
 {
   using System;
+  using System.Collections.Concurrent;
   using System.Collections.Generic;
   using System.Diagnostics;
   using System.Diagnostics.Tracing;
   using System.Linq;
   using System.Runtime.CompilerServices;
+  using System.Threading;
+  using System.Threading.Channels;
   using System.Threading.Tasks;
   using BionicCode.Utilities.Net;
   using BionicCode.Utilities.Net.UnitTest.Resources;
   using FluentAssertions;
   using FluentAssertions.Specialized;
   using Microsoft.CodeAnalysis;
+  using Microsoft.CodeAnalysis.CSharp.Syntax;
   using Xunit;
 
   public class WeakEventManagerTest : IDisposable
@@ -21,6 +25,7 @@
       this.EventSource1 = new TestEventSource1();
       this.EventSource2 = new TestEventSource2();
       eventHandlerInvocationCount = 0;
+      eventHandlerInvocationThreadId = -1;
       this.registrationManager = new EventHandlerRegistrationManager();
     }
 
@@ -82,7 +87,7 @@
     }
 
     [Fact]
-    public void RegisteredHander_GarbageCollectListenerWhileEventSourceIsAlive_MustSucceed()
+    public void RegisteredHandler_GarbageCollectListenerWhileEventSourceIsAlive_MustSucceed()
     {
       WeakReference<TestEventListener> weakReferenceToListener;
       TestEventListener strongReferenceToListener;
@@ -102,10 +107,52 @@
       _ = eventHandlerInvocationCount.Should().Be(1);
     }
 
+    [Fact]
+    public async Task InvokeEventOnBackgroundThread_PassingSynchronizationContext_MustInvokeEventHandlerOnOriginalThread()
+    {
+      var currentSynchronizationContext = new TestEnvironmentSynchronizationContext();
+      SynchronizationContext.SetSynchronizationContext(currentSynchronizationContext);
+      _ = this.registrationManager.RegisterEventHandlerWithSynchronizationContext(this.EventSource1, nameof(this.EventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1, currentSynchronizationContext);
+      int currentThreadId = currentSynchronizationContext.ManagedThreadId;
+
+      await Task.Run(this.EventSource1.OnGenericTestEvent);
+
+      _ = eventHandlerInvocationThreadId.Should().Be(currentThreadId);
+    }
+
+    [Fact]
+    public async Task InvokeEventOnBackgroundThread_CapturingSynchronizationContext_MustInvokeEventHandlerOnOriginalThread()
+    {
+      var currentSynchronizationContext = new TestEnvironmentSynchronizationContext();
+      SynchronizationContext.SetSynchronizationContext(currentSynchronizationContext);
+      currentSynchronizationContext.Send(state => _ = this.registrationManager.RegisterEventHandlerWithCurrentSynchronizationContext(this.EventSource1, nameof(this.EventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1), null);
+
+      int currentThreadId = currentSynchronizationContext.ManagedThreadId;
+
+      await Task.Run(this.EventSource1.OnGenericTestEvent);
+      
+      _ = eventHandlerInvocationThreadId.Should().Be(currentThreadId);
+    }
+
+    [Fact]
+    public async Task InvokeEventOnBackgroundThread_NotPassingSynchronizationContext_MustInvokeEventHandlerOnEventInvocatorThread()
+    {
+      _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(this.EventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1);
+
+      int invocatorThreadId = await Task.Run(() =>
+      {
+        this.EventSource1.OnGenericTestEvent();
+
+        return invocatorThreadId = Thread.CurrentThread.ManagedThreadId;
+      });
+
+      _ = eventHandlerInvocationThreadId.Should().Be(invocatorThreadId);
+    }
+
     [MethodImpl(MethodImplOptions.NoInlining)]
     private void InitializeGcTest(string eventName, out WeakReference<TestEventListener> weakReferenceToListener, out TestEventListener strongReferenceToListener)
     {
-      Action invocationCounterInvocator = () => ++eventHandlerInvocationCount;
+      Action invocationCounterInvocator = WeakEventManagerTest.OnEventInvoked;
       strongReferenceToListener = new TestEventListener();
       weakReferenceToListener = new WeakReference<TestEventListener>(strongReferenceToListener);
       strongReferenceToListener.InitializeWeakEventTest(invocationCounterInvocator, this.registrationManager, this.EventSource1, eventName);
@@ -282,239 +329,278 @@
     }
     private void OnInvalidSender(Point sender, EventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
     }
 
     private void OnInvalidEventArgs(object sender, Point e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
     }
 
     private void OnGenericAllPurposeEventHandler<TSender, TEventArgs>(TSender sender, TEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
     }
 
     private void OnStronglyTypedSenderAndStringEventArgsFromTestEventSourceBase(TestEventSourceBase sender, string e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSourceBase>();
     }
 
     private void OnCustomSignatureTwoParametersTestEvent(int sender, TestEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
     }
 
     private void OnCustomSignatureThreeParametersTestEvent1(object sender, TestEventArgs e, int value)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource1>();
     }
 
     private void OnStronglyTypedSenderAndStringEventArgsFromTestEventSource1(TestEventSource1 sender, string e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource1>();
     }
 
     private void OnStronglyTypedEventArgsFromTestEventSource1<TEventArgs>(object sender, TEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource1>();
     }
 
     private void OnGenericTestEventFromTestEventSource1(object sender, EventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource1>();
     }
 
     private void OnNonGenericTestEventFromTestEventSource1(object sender, EventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource1>();
       //_ = e.Should().BeSameAs(EventArgs.Empty);
     }
 
     private static void OnGenericTestEventFromTestEventSource1Static(object sender, EventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource1>();
     }
 
     private static void OnGenericTestEventFromStaticTestEventSource1Static(object sender, EventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeNull();
     }
 
     private void OnStronglyTypedEventArgsTestEventFromTestEventSource1(object sender, TestEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource1>();
       _ = e.Should().BeOfType<TestEventArgs>();
     }
 
     private static void OnStronglyTypedEventArgsTestEventFromTestEventSource1Static(object sender, TestEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource1>();
       _ = e.Should().BeOfType<TestEventArgs>();
     }
 
     private void OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource1(TestEventSource1 sender, TestEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource1>();
       _ = e.Should().BeOfType<TestEventArgs>();
     }
 
     private static void OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource1Static(TestEventSource1 sender, TestEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource1>();
       _ = e.Should().BeOfType<TestEventArgs>();
     }
 
     private void OnStronglyTypedEventArgsTestEventFromStaticTestEventSource1(TestEventSource1 sender, TestEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeNull();
       _ = e.Should().BeOfType<TestEventArgs>();
     }
 
     private static void OnStronglyTypedEventArgsTestEventFromStaticTestEventSource1Static(object sender, TestEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeNull();
       _ = e.Should().BeOfType<TestEventArgs>();
     }
 
     private void OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource1(TestEventSource1 sender, TestEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeNull();
       _ = e.Should().BeOfType<TestEventArgs>();
     }
 
     private static void OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource1Static(TestEventSource1 sender, TestEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeNull();
       _ = e.Should().BeOfType<TestEventArgs>();
     }
 
     private void OnCustomSignatureThreeParametersTestEvent2(object sender, TestEventArgs e, int value)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource2>();
     }
 
     private void OnStronglyTypedEventArgsFromTestEventSource2<TEventArgs>(object sender, TEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource1>();
     }
 
     private void OnStronglyTypedSenderAndStringEventArgsFromTestEventSource2(TestEventSource2 sender, string e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource2>();
     }
 
     private void OnGenericTestEventFromTestEventSource2(object sender, EventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource2>();
     }
 
     private void OnNonGenericTestEventFromTestEventSource2(object sender, EventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource2>();
       _ = e.Should().BeSameAs(EventArgs.Empty);
     }
 
     private static void OnGenericTestEventFromTestEventSource2Static(object sender, EventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource2>();
     }
 
     private static void OnGenericTestEventFromStaticTestEventSource2Static(object sender, EventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeNull();
     }
 
     private void OnStronglyTypedEventArgsTestEventFromTestEventSource2(object sender, TestEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource2>();
       _ = e.Should().BeOfType<TestEventArgs>();
     }
 
     private static void OnStronglyTypedEventArgsTestEventFromTestEventSource2Static(object sender, TestEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource2>();
       _ = e.Should().BeOfType<TestEventArgs>();
     }
 
     private void OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource2(TestEventSource2 sender, TestEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource2>();
       _ = e.Should().BeOfType<TestEventArgs>();
     }
 
     private static void OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource2Static(TestEventSource2 sender, TestEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource2>();
       _ = e.Should().BeOfType<TestEventArgs>();
     }
 
     private void OnStronglyTypedEventArgsTestEventFromStaticTestEventSource2(TestEventSource2 sender, TestEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeNull();
       _ = e.Should().BeOfType<TestEventArgs>();
     }
 
     private static void OnStronglyTypedEventArgsTestEventFromStaticTestEventSource2Static(object sender, TestEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeNull();
       _ = e.Should().BeOfType<TestEventArgs>();
     }
 
     private void OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource2(TestEventSource2 sender, TestEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeNull();
       _ = e.Should().BeOfType<TestEventArgs>();
     }
 
     private static void OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource2Static(TestEventSource2 sender, TestEventArgs e)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeNull();
       _ = e.Should().BeOfType<TestEventArgs>();
     }
 
     private void OnTestEventFromTestEventSourceWrongSignature(object sender, EventArgs e, int value)
     {
-      eventHandlerInvocationCount++;
+      WeakEventManagerTest.OnEventInvoked();
+
       _ = sender.Should().BeOfType<TestEventSource1>();
       _ = e.Should().BeOfType<EventArgs>();
     }    
+
+    private static void OnEventInvoked()
+    {
+      eventHandlerInvocationThreadId = Thread.CurrentThread.ManagedThreadId;
+      eventHandlerInvocationCount++;
+    }
 
     private readonly EventHandlerRegistrationManager registrationManager;
     private TestEventSource1 EventSource1 { get; set; }
     private TestEventSource2 EventSource2 { get; set; }
     private static int eventHandlerInvocationCount;
+    private static int eventHandlerInvocationThreadId;
     private bool disposedValue;
     private static bool IsDisposing { get; set; }
 
@@ -527,6 +613,7 @@
         {
           this.registrationManager.UnregisterAllEventHandlers();
           eventHandlerInvocationCount = 0;
+          eventHandlerInvocationThreadId = -1;
           GcEx.ForceFullGC();
         }
 
@@ -541,5 +628,64 @@
       Dispose(disposing: true);
       GC.SuppressFinalize(this);
     }
+  }
+
+  internal class TestEnvironmentSynchronizationContext : SynchronizationContext, BionicCode.Utilities.Net.idispos
+  {
+    public int ManagedThreadId { get; }
+    private readonly Channel<Action> unitOfWorkItemsChannel;
+    private readonly ChannelWriter<Action> unitOfWorkItemsWriter;
+    private readonly ChannelReader<Action> unitOfWorkItemsReader;
+    private bool isShutdown;
+    private readonly BlockingCollection<Action> unitOfWorkItems;
+
+    public TestEnvironmentSynchronizationContext()
+    {
+      this.unitOfWorkItems = new BlockingCollection<Action>();
+      var unboundedChannelOptions = new UnboundedChannelOptions()
+      {
+        SingleReader = true,
+        SingleWriter = true,
+      };
+
+      this.unitOfWorkItemsChannel = Channel.CreateUnbounded<Action>(unboundedChannelOptions);
+      this.unitOfWorkItemsWriter = this.unitOfWorkItemsChannel.Writer;
+      this.unitOfWorkItemsReader = this.unitOfWorkItemsChannel.Reader;
+      var mainThread = new Thread(OnMessageLoopStarted);
+      this.ManagedThreadId = mainThread.ManagedThreadId;
+      mainThread.Start();
+    }
+
+    public void Shutdown() => this.unitOfWorkItemsWriter.Complete();
+
+    private async void OnMessageLoopStarted(object obj)
+    {
+      while (!this.unitOfWorkItems.IsCompleted)
+      {
+        if (this.unitOfWorkItems.TryTake(out Action unitOfWorkItem))
+        {
+          unitOfWorkItem.Invoke();
+        }
+      }
+
+      this.isShutdown = true;
+    }
+
+    public override SynchronizationContext CreateCopy() => base.CreateCopy();
+    public override void OperationCompleted() => base.OperationCompleted();
+    public override void OperationStarted() => base.OperationStarted();
+    public override void Post(SendOrPostCallback d, object state) => Send(d, state);
+    public override void Send(SendOrPostCallback d, object state)
+    {
+      if (this.isShutdown)
+      {
+        throw new InvalidOperationException("SynchronizationContext has been shutdown.");
+      }
+
+      this.unitOfWorkItems.Add(() => d.Invoke(state));
+      //_ = this.unitOfWorkItemsWriter.TryWrite(() => d.Invoke(state));
+    }
+
+    public override int Wait(IntPtr[] waitHandles, bool waitAll, int millisecondsTimeout) => base.Wait(waitHandles, waitAll, millisecondsTimeout);
   }
 }

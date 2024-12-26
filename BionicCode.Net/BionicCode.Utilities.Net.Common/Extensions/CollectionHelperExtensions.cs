@@ -566,12 +566,12 @@
     }
 
     /// <summary>
-    /// Adds a range of <c>IEnumerable&lt;(TKey Key,TValue Value)&gt;</c> to the <see cref="IDictionary{TKey,TValue}"/>.
+    /// Adds a range of <c>IEnumerable&lt;(TKey Key,TValue ExecuteDelegate)&gt;</c> to the <see cref="IDictionary{TKey,TValue}"/>.
     /// </summary>
     /// <typeparam name="TKey">The type of the key.</typeparam>
     /// <typeparam name="TValue">The type of the rangeInfo.</typeparam>
     /// <param name="source">The <see cref="IDictionary{TKey,TValue}"/> to modify.</param>
-    /// <param name="range">The <c>IEnumerable&lt;(TKey Key,TValue Value&gt;&gt;</c>  to add.</param>
+    /// <param name="range">The <c>IEnumerable&lt;(TKey Key,TValue ExecuteDelegate&gt;&gt;</c>  to add.</param>
     /// <returns>The original <see cref="IDictionary{TKey, TValue}"/> this method was invoked on to allow method chaining.</returns>
     /// <remarks>Although this method returns a <see cref="IDictionary{TKey, TValue}"/> it modifies the original collection. The rangeInfo is only returned to enable method chaining.</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>

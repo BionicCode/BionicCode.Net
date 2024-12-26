@@ -98,7 +98,7 @@
     public static async Task TimeConsumingMethod<TMethodParam>(int delayInMilliseconds, TMethodParam someValue) => await Task.Delay(TimeSpan.FromMilliseconds(delayInMilliseconds));
 
     [Profile]
-    [ProfilerMethodArgument(100, "Test Value 1", new[] { "1", "2", "3" }, 1)]
+    [ProfilerMethodArgument(100, "Test ExecuteDelegate 1", new[] { "1", "2", "3" }, 1)]
     [DisplayName("RTM")]
     //[ProfilerArgument(10, "2", 2)]
     //[ProfilerArgument(200, "3", 3)]

@@ -111,17 +111,8 @@
     /// <summary>
     /// Cancels all pending command executions.
     /// </summary>    
-    /// <returns><see langword="true"/> if any pending task was cancelled. Otherwise <see langword="false"/>.</returns>
-    /// <remarks>See <see cref="CancellationTokenSource.Cancel()"/> for the exception behavior of this overload.</remarks>
+    /// <returns><see langword="true"/> if any pending task has been cancelled. Otherwise <see langword="false"/>.</returns>
     bool CancelPending();
-
-    /// <summary>
-    /// Cancels all pending command executions.
-    /// </summary>    
-    /// <param name="throwOnFirstException">See <see cref="CancellationTokenSource.Cancel(bool)"/> for the effects of the parameter.</param>
-    /// <returns><see langword="true"/> if any pending task was cancelled. Otherwise <see langword="false"/>.</returns>
-    /// <remarks>See <see cref="CancellationTokenSource.Cancel(bool)"/> for the exception behavior of this overload.</remarks>
-    bool CancelPending(bool throwOnFirstException);
 
     /// <summary>
     /// Raises the <seealso cref="ICommand.CanExecuteChanged"/> event of this particular command only.

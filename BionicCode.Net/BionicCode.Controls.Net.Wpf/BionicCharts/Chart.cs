@@ -344,7 +344,7 @@
     /// Constructor, initializes the GridLength and specifies what kind of value 
     /// it will hold.
     /// </summary>
-    /// <param name="value">Value to be stored by this GridLength 
+    /// <param name="value">ExecuteDelegate to be stored by this GridLength 
     /// instance.</param>
     /// <param name="unit">Types of the value to be stored by this GridLength 
     /// instance.</param>
@@ -361,11 +361,11 @@
     {
       if (double.IsNaN(value))
       {
-        throw new ArgumentException($"Value {nameof(double.NaN)} is not allowed with this constructor.", "value");
+        throw new ArgumentException($"ExecuteDelegate {nameof(double.NaN)} is not allowed with this constructor.", "value");
       }
       if (double.IsInfinity(value))
       {
-        throw new ArgumentException($"Value {nameof(double.PositiveInfinity)} and {nameof(double.NegativeInfinity)} is not allowed with this constructor.", "value");
+        throw new ArgumentException($"ExecuteDelegate {nameof(double.PositiveInfinity)} and {nameof(double.NegativeInfinity)} is not allowed with this constructor.", "value");
       }
       this.Value = unit == ZoomFactorUnit.Auto ? 0.0 : value;
       this.Unit = unit;

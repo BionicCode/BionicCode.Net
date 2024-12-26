@@ -22,7 +22,7 @@
     {
       if (standardDeviation == 0)
       {
-        throw new ArgumentException("Value must be less or greater than '0'.", nameof(standardDeviation));
+        throw new ArgumentException("ExecuteDelegate must be less or greater than '0'.", nameof(standardDeviation));
       }
 
       return EnumerateNormDist(mean, standardDeviation, resolution).ToList();
@@ -42,7 +42,7 @@
     {
       if (standardDeviation == 0)
       {
-        throw new ArgumentException("Value must be less or greater than '0'.", nameof(standardDeviation));
+        throw new ArgumentException("ExecuteDelegate must be less or greater than '0'.", nameof(standardDeviation));
       }
 
       return EnumerateNormDistInternal(mean, standardDeviation, resolution, existingXValues ?? Enumerable.Empty<double>()).ToList();
@@ -59,7 +59,7 @@
     {
       if (standardDeviation == 0)
       {
-        throw new ArgumentException("Value must be less or greater than '0'.", nameof(standardDeviation));
+        throw new ArgumentException("ExecuteDelegate must be less or greater than '0'.", nameof(standardDeviation));
       }
 
       double y = 1 / (standardDeviation * System.Math.Sqrt(2 * System.Math.PI))
@@ -88,7 +88,7 @@
     {
       if (standardDeviation == 0)
       {
-        throw new ArgumentException("Value must be less or greater than 'ß'.", nameof(standardDeviation));
+        throw new ArgumentException("ExecuteDelegate must be less or greater than 'ß'.", nameof(standardDeviation));
       }
 
       double sigma0 = mean;
@@ -184,7 +184,7 @@
     }
 
     public override bool Equals(object obj) => obj is IndexedNumber indexedNumber && Equals(indexedNumber);
-    public override string ToString() => $"Value: {this.Value}; Index: {this.Index}";
+    public override string ToString() => $"ExecuteDelegate: {this.Value}; Index: {this.Index}";
     public int CompareTo(IndexedNumber other) => this.Value.CompareTo(other.Value);
 
     public static bool operator <(IndexedNumber left, IndexedNumber right) => left.CompareTo(right) < 0;

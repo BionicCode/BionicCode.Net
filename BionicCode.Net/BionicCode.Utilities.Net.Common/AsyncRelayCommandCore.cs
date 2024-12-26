@@ -124,9 +124,9 @@
 
     protected void EndExecuteAyncCore()
     {
-      this.CommandCancellationTokenSource.Dispose();
+      this.CommandCancellationTokenSource?.Dispose();
       this.CommandCancellationTokenSource = null;
-      this.MergedCommandCancellationTokenSource.Dispose();
+      this.MergedCommandCancellationTokenSource?.Dispose();
       this.MergedCommandCancellationTokenSource = null;
       this.IsExecuting = false;
       this.IsCancelled = this.CurrentCancellationToken.IsCancellationRequested;

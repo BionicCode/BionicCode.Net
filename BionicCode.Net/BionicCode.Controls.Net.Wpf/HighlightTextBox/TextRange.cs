@@ -16,7 +16,7 @@
     {
       if (begin < 0)
       {
-        throw new ArgumentException("Value must be greater or equal to '0'.", nameof(begin));
+        throw new ArgumentException("ExecuteDelegate must be greater or equal to '0'.", nameof(begin));
       }
 
       if (text is null)

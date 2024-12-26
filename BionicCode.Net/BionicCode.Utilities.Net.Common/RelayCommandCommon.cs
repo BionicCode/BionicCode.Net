@@ -16,7 +16,7 @@
     /// </summary>
     /// <value>
     /// A delegate that supports cancellation and takes a command parameter of <typeparamref name="TParam"/> and returns a <see cref="Task"/>.</value>
-    private readonly Action<CancellationToken> executeCancellableDelegate;
+    private readonly Action<CancellationToken> cancellableExecuteDelegate;
 
     /// <summary>
     /// The registered CanExecute delegate that accepts a parameter of <typeparamref name="TParam"/>.
@@ -36,7 +36,7 @@
     {
       ArgumentNullExceptionEx.ThrowIfNull(execute, nameof(execute));
 
-      this.executeCancellableDelegate = cancellationToken => execute.Invoke();
+      this.cancellableExecuteDelegate = cancellationToken => execute.Invoke();
       this.canExecuteDelegate = () => true;
     }
 
@@ -50,7 +50,7 @@
     {
       ArgumentNullExceptionEx.ThrowIfNull(execute, nameof(execute));
 
-      this.executeCancellableDelegate = execute;
+      this.cancellableExecuteDelegate = execute;
       this.canExecuteDelegate = () => true;
     }
 
@@ -63,7 +63,7 @@
     {
       ArgumentNullExceptionEx.ThrowIfNull(execute, nameof(execute));
 
-      this.executeCancellableDelegate = cancellationToken => execute.Invoke();
+      this.cancellableExecuteDelegate = cancellationToken => execute.Invoke();
       this.canExecuteDelegate = canExecute is null ? () => true : canExecute;
     }
 
@@ -76,7 +76,7 @@
     {
       ArgumentNullExceptionEx.ThrowIfNull(execute, nameof(execute));
 
-      this.executeCancellableDelegate = execute;
+      this.cancellableExecuteDelegate = execute;
       this.canExecuteDelegate = canExecute is null ? () => true : canExecute;
     }
 
@@ -101,20 +101,11 @@
     public void Execute(CancellationToken cancellationToken) => Execute(Timeout.InfiniteTimeSpan, cancellationToken);
 
     /// <inheritdoc />
-    public void Execute(TimeSpan timeout, CancellationToken cancellationToken)
-    {
-      try
-      {
-        BeginExecuteCore(timeout, cancellationToken);
+    public void Execute(TimeSpan timeout, CancellationToken cancellationToken) => Execute(Timeout.InfiniteTimeSpan, timeout, cancellationToken);
 
-        this.CurrentCancellationToken.ThrowIfCancellationRequested();
-        this.executeCancellableDelegate?.Invoke(this.CurrentCancellationToken);
-      }
-      finally
-      {
-        EndExecuteCore();
-      }
-    }
+    /// <inheritdoc />
+    public void Execute(TimeSpan pendingTimeout, TimeSpan executingTimeout, CancellationToken cancellationToken) 
+      => ExecuteCore(this.cancellableExecuteDelegate, pendingTimeout, executingTimeout, cancellationToken);
 
     #region ICommand implementation
 #if NET

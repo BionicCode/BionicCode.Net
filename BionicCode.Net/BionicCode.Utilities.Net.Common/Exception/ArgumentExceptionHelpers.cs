@@ -192,55 +192,55 @@
     [DoesNotReturn]
 #endif
     private static void ThrowZero<T>(T value, string paramName)
-      => throw new System.ArgumentOutOfRangeException(paramName, value, "Value must be non-zero.");
+      => throw new System.ArgumentOutOfRangeException(paramName, value, "ExecuteDelegate must be non-zero.");
 
 #if NET5_0_OR_GREATER || NETCOREAPP || NETSTANDARD2_1_OR_GREATER
     [DoesNotReturn]
 #endif
     private static void ThrowNegative<T>(T value, string paramName)
-      => throw new System.ArgumentOutOfRangeException(paramName, value, "Value must be non-negative.");
+      => throw new System.ArgumentOutOfRangeException(paramName, value, "ExecuteDelegate must be non-negative.");
 
 #if NET5_0_OR_GREATER || NETCOREAPP || NETSTANDARD2_1_OR_GREATER
     [DoesNotReturn]
 #endif
     private static void ThrowNegativeOrZero<T>(T value, string paramName)
-      => throw new System.ArgumentOutOfRangeException(paramName, value, "Value must be non-negative and non-zero.");
+      => throw new System.ArgumentOutOfRangeException(paramName, value, "ExecuteDelegate must be non-negative and non-zero.");
 
 #if NET5_0_OR_GREATER || NETCOREAPP || NETSTANDARD2_1_OR_GREATER
     [DoesNotReturn]
 #endif
     private static void ThrowGreater<T>(T value, T other, string paramName)
-      => throw new System.ArgumentOutOfRangeException(paramName, value, $"Value must be less or equal to {other}");
+      => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be less or equal to {other}");
 
 #if NET5_0_OR_GREATER || NETCOREAPP || NETSTANDARD2_1_OR_GREATER
     [DoesNotReturn]
 #endif
     private static void ThrowGreaterEqual<T>(T value, T other, string paramName)
-      => throw new System.ArgumentOutOfRangeException(paramName, value, $"Value must be less than {other}");
+      => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be less than {other}");
 
 #if NET5_0_OR_GREATER || NETCOREAPP || NETSTANDARD2_1_OR_GREATER
     [DoesNotReturn]
 #endif
     private static void ThrowLess<T>(T value, T other, string paramName)
-      => throw new System.ArgumentOutOfRangeException(paramName, value, $"Value must be greater or equal to {other}");
+      => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be greater or equal to {other}");
 
 #if NET5_0_OR_GREATER || NETCOREAPP || NETSTANDARD2_1_OR_GREATER
     [DoesNotReturn]
 #endif
     private static void ThrowLessEqual<T>(T value, T other, string paramName)
-      => throw new System.ArgumentOutOfRangeException(paramName, value, $"Value must be greater than {other}");
+      => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be greater than {other}");
 
 #if NET5_0_OR_GREATER || NETCOREAPP || NETSTANDARD2_1_OR_GREATER
     [DoesNotReturn]
 #endif
     private static void ThrowEqual<T>(T value, T other, string paramName)
-      => throw new System.ArgumentOutOfRangeException(paramName, value, $"Value must not be equal to {(other?.ToString() ?? "NULL")}");
+      => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must not be equal to {(other?.ToString() ?? "NULL")}");
 
 #if NET5_0_OR_GREATER || NETCOREAPP || NETSTANDARD2_1_OR_GREATER
     [DoesNotReturn]
 #endif
     private static void ThrowNotEqual<T>(T value, T other, string paramName)
-      => throw new System.ArgumentOutOfRangeException(paramName, value, $"Value must be equal to {(other?.ToString() ?? "NULL")}");
+      => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be equal to {(other?.ToString() ?? "NULL")}");
 
     /// <summary>Throws an <see cref="ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is zero.</summary>
     /// <param name="value">The argument to validate as non-zero.</param>

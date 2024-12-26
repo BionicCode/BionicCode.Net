@@ -2,6 +2,7 @@
 {
   using System;
   using System.Collections.Generic;
+  using System.Threading;
   using BionicCode.Utilities.Net;
   using BionicCode.Utilities.Net.UnitTest.Resources;
   using FluentAssertions;
@@ -21,6 +22,26 @@
     public EventHandlerInfo<TestEventSource1> RegisterEventHandler<TEventHandler>(TestEventSource1 eventSource, string eventName, TEventHandler eventHandler) where TEventHandler : Delegate
     {
       WeakEventManager<TestEventSource1>.AddEventHandler(eventSource, eventName, eventHandler);
+      var eventHandlerInfo = new EventHandlerInfo<TestEventSource1>(eventSource, eventName, eventHandler);
+      this.testEventSource1RegisteredEventHandlerInfo.Add(eventHandlerInfo);
+      ++this.RegisteredEventHandlerCount;
+
+      return eventHandlerInfo;
+    }
+
+    public EventHandlerInfo<TestEventSource1> RegisterEventHandlerWithSynchronizationContext<TEventHandler>(TestEventSource1 eventSource, string eventName, TEventHandler eventHandler, SynchronizationContext synchronizationContext) where TEventHandler : Delegate
+    {
+      WeakEventManager<TestEventSource1>.AddEventHandler(eventSource, eventName, eventHandler, synchronizationContext);
+      var eventHandlerInfo = new EventHandlerInfo<TestEventSource1>(eventSource, eventName, eventHandler);
+      this.testEventSource1RegisteredEventHandlerInfo.Add(eventHandlerInfo);
+      ++this.RegisteredEventHandlerCount;
+
+      return eventHandlerInfo;
+    }
+
+    public EventHandlerInfo<TestEventSource1> RegisterEventHandlerWithCurrentSynchronizationContext<TEventHandler>(TestEventSource1 eventSource, string eventName, TEventHandler eventHandler) where TEventHandler : Delegate
+    {
+      WeakEventManager<TestEventSource1>.AddEventHandler(eventSource, eventName, eventHandler, executeOnCurrentSynchronizationContext: true);
       var eventHandlerInfo = new EventHandlerInfo<TestEventSource1>(eventSource, eventName, eventHandler);
       this.testEventSource1RegisteredEventHandlerInfo.Add(eventHandlerInfo);
       ++this.RegisteredEventHandlerCount;

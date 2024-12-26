@@ -953,7 +953,7 @@ namespace BionicCode.Utilities.Net.UnitTest
     //    ProfilerBatchResult profilerBatchResult = await Profiler.LogTimeAsync(() => this.AsyncCancellableTestNoParamCommand.ExecuteAsync(this.Timeout), 1, logger);
     //    ProfilerResult profilerResult = profilerBatchResult.Results.First();
     //    _ = profilerResult.ProfiledTask.Status.Should().Be(TaskStatus.Canceled);
-    //    _ = profilerResult.ElapsedTime.Value.Should().BeGreaterThanOrEqualTo(this.Timeout.TotalMilliseconds * System.Math.Pow(10, 3));
+    //    _ = profilerResult.ElapsedTime.ExecuteDelegate.Should().BeGreaterThanOrEqualTo(this.Timeout.TotalMilliseconds * System.Math.Pow(10, 3));
     //    _ = profilerResult.ElapsedTime.Should().BeLessThanOrEqualTo(this.LongRunningAsyncDelay);
     //  }
     //}

@@ -18,7 +18,7 @@ namespace BionicCode.Utilities.Net
   public class InvertExtension : MarkupExtension
   {
     /// <summary>
-    /// The Value to invert. Can everything that the provided <see cref="ValueInverter"/> can invert. The value can also be a <see cref="BindingBase"/> or any other <see cref="MarkupExtension"/> that can provide the invertible value.
+    /// The ExecuteDelegate to invert. Can everything that the provided <see cref="ValueInverter"/> can invert. The value can also be a <see cref="BindingBase"/> or any other <see cref="MarkupExtension"/> that can provide the invertible value.
     /// </summary>
     /// <value>The value to invert.</value>
     public object Value { get; set; }

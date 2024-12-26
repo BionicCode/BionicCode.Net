@@ -567,7 +567,7 @@
     //    if (profiledPropertyInfo.IsIndexer)
     //    {
     //      var argumentInfo = (KeyValuePair<object, object>)argumentList.FirstOrDefault();
-    //      setMethod = () => profiledPropertyInfo.PropertyInfo.SetValue(targetInstance, argumentInfo.Value, new[] { argumentInfo.Key });
+    //      setMethod = () => profiledPropertyInfo.PropertyInfo.SetValue(targetInstance, argumentInfo.ExecuteDelegate, new[] { argumentInfo.Key });
     //      getMethod = () => profiledPropertyInfo.PropertyInfo.GetValue(targetInstance, new[] { argumentInfo.Key });
     //    }
     //    else

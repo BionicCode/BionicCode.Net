@@ -132,7 +132,7 @@
     {
       bool isValid = count > 0 && count < 100;
       (bool IsValid, IEnumerable<string> ErrorMessages) result = (isValid,
-        isValid ? new List<string>() : new List<string>() { "Value must be between 1 and 100" });
+        isValid ? new List<string>() : new List<string>() { "ExecuteDelegate must be between 1 and 100" });
       return result;
     }
 

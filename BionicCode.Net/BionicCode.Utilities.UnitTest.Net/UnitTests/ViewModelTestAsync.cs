@@ -25,8 +25,8 @@
       this.PropertyChangedEventInvocationCount = 0;
       this.PropertyValueChangedEventInvocationCount = 0;
 
-      this.UppercaseValidationErrorMessage = "Value must be all uppercase, no spaces allowed.";
-      this.StartsWithValidationErrorMessage = $"Value must start with {this.ValidTextValue.First()}.";
+      this.UppercaseValidationErrorMessage = "ExecuteDelegate must be all uppercase, no spaces allowed.";
+      this.StartsWithValidationErrorMessage = $"ExecuteDelegate must start with {this.ValidTextValue.First()}.";
     }
 
     public void Dispose()
