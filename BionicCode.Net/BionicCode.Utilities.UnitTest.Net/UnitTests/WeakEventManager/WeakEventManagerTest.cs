@@ -95,6 +95,7 @@
 
       GcEx.ForceFullGC();
       this.EventSource1?.OnTestEvent();
+      GC.KeepAlive(strongReferenceToListener);
 
       // Garbage collect the listener by discarding the strong reference
       strongReferenceToListener = null;
@@ -262,6 +263,17 @@
       RegisterAllEventHandlersEventSource2();
 
       this.EventSource1.OnCustomHandlerTestEvent();
+
+      _ = eventHandlerInvocationCount.Should().Be(1);
+    }
+
+    [Fact]
+    public void RegisterEventHandler_AllEventTypesAndRaiseCustomThreeParameterHandlerTestEvent_MustInvokeHandlerOnce()
+    {
+      RegisterAllEventHandlersEventSource1();
+      RegisterAllEventHandlersEventSource2();
+
+      this.EventSource1.OnCustomSignatureThreeParametersTestEvent();
 
       _ = eventHandlerInvocationCount.Should().Be(1);
     }

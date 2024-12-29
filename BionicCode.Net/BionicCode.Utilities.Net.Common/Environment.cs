@@ -94,7 +94,7 @@ namespace BionicCode.Utilities.Net
     private static void OnWmiProcessorQueryResultReady(object sender, ObjectReadyEventArgs e)
     {
       int clckSpeed = Convert.ToInt32(e.NewObject["CurrentClockSpeed"]);
-      string processorName = e.NewObject["Name"] as string;
+      string processorName = e.NewObject["MemberName"] as string;
       int numberOfCores = Convert.ToInt32(e.NewObject["NumberOfCores"]);
       int numberOfLogicalCores = Convert.ToInt32(e.NewObject["NumberOfLogicalProcessors"]);
       int threadCount = Convert.ToInt32(e.NewObject["ThreadCount"]);

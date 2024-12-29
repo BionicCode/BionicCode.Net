@@ -62,7 +62,7 @@
 
     public PropertyData GetProperty(string propertyName)
     {
-      ISymbolInfoDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(propertyName, this.Namespace, this.Handle);
+      IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, propertyName);
       if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out PropertyData propertyData))
       {
         return propertyData;
@@ -71,9 +71,9 @@
       throw new ArgumentException($"Unable to find a property named '{propertyName}' on type '{this.Namespace}.{this.Name}'.", nameof(propertyName));
     }
 
-    public MethodData GetMethod(string methodName)
+    public MethodData GetMethod(string methodName, params Type[] parameterList)
     {
-      ISymbolInfoDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(methodName, this.Namespace, this.Handle);
+      IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, methodName, parameterList);
       if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out MethodData methodData))
       {
         return methodData;
@@ -84,7 +84,7 @@
 
     public FieldData GetField(string fieldName)
     {
-      ISymbolInfoDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(fieldName, this.Namespace, this.Handle);
+      IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, fieldName);
       if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out FieldData methodData))
       {
         return methodData;
@@ -95,7 +95,7 @@
 
     public EventData GetEvent(string eventName)
     {
-      ISymbolInfoDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(eventName, this.Namespace, this.Handle);
+      IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, eventName);
       if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out EventData methodData))
       {
         return methodData;
@@ -104,9 +104,9 @@
       throw new ArgumentException($"Unable to find an event named '{eventName}' on type '{this.Namespace}.{this.Name}'.", nameof(eventName));
     }
 
-    public ConstructorData GetConstructor(string constructorName)
+    public ConstructorData GetConstructor(string constructorName, params Type[] parameterList)
     {
-      ISymbolInfoDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(constructorName, this.Namespace, this.Handle);
+      IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, constructorName, parameterList);
       if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out ConstructorData methodData))
       {
         return methodData;

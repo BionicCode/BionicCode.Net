@@ -6,7 +6,7 @@
   /// <summary>
   /// Interface that encapsulates the publisher side API. For example, use this interface to constrain the access to the provided the <see cref="WeakEventAggregator"/> e.g., in context of dependency injection.
   /// </summary>
-  public interface IWeakEventAggregatorPublisher
+  public interface IWeakEventAggregatorPublisherService
   {
     /// <summary>
     /// Register an object as event source for a  specified event.

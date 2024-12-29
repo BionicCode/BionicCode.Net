@@ -32,7 +32,7 @@
     }
 
     public void RegisterDelegate(object eventSource)
-    => RegisterDelegate((TEventSource)eventSource);
+      => RegisterDelegate((TEventSource)eventSource);
 
     public virtual void UnregisterDelegate(object eventSource)
       => UnregisterDelegate((TEventSource)eventSource);

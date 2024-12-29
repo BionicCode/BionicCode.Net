@@ -60,7 +60,7 @@
           throw new ArgumentException($"The event {eventInfo.Name} was not found on the event source {eventSourceType.FullName} or on its declaring base eventHandlerGenericTypeDefinition.");
         }
 
-        Debug.Assert(eventInfo.DeclaringType == eventSourceType);
+        Debug.Assert(eventInfo.ReflectedType == eventSourceType);
 
         AddSourceInstanceInternal(eventSource, eventInfo);
       }
@@ -69,7 +69,7 @@
     public void AddSourceInstanceInternal(object eventSource, EventInfo eventInfo)
     {
       Type eventSourceType = eventSource.GetType();
-      Debug.Assert(eventInfo.DeclaringType == eventSourceType);
+      Debug.Assert(eventInfo.ReflectedType == eventSourceType);
 
       if (this.eventSourceInstances.Contains(eventSource))
       {
@@ -176,6 +176,44 @@
           {
             UnregisterClientHandlersFor(registrar);
           }
+        }
+      }
+    }
+
+    public void UnregisterAll<TObservedEventSource>()
+    {
+      lock (this.syncLock)
+      {
+        Type eventSourceType = typeof(TObservedEventSource);
+        if (!(this.listenerRegistrars.TryGetValue(eventSourceType, out Dictionary<string, List<IClientEventHandlerRegistrar>> listenersForAllEventsOfSourceType)))
+        {
+          return;
+        }
+
+        foreach (KeyValuePair<string, List<IClientEventHandlerRegistrar>> listenersForEventNameEntry in listenersForAllEventsOfSourceType)
+        {
+          foreach (IClientEventHandlerRegistrar registrar in listenersForEventNameEntry.Value)
+          {
+            UnregisterClientHandlersFor(registrar);
+          }
+        }
+      }
+    }
+
+    public void UnregisterEvent<TObservedEventSource>(string eventName)
+    {
+      lock (this.syncLock)
+      {
+        Type eventSourceType = typeof(TObservedEventSource);
+        if (!(this.listenerRegistrars.TryGetValue(eventSourceType, out Dictionary<string, List<IClientEventHandlerRegistrar>> listenersForAllEventsOfSourceType)
+          && listenersForAllEventsOfSourceType.TryGetValue(eventName, out List<IClientEventHandlerRegistrar> listenersForEventName)))
+        {
+          return;
+        }
+
+        foreach (IClientEventHandlerRegistrar registrar in listenersForEventName)
+        {
+          UnregisterClientHandlersFor(registrar);
         }
       }
     }

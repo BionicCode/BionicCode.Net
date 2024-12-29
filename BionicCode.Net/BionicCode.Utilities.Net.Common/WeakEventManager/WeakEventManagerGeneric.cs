@@ -1,6 +1,7 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System;
+  using System.Collections.Concurrent;
   using System.Collections.Generic;
   using System.Diagnostics;
   using System.Diagnostics.Tracing;
@@ -45,51 +46,43 @@
       this.EventSourceType = typeof(TEventSource);
 #endif
 
-      var key = new EventInfoTableKey(eventName, typeof(TEventSource));
-      if (!WeakEventManager.EventInfoTable.TryGetValue(key, out EventInfoTableEntry tableEntry))
+      IMemberDataCacheKey key = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(typeof(TEventSource).TypeHandle, eventName);
+      if (!SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(key, out EventData eventData))
       {
-        // Use BindingFlags.FlattenHierarchy to also get base genericTypeDefinition static events via the subclass (including protected events of the hierarchy and private events of the current genericTypeDefinition)
-        EventInfo eventInfo = typeof(TEventSource).GetEvent(eventName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-        if (eventInfo is null)
-        {
-          throw new ArgumentException($"Unable to find event '{eventName}'. The provided event name must specify an event that must be public, protected (including inherited members) or private and defined on the current TEventSource {typeof(TEventSource).FullName}.", nameof(eventName));
-        }
-
-        EventData eventSourceEventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
-
-        tableEntry = new EventInfoTableEntry(eventSourceEventData);
-        _ = WeakEventManager.EventInfoTable.TryAdd(key, tableEntry);
+        throw new ArgumentException($"Unable to find event '{eventName}' on type {typeof(TEventSource).FullName}. The provided event name must specify an event that must be public, protected (including inherited members) or private and defined on the current TEventSource {typeof(TEventSource).FullName}.", nameof(eventName));
       }
 
-      TypeData eventHandlerTypeData = tableEntry.EventData.EventHandlerTypeData;
+      TypeData eventHandlerTypeData = eventData.EventHandlerTypeData;
       MethodData invocatorData = eventHandlerTypeData.DelegateInvokeMethodData;
       ParameterData[] eventHandlerParameters = invocatorData.Parameters;
       Delegate proxySourceEventHandler = null;
-
+      bool isGenericHandler = false;
+      string proxyDelegateName;
       if (!isCustomClientDelegate
         && invocatorData.Parameters.Length == 2)
       {
-        try
-        {
-          LogDebug($"Using '{nameof(OnStronglyTypedEvent)}' event source proxy event handler.");
-
-          MethodInfo proxySourceEventHandlerMethodInfo = WeakEventManager<TEventSource>.genericHandlerMethodData.MakeGenericMethodInfo(eventHandlerParameters[0].ParameterTypeData.GetType(), eventHandlerParameters[1].ParameterTypeData.GetType());
-          proxySourceEventHandler = Delegate.CreateDelegate(tableEntry.EventData.EventHandlerTypeData.GetType(), this, proxySourceEventHandlerMethodInfo);
-        }
-        catch (ArgumentException e)
-        {
-          string exceptionMessage = string.Format(InternalDelegateSignatureMismatchExceptionMessage, tableEntry.EventData.RuntimeShortSignature, GetType().GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.NonPublic | BindingFlags.Instance).ToRuntimeSignatureShortName());
-
-          throw new EventHandlerMismatchException(exceptionMessage, e);
-        }
+        isGenericHandler = true;
+        proxyDelegateName = nameof(OnStronglyTypedEvent);
+        LogDebug($"Using '{proxyDelegateName}' event source proxy event handler.");
       }
       else
       {
-        proxySourceEventHandler = GenerateEventHandler(eventHandlerParameters, eventHandlerTypeData);
+        proxyDelegateName = nameof(OnEventHandlerCustomDynamicSignature);
         LogDebug("Using dynamically generated event source proxy event handler.");
       }
 
-      this.EventSourceEventData = tableEntry.EventData;
+      try
+      {
+        MemberParameterInfo[] memberParameterInfos = eventHandlerParameters.Select(parameterData => new MemberParameterInfo(parameterData, isGenericHandler)).ToArray();
+        this.ProxyEventHandler = EventHandlerGenerator.Generate<TEventSource>(eventName, GetType(), proxyDelegateName, memberParameterInfos);
+      }
+      catch (ArgumentException e)
+      {
+        string exceptionMessage = string.Format(InternalDelegateSignatureMismatchExceptionMessage, eventData.RuntimeShortSignature, GetType().GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.NonPublic | BindingFlags.Instance).ToRuntimeSignatureShortName());
+        throw new EventHandlerMismatchException(exceptionMessage, e);
+      }
+
+      this.EventSourceEventData = eventData;
       Debug.Assert(this.EventSourceEventData != null);
 
       this.ProxyEventHandler = proxySourceEventHandler;
@@ -199,7 +192,7 @@
 
     private static void AddCustomHandler(object eventSource, string eventName, Delegate handler, SynchronizationContext synchronizationContext)
     {
-      Action<object, object, ClientHandlerInfo> eventHandlerInvocator = (sender, e, handlerInfo) =>
+      Action<object, object[], ClientHandlerInfo> eventHandlerInvocator = (sender, e, handlerInfo) =>
       {
         if (handlerInfo.TryGetClientHandler(out Delegate clientHandler))
         {
@@ -217,13 +210,13 @@
 
     private static void AddGenericEventHandler<TEventArgs>(TEventSource eventSource, string eventName, EventHandler<TEventArgs> handler, SynchronizationContext synchronizationContext)
     {
-      Action<object, object, ClientHandlerInfo> eventHandlerInvocator =
+      Action<object, object[], ClientHandlerInfo> eventHandlerInvocator =
         (sender, e, handlerInfo) =>
         {
           if (handlerInfo.TryGetClientHandler(out Delegate clientHandler))
           {
             var eventHandler = (EventHandler<TEventArgs>)clientHandler;
-            eventHandler.Invoke(sender, (TEventArgs)e);
+            eventHandler.Invoke(sender, (TEventArgs)e.FirstOrDefault());
           }
         };
 
@@ -235,13 +228,13 @@
 
     private static void AddActionHandler<TSender, TEventArgs>(TEventSource eventSource, string eventName, Action<TSender, TEventArgs> handler, SynchronizationContext synchronizationContext)
     {
-      Action<object, object, ClientHandlerInfo> eventHandlerInvocator =
+      Action<object, object[], ClientHandlerInfo> eventHandlerInvocator =
         (sender, e, handlerInfo) =>
         {
           if (handlerInfo.TryGetClientHandler(out Delegate clientHandler))
           {
             var eventHandler = (Action<TSender, TEventArgs>)clientHandler;
-            eventHandler.Invoke((TSender)sender, (TEventArgs)e);
+            eventHandler.Invoke((TSender)sender, (TEventArgs)e.FirstOrDefault());
           }
         };
 
@@ -253,13 +246,13 @@
 
     private static void AddEventHandler(TEventSource eventSource, string eventName, EventHandler handler, SynchronizationContext synchronizationContext)
     {
-      Action<object, object, ClientHandlerInfo> eventHandlerInvocator =
+      Action<object, object[], ClientHandlerInfo> eventHandlerInvocator =
         (sender, e, handlerInfo) =>
         {
           if (handlerInfo.TryGetClientHandler(out Delegate clientHandler))
           {
             var eventHandler = (EventHandler)clientHandler;
-            eventHandler.Invoke(sender, e as EventArgs);
+            eventHandler.Invoke(sender, e.FirstOrDefault() as EventArgs);
           }
         };
 
@@ -313,7 +306,7 @@
 
       //if (eventDelegateMethodParameters[1].ParameterType != typeof(TEventArgs))
       //{
-      //  throw new EventDelegateMismatchException(string.Format(EventDelegateSignatureMismatchWrongGenericClassTypeParameterExceptionMessage, nameof(TEventArgs), eventInfo.Name, typeof(TEventArgs), eventDelegateMethodParameters[1].ParameterType.FullName));
+      //  throw new EventDelegateMismatchException(string.Format(EventDelegateSignatureMismatchWrongGenericClassTypeParameterExceptionMessage, nameof(TEventArgs), eventInfo.MemberName, typeof(TEventArgs), eventDelegateMethodParameters[1].ParameterType.FullName));
       //}
 
       MethodInfo eventHandlerMethod = clientHandler.Method;
@@ -343,7 +336,7 @@
       }
     }
 
-    private static void RegisterClientHandler(Action<object, object, ClientHandlerInfo> clientHandlerAdapterInvocator, Delegate clientHandler, bool isCustomClientDelegate, object eventSource, string eventName, SynchronizationContext capturedSynchronizationContext)
+    private static void RegisterClientHandler(Action<object, object[], ClientHandlerInfo> clientHandlerAdapterInvocator, Delegate clientHandler, bool isCustomClientDelegate, object eventSource, string eventName, SynchronizationContext capturedSynchronizationContext)
     {
       // If the event is a static event, the eventSource is NULL.
 
@@ -376,7 +369,7 @@
       }
     }
 
-    private void RegisterHandler(Action<object, object, ClientHandlerInfo> clientHandlerAdapterInvocator, Delegate clientHandler, object eventSource, SynchronizationContext capturedSynchronizationContext)
+    private void RegisterHandler(Action<object, object[], ClientHandlerInfo> clientHandlerAdapterInvocator, Delegate clientHandler, object eventSource, SynchronizationContext capturedSynchronizationContext)
     {
       try
       {
@@ -606,11 +599,11 @@
 
               if (handlerInfo.ClientContext != null)
               {
-                handlerInfo.ClientContext.Send(state => handlerInfo.ClientAdapterHandler.Invoke(sender, e, handlerInfo), null);
+                handlerInfo.ClientContext.Send(state => handlerInfo.ClientAdapterHandler.Invoke(sender, new object[] { e }, handlerInfo), null);
               }
               else
               {
-                handlerInfo.ClientAdapterHandler.Invoke(sender, e, handlerInfo);
+                handlerInfo.ClientAdapterHandler.Invoke(sender, new object[]{ e }, handlerInfo);
               }
             }
           }
@@ -756,5 +749,103 @@
   internal class DummyEventSourceForStaticEventHandlers
   {
     public static readonly object Instance = new DummyEventSourceForStaticEventHandlers();
+  }
+
+  internal static class EventHandlerGenerator
+  {
+    private static ConcurrentDictionary<EventInfoTableKey, EventInfoTableEntry> EventInfoTable { get; } = new ConcurrentDictionary<EventInfoTableKey, EventInfoTableEntry>();
+
+    public static Delegate Generate<TEventSource>(string eventName, Type target, string proxyDelegateMethodName, MemberParameterInfo[] proxyDelegateMethodParameterList)
+    {
+      ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
+      ArgumentNullExceptionEx.ThrowIfNull(target, nameof(target));
+      ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(proxyDelegateMethodName, nameof(proxyDelegateMethodName));
+
+      var key = new EventInfoTableKey(eventName, typeof(TEventSource));
+      if (!EventHandlerGenerator.EventInfoTable.TryGetValue(key, out EventInfoTableEntry tableEntry))
+      {
+        // Use BindingFlags.FlattenHierarchy to also get base genericTypeDefinition static events via the subclass (including protected events of the hierarchy and private events of the current genericTypeDefinition)
+        EventInfo eventInfo = typeof(TEventSource).GetEvent(eventName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+        if (eventInfo is null)
+        {
+          throw new ArgumentException($"Unable to find event '{eventName}'. The provided event name must specify an event that must be public, protected (including inherited members) or private and defined on the current TEventSource {typeof(TEventSource).FullName}.", nameof(eventName));
+        }
+
+        EventData eventSourceEventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+
+        tableEntry = new EventInfoTableEntry(eventSourceEventData);
+        _ = EventHandlerGenerator.EventInfoTable.TryAdd(key, tableEntry);
+      }
+
+      TypeData eventHandlerTypeData = tableEntry.EventData.EventHandlerTypeData;
+      MethodData invocatorData = eventHandlerTypeData.DelegateInvokeMethodData;
+      ParameterData[] eventHandlerParameters = invocatorData.Parameters;
+
+      IMemberDataCacheKey symbolCacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(target.TypeHandle, proxyDelegateMethodName, proxyDelegateMethodParameterList);
+      if (!SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(symbolCacheKey, out MethodData proxyDelegateMethodData))
+      {
+        throw new ArgumentException($"The provided method {proxyDelegateMethodName} could not be found on the type {target.GetType().FullName}. Please verify the parameter list, the method name and the declaring type.");
+      }
+
+      Delegate proxySourceEventHandler = GenerateEventHandler(eventHandlerParameters, eventHandlerTypeData, proxyDelegateMethodData);
+      LogDebug("Dynamically generated proxy event handler.");
+
+      return proxySourceEventHandler;
+    }
+
+    private static Delegate GenerateEventHandler(ParameterData[] eventHandlerParameters, TypeData eventDelegateTypeData, MethodData proxyDelegateMethodData)
+    {
+      Delegate eventSourceHandler;
+      var expressionParameters = new List<ParameterExpression>();
+      foreach (ParameterData parameter in eventHandlerParameters)
+      {
+        ParameterExpression expressionParameter = Expression.Parameter(parameter.ParameterTypeData.GetType(), parameter.Name);
+        expressionParameters.Add(expressionParameter);
+      }
+
+      IEnumerable<UnaryExpression> castedExpressionParameters = expressionParameters.Select(parameter => Expression.TypeAs(parameter, typeof(object)));
+      NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), castedExpressionParameters);
+      ConstantExpression target = Expression.Constant(proxyDelegateMethodData.DeclaringTypeData.GetType());
+      MethodInfo proxyDelegateMethod = proxyDelegateMethodData.GetMethodInfo();
+      MethodCallExpression method = Expression.Call(target, proxyDelegateMethod, argsArray);
+      Type eventDelegateType = eventDelegateTypeData.GetType();
+      eventSourceHandler = Expression.Lambda(eventDelegateType, method, expressionParameters).Compile();
+
+      return eventSourceHandler;
+    }
+
+    private static void LogDebug(string message)
+    {
+#if DEBUG
+      Debug.WriteLine($"{message}");
+#endif
+    }
+  }
+
+  internal readonly struct MethodDataCacheKey : IEquatable<MethodDataCacheKey>
+  {
+    public MethodDataCacheKey(Type declaringType, string methodName)
+    {
+      this.DeclaringType = declaringType;
+      this.MethodName = methodName;
+    }
+
+    public Type DeclaringType { get; }
+    public string MethodName { get; }
+
+    public bool Equals(MethodDataCacheKey other) => this.DeclaringType.Equals(other.DeclaringType) && this.MethodName.Equals(other.MethodName, StringComparison.OrdinalIgnoreCase);
+
+    public override bool Equals(object obj) => obj is MethodDataCacheKey registrarCacheKey && Equals(registrarCacheKey);
+
+    public override int GetHashCode()
+    {
+      int hashCode = -1091271162;
+      hashCode = hashCode * -1521134295 + EqualityComparer<Type>.Default.GetHashCode(this.DeclaringType);
+      hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(this.MethodName);
+      return hashCode;
+    }
+
+    public static bool operator ==(MethodDataCacheKey left, MethodDataCacheKey right) => left.Equals(right);
+    public static bool operator !=(MethodDataCacheKey left, MethodDataCacheKey right) => !left.Equals(right);
   }
 }

@@ -4,14 +4,17 @@
 
   internal interface ISymbolInfoDataCacheKey : IEquatable<ISymbolInfoDataCacheKey>
   {
-    object[] Arguments { get; }
-    RuntimeTypeHandle DeclaringTypeHandle { get; }
-    string Name { get; }
-    string Namespace { get; }
+    MemberParameterInfo[] ParameterList { get; }
   }
 
-  internal interface ISymbolInfoDataCacheKey<THandle> : ISymbolInfoDataCacheKey, IEquatable<ISymbolInfoDataCacheKey<THandle>>
+  internal interface ITypeDataCacheKey : ISymbolInfoDataCacheKey
   {
-    THandle SymbolHandle { get; }
+    RuntimeTypeHandle TypeHandle { get; }
+  }
+
+  internal interface IMemberDataCacheKey : ISymbolInfoDataCacheKey
+  {
+    string MemberName { get; }
+    RuntimeTypeHandle DeclaringTypeHandle { get; }
   }
 }

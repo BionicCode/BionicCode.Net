@@ -6,7 +6,7 @@
   /// <summary>
   /// The encapsulated listener-side API for the <see cref="EventAggregator"/>.
   /// </summary>
-  [Obsolete("Please use the IWeakEventAggregatorListener along with the WeakEventAggregator implementation instead (same namespace)! This type offers a cleaned-up API and several performance and feature improvements and uses weak events under the hoods.")]
+  [Obsolete("Please use the IWeakEventAggregatorListenerService along with the WeakEventAggregator implementation instead (same namespace)! This type offers a cleaned-up API and several performance and feature improvements and uses weak events under the hoods.")]
   public interface IEventAggregatorListener
   {
 

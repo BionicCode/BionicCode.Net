@@ -498,7 +498,7 @@
     //    //    for (int genericParameterIndex = 0; genericParameterIndex < methodParameters.Length; genericParameterIndex++)
     //    //    {
     //    //      ParameterInfo parameterAtCurrentPosition = methodParameters[genericParameterIndex];
-    //    //      if (parameterAtCurrentPosition.ParameterType.Name.Equals(genericTypeArgument.Name, StringComparison.Ordinal))
+    //    //      if (parameterAtCurrentPosition.ParameterType.MemberName.Equals(genericTypeArgument.MemberName, StringComparison.Ordinal))
     //    //      {
     //    //        object argumentForGenericParameterPosition = argumentList.ElementAt(genericParameterIndex);
     //    //        genericParameterTypes[genericParameterTypesIndex++] = argumentForGenericParameterPosition.GetType();

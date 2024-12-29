@@ -21,17 +21,23 @@
 
     public void Initialize(Action eventAction, WeakEventManagerTests.EventHandlerRegistrationManager registrationManager, TestEventSource1 eventSource)
     {
-      _ = registrationManager.RegisterEventHandler<Action<object, EventArgs>>(eventSource, nameof(TestEventSource1.TestEvent), OnGenericAllPurposeEventHandler);
+      _ = registrationManager.RegisterEventHandler<Action<object, EventArgs>>(eventSource, nameof(TestEventSource1.TestEvent), OnGenericAllPurposeTwoParameterEventHandler);
       this.eventAction = eventAction;
     }
 
     public void InitializeWeakEventTest(Action eventAction, WeakEventManagerTests.EventHandlerRegistrationManager registrationManager, TestEventSource1 eventSource, string eventName)
     {
-      registrationManager.RegisterEventHandlerWithoutEventSource<Action<object, EventArgs>>(eventSource, eventName, OnGenericAllPurposeEventHandler);
+      registrationManager.RegisterEventHandlerWithoutEventSource<Action<object, EventArgs>>(eventSource, eventName, OnGenericAllPurposeTwoParameterEventHandler);
       this.eventAction = eventAction;
     }
 
-    public void OnGenericAllPurposeEventHandler<TSender, TEventArgs>(TSender sender, TEventArgs e)
+    public void OnGenericAllPurposeTwoParameterEventHandler<TSender, TEventArgs>(TSender sender, TEventArgs e)
+    {
+      ++this.EventHandlerInvocationCount;
+      this.eventAction?.Invoke();
+    }
+
+    public void OnGenericAllPurposeThreeParameterEventHandler<TValue1, TValue2, TValue3>(TValue1 value1, TValue2 value2, TValue3 value3)
     {
       ++this.EventHandlerInvocationCount;
       this.eventAction?.Invoke();
@@ -96,6 +102,8 @@
       OnGenericTestEventForStaticHandlers ();
       OnCustomHandlerTestEvent();
       OnCustomHandlerTestEventForStaticHandlers();
+      OnCustomSignatureTwoParametersTestEvent();
+      OnCustomSignatureThreeParametersTestEvent();
       OnStringEventArgsTestEvent();
     }
   }

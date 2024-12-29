@@ -5,7 +5,7 @@
 
   internal class ClientHandlerInfo : IDisposable
   {
-    public ClientHandlerInfo(Delegate clientHandler, Action<object, object, ClientHandlerInfo> clientAdapterHandler, SynchronizationContext clientContext)
+    public ClientHandlerInfo(Delegate clientHandler, Action<object, object[], ClientHandlerInfo> clientAdapterHandler, SynchronizationContext clientContext)
     {
       this.clientHandler = clientHandler;
       this.ClientAdapterHandler = clientAdapterHandler;
@@ -33,7 +33,7 @@
 
     public event EventHandler Disposed;
     public bool IsDisposed { get; private set; }
-    public Action<object, object, ClientHandlerInfo> ClientAdapterHandler { get; }
+    public Action<object, object[], ClientHandlerInfo> ClientAdapterHandler { get; }
     public SynchronizationContext ClientContext { get; }
     public bool IsClientHandlerAlive => !this.IsDisposed && this.clientHandler != null;
     private Delegate clientHandler;

@@ -8,7 +8,7 @@ namespace BionicCode.Controls.Net.Wpf
   /// </summary>
   /// <example>
   /// <code>
-  /// &lt;BionicSwipePageFrame x:Name="PageFrame" Height="500" &gt;
+  /// &lt;BionicSwipePageFrame x:MemberName="PageFrame" Height="500" &gt;
   ///   &lt;BionicSwipePage&gt;First XAML created page&lt;/BionicSwipePage&gt;
   ///   &lt;BionicSwipePage&gt;Second XAML created page&lt;/BionicSwipePage&gt;
   ///   &lt;BionicSwipePage&gt;Third XAML created page&lt;/BionicSwipePage&gt;

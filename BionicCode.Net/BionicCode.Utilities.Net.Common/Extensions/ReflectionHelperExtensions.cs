@@ -631,7 +631,7 @@
     //      ParameterInfo[] parameters = methodInfo.GetParameters();
     //      foreach (ParameterInfo parameter in parameters)
     //      {
-    //        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.Name))
+    //        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.MemberName))
     //          .WithType(SyntaxFactory.IdentifierName(ToDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
 
     //        if (parameter.IsRef())
@@ -656,7 +656,7 @@
     //        //  {
     //        //    var argumentSyntax = SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression)
     //        //  }
-    //        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.Name, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
+    //        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.MemberName, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
     //        //  parameterSyntax = parameterSyntax.AddAttributeLists(attributeSyntax);
     //        //}
     //        methodGraph = methodGraph.AddParameterListParameters(parameterSyntax);
@@ -722,7 +722,7 @@
     //      ParameterInfo[] parameters = methodInfo.GetParameters();
     //      foreach (ParameterInfo parameter in parameters)
     //      {
-    //        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.Name))
+    //        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.MemberName))
     //          .WithType(SyntaxFactory.IdentifierName(ToDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
 
     //        if (parameter.IsRef())
@@ -747,7 +747,7 @@
     //        //  {
     //        //    var argumentSyntax = SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression)
     //        //  }
-    //        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.Name, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
+    //        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.MemberName, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
     //        //  parameterSyntax = parameterSyntax.AddAttributeLists(attributeSyntax);
     //        //}
     //        methodGraph = methodGraph.AddParameterListParameters(parameterSyntax);
@@ -901,17 +901,17 @@
     //      {
     //        if (memberInfo.DeclaringType.IsGenericType)
     //        {
-    //          int genericTypeArgumentPlaceholderIndex = memberInfo.DeclaringType.Name.IndexOf('`');
-    //          return nameBuilder.Append(memberInfo.DeclaringType.Name, 0, genericTypeArgumentPlaceholderIndex);
+    //          int genericTypeArgumentPlaceholderIndex = memberInfo.DeclaringType.MemberName.IndexOf('`');
+    //          return nameBuilder.Append(memberInfo.DeclaringType.MemberName, 0, genericTypeArgumentPlaceholderIndex);
     //        }
     //        else
     //        {
-    //          return nameBuilder.Append(memberInfo.DeclaringType.Name);
+    //          return nameBuilder.Append(memberInfo.DeclaringType.MemberName);
     //        }
     //      }
     //      else
     //      {
-    //        return nameBuilder.Append(memberInfo.Name);
+    //        return nameBuilder.Append(memberInfo.MemberName);
     //      }
     //    }
     //    private static SymbolAttributes GetKind(this MemberInfo memberInfo)
@@ -926,7 +926,7 @@
     //      var fieldInfo = memberInfo as FieldInfo;
     //      var eventInfo = memberInfo as EventInfo;
     //      MethodInfo eventAddMethodInfo = eventInfo?.GetAddMethod(true);
-    //      FieldInfo eventDeclaredFieldInfo = eventInfo?.DeclaringType.GetField(eventInfo.Name, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+    //      FieldInfo eventDeclaredFieldInfo = eventInfo?.DeclaringType.GetField(eventInfo.MemberName, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
     //      ParameterInfo[] indexerPropertyIndexParameters = propertyInfo?.GetIndexParameters() ?? Array.Empty<ParameterInfo>();
 
@@ -1380,7 +1380,7 @@
     //          _ = signatureNameBuilder
     //            .AppendDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isDeclaringTypeIncluded: false)
     //            .Append(' ')
-    //            .Append(parameter.Name)
+    //            .Append(parameter.MemberName)
     //            .Append(HelperExtensionsCommon.ParameterSeparator);
     //        }
 
@@ -1475,13 +1475,13 @@
 
     //      if (isSubclass)
     //      {
-    //        _ = memberNameBuilder.Append(isFullyQualified ? typeData.BaseType.FullName : typeData.BaseType.Name)
+    //        _ = memberNameBuilder.Append(isFullyQualified ? typeData.BaseType.FullName : typeData.BaseType.MemberName)
     //          .Append(HelperExtensionsCommon.ParameterSeparator);
     //      }
 
     //      foreach (Type interfaceData in interfaces)
     //      {
-    //        _ = memberNameBuilder.Append(isFullyQualified ? interfaceData.FullName : interfaceData.Name)
+    //        _ = memberNameBuilder.Append(isFullyQualified ? interfaceData.FullName : interfaceData.MemberName)
     //          .Append(HelperExtensionsCommon.ParameterSeparator);
     //      }
 
@@ -1526,7 +1526,7 @@
 
     //        _ = constraintBuilder.Append("where")
     //          .Append(' ')
-    //          .Append(genericTypeDefinitionData.Name)
+    //          .Append(genericTypeDefinitionData.MemberName)
     //          .Append(" : ");
 
     //        if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0)
@@ -4316,7 +4316,7 @@
 
     //      //foreach (MethodInfo extensionMethodCandidate in type.GetMethods(BindingFlags.Static | BindingFlags.Public))
     //      //{
-    //      //  if (!extensionMethodCandidate.Name.Equals(nameof(Task.GetAwaiter), StringComparison.Ordinal))
+    //      //  if (!extensionMethodCandidate.MemberName.Equals(nameof(Task.GetAwaiter), StringComparison.Ordinal))
     //      //  {
     //      //    continue;
     //      //  }

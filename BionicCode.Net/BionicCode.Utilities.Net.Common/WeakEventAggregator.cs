@@ -16,7 +16,7 @@
   using System.Threading;
 
   /// <inheritdoc />
-  public class WeakEventAggregator : IWeakEventAggregator, IWeakEventAggregatorListener, IWeakEventAggregatorPublisher
+  public class WeakEventAggregator : IWeakEventAggregator, IWeakEventAggregatorListenerService, IWeakEventAggregatorPublisherService
   {
     /// <summary>
     /// Default constructor.
@@ -156,17 +156,27 @@
       else if (isGenericEventHandler && eventHandlerTypeDefinition == typeof(EventHandler<>))
       {
         Type eventArgsType = eventHandlerType.GetGenericArguments()[0];
-        clientEventHandlerRegistrar = (IClientEventHandlerRegistrar)typeof(EventHandlerGenericRegistrar<,>).MakeGenericType(typeof(TEventSource), eventArgsType)
-          .GetConstructor(new Type[] { eventHandlerType, typeof(string) })
-          .Invoke(new object[] { eventHandler, eventName, synchronizationContext });
+        var registrarFactoryCacheKey = new RegistrarCacheKey(typeof(TEventSource), eventArgsType);
+        if (!WeakEventAggregator.RegistrarCache.TryGetValue(registrarFactoryCacheKey, out Func<Delegate, string, SynchronizationContext, IClientEventHandlerRegistrar> registrarFactory))
+        {
+          registrarFactory = GenerateRegistrarFactory(eventHandlerType, typeof(TEventSource), typeof(EventHandlerGenericRegistrar<,>), null, eventArgsType);
+          WeakEventAggregator.RegistrarCache.Add(registrarFactoryCacheKey, registrarFactory);
+        }
+
+        clientEventHandlerRegistrar = registrarFactory.Invoke(eventHandler, eventName, synchronizationContext);
       }
       else if (isGenericEventHandler && eventHandlerTypeDefinition == typeof(Action<,>))
       {
         Type eventSenderType = eventHandlerType.GetGenericArguments()[0];
         Type eventArgsType = eventHandlerType.GetGenericArguments()[1];
-        clientEventHandlerRegistrar = (IClientEventHandlerRegistrar)typeof(ActionRegistrar<,,>).MakeGenericType(typeof(TEventSource), eventSenderType, eventArgsType)
-          .GetConstructor(new Type[] { eventHandlerType, typeof(string) })
-          .Invoke(new object[] { eventHandler, eventName, synchronizationContext });
+        var registrarFactoryCacheKey = new RegistrarCacheKey(eventSenderType, eventArgsType);
+        if (!WeakEventAggregator.RegistrarCache.TryGetValue(registrarFactoryCacheKey, out Func<Delegate, string, SynchronizationContext, IClientEventHandlerRegistrar> registrarFactory))
+        {
+          registrarFactory = GenerateRegistrarFactory(eventHandlerType, typeof(TEventSource), typeof(ActionRegistrar<,,>), eventSenderType, eventArgsType);
+          WeakEventAggregator.RegistrarCache.Add(registrarFactoryCacheKey, registrarFactory);
+        }
+
+        clientEventHandlerRegistrar = registrarFactory.Invoke(eventHandler, eventName, synchronizationContext);
       }
       else
       {
@@ -176,9 +186,47 @@
       this.registrationService.RegisterHandler(clientEventHandlerRegistrar);
     }
 
+    private Func<Delegate, string, SynchronizationContext, IClientEventHandlerRegistrar> GenerateRegistrarFactory(Type eventHandlerType, Type eventSourceType, Type registrarOpenType, Type eventSenderType, Type eventArgsType)
+    {
+      ConstructorInfo constructorInfo = eventSenderType != null
+        ? registrarOpenType.MakeGenericType(eventSourceType, eventSenderType, eventArgsType)
+            .GetConstructor(new Type[] { eventHandlerType, typeof(string), typeof(SynchronizationContext) })
+        : registrarOpenType.MakeGenericType(eventSourceType, eventArgsType)
+            .GetConstructor(new Type[] { eventHandlerType, typeof(string), typeof(SynchronizationContext) });
+
+      ParameterExpression delegateParameterExpression = Expression.Parameter(typeof(Delegate), "eventHandler");
+      UnaryExpression eventHandlerParameterExpression = Expression.TypeAs(delegateParameterExpression, eventHandlerType);
+      ParameterExpression eventNameParameterExpression = Expression.Parameter(typeof(string), "eventName");
+      ParameterExpression synchronizationContextParameterExpression = Expression.Parameter(typeof(SynchronizationContext), "synchronizationContext");
+      NewExpression registrarConstructorExpression = Expression.New(constructorInfo, eventHandlerParameterExpression, eventNameParameterExpression, synchronizationContextParameterExpression);
+      MemberInitExpression memberInitExpression = Expression.MemberInit(registrarConstructorExpression);
+      Func<Delegate, string, SynchronizationContext, IClientEventHandlerRegistrar>  eventSourceHandler = Expression.Lambda<Func<Delegate, string, SynchronizationContext, IClientEventHandlerRegistrar>>(memberInitExpression, delegateParameterExpression, eventNameParameterExpression, synchronizationContextParameterExpression).Compile();
+
+      return eventSourceHandler;
+    }
+
+    private Delegate GenerateEventHandler(ParameterData[] eventHandlerParameters, TypeData eventDelegateTypeData)
+    {
+      Delegate eventSourceHandler;
+      var expressionParameters = new List<ParameterExpression>();
+      foreach (ParameterData parameter in eventHandlerParameters)
+      {
+        ParameterExpression expressionParameter = Expression.Parameter(parameter.ParameterTypeData.GetType(), parameter.Name);
+        expressionParameters.Add(expressionParameter);
+      }
+
+      IEnumerable<UnaryExpression> castedExpressionParameters = expressionParameters.Select(parameter => Expression.TypeAs(parameter, typeof(object)));
+      NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), castedExpressionParameters);
+      ConstantExpression target = Expression.Constant(this);
+      MethodInfo proxyDelegateMethod = WeakEventManager<TEventSource>.customHandlerMethodData.GetMethodInfo();
+      MethodCallExpression method = Expression.Call(target, proxyDelegateMethod, argsArray);
+      Type eventDelegateType = eventDelegateTypeData.GetType();
+      eventSourceHandler = Expression.Lambda(eventDelegateType, method, expressionParameters).Compile();
+
+      return eventSourceHandler;
+    }
+
     /// <inheritdoc />
-    /// <exception cref="ArgumentNullException">The <paramref name="eventHandler"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">The <paramref name="eventName"/> is <see langword="null"/> or an empty string.</exception>
     public void StopListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler) where TDelegate : Delegate
     {
       ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
@@ -186,6 +234,18 @@
 
       this.registrationService.UnregisterHandler<TEventSource>(eventName, eventHandler);
     }
+
+    /// <inheritdoc />
+    public void StopListeningAll<TEventSource>(string eventName)
+    {
+      ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
+
+      this.registrationService.UnregisterEvent<TEventSource>(eventName);
+    }
+
+    /// <inheritdoc />
+    public void StopListeningAll<TEventSource>() 
+      => this.registrationService.UnregisterAll<TEventSource>();
 
     private void ThrowIfEventHandlerInvalid<TEventSource>(EventInfoTableEntry entry, Delegate eventHandler)
     {
@@ -213,5 +273,32 @@
     #endregion Implementation of IWeakEventAggregator
 
     private readonly WeakEventRegistrationService registrationService;
+    private static readonly Dictionary<RegistrarCacheKey, Func<Delegate, string, SynchronizationContext, IClientEventHandlerRegistrar>> RegistrarCache = new Dictionary<RegistrarCacheKey, Func<Delegate, string, SynchronizationContext, IClientEventHandlerRegistrar>>();
+  }
+
+  internal readonly struct RegistrarCacheKey : IEquatable<RegistrarCacheKey>
+  {
+    public RegistrarCacheKey(Type senderType, Type eventArgsType)
+    {
+      this.SenderType = senderType;
+      this.EventArgsType = eventArgsType;
+    }
+
+    public Type SenderType { get; }
+    public Type EventArgsType { get; }
+
+    public bool Equals(RegistrarCacheKey other) => this.SenderType.Equals(other.SenderType) && this.EventArgsType.Equals(other.EventArgsType);
+    public override bool Equals(object obj) => obj is RegistrarCacheKey registrarCacheKey && Equals(registrarCacheKey);
+
+    public override int GetHashCode()
+    {
+      int hashCode = -1091271162;
+      hashCode = hashCode * -1521134295 + EqualityComparer<Type>.Default.GetHashCode(this.SenderType);
+      hashCode = hashCode * -1521134295 + EqualityComparer<Type>.Default.GetHashCode(this.EventArgsType);
+      return hashCode;
+    }
+
+    public static bool operator==(RegistrarCacheKey left, RegistrarCacheKey right) => left.Equals(right);
+    public static bool operator!=(RegistrarCacheKey left, RegistrarCacheKey right) => !left.Equals(right);
   }
 }
