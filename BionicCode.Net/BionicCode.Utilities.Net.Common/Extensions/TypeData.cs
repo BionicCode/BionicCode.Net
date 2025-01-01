@@ -71,7 +71,7 @@
       throw new ArgumentException($"Unable to find a property named '{propertyName}' on type '{this.Namespace}.{this.Name}'.", nameof(propertyName));
     }
 
-    public MethodData GetMethod(string methodName, params Type[] parameterList)
+    public MethodData GetMethod(string methodName, params MemberParameterInfo[] parameterList)
     {
       IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, methodName, parameterList);
       if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out MethodData methodData))
@@ -106,7 +106,8 @@
 
     public ConstructorData GetConstructor(string constructorName, params Type[] parameterList)
     {
-      IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, constructorName, parameterList);
+      MemberParameterInfo[] parameterListInfos = MemberParameterInfo.ConvertFrom(parameterList);
+      IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, constructorName, parameterListInfos);
       if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out ConstructorData methodData))
       {
         return methodData;
@@ -256,6 +257,11 @@
     {
       get
       {
+        if (!this.IsDelegate)
+        {
+          throw new InvalidOperationException($"The current type is not a delegate. Call {nameof(this.IsDelegate)} to check whether the current type is a delegate.");
+        }
+
         if (this.delegateInvokeMethodData is null)
         {
           MethodInfo methodInfo = GetType().GetMethod("Invoke");

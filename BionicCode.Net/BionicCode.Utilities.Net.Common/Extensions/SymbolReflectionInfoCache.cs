@@ -267,22 +267,68 @@
       eventData = null;
 
       if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
-      {
-        MethodInfo methodInfo = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle).GetMethod(cacheKey.MemberName, SymbolInfoData.AllMembersFlags);
+      {        
+        Type[] parameterTypes = cacheKey.ParameterList
+          .Select(parameter => parameter.ParameterType)
+          .ToArray();
+
+        Type[] genericTypeParameters = cacheKey.ParameterList
+          .Where(parameter => parameter.IsGenericTypeParameter)
+          .Select(parameter => parameter.ParameterType)
+          .ToArray();
+
+        MethodInfo methodInfo = null;
+        var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
+#if NET9_0_OR_GREATER
+
+        methodInfo = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle).GetMethod(cacheKey.MemberName, genericTypeParameters.Length, SymbolInfoData.AllMembersFlags, parameterTypes);
+#else
+        List<MethodInfo> methodInfoCandidates = declaringType.GetMethods(SymbolInfoData.AllMembersFlags)
+          .Where(method => method.Name.Equals(cacheKey.MemberName, StringComparison.Ordinal))
+          .ToList();
+        if (methodInfoCandidates.Count > 1)
+        {
+          foreach (MethodInfo candidate in methodInfoCandidates.Where(method => methodInfo.GetParameters().Length == parameterTypes.Length))
+          {
+            ParameterInfo[] candidateParameters = candidate.GetParameters();
+            bool hasMismatch = false;
+            for (int parameterIndex = 0; parameterIndex < parameterTypes.Length; parameterIndex++) 
+            {
+              MemberParameterInfo predicateParameterInfo = cacheKey.ParameterList[parameterIndex];
+              ParameterInfo candidateParameterInfo = candidateParameters[parameterIndex];
+              Type candidateParameterType = candidateParameterInfo.ParameterType;
+
+              if (predicateParameterInfo.IsGenericTypeParameter != candidateParameterType.IsGenericParameter 
+                && predicateParameterInfo.ParameterType != candidateParameterInfo.ParameterType)
+              {
+                hasMismatch = true;
+                break;
+              }
+            }
+
+            if (!hasMismatch)
+            {
+              methodInfo = candidate;
+              break;
+            }
+          }
+        }
+        else
+        {
+          methodInfo = methodInfoCandidates.FirstOrDefault();
+        }
+#endif
+
         if (methodInfo is null)
         {
           return false;
         }
 
-        if (methodInfo.ContainsGenericParameters || methodInfo.IsGenericMethodDefinition)
+        if (methodInfo.ContainsGenericParameters || methodInfo.IsGenericMethodDefinition)        
         {
-          Type[] genericTypeParameters = cacheKey.ParameterList
-            .Where(parameter => parameter.IsGenericTypeParameter)
-            .Select(parameter => parameter.ParameterType)
-            .ToArray();
-          if (genericTypeParameters.Length < methodInfo.GetGenericArguments().Length) 
+          if (genericTypeParameters.Length != methodInfo.GetGenericArguments().Length) 
           {
-            throw new InvalidOperationException($"The provided count of generic type parameters does not match the number of generic type arguments required by the method {methodInfo.ToFullDisplayName()}.");
+            throw new InvalidOperationException($"The number of provided generic tpe arguments ({genericTypeParameters.Length}) does not match the generic type parameter count found on method {methodInfo.ToSignatureShortName()}.");
           }
 
           methodInfo = methodInfo.MakeGenericMethod(genericTypeParameters);

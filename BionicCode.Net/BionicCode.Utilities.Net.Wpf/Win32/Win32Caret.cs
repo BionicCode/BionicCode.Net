@@ -57,9 +57,9 @@
     /// Create and show a caret for the current hosting Window.
     /// </summary>
     /// <param name="caretInfo">Defines the properties of the caret.</param>
-    /// <returns><c>true</c> if the operation was successfull. Returns <c>false</c> if the creation has failed ot the caret is already visible.</returns>
+    /// <returns><c>true</c> if the operation was successful. Returns <c>false</c> if the creation has failed or the caret is already visible.</returns>
     /// <remarks>To create multiple carets, create the required number of <see cref="Win32Caret"/> instances.</remarks>
-    /// <exception cref="InvalidOperationException">The caret was already detroyed.</exception>
+    /// <exception cref="InvalidOperationException">The caret was already destroyed.</exception>
     /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showcaret">ShowCaret function (winuser.h)</seealso>
     public bool Show(CaretInfo caretInfo)
     {
@@ -67,7 +67,7 @@
       switch (this.CaretVisibility)
       {
         case CaretVisibility.Destroyed:
-          throw new InvalidOperationException("The caret was already detroyed.");
+          throw new InvalidOperationException("The caret was already destroyed.");
         case CaretVisibility.Visible:
           return false;
         case CaretVisibility.Hidden:
@@ -89,9 +89,9 @@
     /// <summary>
     /// Destroys the Win32 caret and disposes the current instance.
     /// </summary>
-    /// <returns><c>true</c> if successfull.</returns>
+    /// <returns><c>true</c> if successful.</returns>
     /// <remarks>To temporarily hide the caret call <see cref="Hide"/> instead.</remarks>
-    /// <exception cref="InvalidOperationException">The caret was already detroyed.</exception>
+    /// <exception cref="InvalidOperationException">The caret was already destroyed.</exception>
     /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroycaret">DestroyCaret function (winuser.h)</seealso>
     public bool Destroy()
     {
@@ -107,9 +107,9 @@
     /// <summary>
     /// Hides the caret, but does not destroy it.
     /// </summary>
-    /// <returns><c>true</c> if successfull.</returns>
+    /// <returns><c>true</c> if successful.</returns>
     /// <remarks>To destroy the caret call <see cref="Destroy"/> or <see cref="IDisposable.Dispose"/>.</remarks>
-    /// <exception cref="InvalidOperationException">The caret was already detroyed.</exception>
+    /// <exception cref="InvalidOperationException">The caret was already destroyed.</exception>
     /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-hidecaret">HideCaret function (winuser.h)</seealso>
     public bool Hide()
     {

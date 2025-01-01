@@ -79,7 +79,7 @@
       PropertyChangedEventManager.AddHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
 #else
       // TODO::Use custom WeakEventManager for .NET Standard support
-      WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddEventHandler(propertyChangedItem, nameof(INotifyPropertyChanged.PropertyChanged), OnItemPropertyChanged);
+      WeakEventManager<INotifyPropertyChanged>.AddEventHandler<PropertyChangedEventHandler>(propertyChangedItem, nameof(INotifyPropertyChanged.PropertyChanged), OnItemPropertyChanged);
 #endif
 
     private void StopListenToItemPropertyChanged(INotifyPropertyChanged propertyChangedItem) =>
@@ -87,7 +87,7 @@
       PropertyChangedEventManager.RemoveHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
 #else
       // TODO::Use custom WeakEventManager for .NET Standard support
-      WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.RemoveEventHandler(propertyChangedItem, nameof(INotifyPropertyChanged.PropertyChanged), OnItemPropertyChanged);
+      WeakEventManager<INotifyPropertyChanged>.RemoveEventHandler<PropertyChangedEventHandler>(propertyChangedItem, nameof(INotifyPropertyChanged.PropertyChanged), OnItemPropertyChanged);
 #endif
 
     #endregion Overrides of ObservableCollection<TItem>

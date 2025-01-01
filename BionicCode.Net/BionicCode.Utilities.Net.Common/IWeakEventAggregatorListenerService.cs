@@ -9,7 +9,7 @@
   public interface IWeakEventAggregatorListenerService
   {
     /// <summary>
-    /// Registers an event delegate, with a random signature that does not follow the common C# event practices, to handle a specific event published by a specific observable type.
+    /// Registers an event delegate, with a random signature that does not have to follow the common C# event practices, to handle a specific event published by a specific observable type.
     /// </summary>
     /// <param name="eventName">The name of the observed event.</param>
     /// <typeparam name="TEventSource">The type of the event publisher object. This can be any derived type like a class or interface.</typeparam>
@@ -22,7 +22,7 @@
     void StartListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler) where TDelegate : Delegate;
 
     /// <summary>
-    /// Registers an event delegate, with a random signature that does not follow the common C# event practices, to handle a specific event published by a specific observable type.
+    /// Registers an event delegate, with a random signature that does not have to follow the common C# event practices, to handle a specific event published by a specific observable type.
     /// <br/>This overload supports marshaling to the current thread by capturing the <see cref="SynchronizationContext"/> of the caller.
     /// </summary>
     /// <param name="eventName">The name of the observed event.</param>
@@ -37,7 +37,7 @@
     void StartListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler, bool isMarshalEventToCurrentThreadEnabled) where TDelegate : Delegate;
 
     /// <summary>
-    /// Registers an event delegate, with a random signature that does not follow the common C# event practices, to handle a specific event published by a specific observable type.
+    /// Registers an event delegate, with a random signature that does not have to follow the common C# event practices, to handle a specific event published by a specific observable type.
     /// <br/>This overload supports marshaling to the specified <see cref="SynchronizationContext"/>.
     /// </summary>
     /// <param name="eventName">The name of the observed event.</param>

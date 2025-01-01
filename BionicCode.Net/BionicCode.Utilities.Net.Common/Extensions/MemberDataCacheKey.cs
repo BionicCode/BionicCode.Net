@@ -37,8 +37,7 @@
       ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(memberName, nameof(memberName));
 
       this.MemberName = memberName;
-      this.ParameterList = parameterList.Select(parameterInfo => new MemberParameterInfo(parameterInfo.ParameterType, parameterInfo.ParameterType.IsGenericParameter))
-        .ToArray();
+      this.ParameterList = MemberParameterInfo.ConvertFrom(parameterList);
       this.DeclaringTypeHandle = declaringTypeHandle;
 
       int hashCode = 1248511333;
@@ -63,8 +62,7 @@
       ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(memberName, nameof(memberName));
 
       this.MemberName = memberName;
-      this.ParameterList = parameterList.Select(parameterData => new MemberParameterInfo(parameterData.ParameterTypeData.GetType(), parameterData.ParameterTypeData.GetType().IsGenericParameter))
-        .ToArray();
+      this.ParameterList = MemberParameterInfo.ConvertFrom(parameterList);
       this.DeclaringTypeHandle = declaringTypeHandle;
 
       int hashCode = 1248511333;

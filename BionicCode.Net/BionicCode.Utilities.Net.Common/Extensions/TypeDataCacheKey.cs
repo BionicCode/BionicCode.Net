@@ -49,8 +49,7 @@
     public TypeDataCacheKey(RuntimeTypeHandle typeHandle, params ParameterInfo[] parameterList)
     {
       this.TypeHandle = typeHandle;
-      this.ParameterList = parameterList.Select(parameterInfo => new MemberParameterInfo(parameterInfo.ParameterType, parameterInfo.ParameterType.IsGenericParameter))
-        .ToArray();
+      this.ParameterList = MemberParameterInfo.ConvertFrom(parameterList);
 
       int hashCode = 1248511333;
       foreach (object argument in this.ParameterList)
@@ -70,8 +69,7 @@
     public TypeDataCacheKey(RuntimeTypeHandle typeHandle, params ParameterData[] parameterList)
     {
       this.TypeHandle = typeHandle;
-      this.ParameterList = parameterList.Select(parameterData => new MemberParameterInfo(parameterData.ParameterTypeData.GetType(), parameterData.ParameterTypeData.GetType().IsGenericParameter))
-        .ToArray();
+      this.ParameterList = MemberParameterInfo.ConvertFrom(parameterList);
 
       int hashCode = 1248511333;
       foreach (object argument in this.ParameterList)

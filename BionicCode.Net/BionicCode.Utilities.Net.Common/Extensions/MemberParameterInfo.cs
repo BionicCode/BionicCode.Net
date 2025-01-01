@@ -2,6 +2,9 @@
 {
   using System;
   using System.Collections.Generic;
+  using System.Linq;
+  using System.Reflection;
+  using System.Runtime.InteropServices;
 
   internal readonly struct MemberParameterInfo : IEquatable<MemberParameterInfo>
   {
@@ -22,6 +25,25 @@
       this.ParameterType = parameterData.ParameterTypeData.GetType();
       this.IsGenericTypeParameter = isGenericTypeParameter;
     }
+
+    public static MemberParameterInfo[] ConvertFrom(Type[] parameterList)
+      => parameterList.Select(parameterType => new MemberParameterInfo(parameterType, parameterType.IsGenericParameter))
+        .ToArray();
+
+    public static MemberParameterInfo[] ConvertFrom(TypeData[] parameterList)
+      => parameterList.Select(parameterData => parameterData.GetType())
+        .Select(parameterType => new MemberParameterInfo(parameterType, parameterType.IsGenericParameter))
+        .ToArray();
+
+    public static MemberParameterInfo[] ConvertFrom(ParameterInfo[] parameterList)
+      => parameterList.Select(parameterInfo => parameterInfo.ParameterType)
+        .Select(parameterType => new MemberParameterInfo(parameterType, parameterType.IsGenericParameter))
+        .ToArray();
+
+    public static MemberParameterInfo[] ConvertFrom(ParameterData[] parameterList)
+      => parameterList.Select(parameterData => parameterData.ParameterTypeData.GetType())
+        .Select(parameterType => new MemberParameterInfo(parameterType, parameterType.IsGenericParameter))
+        .ToArray();
 
     public Type ParameterType { get; }
     public bool IsGenericTypeParameter { get; }

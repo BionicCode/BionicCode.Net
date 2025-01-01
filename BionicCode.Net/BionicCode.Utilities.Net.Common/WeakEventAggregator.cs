@@ -205,27 +205,6 @@
       return eventSourceHandler;
     }
 
-    private Delegate GenerateEventHandler(ParameterData[] eventHandlerParameters, TypeData eventDelegateTypeData)
-    {
-      Delegate eventSourceHandler;
-      var expressionParameters = new List<ParameterExpression>();
-      foreach (ParameterData parameter in eventHandlerParameters)
-      {
-        ParameterExpression expressionParameter = Expression.Parameter(parameter.ParameterTypeData.GetType(), parameter.Name);
-        expressionParameters.Add(expressionParameter);
-      }
-
-      IEnumerable<UnaryExpression> castedExpressionParameters = expressionParameters.Select(parameter => Expression.TypeAs(parameter, typeof(object)));
-      NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), castedExpressionParameters);
-      ConstantExpression target = Expression.Constant(this);
-      MethodInfo proxyDelegateMethod = WeakEventManager<TEventSource>.customHandlerMethodData.GetMethodInfo();
-      MethodCallExpression method = Expression.Call(target, proxyDelegateMethod, argsArray);
-      Type eventDelegateType = eventDelegateTypeData.GetType();
-      eventSourceHandler = Expression.Lambda(eventDelegateType, method, expressionParameters).Compile();
-
-      return eventSourceHandler;
-    }
-
     /// <inheritdoc />
     public void StopListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler) where TDelegate : Delegate
     {

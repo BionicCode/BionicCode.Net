@@ -174,7 +174,9 @@
     public async Task HandleEvent_EventHandlerGeneric_ShouldInvokeHandlerOnce()
     {
       _ = this.registrationManager.RegisterEventHandler(this.EventSource1, nameof(TestEventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1);
-      
+      WeakEventManager<TestEventSource1>.AddEventHandler(this.EventSource1, nameof(TestEventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1);
+      WeakEventManager<TestEventSource1>.RemoveEventHandler(this.EventSource1, nameof(TestEventSource1.GenericTestEvent), OnGenericTestEventFromTestEventSource1);
+
       this.EventSource1.OnGenericTestEvent();
 
       _ = eventHandlerInvocationCount.Should().Be(1);
@@ -371,7 +373,7 @@
     {
       WeakEventManagerTest.OnEventInvoked();
 
-      _ = sender.Should().BeOfType<TestEventSource1>();
+      _ = sender.Should().BeOfType<TestEventSourceBase>();
     }
 
     private void OnStronglyTypedSenderAndStringEventArgsFromTestEventSource1(TestEventSource1 sender, string e)

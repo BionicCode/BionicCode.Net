@@ -10,6 +10,11 @@
     private IList<CustomAttributeData> attributeData;
     private bool? isRef;
     private bool? isByRef;
+    private bool? isIn;
+    private bool? isOut;
+    private bool? isOptional;
+    private bool? isParams;
+    private int? position;
     private TypeData parameterTypeData;
     private TypeData declaringTypeData;
     private MemberInfoData member;
@@ -34,13 +39,22 @@
       => (bool)(this.isRef ?? (this.isRef = HelperExtensionsCommon.IsRefInternal(this)));
 
     public bool IsIn
-      => GetParameterInfo().IsIn;
+      => (bool)(this.isIn ?? (this.isIn = GetParameterInfo().IsIn));
 
     public bool IsOut
-      => GetParameterInfo().IsOut;
+      => (bool)(this.isOut ?? (this.isOut = GetParameterInfo().IsOut));
 
     public bool IsOptional
-      => GetParameterInfo().IsOptional;
+      => (bool)(this.isOptional ?? (this.isOptional = GetParameterInfo().IsOptional));
+
+    /// <summary>
+    /// Zero-based index of the parameter in the formal parameter list.
+    /// </summary>
+    public int Position
+      => (int)(this.position ?? (this.position = GetParameterInfo().Position));
+
+    public bool IsParams
+      => (bool)(this.isParams ?? (this.isParams = GetParameterInfo().GetCustomAttribute<ParamArrayAttribute>() != null));
 
     public ParameterInfo ParameterInfo { get; }
 
