@@ -55,7 +55,7 @@
         if (lastParameter.IsParams)
         {
           IEnumerable<Expression> paramsParameterArguments = expressionParameters.Skip(lastParameter.GetParameterInfo().Position)
-                        .Select(parameter => Expression.TypeAs(parameter, lastParameter.ParameterTypeData.GetType()))
+                        .Select(parameter => Expression.TypeAs(parameter, lastParameter.ParameterTypeData.GetType().GetElementType()))
                         .Cast<Expression>();
           NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), paramsParameterArguments);
           delegateParameters.RemoveRange(lastParameter.Position, expressionParameters.Count - lastParameter.Position);

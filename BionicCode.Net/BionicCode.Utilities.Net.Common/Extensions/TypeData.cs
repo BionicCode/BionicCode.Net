@@ -1,8 +1,10 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System;
+  using System.Collections;
   using System.Collections.Generic;
   using System.Linq;
+  using System.Management;
   using System.Reflection;
 
   internal  class TypeData : SymbolInfoData
@@ -44,8 +46,14 @@
     private string assemblyName;
     private MethodData delegateInvokeMethodData;
     private SymbolComponentInfo symbolComponentInfo;
-    private SymbolComponentInfo comapactSymbolComponentInfo;
+    private SymbolComponentInfo compactSymbolComponentInfo;
     private bool? containsGenericParameters;
+    private readonly Dictionary<string, SymbolInfoData> memberTable;
+    private bool isAllPropertiesGenerated;
+    private bool isAllMethodsGenerated;
+    private bool isAllFieldsGenerated;
+    private bool isAllEventsGenerated;
+    private bool isAllConstructorsGenerated;
 
 #if !NETFRAMEWORK && !NETSTANDARD2_0
     private bool? isByRefLike;
@@ -55,6 +63,7 @@
     {
       this.Handle = type.TypeHandle;
       this.Namespace = type.Namespace;
+      this.memberTable = new Dictionary<string, SymbolInfoData>();
     }
 
     new public Type GetType()
@@ -62,58 +71,193 @@
 
     public PropertyData GetProperty(string propertyName)
     {
+      if (this.memberTable.TryGetValue(propertyName, out SymbolInfoData symbolInfoData))
+      {
+        return (PropertyData)symbolInfoData;
+      }
+
       IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, propertyName);
       if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out PropertyData propertyData))
       {
+        this.memberTable.Add(propertyName, propertyData);
         return propertyData;
       }
 
       throw new ArgumentException($"Unable to find a property named '{propertyName}' on type '{this.Namespace}.{this.Name}'.", nameof(propertyName));
     }
 
+    public IEnumerable<PropertyData> EnumerateProperties()
+    {
+      if (this.isAllPropertiesGenerated)
+      {
+        foreach (PropertyData property in this.memberTable.Values.OfType<PropertyData>())
+        {
+          yield return property;
+        }
+
+        yield break;
+      }
+      
+      foreach (PropertyInfo property in GetType().GetProperties(SymbolInfoData.AllMembersFlags))
+      {
+        PropertyData propertyData = GetProperty(property.Name);
+        yield return propertyData;
+      }
+
+      this.isAllPropertiesGenerated = true;
+    }
+
     public MethodData GetMethod(string methodName, params MemberParameterInfo[] parameterList)
     {
+      if (this.memberTable.TryGetValue(methodName, out SymbolInfoData symbolInfoData))
+      {
+        return (MethodData)symbolInfoData;
+      }
+
       IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, methodName, parameterList);
       if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out MethodData methodData))
       {
+        this.memberTable.Add(methodName, methodData);
         return methodData;
       }
 
       throw new ArgumentException($"Unable to find a method named '{methodName}' on type '{this.Namespace}.{this.Name}'.", nameof(methodName));
     }
 
+    public IEnumerable<MethodData> EnumerateMethods()
+    {
+      if (this.isAllMethodsGenerated)
+      {
+        foreach (MethodData method in this.memberTable.Values.OfType<MethodData>())
+        {
+          yield return method;
+        }
+
+        yield break;
+      }
+
+      foreach (MethodInfo method in GetType().GetMethods(SymbolInfoData.AllMembersFlags))
+      {
+        MethodData methodData = GetMethod(method.Name);
+        yield return methodData;
+      }
+
+      this.isAllMethodsGenerated = true;
+    }
+
     public FieldData GetField(string fieldName)
     {
-      IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, fieldName);
-      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out FieldData methodData))
+      if (this.memberTable.TryGetValue(fieldName, out SymbolInfoData symbolInfoData))
       {
-        return methodData;
+        return (FieldData)symbolInfoData;
+      }
+
+      IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, fieldName);
+      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out FieldData fieldData))
+      {
+        this.memberTable.Add(fieldName, fieldData);
+        return fieldData;
       }
 
       throw new ArgumentException($"Unable to find a field named '{fieldName}' on type '{this.Namespace}.{this.Name}'.", nameof(fieldName));
     }
 
+    public IEnumerable<FieldData> EnumerateFields()
+    {
+      if (this.isAllFieldsGenerated)
+      {
+        foreach (FieldData field in this.memberTable.Values.OfType<FieldData>())
+        {
+          yield return field;
+        }
+
+        yield break;
+      }
+
+      foreach (FieldInfo field in GetType().GetFields(SymbolInfoData.AllMembersFlags))
+      {
+        FieldData fieldData = GetField(field.Name);
+        yield return fieldData;
+      }
+
+      this.isAllFieldsGenerated = true;
+    }
+
     public EventData GetEvent(string eventName)
     {
-      IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, eventName);
-      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out EventData methodData))
+      if (this.memberTable.TryGetValue(eventName, out SymbolInfoData symbolInfoData))
       {
-        return methodData;
+        return (EventData)symbolInfoData;
+      }
+
+      IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, eventName);
+      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out EventData eventData))
+      {
+        this.memberTable.Add(eventName, eventData);
+        return eventData;
       }
 
       throw new ArgumentException($"Unable to find an event named '{eventName}' on type '{this.Namespace}.{this.Name}'.", nameof(eventName));
     }
 
+    public IEnumerable<EventData> EnumerateEvents()
+    {
+      if (this.isAllEventsGenerated)
+      {
+        foreach (EventData eventData in this.memberTable.Values.OfType<EventData>())
+        {
+          yield return eventData;
+        }
+
+        yield break;
+      }
+
+      foreach (EventInfo eventInfo in GetType().GetEvents(SymbolInfoData.AllMembersFlags))
+      {
+        EventData eventData = GetEvent(eventInfo.Name);
+        yield return eventData;
+      }
+
+      this.isAllEventsGenerated = true;
+    }
+
     public ConstructorData GetConstructor(string constructorName, params Type[] parameterList)
     {
+      if (this.memberTable.TryGetValue(constructorName, out SymbolInfoData symbolInfoData))
+      {
+        return (ConstructorData)symbolInfoData;
+      }
+
       MemberParameterInfo[] parameterListInfos = MemberParameterInfo.ConvertFrom(parameterList);
       IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, constructorName, parameterListInfos);
-      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out ConstructorData methodData))
+      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out ConstructorData constructorData))
       {
-        return methodData;
+        this.memberTable.Add(constructorName, constructorData);
+        return constructorData;
       }
 
       throw new ArgumentException($"Unable to find a constructor named '{constructorName}' on type '{this.Namespace}.{this.Name}'.", nameof(constructorName));
+    }
+
+    public IEnumerable<ConstructorData> EnumerateConstructors()
+    {
+      if (this.isAllConstructorsGenerated)
+      {
+        foreach (ConstructorData constructor in this.memberTable.Values.OfType<ConstructorData>())
+        {
+          yield return constructor;
+        }
+
+        yield break;
+      }
+
+      foreach (ConstructorInfo constructor in GetType().GetConstructors(SymbolInfoData.AllMembersFlags))
+      {
+        ConstructorData constructorData = GetConstructor(constructor.Name);
+        yield return constructorData;
+      }
+
+      this.isAllConstructorsGenerated = true;
     }
 
     public RuntimeTypeHandle Handle { get; }
@@ -171,7 +315,7 @@
       => this.symbolComponentInfo ?? (this.symbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isCompact: false));
 
     public SymbolComponentInfo CompactSymbolComponentInfo
-      => this.comapactSymbolComponentInfo ?? (this.comapactSymbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isCompact: true));
+      => this.compactSymbolComponentInfo ?? (this.compactSymbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isCompact: true));
 
     public override string Signature
       => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: false, isRuntimeSymbol: false));

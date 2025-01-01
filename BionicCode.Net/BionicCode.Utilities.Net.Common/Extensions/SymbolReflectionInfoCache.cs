@@ -102,8 +102,8 @@
         SymbolReflectionInfoCache.SymbolInfoDataCache.Add(cacheKey, symbolInfoData);
       }
 
-      // TODO::Remove after testing
 #if DEBUG
+      // TODO::Remove after testing
       else
       {
         Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
@@ -122,8 +122,8 @@
         SymbolReflectionInfoCache.SymbolInfoDataCache.Add(cacheKey, symbolInfoData);
       }
 
-      // TODO::Remove after testing
 #if DEBUG
+      // TODO::Remove after testing
       else
       {
         Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
@@ -142,8 +142,8 @@
         SymbolReflectionInfoCache.SymbolInfoDataCache.Add(cacheKey, symbolInfoData);
       }
 
-      // TODO::Remove after testing
 #if DEBUG
+      // TODO::Remove after testing
       else
       {
         Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
@@ -162,8 +162,8 @@
         SymbolReflectionInfoCache.SymbolInfoDataCache.Add(cacheKey, symbolInfoData);
       }
 
-      // TODO::Remove after testing
 #if DEBUG
+      // TODO::Remove after testing
       else
       {
         Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
@@ -182,8 +182,8 @@
         SymbolReflectionInfoCache.SymbolInfoDataCache.Add(cacheKey, symbolInfoData);
       }
 
-      // TODO::Remove after testing
 #if DEBUG
+      // TODO::Remove after testing
       else
       {
         Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
@@ -202,8 +202,8 @@
         SymbolReflectionInfoCache.SymbolInfoDataCache.Add(cacheKey, symbolInfoData);
       }
 
-      // TODO::Remove after testing
 #if DEBUG
+      // TODO::Remove after testing
       else
       {
         Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
@@ -222,8 +222,8 @@
         SymbolReflectionInfoCache.SymbolInfoDataCache.Add(cacheKey, symbolInfoData);
       }
 
-      // TODO::Remove after testing
 #if DEBUG
+      // TODO::Remove after testing
       else
       {
         Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
@@ -249,8 +249,8 @@
         SymbolReflectionInfoCache.SymbolInfoDataCache.Add(cacheKey, symbolInfoData);
       }
 
-      // TODO::Remove after testing
 #if DEBUG
+      // TODO::Remove after testing
       else
       {
         Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
@@ -328,7 +328,7 @@
         {
           if (genericTypeParameters.Length != methodInfo.GetGenericArguments().Length) 
           {
-            throw new InvalidOperationException($"The number of provided generic tpe arguments ({genericTypeParameters.Length}) does not match the generic type parameter count found on method {methodInfo.ToSignatureShortName()}.");
+            throw new InvalidOperationException($"The number of provided generic type arguments ({genericTypeParameters.Length}) does not match the generic type parameter count found on method {methodInfo.ToSignatureShortName()}.");
           }
 
           methodInfo = methodInfo.MakeGenericMethod(genericTypeParameters);
@@ -367,8 +367,8 @@
         SymbolReflectionInfoCache.SymbolInfoDataCache.Add(cacheKey, symbolInfoData);
       }
 
-      // TODO::Remove after testing
 #if DEBUG
+      // TODO::Remove after testing
       else
       {
         Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
@@ -396,8 +396,8 @@
         SymbolReflectionInfoCache.SymbolInfoDataCache.Add(cacheKey, symbolInfoData);
       }
 
-      // TODO::Remove after testing
 #if DEBUG
+      // TODO::Remove after testing
       else
       {
         Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
@@ -428,8 +428,8 @@
         SymbolReflectionInfoCache.SymbolInfoDataCache.Add(cacheKey, symbolInfoData);
       }
 
-      // TODO::Remove after testing
 #if DEBUG
+      // TODO::Remove after testing
       else
       {
         Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
@@ -437,6 +437,30 @@
 #endif
 
       eventData = (ConstructorData)symbolInfoData;
+
+      return true;
+    }
+
+    internal static bool TryGetOrCreateSymbolInfoDataCacheEntry(ITypeDataCacheKey cacheKey, out TypeData eventData)
+    {
+      eventData = null;
+
+      if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
+      {
+        var type = Type.GetTypeFromHandle(cacheKey.TypeHandle);
+        symbolInfoData = new TypeData(type);
+        SymbolReflectionInfoCache.SymbolInfoDataCache.Add(cacheKey, symbolInfoData);
+      }
+
+#if DEBUG
+      // TODO::Remove after testing
+      else
+      {
+        Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
+      }
+#endif
+
+      eventData = (TypeData)symbolInfoData;
 
       return true;
     }
@@ -454,18 +478,53 @@
       return entry != null;
     }
 
-    internal static ISymbolInfoDataCacheKey CreateTypeSymbolCacheKey(RuntimeTypeHandle handle, params MemberParameterInfo[] parameterList) 
+    /// <summary>
+    /// Do not use with delegates as this overload does not allow to provide the related parameter list in order to eliminate any ambiguities.
+    /// </summary>
+    internal static ITypeDataCacheKey CreateTypeSymbolCacheKey(RuntimeTypeHandle handle) 
+      => new TypeDataCacheKey(handle);
+
+    /// <summary>
+    /// Use with delegates and provide the parameter list of the delegate.
+    /// </summary>
+    /// <param name="handle">Handle of the delegate type.</param>
+    /// <param name="parameterList">The parameter list of the delegate.</param>
+    /// <returns>A valid key that can be used to query the cache.</returns>
+    internal static ITypeDataCacheKey CreateTypeSymbolCacheKey(RuntimeTypeHandle handle, params MemberParameterInfo[] parameterList)
       => new TypeDataCacheKey(handle, parameterList);
 
-    internal static ISymbolInfoDataCacheKey CreateTypeSymbolCacheKey(RuntimeTypeHandle handle, params ParameterInfo[] parameterList)
+    /// <summary>
+    /// Use with delegates and provide the parameter list of the delegate.
+    /// </summary>
+    /// <param name="handle">Handle of the delegate type.</param>
+    /// <param name="parameterList">The parameter list of the delegate.</param>
+    /// <returns>A valid key that can be used to query the cache.</returns>
+    internal static ITypeDataCacheKey CreateTypeSymbolCacheKey(RuntimeTypeHandle handle, params ParameterInfo[] parameterList)
       => new TypeDataCacheKey(handle, parameterList);
 
+    /// <summary>
+    /// Do not use with methods and constructors as this overload does not allow to provide the related parameter list in order to eliminate any ambiguities.
+    /// </summary>
     internal static IMemberDataCacheKey CreateMemberSymbolCacheKey(RuntimeTypeHandle declaringTypeHandle, string memberName) 
       => new MemberDataCacheKey(declaringTypeHandle, memberName);
 
+    /// <summary>
+    /// Use with methods and constructors and provide the related parameter list.
+    /// </summary>
+    /// <param name="declaringTypeHandle">Handle of the method or constructor.</param>
+    /// <param name="memberName">The name of the member that should be looked up.</param>
+    /// <param name="parameterList">The parameter list of the method or constructor.</param>
+    /// <returns>A valid key that can be used to query the cache.</returns>
     internal static IMemberDataCacheKey CreateMemberSymbolCacheKey(RuntimeTypeHandle declaringTypeHandle, string memberName, params MemberParameterInfo[] parameterList)
       => new MemberDataCacheKey(declaringTypeHandle, memberName, parameterList);
 
+    /// <summary>
+    /// Use with methods and constructors and provide the related parameter list.
+    /// </summary>
+    /// <param name="declaringTypeHandle">Handle of the method or constructor.</param>
+    /// <param name="memberName">The name of the member that should be looked up.</param>
+    /// <param name="parameterList">The parameter list of the method or constructor.</param>
+    /// <returns>A valid key that can be used to query the cache.</returns>
     internal static IMemberDataCacheKey CreateMemberSymbolCacheKey(RuntimeTypeHandle declaringTypeHandle, string memberName, params ParameterInfo[] parameterList)
       => new MemberDataCacheKey(declaringTypeHandle, memberName, parameterList);
   }

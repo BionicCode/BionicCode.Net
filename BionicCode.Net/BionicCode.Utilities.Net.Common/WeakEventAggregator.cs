@@ -141,6 +141,15 @@
       StartListeningInternal<TEventSource>(eventName, eventHandler, synchronizationContext);
     }
 
+    /// <inheritdoc /> 
+    public void StartListeningAll<TEventSource, TDelegate>(TDelegate eventHandler, SynchronizationContext synchronizationContext) where TDelegate : Delegate
+    {
+      ArgumentNullExceptionEx.ThrowIfNull(eventHandler, nameof(eventHandler));
+      ArgumentNullExceptionEx.ThrowIfNull(synchronizationContext, nameof(synchronizationContext));
+
+      StartListeningAllInternal<TEventSource, TDelegate>(eventHandler, synchronizationContext);
+    }
+
     private void StartListeningInternal<TEventSource>(string eventName, Delegate eventHandler, SynchronizationContext synchronizationContext)
     {
       //ThrowIfEventHandlerInvalid(eventInfoTableEntry, eventHandler);
@@ -184,6 +193,25 @@
       }
 
       this.registrationService.RegisterHandler(clientEventHandlerRegistrar);
+    }
+
+    private void StartListeningAllInternal<TEventSource, TDelegate>(TDelegate eventHandler, SynchronizationContext synchronizationContext) where TDelegate : Delegate
+    {
+      //ThrowIfEventHandlerInvalid(eventInfoTableEntry, eventHandler);
+      ITypeDataCacheKey key = SymbolReflectionInfoCache.CreateTypeSymbolCacheKey(typeof(TEventSource).TypeHandle);
+      if (!SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(key, out TypeData eventSourceData))
+      {
+        return;
+      }
+
+      IEnumerable<EventData> allEventsOfEventSource = eventSourceData.EnumerateEvents();
+      foreach (EventData eventData in allEventsOfEventSource)
+      {
+        if (IsEventHandlerIsValid)
+        {
+          StartListening<TEventSource, TDelegate>(eventData.Name, eventHandler, synchronizationContext);
+        }
+      }
     }
 
     private Func<Delegate, string, SynchronizationContext, IClientEventHandlerRegistrar> GenerateRegistrarFactory(Type eventHandlerType, Type eventSourceType, Type registrarOpenType, Type eventSenderType, Type eventArgsType)

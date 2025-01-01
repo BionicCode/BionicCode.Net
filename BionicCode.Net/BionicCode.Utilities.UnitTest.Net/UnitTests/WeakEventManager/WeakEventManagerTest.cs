@@ -373,7 +373,7 @@
     {
       WeakEventManagerTest.OnEventInvoked();
 
-      _ = sender.Should().BeOfType<TestEventSourceBase>();
+      _ = sender.Should().BeOfType<TestEventSource1>();
     }
 
     private void OnStronglyTypedSenderAndStringEventArgsFromTestEventSource1(TestEventSource1 sender, string e)

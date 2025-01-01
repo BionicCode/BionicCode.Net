@@ -49,7 +49,7 @@
       IMemberDataCacheKey key = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(typeof(TEventSource).TypeHandle, eventName);
       if (!SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(key, out EventData eventData))
       {
-        throw new ArgumentException($"Unable to find event '{eventName}' on targetType {typeof(TEventSource).FullName}. The provided event name must specify an event that must be public, protected (including inherited members) or private and defined on the current TEventSource {typeof(TEventSource).FullName}.", nameof(eventName));
+        throw new ArgumentException($"Unable to find event '{eventName}' on type {typeof(TEventSource).FullName}. The provided event name must specify an event that must be public, protected (including inherited members) or private and defined on the current TEventSource {typeof(TEventSource).FullName}.", nameof(eventName));
       }
 
       this.EventSourceEventData = eventData;
@@ -334,7 +334,7 @@
           throw new EventHandlerMismatchException(string.Format(WeakEventManager.HandlerDelegateSignatureMismatchExceptionMessage,
             eventInfo.EventHandlerType.ToSignatureName(),
             eventHandlerMethod.ToSignatureName(),
-            $"Unable to cast parameter of targetType '{eventDelegateParameterType.FullName}' at parameter index '{parameterIndex}' of the event delegate to targetType '{eventHandlerParameterType.FullName}' of the event handler."));
+            $"Unable to cast parameter of type '{eventDelegateParameterType.FullName}' at parameter index '{parameterIndex}' of the event delegate to type '{eventHandlerParameterType.FullName}' of the event handler."));
         }
       }
     }
