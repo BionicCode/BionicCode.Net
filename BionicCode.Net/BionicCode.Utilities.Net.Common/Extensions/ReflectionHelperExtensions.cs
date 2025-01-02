@@ -32,6 +32,7 @@
   /// </summary>
   public static partial class HelperExtensionsCommon
   {
+
     private const string ParameterSeparator = ", ";
     private const char ExpressionTerminator = ';';
     private const string Indentation = "  ";
@@ -4940,6 +4941,34 @@
       }
 
       return signatureBuilder;
+    }
+
+    public static bool IsAssignable(this Delegate clientHandler, EventInfo eventInfo)
+    {
+      MethodInfo eventDelegateInvokeMethod = eventInfo.EventHandlerType.GetMethod("Invoke");
+      ParameterInfo[] eventDelegateParameters = eventDelegateInvokeMethod.GetParameters();
+
+      MethodInfo eventHandlerMethod = clientHandler.Method;
+      ParameterInfo[] clientHandlerParameters = eventHandlerMethod.GetParameters();
+
+      /* Validate the event EventHandler */
+
+      if (eventDelegateParameters.Length != clientHandlerParameters.Length)
+      {
+        return false;
+      }
+
+      for (int parameterIndex = 0; parameterIndex < eventDelegateParameters.Length; parameterIndex++)
+      {
+        Type eventDelegateParameterType = eventDelegateParameters[parameterIndex].ParameterType;
+        Type eventHandlerParameterType = clientHandlerParameters[parameterIndex].ParameterType;
+        if (!eventHandlerParameterType.IsAssignableFrom(eventDelegateParameterType))
+        {
+         return false;
+        }
+      }
+
+      return true;
     }
   }
 }

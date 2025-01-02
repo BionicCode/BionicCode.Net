@@ -4,6 +4,7 @@
   using System.Collections.Generic;
   using System.Diagnostics.CodeAnalysis;
   using System.Numerics;
+  using System.Reflection;
   using System.Runtime.CompilerServices;
   using System.Runtime.Serialization;
 
@@ -151,6 +152,37 @@
         ThrowNullOrWhiteSpaceException(argument, paramName);
       }
 #endif
+    }
+
+    public static void ThrowIfNotAssignable(EventInfo eventInfo, Delegate clientHandler)
+    {
+      MethodInfo eventDelegateInvokeMethod = eventInfo.EventHandlerType.GetMethod("Invoke");
+      ParameterInfo[] eventDelegateParameters = eventDelegateInvokeMethod.GetParameters();
+
+      MethodInfo eventHandlerMethod = clientHandler.Method;
+      ParameterInfo[] clientHandlerParameters = eventHandlerMethod.GetParameters();
+
+      /* Validate the event EventHandler */
+
+      if (eventDelegateParameters.Length != clientHandlerParameters.Length)
+      {
+        string message = ExceptionMessages.GetHandlerDelegateSignatureMismatchExceptionMessage(eventInfo, eventHandlerMethod, "Invalid parameter count.");
+        throw new EventHandlerMismatchException(message);
+      }
+
+      for (int parameterIndex = 0; parameterIndex < eventDelegateParameters.Length; parameterIndex++)
+      {
+        Type eventDelegateParameterType = eventDelegateParameters[parameterIndex].ParameterType;
+        Type eventHandlerParameterType = clientHandlerParameters[parameterIndex].ParameterType;
+        if (!eventHandlerParameterType.IsAssignableFrom(eventDelegateParameterType))
+        {
+          string message = ExceptionMessages.GetHandlerDelegateSignatureMismatchExceptionMessage(
+            eventInfo, 
+            eventHandlerMethod, 
+            $"Unable to cast parameter of type '{eventDelegateParameterType.FullName}' at parameter index '{parameterIndex}' of the event delegate to type '{eventHandlerParameterType.FullName}' of the event handler.");
+          throw new EventHandlerMismatchException(message);
+        }
+      }
     }
 
 #if NET5_0_OR_GREATER || NETCOREAPP || NETSTANDARD2_1_OR_GREATER

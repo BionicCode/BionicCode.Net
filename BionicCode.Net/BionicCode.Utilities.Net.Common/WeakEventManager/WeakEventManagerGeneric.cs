@@ -284,61 +284,6 @@
       }
     }
 
-    private static void ThrowIfInvalidHandler(EventInfo eventInfo, Delegate clientHandler)
-    {
-      MethodInfo eventDelegateInvokeMethod = eventInfo.EventHandlerType.GetMethod("Invoke");
-      ParameterInfo[] eventDelegateParameters = eventDelegateInvokeMethod.GetParameters();
-
-      /* Validate the event */
-
-      //if (eventDelegateMethodParameters.Length != 2)
-      //{
-      //  throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToSignatureName(), eventInfo.EventHandlerType.ToSignatureName(), $"the parameter count is {eventDelegateMethodParameters.Length} instead of 2"));
-      //}
-
-      //if (!(eventDelegateMethodParameters[0].ParameterType == typeof(TEventSource) 
-      //  || eventDelegateMethodParameters[0].ParameterType == typeof(object)))
-      //{
-      //  throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToSignatureName(), eventInfo.EventHandlerType.ToSignatureName(), $"the parameter at index '0' is not of genericTypeDefinition {nameof(TEventSource)} or {typeof(object).FullName}"));
-      //}
-
-      //if (!typeof(EventArgs).IsAssignableFrom(eventDelegateMethodParameters[1].ParameterType))
-      //{
-      //  throw new EventDelegateNotSupportedException(string.Format(EventDelegateNotSupportedExceptionMessage, nameof(TEventSource), typeof(object).FullName, typeof(EventArgs).FullName, nameof(TEventArgs), typeof(EventHandler).ToSignatureName(), eventInfo.EventHandlerType.ToSignatureName(), $"the parameter at index '1' is not of genericTypeDefinition or derived from genericTypeDefinition {typeof(EventArgs).FullName}"));
-      //}
-
-      //if (eventDelegateMethodParameters[1].ParameterType != typeof(TEventArgs))
-      //{
-      //  throw new EventDelegateMismatchException(string.Format(EventDelegateSignatureMismatchWrongGenericClassTypeParameterExceptionMessage, nameof(TEventArgs), eventInfo.MemberName, typeof(TEventArgs), eventDelegateMethodParameters[1].ParameterType.FullName));
-      //}
-
-      MethodInfo eventHandlerMethod = clientHandler.Method;
-      ParameterInfo[] clientHandlerParameters = eventHandlerMethod.GetParameters();
-
-      /* Validate the event EventHandler */
-
-      if (eventDelegateParameters.Length != clientHandlerParameters.Length)
-      {
-        throw new EventHandlerMismatchException(string.Format(WeakEventManager.HandlerDelegateSignatureMismatchExceptionMessage,
-          eventInfo.EventHandlerType.ToSignatureName(),
-          eventHandlerMethod.ToSignatureName(),
-          $"Invalid parameter count."));
-      }
-
-      for (int parameterIndex = 0; parameterIndex < eventDelegateParameters.Length; parameterIndex++)
-      {
-        Type eventDelegateParameterType = eventDelegateParameters[parameterIndex].ParameterType;
-        Type eventHandlerParameterType = clientHandlerParameters[parameterIndex].ParameterType;
-        if (!eventHandlerParameterType.IsAssignableFrom(eventDelegateParameterType))
-        {
-          throw new EventHandlerMismatchException(string.Format(WeakEventManager.HandlerDelegateSignatureMismatchExceptionMessage,
-            eventInfo.EventHandlerType.ToSignatureName(),
-            eventHandlerMethod.ToSignatureName(),
-            $"Unable to cast parameter of type '{eventDelegateParameterType.FullName}' at parameter index '{parameterIndex}' of the event delegate to type '{eventHandlerParameterType.FullName}' of the event handler."));
-        }
-      }
-    }
-
     private static void RegisterClientHandler(Action<object, object[], ClientHandlerInfo> clientHandlerAdapterInvocator, Delegate clientHandler, bool isCustomClientDelegate, object eventSource, string eventName, SynchronizationContext capturedSynchronizationContext)
     {
       // If the event is a static event, the eventSource is NULL.
@@ -347,7 +292,7 @@
       lock (ManagedWeakTable.TableLock)
       {
         weakEventManager = WeakEventManagerTable.GetOrCreateWeakEventManager<TEventSource>(eventSource, eventName, isCustomClientDelegate);
-        ThrowIfInvalidHandler(weakEventManager.EventSourceEventData.GetEventInfo(), clientHandler);
+        ArgumentExceptionEx.ThrowIfNotAssignable(weakEventManager.EventSourceEventData.GetEventInfo(), clientHandler);
 
         weakEventManager.RegisterHandler(clientHandlerAdapterInvocator, clientHandler, eventSource, capturedSynchronizationContext);
       }

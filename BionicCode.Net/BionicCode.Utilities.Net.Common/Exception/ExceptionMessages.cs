@@ -3,6 +3,7 @@ namespace BionicCode.Utilities.Net
 {
   using System;
   using System.Collections;
+  using System.Reflection;
 
   internal class ExceptionMessages
   {
@@ -27,6 +28,7 @@ namespace BionicCode.Utilities.Net
     public static string GetValueNotSupportedExceptionMessage(object value) => $"The {(value is Enum ? "enum " : string.Empty)}value '{(value is Enum enumValue ? $"{enumValue.GetType().FullName}.{enumValue}" : value)}' is not supported.";
     public static string GetModificationOfReadOnlyCollectionNotSupportedExceptionMessage(IEnumerable collection) => $"The {collection.GetType().ToDisplayName()} is read-only.";
     public static string GetModificationOfImmutableCollectionNotSupportedExceptionMessage(IEnumerable collection) => $"The {collection.GetType().ToDisplayName()} is immutable.";
+    public static string GetHandlerDelegateSignatureMismatchExceptionMessage(EventInfo eventInfo, MethodInfo eventHandlerMethodInfo, string because) => $"Event handler delegate signature mismatch. Expected signature as required by event source: '{eventInfo.EventHandlerType.ToSignatureName()}'. Found signature on provided event handler: '{eventHandlerMethodInfo.ToSignatureName()}'. Because: {because}";
   }
 }
 
