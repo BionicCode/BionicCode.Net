@@ -18,9 +18,9 @@
   using Microsoft.CodeAnalysis.CSharp.Syntax;
   using Xunit;
 
-  public class WeakEventAggregatorTest : IDisposable
+  public class WeakEventAggregatorExceptionTest : IDisposable
   {
-    public WeakEventAggregatorTest()
+    public WeakEventAggregatorExceptionTest()
     {
       this.EventSource1 = new TestEventSource1();
       this.EventSource2 = new TestEventSource2();
@@ -47,165 +47,21 @@
     }
 
     [Fact]
-    public void RegisterSingleGenericEventHandlerEventSourceWithTwoListeners_RaiseSingleEventOnce_MustInvokeTwoListeners()
-    {
-      const string eventName = nameof(TestEventSource1.GenericTestEvent);
-      var eventListener1 = new TestEventListener();
-      var eventListener2 = new TestEventListener();
-      this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1, eventName);
-      this.EventAggregatorListenerService.StartListening<TestEventSource1, EventHandler<TestEventArgs>>(eventName, eventListener1.OnGenericAllPurposeTwoParameterEventHandler);
-      this.EventAggregatorListenerService.StartListening<TestEventSource1, EventHandler<TestEventArgs>>(eventName, eventListener2.OnGenericAllPurposeTwoParameterEventHandler);
-
-      this.EventSource1.RaiseAll();
-
-      _ = eventListener1.EventHandlerInvocationCount.Should().Be(1);
-      _ = eventListener2.EventHandlerInvocationCount.Should().Be(1);
-    }
-
-    [Fact]
-    public void RegisterSingleGenericActionHandlerEventSourceWithTwoListeners_RaiseSingleEventOnce_MustInvokeTwoListeners()
-    {
-      const string eventName = nameof(TestEventSource1.GenericTestEvent);
-      var eventListener1 = new TestEventListener();
-      var eventListener2 = new TestEventListener();
-      this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1, eventName);
-      this.EventAggregatorListenerService.StartListening<TestEventSource1, Action<object, TestEventArgs>>(eventName, eventListener1.OnGenericAllPurposeTwoParameterEventHandler);
-      this.EventAggregatorListenerService.StartListening<TestEventSource1, Action<object, TestEventArgs>>(eventName, eventListener2.OnGenericAllPurposeTwoParameterEventHandler);
-
-      this.EventSource1.RaiseAll();
-
-      _ = eventListener1.EventHandlerInvocationCount.Should().Be(1);
-      _ = eventListener2.EventHandlerInvocationCount.Should().Be(1);
-    }
-
-    [Fact]
-    public void RegisterSingleCustomEventHandlerEventSourceWithTwoListeners_RaiseSingleEventOnce_MustInvokeTwoListeners()
-    {
-      const string eventName = nameof(TestEventSource1.CustomSignatureThreeParametersTestEvent);
-      var eventListener1 = new TestEventListener();
-      var eventListener2 = new TestEventListener();
-      this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1, eventName);
-      this.EventAggregatorListenerService.StartListening<TestEventSource1, CustomSignatureMoreThanTwoParametersTestEventHandler>(eventName, eventListener1.OnGenericAllPurposeThreeParameterEventHandler);
-      this.EventAggregatorListenerService.StartListening<TestEventSource1, CustomSignatureMoreThanTwoParametersTestEventHandler>(eventName, eventListener2.OnGenericAllPurposeThreeParameterEventHandler);
-
-      this.EventSource1.RaiseAll();
-
-      _ = eventListener1.EventHandlerInvocationCount.Should().Be(1);
-      _ = eventListener2.EventHandlerInvocationCount.Should().Be(1);
-    }
-
-    [Fact]
-    public void RegisterTwoEventSourceWithSingleBaseClassListener_RaiseEachDerivedEventSourceOnce_MustInvokeListenerTwice()
-    {
-      const string eventName = nameof(TestEventSource1.TestEvent);
-      var eventListener1 = new TestEventListener();
-      var eventListener2 = new TestEventListener();
-      this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1, eventName);
-      this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource2, eventName);
-      this.EventAggregatorListenerService.StartListening<TestEventSourceBase, EventHandler>(eventName, eventListener1.OnGenericAllPurposeTwoParameterEventHandler);
-
-      this.EventSource1.RaiseAll();
-      this.EventSource2.RaiseAll();
-
-      _ = eventListener1.EventHandlerInvocationCount.Should().Be(2);
-    }
-
-    [Fact]
-    public void RegisterTwoEventSourceWithSingleInterfaceListener_RaiseEachImplementingEventSourceOnce_MustInvokeListenerTwice()
-    {
-      const string eventName = nameof(TestEventSource1.TestEvent);
-      var eventListener1 = new TestEventListener();
-      var eventListener2 = new TestEventListener();
-      this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1, eventName);
-      this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource2, eventName);
-      this.EventAggregatorListenerService.StartListening<ITestEventSourceCommonEventPractice, EventHandler>(eventName, eventListener1.OnGenericAllPurposeTwoParameterEventHandler);
-
-      this.EventSource1.RaiseAll();
-      this.EventSource2.RaiseAll();
-
-      _ = eventListener1.EventHandlerInvocationCount.Should().Be(2);
-    }
-
-    [Fact]
-    public void RegisterEventSourceWithSingleListener_ListenToAllEventsAnonymouslyWithSomeIncompatibleHandlers_RaiseAllEventsMustInvokeCompatibleEvents()
-    {
-      var eventListener1 = new TestEventListener();
-      Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
-      int numberOfCompatibleEvents = this.EventSource1.GetType().GetEvents().Where(eventHandler.IsAssignable).ToList().Count;
-      this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1);
-      _ = this.EventAggregatorListenerService.TryStartListeningAll<TestEventSource1, Action<object, object>>(eventHandler);
-
-      this.EventSource1.RaiseAll();
-
-      _ = eventListener1.EventHandlerInvocationCount.Should().Be(numberOfCompatibleEvents);
-    }
-
-    [Fact]
-    public void RegisterEventSourceWithSingleListener_ListenToAllEventsAnonymouslyWithSomeIncompatibleHandlers_TryStartListeningAllMustReturnFalse()
+    public void RegisterEventSourceWithSingleListener_ListenToAllEventsAnonymouslyWithAnyIncompatibleHandler_MustRaiseEventHandlerMismatchException()
     {
       var eventListener1 = new TestEventListener();
       Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
       
-      bool hasNoIncompatibleHandlers = this.EventAggregatorListenerService.TryStartListeningAll<ITestEventSource, Action<object, object>>(eventHandler);
-
-      _ = hasNoIncompatibleHandlers.Should().BeFalse();
+      _ = this.Invoking(testEnvironment => this.EventAggregatorListenerService.StartListeningAll<ITestEventSource, Action<object, object>>(eventHandler)).Should().ThrowExactly<EventHandlerMismatchException>();
     }
 
     [Fact]
-    public void RegisterEventSourceWithSingleListener_ListenToAllEventsAnonymouslyWithOnlyCompatibleHandlers_TryStartListeningAllMustReturnTrue()
+    public void RegisterEventSourceWithSingleListener_ListenToAllEventsAnonymouslyWithAnyIncompatibleHandlerUsingTryMethod_MustNotRaiseEventHandlerMismatchException()
     {
       var eventListener1 = new TestEventListener();
       Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
 
-      bool hasNoIncompatibleHandlers = this.EventAggregatorListenerService.TryStartListeningAll<ITestEventSourceCommonEventPractice, Action<object, object>>(eventHandler);
-
-      _ = hasNoIncompatibleHandlers.Should().BeTrue();
-    }
-
-    [Fact]
-    public void RegisterEventSourceWithSingleListener_StopBroadcastingWithoutRemovingListeners_MustRaiseNoEvents()
-    {
-      var eventListener1 = new TestEventListener();
-      Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
-      this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1);
-      _ = this.EventAggregatorListenerService.TryStartListeningAll<TestEventSource1, Action<object, object>>(eventHandler);
-      
-      this.EventAggregatorPublisherService.StopBroadcasting(this.EventSource1, removeListeners: false);
-      this.EventSource1.RaiseAll();
-
-      _ = eventListener1.EventHandlerInvocationCount.Should().Be(0);
-    }
-
-    [Fact]
-    public void RegisterEventSourceWithSingleListener_StopBroadcastingWithRemovingListenersThenStartBroadcastingAgain_MustRaiseNoEvents()
-    {
-      var eventListener1 = new TestEventListener();
-      Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
-      this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1);
-      _ = this.EventAggregatorListenerService.TryStartListeningAll<TestEventSource1, Action<object, object>>(eventHandler);
-
-      this.EventAggregatorPublisherService.StopBroadcasting(this.EventSource1, removeListeners: true);
-      this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1);
-      this.EventSource1.RaiseAll();
-
-      _ = eventListener1.EventHandlerInvocationCount.Should().Be(0);
-    }
-
-    [Fact]
-    public void RegisterEventSourceWithSingleListener_StopBroadcastingWithoutRemovingListenersThenStartBroadcastingAgain_MustRaiseAllCompatibleEvents()
-    {
-      var eventListener1 = new TestEventListener();
-      Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
-      int numberOfCompatibleEvents = this.EventSource1.GetType().GetEvents().Where(eventHandler.IsAssignable).ToList().Count;
-      this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1);
-      _ = this.EventAggregatorListenerService.TryStartListeningAll<TestEventSource1, Action<object, object>>(eventHandler);
-
-      this.EventAggregatorPublisherService.StopBroadcasting(this.EventSource1, removeListeners: false);
-      this.EventSource1.RaiseAll();
-      this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1);
-      this.EventSource1.RaiseAll();
-
-      _ = eventListener1.EventHandlerInvocationCount.Should().Be(numberOfCompatibleEvents);
+      _ = this.Invoking(testEnvironment => this.EventAggregatorListenerService.TryStartListeningAll<ITestEventSource, Action<object, object>>(eventHandler)).Should().NotThrow();
     }
 
     [Fact]
@@ -232,62 +88,62 @@
 
     private void OnInvalidSender(Point sender, EventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
     }
 
     private void OnInvalidEventArgs(object sender, Point e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
     }
 
     private void OnGenericAllPurposeEventHandler<TSender, TEventArgs>(TSender sender, TEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
     }
 
     private void OnStronglyTypedSenderAndStringEventArgsFromTestEventSourceBase(TestEventSourceBase sender, string e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSourceBase>();
     }
 
     private void OnCustomSignatureTwoParametersTestEvent(int sender, TestEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
     }
 
     private void OnCustomSignatureThreeParametersTestEvent1(object sender, TestEventArgs e, int value)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource1>();
     }
 
     private void OnStronglyTypedSenderAndStringEventArgsFromTestEventSource1(TestEventSource1 sender, string e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource1>();
     }
 
     private void OnStronglyTypedEventArgsFromTestEventSource1<TEventArgs>(object sender, TEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource1>();
     }
 
     private void OnGenericTestEventFromTestEventSource1(object sender, EventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource1>();
     }
 
     private void OnNonGenericTestEventFromTestEventSource1(object sender, EventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource1>();
       //_ = e.Should().BeSameAs(EventArgs.Empty);
@@ -295,21 +151,21 @@
 
     private static void OnGenericTestEventFromTestEventSource1Static(object sender, EventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource1>();
     }
 
     private static void OnGenericTestEventFromStaticTestEventSource1Static(object sender, EventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeNull();
     }
 
     private void OnStronglyTypedEventArgsTestEventFromTestEventSource1(object sender, TestEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource1>();
       _ = e.Should().BeOfType<TestEventArgs>();
@@ -317,7 +173,7 @@
 
     private static void OnStronglyTypedEventArgsTestEventFromTestEventSource1Static(object sender, TestEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource1>();
       _ = e.Should().BeOfType<TestEventArgs>();
@@ -325,7 +181,7 @@
 
     private void OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource1(TestEventSource1 sender, TestEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource1>();
       _ = e.Should().BeOfType<TestEventArgs>();
@@ -333,7 +189,7 @@
 
     private static void OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource1Static(TestEventSource1 sender, TestEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource1>();
       _ = e.Should().BeOfType<TestEventArgs>();
@@ -341,7 +197,7 @@
 
     private void OnStronglyTypedEventArgsTestEventFromStaticTestEventSource1(TestEventSource1 sender, TestEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeNull();
       _ = e.Should().BeOfType<TestEventArgs>();
@@ -349,7 +205,7 @@
 
     private static void OnStronglyTypedEventArgsTestEventFromStaticTestEventSource1Static(object sender, TestEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeNull();
       _ = e.Should().BeOfType<TestEventArgs>();
@@ -357,7 +213,7 @@
 
     private void OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource1(TestEventSource1 sender, TestEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeNull();
       _ = e.Should().BeOfType<TestEventArgs>();
@@ -365,7 +221,7 @@
 
     private static void OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource1Static(TestEventSource1 sender, TestEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeNull();
       _ = e.Should().BeOfType<TestEventArgs>();
@@ -373,35 +229,35 @@
 
     private void OnCustomSignatureThreeParametersTestEvent2(object sender, TestEventArgs e, int value)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource2>();
     }
 
     private void OnStronglyTypedEventArgsFromTestEventSource2<TEventArgs>(object sender, TEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource1>();
     }
 
     private void OnStronglyTypedSenderAndStringEventArgsFromTestEventSource2(TestEventSource2 sender, string e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource2>();
     }
 
     private void OnGenericTestEventFromTestEventSource2(object sender, EventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource2>();
     }
 
     private void OnNonGenericTestEventFromTestEventSource2(object sender, EventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource2>();
       _ = e.Should().BeSameAs(EventArgs.Empty);
@@ -409,21 +265,21 @@
 
     private static void OnGenericTestEventFromTestEventSource2Static(object sender, EventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource2>();
     }
 
     private static void OnGenericTestEventFromStaticTestEventSource2Static(object sender, EventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeNull();
     }
 
     private void OnStronglyTypedEventArgsTestEventFromTestEventSource2(object sender, TestEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource2>();
       _ = e.Should().BeOfType<TestEventArgs>();
@@ -431,7 +287,7 @@
 
     private static void OnStronglyTypedEventArgsTestEventFromTestEventSource2Static(object sender, TestEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource2>();
       _ = e.Should().BeOfType<TestEventArgs>();
@@ -439,7 +295,7 @@
 
     private void OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource2(TestEventSource2 sender, TestEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource2>();
       _ = e.Should().BeOfType<TestEventArgs>();
@@ -447,7 +303,7 @@
 
     private static void OnStronglyTypedSenderAndEventArgsTestEventFromTestEventSource2Static(TestEventSource2 sender, TestEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource2>();
       _ = e.Should().BeOfType<TestEventArgs>();
@@ -455,7 +311,7 @@
 
     private void OnStronglyTypedEventArgsTestEventFromStaticTestEventSource2(TestEventSource2 sender, TestEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeNull();
       _ = e.Should().BeOfType<TestEventArgs>();
@@ -463,7 +319,7 @@
 
     private static void OnStronglyTypedEventArgsTestEventFromStaticTestEventSource2Static(object sender, TestEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeNull();
       _ = e.Should().BeOfType<TestEventArgs>();
@@ -471,7 +327,7 @@
 
     private void OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource2(TestEventSource2 sender, TestEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeNull();
       _ = e.Should().BeOfType<TestEventArgs>();
@@ -479,7 +335,7 @@
 
     private static void OnStronglyTypedSenderAndEventArgsTestEventFromStaticTestEventSource2Static(TestEventSource2 sender, TestEventArgs e)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeNull();
       _ = e.Should().BeOfType<TestEventArgs>();
@@ -487,7 +343,7 @@
 
     private void OnTestEventFromTestEventSourceWrongSignature(object sender, EventArgs e, int value)
     {
-      WeakEventAggregatorTest.OnEventInvoked();
+      WeakEventAggregatorExceptionTest.OnEventInvoked();
 
       _ = sender.Should().BeOfType<TestEventSource1>();
       _ = e.Should().BeOfType<EventArgs>();
@@ -515,7 +371,7 @@
     {
       if (!disposedValue)
       {
-        WeakEventAggregatorTest.IsDisposing = true;
+        WeakEventAggregatorExceptionTest.IsDisposing = true;
         if (disposing)
         {
           this.EventAggregatorListenerService.StopListeningAll<TestEventSource1>();
@@ -529,7 +385,7 @@
         }
 
         disposedValue = true;
-        WeakEventAggregatorTest.IsDisposing = false;
+        WeakEventAggregatorExceptionTest.IsDisposing = false;
       }
     }
 

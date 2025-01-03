@@ -6,6 +6,7 @@
   #endregion
 
   using System;
+  using System.Collections.Concurrent;
   using System.Collections.Generic;
   using System.Collections.Immutable;
   using System.Collections.ObjectModel;
@@ -19,9 +20,10 @@
 
   internal class WeakEventRegistrationService
   {
-    private readonly Dictionary<Type, Dictionary<string, List<IClientEventHandlerRegistrar>>> listenerRegistrars;
-    private static readonly Dictionary<Type, Dictionary<string, EventInfo>> typeEventInfosMap = new Dictionary<Type, Dictionary<string, EventInfo>>();
     private static readonly Dictionary<Type, ImmutableHashSet<Type>> typeHierarchies = new Dictionary<Type, ImmutableHashSet<Type>>();
+    private static readonly object staticReadWriteSyncLock = new object();
+    private readonly Dictionary<Type, Dictionary<string, List<IClientEventHandlerRegistrar>>> listenerRegistrars;
+    private readonly Dictionary<Type, HashSet<string>> typeToRegisteredEventsMap;
     private readonly WeakCollection<object> eventSourceInstances;
     private readonly object syncLock;
 
@@ -31,6 +33,7 @@
     {
       this.eventSourceInstances = new WeakCollection<object>();
       this.listenerRegistrars = new Dictionary<Type, Dictionary<string, List<IClientEventHandlerRegistrar>>>();
+      this.typeToRegisteredEventsMap = new Dictionary<Type, HashSet<string>>();
       this.syncLock = new object();
     }
 
@@ -68,30 +71,29 @@
 
     public void AddSourceInstanceInternal(object eventSource, EventInfo eventInfo)
     {
-      Type eventSourceType = eventSource.GetType();
-      Debug.Assert(eventInfo.ReflectedType == eventSourceType);
-
-      if (this.eventSourceInstances.Contains(eventSource))
+      lock (this.syncLock)
       {
-        throw new ArgumentException("The event source instance was already added.");
+        if (!this.eventSourceInstances.Contains(eventSource))
+        {
+          this.eventSourceInstances.Add(eventSource);
+        }
+
+        Type eventSourceType = eventSource.GetType();
+        Debug.Assert(eventInfo.ReflectedType == eventSourceType);
+
+        if (!this.typeToRegisteredEventsMap.TryGetValue(eventSourceType, out HashSet<string> registeredEventsLookupTable))
+        {
+          registeredEventsLookupTable = new HashSet<string>();
+          this.typeToRegisteredEventsMap.Add(eventSourceType, registeredEventsLookupTable);
+        }
+
+        _ = registeredEventsLookupTable.Add(eventInfo.Name);
       }
 
-      if (!WeakEventRegistrationService.typeEventInfosMap.TryGetValue(eventSourceType, out Dictionary<string, EventInfo> eventInfoMap))
-      {
-        eventInfoMap = new Dictionary<string, EventInfo>();
-        typeEventInfosMap.Add(eventSourceType, eventInfoMap);
-      }
-
-      if (!eventInfoMap.TryGetValue(eventInfo.Name, out _))
-      {
-        eventInfoMap.Add(eventInfo.Name, eventInfo);
-      }
-
-      this.eventSourceInstances.Add(eventSource);
       RegisterListenersFor(eventSource, eventInfo.Name);
     }
 
-    public void RemoveSourceInstance(object eventSource)
+    public void RemoveSourceInstance(object eventSource, bool removeListeners)
     {
       lock (this.syncLock)
       {
@@ -101,19 +103,21 @@
         }
 
         Type eventSourceType = eventSource.GetType();
-        if (!WeakEventRegistrationService.typeEventInfosMap.TryGetValue(eventSourceType, out Dictionary<string, EventInfo> eventInfoMap))
+        if (!this.typeToRegisteredEventsMap.TryGetValue(eventSourceType, out HashSet<string> registeredEventsLookupTable))
         {
           return;
         }
 
-        foreach (KeyValuePair<string, EventInfo> eventInfoMapEntry in eventInfoMap)
+        foreach (string eventName in registeredEventsLookupTable)
         {
-          RemoveSourceInstanceInternal(eventSource, eventInfoMapEntry.Value.Name);
+          RemoveSourceInstanceInternal(eventSource, eventName, removeListeners);
         }
+
+        registeredEventsLookupTable.Clear();
       }
     }
 
-    public void RemoveSourceInstance(object eventSource, string eventName)
+    public void RemoveSourceInstance(object eventSource, string eventName, bool removeListeners)
     {
       lock (this.syncLock)
       {
@@ -123,19 +127,21 @@
         }
 
         Type eventSourceType = eventSource.GetType();
-        if (!WeakEventRegistrationService.typeEventInfosMap.TryGetValue(eventSourceType, out Dictionary<string, EventInfo> eventInfoMap))
+        if (!(this.typeToRegisteredEventsMap.TryGetValue(eventSourceType, out HashSet<string> registeredEventsLookupTable)
+          && registeredEventsLookupTable.Contains(eventName)))
         {
           return;
         }
 
-        RemoveSourceInstanceInternal(eventSource, eventName);
+        RemoveSourceInstanceInternal(eventSource, eventName, removeListeners);
+        _ = registeredEventsLookupTable.Remove(eventName);
       }
     }
 
-    private void RemoveSourceInstanceInternal(object eventSource, string eventName)
+    private void RemoveSourceInstanceInternal(object eventSource, string eventName, bool removeListeners)
     {
       _ = this.eventSourceInstances.Remove(eventSource);
-      UnregisterListenersFor(eventSource, eventName);
+      UnregisterListenersFor(eventSource, eventName, removeListeners);
     }
 
     public void RegisterHandler(IClientEventHandlerRegistrar registrar)
@@ -170,17 +176,19 @@
           return;
         }
 
-        foreach (IClientEventHandlerRegistrar registrar in listenersForEventName)
+        for (int index = listenersForEventName.Count - 1; index >= 0; index--)
         {
+          IClientEventHandlerRegistrar registrar = listenersForEventName[index];
           if (registrar.TryGetClientHandler(out Delegate storedDelegate) && Delegate.Equals(storedDelegate, clientHandler))
           {
             UnregisterClientHandlersFor(registrar);
+            listenersForEventName.RemoveAt(index);
           }
         }
       }
     }
 
-    public void UnregisterAll<TObservedEventSource>()
+    public void UnregisterAllHandlers<TObservedEventSource>()
     {
       lock (this.syncLock)
       {
@@ -192,15 +200,17 @@
 
         foreach (KeyValuePair<string, List<IClientEventHandlerRegistrar>> listenersForEventNameEntry in listenersForAllEventsOfSourceType)
         {
-          foreach (IClientEventHandlerRegistrar registrar in listenersForEventNameEntry.Value)
+          for (int index = listenersForEventNameEntry.Value.Count - 1; index >= 0; index--)
           {
+            IClientEventHandlerRegistrar registrar = listenersForEventNameEntry.Value[index];
             UnregisterClientHandlersFor(registrar);
+            listenersForEventNameEntry.Value.RemoveAt(index);
           }
         }
       }
     }
 
-    public void UnregisterEvent<TObservedEventSource>(string eventName)
+    public void UnregisterAllHandlersFromEvent<TObservedEventSource>(string eventName)
     {
       lock (this.syncLock)
       {
@@ -211,9 +221,11 @@
           return;
         }
 
-        foreach (IClientEventHandlerRegistrar registrar in listenersForEventName)
+        for (int index = listenersForEventName.Count - 1; index >= 0; index--)
         {
+          IClientEventHandlerRegistrar registrar = listenersForEventName[index];
           UnregisterClientHandlersFor(registrar);
+          listenersForEventName.RemoveAt(index);
         }
       }
     }
@@ -240,19 +252,7 @@
       }
     }
 
-    private ImmutableHashSet<Type> EnsureSupportedObservableTypes(object eventSource)
-    {
-      Type eventSourceType = eventSource.GetType();
-      if (!WeakEventRegistrationService.typeHierarchies.TryGetValue(eventSourceType, out ImmutableHashSet<Type> supportedObservableTypes))
-      {
-        supportedObservableTypes = TypeHierarchyProvider.GetTypeHierarchy(eventSourceType, includeCurrentType: true);
-        WeakEventRegistrationService.typeHierarchies.Add(eventSourceType, supportedObservableTypes);
-      }
-
-      return supportedObservableTypes;
-    }
-
-    private void UnregisterListenersFor<TEventSource>(TEventSource eventSource, string eventName)
+    private void UnregisterListenersFor<TEventSource>(TEventSource eventSource, string eventName, bool removeListeners)
     {
       ImmutableHashSet<Type> supportedObservableTypes = EnsureSupportedObservableTypes(eventSource);
       foreach (Type supportedListenerType in supportedObservableTypes)
@@ -261,11 +261,17 @@
         {
           if (listenersForAllEventsOfSourceType.TryGetValue(eventName, out List<IClientEventHandlerRegistrar> listenersForEventName))
           {
-            foreach (IClientEventHandlerRegistrar registrar in listenersForEventName)
+            for (int index = listenersForEventName.Count - 1; index >= 0; index--)
             {
+              IClientEventHandlerRegistrar registrar = listenersForEventName[index];
               if (registrar.EventName.Equals(eventName, StringComparison.OrdinalIgnoreCase))
               {
                 registrar.UnregisterDelegate(eventSource);
+
+                if (removeListeners)
+                {
+                  listenersForEventName.RemoveAt(index);
+                }
               }
             }
           }
@@ -283,8 +289,8 @@
           continue;
         }
 
-        if (!(WeakEventRegistrationService.typeEventInfosMap.TryGetValue(eventSource.GetType(), out Dictionary<string, EventInfo> eventInfoMap) 
-          && eventInfoMap.ContainsKey(registrar.EventName)))
+        if (!(this.typeToRegisteredEventsMap.TryGetValue(eventSource.GetType(), out HashSet<string> registeredEventsLookupTable) 
+          && registeredEventsLookupTable.Contains(registrar.EventName)))
         {
           continue;
         }
@@ -303,13 +309,29 @@
           continue;
         }
 
-        if (!(WeakEventRegistrationService.typeEventInfosMap.TryGetValue(eventSource.GetType(), out Dictionary<string, EventInfo> eventInfoMap)
-          && eventInfoMap.ContainsKey(registrar.EventName)))
+        if (!(this.typeToRegisteredEventsMap.TryGetValue(eventSource.GetType(), out HashSet<string> registeredEventsLookupTable)
+          && registeredEventsLookupTable.Contains(registrar.EventName)))
         {
           continue;
         }
 
         registrar.UnregisterDelegate(eventSource);
+      }
+    }
+
+    private static ImmutableHashSet<Type> EnsureSupportedObservableTypes(object eventSource)
+    {
+      Type eventSourceType = eventSource.GetType();
+      
+      lock (WeakEventRegistrationService.staticReadWriteSyncLock)
+      {
+        if (!WeakEventRegistrationService.typeHierarchies.TryGetValue(eventSourceType, out ImmutableHashSet<Type> supportedObservableTypes))
+        {
+          supportedObservableTypes = TypeHierarchyProvider.GetTypeHierarchy(eventSourceType, includeCurrentType: true);
+          WeakEventRegistrationService.typeHierarchies.Add(eventSourceType, supportedObservableTypes);
+        }
+
+        return supportedObservableTypes;
       }
     }
   }
@@ -326,12 +348,12 @@
           typeHierarchy = typeHierarchy.Add(type);
         }
 
-        typeHierarchyMap.Add(type, typeHierarchy);
+        _ = typeHierarchyMap.TryAdd(type, typeHierarchy);
       }
 
       return typeHierarchy;
     }
 
-    private static readonly Dictionary<Type, ImmutableHashSet<Type>> typeHierarchyMap = new Dictionary<Type, ImmutableHashSet<Type>>();
+    private static readonly ConcurrentDictionary<Type, ImmutableHashSet<Type>> typeHierarchyMap = new ConcurrentDictionary<Type, ImmutableHashSet<Type>>();
   }
 }

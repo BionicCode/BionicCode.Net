@@ -632,7 +632,7 @@
     //      ParameterInfo[] parameters = methodInfo.GetParameters();
     //      foreach (ParameterInfo parameter in parameters)
     //      {
-    //        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.MemberName))
+    //        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.EventName))
     //          .WithType(SyntaxFactory.IdentifierName(ToDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
 
     //        if (parameter.IsRef())
@@ -657,7 +657,7 @@
     //        //  {
     //        //    var argumentSyntax = SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression)
     //        //  }
-    //        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.MemberName, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
+    //        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.EventName, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
     //        //  parameterSyntax = parameterSyntax.AddAttributeLists(attributeSyntax);
     //        //}
     //        methodGraph = methodGraph.AddParameterListParameters(parameterSyntax);
@@ -723,7 +723,7 @@
     //      ParameterInfo[] parameters = methodInfo.GetParameters();
     //      foreach (ParameterInfo parameter in parameters)
     //      {
-    //        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.MemberName))
+    //        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.EventName))
     //          .WithType(SyntaxFactory.IdentifierName(ToDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
 
     //        if (parameter.IsRef())
@@ -748,7 +748,7 @@
     //        //  {
     //        //    var argumentSyntax = SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression)
     //        //  }
-    //        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.MemberName, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
+    //        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.EventName, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
     //        //  parameterSyntax = parameterSyntax.AddAttributeLists(attributeSyntax);
     //        //}
     //        methodGraph = methodGraph.AddParameterListParameters(parameterSyntax);
@@ -902,17 +902,17 @@
     //      {
     //        if (memberInfo.DeclaringType.IsGenericType)
     //        {
-    //          int genericTypeArgumentPlaceholderIndex = memberInfo.DeclaringType.MemberName.IndexOf('`');
-    //          return nameBuilder.Append(memberInfo.DeclaringType.MemberName, 0, genericTypeArgumentPlaceholderIndex);
+    //          int genericTypeArgumentPlaceholderIndex = memberInfo.DeclaringType.EventName.IndexOf('`');
+    //          return nameBuilder.Append(memberInfo.DeclaringType.EventName, 0, genericTypeArgumentPlaceholderIndex);
     //        }
     //        else
     //        {
-    //          return nameBuilder.Append(memberInfo.DeclaringType.MemberName);
+    //          return nameBuilder.Append(memberInfo.DeclaringType.EventName);
     //        }
     //      }
     //      else
     //      {
-    //        return nameBuilder.Append(memberInfo.MemberName);
+    //        return nameBuilder.Append(memberInfo.EventName);
     //      }
     //    }
     //    private static SymbolAttributes GetKind(this MemberInfo memberInfo)
@@ -927,7 +927,7 @@
     //      var fieldInfo = memberInfo as FieldInfo;
     //      var eventInfo = memberInfo as EventInfo;
     //      MethodInfo eventAddMethodInfo = eventInfo?.GetAddMethod(true);
-    //      FieldInfo eventDeclaredFieldInfo = eventInfo?.DeclaringType.GetField(eventInfo.MemberName, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+    //      FieldInfo eventDeclaredFieldInfo = eventInfo?.DeclaringType.GetField(eventInfo.EventName, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
     //      ParameterInfo[] indexerPropertyIndexParameters = propertyInfo?.GetIndexParameters() ?? Array.Empty<ParameterInfo>();
 
@@ -1381,7 +1381,7 @@
     //          _ = signatureNameBuilder
     //            .AppendDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isDeclaringTypeIncluded: false)
     //            .Append(' ')
-    //            .Append(parameter.MemberName)
+    //            .Append(parameter.EventName)
     //            .Append(HelperExtensionsCommon.ParameterSeparator);
     //        }
 
@@ -1476,13 +1476,13 @@
 
     //      if (isSubclass)
     //      {
-    //        _ = memberNameBuilder.Append(isFullyQualified ? typeData.BaseType.FullName : typeData.BaseType.MemberName)
+    //        _ = memberNameBuilder.Append(isFullyQualified ? typeData.BaseType.FullName : typeData.BaseType.EventName)
     //          .Append(HelperExtensionsCommon.ParameterSeparator);
     //      }
 
     //      foreach (Type interfaceData in interfaces)
     //      {
-    //        _ = memberNameBuilder.Append(isFullyQualified ? interfaceData.FullName : interfaceData.MemberName)
+    //        _ = memberNameBuilder.Append(isFullyQualified ? interfaceData.FullName : interfaceData.EventName)
     //          .Append(HelperExtensionsCommon.ParameterSeparator);
     //      }
 
@@ -1527,7 +1527,7 @@
 
     //        _ = constraintBuilder.Append("where")
     //          .Append(' ')
-    //          .Append(genericTypeDefinitionData.MemberName)
+    //          .Append(genericTypeDefinitionData.EventName)
     //          .Append(" : ");
 
     //        if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0)
@@ -4317,7 +4317,7 @@
 
     //      //foreach (MethodInfo extensionMethodCandidate in type.GetMethods(BindingFlags.Static | BindingFlags.Public))
     //      //{
-    //      //  if (!extensionMethodCandidate.MemberName.Equals(nameof(Task.GetAwaiter), StringComparison.Ordinal))
+    //      //  if (!extensionMethodCandidate.EventName.Equals(nameof(Task.GetAwaiter), StringComparison.Ordinal))
     //      //  {
     //      //    continue;
     //      //  }

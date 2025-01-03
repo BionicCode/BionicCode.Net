@@ -8,6 +8,7 @@
   using System;
   using System.Collections.Concurrent;
   using System.Collections.Generic;
+  using System.Diagnostics;
   using System.Diagnostics.Tracing;
   using System.Linq;
   using System.Linq.Expressions;
@@ -70,42 +71,44 @@
     }
 
     /// <inheritdoc />
-    public void StopBroadcasting(object eventSource, params string[] eventNames)
+    public void StopBroadcasting(object eventSource, bool removeListeners, params string[] eventNames)
     {
       ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
       ArgumentNullExceptionEx.ThrowIfNull(eventNames, nameof(eventNames));
 
-      StopBroadcastingInternal(eventSource, eventNames);
+      StopBroadcastingInternal(eventSource, eventNames, removeListeners);
     }
 
     /// <inheritdoc />
-    public void StopBroadcasting(object eventSource, IEnumerable<string> eventNames)
+    public void StopBroadcasting(object eventSource, IEnumerable<string> eventNames, bool removeListeners)
     {
       ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
       ArgumentNullExceptionEx.ThrowIfNull(eventNames, nameof(eventNames));
 
-      StopBroadcastingInternal(eventSource, eventNames);
+      StopBroadcastingInternal(eventSource, eventNames, removeListeners);
     }
 
     /// <inheritdoc />
-    public void StopBroadcasting(object eventSource)
+    public void StopBroadcasting(object eventSource, bool removeListeners)
     {
       ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
 
-      StopBroadcastingInternal(eventSource, null);
+      StopBroadcastingInternal(eventSource, null, removeListeners);
     }
 
-    private void StopBroadcastingInternal(object eventSource, IEnumerable<string> eventNames)
+    private void StopBroadcastingInternal(object eventSource, IEnumerable<string> eventNames, bool removeListeners)
     {
       if (eventNames is null)
       {
-        this.registrationService.RemoveSourceInstance(eventSource);
+        // Stop broadcasting all events
+        this.registrationService.RemoveSourceInstance(eventSource, removeListeners);
       }
       else
       {
+        // Stop broadcasting specified events
         foreach (string eventName in eventNames)
         {
-          this.registrationService.RemoveSourceInstance(eventSource, eventName);
+          this.registrationService.RemoveSourceInstance(eventSource, eventName, removeListeners);
         }
       }
     }
@@ -232,7 +235,9 @@
       {
         if (eventHandler.IsAssignable(eventData.GetEventInfo()))
         {
-          StartListening<TEventSource, TDelegate>(eventData.Name, eventHandler, synchronizationContext);
+          StartListeningInternal<TEventSource>(eventData.Name, eventHandler, synchronizationContext);
+
+          Debug.WriteLine($"WeakEventAggregator: Registered event handler for event {eventData.Name}.");
         }
         else
         {
@@ -240,7 +245,7 @@
         }
       }
 
-      return hasIncompatibleEvents;
+      return !hasIncompatibleEvents;
     }
 
     private void StartListeningAllInternal<TEventSource, TDelegate>(TDelegate eventHandler, SynchronizationContext synchronizationContext) where TDelegate : Delegate
@@ -255,8 +260,9 @@
       foreach (EventData eventData in allEventsOfEventSource)
       {
         ArgumentExceptionEx.ThrowIfNotAssignable(eventData.GetEventInfo(), eventHandler);
+        StartListeningInternal<TEventSource>(eventData.Name, eventHandler, synchronizationContext);
 
-        StartListening<TEventSource, TDelegate>(eventData.Name, eventHandler, synchronizationContext);
+        Debug.WriteLine($"Registered event handler for event {eventData.Name}.");
       }
     }
 
@@ -293,12 +299,12 @@
     {
       ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
 
-      this.registrationService.UnregisterEvent<TEventSource>(eventName);
+      this.registrationService.UnregisterAllHandlersFromEvent<TEventSource>(eventName);
     }
 
     /// <inheritdoc />
     public void StopListeningAll<TEventSource>() 
-      => this.registrationService.UnregisterAll<TEventSource>();
+      => this.registrationService.UnregisterAllHandlers<TEventSource>();
 
     private void ThrowIfEventHandlerInvalid<TEventSource>(EventInfoTableEntry entry, Delegate eventHandler)
     {

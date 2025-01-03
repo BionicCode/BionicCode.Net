@@ -20,17 +20,17 @@
     public abstract string AssemblyName { get; }
 
     /// <summary>
-    /// MemberName without namespace, but with the declaring type (in case of a member), and generic type parameters.
+    /// EventName without namespace, but with the declaring type (in case of a member), and generic type parameters.
     /// </summary>
     public abstract string DisplayName { get; }
 
     /// <summary>
-    /// MemberName without namespace and the declaring type (in case of a member), but <see langword="with"/>generic type parameters.
+    /// EventName without namespace and the declaring type (in case of a member), but <see langword="with"/>generic type parameters.
     /// </summary>
     public abstract string ShortDisplayName { get; }
 
     /// <summary>
-    /// MemberName with namespace, the declaring type (in case of a member), and generic type parameters.
+    /// EventName with namespace, the declaring type (in case of a member), and generic type parameters.
     /// </summary>
     public abstract string FullyQualifiedDisplayName { get; }
 

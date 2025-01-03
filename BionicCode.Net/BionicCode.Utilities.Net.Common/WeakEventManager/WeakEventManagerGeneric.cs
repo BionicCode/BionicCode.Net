@@ -42,11 +42,12 @@
       this.ListenerReaderWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
       this.eventListenerHandlerMap = new ConditionalWeakTable<object, ClientHandlerInfoCollection>();
 
+      Type eventSourceType = typeof(TEventSource);
 #if DEBUG
-      this.EventSourceType = typeof(TEventSource);
+      this.EventSourceType = eventSourceType;
 #endif
 
-      IMemberDataCacheKey key = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(typeof(TEventSource).TypeHandle, eventName);
+      IMemberDataCacheKey key = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(eventSourceType.TypeHandle, eventName);
       if (!SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(key, out EventData eventData))
       {
         throw new ArgumentException($"Unable to find event '{eventName}' on type {typeof(TEventSource).FullName}. The provided event name must specify an event that must be public, protected (including inherited members) or private and defined on the current TEventSource {typeof(TEventSource).FullName}.", nameof(eventName));
@@ -75,9 +76,9 @@
 
       try
       {
-        MemberParameterInfo[] memberParameterInfos = eventHandlerParameters.Select(parameterData => new MemberParameterInfo(parameterData, isGenericHandler)).ToArray();
-        this.ProxyEventHandler = ProxyEventHandlerGenerator.Generate<TEventSource>(eventName, this, proxyDelegateName, memberParameterInfos);
-        
+        MemberParameterInfo[] proxyDelegateParameters = eventHandlerParameters.Select(parameterData => new MemberParameterInfo(parameterData, isGenericHandler)).ToArray();
+        this.ProxyEventHandler = ProxyEventHandlerGenerator.Generate<TEventSource>(eventName, this, proxyDelegateName, proxyDelegateParameters);
+
         Debug.Assert(this.ProxyEventHandler != null);
       }
       catch (ArgumentException e)
@@ -311,7 +312,7 @@
         if (!WeakEventManagerTable.TryGetWeakEventManager(eventSource, eventName, out WeakEventManager<TEventSource> weakEventManager))
         {
 #if DEBUG
-          weakEventManager.LogDebug($"Unable to remove event handler because event source has expired or the event was never registered.");
+          Debug.WriteLine($"Unable to remove event handler because event source has expired or the event was never registered and therefore the WeakEventManager instance has bee garbage collected.");
 #endif
           return;
         }
@@ -407,6 +408,8 @@
 
           if (clientHandlerInfos.Count == 0)
           {
+            /* Force cleanup instead of waiting for garbage collection to free and safe resources */
+
             WeakReference<object> eventListenerWeakReference = this.EventListeners.FirstOrDefault(reference => reference.TryGetTarget(out object listener) && ReferenceEquals(listener, eventListener));
             if (eventListenerWeakReference != null)
             {
@@ -426,6 +429,7 @@
         {
           LogDebug($"Empty handler list ==> call End Service from RemoveEventHandler() API.");
 
+          // Force cleanup instead of waiting for garbage collection to free and safe resources
           EndService(eventSource);
         }
       }

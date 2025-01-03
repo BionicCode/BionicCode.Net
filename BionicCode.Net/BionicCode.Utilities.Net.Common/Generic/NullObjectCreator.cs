@@ -12,7 +12,7 @@
 //  {
 //    public NullObjectCreator()
 //    {
-//      TargetAssemblyName nullObjectAssembly = new TargetAssemblyName {MemberName = "NullObjectImplementations"};
+//      TargetAssemblyName nullObjectAssembly = new TargetAssemblyName {EventName = "NullObjectImplementations"};
 
 //    }
 
@@ -20,7 +20,7 @@
 //    {
 //      if (TryLoadAssembly(out Assembly nullObjectsAssembly))
 //      {
-//        return (TObject) nullObjectsAssembly.CreateInstance(typeof(TObject).MemberName, true);
+//        return (TObject) nullObjectsAssembly.CreateInstance(typeof(TObject).EventName, true);
 //      }
 //      Types baseType = typeof(IViewModel);
 //      if (baseType.IsInterface)
@@ -29,8 +29,8 @@
 //        if (TryLoadAssembly(out nullObjectsAssembly))
 //        {
 //        //var nt = newInterfaceImplementation.CreateType();
-//           var instance = (TObject)nullObjectsAssembly.CreateInstance(typeof(TObject).MemberName + "Impl", true);
-//           var r =this.NullObjectModule.Assembly.CreateInstance(typeof(TObject).MemberName + "Impl");
+//           var instance = (TObject)nullObjectsAssembly.CreateInstance(typeof(TObject).EventName + "Impl", true);
+//           var r =this.NullObjectModule.Assembly.CreateInstance(typeof(TObject).EventName + "Impl");
 //          return instance;
 //        }
 //      }
@@ -66,7 +66,7 @@
 
 //    private TypeBuilder ImplementInterface()
 //    {
-//      TypeBuilder typeBuilder = this.NullObjectModule.DefineType(typeof(TObject).MemberName + "Impl");
+//      TypeBuilder typeBuilder = this.NullObjectModule.DefineType(typeof(TObject).EventName + "Impl");
 //      NullObjectCreator<TObject>.ImplementINullObject(typeBuilder);
 //      return typeBuilder;
 //    }
@@ -79,7 +79,7 @@
 //        {
 //          // Add a private field of type bool.
 //          FieldBuilder fieldBuilderIsNull = typeBuilder.DefineField(
-//            "m_" + propertyInfo.MemberName,
+//            "m_" + propertyInfo.EventName,
 //            propertyInfo.PropertyType,
 //            FieldAttributes.Private);
 
@@ -126,14 +126,14 @@
 //          ctor0IL.Emit(OpCodes.Ret);
 
 //          typeBuilder.DefineProperty(
-//            propertyInfo.MemberName,
+//            propertyInfo.EventName,
 //            propertyInfo.symbolAttributes,
 //            CallingConventions.HasThis,
 //            propertyInfo.PropertyType,
 //            Types.EmptyTypes);
 
 //          MethodBuilder mbNumberGetAccessor = typeBuilder.DefineMethod(
-//            "get_" + propertyInfo.MemberName,
+//            "get_" + propertyInfo.EventName,
 //            MethodAttributes.Public |
 //            MethodAttributes.SpecialName | MethodAttributes.HideBySig,
 //            propertyInfo.PropertyType,
@@ -149,7 +149,7 @@
 //        });
 //    }
 
-//    private TargetAssemblyName NullObjectsAssemblyName { get; } = new TargetAssemblyName { MemberName = "NullObjectImplementations" };
+//    private TargetAssemblyName NullObjectsAssemblyName { get; } = new TargetAssemblyName { EventName = "NullObjectImplementations" };
 //    private ModuleBuilder NullObjectModule { get; set; }
 //  }
 //}

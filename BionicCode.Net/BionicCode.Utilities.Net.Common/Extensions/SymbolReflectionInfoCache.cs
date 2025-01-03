@@ -239,10 +239,27 @@
 
       if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
       {
-        EventInfo eventInfo = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle).GetEvent(cacheKey.MemberName, SymbolInfoData.AllMembersFlags);
+        var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
+        EventInfo eventInfo = declaringType.GetEvent(cacheKey.MemberName, SymbolInfoData.AllMembersFlags);
         if (eventInfo is null)
         {
-          return false;
+          if (declaringType.IsInterface)
+          {
+            Type[] implementedInterfaces = declaringType.GetInterfaces();
+            foreach (Type implementedInterface in implementedInterfaces)
+            {
+              eventInfo = declaringType.GetEvent(cacheKey.MemberName, SymbolInfoData.AllMembersFlags);
+              if (eventInfo != null)
+              {
+                break;
+              }
+            }
+          }
+
+          if (eventInfo is null)
+          {
+            return false;
+          }
         }
 
         symbolInfoData = new EventData(eventInfo);
@@ -328,7 +345,7 @@
         {
           if (genericTypeParameters.Length != methodInfo.GetGenericArguments().Length) 
           {
-            throw new InvalidOperationException($"The number of provided generic type arguments ({genericTypeParameters.Length}) does not match the generic type parameter count found on method {methodInfo.ToSignatureShortName()}.");
+            throw new InvalidOperationException($"The number of provided generic declaringType arguments ({genericTypeParameters.Length}) does not match the generic declaringType parameter count found on method {methodInfo.ToSignatureShortName()}.");
           }
 
           methodInfo = methodInfo.MakeGenericMethod(genericTypeParameters);
@@ -487,7 +504,7 @@
     /// <summary>
     /// Use with delegates and provide the parameter list of the delegate.
     /// </summary>
-    /// <param name="handle">Handle of the delegate type.</param>
+    /// <param name="handle">Handle of the delegate declaringType.</param>
     /// <param name="parameterList">The parameter list of the delegate.</param>
     /// <returns>A valid key that can be used to query the cache.</returns>
     internal static ITypeDataCacheKey CreateTypeSymbolCacheKey(RuntimeTypeHandle handle, params MemberParameterInfo[] parameterList)
@@ -496,7 +513,7 @@
     /// <summary>
     /// Use with delegates and provide the parameter list of the delegate.
     /// </summary>
-    /// <param name="handle">Handle of the delegate type.</param>
+    /// <param name="handle">Handle of the delegate declaringType.</param>
     /// <param name="parameterList">The parameter list of the delegate.</param>
     /// <returns>A valid key that can be used to query the cache.</returns>
     internal static ITypeDataCacheKey CreateTypeSymbolCacheKey(RuntimeTypeHandle handle, params ParameterInfo[] parameterList)

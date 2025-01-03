@@ -53,25 +53,30 @@
     void OnStronglyTypedCustomHandlerTestEventForStaticHandlers();
   }
 
-  public interface ITestEventSource
+  public interface ITestEventSourceCommonEventPractice
   {
     event EventHandler TestEvent;
     event TestEventHandler CustomHandlerTestEvent;
     event TestEventHandler CustomHandlerTestEventForStaticHandlers;
     event EventHandler<TestEventArgs> GenericTestEvent;
     event EventHandler<TestEventArgs> GenericTestEventForStaticHandlers;
-    event CustomSignatureMoreThanTwoParametersTestEventHandler CustomSignatureThreeParametersTestEvent;
-    event CustomSignatureTwoParametersTestEventHandler CustomSignatureTwoParametersTestEvent;
 
     void OnTestEvent();
     void OnGenericTestEvent();
     void OnGenericTestEventForStaticHandlers();
     void OnCustomHandlerTestEvent();
     void OnCustomHandlerTestEventForStaticHandlers();
-    void OnCustomSignatureThreeParametersTestEvent(); 
-    void OnCustomSignatureTwoParametersTestEvent();
     void OnStringEventArgsTestEvent();
     void RaiseAll();
+  }
+
+  public interface ITestEventSource : ITestEventSourceCommonEventPractice
+  {
+    event CustomSignatureMoreThanTwoParametersTestEventHandler CustomSignatureThreeParametersTestEvent;
+    event CustomSignatureTwoParametersTestEventHandler CustomSignatureTwoParametersTestEvent;
+
+    void OnCustomSignatureThreeParametersTestEvent();
+    void OnCustomSignatureTwoParametersTestEvent();
   }
 
   public abstract class TestEventSourceBase : ITestEventSource
@@ -94,17 +99,23 @@
     public virtual void OnCustomSignatureThreeParametersTestEvent() => this.CustomSignatureThreeParametersTestEvent?.Invoke(this, new TestEventArgs(), 99);
     public virtual void OnCustomSignatureTwoParametersTestEvent() => this.CustomSignatureTwoParametersTestEvent?.Invoke(99, new TestEventArgs());
     public abstract void OnStringEventArgsTestEvent();
+    public abstract void OnStringEventArgsTestEventForStaticHandlers();
+    public abstract void OnStronglyTypedCustomHandlerTestEvent();
+    public abstract void OnStronglyTypedCustomHandlerTestEventForStaticHandlers();
 
     public virtual void RaiseAll()
     {
       OnTestEvent();
       OnGenericTestEvent();
-      OnGenericTestEventForStaticHandlers ();
+      OnGenericTestEventForStaticHandlers();
       OnCustomHandlerTestEvent();
       OnCustomHandlerTestEventForStaticHandlers();
       OnCustomSignatureTwoParametersTestEvent();
       OnCustomSignatureThreeParametersTestEvent();
       OnStringEventArgsTestEvent();
+      OnStringEventArgsTestEventForStaticHandlers();
+      OnStronglyTypedCustomHandlerTestEvent();
+      OnStronglyTypedCustomHandlerTestEventForStaticHandlers();
     }
   }
 
@@ -121,8 +132,6 @@
     public override void RaiseAll()
     {
       base.RaiseAll();
-      OnStronglyTypedCustomHandlerTestEvent();
-      OnStronglyTypedCustomHandlerTestEventForStaticHandlers();
       OnStaticStronglyTypedCustomHandlerTestEvent();
       OnStaticGenericTestEvent();
       OnStaticCustomHandlerTestEvent();
@@ -131,10 +140,13 @@
     public override void OnStringEventArgsTestEvent() 
       => this.StringEventArgsTestEvent?.Invoke(this, "Some string");
 
-    public void OnStronglyTypedCustomHandlerTestEvent()
+    public override void OnStringEventArgsTestEventForStaticHandlers()
+      => this.StringEventArgsTestEventForStaticHandlers?.Invoke(this, "Some string");
+
+    public override void OnStronglyTypedCustomHandlerTestEvent()
       => this.StronglyTypedCustomHandlerTestEvent?.Invoke(this, new TestEventArgs());
 
-    public void OnStronglyTypedCustomHandlerTestEventForStaticHandlers()
+    public override void OnStronglyTypedCustomHandlerTestEventForStaticHandlers()
       => this.StronglyTypedCustomHandlerTestEventForStaticHandlers?.Invoke(this, new TestEventArgs());
 
     public static void OnStaticStronglyTypedCustomHandlerTestEvent()
@@ -151,14 +163,13 @@
     public static event TestEventHandler StaticCustomHandlerTestEvent;
     public static event StronglyTypedTestEventHandler<TestEventSource2, TestEventArgs> StaticStronglyTypedCustomHandlerTestEvent;
     public event StronglyTypedTestEventHandler<TestEventSource2, string> StringEventArgsTestEvent;
+    public event StronglyTypedTestEventHandler<TestEventSource2, string> StringEventArgsTestEventForStaticHandlers;
     public event StronglyTypedTestEventHandler<TestEventSource2, TestEventArgs> StronglyTypedCustomHandlerTestEvent;
     public event StronglyTypedTestEventHandler<TestEventSource2, TestEventArgs> StronglyTypedCustomHandlerTestEventForStaticHandlers;
 
     public override void RaiseAll()
     {
       base.RaiseAll();
-      OnStronglyTypedCustomHandlerTestEvent();
-      OnStronglyTypedCustomHandlerTestEventForStaticHandlers();
       OnStaticStronglyTypedCustomHandlerTestEvent();
       OnStaticGenericTestEvent();
       OnStaticCustomHandlerTestEvent();
@@ -167,10 +178,13 @@
     public override void OnStringEventArgsTestEvent()
       => this.StringEventArgsTestEvent?.Invoke(this, "Some string");
 
-    public void OnStronglyTypedCustomHandlerTestEvent()
+    public override void OnStringEventArgsTestEventForStaticHandlers()
+      => this.StringEventArgsTestEventForStaticHandlers?.Invoke(this, "Some string");
+
+    public override void OnStronglyTypedCustomHandlerTestEvent()
       => this.StronglyTypedCustomHandlerTestEvent?.Invoke(this, new TestEventArgs());
 
-    public void OnStronglyTypedCustomHandlerTestEventForStaticHandlers()
+    public override void OnStronglyTypedCustomHandlerTestEventForStaticHandlers()
       => this.StronglyTypedCustomHandlerTestEventForStaticHandlers?.Invoke(this, new TestEventArgs());
 
     public static void OnStaticStronglyTypedCustomHandlerTestEvent()
