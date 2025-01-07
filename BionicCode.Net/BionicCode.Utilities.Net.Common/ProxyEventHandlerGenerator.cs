@@ -19,16 +19,10 @@
 
       Type targetType = target.GetType();
       IMemberDataCacheKey symbolCacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(targetType.TypeHandle, targetDelegateMethodName, targetDelegateMethodParameterList);
-      if (!SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(symbolCacheKey, out MethodData proxyDelegateMethodData))
-      {
-        throw new ArgumentException($"The provided method {targetDelegateMethodName} could not be found on the targetType {targetType.FullName}. Please verify the parameter list, the method name and the declaring targetType.");
-      }
+      SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(symbolCacheKey, out MethodData proxyDelegateMethodData);
 
       symbolCacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(typeof(TEventSource).TypeHandle, eventName);
-      if (!SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(symbolCacheKey, out EventData eventData))
-      {
-        throw new ArgumentException($"Unable to find event '{eventName}' on targetType {typeof(TEventSource).FullName}. The provided event name must specify an event that must be public, protected (including inherited members) or private and defined on the current TEventSource {typeof(TEventSource).FullName}.", nameof(eventName));
-      }
+      SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(symbolCacheKey, out EventData eventData);
 
       TypeData eventHandlerTypeData = eventData.EventHandlerTypeData;
       MethodData invocatorData = eventData.InvocatorMethodData;

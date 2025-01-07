@@ -51,7 +51,7 @@
     {
       var eventListener1 = new TestEventListener();
       Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
-      
+
       _ = this.Invoking(testEnvironment => this.EventAggregatorListenerService.StartListeningAll<ITestEventSource, Action<object, object>>(eventHandler)).Should().ThrowExactly<EventHandlerMismatchException>();
     }
 
@@ -64,27 +64,27 @@
       _ = this.Invoking(testEnvironment => this.EventAggregatorListenerService.TryStartListeningAll<ITestEventSource, Action<object, object>>(eventHandler)).Should().NotThrow();
     }
 
-    [Fact]
-    public void RegisteredHandler_GarbageCollectListenerWhileEventSourceIsAlive_MustSucceed()
-    {
-      //WeakReference<TestEventListener> weakReferenceToListener;
-      //TestEventListener strongReferenceToListener;
-      //InitializeGcTest(nameof(TestEventSource1.TestEvent), out weakReferenceToListener, out strongReferenceToListener);
+    //[Fact]
+    //public void RegisteredHandler_GarbageCollectListenerWhileEventSourceIsAlive_MustSucceed()
+    //{
+    //  //WeakReference<TestEventListener> weakReferenceToListener;
+    //  //TestEventListener strongReferenceToListener;
+    //  //InitializeGcTest(nameof(TestEventSource1.TestEvent), out weakReferenceToListener, out strongReferenceToListener);
 
-      //GcEx.ForceFullGC();
-      //this.EventSource1?.OnTestEvent();
-      //GC.KeepAlive(strongReferenceToListener);
+    //  //GcEx.ForceFullGC();
+    //  //this.EventSource1?.OnTestEvent();
+    //  //GC.KeepAlive(strongReferenceToListener);
 
-      //// Garbage collect the listener by discarding the strong reference
-      //strongReferenceToListener = null;
-      //GcEx.ForceFullGC();
+    //  //// Garbage collect the listener by discarding the strong reference
+    //  //strongReferenceToListener = null;
+    //  //GcEx.ForceFullGC();
 
-      //// This must not raise any events as the listener is expected to be garbage collected at this point
-      //this.EventSource1?.OnTestEvent();
+    //  //// This must not raise any events as the listener is expected to be garbage collected at this point
+    //  //this.EventSource1?.OnTestEvent();
 
-      //_ = weakReferenceToListener.TryGetTarget(out _).Should().BeFalse();
-      //_ = eventHandlerInvocationCount.Should().Be(1);
-    }
+    //  //_ = weakReferenceToListener.TryGetTarget(out _).Should().BeFalse();
+    //  //_ = eventHandlerInvocationCount.Should().Be(1);
+    //}
 
     private void OnInvalidSender(Point sender, EventArgs e)
     {

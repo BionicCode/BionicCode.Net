@@ -26,6 +26,7 @@
   using System.Management;
   using System.Collections;
   using System.Collections.Frozen;
+  using System.Collections.Immutable;
 
   /// <summary>
   /// A collection of extension methods for various default constraintTypes
@@ -3096,39 +3097,51 @@
     }
 
     /// <summary>
-    /// Get the ordered subtype hierarchy of a specified type, starting from the root type.
+    /// Gets the ordered base type hierarchy (ancestor inheritance tree) of a specified type, starting from the root type (most distant base class or most distant implemented interface) and includes the current type (the tree's leaf) as the last item.
     /// </summary>
-    /// <param name="type">The type of which the hierarchy to return.</param>
-    /// <param name="includeInterfaces"><see langword="true"/> if interfaces should be included. Otherwise <see langword="false"/>. The default is <see langword="false"/>.</param>
-    /// <returns>The ordered subtypes of <paramref name="type"/> starting with the root. If <paramref name="includeInterfaces"/> is <see langword="true"/> then the result also contains all inherited interfaces. 
-    /// <br/>If <paramref name="type"/> does not have an inheritance tree or does not implement any interfaces or is of type <see cref="object"/> or a value type (<see cref="Type.IsValueType"/> returns <see langword="true"/>) then an empty <c>IEnumerable&lt;Type&gt;</c> is returned.</returns>
+    /// <param name="type">The type of which the ancestor hierarchy to return.</param>
+    /// <param name="includeInterfaces"><see langword="true"/> if interfaces should be included. Otherwise <see langword="false"/>. 
+    /// If type <paramref name="type"/> is itself an interface then the <paramref name="includeInterfaces"/> parameter is ignored and all implemented interfaces will be returned.
+    /// The default is <see langword="false"/>.</param>
+    /// <returns>A <see cref="List{Type}"/> that contains the ordered base types of <paramref name="type"/> (ancestor hierarchy) starting with the root (the most distant base class or most distant interface in case <paramref name="includeInterfaces"/> evaluates to <see langword="true"/>). 
+    /// If <paramref name="includeInterfaces"/> is <see langword="true"/> then the result also contains all implemented interfaces. 
+    /// <br/>The last item in the collection is always the current <paramref name="type"/> value (the hierarchy leaf). 
+    /// <br/>The language base types <see cref="object" /> and <see cref="ValueType"/> are excluded from the result, except the current <paramref name="type"/> is itself of type <see cref="object"/>.
+    /// <br/>If <paramref name="type"/> does not have a parent inheritance tree or does not implement any interfaces or is of type <see cref="object"/> or a value type (<see cref="Type.IsValueType"/> returns <see langword="true"/>) then the result collection will only contain the current <paramref name="type"/> value.</returns>
     /// <remarks>The type <see cref="object"/> (the root type for reference types) and the type <see cref="ValueType"/> (the base type for value types) are not included in the hierarchy.
-    /// <br/>This means, if <paramref name="type"/> is of type <see cref="object"/> or a value type (<see cref="Type.IsValueType"/> returns <see langword="true"/>) then an empty <c>IEnumerable&lt;Type&gt;</c> is returned.
+    /// <br/>This means, if <paramref name="type"/> is of type <see cref="object"/> or a value type (<see cref="Type.IsValueType"/> returns <see langword="true"/>) then the result will only contain the current <paramref name="type"/> or in case of a value type additionally the implemented interfaces.
     /// </remarks>
-    /// <exception cref="ArgumentNullException"
-    public static IEnumerable<Type> GetTypeHierarchy(this Type type, bool includeInterfaces = false)
+    /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
+    public static ImmutableList<Type> GetTypeHierarchy(this Type type, bool includeInterfaces = false)
     {
       ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
       if (type == typeof(object) || type.IsValueType)
       {
-        return Type.EmptyTypes;
+        return ImmutableList.Create<Type>();
       }
 
       if (type.IsInterface)
       {
         return includeInterfaces
-          ? type.GetInterfaces()
-          : Type.EmptyTypes;
+          ? ImmutableList.Create(type.GetInterfaces()).Add(type)
+          : ImmutableList.Create<Type>();
       }
 
       Type subType = type;
       var subTypes = new Stack<Type>();
-      while (subType.BaseType != null
-        && subType.BaseType != typeof(object))
+      if (type == typeof(object))
       {
-        subType = subType.BaseType;
-        subTypes.Push(subType);
+        subTypes.Push(type);
+      }
+      else
+      {
+        while (subType.BaseType != null
+          && subType.BaseType != typeof(object))
+        {
+          subType = subType.BaseType;
+          subTypes.Push(subType);
+        }
       }
 
       if (includeInterfaces)
@@ -3136,7 +3149,7 @@
         subTypes.AddRange(type.GetInterfaces());
       }
 
-      return subTypes;
+      return subTypes.ToImmutableList();
     }
 
     /// <summary>
@@ -3273,7 +3286,7 @@
     }
 
     /// <summary>
-    /// Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
+    /// Extension method to convert generic and non-generic type name to a readable fully qualified display name.
     /// </summary>
     /// <returns>
     /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.

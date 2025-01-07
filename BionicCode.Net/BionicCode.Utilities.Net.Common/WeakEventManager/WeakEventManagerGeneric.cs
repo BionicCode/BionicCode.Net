@@ -16,11 +16,10 @@
     public string EventName { get; }
 
     private readonly ConditionalWeakTable<object, ClientHandlerInfoCollection> eventListenerHandlerMap;
+    private HashSet<WeakReference<object>> EventListeners { get; }
     private ReaderWriterLockSlim ListenerReaderWriterLock { get; set; }
     private static object SyncLock { get; }
 
-    private static readonly MethodData genericHandlerMethodData;
-    private static readonly MethodData customHandlerMethodData;
 
 #if DEBUG
     private protected override Type EventSourceType { get; }
@@ -29,16 +28,11 @@
     static WeakEventManager()
     {
       SyncLock = new object();
-
-      MethodInfo methodInfo = typeof(WeakEventManager<TEventSource>).GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.Instance | BindingFlags.NonPublic);
-      genericHandlerMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-
-      methodInfo = typeof(WeakEventManager<TEventSource>).GetMethod(nameof(OnEventHandlerCustomDynamicSignature), BindingFlags.Instance | BindingFlags.NonPublic);
-      customHandlerMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
     }
 
     internal WeakEventManager(string eventName, bool isCustomClientDelegate)
     {
+      this.EventListeners = new HashSet<WeakReference<object>>();
       this.ListenerReaderWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
       this.eventListenerHandlerMap = new ConditionalWeakTable<object, ClientHandlerInfoCollection>();
 
@@ -48,11 +42,7 @@
 #endif
 
       IMemberDataCacheKey key = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(eventSourceType.TypeHandle, eventName);
-      if (!SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(key, out EventData eventData))
-      {
-        throw new ArgumentException($"Unable to find event '{eventName}' on type {typeof(TEventSource).FullName}. The provided event name must specify an event that must be public, protected (including inherited members) or private and defined on the current TEventSource {typeof(TEventSource).FullName}.", nameof(eventName));
-      }
-
+      SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(key, out EventData eventData);
       this.EventSourceEventData = eventData;
       Debug.Assert(this.EventSourceEventData != null);
 
@@ -84,33 +74,12 @@
       catch (ArgumentException e)
       {
         MethodInfo attachingMethodInfo = e.Data[ProxyEventHandlerGenerator.ConflictingMethodInfoExceptionDataKey] as MethodInfo 
-          ?? GetType().GetMethod(nameof(OnStronglyTypedEvent), BindingFlags.NonPublic | BindingFlags.Instance);
+          ?? GetType().GetMethod(proxyDelegateName, BindingFlags.NonPublic | BindingFlags.Instance);
         string exceptionMessage = string.Format(InternalDelegateSignatureMismatchExceptionMessage, eventData.InvocatorMethodData.RuntimeShortSignature, attachingMethodInfo.ToRuntimeSignatureShortName());
         throw new EventHandlerMismatchException(exceptionMessage, e);
       }
 
       this.EventName = eventName;
-    }
-
-    private Delegate GenerateEventHandler(ParameterData[] eventHandlerParameters, TypeData eventDelegateTypeData)
-    {
-      Delegate eventSourceHandler;
-      var expressionParameters = new List<ParameterExpression>();
-      foreach (ParameterData parameter in eventHandlerParameters)
-      {
-        ParameterExpression expressionParameter = Expression.Parameter(parameter.ParameterTypeData.GetType(), parameter.Name);
-        expressionParameters.Add(expressionParameter);
-      }
-
-      IEnumerable<UnaryExpression> castedExpressionParameters = expressionParameters.Select(parameter => Expression.TypeAs(parameter, typeof(object)));
-      NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), castedExpressionParameters);
-      ConstantExpression target = Expression.Constant(this);
-      MethodInfo proxyDelegateMethod = WeakEventManager<TEventSource>.customHandlerMethodData.GetMethodInfo();
-      MethodCallExpression method = Expression.Call(target, proxyDelegateMethod, argsArray);
-      Type eventDelegateType = eventDelegateTypeData.GetType();
-      eventSourceHandler = Expression.Lambda(eventDelegateType, method, expressionParameters).Compile();
-
-      return eventSourceHandler;
     }
 
     private static bool TryGenerateAddEventHandlerInvocator(Type clientHandlerType, out Action<TEventSource, string, Delegate, SynchronizationContext> addHandlerInvocator)

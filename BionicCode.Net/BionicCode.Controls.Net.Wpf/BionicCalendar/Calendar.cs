@@ -440,7 +440,7 @@ namespace BionicCode.Controls.Net.Wpf
 
     private void Initialize()
     {
-      // TODO::Remove
+      // REMOVE::
       int daysInMonth = this.CalendarSource.GetDaysInMonth(DateTime.Today.Year, DateTime.Today.Month);
       var firstDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
       var events = new ObservableCollection<CalendarEvent>();

@@ -2,10 +2,12 @@
 {
   using System;
   using System.Collections;
+  using System.Collections.Concurrent;
   using System.Collections.Generic;
   using System.Linq;
   using System.Management;
   using System.Reflection;
+  using System.Runtime.InteropServices;
 
   internal  class TypeData : SymbolInfoData
   {
@@ -48,7 +50,7 @@
     private SymbolComponentInfo symbolComponentInfo;
     private SymbolComponentInfo compactSymbolComponentInfo;
     private bool? containsGenericParameters;
-    private readonly Dictionary<string, SymbolInfoData> memberTable;
+    private readonly ConcurrentDictionary<string, SymbolInfoData> memberTable;
     private bool isAllPropertiesGenerated;
     private bool isAllMethodsGenerated;
     private bool isAllFieldsGenerated;
@@ -63,7 +65,7 @@
     {
       this.Handle = type.TypeHandle;
       this.Namespace = type.Namespace;
-      this.memberTable = new Dictionary<string, SymbolInfoData>();
+      this.memberTable = new ConcurrentDictionary<string, SymbolInfoData>();
     }
 
     new public Type GetType()
@@ -71,19 +73,16 @@
 
     public PropertyData GetProperty(string propertyName)
     {
-      if (this.memberTable.TryGetValue(propertyName, out SymbolInfoData symbolInfoData))
-      {
+      SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(propertyName,
+        key =>
+        {
+          IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, propertyName);
+          SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out PropertyData propertyData);
+
+          return propertyData;
+        });
+
         return (PropertyData)symbolInfoData;
-      }
-
-      IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, propertyName);
-      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out PropertyData propertyData))
-      {
-        this.memberTable.Add(propertyName, propertyData);
-        return propertyData;
-      }
-
-      throw new ArgumentException($"Unable to find a property named '{propertyName}' on type '{this.Namespace}.{this.Name}'.", nameof(propertyName));
     }
 
     public IEnumerable<PropertyData> EnumerateProperties()
@@ -109,19 +108,16 @@
 
     public MethodData GetMethod(string methodName, params MemberParameterInfo[] parameterList)
     {
-      if (this.memberTable.TryGetValue(methodName, out SymbolInfoData symbolInfoData))
-      {
+      SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(methodName,
+        key =>
+        {
+          IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, methodName, parameterList);
+          SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out MethodData methodData);
+
+          return methodData;
+        });
+
         return (MethodData)symbolInfoData;
-      }
-
-      IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, methodName, parameterList);
-      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out MethodData methodData))
-      {
-        this.memberTable.Add(methodName, methodData);
-        return methodData;
-      }
-
-      throw new ArgumentException($"Unable to find a method named '{methodName}' on type '{this.Namespace}.{this.Name}'.", nameof(methodName));
     }
 
     public IEnumerable<MethodData> EnumerateMethods()
@@ -147,20 +143,17 @@
 
     public FieldData GetField(string fieldName)
     {
-      if (this.memberTable.TryGetValue(fieldName, out SymbolInfoData symbolInfoData))
-      {
-        return (FieldData)symbolInfoData;
-      }
+      SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(fieldName,
+        key =>
+        {
+          IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, fieldName);
+          SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out FieldData fieldData);
 
-      IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, fieldName);
-      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out FieldData fieldData))
-      {
-        this.memberTable.Add(fieldName, fieldData);
-        return fieldData;
-      }
+          return fieldData;
+        });
 
-      throw new ArgumentException($"Unable to find a field named '{fieldName}' on type '{this.Namespace}.{this.Name}'.", nameof(fieldName));
-    }
+      return (FieldData)symbolInfoData;
+    }    
 
     public IEnumerable<FieldData> EnumerateFields()
     {
@@ -185,19 +178,17 @@
 
     public EventData GetEvent(string eventName)
     {
-      if (this.memberTable.TryGetValue(eventName, out SymbolInfoData symbolInfoData))
-      {
-        return (EventData)symbolInfoData;
-      }
+      SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(eventName,
+        key =>
+        {
 
-      IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, eventName);
-      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out EventData eventData))
-      {
-        this.memberTable.Add(eventName, eventData);
-        return eventData;
-      }
+          IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, eventName);
+          SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out EventData eventData);
 
-      throw new ArgumentException($"Unable to find an event named '{eventName}' on type '{this.Namespace}.{this.Name}'.", nameof(eventName));
+          return eventData;
+        });
+
+      return (EventData)symbolInfoData;
     }
 
     public IEnumerable<EventData> EnumerateEvents()
@@ -221,22 +212,18 @@
       this.isAllEventsGenerated = true;
     }
 
-    public ConstructorData GetConstructor(string constructorName, params Type[] parameterList)
+    public ConstructorData GetConstructor(string constructorName, params MemberParameterInfo[] parameterList)
     {
-      if (this.memberTable.TryGetValue(constructorName, out SymbolInfoData symbolInfoData))
-      {
-        return (ConstructorData)symbolInfoData;
-      }
+      SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(constructorName,
+        key =>
+        {
+          IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, constructorName, parameterList);
+          SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out ConstructorData constructorData);
 
-      MemberParameterInfo[] parameterListInfos = MemberParameterInfo.ConvertFrom(parameterList);
-      IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, constructorName, parameterListInfos);
-      if (SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(cacheKey, out ConstructorData constructorData))
-      {
-        this.memberTable.Add(constructorName, constructorData);
-        return constructorData;
-      }
+          return constructorData;
+        });
 
-      throw new ArgumentException($"Unable to find a constructor named '{constructorName}' on type '{this.Namespace}.{this.Name}'.", nameof(constructorName));
+      return (ConstructorData)symbolInfoData;
     }
 
     public IEnumerable<ConstructorData> EnumerateConstructors()
@@ -451,7 +438,5 @@
 
     public ConstructorData[] ConstructorsData
       => this.constructorsData ?? (this.constructorsData = GetType().GetConstructors(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
-
-    public bool IsParameterType { get; set; }
   }
 }

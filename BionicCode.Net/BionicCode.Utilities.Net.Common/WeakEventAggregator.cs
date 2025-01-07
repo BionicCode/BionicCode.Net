@@ -224,7 +224,12 @@
     private bool TryStartListeningAllInternal<TEventSource, TDelegate>(TDelegate eventHandler, SynchronizationContext synchronizationContext) where TDelegate : Delegate
     {
       ITypeDataCacheKey key = SymbolReflectionInfoCache.CreateTypeSymbolCacheKey(typeof(TEventSource).TypeHandle);
-      if (!SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(key, out TypeData eventSourceData))
+      TypeData eventSourceData;
+      try
+      {
+        SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(key, out eventSourceData);
+      }
+      catch (ArgumentException)
       {
         return false;
       }
@@ -251,11 +256,7 @@
     private void StartListeningAllInternal<TEventSource, TDelegate>(TDelegate eventHandler, SynchronizationContext synchronizationContext) where TDelegate : Delegate
     {
       ITypeDataCacheKey key = SymbolReflectionInfoCache.CreateTypeSymbolCacheKey(typeof(TEventSource).TypeHandle);
-      if (!SymbolReflectionInfoCache.TryGetOrCreateSymbolInfoDataCacheEntry(key, out TypeData eventSourceData))
-      {
-        return;
-      }
-
+      SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(key, out TypeData eventSourceData);
       IEnumerable<EventData> allEventsOfEventSource = eventSourceData.EnumerateEvents();
       foreach (EventData eventData in allEventsOfEventSource)
       {

@@ -42,10 +42,12 @@
       lock (this.syncLock)
       {
         Type eventSourceType = eventSource.GetType();
-        IEnumerable<EventInfo> eventInfos = eventSourceType.GetEvents(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-        foreach (EventInfo eventInfo in eventInfos)
+        TypeData eventSourceTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventSourceType);
+        IEnumerable<EventData> events = eventSourceTypeData.EnumerateEvents();
+        foreach (EventData eventData in events)
         {
-          AddSourceInstanceInternal(eventSource, eventInfo);
+          Debug.Assert(eventData.GetEventInfo().ReflectedType == eventSourceType);
+          AddSourceInstanceInternal(eventSource, eventSourceType, eventData.Name);
         }
       }
     }
@@ -57,19 +59,20 @@
         Debug.Assert(!string.IsNullOrWhiteSpace(eventName));
 
         Type eventSourceType = eventSource.GetType();
-        EventInfo eventInfo = eventSourceType.GetEvent(eventName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-        if (eventInfo is null)
+        TypeData eventSourceTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventSourceType);
+        EventData eventData = eventSourceTypeData.GetEvent(eventName);
+        if (eventData is null)
         {
-          throw new ArgumentException($"The event {eventInfo.Name} was not found on the event source {eventSourceType.FullName} or on its declaring base eventHandlerGenericTypeDefinition.");
+          throw new ArgumentException($"The event {eventData.Name} was not found on the event source {eventSourceTypeData.FullyQualifiedDisplayName} or on its declaring base eventHandlerGenericTypeDefinition.");
         }
 
-        Debug.Assert(eventInfo.ReflectedType == eventSourceType);
+        Debug.Assert(eventData.GetEventInfo().ReflectedType == eventSourceType);
 
-        AddSourceInstanceInternal(eventSource, eventInfo);
+        AddSourceInstanceInternal(eventSource, eventSourceType, eventData.Name);
       }
     }
 
-    public void AddSourceInstanceInternal(object eventSource, EventInfo eventInfo)
+    public void AddSourceInstanceInternal(object eventSource, Type eventSourceType, string eventName)
     {
       lock (this.syncLock)
       {
@@ -78,19 +81,16 @@
           this.eventSourceInstances.Add(eventSource);
         }
 
-        Type eventSourceType = eventSource.GetType();
-        Debug.Assert(eventInfo.ReflectedType == eventSourceType);
-
         if (!this.typeToRegisteredEventsMap.TryGetValue(eventSourceType, out HashSet<string> registeredEventsLookupTable))
         {
           registeredEventsLookupTable = new HashSet<string>();
           this.typeToRegisteredEventsMap.Add(eventSourceType, registeredEventsLookupTable);
         }
 
-        _ = registeredEventsLookupTable.Add(eventInfo.Name);
+        _ = registeredEventsLookupTable.Add(eventName);
       }
 
-      RegisterListenersFor(eventSource, eventInfo.Name);
+      RegisterListenersFor(eventSource, eventName);
     }
 
     public void RemoveSourceInstance(object eventSource, bool removeListeners)
@@ -340,20 +340,24 @@
   {
     public static ImmutableHashSet<Type> GetTypeHierarchy(Type type, bool includeCurrentType)
     {
-      if (!typeHierarchyMap.TryGetValue(type, out ImmutableHashSet<Type> typeHierarchy))
+      lock (TypeHierarchyProvider.staticReadWriteSyncLock)
       {
-        typeHierarchy = type.GetTypeHierarchy(includeInterfaces: true).ToImmutableHashSet();
-        if (includeCurrentType)
+        if (!typeHierarchyMap.TryGetValue(type, out ImmutableHashSet<Type> typeHierarchy))
         {
-          typeHierarchy = typeHierarchy.Add(type);
+          typeHierarchy = type.GetTypeHierarchy(includeInterfaces: true).ToImmutableHashSet();
+          if (includeCurrentType)
+          {
+            typeHierarchy = typeHierarchy.Add(type);
+          }
+
+          typeHierarchyMap.Add(type, typeHierarchy);
         }
 
-        _ = typeHierarchyMap.TryAdd(type, typeHierarchy);
+        return typeHierarchy;
       }
-
-      return typeHierarchy;
     }
 
-    private static readonly ConcurrentDictionary<Type, ImmutableHashSet<Type>> typeHierarchyMap = new ConcurrentDictionary<Type, ImmutableHashSet<Type>>();
+    private static readonly Dictionary<Type, ImmutableHashSet<Type>> typeHierarchyMap = new Dictionary<Type, ImmutableHashSet<Type>>();
+    private static readonly object staticReadWriteSyncLock = new object();
   }
 }

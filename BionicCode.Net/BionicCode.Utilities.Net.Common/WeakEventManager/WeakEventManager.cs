@@ -35,11 +35,9 @@
     public bool IsPurged { get; protected set; }
     protected Delegate ProxyEventHandler { get; set; }
     private protected EventData EventSourceEventData { get; set; }
-    protected HashSet<WeakReference<object>> EventListeners { get; }
 
     protected WeakEventManager()
     {
-      this.EventListeners = new HashSet<WeakReference<object>>();
       this.EventSourceId = new Guid();
 
 #if DEBUG
