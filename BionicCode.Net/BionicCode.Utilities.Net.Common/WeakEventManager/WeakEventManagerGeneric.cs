@@ -19,8 +19,8 @@
     private HashSet<WeakReference<object>> EventListeners { get; }
     private ReaderWriterLockSlim ListenerReaderWriterLock { get; set; }
     private static object SyncLock { get; }
-
-
+    private static readonly DummyEventSourceForStaticEventHandlers DummyEventSourceForStaticEventHandlers;
+    private readonly DummyEventListenerForStaticEventHandlers dummyEventListenerForStaticEventHandlers;
 #if DEBUG
     private protected override Type EventSourceType { get; }
 #endif
@@ -28,6 +28,7 @@
     static WeakEventManager()
     {
       SyncLock = new object();
+      DummyEventSourceForStaticEventHandlers = new DummyEventSourceForStaticEventHandlers();
     }
 
     internal WeakEventManager(string eventName, bool isCustomClientDelegate)
@@ -35,6 +36,7 @@
       this.EventListeners = new HashSet<WeakReference<object>>();
       this.ListenerReaderWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
       this.eventListenerHandlerMap = new ConditionalWeakTable<object, ClientHandlerInfoCollection>();
+      this.dummyEventListenerForStaticEventHandlers = new DummyEventListenerForStaticEventHandlers();
 
       Type eventSourceType = typeof(TEventSource);
 #if DEBUG
@@ -256,15 +258,16 @@
 
     private static void RegisterClientHandler(Action<object, object[], ClientHandlerInfo> clientHandlerAdapterInvocator, Delegate clientHandler, bool isCustomClientDelegate, object eventSource, string eventName, SynchronizationContext capturedSynchronizationContext)
     {
-      // If the event is a static event, the eventSource is NULL.
-
       WeakEventManager<TEventSource> weakEventManager;
       lock (ManagedWeakTable.TableLock)
       {
-        weakEventManager = WeakEventManagerTable.GetOrCreateWeakEventManager<TEventSource>(eventSource, eventName, isCustomClientDelegate);
+        // If the event is a static event, the eventSource is NULL.
+        object adjustedEventSource = eventSource ?? WeakEventManager<TEventSource>.DummyEventSourceForStaticEventHandlers;
+
+        weakEventManager = WeakEventManagerTable.GetOrCreateWeakEventManager<TEventSource>(adjustedEventSource, eventName, isCustomClientDelegate);
         ArgumentExceptionEx.ThrowIfNotAssignable(weakEventManager.EventSourceEventData.GetEventInfo(), clientHandler);
 
-        weakEventManager.RegisterHandler(clientHandlerAdapterInvocator, clientHandler, eventSource, capturedSynchronizationContext);
+        weakEventManager.RegisterHandler(clientHandlerAdapterInvocator, clientHandler, adjustedEventSource, capturedSynchronizationContext);
       }
     }
 
@@ -278,7 +281,10 @@
 
       lock (ManagedWeakTable.TableLock)
       {
-        if (!WeakEventManagerTable.TryGetWeakEventManager(eventSource, eventName, out WeakEventManager<TEventSource> weakEventManager))
+        // If the event is a static event, the eventSource is NULL.
+        object adjustedEventSource = (object)eventSource ?? WeakEventManager<TEventSource>.DummyEventSourceForStaticEventHandlers;
+
+        if (!WeakEventManagerTable.TryGetWeakEventManager(adjustedEventSource, eventName, out WeakEventManager<TEventSource> weakEventManager))
         {
 #if DEBUG
           Debug.WriteLine($"Unable to remove event handler because event source has expired or the event was never registered and therefore the WeakEventManager instance has bee garbage collected.");
@@ -286,7 +292,7 @@
           return;
         }
 
-        weakEventManager.UnregisterHandler(handler, eventSource);
+        weakEventManager.UnregisterHandler(handler, adjustedEventSource);
       }
     }
 
@@ -298,14 +304,15 @@
 
         // If the event handler is a static method, the delegate's target is NULL.
         // In this case, we need to provide a placeholder for the WeakTable entry.
-        object eventListener = clientHandler.Target ?? DummyEventListenerForStaticEventHandlers.Instance;
+        object eventListener = clientHandler.Target ?? this.dummyEventListenerForStaticEventHandlers;
+
         if (!this.eventListenerHandlerMap.TryGetValue(eventListener, out ClientHandlerInfoCollection clientHandlerInfos))
         {
           clientHandlerInfos = new ClientHandlerInfoCollection();
           this.eventListenerHandlerMap.Add(eventListener, clientHandlerInfos);
           WeakReference<object> eventListenerWeakReference = ManagedWeakTable.GetOrCreateWeakReference(eventListener);
           _ = this.EventListeners.Add(eventListenerWeakReference);
-          StartListeningInternal(eventSource);
+          StartListeningInternal(eventSource is DummyEventSourceForStaticEventHandlers ? null : eventSource);
         }
 
         var clientHandlerInfo = new ClientHandlerInfo(clientHandler, clientHandlerAdapterInvocator, capturedSynchronizationContext);
@@ -329,7 +336,7 @@
       {
         this.ListenerReaderWriterLock.EnterWriteLock();
 
-        object eventListener = handler.Target ?? DummyEventListenerForStaticEventHandlers.Instance;
+        object eventListener = handler.Target ?? this.dummyEventListenerForStaticEventHandlers;
         if (this.eventListenerHandlerMap.TryGetValue(eventListener, out ClientHandlerInfoCollection clientHandlerInfos))
         {
           var delegateEqualityComparer = new DelegateSignatureEqualityComparer();
@@ -448,22 +455,6 @@
       }
 
       _ = TryDisposeLock();
-    }
-
-    public static void StopListening(TEventSource eventSource, string eventName)
-    {
-      if (WeakEventManagerTable.TryGetWeakEventManager(eventSource, eventName, out WeakEventManager<TEventSource> weakEventManager))
-      {
-        weakEventManager.StopListeningInternal(eventSource);
-      }
-    }
-
-    public static void StartListening(TEventSource eventSource, string eventName)
-    {
-      if (WeakEventManagerTable.TryGetWeakEventManager(eventSource, eventName, out WeakEventManager<TEventSource> weakEventManager))
-      {
-        weakEventManager.StartListeningInternal(eventSource);
-      }
     }
 
     private void OnStronglyTypedEvent<TSender, TEventArgs>(TSender sender, TEventArgs e)
@@ -632,7 +623,7 @@
     {
       LogDebug($"End Service called.");
 
-      StopListeningInternal(eventSource);
+      StopListeningInternal(eventSource is DummyEventSourceForStaticEventHandlers ? null : eventSource);
       WeakEventManagerTable.RemoveWeakEventManager<TEventSource>(this.EventSourceId, this.EventName);
       if (!this.IsPurged)
       {
@@ -664,7 +655,7 @@
   /// </summary>
   internal class DummyEventListenerForStaticEventHandlers
   {
-    public static readonly object Instance = new DummyEventListenerForStaticEventHandlers();
+    //public static readonly object Instance = new DummyEventListenerForStaticEventHandlers();
   }
 
   /// <summary>
@@ -672,6 +663,6 @@
   /// </summary>
   internal class DummyEventSourceForStaticEventHandlers
   {
-    public static readonly object Instance = new DummyEventSourceForStaticEventHandlers();
+    //public static readonly object Instance = new DummyEventSourceForStaticEventHandlers();
   }
 }

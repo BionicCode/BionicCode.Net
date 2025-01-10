@@ -495,14 +495,14 @@
 
     private static void OnEventInvoked()
     {
-      eventHandlerInvocationThreadId = Thread.CurrentThread.ManagedThreadId;
-      eventHandlerInvocationCount++;
+      WeakEventAggregatorTest.eventHandlerInvocationThreadId = Thread.CurrentThread.ManagedThreadId;
+      WeakEventAggregatorTest.eventHandlerInvocationCount++;
     }
 
     private TestEventSource1 EventSource1 { get; set; }
     private TestEventSource2 EventSource2 { get; set; }
-    public IWeakEventAggregatorListenerService EventAggregatorListenerService { get; }
-    public IWeakEventAggregatorPublisherService EventAggregatorPublisherService { get; }
+    public IWeakEventAggregatorListenerService EventAggregatorListenerService { get; set; }
+    public IWeakEventAggregatorPublisherService EventAggregatorPublisherService { get; set; }
 
     private static int eventHandlerInvocationCount;
     private static int eventHandlerInvocationThreadId;
@@ -522,6 +522,10 @@
           this.EventAggregatorListenerService.StopListeningAll<TestEventSource2>();
           this.EventAggregatorPublisherService.StopBroadcasting(this.EventSource1, true);
           this.EventAggregatorPublisherService.StopBroadcasting(this.EventSource2, true);
+          this.EventAggregatorListenerService = null;
+          this.EventAggregatorPublisherService = null;
+          this.EventSource1 = null;
+          this.EventSource2 = null;
           this.currentSynchronizationContext = null;
           eventHandlerInvocationCount = 0;
           eventHandlerInvocationThreadId = -1;

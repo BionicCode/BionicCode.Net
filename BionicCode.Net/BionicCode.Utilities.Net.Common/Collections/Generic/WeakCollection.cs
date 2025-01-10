@@ -394,8 +394,8 @@
     protected virtual void RemoveItem(int index)
     {
       WeakReference<object> reference = this.Items[index];
-      WeakReferencePool.Add(reference);
       this.Items.RemoveAt(index);
+      WeakReferencePool.Add(reference);
     }
 
     protected virtual void SetItem(int index, TItem item) => this.Items[index].SetTarget(item);

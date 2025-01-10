@@ -219,6 +219,7 @@
       }
 
       this.registrationService.RegisterHandler(clientEventHandlerRegistrar);
+
     }
 
     private bool TryStartListeningAllInternal<TEventSource, TDelegate>(TDelegate eventHandler, SynchronizationContext synchronizationContext) where TDelegate : Delegate

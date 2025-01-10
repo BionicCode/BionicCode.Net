@@ -64,28 +64,6 @@
       _ = this.Invoking(testEnvironment => this.EventAggregatorListenerService.TryStartListeningAll<ITestEventSource, Action<object, object>>(eventHandler)).Should().NotThrow();
     }
 
-    //[Fact]
-    //public void RegisteredHandler_GarbageCollectListenerWhileEventSourceIsAlive_MustSucceed()
-    //{
-    //  //WeakReference<TestEventListener> weakReferenceToListener;
-    //  //TestEventListener strongReferenceToListener;
-    //  //InitializeGcTest(nameof(TestEventSource1.TestEvent), out weakReferenceToListener, out strongReferenceToListener);
-
-    //  //GcEx.ForceFullGC();
-    //  //this.EventSource1?.OnTestEvent();
-    //  //GC.KeepAlive(strongReferenceToListener);
-
-    //  //// Garbage collect the listener by discarding the strong reference
-    //  //strongReferenceToListener = null;
-    //  //GcEx.ForceFullGC();
-
-    //  //// This must not raise any events as the listener is expected to be garbage collected at this point
-    //  //this.EventSource1?.OnTestEvent();
-
-    //  //_ = weakReferenceToListener.TryGetTarget(out _).Should().BeFalse();
-    //  //_ = eventHandlerInvocationCount.Should().Be(1);
-    //}
-
     private void OnInvalidSender(Point sender, EventArgs e)
     {
       WeakEventAggregatorExceptionTest.OnEventInvoked();
@@ -351,14 +329,14 @@
 
     private static void OnEventInvoked()
     {
-      eventHandlerInvocationThreadId = Thread.CurrentThread.ManagedThreadId;
-      eventHandlerInvocationCount++;
+      WeakEventAggregatorExceptionTest.eventHandlerInvocationThreadId = Thread.CurrentThread.ManagedThreadId;
+      WeakEventAggregatorExceptionTest.eventHandlerInvocationCount++;
     }
 
     private TestEventSource1 EventSource1 { get; set; }
     private TestEventSource2 EventSource2 { get; set; }
-    public IWeakEventAggregatorListenerService EventAggregatorListenerService { get; }
-    public IWeakEventAggregatorPublisherService EventAggregatorPublisherService { get; }
+    public IWeakEventAggregatorListenerService EventAggregatorListenerService { get; set; }
+    public IWeakEventAggregatorPublisherService EventAggregatorPublisherService { get; set; }
 
     private static int eventHandlerInvocationCount;
     private static int eventHandlerInvocationThreadId;
@@ -378,6 +356,10 @@
           this.EventAggregatorListenerService.StopListeningAll<TestEventSource2>();
           this.EventAggregatorPublisherService.StopBroadcasting(this.EventSource1, true);
           this.EventAggregatorPublisherService.StopBroadcasting(this.EventSource2, true);
+          this.EventSource1 = null;
+          this.EventSource2 = null;
+          this.EventAggregatorListenerService = null;
+          this.EventAggregatorPublisherService = null;
           this.currentSynchronizationContext = null;
           eventHandlerInvocationCount = 0;
           eventHandlerInvocationThreadId = -1;

@@ -20,8 +20,7 @@
 
   internal class WeakEventRegistrationService
   {
-    private static readonly Dictionary<Type, ImmutableHashSet<Type>> typeHierarchies = new Dictionary<Type, ImmutableHashSet<Type>>();
-    private static readonly object staticReadWriteSyncLock = new object();
+    private static readonly ConcurrentDictionary<Type, ImmutableHashSet<Type>> typeHierarchies = new ConcurrentDictionary<Type, ImmutableHashSet<Type>>();
     private readonly Dictionary<Type, Dictionary<string, List<IClientEventHandlerRegistrar>>> listenerRegistrars;
     private readonly Dictionary<Type, HashSet<string>> typeToRegisteredEventsMap;
     private readonly WeakCollection<object> eventSourceInstances;
@@ -72,23 +71,20 @@
       }
     }
 
-    public void AddSourceInstanceInternal(object eventSource, Type eventSourceType, string eventName)
+    private void AddSourceInstanceInternal(object eventSource, Type eventSourceType, string eventName)
     {
-      lock (this.syncLock)
+      if (!this.eventSourceInstances.Contains(eventSource))
       {
-        if (!this.eventSourceInstances.Contains(eventSource))
-        {
-          this.eventSourceInstances.Add(eventSource);
-        }
-
-        if (!this.typeToRegisteredEventsMap.TryGetValue(eventSourceType, out HashSet<string> registeredEventsLookupTable))
-        {
-          registeredEventsLookupTable = new HashSet<string>();
-          this.typeToRegisteredEventsMap.Add(eventSourceType, registeredEventsLookupTable);
-        }
-
-        _ = registeredEventsLookupTable.Add(eventName);
+        this.eventSourceInstances.Add(eventSource);
       }
+
+      if (!this.typeToRegisteredEventsMap.TryGetValue(eventSourceType, out HashSet<string> registeredEventsLookupTable))
+      {
+        registeredEventsLookupTable = new HashSet<string>();
+        this.typeToRegisteredEventsMap.Add(eventSourceType, registeredEventsLookupTable);
+      }
+
+      _ = registeredEventsLookupTable.Add(eventName);
 
       RegisterListenersFor(eventSource, eventName);
     }
@@ -289,7 +285,7 @@
           continue;
         }
 
-        if (!(this.typeToRegisteredEventsMap.TryGetValue(eventSource.GetType(), out HashSet<string> registeredEventsLookupTable) 
+        if (!(this.typeToRegisteredEventsMap.TryGetValue(eventSource.GetType(), out HashSet<string> registeredEventsLookupTable)
           && registeredEventsLookupTable.Contains(registrar.EventName)))
         {
           continue;
@@ -322,17 +318,15 @@
     private static ImmutableHashSet<Type> EnsureSupportedObservableTypes(object eventSource)
     {
       Type eventSourceType = eventSource.GetType();
-      
-      lock (WeakEventRegistrationService.staticReadWriteSyncLock)
-      {
-        if (!WeakEventRegistrationService.typeHierarchies.TryGetValue(eventSourceType, out ImmutableHashSet<Type> supportedObservableTypes))
+
+      ImmutableHashSet<Type> supportedObservableTypes = WeakEventRegistrationService.typeHierarchies.GetOrAdd(eventSourceType,
+        key =>
         {
           supportedObservableTypes = TypeHierarchyProvider.GetTypeHierarchy(eventSourceType, includeCurrentType: true);
-          WeakEventRegistrationService.typeHierarchies.Add(eventSourceType, supportedObservableTypes);
-        }
+          return supportedObservableTypes;
+        });
 
-        return supportedObservableTypes;
-      }
+      return supportedObservableTypes;
     }
   }
 
@@ -340,24 +334,21 @@
   {
     public static ImmutableHashSet<Type> GetTypeHierarchy(Type type, bool includeCurrentType)
     {
-      lock (TypeHierarchyProvider.staticReadWriteSyncLock)
+      ImmutableHashSet<Type> typeHierarchy = typeHierarchyMap.GetOrAdd(type,
+        key =>
       {
-        if (!typeHierarchyMap.TryGetValue(type, out ImmutableHashSet<Type> typeHierarchy))
+        typeHierarchy = type.GetTypeHierarchy(includeInterfaces: true).ToImmutableHashSet();
+        if (includeCurrentType)
         {
-          typeHierarchy = type.GetTypeHierarchy(includeInterfaces: true).ToImmutableHashSet();
-          if (includeCurrentType)
-          {
-            typeHierarchy = typeHierarchy.Add(type);
-          }
-
-          typeHierarchyMap.Add(type, typeHierarchy);
+          typeHierarchy = typeHierarchy.Add(type);
         }
 
         return typeHierarchy;
-      }
+      });
+
+      return typeHierarchy;
     }
 
-    private static readonly Dictionary<Type, ImmutableHashSet<Type>> typeHierarchyMap = new Dictionary<Type, ImmutableHashSet<Type>>();
-    private static readonly object staticReadWriteSyncLock = new object();
+    private static readonly ConcurrentDictionary<Type, ImmutableHashSet<Type>> typeHierarchyMap = new ConcurrentDictionary<Type, ImmutableHashSet<Type>>();
   }
 }

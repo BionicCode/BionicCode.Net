@@ -66,7 +66,7 @@
       LogDebug($"Attaching proxy handler to {eventSourceTypeName}.");
       LogDebug($"Start listening to {eventSourceTypeName}.");
 #endif
-
+      
       this.EventSourceEventData.AddEventHandler(eventSource, this.ProxyEventHandler);
       this.IsListening = true;
     }
