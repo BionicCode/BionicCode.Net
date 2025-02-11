@@ -319,9 +319,9 @@
         clientHandlerInfos.Add(clientHandlerInfo);
 
 #if DEBUG
-        LogDebug($">>> Add event handler.");
+        LogDebug($">>> Add client event handler.");
         registeredEventHandlerCount++;
-        LogDebug($"Registered event handlers: {registeredEventHandlerCount}; Unregistered event handlers: {unregisteredEventHandlerCount}.");
+        LogDebug($"Registered client event handlers: {registeredEventHandlerCount}; Unregistered client event handlers: {unregisteredEventHandlerCount}.");
 #endif
       }
       finally
@@ -373,11 +373,10 @@
               handlerInfo.Dispose();
 
 #if DEBUG
-              LogDebug($"<<< Removed event handler.");
+              LogDebug($"<<< Removed client event handler.");
               unregisteredEventHandlerCount++;
-              LogDebug($"Registered event handlers: {registeredEventHandlerCount}; Unregistered event handlers: {unregisteredEventHandlerCount}.");
+              LogDebug($"Registered client event handlers: {registeredEventHandlerCount}; Unregistered client event handlers: {unregisteredEventHandlerCount}.");
 #endif
-
               break;
             }
           }
@@ -397,13 +396,13 @@
               && eventListenerWeakReference != null;
 
             Debug.Assert(isListenerRemoved);
-            LogDebug($"Retained event handlers in collection: {this.EventListeners.Count}.");
+            LogDebug($"Retained client event handlers in collection: {this.EventListeners.Count}.");
           }
         }
 
         if (!this.EventListeners.Any())
         {
-          LogDebug($"Empty handler list ==> call End Service from RemoveEventHandler() API.");
+          LogDebug($"Empty client handler list ==> call End Service from RemoveEventHandler() API.");
 
           // Force cleanup instead of waiting for garbage collection to free and safe resources
           EndService(eventSource);
@@ -542,7 +541,7 @@
       LogDebug($"Invoking proxy event handler and deliver event to client.");
 
       var tableKey = new ManagedWeakTableKey(this.EventName, typeof(TEventSource));
-      if (!(ManagedWeakTable.TryGetEntry(this.EventSourceId, tableKey, out ManagedWeakTableEntry entry)
+      if (!(ManagedWeakTable.TryGetEntry(this.Id, tableKey, out ManagedWeakTableEntry entry)
         && entry.TryGetReferenceTarget(out object eventSource)))
       {
         return;
@@ -624,7 +623,7 @@
       LogDebug($"End Service called.");
 
       StopListeningInternal(eventSource is DummyEventSourceForStaticEventHandlers ? null : eventSource);
-      WeakEventManagerTable.RemoveWeakEventManager<TEventSource>(this.EventSourceId, this.EventName);
+      WeakEventManagerTable.RemoveWeakEventManager<TEventSource>(this.Id, this.EventName);
       if (!this.IsPurged)
       {
         Purge();

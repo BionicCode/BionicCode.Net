@@ -21,13 +21,13 @@
 
     public void Initialize(Action eventAction, WeakEventManagerTests.EventHandlerRegistrationManager registrationManager, TestEventSource1 eventSource)
     {
-      _ = registrationManager.RegisterEventHandler<Action<object, EventArgs>>(eventSource, nameof(TestEventSource1.TestEvent), OnGenericAllPurposeTwoParameterEventHandler);
+      _ = registrationManager?.RegisterEventHandler<Action<object, EventArgs>>(eventSource, nameof(TestEventSource1.TestEvent), OnGenericAllPurposeTwoParameterEventHandler);
       this.eventAction = eventAction;
     }
 
     public void InitializeWeakEventTest(Action eventAction, WeakEventManagerTests.EventHandlerRegistrationManager registrationManager, TestEventSource1 eventSource, string eventName)
     {
-      registrationManager.RegisterEventHandlerWithoutEventSource<Action<object, EventArgs>>(eventSource, eventName, OnGenericAllPurposeTwoParameterEventHandler);
+      registrationManager?.RegisterEventHandlerWithoutEventSource<Action<object, EventArgs>>(eventSource, eventName, OnGenericAllPurposeTwoParameterEventHandler);
       this.eventAction = eventAction;
     }
 

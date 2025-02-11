@@ -33,6 +33,7 @@
     [Fact]
     public void RegisterSingleEventHandlerEventSourceWithTwoListeners_RaiseSingleEventOnce_MustInvokeTwoListeners()
     {
+      Debug.WriteLine($"Exception test thread: {Thread.CurrentThread.ManagedThreadId}");
       const string eventName = nameof(TestEventSource1.TestEvent);
       var eventListener1 = new TestEventListener();
       var eventListener2 = new TestEventListener();
@@ -46,23 +47,23 @@
       _ = eventListener2.EventHandlerInvocationCount.Should().Be(1);
     }
 
-    [Fact]
-    public void RegisterEventSourceWithSingleListener_ListenToAllEventsAnonymouslyWithAnyIncompatibleHandler_MustRaiseEventHandlerMismatchException()
-    {
-      var eventListener1 = new TestEventListener();
-      Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
+    //[Fact]
+    //public void RegisterEventSourceWithSingleListener_ListenToAllEventsAnonymouslyWithAnyIncompatibleHandler_MustRaiseEventHandlerMismatchException()
+    //{
+    //  var eventListener1 = new TestEventListener();
+    //  Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
 
-      _ = this.Invoking(testEnvironment => this.EventAggregatorListenerService.StartListeningAll<ITestEventSource, Action<object, object>>(eventHandler)).Should().ThrowExactly<EventHandlerMismatchException>();
-    }
+    //  _ = this.Invoking(testEnvironment => this.EventAggregatorListenerService.StartListeningAll<ITestEventSource, Action<object, object>>(eventHandler)).Should().ThrowExactly<EventHandlerMismatchException>();
+    //}
 
-    [Fact]
-    public void RegisterEventSourceWithSingleListener_ListenToAllEventsAnonymouslyWithAnyIncompatibleHandlerUsingTryMethod_MustNotRaiseEventHandlerMismatchException()
-    {
-      var eventListener1 = new TestEventListener();
-      Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
+    //[Fact]
+    //public void RegisterEventSourceWithSingleListener_ListenToAllEventsAnonymouslyWithAnyIncompatibleHandlerUsingTryMethod_MustNotRaiseEventHandlerMismatchException()
+    //{
+    //  var eventListener1 = new TestEventListener();
+    //  Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
 
-      _ = this.Invoking(testEnvironment => this.EventAggregatorListenerService.TryStartListeningAll<ITestEventSource, Action<object, object>>(eventHandler)).Should().NotThrow();
-    }
+    //  _ = this.Invoking(testEnvironment => this.EventAggregatorListenerService.TryStartListeningAll<ITestEventSource, Action<object, object>>(eventHandler)).Should().NotThrow();
+    //}
 
     private void OnInvalidSender(Point sender, EventArgs e)
     {

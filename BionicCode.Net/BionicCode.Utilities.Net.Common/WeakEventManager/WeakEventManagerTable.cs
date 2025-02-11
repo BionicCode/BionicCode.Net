@@ -22,7 +22,7 @@
         {
 #if DEBUG
           int instanceNumber = entryInfo?.Entry.WeakEventManager.InstanceNumber ?? -1;
-          Debug.WriteLine($"WeakEventManager instance #{instanceNumber} of {WeakEventManager.InstanceCounter}: Explicitly removing from weak table in GetOrCreateWeakEventManger().");
+          Debug.WriteLine($"WeakEventManager instance #{instanceNumber} of {WeakEventManager.InstanceCounter}: Implicitly removing purged WeakEventManager from weak table in GetOrCreateWeakEventManger().");
 #endif
           bool hasRemoved = ManagedWeakTable.RemoveEntry(key, entryInfo.Entry);
           Debug.Assert(hasRemoved);
@@ -32,14 +32,14 @@
         var tableEntry = new WeakManagerTableEntry(eventSource, typeof(TEventSource), eventName, weakEventManager);
         ManagedWeakTable.AddEntry(key, tableEntry);
 #if DEBUG
-        Debug.WriteLine($"WeakEventManager instance #{weakEventManager.InstanceNumber} of {WeakEventManager.InstanceCounter}: Created NEW from weak table in GetOrCreateWeakEventManger().");
+        weakEventManager.LogDebug($"Created NEW from weak table in GetOrCreateWeakEventManger().");
 #endif
       }
       else
       {
         weakEventManager = (WeakEventManager<TEventSource>)entryInfo.Entry.WeakEventManager;
 #if DEBUG
-        Debug.WriteLine($"WeakEventManager instance #{weakEventManager.InstanceNumber} of {WeakEventManager.InstanceCounter}: Returned EXISTING from weak table in GetOrCreateWeakEventManger().");
+        weakEventManager.LogDebug($"Returned EXISTING from weak table in GetOrCreateWeakEventManger().");
 #endif
       }
 
@@ -58,7 +58,7 @@
         weakEventManager = (WeakEventManager<TEventSource>)entryInfo.Entry.WeakEventManager;
 
 #if DEBUG
-        Debug.WriteLine($"WeakEventManager instance #{weakEventManager.InstanceNumber} of {WeakEventManager.InstanceCounter}: Returned EXISTING from weak table in TryGetWeakEventManager().");
+        weakEventManager.LogDebug($"Returned EXISTING from weak table in TryGetWeakEventManager().");
 #endif
       }
 
@@ -74,7 +74,7 @@
       if (ManagedWeakTable<WeakManagerTableEntry>.TryGetEntry(managerId, key, out ManagedWeakTableEntry entry))
       {
 #if DEBUG
-        Debug.WriteLine($"WeakEventManager instance #{(entry is WeakManagerTableEntry managerTableEntry ? managerTableEntry.WeakEventManagerInstanceNumber : -1)} of {WeakEventManager.InstanceCounter}: Removed manager from weak table in RemoveWeakEventManager().");
+        (entry as WeakManagerTableEntry).WeakEventManager.LogDebug("Removed manager from weak table in RemoveWeakEventManager().");
 #endif
 
         _ = ManagedWeakTable.RemoveEntry(key, entry);

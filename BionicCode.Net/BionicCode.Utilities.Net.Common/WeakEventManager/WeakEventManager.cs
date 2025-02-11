@@ -23,12 +23,12 @@
 #if DEBUG
     internal static int InstanceCounter { get; private set; }
     internal int InstanceNumber { get; }
-    private protected static int registeredEventHandlerCount;
-    private protected static int unregisteredEventHandlerCount;
+    private protected int registeredEventHandlerCount;
+    private protected int unregisteredEventHandlerCount;
     private protected abstract Type EventSourceType { get; }
 #endif
 
-    internal Guid EventSourceId { get; }
+    internal Guid Id { get; }
 
     private protected static ConcurrentDictionary<AddClientHandlerInvocatorTableKey, AddClientHandlerInvocatorTableEntry> AddClientHandlerInvocatorTable { get; } = new ConcurrentDictionary<AddClientHandlerInvocatorTableKey, AddClientHandlerInvocatorTableEntry>();
     public bool IsListening { get; private set; }
@@ -38,7 +38,7 @@
 
     protected WeakEventManager()
     {
-      this.EventSourceId = new Guid();
+      this.Id = Guid.NewGuid();
 
 #if DEBUG
       this.InstanceNumber = ++InstanceCounter;
@@ -47,12 +47,12 @@
 
     internal abstract void Purge();
 
+#if DEBUG
     internal void LogDebug(string message)
     {
-#if DEBUG
-      Debug.WriteLine($"{nameof(WeakEventManager)} instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}: {message}");
-#endif
+      Debug.WriteLine($"[ThreadID: {Thread.CurrentThread.ManagedThreadId}] [ID: {this.Id}] [{nameof(WeakEventManager)} instance #{this.InstanceNumber} of {WeakEventManager.InstanceCounter}]: {message}");
     }
+#endif
 
     internal void StartListeningInternal(object eventSource)
     {

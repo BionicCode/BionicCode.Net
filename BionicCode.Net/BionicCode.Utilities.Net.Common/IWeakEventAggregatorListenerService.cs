@@ -9,7 +9,8 @@
   public interface IWeakEventAggregatorListenerService
   {
     /// <summary>
-    /// Registers an event delegate, with a random signature that does not have to follow the common C# event practices, to handle a specific event published by a specific observable type.
+    /// Register an event handler to handle a specified event that is published by a specific event source. 
+    /// The events can have an arbitrary signature which does not have to follow the common C# event practices.
     /// </summary>
     /// <param name="eventName">The name of the observed event.</param>
     /// <typeparam name="TEventSource">The type of the event publisher object. This can be any derived type like a class or interface.</typeparam>
@@ -22,8 +23,9 @@
     void StartListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler) where TDelegate : Delegate;
 
     /// <summary>
-    /// Registers an event delegate, with a random signature that does not have to follow the common C# event practices, to handle a specific event published by a specific observable type.
-    /// <br/>This overload supports marshaling to the current thread by capturing the <see cref="SynchronizationContext"/> of the caller.
+    /// Register an event handler to handle a specified event that is published by a specific event source. 
+    /// The events can have an arbitrary signature which does not have to follow the common C# event practices.
+    /// <br/>This overload supports marshalling to the current thread by capturing the <see cref="SynchronizationContext"/> of the caller.
     /// </summary>
     /// <param name="eventName">The name of the observed event.</param>
     /// <typeparam name="TEventSource">The type of the event publisher object. This can be any derived type like a class or interface.</typeparam>
@@ -37,8 +39,9 @@
     void StartListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler, bool isMarshalEventToCurrentThreadEnabled) where TDelegate : Delegate;
 
     /// <summary>
-    /// Registers an event delegate, with a random signature that does not have to follow the common C# event practices, to handle a specific event published by a specific observable type.
-    /// <br/>This overload supports marshaling to the specified <see cref="SynchronizationContext"/>.
+    /// Register an event handler to handle a specified event that is published by a specific event source. 
+    /// The events can have an arbitrary signature which does not have to follow the common C# event practices.
+    /// <br/>This overload supports marshalling to the specified <see cref="SynchronizationContext"/>.
     /// </summary>
     /// <param name="eventName">The name of the observed event.</param>
     /// <typeparam name="TEventSource">The type of the event publisher object. This can be any derived type like a class or interface.</typeparam>
@@ -52,7 +55,8 @@
     void StartListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler, SynchronizationContext synchronizationContext) where TDelegate : Delegate;
 
     /// <summary>
-    /// Tries to register an event delegate, with a random signature that does not have to follow the common C# event practices, to handle all matching events published by a specific observable type.
+    /// Tries to register an event handler to handle all compatible events that are published by a specific observable type. 
+    /// The events can have an arbitrary signature which does not have to follow the common C# event practices.
     /// </summary>
     /// <typeparam name="TEventSource">The type of the event publisher object. This can be any derived type like a class or interface.</typeparam>
     /// <typeparam name="TDelegate">The type of the event handler.</typeparam>
@@ -60,7 +64,7 @@
     /// <returns><see langword="true"/> when registration was successful, which means all events where compatible with the provided <paramref name="eventHandler"/>. If there is at least a single incompatible event, the method returns <see langword="false"/> but still registers the <paramref name="eventHandler"/> for all compatible events.</returns>
     /// <exception cref="ArgumentNullException">The <paramref name="eventHandler"/> is <see langword="null"/>.</exception>
     /// <remarks>This method will observe any event on the specified event source if the event delegate's signature is compatible to the provided <paramref name="eventHandler"/>.
-    /// <br/>An event handler is considered compatible all of the following conditions are true:
+    /// <br/>An event handler is considered compatible when all of the following conditions are true:
     /// <list type="bullet">
     /// <item>The parameter count matches the parameter count of the event delegate</item>
     /// <item>Each parameter is assignable to the event delegate's parameter at the same position.</item>
@@ -72,8 +76,9 @@
     bool TryStartListeningAll<TEventSource, TDelegate>(TDelegate eventHandler) where TDelegate : Delegate;
 
     /// <summary>
-    /// Tries to register an event delegate, with a random signature that does not have to follow the common C# event practices, to handle all matching events published by a specific observable type.
-    /// <br/>This overload supports marshaling to the specified <see cref="SynchronizationContext"/>.
+    /// Tries to register an event handler to handle all compatible events that are published by a specific observable type. 
+    /// The events can have an arbitrary signature which does not have to follow the common C# event practices.
+    /// <br/>This overload supports marshalling to the specified <see cref="SynchronizationContext"/>.
     /// </summary>
     /// <typeparam name="TEventSource">The type of the event publisher object. This can be any derived type like a class or interface.</typeparam>
     /// <typeparam name="TDelegate">The type of the event handler.</typeparam>
@@ -83,7 +88,7 @@
     /// <exception cref="ArgumentNullException">The <paramref name="eventHandler"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentNullException">The <paramref name="synchronizationContext"/> is <see langword="null"/>.</exception>
     /// <remarks>This method will observe any event on the specified event source if the event delegate's signature is compatible to the provided <paramref name="eventHandler"/>.
-    /// <br/>An event handler is considered compatible all of the following conditions are true:
+    /// <br/>An event handler is considered compatible when all of the following conditions are true:
     /// <list type="bullet">
     /// <item>The parameter count matches the parameter count of the event delegate</item>
     /// <item>Each parameter is assignable to the event delegate's parameter at the same position.</item>
@@ -95,8 +100,9 @@
     bool TryStartListeningAll<TEventSource, TDelegate>(TDelegate eventHandler, SynchronizationContext synchronizationContext) where TDelegate : Delegate;
 
     /// <summary>
-    /// Registers an event delegate, with a random signature that does not have to follow the common C# event practices, to handle all matching events published by a specific observable type.
-    /// <br/>This overload supports marshaling to the specified <see cref="SynchronizationContext"/>.
+    /// Registers an event handler to handle all events that are published by a specific observable type. 
+    /// The events can have an arbitrary signature which does not have to follow the common C# event practices.
+    /// <br/>This overload supports marshalling to the specified <see cref="SynchronizationContext"/>.
     /// </summary>
     /// <typeparam name="TEventSource">The type of the event publisher object. This can be any derived type like a class or interface.</typeparam>
     /// <typeparam name="TDelegate">The type of the event handler.</typeparam>
@@ -106,19 +112,20 @@
     /// <exception cref="ArgumentNullException">The <paramref name="synchronizationContext"/> is <see langword="null"/>.</exception>
     /// <exception cref="EventHandlerMismatchException">The <paramref name="eventHandler"/> is not compatible to an event of the event source. See remarks.</exception>
     /// <remarks>This method will observe any event on the specified event source if the event delegate's signature is compatible to the provided <paramref name="eventHandler"/>.
-    /// <br/>An event handler is considered compatible all of the following conditions are true:
+    /// <br/>An event handler is considered compatible when all of the following conditions are true:
     /// <list type="bullet">
     /// <item>The parameter count matches the parameter count of the event delegate</item>
     /// <item>Each parameter is assignable to the event delegate's parameter at the same position.</item>
     /// </list>
-    /// Events that are not compatible with the provided <paramref name="eventHandler"/> are ignored.
+    /// This method will throw an <see cref="EventHandlerMismatchException"/> if there are any events that are not compatible with the provided <paramref name="eventHandler"/>.
     /// <para></para> 
     /// Call <see cref="TryStartListeningAll{TEventSource, TDelegate}(TDelegate, SynchronizationContext)"/> if a <see langword="bool"/> value to indicate incompatible events should be returned instead of throwing an exception.
     /// </remarks>
     void StartListeningAll<TEventSource, TDelegate>(TDelegate eventHandler, SynchronizationContext synchronizationContext) where TDelegate : Delegate;
 
     /// <summary>
-    /// Registers an event delegate, with a random signature that does not have to follow the common C# event practices, to handle all matching events published by a specific observable type.
+    /// Registers an event handler to handle all events that are published by a specific observable type. 
+    /// The events can have an arbitrary signature which does not have to follow the common C# event practices.
     /// </summary>
     /// <typeparam name="TEventSource">The type of the event publisher object. This can be any derived type like a class or interface.</typeparam>
     /// <typeparam name="TDelegate">The type of the event handler.</typeparam>
@@ -126,12 +133,12 @@
     /// <exception cref="ArgumentNullException">The <paramref name="eventHandler"/> is <see langword="null"/>.</exception>
     /// <exception cref="EventHandlerMismatchException">The <paramref name="eventHandler"/> is not compatible to an event of the event source. See remarks.</exception>
     /// <remarks>This method will observe any event on the specified event source if the event delegate's signature is compatible to the provided <paramref name="eventHandler"/>.
-    /// <br/>An event handler is considered compatible all of the following conditions are true:
+    /// <br/>An event handler is considered compatible when all of the following conditions are true:
     /// <list type="bullet">
     /// <item>The parameter count matches the parameter count of the event delegate</item>
     /// <item>Each parameter is assignable to the event delegate's parameter at the same position.</item>
     /// </list>
-    /// Events that are not compatible with the provided <paramref name="eventHandler"/> are ignored.
+    /// This method will throw an <see cref="EventHandlerMismatchException"/> if there are any events that are not compatible with the provided <paramref name="eventHandler"/>.
     /// <para></para> 
     /// Call <see cref="TryStartListeningAll{TEventSource, TDelegate}(TDelegate)"/> if a <see langword="bool"/> value to indicate incompatible events should be returned instead of throwing an exception.
     /// </remarks>

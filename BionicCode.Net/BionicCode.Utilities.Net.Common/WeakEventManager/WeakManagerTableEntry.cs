@@ -13,7 +13,7 @@
     public int WeakEventManagerInstanceNumber { get; }
 #endif
 
-    public WeakManagerTableEntry(object eventSource, Type eventSourceType, string eventName, WeakEventManager weakEventManager) : base(eventSource, eventSourceType, weakEventManager.EventSourceId)
+    public WeakManagerTableEntry(object eventSource, Type eventSourceType, string eventName, WeakEventManager weakEventManager) : base(eventSource, eventSourceType, weakEventManager.Id)
     {
       this.EventName = eventName;
       this.WeakEventManager = weakEventManager;
