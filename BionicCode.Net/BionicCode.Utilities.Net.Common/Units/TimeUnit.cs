@@ -3,11 +3,11 @@
   public enum TimeUnit
   {
     None = 0,
-    Nanoseconds = -9,
-    Microseconds = -6,
-    Milliseconds = -3,
-    Seconds = 1,
-    Minutes = 60,
+    Nanosecond,
+    Microsecond,
+    Millisecond,
+    Second,
+    Minute,
     Auto,
   }
 }

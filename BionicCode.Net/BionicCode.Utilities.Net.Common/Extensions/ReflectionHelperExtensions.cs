@@ -1,32 +1,21 @@
 ﻿namespace BionicCode.Utilities.Net
 {
   using System;
+  using System.CodeDom;
+  using System.Collections;
+  using System.Collections.Frozen;
   using System.Collections.Generic;
-  using System.ComponentModel;
+  using System.Collections.Immutable;
   using System.Diagnostics;
+  using System.Globalization;
   using System.Linq;
   using System.Reflection;
   using System.Runtime.CompilerServices;
+  using System.Runtime.InteropServices;
   using System.Text;
   using System.Threading.Tasks;
-  using System.CodeDom;
-  using Microsoft.CSharp;
-  using System.IO;
-  using System.CodeDom.Compiler;
-  using Microsoft.CodeAnalysis.CSharp;
-  using Microsoft.CodeAnalysis.CSharp.Syntax;
   using Microsoft.CodeAnalysis;
-  using System.Runtime.InteropServices;
-  using Microsoft.CodeAnalysis.Operations;
-  using System.Xml.Linq;
-  using System.Reflection.Metadata;
-  using System.Globalization;
-  using Microsoft.Extensions.Caching.Memory;
-  using Microsoft.Extensions.Logging;
-  using System.Management;
-  using System.Collections;
-  using System.Collections.Frozen;
-  using System.Collections.Immutable;
+  using Microsoft.CSharp;
 
   /// <summary>
   /// A collection of extension methods for various default constraintTypes
@@ -62,10 +51,10 @@
       nameof(AsyncStateMachineAttribute),
       nameof(InAttribute),
       nameof(OutAttribute),
-      nameof(ProfileAttribute),
-      nameof(ProfilerMethodArgumentAttribute),
-      nameof(ProfilerPropertyArgumentAttribute),
-      nameof(ProfilerFactoryAttribute),
+      //nameof(ProfileAttribute),
+      //nameof(ProfilerMethodArgumentAttribute),
+      //nameof(ProfilerPropertyArgumentAttribute),
+      //nameof(ProfilerFactoryAttribute),
 #if !NETSTANDARD2_0
       nameof(IsReadOnlyAttribute),
 #endif
@@ -4977,7 +4966,7 @@
         Type eventHandlerParameterType = clientHandlerParameters[parameterIndex].ParameterType;
         if (!eventHandlerParameterType.IsAssignableFrom(eventDelegateParameterType))
         {
-         return false;
+          return false;
         }
       }
 

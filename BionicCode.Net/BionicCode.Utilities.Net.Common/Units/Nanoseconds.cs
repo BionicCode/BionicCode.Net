@@ -11,10 +11,10 @@
     public Nanoseconds(double value)
     {
       this.Value = value;
-      this.Unit = TimeUnit.Nanoseconds;
+      this.Unit = TimeUnit.Nanosecond;
     }
 
-    public Minutes ToMinutes() => TimeValueConverter.ToMinutes(this);
+    public Minute ToMinutes() => TimeValueConverter.ToMinutes(this);
     public Seconds ToSeconds() => TimeValueConverter.ToSeconds(this);
     public Milliseconds ToMilliseconds() => TimeValueConverter.ToMilliseconds(this);
     public Microseconds ToMicroseconds() => TimeValueConverter.ToMicroseconds(this);
@@ -28,12 +28,12 @@
     public int CompareTo(Microseconds other) => CompareTo(other.ToNanoseconds());
     public int CompareTo(Milliseconds other) => CompareTo(other.ToNanoseconds());
     public int CompareTo(Seconds other) => CompareTo(other.ToNanoseconds());
-    public int CompareTo(Minutes other) => CompareTo(other.ToNanoseconds());
+    public int CompareTo(Minute other) => CompareTo(other.ToNanoseconds());
     public int CompareTo(TimeSpan other) => CompareTo((Nanoseconds)other);
 
     int IComparable.CompareTo(object obj) => obj is Seconds seconds
       ? CompareTo(seconds)
-      : obj is Minutes minutes
+      : obj is Minute minutes
         ? CompareTo(minutes)
         : obj is Milliseconds milliseconds
           ? CompareTo(milliseconds)
@@ -133,13 +133,13 @@
     public static bool operator >=(Nanoseconds left, Seconds right) => left.CompareTo(right) >= 0;
 
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_LessThan(TSelf, TOther)" />
-    public static bool operator <(Nanoseconds left, Minutes right) => left.CompareTo(right) < 0;
+    public static bool operator <(Nanoseconds left, Minute right) => left.CompareTo(right) < 0;
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_LessThanOrEqual(TSelf, TOther)" />
-    public static bool operator <=(Nanoseconds left, Minutes right) => left.CompareTo(right) <= 0;
+    public static bool operator <=(Nanoseconds left, Minute right) => left.CompareTo(right) <= 0;
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_GreaterThan(TSelf, TOther)" />
-    public static bool operator >(Nanoseconds left, Minutes right) => left.CompareTo(right) > 0;
+    public static bool operator >(Nanoseconds left, Minute right) => left.CompareTo(right) > 0;
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_GreaterThanOrEqual(TSelf, TOther)" />
-    public static bool operator >=(Nanoseconds left, Minutes right) => left.CompareTo(right) >= 0;
+    public static bool operator >=(Nanoseconds left, Minute right) => left.CompareTo(right) >= 0;
 
     /// <inheritdoc cref="System.Numerics.IComparisonOperators{TSelf, TOther, TResult}.op_LessThan(TSelf, TOther)" />
     public static bool operator <(Nanoseconds left, TimeSpan right) => left.CompareTo(right) < 0;
@@ -154,12 +154,12 @@
 
     #region Arithmetic operators
 
-    public static Nanoseconds operator +(Nanoseconds left, Minutes right) => left.Value + right.ToNanoseconds();
-    public static Nanoseconds operator -(Nanoseconds left, Minutes right) => left.Value - right.ToNanoseconds();
+    public static Nanoseconds operator +(Nanoseconds left, Minute right) => left.Value + right.ToNanoseconds();
+    public static Nanoseconds operator -(Nanoseconds left, Minute right) => left.Value - right.ToNanoseconds();
     /// <inheritdoc cref="System.Numerics.IMultiplyOperators{TSelf, TOther, TResult}.op_Multiply(TSelf, TOther)" />
-    public static Nanoseconds operator *(Nanoseconds left, Minutes right) => left.Value * right.ToNanoseconds();
+    public static Nanoseconds operator *(Nanoseconds left, Minute right) => left.Value * right.ToNanoseconds();
     /// <inheritdoc cref="System.Numerics.IDivisionOperators{TSelf, TOther, TResult}.op_Division(TSelf, TOther)" />
-    public static Nanoseconds operator /(Nanoseconds left, Minutes right) => left.Value / right.ToNanoseconds();
+    public static Nanoseconds operator /(Nanoseconds left, Minute right) => left.Value / right.ToNanoseconds();
 
     public static Nanoseconds operator +(Nanoseconds left, Seconds right) => left.Value + right.ToNanoseconds();
     public static Nanoseconds operator -(Nanoseconds left, Seconds right) => left.Value - right.ToNanoseconds();
@@ -207,7 +207,7 @@
 
     #region Cast operators
 
-    public static implicit operator Nanoseconds(Minutes minutes) => minutes.ToNanoseconds();
+    public static implicit operator Nanoseconds(Minute minutes) => minutes.ToNanoseconds();
     public static implicit operator Nanoseconds(Seconds seconds) => seconds.ToNanoseconds();
     public static implicit operator Nanoseconds(Milliseconds milliseconds) => milliseconds.ToNanoseconds();
     public static implicit operator Nanoseconds(Microseconds microseconds) => microseconds.ToNanoseconds();
@@ -238,9 +238,9 @@
     public static bool operator !=(Nanoseconds left, double right) => !(left == right);
 
     /// <inheritdoc cref="System.Numerics.IEqualityOperators{TSelf, TOther, TResult}.op_Equality(TSelf, TOther)" />
-    public static bool operator ==(Nanoseconds left, Minutes right) => left.Equals(right);
+    public static bool operator ==(Nanoseconds left, Minute right) => left.Equals(right);
     /// <inheritdoc cref="System.Numerics.IEqualityOperators{TSelf, TOther, TResult}.op_Inequality(TSelf, TOther)" />
-    public static bool operator !=(Nanoseconds left, Minutes right) => !(left == right);
+    public static bool operator !=(Nanoseconds left, Minute right) => !(left == right);
 
     /// <inheritdoc cref="System.Numerics.IEqualityOperators{TSelf, TOther, TResult}.op_Equality(TSelf, TOther)" />
     public static bool operator ==(Nanoseconds left, Seconds right) => left.Equals(right);
@@ -284,16 +284,16 @@
     {
       switch (unit)
       {
-        case TimeUnit.Microseconds:
+        case TimeUnit.Microsecond:
           return ToMicroseconds();
-        case TimeUnit.Nanoseconds:
+        case TimeUnit.Nanosecond:
         case TimeUnit.None:
           return this;
-        case TimeUnit.Milliseconds:
+        case TimeUnit.Millisecond:
           return ToMilliseconds();
-        case TimeUnit.Seconds:
+        case TimeUnit.Second:
           return ToSeconds();
-        case TimeUnit.Minutes:
+        case TimeUnit.Minute:
           return ToMinutes();
         case TimeUnit.Auto:
           TimeUnit newUnit = TimeValueConverter.GetBestDisplayUnit(this);
@@ -307,7 +307,7 @@
     {
       switch (other)
       {
-        case Minutes minutes:
+        case Minute minutes:
           return CompareTo(minutes);
         case Seconds seconds:
           return CompareTo(seconds);
@@ -326,7 +326,7 @@
     {
       switch (other)
       {
-        case Minutes minutes:
+        case Minute minutes:
           return Equals(minutes);
         case Seconds seconds:
           return Equals(seconds);

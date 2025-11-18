@@ -4,10 +4,8 @@
   using System.Collections;
   using System.Collections.Generic;
   using System.ComponentModel;
-  using System.ComponentModel.DataAnnotations;
-  using System.Reflection;
-  using System.Runtime.CompilerServices;
   using System.Threading.Tasks;
+  using BionicCode.Utilities.Net.Profiling;
 
   [ProfilerAutoDiscover(typeof(string))]
   public class BenchmarkTarget<TParam>
@@ -73,7 +71,7 @@
     }
 
     //[ProfilerFactoryAttribute]
-    private static BenchmarkTarget<TParam> factory = new BenchmarkTarget<TParam>(300);
+    private static readonly BenchmarkTarget<TParam> factory = new BenchmarkTarget<TParam>(300);
 
     //[ProfilerFactoryAttribute]
     //private static BenchmarkTarget<TParam> CreateInstance() => new BenchmarkTarget<TParam>(300);
@@ -169,7 +167,7 @@
     }
 
     //[ProfilerFactoryAttribute]
-    private static BenchmarkTargetAlternate<TParam> factory = new BenchmarkTargetAlternate<TParam>("Created by factory field");
+    private static readonly BenchmarkTargetAlternate<TParam> factory = new BenchmarkTargetAlternate<TParam>("Created by factory field");
 
     //[ProfilerFactoryAttribute]
     //private static BenchmarkTarget<TParam> CreateInstance() => new BenchmarkTarget<TParam>(300);

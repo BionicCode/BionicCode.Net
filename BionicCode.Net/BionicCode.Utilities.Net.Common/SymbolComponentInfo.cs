@@ -1,14 +1,8 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-  using System;
   using System.Collections.Generic;
-  using System.Collections.Immutable;
   using System.Collections.ObjectModel;
   using System.Diagnostics;
-  using System.Linq;
-  using System.Text;
-  using System.Threading.Tasks;
-  using Microsoft.Extensions.Primitives;
 
   [DebuggerDisplay("Symbol name = {NameBuilder}")]
   internal class SymbolComponentInfo
@@ -63,10 +57,12 @@
       set
       {
         this.returnType = value;
-        if (this.returnType != null)
+        if (this.returnType == null)
         {
-          this.returnType.IsSymbol = false;
+          return;
         }
+
+        this.returnType.IsSymbol = false;
       }
     }
     public SymbolComponentInfo PropertyGet { get; set; }
@@ -133,7 +129,7 @@
     public void AddGenericTypeParameter(SymbolComponentInfo typeParameter)
       => this.genericTypeParametersInternal.Add(typeParameter);
 
-    public void AddGenericTypeParameterRange(IEnumerable<SymbolComponentInfo> typeParameters) 
+    public void AddGenericTypeParameterRange(IEnumerable<SymbolComponentInfo> typeParameters)
       => this.genericTypeParametersInternal.AddRange(typeParameters);
 
     public void AddGenericTypeConstraint(SymbolComponentInfo typeConstraint)

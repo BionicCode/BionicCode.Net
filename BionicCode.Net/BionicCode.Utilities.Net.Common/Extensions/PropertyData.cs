@@ -1,4 +1,5 @@
-﻿namespace BionicCode.Utilities.Net
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("BionicCode.Utilities.Net.Profiling")]
+namespace BionicCode.Utilities.Net
 {
   using System;
   using System.Linq;
@@ -49,7 +50,7 @@
     public PropertyInfo GetPropertyInfo()
       => this.PropertyInfo;
 
-    protected override MemberInfo GetMemberInfo() 
+    protected override MemberInfo GetMemberInfo()
       => GetPropertyInfo();
 
     public object Get(object target, object[] indexerPropertyIndex = null)
@@ -106,10 +107,10 @@
       this.getAccessorAccessModifier = getMethodModifier;
     }
 
-    public bool IsIndexer 
+    public bool IsIndexer
       => this.IndexerParameters.Length > 0;
 
-    public ParameterData[] IndexerParameters 
+    public ParameterData[] IndexerParameters
       => this.indexerParameters ?? (this.indexerParameters = this.PropertyInfo.GetIndexParameters().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
 
     public override AccessModifier AccessModifier
@@ -133,7 +134,7 @@
         {
           GetAccessors();
         }
-        
+
         return this.setAccessorAccessModifier.Value;
       }
     }
@@ -151,8 +152,8 @@
       }
     }
 
-    public TypeData PropertyTypeData 
-      => this.propertyTypeData ?? (this.propertyTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetPropertyInfo().PropertyType)); 
+    public TypeData PropertyTypeData
+      => this.propertyTypeData ?? (this.propertyTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetPropertyInfo().PropertyType));
 
     public PropertyInfo PropertyInfo { get; }
 
@@ -165,16 +166,16 @@
     public bool IsSealed
       => (bool)(this.isSealed ?? (this.isSealed = this.CanRead ? this.GetMethodData.IsSealed : this.SetMethodData.IsSealed));
 
-    public bool CanWrite 
+    public bool CanWrite
       => (bool)(this.canWrite ?? (this.canWrite = GetPropertyInfo().CanWrite));
 
-    public bool CanRead 
-      => (bool)(this.canRead ?? (this.canRead = GetPropertyInfo().CanRead)); 
+    public bool CanRead
+      => (bool)(this.canRead ?? (this.canRead = GetPropertyInfo().CanRead));
 
-    public MethodData GetMethodData 
+    public MethodData GetMethodData
       => this.getMethodData ?? (this.getMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetPropertyInfo().GetGetMethod(true)));
 
-    public MethodData SetMethodData 
+    public MethodData SetMethodData
       => this.setMethodData ?? (this.setMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetPropertyInfo().GetSetMethod(true)));
 
     public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
@@ -205,13 +206,13 @@
     public override string ShortDisplayName
       => this.shortDisplayName ?? (this.shortDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false));
 
-    public override string FullyQualifiedDisplayName 
+    public override string FullyQualifiedDisplayName
       => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true));
 
     public override string AssemblyName
       => this.assemblyName ?? (this.assemblyName = this.DeclaringTypeData.AssemblyName);
 
-    public override bool IsStatic 
+    public override bool IsStatic
       => (bool)(this.isStatic ?? (this.isStatic = this.CanRead ? this.GetMethodData.IsStatic : this.SetMethodData.IsStatic));
 
 #if !NETSTANDARD2_0

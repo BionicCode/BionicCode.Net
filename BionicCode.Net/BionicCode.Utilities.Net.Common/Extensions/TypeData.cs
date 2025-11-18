@@ -1,15 +1,13 @@
-﻿namespace BionicCode.Utilities.Net
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("BionicCode.Utilities.Net.Profiling")]
+namespace BionicCode.Utilities.Net
 {
   using System;
-  using System.Collections;
   using System.Collections.Concurrent;
   using System.Collections.Generic;
   using System.Linq;
-  using System.Management;
   using System.Reflection;
-  using System.Runtime.InteropServices;
 
-  internal  class TypeData : SymbolInfoData
+  internal class TypeData : SymbolInfoData
   {
     private string displayName;
     private string shortDisplayName;
@@ -82,7 +80,7 @@
           return propertyData;
         });
 
-        return (PropertyData)symbolInfoData;
+      return (PropertyData)symbolInfoData;
     }
 
     public IEnumerable<PropertyData> EnumerateProperties()
@@ -96,7 +94,7 @@
 
         yield break;
       }
-      
+
       foreach (PropertyInfo property in GetType().GetProperties(SymbolInfoData.AllMembersFlags))
       {
         PropertyData propertyData = GetProperty(property.Name);
@@ -117,7 +115,7 @@
           return methodData;
         });
 
-        return (MethodData)symbolInfoData;
+      return (MethodData)symbolInfoData;
     }
 
     public IEnumerable<MethodData> EnumerateMethods()
@@ -153,7 +151,7 @@
         });
 
       return (FieldData)symbolInfoData;
-    }    
+    }
 
     public IEnumerable<FieldData> EnumerateFields()
     {
@@ -250,7 +248,7 @@
     public RuntimeTypeHandle Handle { get; }
     public string Namespace { get; }
 
-    public bool IsAwaitable 
+    public bool IsAwaitable
       => (bool)(this.isAwaitable ?? (this.isAwaitable = HelperExtensionsCommon.IsAwaitableInternal(this)));
 
     public bool IsValueType
@@ -288,13 +286,13 @@
       }
     }
 
-    public bool CanDeclareExtensionMethod 
+    public bool CanDeclareExtensionMethod
       => (bool)(this.canDeclareExtensionMethod ?? (this.canDeclareExtensionMethod = HelperExtensionsCommon.CanDeclareExtensionMethodsInternal(this)));
 
     public override IList<CustomAttributeData> AttributeData
       => this.attributeData ?? (this.attributeData = GetType().GetCustomAttributesData());
 
-    public AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined 
+    public AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
       ? (this.accessModifier = HelperExtensionsCommon.GetAccessModifierInternal(this))
       : this.accessModifier;
 
@@ -324,23 +322,23 @@
 
     public override string ShortDisplayName
       => this.shortDisplayName ?? (this.shortDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false));
-    public override string FullyQualifiedDisplayName 
+    public override string FullyQualifiedDisplayName
       => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false));
 
     public override string AssemblyName
       => this.assemblyName ?? (this.assemblyName = GetType().Assembly.GetName().Name);
 
-    public bool IsStatic 
+    public bool IsStatic
       => (bool)(this.isStatic ?? (this.isStatic = HelperExtensionsCommon.IsStaticInternal(this)));
 
-    public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined 
-      ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this)) 
+    public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
+      ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
       : this.symbolAttributes;
 
-    public bool IsAbstract 
+    public bool IsAbstract
       => (bool)(this.isAbstract ?? (this.isAbstract = GetType().IsAbstract));
 
-    public bool IsSealed 
+    public bool IsSealed
       => (bool)(this.isSealed ?? (this.isSealed = GetType().IsSealed));
 
     public bool IsByRef

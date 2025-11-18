@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-    <TargetFrameworks>net472;net48;net481;netstandard20;netstandard21;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
 		<ApplicationIcon>logo.ico</ApplicationIcon>
 		<RootNamespace>BionicCode.Utilities.Net</RootNamespace>
 		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
@@ -193,16 +193,6 @@
   </ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Profiling\HtmlLogger.html" />
-	  <None Remove="Profiling\HtmlLogger.js" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <EmbeddedResource Include="Profiling\HtmlLogger.html" />
-	  <EmbeddedResource Include="Profiling\HtmlLogger.js" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <None Include="..\..\..\..\BionicCode_Logo.png">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
@@ -225,6 +215,10 @@
     <PackageReference Include="System.Runtime.Caching" Version="8.0.1" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Profiling\" />
 	</ItemGroup>
 
 	<!--<ItemGroup>

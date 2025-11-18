@@ -1,10 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
-using BionicCode.Utilities.Net;
-using BionicCode.Utilities.Net.Profiling.Ipc;
 using BionicCode.Utilities.Net.Profiling;
+using BionicCode.Utilities.Net.Profiling.Ipc;
 
 /******************************************************************************/
 internal class Program

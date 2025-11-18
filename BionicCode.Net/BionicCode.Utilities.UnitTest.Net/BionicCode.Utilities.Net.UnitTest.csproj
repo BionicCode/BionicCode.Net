@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0;net8.0;net9.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
 
     <IsPackable>false</IsPackable>
 
@@ -52,6 +52,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BionicCode.Utilities.Net.Common\BionicCode.Utilities.Net.Common.csproj" />
+    <ProjectReference Include="..\BionicCode.Utilities.Net.Profiling\BionicCode.Utilities.Net.Profiling.csproj" />
     <ProjectReference Include="..\BionicCode.Utilities.Net\BionicCode.Utilities.Net.csproj" />
   </ItemGroup>
   

@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0;net8.0;net9.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="HtmlLogger.html" />
+    <EmbeddedResource Include="HtmlLogger.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BionicCode.Utilities.Net.Common\BionicCode.Utilities.Net.Common.csproj" />
+  </ItemGroup>
+
+</Project>

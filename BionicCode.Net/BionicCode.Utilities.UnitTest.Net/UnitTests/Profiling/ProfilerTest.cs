@@ -4,10 +4,10 @@
   using System.Collections.Generic;
   using System.Diagnostics;
   using System.Linq;
-  using System.Reflection;
   using System.Threading;
   using System.Threading.Tasks;
   using BionicCode.Utilities.Net;
+  using BionicCode.Utilities.Net.Profiling;
   using BionicCode.Utilities.Net.UnitTest.Resources;
   using FluentAssertions;
   using Xunit;

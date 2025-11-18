@@ -3,18 +3,18 @@
 namespace BionicCode.Utilities.Net.UnitTest
 {
   using System;
-  using System.Diagnostics;
-  using System.IO;
-  using System.Linq;
-  using System.Runtime.CompilerServices;
-  using BionicCode.Utilities.Net;
-  using System.Threading;
-  using System.Threading.Tasks;
-  using FluentAssertions;
-  using Xunit;
-  using System.Windows.Input;
   using System.Collections.Generic;
   using System.ComponentModel;
+  using System.Diagnostics;
+  using System.IO;
+  using System.Runtime.CompilerServices;
+  using System.Threading;
+  using System.Threading.Tasks;
+  using System.Windows.Input;
+  using BionicCode.Utilities.Net;
+  using BionicCode.Utilities.Net.Profiling;
+  using FluentAssertions;
+  using Xunit;
 
   public class AsyncCommandTest : IDisposable
   {
@@ -209,7 +209,7 @@ namespace BionicCode.Utilities.Net.UnitTest
       switch (e.PropertyName)
       {
         case nameof(IAsyncRelayCommandCore.PendingCount):
-          this.pendingCount = ((IAsyncRelayCommandCore)sender).PendingCount; 
+          this.pendingCount = ((IAsyncRelayCommandCore)sender).PendingCount;
           if (this.pendingCount == this.commandsToAwaitPendingCount)
           {
             this.pendingTaskCompletionSource.SetResult();
@@ -246,7 +246,7 @@ namespace BionicCode.Utilities.Net.UnitTest
       await Task.Delay(this.AsyncDelay);
     }
 
-    private async Task ExecuteTestNoParamCommandAsync() 
+    private async Task ExecuteTestNoParamCommandAsync()
       => await Task.Delay(this.AsyncDelay);
 
     private async Task ExecuteCancellableTestCommandAsync(string commandParameter, CancellationToken cancellationToken)
@@ -590,7 +590,7 @@ namespace BionicCode.Utilities.Net.UnitTest
     {
       Task task1 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter, this.Timeout, CancellationToken.None);
       Task task2 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter, this.Timeout, CancellationToken.None);
-      
+
       try
       {
         await Task.WhenAll(task1, task2);
@@ -662,32 +662,32 @@ namespace BionicCode.Utilities.Net.UnitTest
       }
 
       _ = this.totalCommandsCompletedCount.Should().Be(2);
-    } 
+    }
 
-  [Fact]
-  public async Task ExecutingCommandTwoTimes_CancelFirstWithTimeout_MustExecuteSecond()
-  {
-    Task task2 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter, this.Timeout);
-    Task task1 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter);
-    Func<Task> tasks = () => Task.WhenAll(task1, task2);
-
-    try
+    [Fact]
+    public async Task ExecutingCommandTwoTimes_CancelFirstWithTimeout_MustExecuteSecond()
     {
-      _ = Task.Run(tasks);
+      Task task2 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter, this.Timeout);
+      Task task1 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter);
+      Func<Task> tasks = () => Task.WhenAll(task1, task2);
+
+      try
+      {
+        _ = Task.Run(tasks);
         await WaitForExecutionStartedAsync(1);
         await WaitForExecutionPendingAsync(1);
         this.AsyncCancellableTestCommand.Cancel();
-      await WaitForExecutionCompletedAsync();
+        await WaitForExecutionCompletedAsync();
         await WaitForExecutionStartedAsync(1);
       }
-    catch (OperationCanceledException)
-    {
+      catch (OperationCanceledException)
+      {
+      }
+
+      _ = this.totalCommandsCompletedCount.Should().Be(2);
     }
 
-    _ = this.totalCommandsCompletedCount.Should().Be(2);
-  }
-
-  [Fact]
+    [Fact]
     public async Task ExecutingCommandTwoTimes_CancelSecondPending_MustExecuteOnlyFirst()
     {
       Task task1 = this.AsyncCancellableTestCommand.ExecuteAsync(this.ValidCommandParameter);

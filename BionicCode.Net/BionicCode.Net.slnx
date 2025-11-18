@@ -1,0 +1,42 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="ARM" />
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Controls/">
+    <Project Path="BionicCode.Controls.Net.Wpf/BionicCode.Controls.Net.Wpf.csproj">
+      <Build Solution="Debug|Any CPU" Project="false" />
+    </Project>
+  </Folder>
+  <Folder Name="/Test/">
+    <Project Path="BionicCode.Controls.Net.Wpf.Ui.Test/BionicCode.Controls.Net.Wpf.Ui.Test.csproj">
+      <Build Solution="Debug|Any CPU" Project="false" />
+    </Project>
+    <Project Path="BionicCode.Net.Framework.Wpf.BionicCharts.Ui.Test/BionicCode.Net.Framework.Wpf.BionicCharts.Ui.Test.csproj" Id="83fdac1f-7bcd-4a38-9b13-b778024c50b2">
+      <Build Solution="Debug|Any CPU" Project="false" />
+    </Project>
+    <Project Path="BionicCode.Utilities.UnitTest.Net/BionicCode.Utilities.Net.UnitTest.csproj">
+      <Build Solution="Release|Any CPU" Project="false" />
+    </Project>
+  </Folder>
+  <Folder Name="/Utilities/">
+    <Project Path="BionicCode.Utilities.Net.Common.Isolation.Net6/BionicCode.Utilities.Net.Common.Isolation.Net6.csproj" />
+    <Project Path="BionicCode.Utilities.Net.Common/BionicCode.Utilities.Net.Common.csproj" />
+    <Project Path="BionicCode.Utilities.Net.Wpf/BionicCode.Utilities.Net.Wpf.csproj" />
+    <Project Path="BionicCode.Utilities.Net/BionicCode.Utilities.Net.csproj" />
+  </Folder>
+  <Project Path="BionicCode.Utilities.Net.Profiling/BionicCode.Utilities.Net.Profiling.csproj" Id="6e13f596-7ab1-4df7-b9b4-afb4bd4001b9">
+    <BuildDependency Project="BionicCode.Utilities.Net.Common/BionicCode.Utilities.Net.Common.csproj" />
+  </Project>
+  <Project Path="Documentation/Documentation.csproj">
+    <BuildDependency Project="BionicCode.Utilities.Net.Common/BionicCode.Utilities.Net.Common.csproj" />
+    <BuildDependency Project="BionicCode.Utilities.Net.Profiling/BionicCode.Utilities.Net.Profiling.csproj" />
+    <BuildDependency Project="BionicCode.Utilities.Net.Wpf/BionicCode.Utilities.Net.Wpf.csproj" />
+    <BuildDependency Project="BionicCode.Utilities.Net/BionicCode.Utilities.Net.csproj" />
+    <BuildDependency Project="BionicCode.Utilities.UnitTest.Net/BionicCode.Utilities.Net.UnitTest.csproj" />
+    <Build Solution="Debug|Any CPU" Project="false" />
+  </Project>
+</Solution>

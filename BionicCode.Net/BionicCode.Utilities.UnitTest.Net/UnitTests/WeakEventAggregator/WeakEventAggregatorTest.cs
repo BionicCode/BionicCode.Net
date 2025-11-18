@@ -25,6 +25,7 @@
       this.EventSource1 = new TestEventSource1();
       this.EventSource2 = new TestEventSource2();
       this.EventAggregatorListenerService = new WeakEventAggregator();
+      this.unsubscribeDelegates = new List<Action>();
       this.EventAggregatorPublisherService = (IWeakEventAggregatorPublisherService)this.EventAggregatorListenerService;
       eventHandlerInvocationCount = 0;
       eventHandlerInvocationThreadId = -1;
@@ -132,9 +133,11 @@
       Debug.WriteLine($"Normal test thread: {Thread.CurrentThread.ManagedThreadId}");
       var eventListener1 = new TestEventListener();
       Action<object, object> eventHandler = eventListener1.OnGenericAllPurposeTwoParameterEventHandler;
-      int numberOfCompatibleEvents = this.EventSource1.GetType().GetEvents().Where(eventHandler.IsAssignable).ToList().Count;
+      int numberOfCompatibleEvents = this.EventSource1.GetType().GetEvents().Where(eventInfo => !eventInfo.AddMethod.IsStatic).Where(eventHandler.IsAssignable).ToList().Count;
       this.EventAggregatorPublisherService.StartBroadcasting(this.EventSource1);
       _ = this.EventAggregatorListenerService.TryStartListeningAll<TestEventSource1, Action<object, object>>(eventHandler);
+      Action unsubscribe = this.EventAggregatorListenerService.StopListeningAll<TestEventSource1>;
+      this.unsubscribeDelegates.Add(unsubscribe);
 
       this.EventSource1.RaiseAll();
 
@@ -509,6 +512,7 @@
     private static int eventHandlerInvocationThreadId;
     private bool disposedValue;
     private TestEnvironmentSynchronizationContext currentSynchronizationContext;
+    private readonly List<Action> unsubscribeDelegates;
 
     private static bool IsDisposing { get; set; }
 
@@ -519,8 +523,12 @@
         WeakEventAggregatorTest.IsDisposing = true;
         if (disposing)
         {
-          this.EventAggregatorListenerService.StopListeningAll<TestEventSource1>();
-          this.EventAggregatorListenerService.StopListeningAll<TestEventSource2>();
+          //this.EventAggregatorListenerService.StopListeningAll<TestEventSource1>();
+          //this.EventAggregatorListenerService.StopListeningAll<TestEventSource2>();
+          foreach (Action unsubscribe in this.unsubscribeDelegates)
+          {
+            unsubscribe.Invoke();
+          }
           this.EventAggregatorPublisherService.StopBroadcasting(this.EventSource1, true);
           this.EventAggregatorPublisherService.StopBroadcasting(this.EventSource2, true);
           this.EventAggregatorListenerService = null;
