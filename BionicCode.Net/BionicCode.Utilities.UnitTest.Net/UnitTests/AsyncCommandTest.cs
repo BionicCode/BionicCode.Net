@@ -923,14 +923,6 @@ namespace BionicCode.Utilities.Net.UnitTest
         [Fact]
         public async Task ExecutingAsyncCommand_CastToICommandToExecuteSynchronouslyAndCancelWithCancellationToken_MustThrow()
         {
-
-            using (var cancellationTokenSource = new CancellationTokenSource(this.Timeout))
-            {
-                Action executeTask = () => ((ICommand)this.AsyncCancellableTestCommand).Execute(this.ValidCommandParameter);
-
-                _ = executeTask.Should().Throw<OperationCanceledException>();
-            }
-
             using var cancellationTokenSource = new CancellationTokenSource(this.Timeout);
             Action executeTask = () => ((ICommand)this.AsyncCancellableTestCommand).Execute(this.ValidCommandParameter);
 
