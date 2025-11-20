@@ -344,27 +344,6 @@
         public static Nanoseconds Add(Nanoseconds left, Nanoseconds right) => throw new NotImplementedException();
 
         public static Nanoseconds Subtract(Nanoseconds left, Nanoseconds right) => throw new NotImplementedException();
-
-
-<<<<<<< TODO: Unmerged change from project 'BionicCode.Utilities.Net.Common(net9.0)', Before:
-    public static Nanoseconds Multiply(Nanoseconds left, Nanoseconds right)
-    {
-      throw new NotImplementedException();
-    }
-
-    #endregion ITimeUnit
-  }
-=======
-    public static Nanoseconds Multiply(Nanoseconds left, Nanoseconds right) => throw new NotImplementedException();
-
-        public static Nanoseconds Divide(Nanoseconds left, Nanoseconds right)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion ITimeUnit
-    }
->>>>>>> After
         public static Nanoseconds Multiply(Nanoseconds left, Nanoseconds right) => throw new NotImplementedException();
 
         public static Nanoseconds Divide(Nanoseconds left, Nanoseconds right)

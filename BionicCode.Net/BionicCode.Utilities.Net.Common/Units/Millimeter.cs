@@ -232,27 +232,6 @@
         public static Millimeter Add(Millimeter left, Millimeter right) => throw new NotImplementedException();
 
         public static Millimeter Subtract(Millimeter left, Millimeter right) => throw new NotImplementedException();
-
-
-<<<<<<< TODO: Unmerged change from project 'BionicCode.Utilities.Net.Common(net9.0)', Before:
-    public static Millimeter Multiply(Millimeter left, Millimeter right)
-    {
-      throw new NotImplementedException();
-    }
-
-    #endregion
-  }
-=======
-    public static Millimeter Multiply(Millimeter left, Millimeter right) => throw new NotImplementedException();
-
-        public static Millimeter Divide(Millimeter left, Millimeter right)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-    }
->>>>>>> After
         public static Millimeter Multiply(Millimeter left, Millimeter right) => throw new NotImplementedException();
 
         public static Millimeter Divide(Millimeter left, Millimeter right)

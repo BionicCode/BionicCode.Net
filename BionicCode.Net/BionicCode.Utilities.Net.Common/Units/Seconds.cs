@@ -340,27 +340,6 @@
         public static Seconds Add(Seconds left, Seconds right) => throw new NotImplementedException();
 
         public static Seconds Subtract(Seconds left, Seconds right) => throw new NotImplementedException();
-
-
-<<<<<<< TODO: Unmerged change from project 'BionicCode.Utilities.Net.Common(net9.0)', Before:
-    public static Seconds Multiply(Seconds left, Seconds right)
-    {
-      throw new NotImplementedException();
-    }
-
-    #endregion ITimeUnit
-  }
-=======
-    public static Seconds Multiply(Seconds left, Seconds right) => throw new NotImplementedException();
-
-        public static Seconds Divide(Seconds left, Seconds right)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion ITimeUnit
-    }
->>>>>>> After
         public static Seconds Multiply(Seconds left, Seconds right) => throw new NotImplementedException();
 
         public static Seconds Divide(Seconds left, Seconds right)

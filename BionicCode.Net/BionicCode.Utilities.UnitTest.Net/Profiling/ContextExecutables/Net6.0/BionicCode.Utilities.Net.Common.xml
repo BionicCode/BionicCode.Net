@@ -62,6 +62,17 @@
             Represents the <see langword="private"/> modifier.
             </summary>
         </member>
+        <member name="T:BionicCode.Utilities.Net.ArrayEx">
+            <summary>
+            Provides static utility methods for manipulating and modifying arrays, including moving, shifting, and inserting
+            elements or ranges within arrays.
+            </summary>
+            <remarks>The methods in this class extend the functionality of standard arrays by enabling advanced
+            operations such as moving single elements or ranges to new positions, shifting ranges left or right, and inserting
+            items or collections at specified indices. These operations are performed in-place and may resize the array as
+            needed. All methods validate input parameters and throw exceptions for invalid arguments. This class is
+            thread-unsafe; concurrent modifications to the same array instance should be synchronized externally.</remarks>
+        </member>
         <member name="T:BionicCode.Utilities.Net.AsyncRelayCommandCommon">
             <summary>
             A reusable command that encapsulates the implementation of <see cref="T:System.Windows.Input.ICommand"/> with support for async/await command delegates. 
@@ -145,7 +156,7 @@
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.System#Windows#Input#ICommand#CanExecute(System.Object)">
             <inheritdoc />
         </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.System#Windows#Input#ICommand#Execute(System.Object)">
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.Execute(System.Object)">
             <inheritdoc />
         </member>
         <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCore.CanBeCanceled">
@@ -2229,7 +2240,7 @@
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.System#Windows#Input#ICommand#CanExecute(System.Object)">
             <inheritdoc />
         </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.System#Windows#Input#ICommand#Execute(System.Object)">
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.Execute(System.Object)">
             <inheritdoc />
         </member>
         <member name="T:BionicCode.Utilities.Net.Factory`1">

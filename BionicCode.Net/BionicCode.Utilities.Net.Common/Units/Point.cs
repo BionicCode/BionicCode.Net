@@ -233,27 +233,6 @@
         public static Inch Add(Point left, Point right) => throw new NotImplementedException();
 
         public static Inch Subtract(Point left, Point right) => throw new NotImplementedException();
-
-
-<<<<<<< TODO: Unmerged change from project 'BionicCode.Utilities.Net.Common(net9.0)', Before:
-    public static Inch Multiply(Point left, Point right)
-    {
-      throw new NotImplementedException();
-    }
-
-    #endregion
-  }
-=======
-    public static Inch Multiply(Point left, Point right) => throw new NotImplementedException();
-
-        public static Inch Divide(Point left, Point right)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-    }
->>>>>>> After
         public static Inch Multiply(Point left, Point right) => throw new NotImplementedException();
 
         public static Inch Divide(Point left, Point right)

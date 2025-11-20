@@ -180,26 +180,6 @@
         /// <inheritdoc cref="System.Numerics.IMultiplyOperators{TSelf, TOther, TResult}.op_Multiply(TSelf, TOther)" />
         public static Microseconds operator *(Microseconds left, Microseconds right) => left.Value * right.Value;
         /// <inheritdoc cref="System.Numerics.IDivisionOperators{TSelf, TOther, TResult}.op_Division(TSelf, TOther)" />
-    
-<<<<<<< TODO: Unmerged change from project 'BionicCode.Utilities.Net.Common(net9.0)', Before:
-    public static Microseconds Multiply(Microseconds left, Microseconds right)
-    {
-      throw new NotImplementedException();
-    }
-
-    #endregion ITimeUnit
-  }
-=======
-    public static Microseconds Multiply(Microseconds left, Microseconds right) => throw new NotImplementedException();
-
-        public static Microseconds Divide(Microseconds left, Microseconds right)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion ITimeUnit
-    }
->>>>>>> After
         public static Microseconds operator /(Microseconds left, Microseconds right) => left.Value / right.Value;
 
         public static Microseconds operator +(Microseconds left, Nanoseconds right) => left.Value + right.ToMicroseconds();

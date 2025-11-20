@@ -179,27 +179,7 @@
         public static Milliseconds operator +(Milliseconds left, Microseconds right) => left.Value + right.ToMilliseconds();
         public static Milliseconds operator -(Milliseconds left, Microseconds right) => left.Value - right.ToMilliseconds();
         /// <inheritdoc cref="System.Numerics.IMultiplyOperators{TSelf, TOther, TResult}.op_Multiply(TSelf, TOther)" />
-        public static Milliseconds operator *(Milliseconds 
-<<<<<<< TODO: Unmerged change from project 'BionicCode.Utilities.Net.Common(net9.0)', Before:
-    public static Milliseconds Multiply(Milliseconds left, Milliseconds right)
-    {
-      throw new NotImplementedException();
-    }
-
-    #endregion ITimeUnit
-  }
-=======
-        public static Milliseconds Multiply(Milliseconds left, Milliseconds right) => throw new NotImplementedException();
-
-        public static Milliseconds Divide(Milliseconds left, Milliseconds right)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion ITimeUnit
-    }
->>>>>>> After
-left, Microseconds right) => left.Value * right.ToMilliseconds();
+        public static Milliseconds operator *(Milliseconds left, Microseconds right) => left.Value * right.ToMilliseconds();
         /// <inheritdoc cref="System.Numerics.IDivisionOperators{TSelf, TOther, TResult}.op_Division(TSelf, TOther)" />
         public static Milliseconds operator /(Milliseconds left, Microseconds right) => left.Value / right.ToMilliseconds();
 
