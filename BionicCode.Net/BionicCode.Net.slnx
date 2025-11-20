@@ -28,6 +28,7 @@
     <Project Path="BionicCode.Utilities.Net.Wpf/BionicCode.Utilities.Net.Wpf.csproj" />
     <Project Path="BionicCode.Utilities.Net/BionicCode.Utilities.Net.csproj" />
   </Folder>
+  <Project Path="BionicCode.SIUnits.Core/BionicCode.SIUnits.Core.csproj" />
   <Project Path="BionicCode.Utilities.Net.Profiling/BionicCode.Utilities.Net.Profiling.csproj" Id="6e13f596-7ab1-4df7-b9b4-afb4bd4001b9">
     <BuildDependency Project="BionicCode.Utilities.Net.Common/BionicCode.Utilities.Net.Common.csproj" />
   </Project>
