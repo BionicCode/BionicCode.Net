@@ -1,136 +1,136 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-  using System;
-  using System.Collections.Generic;
-  using System.Reflection;
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
 
-  internal sealed class ParameterData : SymbolInfoData
-  {
-    private SymbolAttributes symbolAttributes;
-    private IList<CustomAttributeData> attributeData;
-    private bool? isRef;
-    private bool? isByRef;
-    private bool? isIn;
-    private bool? isOut;
-    private bool? isOptional;
-    private bool? isParams;
-    private int? position;
-    private TypeData parameterTypeData;
-    private TypeData declaringTypeData;
-    private MemberInfoData member;
-    private string assemblyName;
-    private SymbolComponentInfo symbolComponentInfo;
-
-    public ParameterData(ParameterInfo parameterInfo) : base(parameterInfo.Name)
+    internal sealed class ParameterData : SymbolInfoData
     {
-      this.DeclaringTypeHandle = parameterInfo.Member.DeclaringType.TypeHandle;
-      this.ParameterInfo = parameterInfo;
-    }
+        private SymbolAttributes symbolAttributes;
+        private IList<CustomAttributeData> attributeData;
+        private bool? isRef;
+        private bool? isByRef;
+        private bool? isIn;
+        private bool? isOut;
+        private bool? isOptional;
+        private bool? isParams;
+        private int? position;
+        private TypeData parameterTypeData;
+        private TypeData declaringTypeData;
+        private MemberInfoData member;
+        private string assemblyName;
+        private SymbolComponentInfo symbolComponentInfo;
 
-    public ParameterInfo GetParameterInfo()
-      => this.ParameterInfo;
-
-    public Type GetDeclaringType()
-      => Type.GetTypeFromHandle(this.DeclaringTypeHandle);
-
-    public RuntimeTypeHandle DeclaringTypeHandle { get; set; }
-
-    public bool IsRef 
-      => (bool)(this.isRef ?? (this.isRef = HelperExtensionsCommon.IsRefInternal(this)));
-
-    public bool IsIn
-      => (bool)(this.isIn ?? (this.isIn = GetParameterInfo().IsIn));
-
-    public bool IsOut
-      => (bool)(this.isOut ?? (this.isOut = GetParameterInfo().IsOut));
-
-    public bool IsOptional
-      => (bool)(this.isOptional ?? (this.isOptional = GetParameterInfo().IsOptional));
-
-    /// <summary>
-    /// Zero-based index of the parameter in the formal parameter list.
-    /// </summary>
-    public int Position
-      => (int)(this.position ?? (this.position = GetParameterInfo().Position));
-
-    public bool IsParams
-      => (bool)(this.isParams ?? (this.isParams = GetParameterInfo().GetCustomAttribute<ParamArrayAttribute>() != null));
-
-    public ParameterInfo ParameterInfo { get; }
-
-    public MemberInfoData Member
-    {
-      get
-      {
-        MemberInfo member = GetParameterInfo().Member;
-        if (this.member is null)
+        public ParameterData(ParameterInfo parameterInfo) : base(parameterInfo.Name)
         {
-          if (member is ConstructorInfo constructorInfo)
-          {
-            this.member = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
-          }
-          else if (member is PropertyInfo propertyInfo)
-          {
-            this.member = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
-          }
-          else if (member is MethodInfo methodInfo)
-          {
-            this.member = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-          }
-          else
-          {
-            throw new NotImplementedException();
-          }
+            this.DeclaringTypeHandle = parameterInfo.Member.DeclaringType.TypeHandle;
+            this.ParameterInfo = parameterInfo;
         }
 
-        return this.member;
-      }
+        public ParameterInfo GetParameterInfo()
+          => this.ParameterInfo;
+
+        public Type GetDeclaringType()
+          => Type.GetTypeFromHandle(this.DeclaringTypeHandle);
+
+        public RuntimeTypeHandle DeclaringTypeHandle { get; set; }
+
+        public bool IsRef
+          => (bool)((bool?)(this.isRef ??= HelperExtensionsCommon.IsRefInternal(this)));
+
+        public bool IsIn
+          => (bool)((bool?)(this.isIn ??= GetParameterInfo().IsIn));
+
+        public bool IsOut
+          => (bool)((bool?)(this.isOut ??= GetParameterInfo().IsOut));
+
+        public bool IsOptional
+          => (bool)((bool?)(this.isOptional ??= GetParameterInfo().IsOptional));
+
+        /// <summary>
+        /// Zero-based index of the parameter in the formal parameter list.
+        /// </summary>
+        public int Position
+          => (int)((int?)(this.position ??= GetParameterInfo().Position));
+
+        public bool IsParams
+          => (bool)((bool?)(this.isParams ??= GetParameterInfo().GetCustomAttribute<ParamArrayAttribute>() != null));
+
+        public ParameterInfo ParameterInfo { get; }
+
+        public MemberInfoData Member
+        {
+            get
+            {
+                MemberInfo member = GetParameterInfo().Member;
+                if (this.member is null)
+                {
+                    if (member is ConstructorInfo constructorInfo)
+                    {
+                        this.member = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+                    }
+                    else if (member is PropertyInfo propertyInfo)
+                    {
+                        this.member = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+                    }
+                    else if (member is MethodInfo methodInfo)
+                    {
+                        this.member = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+                }
+
+                return this.member;
+            }
+        }
+
+        public TypeData ParameterTypeData
+          => this.parameterTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetParameterInfo().ParameterType);
+
+        public TypeData DeclaringTypeData
+          => this.declaringTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetDeclaringType());
+
+        public override IList<CustomAttributeData> AttributeData
+          => this.attributeData ??= new List<CustomAttributeData>(GetParameterInfo().GetCustomAttributesData());
+
+        public bool IsByRef
+          => (bool)((bool?)(this.isByRef ??= this.ParameterTypeData.GetType().IsByRef));
+
+        public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
+          ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
+          : this.symbolAttributes;
+
+        public override SymbolComponentInfo SymbolComponentInfo
+          => this.symbolComponentInfo ??= HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
+
+        public override string Signature
+          => this.Name;
+
+        public override string ShortSignature
+          => this.Name;
+
+        public override string ShortCompactSignature
+          => this.Name;
+
+        public override string RuntimeShortSignature
+          => this.Name;
+
+        public override string FullyQualifiedSignature
+          => this.Name;
+
+        public override string DisplayName
+          => this.Name;
+
+        public override string ShortDisplayName
+          => this.Name;
+
+        public override string FullyQualifiedDisplayName
+          => this.Name;
+
+        public override string AssemblyName
+          => this.assemblyName ??= this.Member.AssemblyName;
     }
-
-    public TypeData ParameterTypeData
-      => this.parameterTypeData ?? (this.parameterTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetParameterInfo().ParameterType));
-
-    public TypeData DeclaringTypeData
-      => this.declaringTypeData ?? (this.declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetDeclaringType()));
-
-    public override IList<CustomAttributeData> AttributeData
-      => this.attributeData ?? (this.attributeData = new List<CustomAttributeData>(GetParameterInfo().GetCustomAttributesData()));
-
-    public bool IsByRef 
-      => (bool)(this.isByRef ?? (this.isByRef = this.ParameterTypeData.GetType().IsByRef));
-
-    public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
-      ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
-      : this.symbolAttributes;
-
-    public override SymbolComponentInfo SymbolComponentInfo
-      => this.symbolComponentInfo ?? (this.symbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false));
-
-    public override string Signature
-      => this.Name;
-
-    public override string ShortSignature
-      => this.Name;
-
-    public override string ShortCompactSignature
-      => this.Name;
-
-    public override string RuntimeShortSignature
-      => this.Name;
-
-    public override string FullyQualifiedSignature
-      => this.Name;
-
-    public override string DisplayName
-      => this.Name ;
-
-    public override string ShortDisplayName
-      => this.Name;
-
-    public override string FullyQualifiedDisplayName 
-      => this.Name;
-
-    public override string AssemblyName
-      => this.assemblyName ?? (this.assemblyName = this.Member.AssemblyName);
-  }
 }

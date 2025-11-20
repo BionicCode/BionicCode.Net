@@ -1,16 +1,16 @@
 ﻿namespace BionicCode.Controls.Net.Wpf
 {
-  using System.Windows;
+    using System.Windows;
 
-  public class ResourceLocator
-  {
-    public ResourceLocator(FrameworkElement resourcesHost) => this.ResourcesHost = resourcesHost;
+    public class ResourceLocator
+    {
+        public ResourceLocator(FrameworkElement resourcesHost) => this.ResourcesHost = resourcesHost;
 
-    public TResource FindResource<TResource>(object resourceKey) => (TResource)this.ResourcesHost.FindResource(resourceKey);
-    public TResource TryFindResources<TResource>(object resourceKey) => this.ResourcesHost.TryFindResource(resourceKey) is object resource
-      ? (TResource)resource
-      : default;
+        public TResource FindResource<TResource>(object resourceKey) => (TResource)this.ResourcesHost.FindResource(resourceKey);
+        public TResource TryFindResources<TResource>(object resourceKey) => this.ResourcesHost.TryFindResource(resourceKey) is object resource
+          ? (TResource)resource
+          : default;
 
-    public FrameworkElement ResourcesHost { get; }
-  }
+        public FrameworkElement ResourcesHost { get; }
+    }
 }

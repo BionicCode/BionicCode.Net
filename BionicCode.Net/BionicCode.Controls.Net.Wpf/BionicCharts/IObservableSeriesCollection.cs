@@ -1,10 +1,10 @@
 ﻿namespace BionicCode.Controls.Net.Wpf
 {
-  using System.Collections;
-  using System.Collections.Specialized;
+    using System.Collections;
+    using System.Collections.Specialized;
 
-  public interface IObservableSeriesCollection : INotifyCollectionChanged, ICollection
-  {
+    public interface IObservableSeriesCollection : INotifyCollectionChanged, ICollection
+    {
 
-  }
+    }
 }

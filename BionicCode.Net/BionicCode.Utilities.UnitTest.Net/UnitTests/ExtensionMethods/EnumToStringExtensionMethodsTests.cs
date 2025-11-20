@@ -1,66 +1,66 @@
 ﻿namespace BionicCode.Utilities.Net.UnitTest.ExtensionMethodsTests
 {
-  using System;
-  using BionicCode.Utilities.Net.Profiling;
-  using FluentAssertions;
-  using Xunit;
+    using System;
+    using BionicCode.Utilities.Net.Profiling;
+    using FluentAssertions;
+    using Xunit;
 
-  public class EnumToStringExtensionMethodsTests
-  {
-    [Fact]
-    public void ExtensionMethod_ProfiledTargetTypeToDisplayStringValue_ShouldNotThrowBecauseAllValuesAreSupported()
+    public class EnumToStringExtensionMethodsTests
     {
-      Action act = () =>
-      {
-        foreach (ProfiledTargetType profiledTargetType in Enum.GetValues(typeof(ProfiledTargetType)))
+        [Fact]
+        public void ExtensionMethod_ProfiledTargetTypeToDisplayStringValue_ShouldNotThrowBecauseAllValuesAreSupported()
         {
-          _ = profiledTargetType.ToDisplayStringValue();
+            Action act = () =>
+            {
+                foreach (ProfiledTargetType profiledTargetType in Enum.GetValues(typeof(ProfiledTargetType)))
+                {
+                    _ = profiledTargetType.ToDisplayStringValue();
+                }
+            };
+
+            _ = act.Should().NotThrow<NotSupportedException>("all values are supported.");
         }
-      };
 
-      _ = act.Should().NotThrow<NotSupportedException>("all values are supported.");
-    }
-
-    [Fact]
-    public void ExtensionMethod_AccessModifierToDisplayStringValue_ShouldNotThrowBecauseAllValuesAreSupported()
-    {
-      Action act = () =>
-      {
-        foreach (AccessModifier accessModifier in Enum.GetValues(typeof(AccessModifier)))
+        [Fact]
+        public void ExtensionMethod_AccessModifierToDisplayStringValue_ShouldNotThrowBecauseAllValuesAreSupported()
         {
-          _ = accessModifier.ToDisplayStringValue();
+            Action act = () =>
+            {
+                foreach (AccessModifier accessModifier in Enum.GetValues(typeof(AccessModifier)))
+                {
+                    _ = accessModifier.ToDisplayStringValue();
+                }
+            };
+
+            _ = act.Should().NotThrow<NotSupportedException>("all values are supported.");
         }
-      };
 
-      _ = act.Should().NotThrow<NotSupportedException>("all values are supported.");
-    }
-
-    [Fact]
-    public void ExtensionMethod_TimeUnitToDisplayStringValue_ShouldNotThrowBecauseAllValuesAreSupported()
-    {
-      Action act = () =>
-      {
-        foreach (TimeUnit timeUnit in Enum.GetValues(typeof(TimeUnit)))
+        [Fact]
+        public void ExtensionMethod_TimeUnitToDisplayStringValue_ShouldNotThrowBecauseAllValuesAreSupported()
         {
-          _ = timeUnit.ToDisplayStringValue();
+            Action act = () =>
+            {
+                foreach (TimeUnit timeUnit in Enum.GetValues(typeof(TimeUnit)))
+                {
+                    _ = timeUnit.ToDisplayStringValue();
+                }
+            };
+
+            _ = act.Should().NotThrow<NotSupportedException>("all values are supported.");
         }
-      };
 
-      _ = act.Should().NotThrow<NotSupportedException>("all values are supported.");
-    }
-
-    [Fact]
-    public void ExtensionMethod_SymbolAttributesToDisplayStringValue_ShouldNotThrowBecauseAllValuesAreSupported()
-    {
-      Action act = () =>
-      {
-        foreach (SymbolAttributes symbolAttributes in Enum.GetValues(typeof(SymbolAttributes)))
+        [Fact]
+        public void ExtensionMethod_SymbolAttributesToDisplayStringValue_ShouldNotThrowBecauseAllValuesAreSupported()
         {
-          _ = symbolAttributes.ToDisplayTypeKind();
-        }
-      };
+            Action act = () =>
+            {
+                foreach (SymbolAttributes symbolAttributes in Enum.GetValues(typeof(SymbolAttributes)))
+                {
+                    _ = symbolAttributes.ToDisplayTypeKind();
+                }
+            };
 
-      _ = act.Should().NotThrow<NotSupportedException>("all values are supported.");
+            _ = act.Should().NotThrow<NotSupportedException>("all values are supported.");
+        }
     }
-  }
 }

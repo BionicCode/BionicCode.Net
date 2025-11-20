@@ -1,21 +1,20 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-  using System;
-  using System.Runtime.Serialization;
+    using System;
 
-  [Serializable]
-  public class EventHandlerMismatchException : Exception
-  {
-    public EventHandlerMismatchException()
+    [Serializable]
+    public class EventHandlerMismatchException : Exception
     {
-    }
+        public EventHandlerMismatchException()
+        {
+        }
 
-    public EventHandlerMismatchException(string message) : base(message)
-    {
-    }
+        public EventHandlerMismatchException(string message) : base(message)
+        {
+        }
 
-    public EventHandlerMismatchException(string message, Exception innerException) : base(message, innerException)
-    {
+        public EventHandlerMismatchException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
     }
-  }
 }

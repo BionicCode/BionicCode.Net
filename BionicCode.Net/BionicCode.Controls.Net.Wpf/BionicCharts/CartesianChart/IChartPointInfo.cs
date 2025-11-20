@@ -1,7 +1,7 @@
 ﻿namespace BionicCode.Controls.Net.Wpf
 {
-  public interface IChartPointInfo
-  {
-    ICartesianSeriesInfo SeriesInfo { get; }
-  }
+    public interface IChartPointInfo
+    {
+        ICartesianSeriesInfo SeriesInfo { get; }
+    }
 }

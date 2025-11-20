@@ -1,13 +1,13 @@
 ﻿namespace BionicCode.Utilities.Net.Profiling
 {
-  using System;
+    using System;
 
-  [Flags]
-  public enum PropertyAccessor
-  {
-    Undefined = 0,
-    Set = 1,
-    Get = 2,
-    GetAndSet = Get | Set,
-  }
+    [Flags]
+    public enum PropertyAccessor
+    {
+        Undefined = 0,
+        Set = 1,
+        Get = 2,
+        GetAndSet = Get | Set,
+    }
 }

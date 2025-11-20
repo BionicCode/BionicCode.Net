@@ -1,18 +1,18 @@
 ﻿namespace BionicCode.Utilities.Net.UnitTest.WeakEventManagerTests
 {
-  using System;
+    using System;
 
-  public readonly struct EventHandlerInfo<TEventsSource>
-  {
-    public EventHandlerInfo(TEventsSource eventSource, string eventName, Delegate eventHandler)
+    public readonly struct EventHandlerInfo<TEventsSource>
     {
-      this.EventSource = eventSource;
-      this.EventHandler = eventHandler;
-      this.EventName = eventName;
-    }
+        public EventHandlerInfo(TEventsSource eventSource, string eventName, Delegate eventHandler)
+        {
+            this.EventSource = eventSource;
+            this.EventHandler = eventHandler;
+            this.EventName = eventName;
+        }
 
-    public TEventsSource EventSource { get; }
-    public Delegate EventHandler { get; }
-    public string EventName { get; }
-  }
+        public TEventsSource EventSource { get; }
+        public Delegate EventHandler { get; }
+        public string EventName { get; }
+    }
 }

@@ -1,8 +1,6 @@
 ﻿namespace BionicCode.Utilities.Net.UnitTest.ReflectionExtensionMethodsTests.Resources.Public
 {
-  using BionicCode.Utilities.Net.UnitTest.ReflectionExtensionMethodsTests.Resources.Public;
-
-  public class TestClassWithInterfaceAndBaseClass : TestClassBase, ITestClass1
-  {
-  }
+    public class TestClassWithInterfaceAndBaseClass : TestClassBase, ITestClass1
+    {
+    }
 }

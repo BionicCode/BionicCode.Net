@@ -1,9 +1,9 @@
 ﻿namespace BionicCode.Utilities.Net.UnitTest.ReflectionExtensionMethodsTests.Resources.Public
 {
-  using System;
+    using System;
 
-  public abstract class TestClassBase
-  {
-    public virtual event EventHandler TestEvent;
-  }
+    public abstract class TestClassBase
+    {
+        public virtual event EventHandler TestEvent;
+    }
 }

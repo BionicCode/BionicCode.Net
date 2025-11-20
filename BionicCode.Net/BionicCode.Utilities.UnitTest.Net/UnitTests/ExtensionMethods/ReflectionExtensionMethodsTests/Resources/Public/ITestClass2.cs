@@ -1,4 +1,4 @@
 ﻿namespace BionicCode.Utilities.Net.UnitTest.ReflectionExtensionMethodsTests.Resources.Public
 {
-  public interface ITestClass2 { }
+    public interface ITestClass2 { }
 }

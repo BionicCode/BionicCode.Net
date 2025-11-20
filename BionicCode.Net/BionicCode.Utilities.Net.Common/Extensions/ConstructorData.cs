@@ -1,106 +1,103 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-  using System;
-  using System.Linq;
-  using System.Reflection;
-  using Microsoft.CodeAnalysis;
+    using System;
+    using System.Linq;
+    using System.Reflection;
+    using Microsoft.CodeAnalysis;
 
-  internal sealed class ConstructorData : MemberInfoData
-  {
-    private string displayName;
-    private string shortDisplayName;
-    private string fullyQualifiedDisplayName;
-    private string signature;
-    private string shortSignature;
-    private string runtimeShortSignature;
-    private string shortCompactSignature;
-    private string fullyQualifiedSignature;
-    private SymbolAttributes symbolAttributes;
-    private AccessModifier accessModifier;
-    private ParameterData[] parameters;
-    private bool? isStatic;
-    private Func<object[], object> invocator;
-    private string assemblyName;
-    private SymbolComponentInfo symbolComponentInfo;
-
-    public ConstructorData(ConstructorInfo constructorInfo) : base(constructorInfo)
+    internal sealed class ConstructorData : MemberInfoData
     {
-      this.Handle = constructorInfo.MethodHandle;
+        private string displayName;
+        private string shortDisplayName;
+        private string fullyQualifiedDisplayName;
+        private string signature;
+        private string shortSignature;
+        private string runtimeShortSignature;
+        private string shortCompactSignature;
+        private string fullyQualifiedSignature;
+        private SymbolAttributes symbolAttributes;
+        private AccessModifier accessModifier;
+        private ParameterData[] parameters;
+        private bool? isStatic;
+        private Func<object[], object> invocator;
+        private string assemblyName;
+        private SymbolComponentInfo symbolComponentInfo;
+
+        public ConstructorData(ConstructorInfo constructorInfo) : base(constructorInfo) => this.Handle = constructorInfo.MethodHandle;
+
+        public ConstructorInfo GetConstructorInfo()
+          => (ConstructorInfo)MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle);
+
+        protected override MemberInfo GetMemberInfo()
+          => GetConstructorInfo();
+
+        public object Invoke(params object[] arguments)
+        {
+            if (this.invocator is null)
+            {
+                InitializeInvocator();
+            }
+
+            return this.invocator.Invoke(arguments);
+        }
+
+        public Func<object[], object> GetInvocator()
+        {
+            if (this.invocator is null)
+            {
+                InitializeInvocator();
+            }
+
+            return this.invocator;
+        }
+
+        private void InitializeInvocator()
+          => this.invocator = invocationArguments => GetConstructorInfo().Invoke(invocationArguments);
+
+        public RuntimeMethodHandle Handle { get; set; }
+        public new RuntimeTypeHandle DeclaringTypeHandle { get; set; }
+
+        public override AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
+          ? (this.accessModifier = HelperExtensionsCommon.GetAccessModifierInternal(this))
+          : this.accessModifier;
+
+        public ParameterData[] Parameters
+          => this.parameters ??= GetConstructorInfo().GetParameters().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+
+        public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
+          ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
+          : this.symbolAttributes;
+
+        public override SymbolComponentInfo SymbolComponentInfo
+          => this.symbolComponentInfo ??= HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
+
+        public override string Signature
+          => this.signature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+
+        public override string ShortSignature
+          => this.shortSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false);
+
+        public override string ShortCompactSignature
+          => this.shortCompactSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
+
+        public override string RuntimeShortSignature
+          => this.runtimeShortSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
+
+        public override string FullyQualifiedSignature
+          => this.fullyQualifiedSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+
+        public override string DisplayName
+          => this.displayName ??= HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
+
+        public override string ShortDisplayName
+          => this.shortDisplayName ??= HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
+
+        public override string FullyQualifiedDisplayName
+          => this.fullyQualifiedDisplayName ??= HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
+
+        public override string AssemblyName
+          => this.assemblyName ??= this.DeclaringTypeData.AssemblyName;
+
+        public override bool IsStatic => (bool)((bool?)(this.isStatic ??= GetConstructorInfo().IsStatic));
     }
-
-    public ConstructorInfo GetConstructorInfo()
-      => (ConstructorInfo)MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle);
-
-    protected override MemberInfo GetMemberInfo() 
-      => GetConstructorInfo();
-
-    public object Invoke(params object[] arguments)
-    {
-      if (this.invocator is null)
-      {
-        InitializeInvocator();
-      }
-
-      return this.invocator.Invoke(arguments);
-    }
-
-    public Func<object[], object> GetInvocator()
-    {
-      if (this.invocator is null)
-      {
-        InitializeInvocator();
-      }
-
-      return this.invocator;
-    }
-
-    private void InitializeInvocator()
-      => this.invocator = invocationArguments => GetConstructorInfo().Invoke(invocationArguments);
-
-    public RuntimeMethodHandle Handle { get; set; }
-    public RuntimeTypeHandle DeclaringTypeHandle { get; set; }
-
-    public override AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
-      ? (this.accessModifier = HelperExtensionsCommon.GetAccessModifierInternal(this))
-      : this.accessModifier;
-
-    public ParameterData[] Parameters
-      => this.parameters ?? (this.parameters = GetConstructorInfo().GetParameters().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
-
-    public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
-      ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
-      : this.symbolAttributes;
-
-    public override SymbolComponentInfo SymbolComponentInfo
-      => this.symbolComponentInfo ?? (this.symbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false));
-
-    public override string Signature
-      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false));
-
-    public override string ShortSignature
-      => this.shortSignature ?? (this.shortSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false));
-
-    public override string ShortCompactSignature
-      => this.shortCompactSignature ?? (this.shortCompactSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false));
-
-    public override string RuntimeShortSignature
-      => this.runtimeShortSignature ?? (this.runtimeShortSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true));
-
-    public override string FullyQualifiedSignature
-      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false));
-
-    public override string DisplayName
-      => this.displayName ?? (this.displayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true));
-
-    public override string ShortDisplayName
-      => this.shortDisplayName ?? (this.shortDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false));
-
-    public override string FullyQualifiedDisplayName
-      => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true));
-
-    public override string AssemblyName
-      => this.assemblyName ?? (this.assemblyName = this.DeclaringTypeData.AssemblyName);
-
-    public override bool IsStatic => (bool)(this.isStatic ?? (this.isStatic = GetConstructorInfo().IsStatic));
-  }
 }

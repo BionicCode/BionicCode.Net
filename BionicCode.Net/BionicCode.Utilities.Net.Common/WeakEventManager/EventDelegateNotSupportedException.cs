@@ -1,21 +1,20 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-  using System;
-  using System.Runtime.Serialization;
+    using System;
 
-  [Serializable]
-  public class EventDelegateNotSupportedException : Exception
-  {
-    public EventDelegateNotSupportedException()
+    [Serializable]
+    public class EventDelegateNotSupportedException : Exception
     {
-    }
+        public EventDelegateNotSupportedException()
+        {
+        }
 
-    public EventDelegateNotSupportedException(string message) : base(message)
-    {
-    }
+        public EventDelegateNotSupportedException(string message) : base(message)
+        {
+        }
 
-    public EventDelegateNotSupportedException(string message, Exception innerException) : base(message, innerException)
-    {
+        public EventDelegateNotSupportedException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
     }
-  }
 }

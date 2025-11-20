@@ -1,100 +1,100 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-  using System;
-  using System.Collections.ObjectModel;
-  using System.Collections.Specialized;
-  using System.ComponentModel;
-  using System.Diagnostics;
-  using System.Linq;
+    using System;
+    using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Linq;
 
-  /// <summary>
-  /// Raises <see cref="ObservableCollection{T}.CollectionChanged"></see> event when the property of an item raised <see cref="INotifyPropertyChanged.PropertyChanged"/>. The <see cref="NotifyCollectionChangedAction"/> for this particular notification is <see cref="NotifyCollectionChangedAction.Reset"/> with a reference to the notifying item and the item's index. .
-  /// </summary>
-  /// <typeparam name="TItem"></typeparam>
-  /// <remarks>The item must implement <see cref="INotifyPropertyChanged"/> otherwise the behavior is like a common <see cref="ObservableCollection{T}"/>. The <see cref="ObservablePropertyChangedCollection{TItem}"/> implements the weak event pattern in order to handle the <see cref="INotifyPropertyChanged.PropertyChanged"/> event.</remarks>
-  [DebuggerDisplay("Count = {Count}")]
-  [Serializable]
-  public class ObservablePropertyChangedCollection<TItem> : ObservableCollection<TItem>
-  {
-    #region Overrides of ObservableCollection<TItem>
-
-    /// <inheritdoc />
-    protected override void InsertItem(int index, TItem item)
+    /// <summary>
+    /// Raises <see cref="ObservableCollection{T}.CollectionChanged"></see> event when the property of an item raised <see cref="INotifyPropertyChanged.PropertyChanged"/>. The <see cref="NotifyCollectionChangedAction"/> for this particular notification is <see cref="NotifyCollectionChangedAction.Reset"/> with a reference to the notifying item and the item's index. .
+    /// </summary>
+    /// <typeparam name="TItem"></typeparam>
+    /// <remarks>The item must implement <see cref="INotifyPropertyChanged"/> otherwise the behavior is like a common <see cref="ObservableCollection{T}"/>. The <see cref="ObservablePropertyChangedCollection{TItem}"/> implements the weak event pattern in order to handle the <see cref="INotifyPropertyChanged.PropertyChanged"/> event.</remarks>
+    [DebuggerDisplay("Count = {Count}")]
+    [Serializable]
+    public class ObservablePropertyChangedCollection<TItem> : ObservableCollection<TItem>
     {
-      base.InsertItem(index, item);
-      if (item is INotifyPropertyChanged propertyChangedItem)
-      {
-        StartListenToItemPropertyChanged(propertyChangedItem);
-      }
-    }
+        #region Overrides of ObservableCollection<TItem>
 
-    /// <inheritdoc />
-    protected override void RemoveItem(int index)
-    {
-      CheckReentrancy();
+        /// <inheritdoc />
+        protected override void InsertItem(int index, TItem item)
+        {
+            base.InsertItem(index, item);
+            if (item is INotifyPropertyChanged propertyChangedItem)
+            {
+                StartListenToItemPropertyChanged(propertyChangedItem);
+            }
+        }
 
-      TItem item = this.Items[index];
-      base.RemoveItem(index);
+        /// <inheritdoc />
+        protected override void RemoveItem(int index)
+        {
+            CheckReentrancy();
 
-      if (item is INotifyPropertyChanged propertyChangedItem)
-      {
-        StopListenToItemPropertyChanged(propertyChangedItem);
-      }
-    }
+            TItem item = this.Items[index];
+            base.RemoveItem(index);
 
-    /// <inheritdoc />
-    protected override void ClearItems()
-    {
-      CheckReentrancy();
+            if (item is INotifyPropertyChanged propertyChangedItem)
+            {
+                StopListenToItemPropertyChanged(propertyChangedItem);
+            }
+        }
 
-      foreach (INotifyPropertyChanged item in this.Items.OfType<INotifyPropertyChanged>())
-      {
-        StopListenToItemPropertyChanged(item);
-      }
+        /// <inheritdoc />
+        protected override void ClearItems()
+        {
+            CheckReentrancy();
 
-      base.ClearItems();
-    }
+            foreach (INotifyPropertyChanged item in this.Items.OfType<INotifyPropertyChanged>())
+            {
+                StopListenToItemPropertyChanged(item);
+            }
 
-    /// <inheritdoc />
-    protected override void SetItem(int index, TItem item)
-    {
-      CheckReentrancy();
+            base.ClearItems();
+        }
 
-      if (this.Items[index] is INotifyPropertyChanged oldPropertyChangedItem)
-      {
-        StopListenToItemPropertyChanged(oldPropertyChangedItem);
-      }
+        /// <inheritdoc />
+        protected override void SetItem(int index, TItem item)
+        {
+            CheckReentrancy();
 
-      if (item is INotifyPropertyChanged newPropertyChangedItem)
-      {
-        StartListenToItemPropertyChanged(newPropertyChangedItem);
-      }
+            if (this.Items[index] is INotifyPropertyChanged oldPropertyChangedItem)
+            {
+                StopListenToItemPropertyChanged(oldPropertyChangedItem);
+            }
 
-      base.SetItem(index, item);
-    }
+            if (item is INotifyPropertyChanged newPropertyChangedItem)
+            {
+                StartListenToItemPropertyChanged(newPropertyChangedItem);
+            }
 
-    private void StartListenToItemPropertyChanged(INotifyPropertyChanged propertyChangedItem) =>
+            base.SetItem(index, item);
+        }
+
+        private void StartListenToItemPropertyChanged(INotifyPropertyChanged propertyChangedItem) =>
 
 #if NET461_OR_GREATER || NET
-      PropertyChangedEventManager.AddHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
+          PropertyChangedEventManager.AddHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
 #else
       // TODO::Use custom WeakEventManager for .NET Standard support
       WeakEventManager<INotifyPropertyChanged>.AddEventHandler<PropertyChangedEventHandler>(propertyChangedItem, nameof(INotifyPropertyChanged.PropertyChanged), OnItemPropertyChanged);
 #endif
 
-    private void StopListenToItemPropertyChanged(INotifyPropertyChanged propertyChangedItem) =>
+        private void StopListenToItemPropertyChanged(INotifyPropertyChanged propertyChangedItem) =>
 #if NET461_OR_GREATER || NET
-      PropertyChangedEventManager.RemoveHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
+          PropertyChangedEventManager.RemoveHandler(propertyChangedItem, OnItemPropertyChanged, string.Empty);
 #else
       // TODO::Use custom WeakEventManager for .NET Standard support
       WeakEventManager<INotifyPropertyChanged>.RemoveEventHandler<PropertyChangedEventHandler>(propertyChangedItem, nameof(INotifyPropertyChanged.PropertyChanged), OnItemPropertyChanged);
 #endif
 
-    #endregion Overrides of ObservableCollection<TItem>
+        #endregion Overrides of ObservableCollection<TItem>
 
-    public PropertyChangedEventHandler ItemPropertyChanged;
+        public PropertyChangedEventHandler ItemPropertyChanged;
 
-    private void OnItemPropertyChanged(object item, PropertyChangedEventArgs e)
-      => this.ItemPropertyChanged?.Invoke(item, e);
-  }  
+        private void OnItemPropertyChanged(object item, PropertyChangedEventArgs e)
+          => this.ItemPropertyChanged?.Invoke(item, e);
+    }
 }

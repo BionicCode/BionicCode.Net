@@ -1,440 +1,440 @@
 ﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("BionicCode.Utilities.Net.Profiling")]
 namespace BionicCode.Utilities.Net
 {
-  using System;
-  using System.Collections.Concurrent;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Reflection;
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
 
-  internal class TypeData : SymbolInfoData
-  {
-    private string displayName;
-    private string shortDisplayName;
-    private string fullyQualifiedDisplayName;
-    private SymbolAttributes symbolAttributes;
-    private AccessModifier accessModifier;
-    private bool? canDeclareExtensionMethod;
-    private bool? isAwaitable;
-    private string signature;
-    private string shortSignature;
-    private string runtimeShortSignature;
-    private string shortCompactSignature;
-    private string fullyQualifiedSignature;
-    private bool? isStatic;
-    private bool? isBuiltInType;
-    private bool? isAbstract;
-    private bool? isSealed;
-    private bool? isValueType;
-    private bool? isByRef;
-    private bool? isSubclass;
-    private bool? isDelegate;
-    private bool? isGenericType;
-    private bool? isGenericTypeDefinition;
-    private TypeData[] genericTypeArguments;
-    private TypeData[] genericParameterConstraintsData;
-    private GenericParameterAttributes? genericParameterAttributes;
-    private TypeData genericTypeDefinitionData;
-    private TypeData baseTypeData;
-    private TypeData[] interfacesData;
-    private PropertyData[] propertiesData;
-    private MethodData[] methodsData;
-    private FieldData[] fieldsData;
-    private EventData[] eventsData;
-    private ConstructorData[] constructorsData;
-    private IList<CustomAttributeData> attributeData;
-    private string assemblyName;
-    private MethodData delegateInvokeMethodData;
-    private SymbolComponentInfo symbolComponentInfo;
-    private SymbolComponentInfo compactSymbolComponentInfo;
-    private bool? containsGenericParameters;
-    private readonly ConcurrentDictionary<string, SymbolInfoData> memberTable;
-    private bool isAllPropertiesGenerated;
-    private bool isAllMethodsGenerated;
-    private bool isAllFieldsGenerated;
-    private bool isAllEventsGenerated;
-    private bool isAllConstructorsGenerated;
+    internal class TypeData : SymbolInfoData
+    {
+        private string displayName;
+        private string shortDisplayName;
+        private string fullyQualifiedDisplayName;
+        private SymbolAttributes symbolAttributes;
+        private AccessModifier accessModifier;
+        private bool? canDeclareExtensionMethod;
+        private bool? isAwaitable;
+        private string signature;
+        private string shortSignature;
+        private string runtimeShortSignature;
+        private string shortCompactSignature;
+        private string fullyQualifiedSignature;
+        private bool? isStatic;
+        private bool? isBuiltInType;
+        private bool? isAbstract;
+        private bool? isSealed;
+        private bool? isValueType;
+        private bool? isByRef;
+        private bool? isSubclass;
+        private bool? isDelegate;
+        private bool? isGenericType;
+        private bool? isGenericTypeDefinition;
+        private TypeData[] genericTypeArguments;
+        private TypeData[] genericParameterConstraintsData;
+        private GenericParameterAttributes? genericParameterAttributes;
+        private TypeData genericTypeDefinitionData;
+        private TypeData baseTypeData;
+        private TypeData[] interfacesData;
+        private PropertyData[] propertiesData;
+        private MethodData[] methodsData;
+        private FieldData[] fieldsData;
+        private EventData[] eventsData;
+        private ConstructorData[] constructorsData;
+        private IList<CustomAttributeData> attributeData;
+        private string assemblyName;
+        private MethodData delegateInvokeMethodData;
+        private SymbolComponentInfo symbolComponentInfo;
+        private SymbolComponentInfo compactSymbolComponentInfo;
+        private bool? containsGenericParameters;
+        private readonly ConcurrentDictionary<string, SymbolInfoData> memberTable;
+        private bool isAllPropertiesGenerated;
+        private bool isAllMethodsGenerated;
+        private bool isAllFieldsGenerated;
+        private bool isAllEventsGenerated;
+        private bool isAllConstructorsGenerated;
 
 #if !NETFRAMEWORK && !NETSTANDARD2_0
-    private bool? isByRefLike;
+        private bool? isByRefLike;
 #endif
 
-    public TypeData(Type type) : base(type.Name)
-    {
-      this.Handle = type.TypeHandle;
-      this.Namespace = type.Namespace;
-      this.memberTable = new ConcurrentDictionary<string, SymbolInfoData>();
-    }
-
-    new public Type GetType()
-      => Type.GetTypeFromHandle(this.Handle);
-
-    public PropertyData GetProperty(string propertyName)
-    {
-      SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(propertyName,
-        key =>
+        public TypeData(Type type) : base(type.Name)
         {
-          IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, propertyName);
-          SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out PropertyData propertyData);
-
-          return propertyData;
-        });
-
-      return (PropertyData)symbolInfoData;
-    }
-
-    public IEnumerable<PropertyData> EnumerateProperties()
-    {
-      if (this.isAllPropertiesGenerated)
-      {
-        foreach (PropertyData property in this.memberTable.Values.OfType<PropertyData>())
-        {
-          yield return property;
+            this.Handle = type.TypeHandle;
+            this.Namespace = type.Namespace;
+            this.memberTable = new ConcurrentDictionary<string, SymbolInfoData>();
         }
 
-        yield break;
-      }
+        public new Type GetType()
+          => Type.GetTypeFromHandle(this.Handle);
 
-      foreach (PropertyInfo property in GetType().GetProperties(SymbolInfoData.AllMembersFlags))
-      {
-        PropertyData propertyData = GetProperty(property.Name);
-        yield return propertyData;
-      }
-
-      this.isAllPropertiesGenerated = true;
-    }
-
-    public MethodData GetMethod(string methodName, params MemberParameterInfo[] parameterList)
-    {
-      SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(methodName,
-        key =>
+        public PropertyData GetProperty(string propertyName)
         {
-          IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, methodName, parameterList);
-          SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out MethodData methodData);
+            SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(propertyName,
+              key =>
+              {
+                  IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, propertyName);
+                  SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out PropertyData propertyData);
 
-          return methodData;
-        });
+                  return propertyData;
+              });
 
-      return (MethodData)symbolInfoData;
-    }
-
-    public IEnumerable<MethodData> EnumerateMethods()
-    {
-      if (this.isAllMethodsGenerated)
-      {
-        foreach (MethodData method in this.memberTable.Values.OfType<MethodData>())
-        {
-          yield return method;
+            return (PropertyData)symbolInfoData;
         }
 
-        yield break;
-      }
-
-      foreach (MethodInfo method in GetType().GetMethods(SymbolInfoData.AllMembersFlags))
-      {
-        MethodData methodData = GetMethod(method.Name);
-        yield return methodData;
-      }
-
-      this.isAllMethodsGenerated = true;
-    }
-
-    public FieldData GetField(string fieldName)
-    {
-      SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(fieldName,
-        key =>
+        public IEnumerable<PropertyData> EnumerateProperties()
         {
-          IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, fieldName);
-          SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out FieldData fieldData);
+            if (this.isAllPropertiesGenerated)
+            {
+                foreach (PropertyData property in this.memberTable.Values.OfType<PropertyData>())
+                {
+                    yield return property;
+                }
 
-          return fieldData;
-        });
+                yield break;
+            }
 
-      return (FieldData)symbolInfoData;
-    }
+            foreach (PropertyInfo property in GetType().GetProperties(SymbolInfoData.AllMembersFlags))
+            {
+                PropertyData propertyData = GetProperty(property.Name);
+                yield return propertyData;
+            }
 
-    public IEnumerable<FieldData> EnumerateFields()
-    {
-      if (this.isAllFieldsGenerated)
-      {
-        foreach (FieldData field in this.memberTable.Values.OfType<FieldData>())
-        {
-          yield return field;
+            this.isAllPropertiesGenerated = true;
         }
 
-        yield break;
-      }
-
-      foreach (FieldInfo field in GetType().GetFields(SymbolInfoData.AllMembersFlags))
-      {
-        FieldData fieldData = GetField(field.Name);
-        yield return fieldData;
-      }
-
-      this.isAllFieldsGenerated = true;
-    }
-
-    public EventData GetEvent(string eventName)
-    {
-      SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(eventName,
-        key =>
+        public MethodData GetMethod(string methodName, params MemberParameterInfo[] parameterList)
         {
+            SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(methodName,
+              key =>
+              {
+                  IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, methodName, parameterList);
+                  SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out MethodData methodData);
 
-          IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, eventName);
-          SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out EventData eventData);
+                  return methodData;
+              });
 
-          return eventData;
-        });
-
-      return (EventData)symbolInfoData;
-    }
-
-    public IEnumerable<EventData> EnumerateEvents()
-    {
-      if (this.isAllEventsGenerated)
-      {
-        foreach (EventData eventData in this.memberTable.Values.OfType<EventData>())
-        {
-          yield return eventData;
+            return (MethodData)symbolInfoData;
         }
 
-        yield break;
-      }
-
-      foreach (EventInfo eventInfo in GetType().GetEvents(SymbolInfoData.AllMembersFlags))
-      {
-        EventData eventData = GetEvent(eventInfo.Name);
-        yield return eventData;
-      }
-
-      this.isAllEventsGenerated = true;
-    }
-
-    public ConstructorData GetConstructor(string constructorName, params MemberParameterInfo[] parameterList)
-    {
-      SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(constructorName,
-        key =>
+        public IEnumerable<MethodData> EnumerateMethods()
         {
-          IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, constructorName, parameterList);
-          SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out ConstructorData constructorData);
+            if (this.isAllMethodsGenerated)
+            {
+                foreach (MethodData method in this.memberTable.Values.OfType<MethodData>())
+                {
+                    yield return method;
+                }
 
-          return constructorData;
-        });
+                yield break;
+            }
 
-      return (ConstructorData)symbolInfoData;
-    }
+            foreach (MethodInfo method in GetType().GetMethods(SymbolInfoData.AllMembersFlags))
+            {
+                MethodData methodData = GetMethod(method.Name);
+                yield return methodData;
+            }
 
-    public IEnumerable<ConstructorData> EnumerateConstructors()
-    {
-      if (this.isAllConstructorsGenerated)
-      {
-        foreach (ConstructorData constructor in this.memberTable.Values.OfType<ConstructorData>())
-        {
-          yield return constructor;
+            this.isAllMethodsGenerated = true;
         }
 
-        yield break;
-      }
-
-      foreach (ConstructorInfo constructor in GetType().GetConstructors(SymbolInfoData.AllMembersFlags))
-      {
-        ConstructorData constructorData = GetConstructor(constructor.Name);
-        yield return constructorData;
-      }
-
-      this.isAllConstructorsGenerated = true;
-    }
-
-    public RuntimeTypeHandle Handle { get; }
-    public string Namespace { get; }
-
-    public bool IsAwaitable
-      => (bool)(this.isAwaitable ?? (this.isAwaitable = HelperExtensionsCommon.IsAwaitableInternal(this)));
-
-    public bool IsValueType
-      => (bool)(this.isValueType ?? (this.isValueType = GetType().IsValueType));
-
-    public TypeData GenericTypeDefinitionData
-    {
-      get
-      {
-        if (this.IsGenericTypeDefinition)
+        public FieldData GetField(string fieldName)
         {
-          return this;
-        }
-        else
-        {
-          Type genericTypeDefinitionType = GetType().GetGenericTypeDefinition();
-          this.genericTypeDefinitionData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(genericTypeDefinitionType);
+            SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(fieldName,
+              key =>
+              {
+                  IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, fieldName);
+                  SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out FieldData fieldData);
+
+                  return fieldData;
+              });
+
+            return (FieldData)symbolInfoData;
         }
 
-        return this.genericTypeDefinitionData;
-      }
-    }
-
-    public TypeData[] GenericTypeArguments
-    {
-      get
-      {
-        if (this.genericTypeArguments is null)
+        public IEnumerable<FieldData> EnumerateFields()
         {
-          Type[] typeArguments = GetType().GetGenericArguments();
-          this.genericTypeArguments = typeArguments.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+            if (this.isAllFieldsGenerated)
+            {
+                foreach (FieldData field in this.memberTable.Values.OfType<FieldData>())
+                {
+                    yield return field;
+                }
+
+                yield break;
+            }
+
+            foreach (FieldInfo field in GetType().GetFields(SymbolInfoData.AllMembersFlags))
+            {
+                FieldData fieldData = GetField(field.Name);
+                yield return fieldData;
+            }
+
+            this.isAllFieldsGenerated = true;
         }
 
-        return this.genericTypeArguments;
-      }
-    }
+        public EventData GetEvent(string eventName)
+        {
+            SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(eventName,
+              key =>
+              {
 
-    public bool CanDeclareExtensionMethod
-      => (bool)(this.canDeclareExtensionMethod ?? (this.canDeclareExtensionMethod = HelperExtensionsCommon.CanDeclareExtensionMethodsInternal(this)));
+                  IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, eventName);
+                  SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out EventData eventData);
 
-    public override IList<CustomAttributeData> AttributeData
-      => this.attributeData ?? (this.attributeData = GetType().GetCustomAttributesData());
+                  return eventData;
+              });
 
-    public AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
-      ? (this.accessModifier = HelperExtensionsCommon.GetAccessModifierInternal(this))
-      : this.accessModifier;
+            return (EventData)symbolInfoData;
+        }
 
-    public override SymbolComponentInfo SymbolComponentInfo
-      => this.symbolComponentInfo ?? (this.symbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isCompact: false));
+        public IEnumerable<EventData> EnumerateEvents()
+        {
+            if (this.isAllEventsGenerated)
+            {
+                foreach (EventData eventData in this.memberTable.Values.OfType<EventData>())
+                {
+                    yield return eventData;
+                }
 
-    public SymbolComponentInfo CompactSymbolComponentInfo
-      => this.compactSymbolComponentInfo ?? (this.compactSymbolComponentInfo = HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isCompact: true));
+                yield break;
+            }
 
-    public override string Signature
-      => this.signature ?? (this.signature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: false, isRuntimeSymbol: false));
+            foreach (EventInfo eventInfo in GetType().GetEvents(SymbolInfoData.AllMembersFlags))
+            {
+                EventData eventData = GetEvent(eventInfo.Name);
+                yield return eventData;
+            }
 
-    public override string ShortSignature
-      => this.shortSignature ?? (this.shortSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: false, isRuntimeSymbol: false));
+            this.isAllEventsGenerated = true;
+        }
 
-    public override string ShortCompactSignature
-      => this.shortCompactSignature ?? (this.shortCompactSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: true, isRuntimeSymbol: false));
+        public ConstructorData GetConstructor(string constructorName, params MemberParameterInfo[] parameterList)
+        {
+            SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(constructorName,
+              key =>
+              {
+                  IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, constructorName, parameterList);
+                  SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out ConstructorData constructorData);
 
-    public override string RuntimeShortSignature
-      => this.runtimeShortSignature ?? (this.runtimeShortSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: false, isRuntimeSymbol: true));
+                  return constructorData;
+              });
 
-    public override string FullyQualifiedSignature
-      => this.fullyQualifiedSignature ?? (this.fullyQualifiedSignature = HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isCompact: true, isRuntimeSymbol: false));
+            return (ConstructorData)symbolInfoData;
+        }
 
-    public override string DisplayName
-      => this.displayName ?? (this.displayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false));
+        public IEnumerable<ConstructorData> EnumerateConstructors()
+        {
+            if (this.isAllConstructorsGenerated)
+            {
+                foreach (ConstructorData constructor in this.memberTable.Values.OfType<ConstructorData>())
+                {
+                    yield return constructor;
+                }
 
-    public override string ShortDisplayName
-      => this.shortDisplayName ?? (this.shortDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false));
-    public override string FullyQualifiedDisplayName
-      => this.fullyQualifiedDisplayName ?? (this.fullyQualifiedDisplayName = HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false));
+                yield break;
+            }
 
-    public override string AssemblyName
-      => this.assemblyName ?? (this.assemblyName = GetType().Assembly.GetName().Name);
+            foreach (ConstructorInfo constructor in GetType().GetConstructors(SymbolInfoData.AllMembersFlags))
+            {
+                ConstructorData constructorData = GetConstructor(constructor.Name);
+                yield return constructorData;
+            }
 
-    public bool IsStatic
-      => (bool)(this.isStatic ?? (this.isStatic = HelperExtensionsCommon.IsStaticInternal(this)));
+            this.isAllConstructorsGenerated = true;
+        }
 
-    public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
-      ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
-      : this.symbolAttributes;
+        public RuntimeTypeHandle Handle { get; }
+        public string Namespace { get; }
 
-    public bool IsAbstract
-      => (bool)(this.isAbstract ?? (this.isAbstract = GetType().IsAbstract));
+        public bool IsAwaitable
+          => (bool)((bool?)(this.isAwaitable ??= HelperExtensionsCommon.IsAwaitableInternal(this)));
 
-    public bool IsSealed
-      => (bool)(this.isSealed ?? (this.isSealed = GetType().IsSealed));
+        public bool IsValueType
+          => (bool)((bool?)(this.isValueType ??= GetType().IsValueType));
 
-    public bool IsByRef
-      => (bool)(this.isByRef ?? (this.isByRef = GetType().IsByRef));
+        public TypeData GenericTypeDefinitionData
+        {
+            get
+            {
+                if (this.IsGenericTypeDefinition)
+                {
+                    return this;
+                }
+                else
+                {
+                    Type genericTypeDefinitionType = GetType().GetGenericTypeDefinition();
+                    this.genericTypeDefinitionData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(genericTypeDefinitionType);
+                }
+
+                return this.genericTypeDefinitionData;
+            }
+        }
+
+        public TypeData[] GenericTypeArguments
+        {
+            get
+            {
+                if (this.genericTypeArguments is null)
+                {
+                    Type[] typeArguments = GetType().GetGenericArguments();
+                    this.genericTypeArguments = typeArguments.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+                }
+
+                return this.genericTypeArguments;
+            }
+        }
+
+        public bool CanDeclareExtensionMethod
+          => (bool)((bool?)(this.canDeclareExtensionMethod ??= HelperExtensionsCommon.CanDeclareExtensionMethodsInternal(this)));
+
+        public override IList<CustomAttributeData> AttributeData
+          => this.attributeData ??= GetType().GetCustomAttributesData();
+
+        public AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
+          ? (this.accessModifier = HelperExtensionsCommon.GetAccessModifierInternal(this))
+          : this.accessModifier;
+
+        public override SymbolComponentInfo SymbolComponentInfo
+          => this.symbolComponentInfo ??= HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isCompact: false);
+
+        public SymbolComponentInfo CompactSymbolComponentInfo
+          => this.compactSymbolComponentInfo ??= HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isCompact: true);
+
+        public override string Signature
+          => this.signature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: false, isRuntimeSymbol: false);
+
+        public override string ShortSignature
+          => this.shortSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: false, isRuntimeSymbol: false);
+
+        public override string ShortCompactSignature
+          => this.shortCompactSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: true, isRuntimeSymbol: false);
+
+        public override string RuntimeShortSignature
+          => this.runtimeShortSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: false, isRuntimeSymbol: true);
+
+        public override string FullyQualifiedSignature
+          => this.fullyQualifiedSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isCompact: true, isRuntimeSymbol: false);
+
+        public override string DisplayName
+          => this.displayName ??= HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
+
+        public override string ShortDisplayName
+          => this.shortDisplayName ??= HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
+        public override string FullyQualifiedDisplayName
+          => this.fullyQualifiedDisplayName ??= HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
+
+        public override string AssemblyName
+          => this.assemblyName ??= GetType().Assembly.GetName().Name;
+
+        public bool IsStatic
+          => (bool)((bool?)(this.isStatic ??= HelperExtensionsCommon.IsStaticInternal(this)));
+
+        public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
+          ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
+          : this.symbolAttributes;
+
+        public bool IsAbstract
+          => (bool)((bool?)(this.isAbstract ??= GetType().IsAbstract));
+
+        public bool IsSealed
+          => (bool)((bool?)(this.isSealed ??= GetType().IsSealed));
+
+        public bool IsByRef
+          => (bool)((bool?)(this.isByRef ??= GetType().IsByRef));
 
 #if !NETFRAMEWORK && !NETSTANDARD2_0
-    public bool IsByRefLike
-      => (bool)(this.isByRefLike ?? (this.isByRefLike = GetType().IsByRefLike));
+        public bool IsByRefLike
+          => (bool)((bool?)(this.isByRefLike ??= GetType().IsByRefLike));
 #endif
 
-    public bool IsDelegate
-      => (bool)(this.isDelegate ?? (this.isDelegate = GetType().IsDelegateInternal()));
+        public bool IsDelegate
+          => (bool)((bool?)(this.isDelegate ??= GetType().IsDelegateInternal()));
 
-    public bool IsSubclass
-    {
-      get
-      {
-        if (this.isSubclass is null)
+        public bool IsSubclass
         {
-          Type baseType = GetType().BaseType;
-          this.isSubclass = baseType != null
-            && baseType != typeof(object)
-            && baseType != typeof(ValueType);
+            get
+            {
+                if (this.isSubclass is null)
+                {
+                    Type baseType = GetType().BaseType;
+                    this.isSubclass = baseType != null
+                      && baseType != typeof(object)
+                      && baseType != typeof(ValueType);
+                }
+
+                return (bool)this.isSubclass;
+            }
         }
 
-        return (bool)this.isSubclass;
-      }
+        public TypeData BaseTypeData
+        {
+            get
+            {
+                Type baseType = GetType().BaseType;
+                if (this.baseTypeData is null && this.IsSubclass)
+                {
+                    this.baseTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(baseType);
+                }
+
+                return this.baseTypeData;
+            }
+        }
+
+        public MethodData DelegateInvokeMethodData
+        {
+            get
+            {
+                if (!this.IsDelegate)
+                {
+                    throw new InvalidOperationException($"The current type is not a delegate. Call {nameof(this.IsDelegate)} to check whether the current type is a delegate.");
+                }
+
+                if (this.delegateInvokeMethodData is null)
+                {
+                    MethodInfo methodInfo = GetType().GetMethod("Invoke");
+                    this.delegateInvokeMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+                }
+
+                return this.delegateInvokeMethodData;
+            }
+        }
+
+        public bool IsGenericType
+          => (bool)((bool?)(this.isGenericType ??= GetType().IsGenericType));
+
+        public bool IsBuiltInType
+          => (bool)((bool?)(this.isBuiltInType ??= HelperExtensionsCommon.IsBuiltInTypeInternal(this)));
+
+        public bool IsGenericTypeDefinition
+          => (bool)((bool?)(this.isGenericTypeDefinition ??= GetType().IsGenericTypeDefinition));
+
+        public bool ContainsGenericParameters
+          => (bool)((bool?)(this.containsGenericParameters ??= GetType().ContainsGenericParameters));
+
+        public GenericParameterAttributes GenericParameterAttributes
+          => (GenericParameterAttributes)((GenericParameterAttributes?)(this.genericParameterAttributes ??= GetType().GenericParameterAttributes));
+
+        public TypeData[] GenericParameterConstraintsData
+          => this.genericParameterConstraintsData ??= GetType().GetGenericParameterConstraints().Where(constraint => constraint != typeof(object) && constraint != typeof(ValueType)).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+
+        public TypeData[] InterfacesData
+          => this.interfacesData ??= GetType().GetInterfaces().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+
+        public PropertyData[] PropertiesData
+          => this.propertiesData ??= GetType().GetProperties(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+
+        public MethodData[] MethodsData
+          => this.methodsData ??= GetType().GetMethods(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+
+        public FieldData[] FieldsData
+          => this.fieldsData ??= GetType().GetFields(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+
+        public EventData[] EventsData
+          => this.eventsData ??= GetType().GetEvents(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+
+        public ConstructorData[] ConstructorsData
+          => this.constructorsData ??= GetType().GetConstructors(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
     }
-
-    public TypeData BaseTypeData
-    {
-      get
-      {
-        Type baseType = GetType().BaseType;
-        if (this.baseTypeData is null && this.IsSubclass)
-        {
-          this.baseTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(baseType);
-        }
-
-        return this.baseTypeData;
-      }
-    }
-
-    public MethodData DelegateInvokeMethodData
-    {
-      get
-      {
-        if (!this.IsDelegate)
-        {
-          throw new InvalidOperationException($"The current type is not a delegate. Call {nameof(this.IsDelegate)} to check whether the current type is a delegate.");
-        }
-
-        if (this.delegateInvokeMethodData is null)
-        {
-          MethodInfo methodInfo = GetType().GetMethod("Invoke");
-          this.delegateInvokeMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-        }
-
-        return this.delegateInvokeMethodData;
-      }
-    }
-
-    public bool IsGenericType
-      => (bool)(this.isGenericType ?? (this.isGenericType = GetType().IsGenericType));
-
-    public bool IsBuiltInType
-      => (bool)(this.isBuiltInType ?? (this.isBuiltInType = HelperExtensionsCommon.IsBuiltInTypeInternal(this)));
-
-    public bool IsGenericTypeDefinition
-      => (bool)(this.isGenericTypeDefinition ?? (this.isGenericTypeDefinition = GetType().IsGenericTypeDefinition));
-
-    public bool ContainsGenericParameters
-      => (bool)(this.containsGenericParameters ?? (this.containsGenericParameters = GetType().ContainsGenericParameters));
-
-    public GenericParameterAttributes GenericParameterAttributes
-      => (GenericParameterAttributes)(this.genericParameterAttributes ?? (this.genericParameterAttributes = GetType().GenericParameterAttributes));
-
-    public TypeData[] GenericParameterConstraintsData
-      => this.genericParameterConstraintsData ?? (this.genericParameterConstraintsData = GetType().GetGenericParameterConstraints().Where(constraint => constraint != typeof(object) && constraint != typeof(ValueType)).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
-
-    public TypeData[] InterfacesData
-      => this.interfacesData ?? (this.interfacesData = GetType().GetInterfaces().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
-
-    public PropertyData[] PropertiesData
-      => this.propertiesData ?? (this.propertiesData = GetType().GetProperties(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
-
-    public MethodData[] MethodsData
-      => this.methodsData ?? (this.methodsData = GetType().GetMethods(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
-
-    public FieldData[] FieldsData
-      => this.fieldsData ?? (this.fieldsData = GetType().GetFields(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
-
-    public EventData[] EventsData
-      => this.eventsData ?? (this.eventsData = GetType().GetEvents(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
-
-    public ConstructorData[] ConstructorsData
-      => this.constructorsData ?? (this.constructorsData = GetType().GetConstructors(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
-  }
 }

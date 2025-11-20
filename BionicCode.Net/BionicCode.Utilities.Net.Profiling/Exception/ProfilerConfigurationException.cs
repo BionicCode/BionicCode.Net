@@ -1,21 +1,20 @@
 ﻿namespace BionicCode.Utilities.Net.Profiling
 {
-  using System;
-  using System.Runtime.Serialization;
+    using System;
 
-  [Serializable]
-  internal class ProfilerConfigurationException : Exception
-  {
-    public ProfilerConfigurationException()
+    [Serializable]
+    internal class ProfilerConfigurationException : Exception
     {
-    }
+        public ProfilerConfigurationException()
+        {
+        }
 
-    public ProfilerConfigurationException(string message) : base(message)
-    {
-    }
+        public ProfilerConfigurationException(string message) : base(message)
+        {
+        }
 
-    public ProfilerConfigurationException(string message, Exception innerException) : base(message, innerException)
-    {
+        public ProfilerConfigurationException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
     }
-  }
 }

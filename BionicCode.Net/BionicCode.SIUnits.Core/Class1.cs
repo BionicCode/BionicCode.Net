@@ -1,7 +1,5 @@
 ﻿namespace BionicCode.SIUnits.Core
 {
-    using System.Collections.Frozen;
-
     public readonly struct Mass
     {
 
@@ -100,13 +98,13 @@
             );
         }
 
-        public SIBaseDimensions DecrementLengthExponent(int decrement) => this.IncrementLengthExponent(-decrement);
-        public SIBaseDimensions DecrementMassExponent(int decrement) => this.IncrementMassExponent(-decrement);
-        public SIBaseDimensions DecrementTimeExponent(int decrement) => this.IncrementTimeExponent(-decrement);
-        public SIBaseDimensions DecrementElectricCurrentExponent(int decrement) => this.IncrementElectricCurrentExponent(-decrement);
-        public SIBaseDimensions DecrementThermodynamicTemperatureExponent(int decrement) => this.IncrementThermodynamicTemperatureExponent(-decrement);
-        public SIBaseDimensions DecrementAmountOfSubstanceExponent(int decrement) => this.IncrementAmountOfSubstanceExponent(-decrement);
-        public SIBaseDimensions DecrementLuminousIntensityExponent(int decrement) => this.IncrementLuminousIntensityExponent(-decrement);
+        public SIBaseDimensions DecrementLengthExponent(int decrement) => IncrementLengthExponent(-decrement);
+        public SIBaseDimensions DecrementMassExponent(int decrement) => IncrementMassExponent(-decrement);
+        public SIBaseDimensions DecrementTimeExponent(int decrement) => IncrementTimeExponent(-decrement);
+        public SIBaseDimensions DecrementElectricCurrentExponent(int decrement) => IncrementElectricCurrentExponent(-decrement);
+        public SIBaseDimensions DecrementThermodynamicTemperatureExponent(int decrement) => IncrementThermodynamicTemperatureExponent(-decrement);
+        public SIBaseDimensions DecrementAmountOfSubstanceExponent(int decrement) => IncrementAmountOfSubstanceExponent(-decrement);
+        public SIBaseDimensions DecrementLuminousIntensityExponent(int decrement) => IncrementLuminousIntensityExponent(-decrement);
 
         public SIBaseDimensions MoveLengthToDenominator() => this with { LengthExponent = -Math.Abs(this.LengthExponent) };
         public SIBaseDimensions MoveMassToDenominator() => this with { MassExponent = -Math.Abs(this.MassExponent) };
@@ -178,12 +176,10 @@
 
     internal class UnitExpressionBuilder
     {
-        public
     }
 
     public class UnitExpression
     {
-        public NominatorDimensions Nominator { get; }
+        public NominatorDimensions? Nominator { get; }
     }
-
 }

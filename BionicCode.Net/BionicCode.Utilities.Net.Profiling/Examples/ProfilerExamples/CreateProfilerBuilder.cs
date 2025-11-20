@@ -1,32 +1,32 @@
 ﻿namespace BionicCode.Utilities.Net.Profiling.Examples.ProfilerExamples.CreateProfilerBuilder.A
 {
-  using BionicCode.Utilities.Net.Profiling.Examples.ProfilerExamples.B;
-  using System;
-  using System.Threading;
-  #region CodeWithoutNamespace
-  using System.Threading.Tasks;
+    using BionicCode.Utilities.Net.Profiling.Examples.ProfilerExamples.B;
+    using System;
+    using System.Threading;
+    #region CodeWithoutNamespace
+    using System.Threading.Tasks;
 
-  class CreateProfilerBuilderExample
-  {
-    public static async Task Main(string[] args)
+    internal class CreateProfilerBuilderExample
     {
-      ProfiledTypeResultCollection results = await Profiler.CreateProfilerBuilder(typeof(BenchmarkTarget))
-        .SetBaseUnit(TimeUnit.Millisecond)
-        .RunAsync(CancellationToken.None);
-
-      foreach (ProfilerBatchResultGroupCollection resultGroups in results)
-      {
-        Console.WriteLine($"Profiled type: {resultGroups.ProfiledTypeData.FullyQualifiedDisplayName}");
-        foreach (ProfilerBatchResultGroup resultGroup in resultGroups)
+        public static async Task Main(string[] args)
         {
-          Console.WriteLine($"Profiled member: {resultGroup.TargetShortName}");
-          foreach (ProfilerBatchResult result in resultGroup)
-          {
-            Console.WriteLine($"Summary: {result.Summary}");
-          }
+            ProfiledTypeResultCollection results = await Profiler.CreateProfilerBuilder(typeof(BenchmarkTarget))
+              .SetBaseUnit(TimeUnit.Millisecond)
+              .RunAsync(CancellationToken.None);
+
+            foreach (ProfilerBatchResultGroupCollection resultGroups in results)
+            {
+                Console.WriteLine($"Profiled type: {resultGroups.ProfiledTypeData.FullyQualifiedDisplayName}");
+                foreach (ProfilerBatchResultGroup resultGroup in resultGroups)
+                {
+                    Console.WriteLine($"Profiled member: {resultGroup.TargetShortName}");
+                    foreach (ProfilerBatchResult result in resultGroup)
+                    {
+                        Console.WriteLine($"Summary: {result.Summary}");
+                    }
+                }
+            }
         }
-      }
     }
-  }
-  #endregion
+    #endregion
 }

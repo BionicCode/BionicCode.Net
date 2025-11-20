@@ -145,7 +145,7 @@
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.System#Windows#Input#ICommand#CanExecute(System.Object)">
             <inheritdoc />
         </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.System#Windows#Input#ICommand#Execute(System.Object)">
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon.Execute(System.Object)">
             <inheritdoc />
         </member>
         <member name="P:BionicCode.Utilities.Net.AsyncRelayCommandCore.CanBeCanceled">
@@ -825,83 +825,22 @@
         <member name="M:BionicCode.Utilities.Net.EventAggregator.TryRemoveAllObservers(System.String)">
             <inheritdoc />
         </member>
-        <member name="M:BionicCode.Utilities.Net.ArgumentNullExceptionEx.ThrowIfNullOrEmpty(System.String,System.String)">
-            <summary>Throws an exception if <paramref name="argument"/> is null or empty.</summary>
-            <param name="argument">The string argument to validate as non-null and non-empty.</param>
-            <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
-            <exception cref="T:System.ArgumentNullException"><paramref name="argument"/> is null.</exception>
-            <exception cref="T:System.ArgumentException"><paramref name="argument"/> is empty.</exception>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(System.String,System.String)">
-            <summary>Throws an exception if <paramref name="argument"/> is null, empty, or consists only of white-space characters.</summary>
-            <param name="argument">The string argument to validate.</param>
-            <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
-            <exception cref="T:System.ArgumentNullException"><paramref name="argument"/> is null.</exception>
-            <exception cref="T:System.ArgumentException"><paramref name="argument"/> is empty or consists only of white-space characters.</exception>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.ArgumentExceptionEx.ThrowIfNullOrEmpty(System.String,System.String)">
-            <summary>Throws an exception if <paramref name="argument"/> is null or empty.</summary>
-            <param name="argument">The string argument to validate as non-null and non-empty.</param>
-            <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
-            <exception cref="T:System.ArgumentNullException"><paramref name="argument"/> is null.</exception>
-            <exception cref="T:System.ArgumentException"><paramref name="argument"/> is empty.</exception>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(System.String,System.String)">
-            <summary>Throws an exception if <paramref name="argument"/> is null, empty, or consists only of white-space characters.</summary>
-            <param name="argument">The string argument to validate.</param>
-            <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
-            <exception cref="T:System.ArgumentNullException"><paramref name="argument"/> is null.</exception>
-            <exception cref="T:System.ArgumentException"><paramref name="argument"/> is empty or consists only of white-space characters.</exception>
+        <member name="M:BionicCode.Utilities.Net.ArgumentExceptionEx.ThrowIfNotAssignable(System.Reflection.EventInfo,System.Delegate)">
+            <summary>
+            Validates that the specified delegate is compatible with the signature of the given event. Throws an exception
+            if the delegate cannot be assigned as an event handler.
+            </summary>
+            <remarks>Use this method to ensure that a delegate can be safely attached to an event at runtime. This
+            validation checks that the number and types of parameters in the delegate match those expected by the event.
+            This method does not check for null arguments; callers should ensure arguments are not null before
+            calling.</remarks>
+            <param name="eventInfo">The event metadata that defines the expected event handler signature. Cannot be null.</param>
+            <param name="clientHandler">The delegate to validate as a potential event handler for the event. Cannot be null.</param>
+            <exception cref="T:BionicCode.Utilities.Net.EventHandlerMismatchException">Thrown if the delegate's signature does not match the event handler type required by the event.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx.ThrowIfZero``1(``0,System.String)">
             <summary>Throws an <see cref="T:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is zero.</summary>
             <param name="value">The argument to validate as non-zero.</param>
-            <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx.ThrowIfNegative``1(``0,System.String)">
-            <summary>Throws an <see cref="T:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is negative.</summary>
-            <param name="value">The argument to validate as non-negative.</param>
-            <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx.ThrowIfNegativeOrZero``1(``0,System.String)">
-            <summary>Throws an <see cref="T:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is negative or zero.</summary>
-            <param name="value">The argument to validate as non-zero or non-negative.</param>
-            <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx.ThrowIfEqual``1(``0,``0,System.String)">
-            <summary>Throws an <see cref="T:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is equal to <paramref name="other"/>.</summary>
-            <param name="value">The argument to validate as not equal to <paramref name="other"/>.</param>
-            <param name="other">The value to compare with <paramref name="value"/>.</param>
-            <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx.ThrowIfNotEqual``1(``0,``0,System.String)">
-            <summary>Throws an <see cref="T:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is not equal to <paramref name="other"/>.</summary>
-            <param name="value">The argument to validate as equal to <paramref name="other"/>.</param>
-            <param name="other">The value to compare with <paramref name="value"/>.</param>
-            <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan``1(``0,``0,System.String)">
-            <summary>Throws an <see cref="T:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is greater than <paramref name="other"/>.</summary>
-            <param name="value">The argument to validate as less or equal than <paramref name="other"/>.</param>
-            <param name="other">The value to compare with <paramref name="value"/>.</param>
-            <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual``1(``0,``0,System.String)">
-            <summary>Throws an <see cref="T:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is greater than or equal <paramref name="other"/>.</summary>
-            <param name="value">The argument to validate as less than <paramref name="other"/>.</param>
-            <param name="other">The value to compare with <paramref name="value"/>.</param>
-            <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx.ThrowIfLessThan``1(``0,``0,System.String)">
-            <summary>Throws an <see cref="T:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is less than <paramref name="other"/>.</summary>
-            <param name="value">The argument to validate as greater than or equal than <paramref name="other"/>.</param>
-            <param name="other">The value to compare with <paramref name="value"/>.</param>
-            <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx.ThrowIfLessThanOrEqual``1(``0,``0,System.String)">
-            <summary>Throws an <see cref="T:BionicCode.Utilities.Net.ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is less than or equal <paramref name="other"/>.</summary>
-            <param name="value">The argument to validate as greater than <paramref name="other"/>.</param>
-            <param name="other">The value to compare with <paramref name="value"/>.</param>
             <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
         </member>
         <member name="T:BionicCode.Utilities.Net.WrongEventHandlerSignatureException">
@@ -2290,7 +2229,7 @@
         <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.System#Windows#Input#ICommand#CanExecute(System.Object)">
             <inheritdoc />
         </member>
-        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.System#Windows#Input#ICommand#Execute(System.Object)">
+        <member name="M:BionicCode.Utilities.Net.AsyncRelayCommandCommon`1.Execute(System.Object)">
             <inheritdoc />
         </member>
         <member name="T:BionicCode.Utilities.Net.Factory`1">

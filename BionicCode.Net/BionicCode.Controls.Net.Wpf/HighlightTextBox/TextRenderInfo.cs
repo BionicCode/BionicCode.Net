@@ -1,17 +1,17 @@
 ﻿namespace BionicCode.Controls.Net.Wpf
 {
-  using System.Collections.Generic;
-  using System.Windows.Media;
+    using System.Collections.Generic;
+    using System.Windows.Media;
 
-  internal class TextRenderInfo
-  {
-    public TextRenderInfo(IEnumerable<HighlightBackgroundInfo> highlightBackgroundInfos, FormattedText formattedText)
+    internal class TextRenderInfo
     {
-      this.HighlightBackgroundInfos = highlightBackgroundInfos;
-      this.FormattedText = formattedText;
-    }
+        public TextRenderInfo(IEnumerable<HighlightBackgroundInfo> highlightBackgroundInfos, FormattedText formattedText)
+        {
+            this.HighlightBackgroundInfos = highlightBackgroundInfos;
+            this.FormattedText = formattedText;
+        }
 
-    public IEnumerable<HighlightBackgroundInfo> HighlightBackgroundInfos { get; }
-    public FormattedText FormattedText { get; }
-  }
+        public IEnumerable<HighlightBackgroundInfo> HighlightBackgroundInfos { get; }
+        public FormattedText FormattedText { get; }
+    }
 }

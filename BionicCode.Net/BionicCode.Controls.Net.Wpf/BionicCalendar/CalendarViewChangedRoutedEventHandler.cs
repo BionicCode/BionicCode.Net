@@ -7,5 +7,5 @@
 
 namespace BionicCode.Controls.Net.Wpf
 {
-  public delegate void CalendarViewChangedRoutedEventHandler<TData>(object sender, CalendarViewChangedRoutedEventArgs<TData> e) where TData : CalendarView;
+    public delegate void CalendarViewChangedRoutedEventHandler<TData>(object sender, CalendarViewChangedRoutedEventArgs<TData> e) where TData : CalendarView;
 }

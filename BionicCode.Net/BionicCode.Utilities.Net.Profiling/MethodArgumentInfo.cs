@@ -1,16 +1,16 @@
 ﻿namespace BionicCode.Utilities.Net.Profiling
 {
-  using System.Collections.Generic;
+    using System.Collections.Generic;
 
-  internal readonly struct MethodArgumentInfo
-  {
-    public MethodArgumentInfo(IList<object> arguments, int argumentListIndex)
+    internal readonly struct MethodArgumentInfo
     {
-      this.Arguments = arguments;
-      this.ArgumentListIndex = argumentListIndex;
-    }
+        public MethodArgumentInfo(IList<object> arguments, int argumentListIndex)
+        {
+            this.Arguments = arguments;
+            this.ArgumentListIndex = argumentListIndex;
+        }
 
-    public IList<object> Arguments { get; }
-    public int ArgumentListIndex { get; }
-  }
+        public IList<object> Arguments { get; }
+        public int ArgumentListIndex { get; }
+    }
 }

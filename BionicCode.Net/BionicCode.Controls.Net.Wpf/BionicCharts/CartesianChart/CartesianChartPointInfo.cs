@@ -1,16 +1,16 @@
 ﻿namespace BionicCode.Controls.Net.Wpf
 {
-  using System.Windows;
+    using System.Windows;
 
-  internal readonly struct CartesianChartPointInfo : IChartPointInfo
-  {
-    public CartesianChartPointInfo(Point chartPoint, ICartesianSeriesInfo seriesInfo)
+    internal readonly struct CartesianChartPointInfo : IChartPointInfo
     {
-      this.CartesianChartPoint = chartPoint;
-      this.SeriesInfo = seriesInfo;
-    }
+        public CartesianChartPointInfo(Point chartPoint, ICartesianSeriesInfo seriesInfo)
+        {
+            this.CartesianChartPoint = chartPoint;
+            this.SeriesInfo = seriesInfo;
+        }
 
-    public Point CartesianChartPoint { get; }
-    public ICartesianSeriesInfo SeriesInfo { get; }
-  }
+        public Point CartesianChartPoint { get; }
+        public ICartesianSeriesInfo SeriesInfo { get; }
+    }
 }

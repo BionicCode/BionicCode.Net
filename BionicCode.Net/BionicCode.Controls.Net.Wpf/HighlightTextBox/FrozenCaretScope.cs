@@ -1,46 +1,46 @@
 ﻿namespace BionicCode.Controls.Net.Wpf
 {
-  using System;
+    using System;
 
-  internal class FrozenCaretScope : IDisposable
-  {
-    private bool disposedValue;
-
-    public FrozenCaretScope(CaretAdorner caret)
+    internal class FrozenCaretScope : IDisposable
     {
-      this.Caret = caret;
-      this.Caret.Freeze();
-    }
+        private bool disposedValue;
 
-    public CaretAdorner Caret { get; }
-
-    protected virtual void Dispose(bool disposing)
-    {
-      if (!this.disposedValue)
-      {
-        if (disposing)
+        public FrozenCaretScope(CaretAdorner caret)
         {
-          this.Caret.Unfreeze();
+            this.Caret = caret;
+            this.Caret.Freeze();
         }
 
-        // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-        // TODO: set large fields to null
-        this.disposedValue = true;
-      }
-    }
+        public CaretAdorner Caret { get; }
 
-    // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-    // ~FrozenCaretScope()
-    // {
-    //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-    //     Dispose(disposing: false);
-    // }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposedValue)
+            {
+                if (disposing)
+                {
+                    this.Caret.Unfreeze();
+                }
 
-    public void Dispose()
-    {
-      // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-      Dispose(disposing: true);
-      GC.SuppressFinalize(this);
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                this.disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~FrozenCaretScope()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
-  }
 }

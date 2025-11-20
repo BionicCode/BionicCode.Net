@@ -1,6 +1,6 @@
 ﻿namespace BionicCode.Utilities.Net
 {
 
-  public interface IWeakEventAggregator : IWeakEventAggregatorListenerService, IWeakEventAggregatorPublisherService
-  { }
+    public interface IWeakEventAggregator : IWeakEventAggregatorListenerService, IWeakEventAggregatorPublisherService
+    { }
 }

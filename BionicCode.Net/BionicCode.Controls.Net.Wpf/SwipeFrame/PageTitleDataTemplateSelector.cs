@@ -1,32 +1,31 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-
-namespace BionicCode.Controls.Net.Wpf
+﻿namespace BionicCode.Controls.Net.Wpf
 {
-  internal class PageTitleDataTemplateSelector : DataTemplateSelector
-  {
-    public DataTemplate TextDataTemplate { get; set; }
-    public DataTemplate ImageSourceDataTemplate { get; set; }
-    public DataTemplate ObjectDataTemplate { get; set; }
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Media;
 
-    #region Overrides of TitleDataTemplateSelector
-
-    /// <inheritdoc />
-    public override DataTemplate SelectTemplate(object item, DependencyObject container)
+    internal class PageTitleDataTemplateSelector : DataTemplateSelector
     {
-      var element = container as FrameworkElement;
-      switch (item)
-      {
-        case string _:
-          return this.TextDataTemplate;
-        case ImageSource _:
-          return this.ImageSourceDataTemplate;
-        default:
-          return this.ObjectDataTemplate;
-      }
-    }
+        public DataTemplate TextDataTemplate { get; set; }
+        public DataTemplate ImageSourceDataTemplate { get; set; }
+        public DataTemplate ObjectDataTemplate { get; set; }
 
-    #endregion
-  }
+        #region Overrides of TitleDataTemplateSelector
+
+        /// <inheritdoc />
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            switch (item)
+            {
+                case string _:
+                    return this.TextDataTemplate;
+                case ImageSource _:
+                    return this.ImageSourceDataTemplate;
+                default:
+                    return this.ObjectDataTemplate;
+            }
+        }
+
+        #endregion
+    }
 }

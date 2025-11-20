@@ -7,8 +7,8 @@
 
 namespace BionicCode.Controls.Net.Wpf
 {
-  public enum Meridiem
-  {
-    None = 0, AM, PM
-  }
+    public enum Meridiem
+    {
+        None = 0, AM, PM
+    }
 }

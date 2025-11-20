@@ -1,6 +1,6 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-  internal class Win32Helpers
-  {
-  }
+    internal class Win32Helpers
+    {
+    }
 }

@@ -1,35 +1,32 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-  using System;
-  using System.Diagnostics.CodeAnalysis;
-  using System.Runtime.CompilerServices;
-  using System.Runtime.Serialization;
-  using JetBrains.Annotations;
-
-  /// <inheritdoc />
-  [Serializable]
-  public class WrongEventHandlerSignatureException : System.Exception
-  {
-    /// <inheritdoc />
-    public WrongEventHandlerSignatureException()
-    {
-    }
+    using System;
+    using System.Runtime.Serialization;
 
     /// <inheritdoc />
-    public WrongEventHandlerSignatureException(string message) : base(message)
+    [Serializable]
+    public class WrongEventHandlerSignatureException : System.Exception
     {
-    }
+        /// <inheritdoc />
+        public WrongEventHandlerSignatureException()
+        {
+        }
 
-    /// <inheritdoc />
-    public WrongEventHandlerSignatureException(string message, System.Exception inner) : base(message, inner)
-    {
-    }
+        /// <inheritdoc />
+        public WrongEventHandlerSignatureException(string message) : base(message)
+        {
+        }
 
-    /// <inheritdoc />
-    protected WrongEventHandlerSignatureException(
-      SerializationInfo info,
-      StreamingContext context) : base(info, context)
-    {
+        /// <inheritdoc />
+        public WrongEventHandlerSignatureException(string message, System.Exception inner) : base(message, inner)
+        {
+        }
+
+        /// <inheritdoc />
+        protected WrongEventHandlerSignatureException(
+          SerializationInfo info,
+          StreamingContext context) : base(info, context)
+        {
+        }
     }
-  }
 }

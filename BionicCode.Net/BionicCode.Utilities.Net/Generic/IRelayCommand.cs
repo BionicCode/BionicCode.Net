@@ -1,7 +1,7 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-  /// <inheritdoc/>
-  public interface IRelayCommand<TParam> : IRelayCommandCommon<TParam>
-  {
-  }
+    /// <inheritdoc/>
+    public interface IRelayCommand<TParam> : IRelayCommandCommon<TParam>
+    {
+    }
 }

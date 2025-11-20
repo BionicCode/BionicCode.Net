@@ -1,86 +1,86 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-  using System;
-  using System.Collections.Generic;
-  using System.Diagnostics;
-  using System.Linq;
-  using System.Linq.Expressions;
-  using System.Reflection;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Reflection;
 
-  internal static class ProxyEventHandlerGenerator
-  {
-    public static readonly object ConflictingMethodInfoExceptionDataKey = new object();
-
-    public static Delegate Generate<TEventSource>(string eventName, object target, string targetDelegateMethodName, MemberParameterInfo[] targetDelegateMethodParameterList)
+    internal static class ProxyEventHandlerGenerator
     {
-      ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
-      ArgumentNullExceptionEx.ThrowIfNull(target, nameof(target));
-      ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(targetDelegateMethodName, nameof(targetDelegateMethodName));
+        public static readonly object ConflictingMethodInfoExceptionDataKey = new object();
 
-      Type targetType = target.GetType();
-      IMemberDataCacheKey symbolCacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(targetType.TypeHandle, targetDelegateMethodName, targetDelegateMethodParameterList);
-      SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(symbolCacheKey, out MethodData proxyDelegateMethodData);
-
-      symbolCacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(typeof(TEventSource).TypeHandle, eventName);
-      SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(symbolCacheKey, out EventData eventData);
-
-      TypeData eventHandlerTypeData = eventData.EventHandlerTypeData;
-      MethodData invocatorData = eventData.InvocatorMethodData;
-      ParameterData[] eventHandlerParameters = invocatorData.Parameters;
-      Delegate eventHandler = GenerateProxy(eventHandlerParameters, eventHandlerTypeData, target, proxyDelegateMethodData);
-      LogDebug("Dynamically generated proxy event handler.");
-
-      return eventHandler;
-    }
-
-    private static Delegate GenerateProxy(ParameterData[] eventHandlerParameters, TypeData eventDelegateTypeData, object delegateMethodTarget, MethodData delegateMethodData)
-    {
-      var expressionParameters = new List<ParameterExpression>();
-      foreach (ParameterData parameter in eventHandlerParameters)
-      {
-        ParameterExpression expressionParameter = Expression.Parameter(parameter.ParameterTypeData.GetType(), parameter.Name);
-        expressionParameters.Add(expressionParameter);
-      }
-
-      List<Expression> delegateParameters = expressionParameters.Cast<Expression>().ToList();
-      if (delegateMethodData.Parameters.Any())
-      {
-        ParameterData lastParameter = delegateMethodData.Parameters.Last();
-        if (lastParameter.IsParams)
+        public static Delegate Generate<TEventSource>(string eventName, object target, string targetDelegateMethodName, MemberParameterInfo[] targetDelegateMethodParameterList)
         {
-          IEnumerable<Expression> paramsParameterArguments = expressionParameters.Skip(lastParameter.GetParameterInfo().Position)
-                        .Select(parameter => Expression.TypeAs(parameter, lastParameter.ParameterTypeData.GetType().GetElementType()))
-                        .Cast<Expression>();
-          NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), paramsParameterArguments);
-          delegateParameters.RemoveRange(lastParameter.Position, expressionParameters.Count - lastParameter.Position);
-          delegateParameters.Add(argsArray);
+            ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
+            ArgumentNullExceptionEx.ThrowIfNull(target, nameof(target));
+            ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(targetDelegateMethodName, nameof(targetDelegateMethodName));
+
+            Type targetType = target.GetType();
+            IMemberDataCacheKey symbolCacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(targetType.TypeHandle, targetDelegateMethodName, targetDelegateMethodParameterList);
+            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(symbolCacheKey, out MethodData proxyDelegateMethodData);
+
+            symbolCacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(typeof(TEventSource).TypeHandle, eventName);
+            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(symbolCacheKey, out EventData eventData);
+
+            TypeData eventHandlerTypeData = eventData.EventHandlerTypeData;
+            MethodData invocatorData = eventData.InvocatorMethodData;
+            ParameterData[] eventHandlerParameters = invocatorData.Parameters;
+            Delegate eventHandler = GenerateProxy(eventHandlerParameters, eventHandlerTypeData, target, proxyDelegateMethodData);
+            LogDebug("Dynamically generated proxy event handler.");
+
+            return eventHandler;
         }
-      }
 
-      ConstantExpression target = Expression.Constant(delegateMethodTarget);
-      MethodInfo proxyDelegateMethod = delegateMethodData.GetMethodInfo();
-      MethodCallExpression method;
-      try
-      {
-        method = Expression.Call(target, proxyDelegateMethod, delegateParameters);
-      }
-      catch (ArgumentException e)
-      {
-        e.Data.Add(ProxyEventHandlerGenerator.ConflictingMethodInfoExceptionDataKey, proxyDelegateMethod);
-        throw;
-      }
+        private static Delegate GenerateProxy(ParameterData[] eventHandlerParameters, TypeData eventDelegateTypeData, object delegateMethodTarget, MethodData delegateMethodData)
+        {
+            var expressionParameters = new List<ParameterExpression>();
+            foreach (ParameterData parameter in eventHandlerParameters)
+            {
+                ParameterExpression expressionParameter = Expression.Parameter(parameter.ParameterTypeData.GetType(), parameter.Name);
+                expressionParameters.Add(expressionParameter);
+            }
 
-      Type eventDelegateType = eventDelegateTypeData.GetType();
-      Delegate proxyEventSourceHandler = Expression.Lambda(eventDelegateType, method, expressionParameters).Compile();
+            List<Expression> delegateParameters = expressionParameters.Cast<Expression>().ToList();
+            if (delegateMethodData.Parameters.Any())
+            {
+                ParameterData lastParameter = delegateMethodData.Parameters.Last();
+                if (lastParameter.IsParams)
+                {
+                    IEnumerable<Expression> paramsParameterArguments = expressionParameters.Skip(lastParameter.GetParameterInfo().Position)
+                                  .Select(parameter => Expression.TypeAs(parameter, lastParameter.ParameterTypeData.GetType().GetElementType()))
+                                  .Cast<Expression>();
+                    NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), paramsParameterArguments);
+                    delegateParameters.RemoveRange(lastParameter.Position, expressionParameters.Count - lastParameter.Position);
+                    delegateParameters.Add(argsArray);
+                }
+            }
 
-      return proxyEventSourceHandler;
-    }
+            ConstantExpression target = Expression.Constant(delegateMethodTarget);
+            MethodInfo proxyDelegateMethod = delegateMethodData.GetMethodInfo();
+            MethodCallExpression method;
+            try
+            {
+                method = Expression.Call(target, proxyDelegateMethod, delegateParameters);
+            }
+            catch (ArgumentException e)
+            {
+                e.Data.Add(ProxyEventHandlerGenerator.ConflictingMethodInfoExceptionDataKey, proxyDelegateMethod);
+                throw;
+            }
 
-    private static void LogDebug(string message)
-    {
+            Type eventDelegateType = eventDelegateTypeData.GetType();
+            Delegate proxyEventSourceHandler = Expression.Lambda(eventDelegateType, method, expressionParameters).Compile();
+
+            return proxyEventSourceHandler;
+        }
+
+        private static void LogDebug(string message)
+        {
 #if DEBUG
-      Debug.WriteLine($"{message}");
+            Debug.WriteLine($"{message}");
 #endif
+        }
     }
-  }
 }

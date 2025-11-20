@@ -1,22 +1,21 @@
 ﻿namespace BionicCode.Controls.Net.Wpf
 {
-  public class Unit
-  {
-    public Unit(string name, decimal baseFactor)
+    public class Unit
     {
-      this.Name = name;
-      this.BaseFactor = baseFactor;
+        public Unit(string name, decimal baseFactor)
+        {
+            this.Name = name;
+            this.BaseFactor = baseFactor;
+        }
+
+        #region Overrides of Object
+
+        /// <inheritdoc />
+        public override string ToString() => this.Name;
+
+        #endregion
+
+        public string Name { get; set; }
+        public decimal BaseFactor { get; set; }
     }
-
-    #region Overrides of Object
-
-    /// <inheritdoc />
-    public override string ToString() => this.Name;
-
-    #endregion
-
-    public string Name { get; set; }
-    public decimal BaseFactor { get; set; }
-  }
 }
-

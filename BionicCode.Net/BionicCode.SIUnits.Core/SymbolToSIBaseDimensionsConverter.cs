@@ -26,9 +26,8 @@
         /// <returns>A <see cref="SIBaseDimension"/> that corrsponds to the SI unnit symbol <paramref name="symbol"/>.</returns>
         /// <exception cref="ArgumentException">The symbol is not defined.</exception>
         public static SIBaseDimension ToSIBaseDimension(string symbol)
-            => SymbolToSIBaseDimensionMap.TryGetValue(symbol, out SIBaseDimension sIBaseDimension) 
-                ? sIBaseDimension  
+            => SymbolToSIBaseDimensionMap.TryGetValue(symbol, out SIBaseDimension sIBaseDimension)
+                ? sIBaseDimension
                 : throw new ArgumentException($"Undefined symbol. '{symbol}' is not a SI unit symbol.", nameof(symbol));
     }
-
 }

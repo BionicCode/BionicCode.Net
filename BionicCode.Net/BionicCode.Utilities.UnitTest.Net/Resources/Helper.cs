@@ -1,13 +1,13 @@
 ﻿namespace BionicCode.Utilities.Net.UnitTest.Resources
 {
-  internal static class UnitTestHelper
-  {
-    internal static bool IsDebugModeEnabled =>
+    internal static class UnitTestHelper
+    {
+        internal static bool IsDebugModeEnabled =>
 #if DEBUG
-        true;
+            true;
 #else
         false;
 #endif
 
-  }
+    }
 }

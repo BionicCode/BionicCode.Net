@@ -1,16 +1,16 @@
 ﻿namespace BionicCode.Utilities.Net.Profiling
 {
-  using System.Text.Json.Serialization;
+    using System.Text.Json.Serialization;
 
-  internal class ChartSeries
-  {
-    [JsonPropertyName("title")]
-    public string Title { get; set; }
+    internal class ChartSeries
+    {
+        [JsonPropertyName("title")]
+        public string? Title { get; set; }
 
-    [JsonPropertyName("targetAxisIndex")]
-    public int TargetAxisIndex { get; set; }
+        [JsonPropertyName("targetAxisIndex")]
+        public int TargetAxisIndex { get; set; }
 
-    [JsonIgnore]
-    public int SeriesIndex { get; set; }
-  }
+        [JsonIgnore]
+        public int SeriesIndex { get; set; }
+    }
 }

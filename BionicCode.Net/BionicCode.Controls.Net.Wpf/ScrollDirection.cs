@@ -7,8 +7,8 @@
 
 namespace BionicCode.Controls.Net.Wpf
 {
-  internal enum ScrollDirection
-  {
-    Undefined = 0, Left, Top, Right, Bottom
-  }
+    internal enum ScrollDirection
+    {
+        Undefined = 0, Left, Top, Right, Bottom
+    }
 }

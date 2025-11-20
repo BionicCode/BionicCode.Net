@@ -1,16 +1,16 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-  using System.Collections.Immutable;
+    using System.Collections.Immutable;
 
-  internal class EntryInfo<TEntry> where TEntry : ManagedWeakTableEntry
-  {
-    public EntryInfo(TEntry entry, ImmutableHashSet<ManagedWeakTableEntry> bucket)
+    internal class EntryInfo<TEntry> where TEntry : ManagedWeakTableEntry
     {
-      this.Entry = entry;
-      this.Bucket = bucket;
-    }
+        public EntryInfo(TEntry entry, ImmutableHashSet<ManagedWeakTableEntry> bucket)
+        {
+            this.Entry = entry;
+            this.Bucket = bucket;
+        }
 
-    public TEntry Entry { get; }
-    public ImmutableHashSet<ManagedWeakTableEntry> Bucket { get; }
-  }
+        public TEntry Entry { get; }
+        public ImmutableHashSet<ManagedWeakTableEntry> Bucket { get; }
+    }
 }

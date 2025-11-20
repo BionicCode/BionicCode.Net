@@ -29,5 +29,4 @@
                 ? symbol
                 : throw new ArgumentException("Enum is not defined.", nameof(siBaseDimension));
     }
-
 }
