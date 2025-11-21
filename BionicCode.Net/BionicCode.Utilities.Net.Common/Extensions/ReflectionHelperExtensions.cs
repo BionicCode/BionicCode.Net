@@ -33,9 +33,7 @@
         private static readonly Type AsyncStateMachineAttributeType = typeof(AsyncStateMachineAttribute);
         private static readonly Type ExtensionAttributeType = typeof(ExtensionAttribute);
         private static readonly Type DelegateType = typeof(Delegate);
-#if !NETSTANDARD2_0
         private static readonly Type IsReadOnlyAttributeType = typeof(IsReadOnlyAttribute);
-#endif
 
         /// <summary>
         /// The property genericTypeParameterIdentifier of an indexer property. This genericTypeParameterIdentifier is compiler generated and equals the typeName of the <see langword="static"/>field <see cref="System.Windows.Data.Binding.IndexerName" />.
@@ -55,9 +53,7 @@
       //nameof(ProfilerMethodArgumentAttribute),
       //nameof(ProfilerPropertyArgumentAttribute),
       //nameof(ProfilerFactoryAttribute),
-#if !NETSTANDARD2_0
       nameof(IsReadOnlyAttribute),
-#endif
     }.ToFrozenSet();
 
         /// <summary>
@@ -1549,6 +1545,22 @@
         //    }
         #endregion REMOVE AFTER BENCHMARK COMPARISON!!!
 
+        /// <summary>
+        /// Generates a formatted signature string for the specified property, including modifiers, type, name,
+        /// accessors, and optional custom attributes.
+        /// </summary>
+        /// <remarks>The generated signature reflects the property's access level,
+        /// static/abstract/virtual/override modifiers, type (with generic arguments if applicable), indexer parameters
+        /// (if any), and accessor visibility. When isCompact is true or isRuntimeSymbol is true, custom attributes are
+        /// omitted for brevity or runtime compatibility. Use this method to display or analyze property signatures in
+        /// code generation, documentation, or tooling scenarios.</remarks>
+        /// <param name="propertyData">The property metadata to generate the signature for. Must not be null.</param>
+        /// <param name="isFullyQualifiedName">true to use fully qualified type names in the signature; otherwise, false.</param>
+        /// <param name="isDeclaringTypeIncluded">true to include the declaring type in the property name; otherwise, false.</param>
+        /// <param name="isCompact">true to produce a compact signature without custom attributes or extra formatting; otherwise, false.</param>
+        /// <param name="isRuntimeSymbol">true if the property represents a runtime symbol and should be formatted accordingly; otherwise, false.</param>
+        /// <returns>A string containing the complete signature of the property, including modifiers, type, name, accessors, and
+        /// any applicable custom attributes.</returns>
         internal static string ToSignatureNameInternal(PropertyData propertyData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact, bool isRuntimeSymbol)
         {
             SymbolAttributes symbolAttributes = propertyData.SymbolAttributes;
@@ -1558,12 +1570,11 @@
             {
                 IEnumerable<CustomAttributeData> customAttributesData = propertyData.AttributeData;
 
-#if !NETSTANDARD2_0
                 if (symbolAttributes.HasFlag(SymbolAttributes.Final))
                 {
                     customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute));
                 }
-#endif
+
                 _ = signatureNameBuilder.AppendCustomAttributes(customAttributesData, isAppendNewLineEnabled: true);
             }
 
@@ -1668,14 +1679,13 @@
                       .Append(' ');
                 }
 
-#if !NETSTANDARD2_0
                 if (propertyData.IsSetMethodReadOnly)
                 {
                     _ = signatureNameBuilder
                       .Append("readonly")
                       .Append(' ');
                 }
-#endif
+
                 if (propertyData.SymbolAttributes.HasFlag(SymbolAttributes.InitProperty))
                 {
                     _ = signatureNameBuilder
@@ -1700,6 +1710,18 @@
             return fullMemberName;
         }
 
+        /// <summary>
+        /// Generates the signature name string for the specified event, using the provided formatting and inclusion
+        /// options.
+        /// </summary>
+        /// <param name="eventData">The event metadata to use when constructing the signature name. Must not be null.</param>
+        /// <param name="isFullyQualifiedName">true to include the fully qualified type names in the signature; otherwise, false.</param>
+        /// <param name="isDeclaringTypeIncluded">true to include the declaring type in the event signature; otherwise, false.</param>
+        /// <param name="isCompact">true to generate a compact signature without custom attributes; otherwise, false.</param>
+        /// <param name="isRuntimeSymbol">true if the signature is being generated for a runtime symbol, which affects formatting and attribute
+        /// inclusion; otherwise, false.</param>
+        /// <returns>A string representing the formatted signature name of the event, including modifiers, type, and name as
+        /// specified by the input parameters.</returns>
         internal static string ToSignatureNameInternal(EventData eventData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact, bool isRuntimeSymbol)
         {
             SymbolAttributes symbolAttributes = eventData.SymbolAttributes;
@@ -1708,12 +1730,11 @@
             {
                 IEnumerable<CustomAttributeData> customAttributesData = eventData.AttributeData;
 
-#if !NETSTANDARD2_0
                 if (symbolAttributes.HasFlag(SymbolAttributes.Final))
                 {
                     customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType);
                 }
-#endif
+
                 _ = signatureNameBuilder.AppendCustomAttributes(customAttributesData, isAppendNewLineEnabled: true);
             }
 
@@ -1769,6 +1790,21 @@
             return fullMemberName;
         }
 
+        /// <summary>
+        /// Generates the formatted signature name for a field, including modifiers, type, and name, based on the
+        /// specified formatting options.
+        /// </summary>
+        /// <remarks>This method is intended for internal use when constructing field signature
+        /// representations for display or analysis. The output format may vary depending on the combination of
+        /// formatting flags provided.</remarks>
+        /// <param name="fieldData">The metadata describing the field for which to generate the signature name.</param>
+        /// <param name="isFullyQualifiedName">true to include the fully qualified type name in the signature; otherwise, false.</param>
+        /// <param name="isDeclaringTypeIncluded">true to include the declaring type in the field's signature; otherwise, false.</param>
+        /// <param name="isCompact">true to use a compact format that omits custom attributes and some modifiers; otherwise, false.</param>
+        /// <param name="isRuntimeSymbol">true if the signature is being generated for a runtime symbol, which may affect formatting; otherwise,
+        /// false.</param>
+        /// <returns>A string containing the formatted signature name of the field, including modifiers, type, and name,
+        /// according to the specified options.</returns>
         internal static string ToSignatureNameInternal(FieldData fieldData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact, bool isRuntimeSymbol)
         {
             SymbolAttributes symbolAttributes = fieldData.SymbolAttributes;
@@ -1778,12 +1814,11 @@
             {
                 IEnumerable<CustomAttributeData> customAttributesData = fieldData.AttributeData;
 
-#if !NETSTANDARD2_0
                 if (symbolAttributes.HasFlag(SymbolAttributes.Final))
                 {
                     customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
                 }
-#endif
+
                 _ = signatureNameBuilder.AppendCustomAttributes(customAttributesData, isAppendNewLineEnabled: true);
             }
 
@@ -1840,6 +1875,19 @@
             return fullMemberName;
         }
 
+        /// <summary>
+        /// Generates the signature name for a type, including modifiers, attributes, and type parameters, based on the
+        /// specified formatting options.
+        /// </summary>
+        /// <remarks>When generating signatures for delegates, the return type and parameter list are
+        /// included. For generic types, type parameters and constraints are appended unless compact formatting is
+        /// requested. Attribute and inheritance information is omitted in compact or runtime symbol mode.</remarks>
+        /// <param name="typeData">The type metadata used to construct the signature name.</param>
+        /// <param name="isFullyQualifiedName">true to use fully qualified type names in the signature; otherwise, false.</param>
+        /// <param name="isCompact">true to produce a compact signature without attributes or inheritance information; otherwise, false.</param>
+        /// <param name="isRuntimeSymbol">true if the signature is being generated for a runtime symbol; otherwise, false.</param>
+        /// <returns>A string representing the formatted signature name of the specified type, including modifiers, attributes,
+        /// and type parameters as determined by the input options.</returns>
         internal static string ToSignatureNameInternal(TypeData typeData, bool isFullyQualifiedName, bool isCompact, bool isRuntimeSymbol)
         {
             SymbolAttributes symbolAttributes = typeData.SymbolAttributes;
@@ -1855,12 +1903,11 @@
                 {
                     IEnumerable<CustomAttributeData> customAttributesData = typeData.AttributeData;
 
-#if !NETSTANDARD2_0
                     if (symbolAttributes.HasFlag(SymbolAttributes.Final))
                     {
                         customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
                     }
-#endif
+
                     _ = signatureNameBuilder.AppendCustomAttributes(customAttributesData, isAppendNewLineEnabled: true);
                 }
             }
@@ -2019,6 +2066,20 @@
             return fullMemberName;
         }
 
+        /// <summary>
+        /// Generates a formatted method signature string based on the specified method metadata and formatting options.
+        /// </summary>
+        /// <remarks>The generated signature reflects the specified formatting options and may include
+        /// custom attributes, access modifiers, and generic type constraints depending on the provided parameters. This
+        /// method does not validate the input metadata; callers should ensure that the provided MethodData is
+        /// valid.</remarks>
+        /// <param name="methodData">The metadata describing the method for which to generate the signature. Must not be null.</param>
+        /// <param name="isFullyQualifiedName">true to include fully qualified type names in the signature; otherwise, false.</param>
+        /// <param name="isDeclaringTypeIncluded">true to include the declaring type in the method signature; otherwise, false.</param>
+        /// <param name="isCompact">true to generate a compact signature without custom attributes or generic constraints; otherwise, false.</param>
+        /// <param name="isRuntimeSymbol">true if the signature should be generated for a runtime symbol; otherwise, false.</param>
+        /// <returns>A string representing the formatted method signature, including modifiers, return type, method name,
+        /// parameters, and, if applicable, custom attributes and generic constraints.</returns>
         internal static string ToSignatureNameInternal(MethodData methodData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact, bool isRuntimeSymbol)
         {
             Debug.WriteLine($"Generating method signature");
@@ -2038,12 +2099,11 @@
                 {
                     IEnumerable<CustomAttributeData> customAttributesData = methodData.AttributeData;
 
-#if !NETSTANDARD2_0
                     if (symbolAttributes.HasFlag(SymbolAttributes.Final))
                     {
                         customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType);
                     }
-#endif
+
                     _ = signatureNameBuilder.AppendCustomAttributes(customAttributesData, isAppendNewLineEnabled: true);
                 }
             }
@@ -2103,14 +2163,12 @@
                   .Append(' ');
             }
 
-#if !NETSTANDARD2_0
             if (methodData.IsReturnValueReadOnly)
             {
                 _ = signatureNameBuilder
                   .Append("readonly")
                   .Append(' ');
             }
-#endif
 
             TypeData returnTypeData = methodData.ReturnTypeData;
             if (!isRuntimeSymbol && returnTypeData.IsGenericType && !returnTypeData.IsGenericTypeDefinition)
@@ -2189,6 +2247,19 @@
             return fullMemberName;
         }
 
+        /// <summary>
+        /// Generates the formatted signature name for a constructor based on the specified formatting options.
+        /// </summary>
+        /// <remarks>Custom attributes and certain modifiers are included or omitted in the signature
+        /// based on the values of isCompact and isRuntimeSymbol. This method is intended for internal use when
+        /// generating display names for constructors in various contexts.</remarks>
+        /// <param name="constructorData">The metadata describing the constructor, including its parameters, attributes, and access modifiers.</param>
+        /// <param name="isFullyQualifiedName">true to include the fully qualified type name in the signature; otherwise, false.</param>
+        /// <param name="isDeclaringTypeIncluded">true to include the declaring type in the signature; otherwise, false.</param>
+        /// <param name="isCompact">true to generate a compact signature without custom attributes; otherwise, false.</param>
+        /// <param name="isRuntimeSymbol">true to format the signature for runtime symbol representation, omitting custom attributes and certain
+        /// modifiers; otherwise, false.</param>
+        /// <returns>A string containing the formatted constructor signature according to the specified options.</returns>
         internal static string ToSignatureNameInternal(ConstructorData constructorData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact, bool isRuntimeSymbol)
         {
             SymbolAttributes symbolAttributes = constructorData.SymbolAttributes;
@@ -2198,12 +2269,10 @@
             {
                 IEnumerable<CustomAttributeData> customAttributesData = constructorData.AttributeData;
 
-#if !NETSTANDARD2_0
                 if (symbolAttributes.HasFlag(SymbolAttributes.Final))
                 {
                     customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType);
                 }
-#endif
 
                 _ = signatureNameBuilder.AppendCustomAttributes(customAttributesData, isAppendNewLineEnabled: true);
             }
@@ -2271,6 +2340,20 @@
             return fullMemberName;
         }
 
+        /// <summary>
+        /// Builds a SymbolComponentInfo representation of a method's signature, including modifiers, return type, name,
+        /// parameters, and generic type information, based on the specified formatting options.
+        /// </summary>
+        /// <remarks>If isCompact is set to true, custom attributes and generic type constraints are
+        /// omitted from the signature. The method supports both generic and non-generic methods, and can include or
+        /// exclude the declaring type and fully qualified names as needed.</remarks>
+        /// <param name="methodData">The metadata describing the method to be represented. Must not be null.</param>
+        /// <param name="isFullyQualifiedName">true to include fully qualified type names in the signature; otherwise, false.</param>
+        /// <param name="isDeclaringTypeIncluded">true to include the declaring type in the method signature; otherwise, false.</param>
+        /// <param name="isCompact">true to produce a compact signature without custom attributes and generic type constraints; otherwise,
+        /// false.</param>
+        /// <returns>A SymbolComponentInfo object containing the components of the method's signature as specified by the input
+        /// parameters.</returns>
         internal static SymbolComponentInfo ToSignatureComponentsInternal(MethodData methodData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
         {
             SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
@@ -2287,12 +2370,10 @@
             SymbolAttributes symbolAttributes = methodData.SymbolAttributes;
             IEnumerable<CustomAttributeData> customAttributesData = methodData.AttributeData;
 
-#if !NETSTANDARD2_0
             if (symbolAttributes.HasFlag(SymbolAttributes.Final))
             {
                 customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType);
             }
-#endif
 
             if (!isCompact)
             {
@@ -2337,12 +2418,10 @@
                 symbolComponents.AddModifier("ref");
             }
 
-#if !NETSTANDARD2_0
             if (methodData.IsReturnValueReadOnly)
             {
                 symbolComponents.AddModifier("readonly");
             }
-#endif
 
             symbolComponents.ReturnType = methodData.ReturnTypeData.CompactSymbolComponentInfo;
 
@@ -2381,6 +2460,20 @@
             return symbolComponents;
         }
 
+        /// <summary>
+        /// Creates a SymbolComponentInfo instance representing the signature components of the specified type,
+        /// including modifiers, attributes, and generic parameters as appropriate.
+        /// </summary>
+        /// <remarks>When isCompact is false, the returned signature includes access modifiers, custom
+        /// attributes, and inheritance or generic constraints where applicable. For delegate types, the signature
+        /// includes parameter and return type information. The method does not validate the input typeData; callers
+        /// should ensure it represents a valid type.</remarks>
+        /// <param name="typeData">The type metadata to convert into signature components. Must not be null.</param>
+        /// <param name="isFullyQualifiedName">true to use fully qualified type names in the signature; otherwise, false to use simple names.</param>
+        /// <param name="isCompact">true to generate a compact signature with minimal modifiers and attributes; otherwise, false to include full
+        /// details.</param>
+        /// <returns>A SymbolComponentInfo object containing the signature components for the specified type, including
+        /// modifiers, attributes, name, generic parameters, and, for delegates, parameter and return type information.</returns>
         internal static SymbolComponentInfo ToSignatureComponentsInternal(TypeData typeData, bool isFullyQualifiedName, bool isCompact)
         {
             SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: typeData.IsBuiltInType)
@@ -2396,12 +2489,10 @@
             SymbolAttributes symbolAttributes = typeData.SymbolAttributes;
             IEnumerable<CustomAttributeData> customAttributesData = typeData.AttributeData;
 
-#if !NETSTANDARD2_0
             if (symbolAttributes.HasFlag(SymbolAttributes.Final))
             {
                 customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
             }
-#endif
 
             if (!isCompact)
             {
@@ -2500,6 +2591,19 @@
             return symbolComponents;
         }
 
+        /// <summary>
+        /// Creates a SymbolComponentInfo instance representing the signature components of a parameter, including its
+        /// type, modifiers, and custom attributes, according to the specified formatting options.
+        /// </summary>
+        /// <remarks>Custom attributes are included in the signature unless isCompact is set to true. The
+        /// method applies parameter modifiers such as ref, in, or out as appropriate. If the parameter type is a
+        /// constructed generic type, its generic type definition is used for display purposes.</remarks>
+        /// <param name="parameterData">The parameter metadata to convert into signature components. Must not be null.</param>
+        /// <param name="isFullyQualifiedName">true to use fully qualified type names in the signature; otherwise, false.</param>
+        /// <param name="isDeclaringTypeIncluded">true to include the declaring type in the signature; otherwise, false.</param>
+        /// <param name="isCompact">true to produce a compact signature representation that omits custom attributes; otherwise, false.</param>
+        /// <returns>A SymbolComponentInfo object containing the signature components for the specified parameter, formatted
+        /// according to the provided options.</returns>
         internal static SymbolComponentInfo ToSignatureComponentsInternal(ParameterData parameterData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
         {
             TypeData parameterTypeData = parameterData.ParameterTypeData;
@@ -2519,12 +2623,10 @@
             SymbolAttributes symbolAttributes = parameterData.SymbolAttributes;
             IEnumerable<CustomAttributeData> customAttributesData = parameterData.AttributeData;
 
-#if !NETSTANDARD2_0
             if (symbolAttributes.HasFlag(SymbolAttributes.Final))
             {
                 customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
             }
-#endif
 
             if (!isCompact)
             {
@@ -2551,6 +2653,20 @@
             return symbolComponents;
         }
 
+        /// <summary>
+        /// Creates a SymbolComponentInfo instance representing the signature components of the specified field,
+        /// including modifiers, attributes, and type information.
+        /// </summary>
+        /// <remarks>This method is intended for internal use when constructing field signatures for
+        /// display or analysis. The output reflects the specified formatting options and may omit certain attributes or
+        /// components based on the provided parameters.</remarks>
+        /// <param name="fieldData">The field metadata to extract signature components from. Must not be null.</param>
+        /// <param name="isFullyQualifiedName">true to include the fully qualified name of the field; otherwise, false to use the simple name.</param>
+        /// <param name="isDeclaringTypeIncluded">true to include the declaring type in the field's signature; otherwise, false.</param>
+        /// <param name="isCompact">true to produce a compact signature that omits custom attributes; otherwise, false to include all relevant
+        /// attributes.</param>
+        /// <returns>A SymbolComponentInfo object containing the signature components of the field, such as modifiers, type, and
+        /// name.</returns>
         internal static SymbolComponentInfo ToSignatureComponentsInternal(FieldData fieldData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
         {
             SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
@@ -2562,12 +2678,10 @@
             SymbolAttributes symbolAttributes = fieldData.SymbolAttributes;
             IEnumerable<CustomAttributeData> customAttributesData = fieldData.AttributeData;
 
-#if !NETSTANDARD2_0
             if (symbolAttributes.HasFlag(SymbolAttributes.Final))
             {
                 customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
             }
-#endif
 
             if (!isCompact)
             {
@@ -2606,6 +2720,19 @@
             return symbolComponents;
         }
 
+        /// <summary>
+        /// Creates a SymbolComponentInfo instance representing the signature components of the specified event,
+        /// including modifiers, attributes, and event type information.
+        /// </summary>
+        /// <remarks>This method is intended for internal use when constructing event signatures for
+        /// display or analysis. The output reflects the specified formatting options and may exclude certain attributes
+        /// or modifiers based on the provided parameters.</remarks>
+        /// <param name="eventData">The event metadata to extract signature components from. Must not be null.</param>
+        /// <param name="isFullyQualifiedName">true to include the fully qualified name of the event in the signature; otherwise, false.</param>
+        /// <param name="isDeclaringTypeIncluded">true to include the declaring type in the event's signature; otherwise, false.</param>
+        /// <param name="isCompact">true to produce a compact signature that omits custom attributes; otherwise, false.</param>
+        /// <returns>A SymbolComponentInfo object containing the signature components of the event, including modifiers, event
+        /// type, and name.</returns>
         internal static SymbolComponentInfo ToSignatureComponentsInternal(EventData eventData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
         {
             SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
@@ -2617,12 +2744,10 @@
             SymbolAttributes symbolAttributes = eventData.SymbolAttributes;
             IEnumerable<CustomAttributeData> customAttributesData = eventData.AttributeData;
 
-#if !NETSTANDARD2_0
             if (symbolAttributes.HasFlag(SymbolAttributes.Final))
             {
                 customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType);
             }
-#endif
 
             if (!isCompact)
             {
@@ -2659,6 +2784,21 @@
             return symbolComponents;
         }
 
+        /// <summary>
+        /// Builds a SymbolComponentInfo representation of a property signature based on the specified property metadata
+        /// and formatting options.
+        /// </summary>
+        /// <remarks>This method is intended for internal use when constructing property signatures for
+        /// display or analysis purposes. The output reflects the specified formatting options and may differ depending
+        /// on the property type (e.g., indexer vs. regular property) and the presence of custom attributes or
+        /// modifiers.</remarks>
+        /// <param name="propertyData">The metadata describing the property, including its type, access modifiers, attributes, and accessor
+        /// information. Cannot be null.</param>
+        /// <param name="isFullyQualifiedName">true to include the property's fully qualified name in the signature; otherwise, false.</param>
+        /// <param name="isDeclaringTypeIncluded">true to include the declaring type in the property's signature; otherwise, false.</param>
+        /// <param name="isCompact">true to generate a compact signature that omits custom attributes; otherwise, false.</param>
+        /// <returns>A SymbolComponentInfo object containing the components of the property's signature, including modifiers,
+        /// return type, name, parameters (for indexers), and accessor information.</returns>
         internal static SymbolComponentInfo ToSignatureComponentsInternal(PropertyData propertyData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
         {
             SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
@@ -2670,12 +2810,10 @@
             SymbolAttributes symbolAttributes = propertyData.SymbolAttributes;
             IEnumerable<CustomAttributeData> customAttributesData = propertyData.AttributeData;
 
-#if !NETSTANDARD2_0
             if (symbolAttributes.HasFlag(SymbolAttributes.Final))
             {
                 customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != typeof(IsReadOnlyAttribute));
             }
-#endif
 
             if (!isCompact)
             {
@@ -2750,12 +2888,10 @@
                     propertySet.AddModifier(propertyData.SetAccessorAccessModifier.ToDisplayStringValue());
                 }
 
-#if !NETSTANDARD2_0
                 if (propertyData.IsSetMethodReadOnly)
                 {
                     propertySet.AddModifier("readonly");
                 }
-#endif
 
                 symbolComponents.PropertySet = propertySet;
             }
@@ -2763,6 +2899,20 @@
             return symbolComponents;
         }
 
+        /// <summary>
+        /// Creates a SymbolComponentInfo instance representing the signature components of a constructor, based on the
+        /// specified formatting and inclusion options.
+        /// </summary>
+        /// <remarks>When isCompact is set to true, custom attributes are excluded from the signature. The
+        /// isFullyQualifiedName and isDeclaringTypeIncluded parameters control the level of detail included in the
+        /// constructor's name within the signature.</remarks>
+        /// <param name="constructorData">The metadata describing the constructor, including its attributes, access modifier, parameters, and other
+        /// relevant information.</param>
+        /// <param name="isFullyQualifiedName">true to include the fully qualified name of the constructor in the signature; otherwise, false.</param>
+        /// <param name="isDeclaringTypeIncluded">true to include the declaring type in the constructor's signature; otherwise, false.</param>
+        /// <param name="isCompact">true to generate a compact signature that omits custom attributes; otherwise, false to include custom
+        /// attributes in the signature.</param>
+        /// <returns>A SymbolComponentInfo object containing the formatted signature components of the specified constructor.</returns>
         internal static SymbolComponentInfo ToSignatureComponentsInternal(ConstructorData constructorData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
         {
             SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
@@ -2775,12 +2925,10 @@
             IEnumerable<CustomAttributeData> customAttributesData = constructorData.AttributeData;
             PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
-#if !NETSTANDARD2_0
             if (symbolAttributes.HasFlag(SymbolAttributes.Final))
             {
                 customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType);
             }
-#endif
 
             if (!isCompact)
             {
@@ -4276,7 +4424,11 @@
             return false;
         }
 
-#if !NETSTANDARD2_0
+        /// <summary>
+        /// Determines whether the specified type is a read-only struct.
+        /// </summary>
+        /// <param name="type">The type to evaluate. Cannot be null.</param>
+        /// <returns>true if the specified type is a read-only struct; otherwise, false.</returns>
         public static bool IsReadOnlyStruct(Type type)
         {
             ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
@@ -4287,7 +4439,6 @@
 
         internal static bool IsReadOnlyStructInternal(Type type)
           => type.IsValueType && type.GetCustomAttribute(HelperExtensionsCommon.IsReadOnlyAttributeType) != null;
-#endif
 
         //public static object GetAwaiter(this object obj)
         //{
@@ -4333,6 +4484,16 @@
         //  return null;
         //}
 
+        /// <summary>
+        /// Determines the symbol attributes for the specified type represented by the given TypeData instance.
+        /// </summary>
+        /// <remarks>The returned SymbolAttributes value may include multiple flags combined using a
+        /// bitwise OR to represent all applicable characteristics of the type. This method does not perform validation
+        /// on the input; callers should ensure that typeData is valid and represents a supported type.</remarks>
+        /// <param name="typeData">The TypeData instance representing the type for which to retrieve symbol attributes. Cannot be null.</param>
+        /// <returns>A SymbolAttributes value that describes the kind and characteristics of the specified type, such as whether
+        /// it is a class, struct, interface, enum, delegate, generic, static, abstract, or final. Returns
+        /// SymbolAttributes.Undefined if the type does not match any recognized category.</returns>
         internal static SymbolAttributes GetAttributesInternal(TypeData typeData)
         {
             Type type = typeData.GetType();
@@ -4394,29 +4555,31 @@
                     structAttributes |= SymbolAttributes.Generic;
                 }
 
-#if !NETFRAMEWORK && !NETSTANDARD2_0
                 if (typeData.IsByRefLike)
                 {
                     structAttributes |= SymbolAttributes.ByReference;
                 }
-#endif
 
-#if !NETSTANDARD2_0
                 bool isReadOnlyStruct = IsReadOnlyStructInternal(type);
                 if (isReadOnlyStruct)
                 {
                     structAttributes |= SymbolAttributes.Final;
                 }
-#endif
                 return structAttributes;
             }
 
             return SymbolAttributes.Undefined;
         }
 
+        /// <summary>
+        /// Determines the set of symbol attributes for the specified property based on its metadata and accessor
+        /// methods.
+        /// </summary>
+        /// <param name="propertyData">The metadata describing the property for which to retrieve symbol attributes. Cannot be null.</param>
+        /// <returns>A bitwise combination of SymbolAttributes values that represent the characteristics of the property, such as
+        /// whether it is static, abstract, virtual, an indexer, or has other modifiers.</returns>
         internal static SymbolAttributes GetAttributesInternal(PropertyData propertyData)
         {
-            PropertyInfo propertyInfo = propertyData.PropertyInfo;
             SymbolAttributes propertyAttributes = propertyData.IsIndexer
               ? SymbolAttributes.IndexerProperty
               : SymbolAttributes.Property;
@@ -4428,12 +4591,10 @@
                 propertyAttributes |= SymbolAttributes.Final;
             }
 
-#if NET
             if (IsInitOnlyInternal(propertyData))
             {
                 propertyAttributes |= SymbolAttributes.Init;
             }
-#endif
 
             if (accessorMethodInfo.IsAbstract)
             {
@@ -4458,6 +4619,15 @@
             return propertyAttributes;
         }
 
+        /// <summary>
+        /// Determines the set of symbol attributes for the specified field based on its metadata and characteristics.
+        /// </summary>
+        /// <remarks>The returned attributes reflect the field's characteristics, including whether it is
+        /// static, constant, read-only, or by-reference. This method is intended for internal use when mapping field
+        /// metadata to symbol attributes.</remarks>
+        /// <param name="fieldData">The field metadata used to evaluate and construct the corresponding symbol attributes.</param>
+        /// <returns>A bitwise combination of <see cref="SymbolAttributes"/> values that represent the attributes of the field,
+        /// such as static, constant, or by-reference.</returns>
         internal static SymbolAttributes GetAttributesInternal(FieldData fieldData)
         {
             FieldInfo fieldInfo = fieldData.GetFieldInfo();
@@ -4485,6 +4655,12 @@
             return fieldAttributes;
         }
 
+        /// <summary>
+        /// Determines the set of symbol attributes for a parameter based on its metadata.
+        /// </summary>
+        /// <param name="parameterData">The metadata describing the parameter, including its direction and optionality.</param>
+        /// <returns>A bitwise combination of SymbolAttributes flags that represent the parameter's characteristics, such as In,
+        /// Out, Ref, and Optional.</returns>
         internal static SymbolAttributes GetAttributesInternal(ParameterData parameterData)
         {
             SymbolAttributes parameterAttributes = SymbolAttributes.Parameter;
@@ -4511,6 +4687,12 @@
             return parameterAttributes;
         }
 
+        /// <summary>
+        /// Determines the set of symbol attributes for the specified method based on its metadata and characteristics.
+        /// </summary>
+        /// <param name="methodData">The method metadata used to evaluate and determine the applicable symbol attributes.</param>
+        /// <returns>A bitwise combination of SymbolAttributes values that describe the method's characteristics, such as whether
+        /// it is static, abstract, virtual, final, override, or generic.</returns>
         internal static SymbolAttributes GetAttributesInternal(MethodData methodData)
         {
             MethodInfo methodInfo = methodData.GetMethodInfo();
@@ -4548,6 +4730,12 @@
             return methodAttributes;
         }
 
+        /// <summary>
+        /// Determines the symbol attributes for a constructor based on the specified constructor data.
+        /// </summary>
+        /// <param name="constructorData">The data describing the constructor, including whether it is static.</param>
+        /// <returns>A combination of symbol attributes representing the constructor's characteristics. Includes the static
+        /// attribute if the constructor is static.</returns>
         internal static SymbolAttributes GetAttributesInternal(ConstructorData constructorData)
         {
             SymbolAttributes constructorAttributes = SymbolAttributes.Constructor;
@@ -4560,6 +4748,12 @@
             return constructorAttributes;
         }
 
+        /// <summary>
+        /// Determines the set of symbol attributes for the specified event based on its add method characteristics.
+        /// </summary>
+        /// <param name="eventData">The event metadata used to evaluate and derive the corresponding symbol attributes.</param>
+        /// <returns>A bitwise combination of SymbolAttributes values that represent the attributes of the event, such as Final,
+        /// Abstract, Static, Virtual, or Override.</returns>
         internal static SymbolAttributes GetAttributesInternal(EventData eventData)
         {
             MethodData eventAddMethodData = eventData.AddMethodData;
@@ -4603,24 +4797,44 @@
 
         private static T Cast<T>(this object obj) => (T)obj;
 
-#if !NET7_0_OR_GREATER
-    public static double TotalMicroseconds(this TimeSpan duration) => System.Math.Round(duration.Ticks / (double)Stopwatch.Frequency * 1E6, 1);
-    public static double TotalNanoseconds(this TimeSpan duration) => System.Math.Round(duration.Ticks / (double)Stopwatch.Frequency * 1E9, 0);
-#endif
-
+        /// <summary>
+        /// Converts the specified string to an HTML-encoded representation suitable for display in web pages.
+        /// </summary>
+        /// <remarks>This method replaces special characters such as ampersands, angle brackets, quotes,
+        /// apostrophes, spaces, and newlines with their corresponding HTML entities. Use this method to prevent HTML
+        /// injection when rendering user-supplied text in HTML content.</remarks>
+        /// <param name="text">The input string to encode. Can be null or empty.</param>
+        /// <returns>A string containing the HTML-encoded representation of the input. If the input is null, returns null.</returns>
         internal static string ToHtmlEncodedString(this string text)
-          => text.Replace("&", "&amp;")
-          .Replace("<", "&lt;")
-          .Replace(">", "&gt;")
-          .Replace("\"", "&quot;")
-          .Replace("'", "&apos;")
-          .Replace(System.Environment.NewLine, "<br>")
-          .Replace(" ", "&nbsp;");
+          => text.Replace("&", "&amp;", StringComparison.OrdinalIgnoreCase)
+          .Replace("<", "&lt;", StringComparison.OrdinalIgnoreCase)
+          .Replace(">", "&gt;", StringComparison.OrdinalIgnoreCase)
+          .Replace("\"", "&quot;", StringComparison.OrdinalIgnoreCase)
+          .Replace("'", "&apos;", StringComparison.OrdinalIgnoreCase)
+          .Replace(System.Environment.NewLine, "<br>", StringComparison.OrdinalIgnoreCase)
+          .Replace(" ", "&nbsp;", StringComparison.OrdinalIgnoreCase);
 
+        /// <summary>
+        /// Returns a read-only span containing the HTML-encoded representation of the specified string.
+        /// </summary>
+        /// <param name="text">The input string to encode as HTML. Can be null or empty.</param>
+        /// <returns>A read-only span of characters containing the HTML-encoded form of the input string. If the input is null or
+        /// empty, the returned span will be empty.</returns>
         internal static ReadOnlySpan<char> ToHtmlEncodedReadOnlySpan(this string text)
           => text.ToHtmlEncodedString()
           .AsSpan();
 
+        /// <summary>
+        /// Converts the specified character to its corresponding HTML-encoded string representation.
+        /// </summary>
+        /// <remarks>Use this method to safely represent individual characters in HTML output, ensuring
+        /// that special characters are properly encoded to prevent HTML parsing issues or security vulnerabilities such
+        /// as cross-site scripting (XSS).</remarks>
+        /// <param name="character">The character to encode as an HTML entity or special HTML string.</param>
+        /// <returns>A string containing the HTML-encoded representation of the character. Returns a named HTML entity for
+        /// special characters such as '&', '<', '>', '"', '\'', and space; returns "<br>" for a line feed character
+        /// ('\n'); returns an empty string for a carriage return character ('\r'); otherwise, returns the character as
+        /// a string.</returns>
         internal static string ToHtmlEncodedString(this char character)
         {
             if (character == '&')
@@ -4661,10 +4875,29 @@
             }
         }
 
+        /// <summary>
+        /// Returns a read-only span containing the HTML-encoded representation of the specified character.
+        /// </summary>
+        /// <param name="character">The character to encode as HTML.</param>
+        /// <returns>A read-only span of characters containing the HTML-encoded form of the input character. If the character
+        /// does not require encoding, the span contains the original character.</returns>
         internal static ReadOnlySpan<char> ToHtmlEncodedReadOnlySpan(this char character)
           => character.ToHtmlEncodedString()
           .AsSpan();
 
+        /// <summary>
+        /// Inserts HTML <wbr> elements into the specified text to indicate potential line break opportunities based on
+        /// the given wrap style and delimiters.
+        /// </summary>
+        /// <remarks>This method is intended for generating HTML output that allows browsers to break long
+        /// words or identifiers at appropriate locations. The inserted <wbr> elements are safe for use in HTML and do
+        /// not affect the visible content.</remarks>
+        /// <param name="text">The input string to process for line break opportunities.</param>
+        /// <param name="wrapStyle">The strategy used to determine where to insert <wbr> elements, such as wrapping at casing changes or at
+        /// specified delimiters.</param>
+        /// <param name="delimiters">A set of characters at which to consider inserting <wbr> elements. If empty, only the wrap style is used.</param>
+        /// <returns>A string containing the original text with <wbr> elements inserted at positions determined by the wrap style
+        /// and delimiters.</returns>
         internal static string ToWrappingHtml(this string text, WrapStyle wrapStyle, params char[] delimiters)
         {
             bool isWrappingAtCasing = wrapStyle is WrapStyle.Casing;
@@ -4691,6 +4924,16 @@
             return result;
         }
 
+        /// <summary>
+        /// Appends an HTML-formatted representation of the specified symbol component, including attributes, modifiers,
+        /// type, name, parameters, and constraints, to the provided string builder.
+        /// </summary>
+        /// <remarks>The generated HTML includes semantic CSS classes for syntax highlighting and is
+        /// intended for use in documentation or code display scenarios. The method does not encode user-provided
+        /// values; callers should ensure that all symbol component data is safe for HTML output.</remarks>
+        /// <param name="signatureBuilder">The string builder to which the HTML-formatted symbol signature will be appended.</param>
+        /// <param name="symbolComponentInfo">The symbol component information describing the structure and metadata to render as inline HTML.</param>
+        /// <returns>The same <see cref="PooledStringBuilder"/> instance with the appended HTML-formatted symbol signature.</returns>
         internal static PooledStringBuilder AppendInlineHtml(this PooledStringBuilder signatureBuilder, SymbolComponentInfo symbolComponentInfo)
         {
             if (symbolComponentInfo.CustomAttributes.Any())
@@ -4942,6 +5185,15 @@
             return signatureBuilder;
         }
 
+        /// <summary>
+        /// Determines whether the specified delegate is compatible with the signature of the given event.
+        /// </summary>
+        /// <remarks>This method checks whether the delegate can be used as an event handler for the
+        /// specified event by comparing the parameter types of the delegate's method and the event's handler type.
+        /// Parameter types must match in number and be assignable according to .NET type compatibility rules.</remarks>
+        /// <param name="clientHandler">The delegate to test for compatibility with the event's handler signature.</param>
+        /// <param name="eventInfo">The event whose handler signature is used for compatibility comparison. Cannot be null.</param>
+        /// <returns>true if the delegate's method parameters are assignable to the event handler's parameters; otherwise, false.</returns>
         public static bool IsAssignable(this Delegate clientHandler, EventInfo eventInfo)
         {
             MethodInfo eventDelegateInvokeMethod = eventInfo.EventHandlerType.GetMethod("Invoke");
