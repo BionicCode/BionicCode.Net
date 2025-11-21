@@ -7,9 +7,14 @@
     [DebuggerDisplay("{RuntimeShortSignature}")]
     internal abstract class SymbolInfoData
     {
-        protected SymbolInfoData(string name) => this.Name = name;
+        protected SymbolInfoData(string name)
+        {
+            this.Name = name;
+            this.Indentation = 4;
+        }
 
         internal const BindingFlags AllMembersFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
+
         public abstract IList<CustomAttributeData> AttributeData { get; }
         public abstract SymbolAttributes SymbolAttributes { get; }
         public string Name { get; }
@@ -66,5 +71,26 @@
         /// The individual components that make the signature.
         /// </summary>
         public abstract SymbolComponentInfo SymbolComponentInfo { get; }
+
+        private int indentation;
+        /// <summary>
+        /// Gets or sets the number of spaces to use for each indentation level when formatting the symnbol signatures.
+        /// </summary>
+        /// <value>The number of spaces to indent a line. The default is <code>4</code>.</value>
+        public int Indentation
+        {
+            get => this.indentation;
+            set
+            {
+                this.indentation = value;
+                this.IndentationString = new string(' ', this.indentation);
+            }
+        }
+
+        /// <summary>
+        /// Gets the string used to represent a single level of indentation.
+        /// </summary>
+        /// <value>The spaces to indent a line based on the <see cref="Indentation"/> property.</value>
+        public string IndentationString { get; private set; }
     }
 }

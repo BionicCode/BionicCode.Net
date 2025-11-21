@@ -8,8 +8,8 @@
     [TestAttribute(1024.25, "class", NamedInt = 128)]
     [TestAttribute(64.0, "class", NamedInt = 256)]
     public abstract class TestClassWithBaseClass<T, U> : TestClassBase<T, U>
-      where T : class
-      where U : struct
+        where T : class
+        where U : struct
     {
         [TestAttribute(1024.25, "method", NamedInt = 128)]
         [TestAttribute(64.0, "method", NamedInt = 256)]

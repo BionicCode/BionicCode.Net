@@ -190,7 +190,7 @@
                 throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
             }
 
-            _ = this.stringBuilder.AppendReadOnlySpan(value);
+            _ = this.stringBuilder.Append(value);
 
             return this;
         }
@@ -202,7 +202,7 @@
                 throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
             }
 
-            _ = this.stringBuilder.AppendStringBuilder(value);
+            _ = this.stringBuilder.Append(value);
 
             return this;
         }
@@ -214,7 +214,7 @@
                 throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
             }
 
-            _ = this.stringBuilder.AppendStringBuilder(value.stringBuilder);
+            _ = this.stringBuilder.Append(value.stringBuilder);
 
             return this;
         }

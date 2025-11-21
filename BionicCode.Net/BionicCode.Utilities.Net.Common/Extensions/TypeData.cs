@@ -249,10 +249,10 @@ namespace BionicCode.Utilities.Net
         public string Namespace { get; }
 
         public bool IsAwaitable
-          => (bool)((bool?)(this.isAwaitable ??= HelperExtensionsCommon.IsAwaitableInternal(this)));
+          => (bool)(bool?)(this.isAwaitable ??= HelperExtensionsCommon.IsAwaitableInternal(this));
 
         public bool IsValueType
-          => (bool)((bool?)(this.isValueType ??= GetType().IsValueType));
+          => (bool)(bool?)(this.isValueType ??= GetType().IsValueType);
 
         public TypeData GenericTypeDefinitionData
         {
@@ -287,7 +287,7 @@ namespace BionicCode.Utilities.Net
         }
 
         public bool CanDeclareExtensionMethod
-          => (bool)((bool?)(this.canDeclareExtensionMethod ??= HelperExtensionsCommon.CanDeclareExtensionMethodsInternal(this)));
+          => (bool)(bool?)(this.canDeclareExtensionMethod ??= HelperExtensionsCommon.CanDeclareExtensionMethodsInternal(this));
 
         public override IList<CustomAttributeData> AttributeData
           => this.attributeData ??= GetType().GetCustomAttributesData();
@@ -315,7 +315,7 @@ namespace BionicCode.Utilities.Net
           => this.runtimeShortSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: false, isRuntimeSymbol: true);
 
         public override string FullyQualifiedSignature
-          => this.fullyQualifiedSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isCompact: true, isRuntimeSymbol: false);
+          => this.fullyQualifiedSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isCompact: false, isRuntimeSymbol: false);
 
         public override string DisplayName
           => this.displayName ??= HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
@@ -329,28 +329,28 @@ namespace BionicCode.Utilities.Net
           => this.assemblyName ??= GetType().Assembly.GetName().Name;
 
         public bool IsStatic
-          => (bool)((bool?)(this.isStatic ??= HelperExtensionsCommon.IsStaticInternal(this)));
+          => (bool)(bool?)(this.isStatic ??= HelperExtensionsCommon.IsStaticInternal(this));
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
           ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
           : this.symbolAttributes;
 
         public bool IsAbstract
-          => (bool)((bool?)(this.isAbstract ??= GetType().IsAbstract));
+          => (bool)(bool?)(this.isAbstract ??= GetType().IsAbstract);
 
         public bool IsSealed
-          => (bool)((bool?)(this.isSealed ??= GetType().IsSealed));
+          => (bool)(bool?)(this.isSealed ??= GetType().IsSealed);
 
         public bool IsByRef
-          => (bool)((bool?)(this.isByRef ??= GetType().IsByRef));
+          => (bool)(bool?)(this.isByRef ??= GetType().IsByRef);
 
 #if !NETFRAMEWORK && !NETSTANDARD2_0
         public bool IsByRefLike
-          => (bool)((bool?)(this.isByRefLike ??= GetType().IsByRefLike));
+          => (bool)(bool?)(this.isByRefLike ??= GetType().IsByRefLike);
 #endif
 
         public bool IsDelegate
-          => (bool)((bool?)(this.isDelegate ??= GetType().IsDelegateInternal()));
+          => (bool)(bool?)(this.isDelegate ??= GetType().IsDelegateInternal());
 
         public bool IsSubclass
         {
@@ -402,19 +402,19 @@ namespace BionicCode.Utilities.Net
         }
 
         public bool IsGenericType
-          => (bool)((bool?)(this.isGenericType ??= GetType().IsGenericType));
+          => (bool)(bool?)(this.isGenericType ??= GetType().IsGenericType);
 
         public bool IsBuiltInType
-          => (bool)((bool?)(this.isBuiltInType ??= HelperExtensionsCommon.IsBuiltInTypeInternal(this)));
+          => (bool)(bool?)(this.isBuiltInType ??= HelperExtensionsCommon.IsBuiltInTypeInternal(this));
 
         public bool IsGenericTypeDefinition
-          => (bool)((bool?)(this.isGenericTypeDefinition ??= GetType().IsGenericTypeDefinition));
+          => (bool)(bool?)(this.isGenericTypeDefinition ??= GetType().IsGenericTypeDefinition);
 
         public bool ContainsGenericParameters
-          => (bool)((bool?)(this.containsGenericParameters ??= GetType().ContainsGenericParameters));
+          => (bool)(bool?)(this.containsGenericParameters ??= GetType().ContainsGenericParameters);
 
         public GenericParameterAttributes GenericParameterAttributes
-          => (GenericParameterAttributes)((GenericParameterAttributes?)(this.genericParameterAttributes ??= GetType().GenericParameterAttributes));
+          => (GenericParameterAttributes)(GenericParameterAttributes?)(this.genericParameterAttributes ??= GetType().GenericParameterAttributes);
 
         public TypeData[] GenericParameterConstraintsData
           => this.genericParameterConstraintsData ??= GetType().GetGenericParameterConstraints().Where(constraint => constraint != typeof(object) && constraint != typeof(ValueType)).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();

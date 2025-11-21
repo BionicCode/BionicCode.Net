@@ -22,10 +22,8 @@
     /// </summary>
     public static partial class HelperExtensionsCommon
     {
-
         private const string ParameterSeparator = ", ";
         private const char ExpressionTerminator = ';';
-        private const string Indentation = "  ";
 
         private static readonly Type ValueTaskType = typeof(ValueTask);
         private static readonly Type ValueTaskGenericType = typeof(ValueTask<>);
@@ -49,6 +47,15 @@
       nameof(AsyncStateMachineAttribute),
       nameof(InAttribute),
       nameof(OutAttribute),
+      nameof(DebuggerStepThroughAttribute),
+      nameof(DebuggerBrowsableAttribute),
+      nameof(DebuggerDisplayAttribute),
+      nameof(DebuggerDisplayAttribute),
+      nameof(DebuggerHiddenAttribute),
+      nameof(DebuggerNonUserCodeAttribute),
+      nameof(DebuggerStepperBoundaryAttribute),
+      nameof(DebuggerTypeProxyAttribute),
+      nameof(DebuggerVisualizerAttribute),
       //nameof(ProfileAttribute),
       //nameof(ProfilerMethodArgumentAttribute),
       //nameof(ProfilerPropertyArgumentAttribute),
@@ -338,7 +345,7 @@
             ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-            return methodData.Signature;
+            return methodData.ShortSignature;
         }
 
         /// <summary>
@@ -2051,7 +2058,7 @@
                 {
                     _ = signatureNameBuilder
                       .Append(' ')
-                      .AppendGenericTypeConstraints(genericTypeParameterDefinitions, isFullyQualifiedName, isSingleLine: false);
+                      .AppendGenericTypeConstraints(genericTypeParameterDefinitions, isFullyQualifiedName, isSingleLine: false, typeData.IndentationString);
                 }
             }
 
@@ -2171,10 +2178,10 @@
             }
 
             TypeData returnTypeData = methodData.ReturnTypeData;
-            if (!isRuntimeSymbol && returnTypeData.IsGenericType && !returnTypeData.IsGenericTypeDefinition)
-            {
-                returnTypeData = returnTypeData.GenericTypeDefinitionData;
-            }
+            //if (!isRuntimeSymbol && returnTypeData.IsGenericType && !returnTypeData.IsGenericTypeDefinition)
+            //{
+            //    returnTypeData = returnTypeData.GenericTypeDefinitionData;
+            //}
 
             _ = signatureNameBuilder.AppendDisplayNameInternal(returnTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
               .Append(' ');
@@ -2234,8 +2241,7 @@
                 if (genericTypeParameterDefinitions.Length > 0)
                 {
                     _ = signatureNameBuilder
-                      .Append(' ')
-                      .AppendGenericTypeConstraints(genericTypeParameterDefinitions, isFullyQualifiedName, isSingleLine: false);
+                      .AppendGenericTypeConstraints(genericTypeParameterDefinitions, isFullyQualifiedName, isSingleLine: false, methodData.IndentationString);
                 }
             }
 
@@ -3734,7 +3740,7 @@
                 int startIndexOfUnqualifiedTypeName = typeName.LastIndexOf('.') + 1;
                 if (startIndexOfUnqualifiedTypeName > 0)
                 {
-                    typeName = typeName.Slice(startIndexOfUnqualifiedTypeName, typeName.Length - startIndexOfUnqualifiedTypeName);
+                    typeName = typeName.Slice(startIndexOfUnqualifiedTypeName);
                 }
             }
 
@@ -3858,7 +3864,7 @@
               .Append('>');
         }
 
-        private static PooledStringBuilder AppendGenericTypeConstraints(this PooledStringBuilder constraintBuilder, TypeData[] genericTypeDefinitionsData, bool isFullyQualified, bool isSingleLine)
+        private static PooledStringBuilder AppendGenericTypeConstraints(this PooledStringBuilder constraintBuilder, TypeData[] genericTypeDefinitionsData, bool isFullyQualified, bool isSingleLine, ReadOnlySpan<char> lineIndentation)
         {
             bool hasSingleNewLine = false;
             for (int genericTypeArgumentIndex = 0; genericTypeArgumentIndex < genericTypeDefinitionsData.Length; genericTypeArgumentIndex++)
@@ -3876,7 +3882,7 @@
                     if (!hasSingleNewLine)
                     {
                         _ = constraintBuilder.AppendLine()
-                        .Append(HelperExtensionsCommon.Indentation);
+                        .Append(lineIndentation);
                         hasSingleNewLine = true;
                     }
                     else
@@ -3887,7 +3893,7 @@
                 else
                 {
                     _ = constraintBuilder.AppendLine()
-                      .Append(HelperExtensionsCommon.Indentation);
+                      .Append(lineIndentation);
                 }
 
                 _ = constraintBuilder.Append("where")
@@ -5136,7 +5142,7 @@
                 foreach (SymbolComponentInfo constraintInfo in symbolComponentInfo.GenericTypeConstraints)
                 {
                     _ = signatureBuilder.Append(System.Environment.NewLine.ToHtmlEncodedReadOnlySpan())
-                      .Append(HelperExtensionsCommon.Indentation.ToHtmlEncodedReadOnlySpan())
+                      .Append(symbolComponentInfo.IndentationString.ToHtmlEncodedReadOnlySpan())
                       .Append($"<span class=\"syntax-keyword\">")
                       .Append("where")
                       .Append(' ')

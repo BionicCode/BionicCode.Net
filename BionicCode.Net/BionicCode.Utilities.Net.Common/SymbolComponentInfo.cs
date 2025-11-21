@@ -73,6 +73,28 @@
                 this.returnType.IsSymbol = false;
             }
         }
+
+        private int indentation;
+        /// <summary>
+        /// Gets or sets the number of spaces to use for each indentation level when formatting the symnbol signatures.
+        /// </summary>
+        /// <value>The number of spaces to indent a line. The default is <code>4</code>.</value>
+        public int Indentation
+        {
+            get => this.indentation;
+            set
+            {
+                this.indentation = value;
+                this.IndentationString = new string(' ', this.indentation);
+            }
+        }
+
+        /// <summary>
+        /// Gets the string used to represent a single level of indentation.
+        /// </summary>
+        /// <value>The spaces to indent a line based on the <see cref="Indentation"/> property.</value>
+        public string IndentationString { get; private set; }
+
         public SymbolComponentInfo PropertyGet { get; set; }
         public SymbolComponentInfo PropertySet { get; set; }
         public string Signature { get; set; }
@@ -115,6 +137,7 @@
             this.Signature = string.Empty;
             this.ReturnType = null;
             this.IsKeyword = isKeyword;
+            this.Indentation = 4;
         }
 
         public SymbolComponentInfo(string name, bool isKeyword = false) : this(isKeyword) => _ = this.NameBuilder.Append(name);

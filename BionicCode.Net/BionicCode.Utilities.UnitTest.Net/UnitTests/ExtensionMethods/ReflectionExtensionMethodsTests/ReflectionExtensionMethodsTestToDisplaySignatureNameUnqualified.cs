@@ -207,7 +207,7 @@
         private static readonly string TestMethodGenericOfGenericClassSignatureName = $@"[TestAttribute(1024.25, ""method"", NamedInt = 128)]{System.Environment.NewLine}[TestAttribute(64, ""method"", NamedInt = 256)]{System.Environment.NewLine}public T PublicGenericMethodWithReturnValue<V, W>([TestAttribute(12, ""parameter"", NamedInt = 24)] ref V parameter, W parameter2, out IEnumerable<int> parameter3, in IDictionary<int, string> parameter4){System.Environment.NewLine}  where V : class, IList, ITestClass1, ITestClass3, ITestClass2<T, U>, new(){System.Environment.NewLine}  where W : struct, IComparable, ITestClass2;";
         private static readonly string TestMethodGenericOfGenericClassCompactSignatureName = $@"[TestAttribute(1024.25, ""method"", NamedInt = 128)]{System.Environment.NewLine}[TestAttribute(64, ""method"", NamedInt = 256)]{System.Environment.NewLine}public T PublicGenericMethodWithReturnValue<V, W>([TestAttribute(12, ""parameter"", NamedInt = 24)] ref V parameter, W parameter2, out IEnumerable<int> parameter3, in IDictionary<int, string> parameter4){System.Environment.NewLine}  where V : class, IList, ITestClass1, ITestClass3, ITestClass2<T, U>, new() where W : struct, IComparable, ITestClass2;";
         private static readonly string TestMethodAsyncGenericOfGenericClassSignatureName = $@"[TestAttribute(1024.25, ""method"", NamedInt = 128)]{System.Environment.NewLine}[TestAttribute(64, ""method"", NamedInt = 256)]{System.Environment.NewLine}public async Task<T> PublicGenericMethodWithReturnValueAsync<V, W>([TestAttribute(12, ""parameter"", NamedInt = 24)] V parameter, W parameter2, IEnumerable<int> parameter3, IDictionary<int, string> parameter4) where V : class, IList, ITestClass1, ITestClass3, ITestClass2<T, U>, new() where W : struct, IComparable, ITestClass2;";
-        private static readonly string TestMethodAsyncGenericOfGenericClassCompactSignatureName = $@"[TestAttribute(1024.25, ""method"", NamedInt = 128)]{System.Environment.NewLine}[TestAttribute(64, ""method"", NamedInt = 256)]{System.Environment.NewLine}public async Task<T> PublicGenericMethodWithReturnValueAsync<V, W>([TestAttribute(12, ""parameter"", NamedInt = 24)] V parameter, W parameter2, IEnumerable<int> parameter3, IDictionary<int, string> parameter4) where V : class, IList, ITestClass1, ITestClass3, ITestClass2<T, U>, new() where W : struct, IComparable, ITestClass2;";
+        private static readonly string TestMethodAsyncGenericOfGenericClassCompactSignatureName = $"[TestAttribute(1024.25, \"method\", NamedInt = 128)]{System.Environment.NewLine}[TestAttribute(64, \"method\", NamedInt = 256)]{System.Environment.NewLine}public async Task<T> PublicGenericMethodWithReturnValueAsync<V, W>([TestAttribute(12, \"parameter\", NamedInt = 24)] V parameter, W parameter2, IEnumerable<int> parameter3, IDictionary<int, string> parameter4)\r\n    where V : class, IList, ITestClass1, ITestClass3, ITestClass2<T, U>, new()\r\n    where W : struct, IComparable, ITestClass2;";
 
         [Fact]
         public void ToSignatureName_GenericMethod_MustReturnMethodSignature()
@@ -341,7 +341,7 @@
             ////var s = stringBuilder.ToString();
             ////var stringBuilder2 = new StringBuilder().AppendShortDisplayName(typeof(Generic.TestClassWithBaseClass<List<Queue<Task<string>>>, int>), true);
             ////var s2 = stringBuilder2.ToString();
-            ////Type type = typeof(Generic.TestClassWithBaseClass<,>);
+            ////Type subclassType = typeof(Generic.TestClassWithBaseClass<,>);
             ////var stringBuilder3 = new StringBuilder().AppendSignatureName(methodInfo, false, false);
             ////var s3 = stringBuilder3.ToString();
             ////ConstructorInfo constructorInfo = typeof(Task<>).MakeGenericType(typeof(Func<,,>)).GetConstructor(new[] { typeof(Func<>).MakeGenericType(typeof(Func<,,>)), typeof(CancellationToken) });
@@ -389,8 +389,9 @@
     {
         private static readonly string TestDelegateWithoutReturnValueSignatureName = $"public delegate void {typeof(TestDelegateWithoutReturnValue).FullName}(int a, {typeof(TestClass).FullName} b, string text);";
         private static readonly string TestDelegateWithReturnValueSignatureName = $"public delegate int {typeof(TestDelegateWithReturnValue).FullName}(int a, {typeof(TestClass).FullName} b, string text);";
-        private static readonly string TestClassSignatureName = $"public class {typeof(TestClass).FullName}";
+        private static readonly string TestClassSignatureName = $"[TestAttribute(1024.25, \"class\", NamedInt = 128)]\r\n[TestAttribute(64, \"class\", NamedInt = 256)]\r\npublic class {typeof(TestClass).FullName}";
         private static readonly string TestClassWithBaseClassSignatureName = $"public class {typeof(TestClassWithBaseClass).FullName} : {typeof(TestClassBase).FullName}";
+        private static readonly string TestClassWithBaseClassSignatureNameIncludingAttributes = $"[TestAttribute(1024.25, \"class\", NamedInt = 128)]\r\n[TestAttribute(64.9, \"class\", NamedInt = 256)]\r\npublic class {typeof(TestClassWithBaseClass).FullName} : {typeof(TestClassBase).FullName}";
 
         [Fact]
         public void ToSignatureName_DelegateWithoutReturnValue_MustReturnFullDelegateSignature() => _ = typeof(TestDelegateWithoutReturnValue).ToSignatureName().Should().Be(TestDelegateWithoutReturnValueSignatureName);
@@ -402,7 +403,7 @@
         public void ToSignatureName_SimpleClass_MustReturnFullClassSignature() => _ = typeof(TestClass).ToSignatureName().Should().Be(TestClassSignatureName);
 
         [Fact]
-        public void ToSignatureName_ClassWithBaseClass_MustReturnFullClassSignature() => _ = typeof(TestClassWithBaseClass).ToSignatureName().Should().Be(TestClassWithBaseClassSignatureName);
+        public void ToSignatureName_ClassWithBaseClass_MustReturnFullClassSignature() => _ = typeof(TestClassWithBaseClass).ToSignatureName().Should().Be(TestClassWithBaseClassSignatureNameIncludingAttributes);
     }
 
     public static class HelperExtensionMethods
