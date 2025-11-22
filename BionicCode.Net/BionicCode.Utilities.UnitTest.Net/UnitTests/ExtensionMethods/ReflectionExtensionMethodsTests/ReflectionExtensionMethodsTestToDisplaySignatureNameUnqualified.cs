@@ -66,8 +66,9 @@
 
         #region Class
 
-        private static readonly string TestClassSignatureName = $"[TestAttribute(1024.25, \"class\", NamedInt = 128)]{Environment.NewLine}[TestAttribute(64, \"class\", NamedInt = 256)]{Environment.NewLine}public class {nameof(TestClass)}";
-        private static readonly string TestClassWithBaseClassSignatureName = $"[TestAttribute(1024.25, \"class\", NamedInt = 128)]{Environment.NewLine}[TestAttribute(64, \"class\", NamedInt = 256)]{Environment.NewLine}public class {nameof(TestClassWithBaseClass)} : {nameof(TestClassBase)}";
+        private static readonly string TestClassSignatureName = $"[TestAttribute(1024.25, \"class\", NamedInt = 128)]{Environment.NewLine}[TestAttribute(64.9, \"class\", NamedInt = 256)]{Environment.NewLine}public class {nameof(TestClass)}";
+        private static readonly string TestClassWithBaseClassSignatureName = $"[TestAttribute(1024.25, \"class\", NamedInt = 128)]{Environment.NewLine}[TestAttribute(64.9, \"class\", NamedInt = 256)]{Environment.NewLine}public class {typeof(TestClassWithBaseClass).Namespace}.{nameof(TestClassWithBaseClass)} : {typeof(TestClassBase).Namespace}.{nameof(TestClassBase)}";
+        private static readonly string TestClassWithBaseClassShortSignatureName = $"[TestAttribute(1024.25, \"class\", NamedInt = 128)]{Environment.NewLine}[TestAttribute(64.9, \"class\", NamedInt = 256)]{Environment.NewLine}public class {nameof(TestClassWithBaseClass)} : {nameof(TestClassBase)}";
 
         [Fact]
         public void ToSignatureName_SimpleClass_MustReturnClassSignature()
@@ -96,7 +97,7 @@
 
             string classSignature = type.ToSignatureShortName();
 
-            _ = classSignature.Should().Be(TestClassWithBaseClassSignatureName);
+            _ = classSignature.Should().Be(TestClassWithBaseClassShortSignatureName);
         }
 
         #endregion Class
@@ -204,10 +205,16 @@
 
         private static readonly string TestMethodGenericShortSignatureName = $"public TValue {nameof(TestClass.PublicGenericMethodWithReturnValue)}<TValue>(TValue parameter);";
         private static readonly string TestMethodGenericSignatureName = $"public TValue {nameof(TestClass)}.{nameof(TestClass.PublicGenericMethodWithReturnValue)}<TValue>(TValue parameter);";
-        private static readonly string TestMethodGenericOfGenericClassSignatureName = $@"[TestAttribute(1024.25, ""method"", NamedInt = 128)]{System.Environment.NewLine}[TestAttribute(64, ""method"", NamedInt = 256)]{System.Environment.NewLine}public T PublicGenericMethodWithReturnValue<V, W>([TestAttribute(12, ""parameter"", NamedInt = 24)] ref V parameter, W parameter2, out IEnumerable<int> parameter3, in IDictionary<int, string> parameter4){System.Environment.NewLine}  where V : class, IList, ITestClass1, ITestClass3, ITestClass2<T, U>, new(){System.Environment.NewLine}  where W : struct, IComparable, ITestClass2;";
-        private static readonly string TestMethodGenericOfGenericClassCompactSignatureName = $@"[TestAttribute(1024.25, ""method"", NamedInt = 128)]{System.Environment.NewLine}[TestAttribute(64, ""method"", NamedInt = 256)]{System.Environment.NewLine}public T PublicGenericMethodWithReturnValue<V, W>([TestAttribute(12, ""parameter"", NamedInt = 24)] ref V parameter, W parameter2, out IEnumerable<int> parameter3, in IDictionary<int, string> parameter4){System.Environment.NewLine}  where V : class, IList, ITestClass1, ITestClass3, ITestClass2<T, U>, new() where W : struct, IComparable, ITestClass2;";
-        private static readonly string TestMethodAsyncGenericOfGenericClassSignatureName = $@"[TestAttribute(1024.25, ""method"", NamedInt = 128)]{System.Environment.NewLine}[TestAttribute(64, ""method"", NamedInt = 256)]{System.Environment.NewLine}public async Task<T> PublicGenericMethodWithReturnValueAsync<V, W>([TestAttribute(12, ""parameter"", NamedInt = 24)] V parameter, W parameter2, IEnumerable<int> parameter3, IDictionary<int, string> parameter4) where V : class, IList, ITestClass1, ITestClass3, ITestClass2<T, U>, new() where W : struct, IComparable, ITestClass2;";
-        private static readonly string TestMethodAsyncGenericOfGenericClassCompactSignatureName = $"[TestAttribute(1024.25, \"method\", NamedInt = 128)]{System.Environment.NewLine}[TestAttribute(64, \"method\", NamedInt = 256)]{System.Environment.NewLine}public async Task<T> PublicGenericMethodWithReturnValueAsync<V, W>([TestAttribute(12, \"parameter\", NamedInt = 24)] V parameter, W parameter2, IEnumerable<int> parameter3, IDictionary<int, string> parameter4)\r\n    where V : class, IList, ITestClass1, ITestClass3, ITestClass2<T, U>, new()\r\n    where W : struct, IComparable, ITestClass2;";
+        private static readonly string TestMethodGenericOfGenericClassSignatureName = $@"[TestAttribute(1024.25, ""method"", NamedInt = 128)]{System.Environment.NewLine}[TestAttribute(64, ""method"", NamedInt = 256)]{System.Environment.NewLine}public T PublicGenericMethodWithReturnValue<V, W>([TestAttribute(12, ""parameter"", NamedInt = 24)] ref V parameter, W parameter2, out IEnumerable<int> parameter3, in IDictionary<int, string> parameter4){System.Environment.NewLine}
+    where V : class, IList, ITestClass1, ITestClass3, ITestClass2<T, U>, new(){System.Environment.NewLine}
+    where W : struct, IComparable, ITestClass2;";
+        private static readonly string TestMethodGenericOfGenericClassCompactSignatureName = $@"[TestAttribute(1024.25, ""method"", NamedInt = 128)]{System.Environment.NewLine}[TestAttribute(64, ""method"", NamedInt = 256)]{System.Environment.NewLine}public T PublicGenericMethodWithReturnValue<V, W>([TestAttribute(12, ""parameter"", NamedInt = 24)] ref V parameter, W parameter2, out IEnumerable<int> parameter3, in IDictionary<int, string> parameter4){System.Environment.NewLine}
+    where V : class, IList, ITestClass1, ITestClass3, ITestClass2<T, U>, new()
+    where W : struct, IComparable, ITestClass2;";
+        private static readonly string TestMethodAsyncGenericOfGenericClassSignatureName = $@"[TestAttribute(1024.25, ""method"", NamedInt = 128)]{System.Environment.NewLine}[TestAttribute(64, ""method"", NamedInt = 256)]{System.Environment.NewLine}public async Task<T> PublicGenericMethodWithReturnValueAsync<V, W>([TestAttribute(12, ""parameter"", NamedInt = 24)] ref V parameter, W parameter2, out IEnumerable<int> parameter3, in IDictionary<int, string> parameter4)
+    where V : class, IList, ITestClass1, ITestClass3, ITestClass2<T, U>, new()
+    where W : struct, IComparable, ITestClass2;";
+        private static readonly string TestMethodAsyncGenericOfGenericClassCompactSignatureName = $"[TestAttribute(1024.25, \"method\", NamedInt = 128)]{System.Environment.NewLine}[TestAttribute(64, \"method\", NamedInt = 256)]{System.Environment.NewLine}public async Task<T> PublicGenericMethodWithReturnValueAsync<V, W>([TestAttribute(12, \"parameter\", NamedInt = 24)] ref V parameter, W parameter2, out IEnumerable<int> parameter3, in IDictionary<int, string> parameter4)\r\n    where V : class, IList, ITestClass1, ITestClass3, ITestClass2<T, U>, new()\r\n    where W : struct, IComparable, ITestClass2;";
 
         [Fact]
         public void ToSignatureName_GenericMethod_MustReturnMethodSignature()
@@ -365,7 +372,7 @@
             string constructorSignature = constructorInfo.ToSignatureName();
 
             _ = constructorSignature.Should()
-              .Be(string.Format(TestConstructorOfGenericClassSignatureName, type.ToDisplayName(), type.ToDisplayName(), constructorParameters));
+              .Be(string.Format(TestConstructorOfGenericClassSignatureName, type.ToFullDisplayName(), type.Name[..^2], constructorParameters));
         }
 
         [Fact]
@@ -379,7 +386,7 @@
             string constructorSignature = constructorInfo.ToSignatureName();
 
             _ = constructorSignature.Should()
-              .Be(string.Format(TestConstructorOfGenericClassSignatureName, type.ToDisplayName(), type.ToDisplayName(), constructorParameters));
+              .Be(string.Format(TestConstructorOfGenericClassSignatureName, type.ToFullDisplayName(), type.Name[..^2], constructorParameters));
         }
 
         #endregion Constructor

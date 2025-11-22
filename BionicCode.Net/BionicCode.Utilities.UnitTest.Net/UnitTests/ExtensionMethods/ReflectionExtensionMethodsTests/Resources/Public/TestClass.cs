@@ -32,7 +32,7 @@
         public TValue PublicGenericMethodWithReturnValue<TValue>(TValue parameter) => default;
     }
 
-    public readonly struct TestStruct
+    public struct TestStruct
     {
 
 #if NET

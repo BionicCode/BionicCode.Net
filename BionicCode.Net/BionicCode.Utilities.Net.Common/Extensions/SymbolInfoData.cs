@@ -21,44 +21,52 @@
         public abstract string AssemblyName { get; }
 
         /// <summary>
-        /// EventName without namespace, but with the declaring type (in case of a member), and generic type parameters.
+        /// Symbol name without namespace, but with the declaring type (in case of a member), and generic type parameters.
         /// </summary>
+        /// <value>The full name of the symbol. For example: "MyClass.DoSomething&lt;T&gt;".</value>
         public abstract string DisplayName { get; }
 
         /// <summary>
-        /// EventName without namespace and the declaring type (in case of a member), but <see langword="with"/>generic type parameters.
+        /// Symbol name without namespace and the declaring type (in case of a member), but with generic type parameters.
         /// </summary>
+        /// <value>The short name of the symbol. For example: "MyClass&lt;T&gt;".</value>
         public abstract string ShortDisplayName { get; }
 
         /// <summary>
-        /// EventName with namespace, the declaring type (in case of a member), and generic type parameters.
+        /// Symbol name with namespace, the declaring type (in case of a member), and generic type parameters.
         /// </summary>
+        /// <value>The fully qualified name of the symbol. For example: "MyNamespace.MyClass.DoSomething&lt;T&gt;".</value>
         public abstract string FullyQualifiedDisplayName { get; }
 
         /// <summary>
         /// Signature including the namespace, the declaring type (in case of a member), attributes, generic type parameters and generic type parameter constraints.
         /// </summary>
+        /// <value>The fully qualified signature of the symbol. For example: "public void MyNamespace.MyClass.DoSomething&lt;T&gt;(T firstValue, [CallerMemberName] string value = null) where T : class".</value>
         public abstract string FullyQualifiedSignature { get; }
 
         /// <summary>
         /// Signature without namespace, but with the declaring type (in case of a member), attributes, generic type parameters and generic type parameter constraints.
         /// </summary>
+        /// <value>The full signature of the symbol. For example: "public void MyClass.DoSomething&lt;T&gt;(T firstValue, [CallerMemberName] string value = null) where T : class".</value>
         public abstract string Signature { get; }
 
         /// <summary>
         /// Signature without namespace and the declaring type (in case of a member), but with attributes, generic type parameters and generic type parameter constraints.
         /// </summary>
+        /// <value>The short signature of the symbol. For example: "public void DoSomething&lt;T&gt;(T firstValue, [CallerMemberName] string value = null) where T : class".</value>
         public abstract string ShortSignature { get; }
 
         /// <summary>
         /// Signature without namespace and the declaring type (in case of a member), attributes and generic type parameter constraints, but with generic type parameters.
         /// </summary>
+        /// <value>The short signature of the symbol. For example: "public void DoSomething&lt;T&gt;(T firstValue, string value = null)".</value>
         public abstract string ShortCompactSignature { get; }
 
         /// <summary>
         /// Signature without namespace and the declaring type (in case of a member), attributes and generic type parameter constraints, but with generic type parameters.
         /// <br/>This returns the constructed runtime signature for generic symbols where generic type parameters are replaced by their actual constructed runtime types (<c>Action&lt;T&gt;</c> becomes <c>Action&lt;int&gt;</c>)
         /// </summary>
+        /// <value>The short signature of the symbol. For example: "public void DoSomething&lt;int&gt;(int firstValue, string value = null)".</value>
         public abstract string RuntimeShortSignature { get; }
 
         ///// <summary>
