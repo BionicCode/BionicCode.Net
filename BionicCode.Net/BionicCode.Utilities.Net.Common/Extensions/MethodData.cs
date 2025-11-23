@@ -330,13 +330,13 @@
           : this.accessModifier;
 
         public bool IsExtensionMethod
-          => (bool)((bool?)(this.isExtensionMethod ??= HelperExtensionsCommon.IsExtensionMethodInternal(this)));
+          => (bool)(bool?)(this.isExtensionMethod ??= HelperExtensionsCommon.IsExtensionMethodInternal(this));
 
         public bool IsAsync
-          => (bool)((bool?)(this.isAsync ??= HelperExtensionsCommon.IsMarkedAsyncInternal(this)));
+          => (bool)(bool?)(this.isAsync ??= HelperExtensionsCommon.IsMarkedAsyncInternal(this));
 
         public bool IsAwaitable
-          => (bool)((bool?)(this.isAwaitable ??= HelperExtensionsCommon.IsAwaitableInternal(this)));
+          => (bool)(bool?)(this.isAwaitable ??= HelperExtensionsCommon.IsAwaitableInternal(this));
 
         public bool IsAwaitableTask
         {
@@ -408,21 +408,21 @@
         }
 
         public bool IsOverride
-          => (bool)((bool?)(this.isOverride ??= HelperExtensionsCommon.IsOverrideInternal(this)));
+          => (bool)(bool?)(this.isOverride ??= HelperExtensionsCommon.IsOverrideInternal(this));
 
         public override bool IsStatic
-          => (bool)((bool?)(this.isStatic ??= GetMethodInfo().IsStatic));
+          => (bool)(bool?)(this.isStatic ??= GetMethodInfo().IsStatic);
 
         public bool IsSealed
-          => (bool)((bool?)(this.isSealed ??= GetMethodInfo().IsFinal));
+          => (bool)(bool?)(this.isSealed ??= GetMethodInfo().IsFinal);
 
 #if !NETSTANDARD2_0
         public bool IsReturnValueReadOnly
-          => (bool)((bool?)(this.isReturnValueReadOnly ??= GetMethodInfo().ReturnParameter.GetCustomAttribute(typeof(IsReadOnlyAttribute)) != null));
+          => (bool)(bool?)(this.isReturnValueReadOnly ??= GetMethodInfo().ReturnParameter.GetCustomAttribute(typeof(IsReadOnlyAttribute)) != null);
 #endif
 
         public bool IsReturnValueByRef
-          => (bool)((bool?)(this.isReturnValueByRef ??= this.ReturnTypeData.IsByRef));
+          => (bool)(bool?)(this.isReturnValueByRef ??= this.ReturnTypeData.IsByRef);
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
           ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
@@ -437,14 +437,23 @@
         public override string ShortSignature
           => this.shortSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false);
 
-        public override string RuntimeShortSignature
-          => this.runtimeShortSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
-
         public override string ShortCompactSignature
           => this.shortCompactSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
 
         public override string FullyQualifiedSignature
           => this.fullyQualifiedSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+
+        public override string FullyQualifiedRuntimeSignature
+          => this.fullyQualifiedRuntimeSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+
+        public override string RuntimeSignature
+          => this.runtimeSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+
+        public override string RuntimeShortSignature
+          => this.runtimeShortSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
+
+        public override string RuntimeShortCompactSignature
+          => this.runtimeShortCompactSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: true);
 
         public override string DisplayName
           => this.displayName ??= HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
@@ -462,9 +471,9 @@
           => this.returnTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetMethodInfo().ReturnType);
 
         public bool IsGenericMethod
-          => (bool)((bool?)(this.isGenericMethod ??= GetMethodInfo().IsGenericMethod));
+          => (bool)(bool?)(this.isGenericMethod ??= GetMethodInfo().IsGenericMethod);
 
         public bool IsGenericMethodDefinition
-          => (bool)((bool?)(this.isGenericTypeMethod ??= GetMethodInfo().IsGenericMethodDefinition));
+          => (bool)(bool?)(this.isGenericTypeMethod ??= GetMethodInfo().IsGenericMethodDefinition);
     }
 }

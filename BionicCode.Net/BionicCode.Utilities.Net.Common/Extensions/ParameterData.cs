@@ -36,25 +36,25 @@
         public RuntimeTypeHandle DeclaringTypeHandle { get; set; }
 
         public bool IsRef
-          => (bool)((bool?)(this.isRef ??= HelperExtensionsCommon.IsRefInternal(this)));
+          => (bool)(bool?)(this.isRef ??= HelperExtensionsCommon.IsRefInternal(this));
 
         public bool IsIn
-          => (bool)((bool?)(this.isIn ??= GetParameterInfo().IsIn));
+          => (bool)(bool?)(this.isIn ??= GetParameterInfo().IsIn);
 
         public bool IsOut
-          => (bool)((bool?)(this.isOut ??= GetParameterInfo().IsOut));
+          => (bool)(bool?)(this.isOut ??= GetParameterInfo().IsOut);
 
         public bool IsOptional
-          => (bool)((bool?)(this.isOptional ??= GetParameterInfo().IsOptional));
+          => (bool)(bool?)(this.isOptional ??= GetParameterInfo().IsOptional);
 
         /// <summary>
         /// Zero-based index of the parameter in the formal parameter list.
         /// </summary>
         public int Position
-          => (int)((int?)(this.position ??= GetParameterInfo().Position));
+          => (int)(int?)(this.position ??= GetParameterInfo().Position);
 
         public bool IsParams
-          => (bool)((bool?)(this.isParams ??= GetParameterInfo().GetCustomAttribute<ParamArrayAttribute>() != null));
+          => (bool)(bool?)(this.isParams ??= GetParameterInfo().GetCustomAttribute<ParamArrayAttribute>() != null);
 
         public ParameterInfo ParameterInfo { get; }
 
@@ -97,7 +97,7 @@
           => this.attributeData ??= new List<CustomAttributeData>(GetParameterInfo().GetCustomAttributesData());
 
         public bool IsByRef
-          => (bool)((bool?)(this.isByRef ??= this.ParameterTypeData.GetType().IsByRef));
+          => (bool)(bool?)(this.isByRef ??= this.ParameterTypeData.GetType().IsByRef);
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
           ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
@@ -115,10 +115,19 @@
         public override string ShortCompactSignature
           => this.Name;
 
+        public override string FullyQualifiedSignature
+          => this.Name;
+
+        public override string FullyQualifiedRuntimeSignature
+          => this.Name;
+
+        public override string RuntimeSignature
+          => this.Name;
+
         public override string RuntimeShortSignature
           => this.Name;
 
-        public override string FullyQualifiedSignature
+        public override string RuntimeShortCompactSignature
           => this.Name;
 
         public override string DisplayName

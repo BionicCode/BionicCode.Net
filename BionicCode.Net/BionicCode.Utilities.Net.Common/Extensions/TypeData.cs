@@ -18,7 +18,10 @@ namespace BionicCode.Utilities.Net
         private bool? isAwaitable;
         private string signature;
         private string shortSignature;
+        private string fullyQualifiedRuntimeSignature;
+        private string runtimeSignature;
         private string runtimeShortSignature;
+        private string runtimeShortCompactSignature;
         private string shortCompactSignature;
         private string fullyQualifiedSignature;
         private bool? isStatic;
@@ -311,8 +314,17 @@ namespace BionicCode.Utilities.Net
         public override string ShortCompactSignature
           => this.shortCompactSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: true, isRuntimeSymbol: false);
 
+        public override string FullyQualifiedRuntimeSignature
+          => this.fullyQualifiedRuntimeSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isCompact: false, isRuntimeSymbol: true);
+
+        public override string RuntimeSignature
+          => this.runtimeSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: false, isRuntimeSymbol: true);
+
         public override string RuntimeShortSignature
           => this.runtimeShortSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: false, isRuntimeSymbol: true);
+
+        public override string RuntimeShortCompactSignature
+          => this.runtimeShortCompactSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isCompact: true, isRuntimeSymbol: true);
 
         public override string FullyQualifiedSignature
           => this.fullyQualifiedSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isCompact: false, isRuntimeSymbol: false);

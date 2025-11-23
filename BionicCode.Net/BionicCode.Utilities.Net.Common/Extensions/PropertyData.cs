@@ -17,9 +17,12 @@ namespace BionicCode.Utilities.Net
         private string fullyQualifiedDisplayName;
         private string signature;
         private string shortSignature;
-        private string runtimeShortSignature;
         private string shortCompactSignature;
         private string fullyQualifiedSignature;
+        private string fullyQualifiedRuntimeSignature;
+        private string runtimeSignature;
+        private string runtimeShortSignature;
+        private string runtimeShortCompactSignature;
         private SymbolAttributes symbolAttributes;
         private AccessModifier? propertyAccessModifier;
         private AccessModifier? setAccessorAccessModifier;
@@ -161,13 +164,13 @@ namespace BionicCode.Utilities.Net
           => PropertyData._ValueTaskResultPropertyData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(ValueTask<>).GetProperty(nameof(ValueTask<object>.Result)));
 
         public bool IsSealed
-          => (bool)((bool?)(this.isSealed ??= this.CanRead ? this.GetMethodData.IsSealed : this.SetMethodData.IsSealed));
+          => (bool)(bool?)(this.isSealed ??= this.CanRead ? this.GetMethodData.IsSealed : this.SetMethodData.IsSealed);
 
         public bool CanWrite
-          => (bool)((bool?)(this.canWrite ??= GetPropertyInfo().CanWrite));
+          => (bool)(bool?)(this.canWrite ??= GetPropertyInfo().CanWrite);
 
         public bool CanRead
-          => (bool)((bool?)(this.canRead ??= GetPropertyInfo().CanRead));
+          => (bool)(bool?)(this.canRead ??= GetPropertyInfo().CanRead);
 
         public MethodData GetMethodData
           => this.getMethodData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetPropertyInfo().GetGetMethod(true));
@@ -191,11 +194,20 @@ namespace BionicCode.Utilities.Net
         public override string ShortCompactSignature
           => this.shortCompactSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
 
+        public override string FullyQualifiedSignature
+          => this.fullyQualifiedSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+
+        public override string FullyQualifiedRuntimeSignature
+          => this.fullyQualifiedRuntimeSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+
+        public override string RuntimeSignature
+          => this.runtimeSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+
         public override string RuntimeShortSignature
           => this.runtimeShortSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
 
-        public override string FullyQualifiedSignature
-          => this.fullyQualifiedSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+        public override string RuntimeShortCompactSignature
+          => this.runtimeShortCompactSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: true);
 
         public override string DisplayName
           => this.displayName ??= HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
@@ -210,14 +222,14 @@ namespace BionicCode.Utilities.Net
           => this.assemblyName ??= this.DeclaringTypeData.AssemblyName;
 
         public override bool IsStatic
-          => (bool)((bool?)(this.isStatic ??= this.CanRead ? this.GetMethodData.IsStatic : this.SetMethodData.IsStatic));
+          => (bool)(bool?)(this.isStatic ??= this.CanRead ? this.GetMethodData.IsStatic : this.SetMethodData.IsStatic);
 
 #if !NETSTANDARD2_0
         public bool IsSetMethodReadOnly
-          => (bool)((bool?)(this.isSetMethodReadOnly ??= this.CanWrite && this.SetMethodData.AttributeData.Any(data => data.AttributeType == typeof(IsReadOnlyAttribute))));
+          => (bool)(bool?)(this.isSetMethodReadOnly ??= this.CanWrite && this.SetMethodData.AttributeData.Any(data => data.AttributeType == typeof(IsReadOnlyAttribute)));
 #endif
 
         public bool IsOverride
-          => (bool)((bool?)(this.isOverride ??= this.CanRead ? this.GetMethodData.IsOverride : this.SetMethodData.IsOverride));
+          => (bool)(bool?)(this.isOverride ??= this.CanRead ? this.GetMethodData.IsOverride : this.SetMethodData.IsOverride);
     }
 }
