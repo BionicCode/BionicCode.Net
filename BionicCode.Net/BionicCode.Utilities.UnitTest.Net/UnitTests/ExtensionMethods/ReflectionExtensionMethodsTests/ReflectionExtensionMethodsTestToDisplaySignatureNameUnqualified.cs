@@ -270,7 +270,6 @@
         public void ToSignatureName_AsyncGenericMethodWithConstraints_MustReturnCompactMethodSignature()
         {
             Type type = typeof(Generic.TestClassWithBaseClass<,>);
-            var tc = new Generic.TestClassWithInterface<int>();
             MethodInfo methodInfo = type.GetMethod("PublicGenericMethodWithReturnValueAsync");
             string methodSignature = methodInfo.ToSignatureShortName();
 

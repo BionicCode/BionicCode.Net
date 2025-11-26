@@ -30,7 +30,10 @@
         private string fullyQualifiedDisplayName;
         private string signature;
         private string shortSignature;
+        private string fullyQualifiedRuntimeSignature;
+        private string runtimeSignature;
         private string runtimeShortSignature;
+        private string runtimeShortCompactSignature;
         private string shortCompactSignature;
         private string fullyQualifiedSignature;
         private TypeData returnTypeData;
