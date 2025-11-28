@@ -43,255 +43,41 @@
         private static readonly AccessModifierComparer AccessModifierComparer = new AccessModifierComparer();
         private static readonly CSharpCodeProvider CodeProvider = new CSharpCodeProvider();
         private static readonly FrozenSet<string> IgnorableParameterAttributes = new HashSet<string>
-    {
-      nameof(AsyncStateMachineAttribute),
-      nameof(InAttribute),
-      nameof(OutAttribute),
-      nameof(DebuggerStepThroughAttribute),
-      nameof(DebuggerBrowsableAttribute),
-      nameof(DebuggerDisplayAttribute),
-      nameof(DebuggerDisplayAttribute),
-      nameof(DebuggerHiddenAttribute),
-      nameof(DebuggerNonUserCodeAttribute),
-      nameof(DebuggerStepperBoundaryAttribute),
-      nameof(DebuggerTypeProxyAttribute),
-      nameof(DebuggerVisualizerAttribute),
-      //nameof(ProfileAttribute),
-      //nameof(ProfilerMethodArgumentAttribute),
-      //nameof(ProfilerPropertyArgumentAttribute),
-      //nameof(ProfilerFactoryAttribute),
-      nameof(IsReadOnlyAttribute),
-    }.ToFrozenSet();
+            {
+              nameof(AsyncStateMachineAttribute),
+              nameof(InAttribute),
+              nameof(OutAttribute),
+              nameof(DebuggerStepThroughAttribute),
+              nameof(DebuggerBrowsableAttribute),
+              nameof(DebuggerDisplayAttribute),
+              nameof(DebuggerDisplayAttribute),
+              nameof(DebuggerHiddenAttribute),
+              nameof(DebuggerNonUserCodeAttribute),
+              nameof(DebuggerStepperBoundaryAttribute),
+              nameof(DebuggerTypeProxyAttribute),
+              nameof(DebuggerVisualizerAttribute),
+              //nameof(ProfileAttribute),
+              //nameof(ProfilerMethodArgumentAttribute),
+              //nameof(ProfilerPropertyArgumentAttribute),
+              //nameof(ProfilerFactoryAttribute),
+              nameof(IsReadOnlyAttribute),
+            }.ToFrozenSet();
+
+
 
         /// <summary>
-        /// Extension method to convert generic and non-generic method names to a readable full signature display name without the namespace.
-        /// </summary>
-        /// <param name="methodInfo">The <see cref="MethodInfo"/> object to generate the symbol signature for.</param>
-        /// <returns>
-        /// A readable signature of the symbol without the namespace, that includes the type, name, attributes, generic type constraints and parameters. 
-        /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the method name <c>"Run"</c> becomes <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
-        /// </returns>
-        /// <remarks>
-        /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
-        /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(MethodInfo)"/>, this <see cref="ToSignatureName(MethodInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
-        /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
-        /// </remarks>
-        /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
-        public static string ToSignatureName(this MethodInfo methodInfo)
-        {
-            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-            return methodData.FullyQualifiedSignature;
-        }
-
-        /// <summary>
-        /// Extension method to convert generic and non-generic method names to a readable runtime signature display name without the namespace and where all generic type parameters are replaced with their resolved runtime type arguments.
-        /// </summary>
-        /// <param name="methodInfo">The <see cref="MethodInfo"/> object to generate the symbol signature for.</param>
-        /// <returns>
-        /// A readable signature of the symbol, that includes the return type, method name and parameters where all generic type parameters are replaced with their resolved runtime type arguments.
-        /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the method name <c>"Run"</c> becomes <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
-        /// </returns>
-        /// <remarks>
-        /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
-        /// <br/>Opposed to the counterpart <see cref="ToSignatureName(MethodInfo)"/>, this <see cref="ToRuntimeSignatureName(MethodInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
-        /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
-        /// </remarks>
-        /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
-        public static string ToRuntimeSignatureName(this MethodInfo methodInfo)
-        {
-            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
-
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-            return methodData.RuntimeShortSignature;
-        }
-
-        /// <summary>
-        /// Extension method to return a readable full signature including the namespace.
-        /// </summary>
-        /// <param name="type">The <see cref="Type"/> object to generate the symbol signature for.</param>
-        /// <returns>
-        /// A readable signature of the symbol, that includes the type, namespace, name and parameters and also resolves generic type parameters. 
-        /// <br/>For example, <c>"public void MyNamespace.MyClass.DoSomething&lt;T&gt;(T firstValue, [CallerMemberName] string value = null) where T : class"</c>.
-        /// </returns>
-        /// <remarks>
-        /// Use <see cref="ToRuntimeSignatureName(Type)"/> to replace the generic type names with the runtime type arguments.
-        /// <br/>Use <see cref="ToSignatureShortName(Type)"/> to return the signature without the namespace.
-        /// </remarks>
-        /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
-        public static string ToSignatureName(this Type type, bool withRuntimeGenericTypeArguments = false)
-        {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
-
-            TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
-            return typeData.FullyQualifiedSignature;
-        }
-
-        /// <summary>
-        /// Extension method to return a readable full signature without the namespace. All generic type parameters are replaced with their resolved runtime type arguments.
-        /// </summary>
-        /// <param name="type">The <see cref="Type"/> object to generate the symbol signature for.</param>
-        /// <returns>
-        /// A readable signature of the symbol, that includes the access modifiers, type identifier, type name and inheritance list, where all generic type parameters are replaced with their resolved runtime type arguments.
-        /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the class name <c>"Task"</c> becomes <c>"public class Task&lt;int&gt;"</c>.
-        /// </returns>
-        /// <remarks>
-        /// <br/>Use <see cref="ToRuntimeSignatureShortName(Type)"/> to return the the same runtime signature without the namespace.
-        /// Use <see cref="ToSignatureName(Type)"/> and  <see cref="ToSignatureShortName(Type)"/> to return the signature with generic type parameter names.
-        /// </remarks>
-        /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
-        public static string ToRuntimeSignatureName(this Type type)
-        {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
-
-            TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
-            return typeData.RuntimeShortSignature;
-        }
-
-        /// <summary>
-        /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
-        /// </summary>
-        /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
-        /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
-        /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the field name <c>"currentTask"</c> becomes <c>"private static readonly Task&lt;TResult&gt; currentTask;"</c>.
-        /// </returns>
-        /// <remarks>
-        /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
-        /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(FieldInfo)"/>, this <see cref="ToSignatureName(FieldInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
-        /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
-        /// </remarks>
-        /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
-        public static string ToSignatureName(this FieldInfo fieldInfo)
-        {
-            ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
-
-            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
-            return fieldData.FullyQualifiedSignature;
-        }
-
-        /// <summary>
-        /// Extension method to convert generic and non-generic field names to a readable runtime signature display name without the namespace and where all generic type parameters are replaced with their resolved runtime type arguments.
-        /// </summary>
-        /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
-        /// <returns>
-        /// A readable signature of the symbol, that includes the access modifier, keywords, field type and field name and parameters where all generic type parameters are replaced with their resolved runtime type arguments.
-        /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the field name <c>"currentTask"</c> becomes <c>"private static readonly Task&lt;int&gt; currentTask;"</c>.
-        /// </returns>
-        /// <remarks>
-        /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
-        /// <br/>Opposed to the counterpart <see cref="ToSignatureName(FieldInfo)"/>, this <see cref="ToRuntimeSignatureName(FieldInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
-        /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
-        /// </remarks>
-        /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
-        public static string ToRuntimeSignatureName(this FieldInfo fieldInfo)
-        {
-            ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
-
-            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
-            return fieldData.RuntimeShortSignature;
-        }
-
-        /// <summary>
-        /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
-        /// </summary>
-        /// <param name="propertyInfo">The <see cref="PropertyInfo"/> object to generate the symbol signature for.</param>
-        /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
-        /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the property name <c>"CurrentTask"</c> becomes <c>"public Task&lt;TResult&gt; CurrentTask { get; set; }"</c>.
-        /// </returns>
-        /// <remarks>
-        /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
-        /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(PropertyInfo)"/>, this <see cref="ToSignatureName(PropertyInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
-        /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
-        /// </remarks>
-        /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-        public static string ToSignatureName(this PropertyInfo propertyInfo)
-        {
-            ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
-
-            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
-            return propertyData.FullyQualifiedSignature;
-        }
-
-        /// <summary>
-        /// Extension method to convert generic and non-generic property names to a readable runtime signature display name without the namespace and where all generic type parameters are replaced with their resolved runtime type arguments.
-        /// </summary>
-        /// <param name="propertyInfo">The <see cref="PropertyInfo"/> object to generate the symbol signature for.</param>
-        /// <returns>
-        /// A readable signature of the symbol, that includes the access modifier, property type, property name and accessors where all generic type parameters are replaced with their resolved runtime type arguments.
-        /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the property name <c>"CurrentTask"</c> becomes <c>"public Task&lt;int&gt; CurrentTask { get; set; }"</c>.
-        /// </returns>
-        /// <remarks>
-        /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
-        /// <br/>Opposed to the counterpart <see cref="ToSignatureName(PropertyInfo)"/>, this <see cref="ToRuntimeSignatureName(PropertyInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
-        /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
-        /// </remarks>
-        /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-        public static string ToRuntimeSignatureName(this PropertyInfo propertyInfo)
-        {
-            ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
-
-            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
-            return propertyData.RuntimeShortSignature;
-        }
-
-        /// <summary>
-        /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
-        /// </summary>
-        /// <param name="constructorInfo">The <see cref="ConstructorInfo"/> object to generate the symbol signature for.</param>
-        /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
-        /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the constructor name <c>"Task"</c> becomes <c>"public Task(Func&lt;T&gt; func);"</c>.
-        /// </returns>
-        /// <remarks>
-        /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
-        /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(ConstructorInfo)"/>, this <see cref="ToSignatureName(ConstructorInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
-        /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
-        /// </remarks>
-        /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
-        public static string ToSignatureName(this ConstructorInfo constructorInfo)
-        {
-            ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
-
-            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
-            return constructorData.FullyQualifiedSignature;
-        }
-
-        /// <summary>
-        /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
-        /// </summary>
-        /// <param name="constructorInfo">The <see cref="ConstructorInfo"/> object to generate the symbol signature for.</param>
-        /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
-        /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the constructor name <c>"Task"</c> becomes <c>"public Task(Func&lt;int&gt; func);"</c>.
-        /// </returns>
-        /// <remarks>
-        /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
-        /// <br/>Opposed to the counterpart <see cref="ToSignatureName(ConstructorInfo)"/>, this <see cref="ToRuntimeSignatureName(ConstructorInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
-        /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
-        /// </remarks>
-        /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
-        public static string ToRuntimeSignatureName(this ConstructorInfo constructorInfo)
-        {
-            ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
-
-            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
-            return constructorData.RuntimeShortSignature;
-        }
-
-        /// <summary>
-        /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated without namespace and the declaring type (in case of a member), but with attributes and the resolved runtime generic type argument names.
         /// </summary>
         /// <param name="methodInfo">The <see cref="MethodInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
         /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
-        /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the method name <c>"Run"</c> becomes <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
+        /// <br/>For example, <c>"public MyClass(Action&lt;TParam&gt; doSomething, [CallerMemberName] string value = null)"</c>.
         /// </returns>
         /// <remarks>
-        /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
-        /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(MethodInfo)"/>, this <see cref="ToSignatureName(MethodInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
-        /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="MethodInfo"/> instance.<br/>
+        /// Use <see cref="ToRuntimeSignatureShortName(MethodInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(MethodInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureShortName(this MethodInfo methodInfo)
@@ -303,17 +89,41 @@
         }
 
         /// <summary>
-        /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
         /// </summary>
         /// <param name="methodInfo">The <see cref="MethodInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
         /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
-        /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the method name <c>"Run"</c> becomes <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+        /// <br/>For example, <c>"public MyClass&lt;TParam&gt;.MyClass(Action&lt;TParam&gt; doSomething, [CallerMemberName] string value = null)"</c>.
         /// </returns>
         /// <remarks>
-        /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
-        /// <br/>Opposed to the counterpart <see cref="ToSignatureName(MethodInfo)"/>, this <see cref="ToRuntimeSignatureName(MethodInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
-        /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="MethodInfo"/> instance.<br/>
+        /// Use <see cref="ToRuntimeSignatureName(MethodInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(MethodInfo, bool)"/> to return the plain symbol name.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
+        public static string ToSignatureName(this MethodInfo methodInfo)
+        {
+            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            return methodData.Signature;
+        }
+
+        /// <summary>
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// </summary>
+        /// <param name="methodInfo">The <see cref="MethodInfo"/> object to generate the symbol signature for.</param>
+        /// <returns>
+        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// <br/>For example, <c>"public MyClass(Action&lt;int&gt; doSomething, [CallerMemberName] string value = null)"</c>.
+        /// </returns>
+        /// <remarks>
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="MethodInfo"/> instance.<br/>
+        /// Use <see cref="ToSignatureShortName(MethodInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(MethodInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureShortName(this MethodInfo methodInfo)
@@ -325,16 +135,41 @@
         }
 
         /// <summary>
-        /// Extension method to return a readable full signature without the namespace.
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// </summary>
+        /// <param name="methodInfo">The <see cref="MethodInfo"/> object to generate the symbol signature for.</param>
+        /// <returns>
+        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// <br/>For example, <c>"public MyClass&lt;int&gt;.MyClass(Action&lt;int&gt; doSomething, [CallerMemberName] string value = null)"</c>.
+        /// </returns>
+        /// <remarks>
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="MethodInfo"/> instance.<br/>
+        /// Use <see cref="ToSignatureName(MethodInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(MethodInfo, bool)"/> to return the plain symbol name.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
+        public static string ToRuntimeSignatureName(this MethodInfo methodInfo)
+        {
+            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            return methodData.RuntimeSignature;
+        }
+
+        /// <summary>
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated without namespace and the declaring type (in case of a member), but with attributes and the resolved runtime generic type argument names.
         /// </summary>
         /// <param name="type">The <see cref="Type"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name, parameters and generic type parameters. 
-        /// <br/>For example, <c>"public void MyClass.DoSomething&lt;T&gt;(T firstValue, [CallerMemberName] string value = null) where T : class"</c>.
+        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// <br/>For example, <c>"[Obsolete("Stop using this class")] public class MyClass&lt;T&gt;"</c>.
         /// </returns>
         /// <remarks>
-        /// Use <see cref="ToRuntimeSignatureName(Type)"/> and <see cref="ToRuntimeSignatureShortName(Type)"/> to replace the generic type names with the runtime type arguments.
-        /// <br/>Use <see cref="ToSignatureShortName(Type)"/> to return the signature without the namespace.
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="Type"/> instance.<br/>
+        /// Use <see cref="ToRuntimeSignatureShortName(Type)"/> to return a signature using the resolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(TypeInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
         public static string ToSignatureShortName(this Type type)
@@ -342,21 +177,45 @@
             ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
-            return typeData.Signature;
+            return typeData.ShortSignature;
         }
 
         /// <summary>
-        /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
         /// </summary>
         /// <param name="type">The <see cref="Type"/> object to generate the symbol signature for.</param>
         /// <returns>
         /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
-        /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the class name <c>"Task"</c> becomes <c>"public class Task&lt;int&gt;"</c>.
+        /// <br/>For example, <c>"[Obsolete("Stop using this class")] public class MyClass&lt;T&gt;"</c>.
         /// </returns>
         /// <remarks>
-        /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
-        /// <br/>Opposed to the counterpart <see cref="ToSignatureName(Type)"/>, this <see cref="ToRuntimeSignatureName(Type)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
-        /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="Type"/> instance.<br/>
+        /// Use <see cref="ToRuntimeSignatureName(Type)"/> to return a signature using the resolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(Type, bool)"/> to return the plain symbol name.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
+        public static string ToSignatureName(this Type type)
+        {
+            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+
+            TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+            return typetypeData.Signature;
+        }
+
+        /// <summary>
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> object to generate the symbol signature for.</param>
+        /// <returns>
+        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// <br/>For example, <c>"[Obsolete("Stop using this class")] public class MyClass&lt;string&gt;"</c>.
+        /// </returns>
+        /// <remarks>
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="Type"/> instance.<br/>
+        /// Use <see cref="ToSignatureShortName(Type)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(Type, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureShortName(this Type type)
@@ -368,20 +227,67 @@
         }
 
         /// <summary>
-        /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> object to generate the symbol signature for.</param>
+        /// <returns>
+        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// <br/>For example, <c>"[Obsolete("Stop using this class")] public class MyClass&lt;string&gt;"</c>.
+        /// </returns>
+        /// <remarks>
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="Type"/> instance.<br/>
+        /// Use <see cref="ToSignatureName(Type)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(Type, bool)"/> to return the plain symbol name.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
+        public static string ToRuntimeSignatureName(this Type type)
+        {
+            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+
+            TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+            return typeData.RuntimeSignature;
+        }
+
+        /// <summary>
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated without namespace and the declaring type (in case of a member), but with attributes and the resolved runtime generic type argument names.
         /// </summary>
         /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
         /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
-        /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the field name <c>"currentTask"</c> becomes <c>"private readonly Task&lt;TResult&gt; currentTask;"</c>.
+        /// <br/>For example, <c>"[JsonPropertyName("my_property")] public T myField;"</c>.
         /// </returns>
         /// <remarks>
-        /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
-        /// <br/>Opposed to the counterpart <see cref="ToRuntimeSignatureName(FieldInfo)"/>, this <see cref="ToSignatureName(FieldInfo)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
-        /// to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="FieldInfo"/> instance.<br/>
+        /// Use <see cref="ToRuntimeSignatureShortName(FieldInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(FieldInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureShortName(this FieldInfo fieldInfo)
+        {
+            ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+
+            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+            return fieldData.ShortSignature;
+        }
+
+        /// <summary>
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// </summary>
+        /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
+        /// <returns>
+        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// <br/>For example, <c>"[JsonPropertyName("my_property")] public T MyClass&lt;T&gt;.myField;"</c>.
+        /// </returns>
+        /// <remarks>
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="FieldInfo"/> instance.<br/>
+        /// Use <see cref="ToRuntimeSignatureName(FieldInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(FieldInfo, bool)"/> to return the plain symbol name.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
+        public static string ToSignatureName(this FieldInfo fieldInfo)
         {
             ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
@@ -390,17 +296,18 @@
         }
 
         /// <summary>
-        /// Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
         /// </summary>
         /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
         /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
-        /// <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the field name <c>"currentTask"</c> becomes <c>"private readonly Task&lt;int&gt; currentTask;"</c>.
+        /// <br/>For example, <c>"[JsonPropertyName("my_property")] public string myField;"</c>.
         /// </returns>
         /// <remarks>
-        /// Usually <see cref="MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
-        /// <br/>Opposed to the counterpart <see cref="ToSignatureName(FieldInfo)"/>, this <see cref="ToRuntimeSignatureName(FieldInfo)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
-        /// to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="FieldInfo"/> instance.<br/>
+        /// Use <see cref="ToSignatureShortName(FieldInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(FieldInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureShortName(this FieldInfo fieldInfo)
@@ -409,6 +316,29 @@
 
             FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
             return fieldData.RuntimeShortSignature;
+        }
+
+        /// <summary>
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// </summary>
+        /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
+        /// <returns>
+        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// <br/>For example, <c>"[JsonPropertyName("my_property")] public string MyClass&lt;string&gt;.myField;"</c>.
+        /// </returns>
+        /// <remarks>
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="FieldInfo"/> instance.<br/>
+        /// Use <see cref="ToSignatureName(FieldInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(FieldInfo, bool)"/> to return the plain symbol name.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
+        public static string ToRuntimeSignatureName(this FieldInfo fieldInfo)
+        {
+            ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+
+            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+            return fieldData.RuntimeSignature;
         }
 
         /// <summary>
@@ -422,9 +352,10 @@
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="PropertyInfo"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureShortName(PropertyInfo)"/> to return a signature using the resolved generic type parameters instead. Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
+        /// Use <see cref="ToRuntimeSignatureShortName(PropertyInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(PropertyInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
-        /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureShortName(this PropertyInfo propertyInfo)
         {
             ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
@@ -444,7 +375,8 @@
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="PropertyInfo"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureName(PropertyInfo)"/> to return a signature using the resolved generic type parameters instead. Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
+        /// Use <see cref="ToRuntimeSignatureName(PropertyInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(PropertyInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureName(this PropertyInfo propertyInfo)
@@ -466,7 +398,8 @@
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="PropertyInfo"/> instance.<br/>
-        /// Use <see cref="ToSignatureShortName(PropertyInfo)"/> to return a signature using the unresolved generic type parameters instead. Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
+        /// Use <see cref="ToSignatureShortName(PropertyInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(PropertyInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureShortName(this PropertyInfo propertyInfo)
@@ -488,7 +421,8 @@
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="PropertyInfo"/> instance.<br/>
-        /// Use <see cref="ToSignatureName(PropertyInfo)"/> to return a signature using the unresolved generic type parameters instead. Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
+        /// Use <see cref="ToSignatureName(PropertyInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(PropertyInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureName(this PropertyInfo propertyInfo)
@@ -510,7 +444,8 @@
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="ConstructorInfo"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureShortName(ConstructorInfo)"/> to return a signature using the resolved generic type parameters instead. Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
+        /// Use <see cref="ToRuntimeSignatureShortName(ConstructorInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(ConstructorInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureShortName(this ConstructorInfo constructorInfo)
@@ -532,7 +467,8 @@
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="ConstructorInfo"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureName(ConstructorInfo)"/> to return a signature using the resolved generic type parameters instead. Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
+        /// Use <see cref="ToRuntimeSignatureName(ConstructorInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(ConstructorInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureName(this ConstructorInfo constructorInfo)
@@ -554,7 +490,8 @@
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="ConstructorInfo"/> instance.<br/>
-        /// Use <see cref="ToSignatureShortName(ConstructorInfo)"/> to return a signature using the unresolved generic type parameters instead. Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
+        /// Use <see cref="ToSignatureShortName(ConstructorInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(ConstructorInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureShortName(this ConstructorInfo constructorInfo)
@@ -576,7 +513,8 @@
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="ConstructorInfo"/> instance.<br/>
-        /// Use <see cref="ToSignatureName(ConstructorInfo)"/> to return a signature using the unresolved generic type parameters instead. Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
+        /// Use <see cref="ToSignatureName(ConstructorInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(ConstructorInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureName(this ConstructorInfo constructorInfo)
@@ -598,7 +536,8 @@
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="EventInfo"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureShortName(EventInfo)"/> to return a signature using the resolved generic type parameters instead. Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
+        /// Use <see cref="ToRuntimeSignatureShortName(EventInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureShortName(this EventInfo eventInfo)
@@ -620,7 +559,8 @@
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="EventInfo"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureName(EventInfo)"/> to return a signature using the resolved generic type parameters instead. Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
+        /// Use <see cref="ToRuntimeSignatureName(EventInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureName(this EventInfo eventInfo)
@@ -642,7 +582,8 @@
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="EventInfo"/> instance.<br/>
-        /// Use <see cref="ToSignatureShortName(EventInfo)"/> to return a signature using the unresolved generic type parameters instead. Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
+        /// Use <see cref="ToSignatureShortName(EventInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureShortName(this EventInfo eventInfo)
@@ -664,7 +605,8 @@
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="EventInfo"/> instance.<br/>
-        /// Use <see cref="ToSignatureName(EventInfo)"/> to return a signature using the unresolved generic type parameters instead. Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
+        /// Use <see cref="ToSignatureName(EventInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureName(this EventInfo eventInfo)
