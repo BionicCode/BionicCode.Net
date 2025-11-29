@@ -41,7 +41,7 @@
                 int hash = 17;
                 foreach (ParameterData item in items)
                 {
-                    hash *= 31 + item.GetHashCode();
+                    hash = (hash * 31) + item.GetHashCode();
                 }
 
                 return hash;
