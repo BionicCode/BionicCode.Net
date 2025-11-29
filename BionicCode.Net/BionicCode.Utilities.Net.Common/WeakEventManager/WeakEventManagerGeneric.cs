@@ -66,7 +66,7 @@
 
             try
             {
-                MemberParameterInfo[] proxyDelegateParameters = eventHandlerParameters.Select(parameterData => new MemberParameterInfo(parameterData, isGenericHandler)).ToArray();
+                MethodParameterInfo[] proxyDelegateParameters = eventHandlerParameters.Select(parameterData => new MethodParameterInfo(parameterData, isGenericHandler)).ToArray();
                 this.ProxyEventHandler = ProxyEventHandlerGenerator.Generate<TEventSource>(eventName, this, proxyDelegateName, proxyDelegateParameters);
 
                 Debug.Assert(this.ProxyEventHandler != null);

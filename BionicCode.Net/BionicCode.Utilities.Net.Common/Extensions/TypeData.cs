@@ -107,7 +107,7 @@ namespace BionicCode.Utilities.Net
             this.isAllPropertiesGenerated = true;
         }
 
-        public MethodData GetMethod(string methodName, params MemberParameterInfo[] parameterList)
+        public MethodData GetMethod(string methodName, params MethodParameterInfo[] parameterList)
         {
             SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(methodName,
               key =>
@@ -213,7 +213,7 @@ namespace BionicCode.Utilities.Net
             this.isAllEventsGenerated = true;
         }
 
-        public ConstructorData GetConstructor(string constructorName, params MemberParameterInfo[] parameterList)
+        public ConstructorData GetConstructor(string constructorName, params MethodParameterInfo[] parameterList)
         {
             SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(constructorName,
               key =>

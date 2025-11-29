@@ -11,7 +11,7 @@
     {
         public static readonly object ConflictingMethodInfoExceptionDataKey = new object();
 
-        public static Delegate Generate<TEventSource>(string eventName, object target, string targetDelegateMethodName, MemberParameterInfo[] targetDelegateMethodParameterList)
+        public static Delegate Generate<TEventSource>(string eventName, object target, string targetDelegateMethodName, MethodParameterInfo[] targetDelegateMethodParameterList)
         {
             ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
             ArgumentNullExceptionEx.ThrowIfNull(target, nameof(target));

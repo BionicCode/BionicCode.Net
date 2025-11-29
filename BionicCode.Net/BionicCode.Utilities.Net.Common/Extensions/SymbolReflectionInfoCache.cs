@@ -11,12 +11,12 @@
 
     internal static class SymbolReflectionInfoCache
     {
-        private static readonly ConcurrentDictionary<ISymbolInfoDataCacheKey, SymbolInfoData> SymbolInfoDataCache = new ConcurrentDictionary<ISymbolInfoDataCacheKey, SymbolInfoData>();
+        private static readonly ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoData> SymbolInfoDataCache = new ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoData>();
         private const string MemberNotFoundArgumentExceptionMessage = "Unable to find the {0} named '{1}'{2}on the type '{3}'.";
 
         internal static void AddOrReplaceSymbolInfoDataCacheEntry(Type type)
         {
-            ISymbolInfoDataCacheKey cacheKey = new TypeDataCacheKey(type.TypeHandle);
+            SymbolInfoDataCacheKey cacheKey = new TypeDataCacheKey(type.TypeHandle);
             if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
             {
                 symbolInfoData = new TypeData(type);
@@ -27,14 +27,14 @@
 
         internal static void AddOrReplaceSymbolInfoDataCacheEntry(MethodInfo methodInfo)
         {
-            ISymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(methodInfo.DeclaringType.TypeHandle, methodInfo.Name, methodInfo.GetParameters());
+            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(methodInfo.DeclaringType.TypeHandle, methodInfo.Name, methodInfo.GetParameters());
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(methodInfo));
             SymbolReflectionInfoCache.SymbolInfoDataCache[cacheKey] = symbolInfoData;
         }
 
         internal static void AddOrReplaceSymbolInfoDataCacheEntry(ConstructorInfo constructorInfo)
         {
-            ISymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(constructorInfo.DeclaringType.TypeHandle, constructorInfo.Name, constructorInfo.GetParameters());
+            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(constructorInfo.DeclaringType.TypeHandle, constructorInfo.Name, constructorInfo.GetParameters());
             if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
             {
                 symbolInfoData = new ConstructorData(constructorInfo);
@@ -45,7 +45,7 @@
 
         internal static void AddOrReplaceSymbolInfoDataCacheEntry(FieldInfo fieldInfo)
         {
-            ISymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(fieldInfo.DeclaringType.TypeHandle, fieldInfo.Name);
+            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(fieldInfo.DeclaringType.TypeHandle, fieldInfo.Name);
             if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
             {
                 symbolInfoData = new FieldData(fieldInfo);
@@ -56,7 +56,7 @@
 
         internal static void AddOrReplaceSymbolInfoDataCacheEntry(PropertyInfo propertyInfo)
         {
-            ISymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(propertyInfo.DeclaringType.TypeHandle, propertyInfo.Name);
+            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(propertyInfo.DeclaringType.TypeHandle, propertyInfo.Name);
             if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
             {
                 symbolInfoData = new PropertyData(propertyInfo);
@@ -67,7 +67,7 @@
 
         internal static void AddOrReplaceSymbolInfoDataCacheEntry(EventInfo eventInfo)
         {
-            ISymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(eventInfo.DeclaringType.TypeHandle, eventInfo.Name);
+            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(eventInfo.DeclaringType.TypeHandle, eventInfo.Name);
             if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
             {
                 symbolInfoData = new EventData(eventInfo);
@@ -78,7 +78,7 @@
 
         internal static void AddOrReplaceSymbolInfoDataCacheEntry(ParameterInfo parameterInfo)
         {
-            ISymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(parameterInfo.Member.DeclaringType.TypeHandle, parameterInfo.Name);
+            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(parameterInfo.Member.DeclaringType.TypeHandle, parameterInfo.Name);
             if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
             {
                 symbolInfoData = new ParameterData(parameterInfo);
@@ -89,7 +89,7 @@
 
         internal static TypeData GetOrCreateSymbolInfoDataCacheEntry(Type type)
         {
-            ISymbolInfoDataCacheKey cacheKey = new TypeDataCacheKey(type.TypeHandle);
+            SymbolInfoDataCacheKey cacheKey = new TypeDataCacheKey(type.TypeHandle);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new TypeData(type));
 
             // REMOVE::after testing
@@ -100,7 +100,7 @@
 
         internal static MethodData GetOrCreateSymbolInfoDataCacheEntry(MethodInfo methodInfo)
         {
-            ISymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(methodInfo.DeclaringType.TypeHandle, methodInfo.Name, methodInfo.GetParameters());
+            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(methodInfo.DeclaringType.TypeHandle, methodInfo.Name, methodInfo.GetParameters());
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(methodInfo));
 
             // REMOVE::after testing
@@ -111,7 +111,7 @@
 
         internal static ConstructorData GetOrCreateSymbolInfoDataCacheEntry(ConstructorInfo constructorInfo)
         {
-            ISymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(constructorInfo.DeclaringType.TypeHandle, constructorInfo.Name, constructorInfo.GetParameters());
+            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(constructorInfo.DeclaringType.TypeHandle, constructorInfo.Name, constructorInfo.GetParameters());
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new ConstructorData(constructorInfo));
 
             // REMOVE::after testing
@@ -122,7 +122,7 @@
 
         internal static FieldData GetOrCreateSymbolInfoDataCacheEntry(FieldInfo fieldInfo)
         {
-            ISymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(fieldInfo.DeclaringType.TypeHandle, fieldInfo.Name);
+            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(fieldInfo.DeclaringType.TypeHandle, fieldInfo.Name);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new FieldData(fieldInfo));
 
             // REMOVE::after testing
@@ -133,7 +133,7 @@
 
         internal static PropertyData GetOrCreateSymbolInfoDataCacheEntry(PropertyInfo propertyInfo)
         {
-            ISymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(propertyInfo.DeclaringType.TypeHandle, propertyInfo.Name);
+            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(propertyInfo.DeclaringType.TypeHandle, propertyInfo.Name);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new PropertyData(propertyInfo));
 
             // REMOVE::after testing
@@ -144,7 +144,7 @@
 
         internal static EventData GetOrCreateSymbolInfoDataCacheEntry(EventInfo eventInfo)
         {
-            ISymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(eventInfo.DeclaringType.TypeHandle, eventInfo.Name);
+            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(eventInfo.DeclaringType.TypeHandle, eventInfo.Name);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new EventData(eventInfo));
 
             // REMOVE::after testing
@@ -155,7 +155,7 @@
 
         internal static ParameterData GetOrCreateSymbolInfoDataCacheEntry(ParameterInfo parameterInfo)
         {
-            ISymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(parameterInfo.Member.DeclaringType.TypeHandle, parameterInfo.Name);
+            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(parameterInfo.Member.DeclaringType.TypeHandle, parameterInfo.Name);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new ParameterData(parameterInfo));
 
             // REMOVE::after testing
@@ -232,7 +232,7 @@
                           bool hasMismatch = false;
                           for (int parameterIndex = 0; parameterIndex < parameterTypes.Length; parameterIndex++)
                           {
-                              MemberParameterInfo predicateParameterInfo = cacheKey.ParameterList[parameterIndex];
+                              MethodParameterInfo predicateParameterInfo = cacheKey.ParameterList[parameterIndex];
                               ParameterInfo candidateParameterInfo = candidateParameters[parameterIndex];
                               Type candidateParameterType = candidateParameterInfo.ParameterType;
 
@@ -363,7 +363,7 @@
             typeData = (TypeData)symbolInfoData;
         }
 
-        internal static bool TryGetSymbolInfoDataCacheEntry<TEntry>(ISymbolInfoDataCacheKey key, out TEntry entry)
+        internal static bool TryGetSymbolInfoDataCacheEntry<TEntry>(SymbolInfoDataCacheKey key, out TEntry entry)
           where TEntry : SymbolInfoData
         {
             entry = null;
@@ -388,7 +388,7 @@
         /// <param name="handle">Handle of the delegate declaringType.</param>
         /// <param name="parameterList">The parameter list of the delegate.</param>
         /// <returns>A valid key that can be used to query the cache.</returns>
-        internal static ITypeDataCacheKey CreateTypeSymbolCacheKey(RuntimeTypeHandle handle, params MemberParameterInfo[] parameterList)
+        internal static ITypeDataCacheKey CreateTypeSymbolCacheKey(RuntimeTypeHandle handle, params MethodParameterInfo[] parameterList)
           => new TypeDataCacheKey(handle, parameterList);
 
         /// <summary>
@@ -413,7 +413,7 @@
         /// <param name="memberName">The name of the member that should be looked up.</param>
         /// <param name="parameterList">The parameter list of the method or constructor.</param>
         /// <returns>A valid key that can be used to query the cache.</returns>
-        internal static IMemberDataCacheKey CreateMemberSymbolCacheKey(RuntimeTypeHandle declaringTypeHandle, string memberName, params MemberParameterInfo[] parameterList)
+        internal static IMemberDataCacheKey CreateMemberSymbolCacheKey(RuntimeTypeHandle declaringTypeHandle, string memberName, params MethodParameterInfo[] parameterList)
           => new MemberDataCacheKey(declaringTypeHandle, memberName, parameterList);
 
         /// <summary>
