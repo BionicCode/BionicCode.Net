@@ -2,13 +2,21 @@
 namespace BionicCode.Utilities.Net
 {
     using System;
+    using System.CodeDom;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
 
     internal class TypeData : SymbolInfoData
     {
+        private static readonly Type TaskType = typeof(Task);
+        private static readonly Type ValueTaskType = typeof(ValueTask);
+        private static readonly Type ValueTaskGenericType = typeof(ValueTask<>);
+        private static readonly Type DelegateType = typeof(Delegate);
+
         private string displayName;
         private string shortDisplayName;
         private string fullyQualifiedDisplayName;
@@ -16,6 +24,8 @@ namespace BionicCode.Utilities.Net
         private AccessModifier accessModifier;
         private bool? canDeclareExtensionMethod;
         private bool? isAwaitable;
+        private bool? isAwaitableTask;
+        private bool? isAwaitableValueTask;
         private string signature;
         private string shortSignature;
         private string fullyQualifiedRuntimeSignature;
@@ -252,7 +262,13 @@ namespace BionicCode.Utilities.Net
         public string Namespace { get; }
 
         public bool IsAwaitable
-          => (bool)(bool?)(this.isAwaitable ??= HelperExtensionsCommon.IsAwaitableInternal(this));
+          => (bool)(bool?)(this.isAwaitable ??= TypeData.IsTypeAwaitable(this));
+
+        public bool IsAwaitableTask
+          => (bool)(bool?)(this.isAwaitableTask ??= TypeData.IsTypeAwaitable(this));
+
+        public bool IsAwaitableValueTask
+          => (bool)(bool?)(this.isAwaitableValueTask ??= TypeData.IsTypeAwaitableValueTask(this));
 
         public bool IsValueType
           => (bool)(bool?)(this.isValueType ??= GetType().IsValueType);
@@ -290,7 +306,7 @@ namespace BionicCode.Utilities.Net
         }
 
         public bool CanDeclareExtensionMethod
-          => (bool)(bool?)(this.canDeclareExtensionMethod ??= HelperExtensionsCommon.CanDeclareExtensionMethodsInternal(this));
+          => (bool)(bool?)(this.canDeclareExtensionMethod ??= TypeData.CanDeclareExtensionMethodsInternal(this));
 
         public override IList<CustomAttributeData> AttributeData
           => this.attributeData ??= GetType().GetCustomAttributesData();
@@ -341,10 +357,10 @@ namespace BionicCode.Utilities.Net
           => this.assemblyName ??= GetType().Assembly.GetName().Name;
 
         public bool IsStatic
-          => (bool)(bool?)(this.isStatic ??= HelperExtensionsCommon.IsStaticInternal(this));
+          => (bool)(bool?)(this.isStatic ??= TypeData.IsTypeStatic(this));
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
-          ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
+          ? (this.symbolAttributes = TypeData.GetAttributesInternal(this))
           : this.symbolAttributes;
 
         public bool IsAbstract
@@ -362,7 +378,7 @@ namespace BionicCode.Utilities.Net
 #endif
 
         public bool IsDelegate
-          => (bool)(bool?)(this.isDelegate ??= GetType().IsDelegateInternal());
+          => (bool)(bool?)(this.isDelegate ??= TypeData.IsTypeDelegate(GetType()));
 
         public bool IsSubclass
         {
@@ -417,7 +433,7 @@ namespace BionicCode.Utilities.Net
           => (bool)(bool?)(this.isGenericType ??= GetType().IsGenericType);
 
         public bool IsBuiltInType
-          => (bool)(bool?)(this.isBuiltInType ??= HelperExtensionsCommon.IsBuiltInTypeInternal(this));
+          => (bool)(bool?)(this.isBuiltInType ??= TypeData.IsTypeBuiltInType(this));
 
         public bool IsGenericTypeDefinition
           => (bool)(bool?)(this.isGenericTypeDefinition ??= GetType().IsGenericTypeDefinition);
@@ -448,5 +464,191 @@ namespace BionicCode.Utilities.Net
 
         public ConstructorData[] ConstructorsData
           => this.constructorsData ??= GetType().GetConstructors(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+
+        private static bool IsTypeStatic(TypeData typeData)
+          => typeData.IsAbstract && typeData.IsSealed;
+
+        private static bool IsTypeBuiltInType(TypeData typeData)
+        {
+            var typeReference = new CodeTypeReference(typeData.GetType());
+            string typeName = HelperExtensionsCommon.CodeProvider.GetTypeOutput(typeReference);
+            int typeNameStartIndex = typeName.LastIndexOf('.') + 1;
+            if (typeNameStartIndex > 0)
+            {
+                typeName = typeName.Substring(typeNameStartIndex);
+            }
+
+            return !HelperExtensionsCommon.CodeProvider.IsValidIdentifier(typeName);
+        }
+
+        private static bool CanDeclareExtensionMethodsInternal(TypeData typeData)
+        {
+            Type typeInfo = typeData.GetType();
+            if (!typeData.IsStatic || typeInfo.IsNested || typeInfo.IsGenericType)
+            {
+                return false;
+            }
+
+            Attribute typeExtensionAttribute = typeInfo.GetCustomAttribute(HelperExtensionsCommon.ExtensionAttributeType, false);
+            return typeExtensionAttribute != null;
+        }
+
+        /// <summary>
+        /// Determines the symbol attributes for the specified type represented by the given TypeData instance.
+        /// </summary>
+        /// <remarks>The returned SymbolAttributes value may include multiple flags combined using a
+        /// bitwise OR to represent all applicable characteristics of the type. This method does not perform validation
+        /// on the input; callers should ensure that typeData is valid and represents a supported type.</remarks>
+        /// <param name="typeData">The TypeData instance representing the type for which to retrieve symbol attributes. Cannot be null.</param>
+        /// <returns>A SymbolAttributes value that describes the kind and characteristics of the specified type, such as whether
+        /// it is a class, struct, interface, enum, delegate, generic, static, abstract, or final. Returns
+        /// SymbolAttributes.Undefined if the type does not match any recognized category.</returns>
+        internal static SymbolAttributes GetAttributesInternal(TypeData typeData)
+        {
+            Type type = typeData.GetType();
+            if (typeData.IsDelegate)
+            {
+                SymbolAttributes delegateAttributes = SymbolAttributes.Delegate;
+                if (typeData.IsGenericType)
+                {
+                    delegateAttributes |= SymbolAttributes.Generic;
+                }
+
+                return delegateAttributes;
+            }
+
+            if (type.IsClass)
+            {
+                SymbolAttributes classAttributes = SymbolAttributes.Class;
+                if (type.IsAbstract)
+                {
+                    classAttributes |= SymbolAttributes.Abstract;
+                }
+
+                if (typeData.IsSealed)
+                {
+                    classAttributes |= SymbolAttributes.Final;
+                }
+
+                if (typeData.IsStatic)
+                {
+                    classAttributes |= SymbolAttributes.Static;
+                }
+
+                if (typeData.IsGenericType)
+                {
+                    classAttributes |= SymbolAttributes.Generic;
+                }
+
+                return classAttributes;
+            }
+
+            if (type.IsInterface)
+            {
+                SymbolAttributes interfaceAttributes = SymbolAttributes.Interface;
+                return interfaceAttributes;
+            }
+
+            if (type.IsEnum)
+            {
+                SymbolAttributes enumAttributes = SymbolAttributes.Enum;
+                return enumAttributes;
+            }
+
+            if (type.IsValueType)
+            {
+                SymbolAttributes structAttributes = SymbolAttributes.Struct;
+
+                if (typeData.IsGenericType)
+                {
+                    structAttributes |= SymbolAttributes.Generic;
+                }
+
+                if (typeData.IsByRefLike)
+                {
+                    structAttributes |= SymbolAttributes.ByReference;
+                }
+
+                bool isReadOnlyStruct = TypeData.IsReadOnlyStructInternal(type);
+                if (isReadOnlyStruct)
+                {
+                    structAttributes |= SymbolAttributes.Final;
+                }
+
+                return structAttributes;
+            }
+
+            return SymbolAttributes.Undefined;
+        }
+
+        private static bool IsTypeDelegate(Type type)
+        {
+            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+
+            return TypeData.DelegateType.IsAssignableFrom(type);
+        }
+
+        private static bool IsReadOnlyStructInternal(Type type)
+          => type.IsValueType && type.GetCustomAttribute(HelperExtensionsCommon.IsReadOnlyAttributeType) != null;
+
+        /// <summary>
+        /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.
+        /// </summary>
+        /// <param genericTypeParameterIdentifier="methodInfo">The <see cref="MethodInfo"/> to check if it belongs to an awaitable method.</param>
+        /// <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
+        /// <remarks>The method first checks if the return valueType is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned valueType (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate valueType (awaiter).
+        /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned valueType that would make the valueType awaitable. If this fails too, the method is not awaitable.</remarks>
+        private static bool IsTypeAwaitable(TypeData typeData)
+        {
+            if (TypeData.IsTypeAwaitableTask(typeData) || TypeData.IsTypeAwaitableValueTask(typeData))
+            {
+                return true;
+            }
+
+            Type type = typeData.GetType();
+            if (type.GetMethod(nameof(Task.GetAwaiter)) != null)
+            {
+                return true;
+            }
+
+            // The return valueType of the method is not directly returning an awaitable valueType.
+            // So, search for an extension method named "GetAwaiter" for the return valueType of the currently validated method that effectively converts the valueType into an awaitable object.
+            // By compiler convention the "GetAwaiter" method must return an awaiter object that implements the INotifyComplete interface
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (System.Reflection.TypeInfo typeInfo in assembly.GetExportedTypes())
+                {
+                    if (!typeInfo.CanDeclareExtensionMethods())
+                    {
+                        continue;
+                    }
+
+                    MethodInfo extensionMethodInfo = typeInfo.GetMethod(nameof(Task.GetAwaiter), BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { type }, null);
+                    if (extensionMethodInfo == null
+                      || !extensionMethodInfo.IsExtensionMethodOf(type))
+                    {
+                        return false;
+                    }
+
+                    if (extensionMethodInfo.ReturnType.GetProperty("IsCompleted") != null
+                      && extensionMethodInfo.ReturnType.GetInterface(nameof(INotifyCompletion)) != null
+                      && extensionMethodInfo.ReturnType.GetMethod("GetResult") is MethodInfo getResultMethodInfo
+                      && getResultMethodInfo.GetParameters().Length == 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private static bool IsTypeAwaitableTask(TypeData type)
+          => TypeData.TaskType.IsAssignableFrom(type.GetType())
+            || TypeData.TaskType.IsAssignableFrom(type.BaseTypeData.GetType());
+
+        private static bool IsTypeAwaitableValueTask(TypeData type)
+          => TypeData.ValueTaskType == type.GetType()
+            || (type.IsGenericType && TypeData.ValueTaskGenericType == type.GenericTypeDefinitionData.GetType());
     }
 }

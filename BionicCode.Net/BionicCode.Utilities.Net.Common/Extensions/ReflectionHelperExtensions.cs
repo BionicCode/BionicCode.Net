@@ -25,13 +25,10 @@
         private const string ParameterSeparator = ", ";
         private const char ExpressionTerminator = ';';
 
-        private static readonly Type ValueTaskType = typeof(ValueTask);
-        private static readonly Type ValueTaskGenericType = typeof(ValueTask<>);
-        private static readonly Type TaskType = typeof(Task);
+        internal static readonly CSharpCodeProvider CodeProvider = new CSharpCodeProvider();
+        internal static readonly Type ExtensionAttributeType = typeof(ExtensionAttribute);
+        internal static readonly Type IsReadOnlyAttributeType = typeof(IsReadOnlyAttribute);
         private static readonly Type AsyncStateMachineAttributeType = typeof(AsyncStateMachineAttribute);
-        private static readonly Type ExtensionAttributeType = typeof(ExtensionAttribute);
-        private static readonly Type DelegateType = typeof(Delegate);
-        private static readonly Type IsReadOnlyAttributeType = typeof(IsReadOnlyAttribute);
 
         /// <summary>
         /// The property genericTypeParameterIdentifier of an indexer property. This genericTypeParameterIdentifier is compiler generated and equals the typeName of the <see langword="static"/>field <see cref="System.Windows.Data.Binding.IndexerName" />.
@@ -41,7 +38,6 @@
         public static readonly string IndexerName = "Item";
 
         private static readonly AccessModifierComparer AccessModifierComparer = new AccessModifierComparer();
-        private static readonly CSharpCodeProvider CodeProvider = new CSharpCodeProvider();
         private static readonly FrozenSet<string> IgnorableParameterAttributes = new HashSet<string>
             {
               nameof(AsyncStateMachineAttribute),
@@ -200,7 +196,7 @@
             ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
-            return typetypeData.Signature;
+            return typeData.Signature;
         }
 
         /// <summary>
@@ -2680,6 +2676,10 @@
             {
                 symbolComponents.AddModifier("out");
             }
+            else if (parameterData.IsParams)
+            {
+                symbolComponents.AddModifier("params");
+            }
 
             // Type name
             _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(parameterTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true);
@@ -3870,7 +3870,25 @@
         }
 
         private static PooledStringBuilder AppendDisplayNameInternal(this PooledStringBuilder nameBuilder, ParameterData parameterData)
-          => nameBuilder.Append(parameterData.Name);
+        {
+            _ = nameBuilder.Append(parameterData.Name);
+            if (parameterData.IsOptional)
+            {
+                _ = nameBuilder.Append(" = ");
+
+                object defaultValue = parameterData.DefaultValue;
+                _ = defaultValue switch
+                {
+                    string stringValue => nameBuilder.Append($"""{stringValue}"""),
+                    char charValue => nameBuilder.Append($"'{charValue}'"),
+                    null => nameBuilder.Append("null"),
+                    bool boolValue => nameBuilder.Append(boolValue ? "true" : "false"),
+                    _ => nameBuilder.Append(defaultValue.ToString()),
+                };
+            }
+
+            return nameBuilder;
+        }
 
         private static PooledStringBuilder AppendDisplayNameInternal(this PooledStringBuilder nameBuilder, MemberInfoData memberInfoData, bool isFullyQualifiedName, bool isGenericTypeParameterIncluded, bool isDeclaringTypeIncluded)
         {
@@ -4148,19 +4166,17 @@
         }
 
         // TODO::Test if checking get() is enough to determine if a property is overridden
+        /// <summary>
+        /// Determines whether the specified type represents a delegate type.
+        /// </summary>
+        /// <param name="type">The type to evaluate. Cannot be null.</param>
+        /// <returns>true if the specified type is a delegate; otherwise, false.</returns>
         public static bool IsDelegate(this Type type)
         {
             ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
-            return typeData.SymbolAttributes.HasFlag(SymbolAttributes.Delegate);
-        }
-
-        internal static bool IsDelegateInternal(this Type type)
-        {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
-
-            return HelperExtensionsCommon.DelegateType.IsAssignableFrom(type);
+            return typeData.IsDelegate;
         }
 
         // TODO::Test if checking get() is enough to determine if a property is overridden
@@ -4250,16 +4266,6 @@
         /// <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
         /// <remarks>The method first checks if the return valueType is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned valueType (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate valueType (awaiter).
         /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned valueType that would make the valueType awaitable. If this fails too, the method is not awaitable.</remarks>
-        internal static bool IsAwaitableInternal(MethodData methodData)
-          => IsAwaitableInternal(methodData.ReturnTypeData);
-
-        /// <summary>
-        /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.
-        /// </summary>
-        /// <param genericTypeParameterIdentifier="methodInfo">The <see cref="MethodInfo"/> to check if it belongs to an awaitable method.</param>
-        /// <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
-        /// <remarks>The method first checks if the return valueType is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned valueType (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate valueType (awaiter).
-        /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned valueType that would make the valueType awaitable. If this fails too, the method is not awaitable.</remarks>
         public static bool IsAwaitable(this Type type)
         {
             ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
@@ -4267,66 +4273,6 @@
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             return typeData.IsAwaitable;
         }
-
-        /// <summary>
-        /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.
-        /// </summary>
-        /// <param genericTypeParameterIdentifier="methodInfo">The <see cref="MethodInfo"/> to check if it belongs to an awaitable method.</param>
-        /// <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
-        /// <remarks>The method first checks if the return valueType is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned valueType (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate valueType (awaiter).
-        /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned valueType that would make the valueType awaitable. If this fails too, the method is not awaitable.</remarks>
-        internal static bool IsAwaitableInternal(TypeData typeData)
-        {
-            Type type = typeData.GetType();
-            if (IsAwaitableTask(type) || IsAwaitableValueTask(type))
-            {
-                return true;
-            }
-
-            if (type.GetMethod(nameof(Task.GetAwaiter)) != null)
-            {
-                return true;
-            }
-
-            // The return valueType of the method is not directly returning an awaitable valueType.
-            // So, search for an extension method named "GetAwaiter" for the return valueType of the currently validated method that effectively converts the valueType into an awaitable object.
-            // By compiler convention the "GetAwaiter" method must return an awaiter object that implements the INotifyComplete interface
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                foreach (System.Reflection.TypeInfo typeInfo in assembly.GetExportedTypes())
-                {
-                    if (!typeInfo.CanDeclareExtensionMethods())
-                    {
-                        continue;
-                    }
-
-                    MethodInfo extensionMethodInfo = typeInfo.GetMethod(nameof(Task.GetAwaiter), BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { type }, null);
-                    if (extensionMethodInfo == null
-                      || !extensionMethodInfo.IsExtensionMethodOf(type))
-                    {
-                        return false;
-                    }
-
-                    if (extensionMethodInfo.ReturnType.GetProperty("IsCompleted") != null
-                      && extensionMethodInfo.ReturnType.GetInterface(nameof(INotifyCompletion)) != null
-                      && extensionMethodInfo.ReturnType.GetMethod("GetResult") is MethodInfo getResultMethodInfo
-                      && getResultMethodInfo.GetParameters().Length == 0)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        internal static bool IsAwaitableTask(Type type)
-          => HelperExtensionsCommon.TaskType.IsAssignableFrom(type)
-            || HelperExtensionsCommon.TaskType.IsAssignableFrom(type.BaseType);
-
-        internal static bool IsAwaitableValueTask(Type type)
-          => HelperExtensionsCommon.ValueTaskType == type
-            || (type.IsGenericType && HelperExtensionsCommon.ValueTaskGenericType == type.GetGenericTypeDefinition());
 
         public static bool IsMarkedAsync(this MethodInfo methodInfo)
         {
@@ -4352,28 +4298,17 @@
             return typeData.IsStatic;
         }
 
-        internal static bool IsStaticInternal(TypeData typeData)
-          => typeData.IsAbstract && typeData.IsSealed;
-
+        /// <summary>
+        /// Determines whether the specified type is a built-in .NET type.
+        /// </summary>
+        /// <param name="type">The type to evaluate. Cannot be null.</param>
+        /// <returns><see langword="true"/> if the specified type is a built-in .NET type; otherwise, <see langword="false"/>.</returns>
         public static bool IsBuiltInType(this Type type)
         {
             ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             return typeData.IsBuiltInType;
-        }
-
-        internal static bool IsBuiltInTypeInternal(TypeData typeData)
-        {
-            var typeReference = new CodeTypeReference(typeData.GetType());
-            string typeName = HelperExtensionsCommon.CodeProvider.GetTypeOutput(typeReference);
-            int typeNameStartIndex = typeName.LastIndexOf('.') + 1;
-            if (typeNameStartIndex > 0)
-            {
-                typeName = typeName.Substring(typeNameStartIndex);
-            }
-
-            return !HelperExtensionsCommon.CodeProvider.IsValidIdentifier(typeName);
         }
 
         /// <summary>
@@ -4388,8 +4323,41 @@
             return typeData.IsRef;
         }
 
-        internal static bool IsRefInternal(ParameterData parameterData)
-          => parameterData.IsByRef && !parameterData.IsOut && !parameterData.IsIn;
+        /// <summary>
+        /// Extension method to check if a <see cref="ParameterInfo"/> represents a <see langword="ref"/> <see langword="readonly"/> parameter.
+        /// </summary>
+        /// <returns><see langword="true"/> if the <paramref name="parameterInfo"/> represents a <see langword="ref"/> parameter. Otherwise <see langword="false"/>.</returns>
+        public static bool IsRefReadonly(this ParameterInfo parameterInfo)
+        {
+            ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
+
+            ParameterData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
+            return typeData.IsRefReadonly;
+        }
+
+        /// <summary>
+        /// Extension method to check if a <see cref="ParameterInfo"/> represents a <see langword="in"/> parameter.
+        /// </summary>
+        /// <returns><see langword="true"/> if the <paramref name="parameterInfo"/> represents a <see langword="ref"/> parameter. Otherwise <see langword="false"/>.</returns>
+        public static bool IsIn(this ParameterInfo parameterInfo)
+        {
+            ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
+
+            ParameterData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
+            return typeData.IsIn;
+        }
+
+        /// <summary>
+        /// Extension method to check if a <see cref="ParameterInfo"/> represents a <see langword="out"/> parameter.
+        /// </summary>
+        /// <returns><see langword="true"/> if the <paramref name="parameterInfo"/> represents a <see langword="ref"/> parameter. Otherwise <see langword="false"/>.</returns>
+        public static bool IsOut(this ParameterInfo parameterInfo)
+        {
+            ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
+
+            ParameterData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
+            return typeData.IsOut;
+        }
 
         /// <summary>
         /// Extension method that checks if the provided <see cref="Type"/> is qualified to define extension methods.
@@ -4404,18 +4372,6 @@
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             return typeData.CanDeclareExtensionMethod;
-        }
-
-        internal static bool CanDeclareExtensionMethodsInternal(TypeData typeData)
-        {
-            Type typeInfo = typeData.GetType();
-            if (!typeData.IsStatic || typeInfo.IsNested || typeInfo.IsGenericType)
-            {
-                return false;
-            }
-
-            Attribute typeExtensionAttribute = typeInfo.GetCustomAttribute(HelperExtensionsCommon.ExtensionAttributeType, false);
-            return typeExtensionAttribute != null;
         }
 
         internal static bool CanDeclareExtensionMethodsInternalUncached(Type type)
@@ -4441,39 +4397,6 @@
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
             return methodData.IsExtensionMethod;
-        }
-
-        internal static bool IsExtensionMethodInternal(MethodData methodData)
-        {
-            // Check if the declaring class satisfies the constraints to declare extension methods
-            TypeData declaringTypeData = methodData.DeclaringTypeData;
-            if (!declaringTypeData.CanDeclareExtensionMethod)
-            {
-                return false;
-            }
-
-            /* Check if the method satisfies the constraints to act as an extension methods */
-
-            if (!methodData.IsStatic)
-            {
-                return false;
-            }
-
-            MethodInfo methodInfo = methodData.GetMethodInfo();
-            Attribute methodExtensionAttribute = methodInfo.GetCustomAttribute(HelperExtensionsCommon.ExtensionAttributeType, false);
-            if (methodExtensionAttribute == null)
-            {
-                return false;
-            }
-
-            // Must have at least the 'this' parameter
-            ParameterData[] parameterInfoData = methodData.Parameters;
-            if (parameterInfoData.Length < 1)
-            {
-                return false;
-            }
-
-            return true;
         }
 
         internal static bool IsExtensionMethodInternalUncached(MethodInfo methodInfo)
@@ -4558,9 +4481,6 @@
             return typeData.SymbolAttributes.HasFlag(SymbolAttributes.ReadOnlyStruct);
         }
 
-        internal static bool IsReadOnlyStructInternal(Type type)
-          => type.IsValueType && type.GetCustomAttribute(HelperExtensionsCommon.IsReadOnlyAttributeType) != null;
-
         //public static object GetAwaiter(this object obj)
         //{
         //  MethodInfo getAwaiterMethodInfo = obj.GetType().GetMethod(nameof(Task.GetAwaiter));
@@ -4604,93 +4524,6 @@
 
         //  return null;
         //}
-
-        /// <summary>
-        /// Determines the symbol attributes for the specified type represented by the given TypeData instance.
-        /// </summary>
-        /// <remarks>The returned SymbolAttributes value may include multiple flags combined using a
-        /// bitwise OR to represent all applicable characteristics of the type. This method does not perform validation
-        /// on the input; callers should ensure that typeData is valid and represents a supported type.</remarks>
-        /// <param name="typeData">The TypeData instance representing the type for which to retrieve symbol attributes. Cannot be null.</param>
-        /// <returns>A SymbolAttributes value that describes the kind and characteristics of the specified type, such as whether
-        /// it is a class, struct, interface, enum, delegate, generic, static, abstract, or final. Returns
-        /// SymbolAttributes.Undefined if the type does not match any recognized category.</returns>
-        internal static SymbolAttributes GetAttributesInternal(TypeData typeData)
-        {
-            Type type = typeData.GetType();
-            if (IsDelegateInternal(type))
-            {
-                SymbolAttributes delegateAttributes = SymbolAttributes.Delegate;
-                if (typeData.IsGenericType)
-                {
-                    delegateAttributes |= SymbolAttributes.Generic;
-                }
-
-                return delegateAttributes;
-            }
-
-            if (type.IsClass)
-            {
-                SymbolAttributes classAttributes = SymbolAttributes.Class;
-                if (type.IsAbstract)
-                {
-                    classAttributes |= SymbolAttributes.Abstract;
-                }
-
-                if (typeData.IsSealed)
-                {
-                    classAttributes |= SymbolAttributes.Final;
-                }
-
-                if (typeData.IsStatic)
-                {
-                    classAttributes |= SymbolAttributes.Static;
-                }
-
-                if (typeData.IsGenericType)
-                {
-                    classAttributes |= SymbolAttributes.Generic;
-                }
-
-                return classAttributes;
-            }
-
-            if (type.IsInterface)
-            {
-                SymbolAttributes interfaceAttributes = SymbolAttributes.Interface;
-                return interfaceAttributes;
-            }
-
-            if (type.IsEnum)
-            {
-                SymbolAttributes enumAttributes = SymbolAttributes.Enum;
-                return enumAttributes;
-            }
-
-            if (type.IsValueType)
-            {
-                SymbolAttributes structAttributes = SymbolAttributes.Struct;
-
-                if (typeData.IsGenericType)
-                {
-                    structAttributes |= SymbolAttributes.Generic;
-                }
-
-                if (typeData.IsByRefLike)
-                {
-                    structAttributes |= SymbolAttributes.ByReference;
-                }
-
-                bool isReadOnlyStruct = IsReadOnlyStructInternal(type);
-                if (isReadOnlyStruct)
-                {
-                    structAttributes |= SymbolAttributes.Final;
-                }
-                return structAttributes;
-            }
-
-            return SymbolAttributes.Undefined;
-        }
 
         /// <summary>
         /// Determines the set of symbol attributes for the specified property based on its metadata and accessor

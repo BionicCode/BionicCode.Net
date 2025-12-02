@@ -333,13 +333,13 @@
           : this.accessModifier;
 
         public bool IsExtensionMethod
-          => (bool)(bool?)(this.isExtensionMethod ??= HelperExtensionsCommon.IsExtensionMethodInternal(this));
+          => (bool)(bool?)(this.isExtensionMethod ??= MethodData.IsExtensionMethodInternal(this));
 
         public bool IsAsync
           => (bool)(bool?)(this.isAsync ??= HelperExtensionsCommon.IsMarkedAsyncInternal(this));
 
         public bool IsAwaitable
-          => (bool)(bool?)(this.isAwaitable ??= HelperExtensionsCommon.IsAwaitableInternal(this));
+          => (bool)(bool?)(this.isAwaitable ??= this.ReturnTypeData.IsAwaitable);
 
         public bool IsAwaitableTask
         {
@@ -355,8 +355,8 @@
                     {
                         this.isAwaitableTask = (this.isAwaitableValueTask.HasValue
                           && !this.isAwaitableValueTask.Value
-                          && HelperExtensionsCommon.IsAwaitableTask(this.ReturnTypeData.GetType()))
-                          || (!this.isAwaitableValueTask.HasValue && HelperExtensionsCommon.IsAwaitableTask(this.ReturnTypeData.GetType()));
+                          && this.ReturnTypeData.IsAwaitableTask)
+                          || (!this.isAwaitableValueTask.HasValue && this.ReturnTypeData.IsAwaitableTask);
                     }
                 }
 
@@ -378,8 +378,8 @@
                     {
                         this.isAwaitableValueTask = (this.isAwaitableTask.HasValue
                           && !this.isAwaitableTask.Value
-                          && HelperExtensionsCommon.IsAwaitableValueTask(this.ReturnTypeData.GetType()))
-                          || (!this.isAwaitableTask.HasValue && HelperExtensionsCommon.IsAwaitableValueTask(this.ReturnTypeData.GetType()));
+                          && this.ReturnTypeData.IsAwaitableValueTask)
+                          || (!this.isAwaitableTask.HasValue && this.ReturnTypeData.IsAwaitableValueTask);
                     }
                 }
 
@@ -401,8 +401,8 @@
                     {
                         this.isAwaitableGenericValueTask = (this.isAwaitableTask.HasValue
                           && !this.isAwaitableTask.Value
-                          && HelperExtensionsCommon.IsAwaitableValueTask(this.ReturnTypeData.GetType()))
-                          || (!this.isAwaitableTask.HasValue && HelperExtensionsCommon.IsAwaitableValueTask(this.ReturnTypeData.GetType()));
+                          && this.ReturnTypeData.IsAwaitableValueTask)
+                          || (!this.isAwaitableTask.HasValue && this.ReturnTypeData.IsAwaitableValueTask);
                     }
                 }
 
@@ -478,5 +478,48 @@
 
         public bool IsGenericMethodDefinition
           => (bool)(bool?)(this.isGenericTypeMethod ??= GetMethodInfo().IsGenericMethodDefinition);
+
+        private static bool IsExtensionMethodInternal(MethodData methodData)
+        {
+            // Check if the declaring class satisfies the constraints to declare extension methods
+            TypeData declaringTypeData = methodData.DeclaringTypeData;
+            if (!declaringTypeData.CanDeclareExtensionMethod)
+            {
+                return false;
+            }
+
+            /* Check if the method satisfies the constraints to act as an extension methods */
+
+            if (!methodData.IsStatic)
+            {
+                return false;
+            }
+
+            MethodInfo methodInfo = methodData.GetMethodInfo();
+            Attribute methodExtensionAttribute = methodInfo.GetCustomAttribute(HelperExtensionsCommon.ExtensionAttributeType, false);
+            if (methodExtensionAttribute == null)
+            {
+                return false;
+            }
+
+            // Must have at least the 'this' parameter
+            ParameterData[] parameterInfoData = methodData.Parameters;
+            if (parameterInfoData.Length < 1)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.
+        /// </summary>
+        /// <param genericTypeParameterIdentifier="methodInfo">The <see cref="MethodInfo"/> to check if it belongs to an awaitable method.</param>
+        /// <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
+        /// <remarks>The method first checks if the return valueType is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned valueType (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate valueType (awaiter).
+        /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned valueType that would make the valueType awaitable. If this fails too, the method is not awaitable.</remarks>
+        private static bool IsAwaitableInternal(MethodData methodData)
+          => methodData.ReturnTypeData.IsAwaitable;
     }
 }

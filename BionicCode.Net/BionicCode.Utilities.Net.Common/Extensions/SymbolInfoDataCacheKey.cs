@@ -15,6 +15,7 @@
         public readonly RuntimeMethodHandle SetMethodHandle { get; }
         public readonly RuntimeMethodHandle AddMethodHandle { get; }
         public readonly RuntimeMethodHandle RemoveMethodHandle { get; }
+        public readonly SymbolAttributes SymbolKind { get; }
         public ParameterList ParameterList { get; }
 
         private SymbolInfoDataCacheKey(string name,
@@ -25,7 +26,8 @@
             RuntimeMethodHandle setMethodHandle,
             RuntimeMethodHandle addMethodHandle,
             RuntimeMethodHandle removeMethodHandle,
-            ParameterList parameterList)
+            ParameterList parameterList,
+            SymbolAttributes symbolKind)
         {
             this.Name = name;
             this.DeclaringTypeHandle = declaringTypeHandle;
@@ -36,6 +38,7 @@
             this.AddMethodHandle = addMethodHandle;
             this.RemoveMethodHandle = removeMethodHandle;
             this.ParameterList = parameterList;
+            this.SymbolKind = symbolKind;
         }
 
         public static SymbolInfoDataCacheKey CreateForEvent(EventInfo eventInfo)
@@ -53,7 +56,8 @@
                 default,
                 addMethodHandle,
                 removeMethodHandle,
-                ParameterList.Empty);
+                ParameterList.Empty,
+                SymbolAttributes.Event);
         }
 
         public static SymbolInfoDataCacheKey CreateForProperty(PropertyInfo propertyInfo)
@@ -73,12 +77,34 @@
                 setMethodHandle,
                 default,
                 default,
-                parameterList);
+                parameterList,
+                SymbolAttributes.Property);
         }
 
         public static SymbolInfoDataCacheKey CreateForMethod(MethodInfo methodInfo)
         {
             ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+            RuntimeTypeHandle declaringTypeHandle = methodInfo.DeclaringType.TypeHandle;
+            string name = methodInfo.Name;
+            RuntimeTypeHandle typeHandle = methodInfo.ReturnType.TypeHandle;
+            RuntimeMethodHandle methodHandle = methodInfo.MethodHandle;
+            ParameterList parameterList = MethodParameterInfo.ConvertFrom(methodInfo.GetParameters());
+            return new SymbolInfoDataCacheKey(name,
+                declaringTypeHandle,
+                typeHandle,
+                methodHandle,
+                default,
+                default,
+                default,
+                default,
+                parameterList,
+                SymbolAttributes.Method);
+        }
+
+        public static SymbolInfoDataCacheKey CreateForAnonymousMethod(RuntimeTypeHandle declaringTypeHandle, RuntimeTypeHandle methodReturnTypeHandle, string methodName, ParameterList methodParameters)
+        {
+            ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(methodName, nameof(methodName));
+            ArgumentNullExceptionEx.th(methodName, nameof(methodName));
             RuntimeTypeHandle declaringTypeHandle = methodInfo.DeclaringType.TypeHandle;
             string name = methodInfo.Name;
             RuntimeTypeHandle typeHandle = methodInfo.ReturnType.TypeHandle;
@@ -105,7 +131,7 @@
             ParameterList parameterList = ParameterList.Empty;
             MethodInfo invokeMethod = default;
 
-            if (type.IsDelegateInternal())
+            if (type.IsDelegate())
             {
                 invokeMethod = type.GetMethod("Invoke");
                 methodHandle = invokeMethod.MethodHandle;

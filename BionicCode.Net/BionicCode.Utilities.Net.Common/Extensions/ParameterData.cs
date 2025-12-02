@@ -2,14 +2,27 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.CompilerServices;
 
+    /// <summary>
+    /// Represents metadata and reflection information for a method, constructor, or property parameter, including its
+    /// type, position, attributes, and default value.
+    /// </summary>
+    /// <remarks>This class provides access to various characteristics of a parameter, such as whether it is
+    /// passed by reference, is optional, or has a default value. It is intended for use in scenarios that require
+    /// detailed inspection of parameter metadata, such as code analysis, documentation generation, or advanced
+    /// reflection tasks.<br/>
+    /// The key is that the metadata is cached to aboid the reflection overhead for successive calls.<br/>
+    /// Instances of this class are typically created based on a ParameterInfo object from the <see cref="SymbolReflectionInfoCache"/> API.</remarks>
     internal sealed class ParameterData : SymbolInfoData
     {
         private SymbolAttributes symbolAttributes;
         private IList<CustomAttributeData> attributeData;
         private bool? isRef;
+        private bool? isRefReadonly;
         private bool? isByRef;
         private bool? isIn;
         private bool? isOut;
@@ -21,6 +34,7 @@
         private MemberInfoData member;
         private string assemblyName;
         private SymbolComponentInfo symbolComponentInfo;
+        private object? defaultValue;
 
         public ParameterData(ParameterInfo parameterInfo) : base(parameterInfo.Name)
         {
@@ -36,21 +50,56 @@
 
         public RuntimeTypeHandle DeclaringTypeHandle { get; set; }
 
+        /// <summary>
+        /// Gets a value indicating whether the current type is passed by reference using the <see langword="ref"/> keyword.
+        /// </summary>
+        /// <value><c>true</c> if the parameter is passed by reference using the <c>ref</c> keyword; otherwise, <c>false</c>.</value>
         public bool IsRef
-          => (bool)(bool?)(this.isRef ??= HelperExtensionsCommon.IsRefInternal(this));
+          => (bool)(bool?)(this.isRef ??= IsRefInternal(this));
 
+        /// <summary>
+        /// Gets a value indicating whether the current instance is marked as <see langword="ref"/> <see langword="readonly"/>.
+        /// </summary>
+        /// <value><c>true</c> if the parameter is marked as <see langword="ref"/> <see langword="readonly"/>; otherwise, <c>false</c>.</value>
+        public bool IsRefReadonly
+          => (bool)(bool?)(this.isRefReadonly ??= IsRefReadonlyInternal(this));
+
+        /// <summary>
+        /// Gets a value indicating whether the parameter is an input parameter (passed by  reference using the <see langword="in"/> keyword).
+        /// </summary>
+        /// <value><c>true</c> if the parameter is an input parameter; otherwise, <c>false</c>.</value>
         public bool IsIn
-          => (bool)(bool?)(this.isIn ??= GetParameterInfo().IsIn);
+          => (bool)(bool?)(this.isIn ??= IsInParameter(this));
 
+        /// <summary>
+        /// Gets a value indicating whether the parameter is an output parameter (passed by reference using the <see langword="out"/> keyword.
+        /// </summary>
+        /// <value><c>true</c> if the parameter is an output parameter; otherwise, <c>false</c>.</value>
         public bool IsOut
-          => (bool)(bool?)(this.isOut ??= GetParameterInfo().IsOut);
+          => (bool)(bool?)(this.isOut ??= IsOutParameter(this));
 
+        /// <summary>
+        /// Gets a value indicating whether the parameter is optional.
+        /// </summary>
+        /// <value><c>true</c> if the parameter is optional i.e. has a default value; otherwise, <c>false</c>.</value>
+        /// <remarks>This property does not return whether the parameter is decorated with  the <c>System.Runtime.InteropServices.OptionalAttribuute</c>. It only checks whether the parameter is considered optional by the existance of a default value.</remarks>
         public bool IsOptional
-          => (bool)(bool?)(this.isOptional ??= GetParameterInfo().IsOptional);
+          => (bool)(bool?)(this.isOptional ??= GetParameterInfo().HasDefaultValue);
+
+        /// <summary>
+        /// Gets the default value for the parameter, if one is defined.
+        /// </summary>
+        /// <value>The default value of the parameter, or null if no default value is defined.</value>
+        /// <remarks>If the parameter is optional and a default value is specified, this property returns
+        /// that value; otherwise, it returns null. The value may be of any type, depending on the parameter's
+        /// type.</remarks>
+        public object? DefaultValue
+            => this.IsOptional && this.defaultValue is null ? (this.defaultValue = GetParameterInfo().RawDefaultValue) : default;
 
         /// <summary>
         /// Zero-based index of the parameter in the formal parameter list.
         /// </summary>
+        /// <value>The position of the parameter.</value>
         public int Position
           => (int)(int?)(this.position ??= GetParameterInfo().Position);
 
@@ -97,7 +146,10 @@
         public override IList<CustomAttributeData> AttributeData
           => this.attributeData ??= new List<CustomAttributeData>(GetParameterInfo().GetCustomAttributesData());
 
-        public bool IsByRef
+        /// <summary>
+        /// Gets a value indicating whether the parameter is passed by reference.
+        /// </summary>
+        internal bool IsByRef
           => (bool)(bool?)(this.isByRef ??= this.ParameterTypeData.GetType().IsByRef);
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
@@ -142,5 +194,48 @@
 
         public override string AssemblyName
           => this.assemblyName ??= this.Member.AssemblyName;
+
+        internal static bool IsRefInternal(ParameterData parameterData)
+        {
+            if (!parameterData.IsByRef || parameterData.IsOut)
+            {
+                return false;
+            }
+
+            // No readonly markers → plain ref
+            ParameterInfo parameterInfo = parameterData.GetParameterInfo();
+            return parameterInfo.GetCustomAttribute<IsReadOnlyAttribute>() is null
+                && parameterInfo.GetCustomAttribute<RequiresLocationAttribute>() is null;
+        }
+
+        internal static bool IsRefReadonlyInternal(ParameterData parameterData)
+        {
+            if (!parameterData.IsByRef || parameterData.IsOut)
+            {
+                return false;
+            }
+
+            // No readonly markers → plain ref
+            ParameterInfo parameterInfo = parameterData.GetParameterInfo();
+            return parameterInfo.GetCustomAttribute<RequiresLocationAttribute>() is not null;
+        }
+
+        private static bool IsOutParameter(ParameterData parameterData)
+          => parameterData.IsByRef && parameterData.IsOut;
+
+        private static bool IsInParameter(ParameterData parameterData)
+        {
+            if (!parameterData.ParameterTypeData.IsByRef || parameterData.IsOut)
+            {
+                return false;
+            }
+
+            // C# 'in' → IsReadOnlyAttribute, but not ref readonly
+            ParameterInfo parameterInfo = parameterData.GetParameterInfo();
+            bool hasReadOnly = parameterInfo.GetCustomAttribute<IsReadOnlyAttribute>() is not null;
+            bool hasReqLoc = parameterInfo.GetCustomAttribute<RequiresLocationAttribute>() is not null;
+
+            return hasReadOnly && !hasReqLoc;
+        }
     }
 }
