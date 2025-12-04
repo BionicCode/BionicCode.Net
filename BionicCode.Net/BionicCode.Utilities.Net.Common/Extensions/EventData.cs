@@ -45,7 +45,7 @@
         }
 
         public override AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
-          ? (this.accessModifier = HelperExtensionsCommon.GetAccessModifierInternal(this))
+          ? (this.accessModifier = EventData.GetAccessModifierInternal(this))
           : this.accessModifier;
 
         public void AddEventHandler(object eventSource, Delegate handler)
@@ -70,49 +70,91 @@
           => (bool)(bool?)(this.isStatic ??= this.AddMethodData.IsStatic);
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
-          ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
+          ? (this.symbolAttributes = EventData.GetAttributesInternal(this))
           : this.symbolAttributes;
 
         public override SymbolComponentInfo SymbolComponentInfo
-          => this.symbolComponentInfo ??= HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
+          => this.symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
 
         public override string Signature
-          => this.signature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+          => this.signature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
 
         public override string ShortSignature
-          => this.shortSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false);
+          => this.shortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false);
 
         public override string ShortCompactSignature
-          => this.shortCompactSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
+          => this.shortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
 
         public override string FullyQualifiedSignature
-          => this.fullyQualifiedSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+          => this.fullyQualifiedSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
 
         public override string FullyQualifiedRuntimeSignature
-          => this.fullyQualifiedRuntimeSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+          => this.fullyQualifiedRuntimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
 
         public override string RuntimeSignature
-          => this.runtimeSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+          => this.runtimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
 
         public override string RuntimeShortSignature
-          => this.runtimeShortSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
+          => this.runtimeShortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
 
         public override string RuntimeShortCompactSignature
-          => this.runtimeShortCompactSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: true);
+          => this.runtimeShortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: true);
 
         public override string DisplayName
-          => this.displayName ??= HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
+          => this.displayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
 
         public override string ShortDisplayName
-          => this.shortDisplayName ??= HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
+          => this.shortDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
 
         public override string FullyQualifiedDisplayName
-          => this.fullyQualifiedDisplayName ??= HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
+          => this.fullyQualifiedDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
 
         public override string AssemblyName
           => this.assemblyName ??= this.DeclaringTypeData.AssemblyName;
 
         public bool IsOverride
           => (bool)(bool?)(this.isOverride ??= this.AddMethodData.IsOverride);
+
+        /// <summary>
+        /// Determines the set of symbol attributes for the specified event based on its add method characteristics.
+        /// </summary>
+        /// <param name="eventData">The event metadata used to evaluate and derive the corresponding symbol attributes.</param>
+        /// <returns>A bitwise combination of SymbolAttributes values that represent the attributes of the event, such as Final,
+        /// Abstract, Static, Virtual, or Override.</returns>
+        private static SymbolAttributes GetAttributesInternal(EventData eventData)
+        {
+            MethodData eventAddMethodData = eventData.AddMethodData;
+            SymbolAttributes eventAttributes = SymbolAttributes.Event;
+            MethodInfo addHandlerMethod = eventAddMethodData.GetMethodInfo();
+            if (addHandlerMethod.IsFinal)
+            {
+                eventAttributes |= SymbolAttributes.Final;
+            }
+
+            if (addHandlerMethod.IsAbstract)
+            {
+                eventAttributes |= SymbolAttributes.Abstract;
+            }
+
+            if (eventAddMethodData.IsStatic)
+            {
+                eventAttributes |= SymbolAttributes.Static;
+            }
+
+            if (addHandlerMethod.IsVirtual)
+            {
+                eventAttributes |= SymbolAttributes.Virtual;
+            }
+
+            if (eventAddMethodData.IsOverride)
+            {
+                eventAttributes |= SymbolAttributes.Override;
+            }
+
+            return eventAttributes;
+        }
+
+        private static AccessModifier GetAccessModifierInternal(EventData eventData)
+          => eventData.AddMethodData.AccessModifier;
     }
 }

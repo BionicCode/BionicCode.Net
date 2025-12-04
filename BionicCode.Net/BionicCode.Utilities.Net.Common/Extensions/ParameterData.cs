@@ -2,8 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
@@ -153,11 +151,11 @@
           => (bool)(bool?)(this.isByRef ??= this.ParameterTypeData.GetType().IsByRef);
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
-          ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
+          ? (this.symbolAttributes = ParameterData.GetAttributesInternal(this))
           : this.symbolAttributes;
 
         public override SymbolComponentInfo SymbolComponentInfo
-          => this.symbolComponentInfo ??= HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
+          => this.symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
 
         public override string Signature
           => this.Name;
@@ -236,6 +234,38 @@
             bool hasReqLoc = parameterInfo.GetCustomAttribute<RequiresLocationAttribute>() is not null;
 
             return hasReadOnly && !hasReqLoc;
+        }
+
+        /// <summary>
+        /// Determines the set of symbol attributes for a parameter based on its metadata.
+        /// </summary>
+        /// <param name="parameterData">The metadata describing the parameter, including its direction and optionality.</param>
+        /// <returns>A bitwise combination of SymbolAttributes flags that represent the parameter's characteristics, such as In,
+        /// Out, Ref, and Optional.</returns>
+        private static SymbolAttributes GetAttributesInternal(ParameterData parameterData)
+        {
+            SymbolAttributes parameterAttributes = SymbolAttributes.Parameter;
+            if (parameterData.IsIn)
+            {
+                parameterAttributes |= SymbolAttributes.InParameter;
+            }
+
+            if (parameterData.IsRef)
+            {
+                parameterAttributes |= SymbolAttributes.RefParameter;
+            }
+
+            if (parameterData.IsOut)
+            {
+                parameterAttributes |= SymbolAttributes.OutParameter;
+            }
+
+            if (parameterData.IsOptional)
+            {
+                parameterAttributes |= SymbolAttributes.OptionalParameter;
+            }
+
+            return parameterAttributes;
         }
     }
 }

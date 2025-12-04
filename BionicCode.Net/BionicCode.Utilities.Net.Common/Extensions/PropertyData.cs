@@ -101,7 +101,7 @@ namespace BionicCode.Utilities.Net
 
         private void GetAccessors()
         {
-            (AccessModifier propertyModifier, AccessModifier getMethodModifier, AccessModifier setMethodModifier) = HelperExtensionsCommon.GetPropertyAccessModifier(this.GetMethodData, this.SetMethodData);
+            (AccessModifier propertyModifier, AccessModifier getMethodModifier, AccessModifier setMethodModifier) = PropertyData.GetPropertyAccessModifier(this.GetMethodData, this.SetMethodData);
             this.propertyAccessModifier = propertyModifier;
             this.setAccessorAccessModifier = setMethodModifier;
             this.getAccessorAccessModifier = getMethodModifier;
@@ -179,44 +179,44 @@ namespace BionicCode.Utilities.Net
           => this.setMethodData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetPropertyInfo().GetSetMethod(true));
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
-          ? (this.symbolAttributes = HelperExtensionsCommon.GetAttributesInternal(this))
+          ? (this.symbolAttributes = PropertyData.GetAttributesInternal(this))
           : this.symbolAttributes;
 
         public override SymbolComponentInfo SymbolComponentInfo
-          => this.symbolComponentInfo ??= HelperExtensionsCommon.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
+          => this.symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
 
         public override string Signature
-          => this.signature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+          => this.signature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
 
         public override string ShortSignature
-          => this.shortSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false);
+          => this.shortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false);
 
         public override string ShortCompactSignature
-          => this.shortCompactSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
+          => this.shortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
 
         public override string FullyQualifiedSignature
-          => this.fullyQualifiedSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+          => this.fullyQualifiedSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
 
         public override string FullyQualifiedRuntimeSignature
-          => this.fullyQualifiedRuntimeSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+          => this.fullyQualifiedRuntimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
 
         public override string RuntimeSignature
-          => this.runtimeSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+          => this.runtimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
 
         public override string RuntimeShortSignature
-          => this.runtimeShortSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
+          => this.runtimeShortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
 
         public override string RuntimeShortCompactSignature
-          => this.runtimeShortCompactSignature ??= HelperExtensionsCommon.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: true);
+          => this.runtimeShortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: true);
 
         public override string DisplayName
-          => this.displayName ??= HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
+          => this.displayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
 
         public override string ShortDisplayName
-          => this.shortDisplayName ??= HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
+          => this.shortDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
 
         public override string FullyQualifiedDisplayName
-          => this.fullyQualifiedDisplayName ??= HelperExtensionsCommon.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
+          => this.fullyQualifiedDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
 
         public override string AssemblyName
           => this.assemblyName ??= this.DeclaringTypeData.AssemblyName;
@@ -224,12 +224,69 @@ namespace BionicCode.Utilities.Net
         public override bool IsStatic
           => (bool)(bool?)(this.isStatic ??= this.CanRead ? this.GetMethodData.IsStatic : this.SetMethodData.IsStatic);
 
-#if !NETSTANDARD2_0
         public bool IsSetMethodReadOnly
           => (bool)(bool?)(this.isSetMethodReadOnly ??= this.CanWrite && this.SetMethodData.AttributeData.Any(data => data.AttributeType == typeof(IsReadOnlyAttribute)));
-#endif
 
         public bool IsOverride
           => (bool)(bool?)(this.isOverride ??= this.CanRead ? this.GetMethodData.IsOverride : this.SetMethodData.IsOverride);
+
+        /// <summary>
+        /// Determines the set of symbol attributes for the specified property based on its metadata and accessor
+        /// methods.
+        /// </summary>
+        /// <param name="propertyData">The metadata describing the property for which to retrieve symbol attributes. Cannot be null.</param>
+        /// <returns>A bitwise combination of SymbolAttributes values that represent the characteristics of the property, such as
+        /// whether it is static, abstract, virtual, an indexer, or has other modifiers.</returns>
+        private static SymbolAttributes GetAttributesInternal(PropertyData propertyData)
+        {
+            SymbolAttributes propertyAttributes = propertyData.IsIndexer
+              ? SymbolAttributes.IndexerProperty
+              : SymbolAttributes.Property;
+
+            MethodData accessorData = propertyData.GetMethodData ?? propertyData.SetMethodData;
+            MethodInfo accessorMethodInfo = accessorData.GetMethodInfo();
+            if (!propertyData.CanWrite)
+            {
+                propertyAttributes |= SymbolAttributes.Final;
+            }
+
+            if (SymbolSignatureGenerator.ToDisplayNameInternal(propertyData))
+            {
+                propertyAttributes |= SymbolAttributes.Init;
+            }
+
+            if (accessorMethodInfo.IsAbstract)
+            {
+                propertyAttributes |= SymbolAttributes.Abstract;
+            }
+
+            if (propertyData.IsStatic)
+            {
+                propertyAttributes |= SymbolAttributes.Static;
+            }
+
+            if (accessorMethodInfo.IsVirtual)
+            {
+                propertyAttributes |= SymbolAttributes.Virtual;
+            }
+
+            if (propertyData.IsOverride)
+            {
+                propertyAttributes |= SymbolAttributes.Override;
+            }
+
+            return propertyAttributes;
+        }
+
+        internal static (AccessModifier PropertyModifier, AccessModifier GetMethodModifier, AccessModifier SetMethodModifier) GetPropertyAccessModifier(MethodData getMethodData, MethodData setMethodData)
+        {
+            AccessModifier getMethodModifier = getMethodData.AccessModifier;
+            AccessModifier setMethodModifier = setMethodData.AccessModifier;
+
+            // Property accessors with the least restriction provides the access modifier for the property.
+            AccessModifier propertyAccessModifier = (AccessModifier)System.Math.Min((int)getMethodModifier, (int)setMethodModifier);
+
+            return (propertyAccessModifier, getMethodModifier, setMethodModifier);
+        }
     }
 }
