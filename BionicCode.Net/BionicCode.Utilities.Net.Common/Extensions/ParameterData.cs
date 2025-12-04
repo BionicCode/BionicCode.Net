@@ -53,28 +53,28 @@
         /// </summary>
         /// <value><c>true</c> if the parameter is passed by reference using the <c>ref</c> keyword; otherwise, <c>false</c>.</value>
         public bool IsRef
-          => (bool)(bool?)(this.isRef ??= IsRefInternal(this));
+          => this.isRef ??= IsRefInternal(this);
 
         /// <summary>
         /// Gets a value indicating whether the current instance is marked as <see langword="ref"/> <see langword="readonly"/>.
         /// </summary>
         /// <value><c>true</c> if the parameter is marked as <see langword="ref"/> <see langword="readonly"/>; otherwise, <c>false</c>.</value>
         public bool IsRefReadonly
-          => (bool)(bool?)(this.isRefReadonly ??= IsRefReadonlyInternal(this));
+          => this.isRefReadonly ??= IsRefReadonlyInternal(this);
 
         /// <summary>
         /// Gets a value indicating whether the parameter is an input parameter (passed by  reference using the <see langword="in"/> keyword).
         /// </summary>
         /// <value><c>true</c> if the parameter is an input parameter; otherwise, <c>false</c>.</value>
         public bool IsIn
-          => (bool)(bool?)(this.isIn ??= IsInParameter(this));
+          => this.isIn ??= IsInParameter(this);
 
         /// <summary>
         /// Gets a value indicating whether the parameter is an output parameter (passed by reference using the <see langword="out"/> keyword.
         /// </summary>
         /// <value><c>true</c> if the parameter is an output parameter; otherwise, <c>false</c>.</value>
         public bool IsOut
-          => (bool)(bool?)(this.isOut ??= IsOutParameter(this));
+          => this.isOut ??= IsOutParameter(this);
 
         /// <summary>
         /// Gets a value indicating whether the parameter is optional.
@@ -82,7 +82,7 @@
         /// <value><c>true</c> if the parameter is optional i.e. has a default value; otherwise, <c>false</c>.</value>
         /// <remarks>This property does not return whether the parameter is decorated with  the <c>System.Runtime.InteropServices.OptionalAttribuute</c>. It only checks whether the parameter is considered optional by the existance of a default value.</remarks>
         public bool IsOptional
-          => (bool)(bool?)(this.isOptional ??= GetParameterInfo().HasDefaultValue);
+          => this.isOptional ??= GetParameterInfo().HasDefaultValue;
 
         /// <summary>
         /// Gets the default value for the parameter, if one is defined.
@@ -99,10 +99,10 @@
         /// </summary>
         /// <value>The position of the parameter.</value>
         public int Position
-          => (int)(int?)(this.position ??= GetParameterInfo().Position);
+          => this.position ??= GetParameterInfo().Position;
 
         public bool IsParams
-          => (bool)(bool?)(this.isParams ??= GetParameterInfo().GetCustomAttribute<ParamArrayAttribute>() != null);
+          => this.isParams ??= GetParameterInfo().GetCustomAttribute<ParamArrayAttribute>() != null;
 
         public ParameterInfo ParameterInfo { get; }
 
@@ -148,7 +148,7 @@
         /// Gets a value indicating whether the parameter is passed by reference.
         /// </summary>
         internal bool IsByRef
-          => (bool)(bool?)(this.isByRef ??= this.ParameterTypeData.GetType().IsByRef);
+          => this.isByRef ??= this.ParameterTypeData.GetType().IsByRef;
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
           ? (this.symbolAttributes = ParameterData.GetAttributesInternal(this))

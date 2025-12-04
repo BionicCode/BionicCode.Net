@@ -1643,6 +1643,11 @@
             return typeData.IsAwaitable;
         }
 
+        /// <summary>
+        /// Determines whether the specified method is marked as asynchronous.
+        /// </summary>
+        /// <param name="methodInfo">The method to inspect for asynchronous designation. Cannot be null.</param>
+        /// <returns>true if the method is marked as asynchronous; otherwise, false.</returns>
         public static bool IsMarkedAsync(this MethodInfo methodInfo)
         {
             ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));

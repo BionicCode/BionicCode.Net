@@ -67,7 +67,7 @@
           => this.eventHandlerTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetEventInfo().EventHandlerType);
 
         public override bool IsStatic
-          => (bool)(bool?)(this.isStatic ??= this.AddMethodData.IsStatic);
+          => this.isStatic ??= this.AddMethodData.IsStatic;
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
           ? (this.symbolAttributes = EventData.GetAttributesInternal(this))
@@ -113,7 +113,7 @@
           => this.assemblyName ??= this.DeclaringTypeData.AssemblyName;
 
         public bool IsOverride
-          => (bool)(bool?)(this.isOverride ??= this.AddMethodData.IsOverride);
+          => this.isOverride ??= this.AddMethodData.IsOverride;
 
         /// <summary>
         /// Determines the set of symbol attributes for the specified event based on its add method characteristics.

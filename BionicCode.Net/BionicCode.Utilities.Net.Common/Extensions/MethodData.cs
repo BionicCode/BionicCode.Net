@@ -48,10 +48,7 @@
         private Func<object, object[], dynamic> awaitableGenericValueTaskInvocator;
         private Func<object, object[], ValueTask> awaitableValueTaskInvocator;
         private string assemblyName;
-
-#if !NETSTANDARD2_0
         private bool? isReturnValueReadOnly;
-#endif
 
         public MethodData(MethodInfo methodInfo) : base(methodInfo) => this.Handle = methodInfo.MethodHandle;
 
@@ -331,14 +328,14 @@
         }
 
         public override AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
-          ? (this.accessModifier = MethodData.GetAccessModifierInternal(this))
+          ? (this.accessModifier = MethodData.GetAccessModifier(this))
           : this.accessModifier;
 
         public bool IsExtensionMethod
-          => this.isExtensionMethod ??= MethodData.IsExtensionMethodInternal(this);
+          => this.isExtensionMethod ??= MethodData.IsMethodExtensionMethod(this);
 
         public bool IsAsync
-          => this.isAsync ??= IsMarkedAsyncInternal(this);
+          => this.isAsync ??= IsMarkedAsync(this);
 
         public bool IsAwaitable
           => this.isAwaitable ??= this.ReturnTypeData.IsAwaitable;
@@ -413,7 +410,7 @@
         }
 
         public bool IsOverride
-          => this.isOverride ??= MethodData.IsOverrideInternal(this);
+          => this.isOverride ??= MethodData.IsMethodOverride(this);
 
         public override bool IsStatic
           => this.isStatic ??= GetMethodInfo().IsStatic;
@@ -428,7 +425,7 @@
           => this.isReturnValueByRef ??= this.ReturnTypeData.IsByRef;
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
-          ? (this.symbolAttributes = MethodData.GetAttributesInternal(this))
+          ? (this.symbolAttributes = MethodData.GetAttributes(this))
           : this.symbolAttributes;
 
         public override SymbolComponentInfo SymbolComponentInfo
@@ -479,7 +476,7 @@
         public bool IsGenericMethodDefinition
           => this.isGenericTypeMethod ??= GetMethodInfo().IsGenericMethodDefinition;
 
-        private static bool IsExtensionMethodInternal(MethodData methodData)
+        private static bool IsMethodExtensionMethod(MethodData methodData)
         {
             // Check if the declaring class satisfies the constraints to declare extension methods
             TypeData declaringTypeData = methodData.DeclaringTypeData;
@@ -512,17 +509,7 @@
             return true;
         }
 
-        /// <summary>
-        /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.
-        /// </summary>
-        /// <param genericTypeParameterIdentifier="methodInfo">The <see cref="MethodInfo"/> to check if it belongs to an awaitable method.</param>
-        /// <returns><see langword="true"/> if the associated method is awaitable. Otherwise <see langword="false"/>.</returns>
-        /// <remarks>The method first checks if the return valueType is either <see cref="Task"/> or <see cref="ValueTask"/>. If that fails, it checks if the returned valueType (by compiler convention) exposes a "GetAwaiter" named method that returns an appropriate valueType (awaiter).
-        /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned valueType that would make the valueType awaitable. If this fails too, the method is not awaitable.</remarks>
-        private static bool IsAwaitableInternal(MethodData methodData)
-          => methodData.ReturnTypeData.IsAwaitable;
-
-        private static bool IsMarkedAsyncInternal(MethodData methodData)
+        private static bool IsMarkedAsync(MethodData methodData)
           => methodData.GetMethodInfo().GetCustomAttribute(MethodData.AsyncStateMachineAttributeType) != null;
 
         /// <summary>
@@ -531,7 +518,7 @@
         /// <param name="methodData">The method metadata used to evaluate and determine the applicable symbol attributes.</param>
         /// <returns>A bitwise combination of SymbolAttributes values that describe the method's characteristics, such as whether
         /// it is static, abstract, virtual, final, override, or generic.</returns>
-        private static SymbolAttributes GetAttributesInternal(MethodData methodData)
+        private static SymbolAttributes GetAttributes(MethodData methodData)
         {
             MethodInfo methodInfo = methodData.GetMethodInfo();
             SymbolAttributes methodAttributes = SymbolAttributes.Method;
@@ -568,13 +555,13 @@
             return methodAttributes;
         }
 
-        private static bool IsOverrideInternal(MethodData methodData)
+        private static bool IsMethodOverride(MethodData methodData)
         {
             MethodInfo methodInfo = methodData.GetMethodInfo();
             return !methodInfo.Equals(methodInfo.GetBaseDefinition());
         }
 
-        private static AccessModifier GetAccessModifierInternal(MethodData methodData)
+        private static AccessModifier GetAccessModifier(MethodData methodData)
         {
             MethodInfo methodInfo = methodData.GetMethodInfo();
             return methodInfo.IsPublic ? AccessModifier.Public

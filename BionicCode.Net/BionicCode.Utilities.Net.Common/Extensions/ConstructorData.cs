@@ -110,7 +110,7 @@
         public override string AssemblyName
           => this.assemblyName ??= this.DeclaringTypeData.AssemblyName;
 
-        public override bool IsStatic => (bool)(bool?)(this.isStatic ??= GetConstructorInfo().IsStatic);
+        public override bool IsStatic => this.isStatic ??= GetConstructorInfo().IsStatic;
 
         /// <summary>
         /// Determines the symbol attributes for a constructor based on the specified constructor data.

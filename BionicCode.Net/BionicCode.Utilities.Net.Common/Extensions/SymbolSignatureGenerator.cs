@@ -8,7 +8,6 @@
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
-    using BionicCode.Utilities.Net;
     using Microsoft.CodeAnalysis;
 
     internal static class SymbolSignatureGenerator
@@ -73,20 +72,6 @@
             nameBuilder.Recycle();
 
             return symbolName;
-        }
-
-        internal static bool ToDisplayNameInternal(PropertyData propertyData)
-        {
-            if (propertyData.CanWrite)
-            {
-                Type[] requiredModifiers = propertyData.SetMethodData.GetMethodInfo().ReturnParameter.GetRequiredCustomModifiers();
-                if (requiredModifiers.Length > 0)
-                {
-                    return requiredModifiers.FirstOrDefault(type => type == typeof(IsExternalInit)) != default;
-                }
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -829,8 +814,8 @@
 
         //    private static SyntaxNode CreateMethodGraph(MethodInfo methodInfo, bool isFullyQualifiedName)
         //    {
-        //      TypeSyntax returnType = SyntaxFactory.ParseTypeName(ToDisplayNameInternal(methodInfo.ReturnType, isFullyQualifiedName, isDeclaringTypeIncluded: false));
-        //      string methodName = ToDisplayNameInternal(methodInfo, isFullyQualifiedName, isDeclaringTypeIncluded: false);
+        //      TypeSyntax returnType = SyntaxFactory.ParseTypeName(IsPropertyInit(methodInfo.ReturnType, isFullyQualifiedName, isDeclaringTypeIncluded: false));
+        //      string methodName = IsPropertyInit(methodInfo, isFullyQualifiedName, isDeclaringTypeIncluded: false);
         //      MethodDeclarationSyntax methodGraph = SyntaxFactory.MethodDeclaration(returnType, methodName)
         //        .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
@@ -838,7 +823,7 @@
         //      foreach (ParameterInfo parameter in parameters)
         //      {
         //        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.EventName))
-        //          .WithType(SyntaxFactory.IdentifierName(ToDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
+        //          .WithType(SyntaxFactory.IdentifierName(IsPropertyInit(parameter.ParameterType, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
 
         //        if (parameter.IsRef())
         //        {
@@ -862,7 +847,7 @@
         //        //  {
         //        //    var argumentSyntax = SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression)
         //        //  }
-        //        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.EventName, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
+        //        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(IsPropertyInit(attributeSyntax.EventName, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
         //        //  parameterSyntax = parameterSyntax.AddAttributeLists(attributeSyntax);
         //        //}
         //        methodGraph = methodGraph.AddParameterListParameters(parameterSyntax);
@@ -898,7 +883,7 @@
         //                continue;
         //              }
 
-        //              string constraintName = ToDisplayNameInternal(constraintType, isFullyQualifiedName, isDeclaringTypeIncluded: false);
+        //              string constraintName = IsPropertyInit(constraintType, isFullyQualifiedName, isDeclaringTypeIncluded: false);
         //              TypeConstraintSyntax constraintSyntax = SyntaxFactory.TypeConstraint(SyntaxFactory.IdentifierName(constraintName));
         //              constraints = constraints.Add(constraintSyntax);
         //            }
@@ -908,7 +893,7 @@
         //              constraints = constraints.Add(SyntaxFactory.ConstructorConstraint());
         //            }
 
-        //            string genericTypeParameterName = ToDisplayNameInternal(typeArgument, isFullyQualifiedName, isDeclaringTypeIncluded: false);
+        //            string genericTypeParameterName = IsPropertyInit(typeArgument, isFullyQualifiedName, isDeclaringTypeIncluded: false);
         //            methodGraph = methodGraph.AddConstraintClauses(SyntaxFactory.TypeParameterConstraintClause(SyntaxFactory.IdentifierName(genericTypeParameterName), constraints));
         //          }
         //        }
@@ -920,8 +905,8 @@
 
         //    private static SyntaxNode CreateDelegateGraph(MethodInfo methodInfo, bool isFullyQualifiedName)
         //    {
-        //      TypeSyntax returnType = SyntaxFactory.ParseTypeName(ToDisplayNameInternal(methodInfo.ReturnType, isFullyQualifiedName, isDeclaringTypeIncluded: false));
-        //      string methodName = ToDisplayNameInternal(methodInfo, isFullyQualifiedName, isDeclaringTypeIncluded: true);
+        //      TypeSyntax returnType = SyntaxFactory.ParseTypeName(IsPropertyInit(methodInfo.ReturnType, isFullyQualifiedName, isDeclaringTypeIncluded: false));
+        //      string methodName = IsPropertyInit(methodInfo, isFullyQualifiedName, isDeclaringTypeIncluded: true);
         //      MethodDeclarationSyntax methodGraph = SyntaxFactory.MethodDeclaration(returnType, methodName)
         //        .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
@@ -929,7 +914,7 @@
         //      foreach (ParameterInfo parameter in parameters)
         //      {
         //        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.EventName))
-        //          .WithType(SyntaxFactory.IdentifierName(ToDisplayNameInternal(parameter.ParameterType, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
+        //          .WithType(SyntaxFactory.IdentifierName(IsPropertyInit(parameter.ParameterType, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
 
         //        if (parameter.IsRef())
         //        {
@@ -953,7 +938,7 @@
         //        //  {
         //        //    var argumentSyntax = SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression)
         //        //  }
-        //        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(ToDisplayNameInternal(attributeSyntax.EventName, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
+        //        //  AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.Identifier(IsPropertyInit(attributeSyntax.EventName, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
         //        //  parameterSyntax = parameterSyntax.AddAttributeLists(attributeSyntax);
         //        //}
         //        methodGraph = methodGraph.AddParameterListParameters(parameterSyntax);
@@ -994,12 +979,12 @@
         //                continue;
         //              }
 
-        //              string constraintName = ToDisplayNameInternal(constraintType, isFullyQualifiedName, isDeclaringTypeIncluded: false);
+        //              string constraintName = IsPropertyInit(constraintType, isFullyQualifiedName, isDeclaringTypeIncluded: false);
         //              TypeConstraintSyntax constraintSyntax = SyntaxFactory.TypeConstraint(SyntaxFactory.IdentifierName(constraintName));
         //              constraints = constraints.Add(constraintSyntax);
         //            }
 
-        //            string genericTypeParameterName = ToDisplayNameInternal(typeArgument, isFullyQualifiedName, isDeclaringTypeIncluded: false);
+        //            string genericTypeParameterName = IsPropertyInit(typeArgument, isFullyQualifiedName, isDeclaringTypeIncluded: false);
         //            methodGraph = methodGraph.AddConstraintClauses(SyntaxFactory.TypeParameterConstraintClause(SyntaxFactory.IdentifierName(genericTypeParameterName), constraints));
         //          }
         //        }
@@ -1015,7 +1000,7 @@
         //      AttributeListSyntax attributeSyntaxList = SyntaxFactory.AttributeList();
         //      foreach (Attribute attribute in attributes)
         //      {
-        //        string attributeName = ToDisplayNameInternal(attribute.GetType(), isFullyQualifiedName, isDeclaringTypeIncluded: false);
+        //        string attributeName = IsPropertyInit(attribute.GetType(), isFullyQualifiedName, isDeclaringTypeIncluded: false);
         //        AttributeSyntax attributeSyntax = SyntaxFactory.Attribute(SyntaxFactory.IdentifierName(attributeName));
         //        attributeSyntaxList = attributeSyntaxList.AddAttributes(attributeSyntax);
         //      }
@@ -1033,11 +1018,11 @@
         //        }
         //      }
 
-        //      string typeParameterName = ToDisplayNameInternal(valueType, isFullyQualifiedName, isDeclaringTypeIncluded: false);
+        //      string typeParameterName = IsPropertyInit(valueType, isFullyQualifiedName, isDeclaringTypeIncluded: false);
         //      return SyntaxFactory.TypeParameter(new SyntaxList<AttributeListSyntax>() { attributeSyntaxList }, SyntaxFactory.Token(variance), SyntaxFactory.Identifier(typeParameterName));
         //    }
 
-        //    private static string ToDisplayNameInternal(MemberInfo memberInfo, bool isFullyQualifiedName, bool isDeclaringTypeIncluded)
+        //    private static string IsPropertyInit(MemberInfo memberInfo, bool isFullyQualifiedName, bool isDeclaringTypeIncluded)
         //    {
         //      string symbolName = new StringBuilder()
         //        .AppendDisplayNameInternal(memberInfo, isFullyQualifiedName, isDeclaringTypeIncluded)

@@ -21,6 +21,7 @@
         private bool? isStatic;
         private TypeData fieldTypeData;
         private bool? isRef;
+        private bool? isConst;
         private Func<object, object> getInvocator;
         private Action<object, object> setInvocator;
         private string assemblyName;
@@ -55,7 +56,7 @@
           : this.accessModifier;
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
-          ? (this.symbolAttributes = FieldData.GetAttributesInternal(this))
+          ? (this.symbolAttributes = FieldData.GetAttributes(this))
           : this.symbolAttributes;
 
         public override SymbolComponentInfo SymbolComponentInfo
@@ -97,13 +98,17 @@
         public override string AssemblyName
           => this.assemblyName ??= this.DeclaringTypeData.AssemblyName;
 
-        public override bool IsStatic => (bool)(bool?)(this.isStatic ??= GetFieldInfo().IsStatic);
+        public override bool IsStatic
+            => this.isStatic ??= GetFieldInfo().IsStatic;
 
         public TypeData FieldTypeData
           => this.fieldTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetFieldInfo().FieldType);
 
         public bool IsRef
-          => (bool)(bool?)(this.isRef ??= this.FieldTypeData.IsByRef);
+          => this.isRef ??= this.FieldTypeData.IsByRef;
+
+        public bool IsConst
+          => this.isConst ??= IsFieldConst(this);
 
         /// <summary>
         /// Determines the set of symbol attributes for the specified field based on its metadata and characteristics.
@@ -114,7 +119,7 @@
         /// <param name="fieldData">The field metadata used to evaluate and construct the corresponding symbol attributes.</param>
         /// <returns>A bitwise combination of <see cref="SymbolAttributes"/> values that represent the attributes of the field,
         /// such as static, constant, or by-reference.</returns>
-        private static SymbolAttributes GetAttributesInternal(FieldData fieldData)
+        private static SymbolAttributes GetAttributes(FieldData fieldData)
         {
             FieldInfo fieldInfo = fieldData.GetFieldInfo();
             SymbolAttributes fieldAttributes = SymbolAttributes.Field;
@@ -133,7 +138,7 @@
                 fieldAttributes |= SymbolAttributes.Static;
             }
 
-            if (IsConstInternal(fieldData))
+            if (fieldData.IsConst)
             {
                 fieldAttributes |= SymbolAttributes.Constant;
             }
@@ -141,7 +146,7 @@
             return fieldAttributes;
         }
 
-        private static bool IsConstInternal(FieldData fieldData)
+        private static bool IsFieldConst(FieldData fieldData)
           => fieldData.GetFieldInfo().IsLiteral;
 
         private static AccessModifier GetAccessModifierInternal(FieldData fieldData)

@@ -67,10 +67,7 @@ namespace BionicCode.Utilities.Net
         private bool isAllFieldsGenerated;
         private bool isAllEventsGenerated;
         private bool isAllConstructorsGenerated;
-
-#if !NETFRAMEWORK && !NETSTANDARD2_0
         private bool? isByRefLike;
-#endif
 
         public TypeData(Type type) : base(type.Name)
         {
@@ -306,13 +303,13 @@ namespace BionicCode.Utilities.Net
         }
 
         public bool CanDeclareExtensionMethod
-          => (bool)(bool?)(this.canDeclareExtensionMethod ??= TypeData.CanDeclareExtensionMethodsInternal(this));
+          => (bool)(bool?)(this.canDeclareExtensionMethod ??= TypeData.CanDeclareExtensionMethods(this));
 
         public override IList<CustomAttributeData> AttributeData
           => this.attributeData ??= GetType().GetCustomAttributesData();
 
         public AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
-          ? (this.accessModifier = TypeData.GetAccessModifierInternal(this))
+          ? (this.accessModifier = TypeData.GetAccessModifier(this))
           : this.accessModifier;
 
         public override SymbolComponentInfo SymbolComponentInfo
@@ -358,28 +355,26 @@ namespace BionicCode.Utilities.Net
           => this.assemblyName ??= GetType().Assembly.GetName().Name;
 
         public bool IsStatic
-          => (bool)(bool?)(this.isStatic ??= TypeData.IsTypeStatic(this));
+          => this.isStatic ??= TypeData.IsTypeStatic(this);
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
-          ? (this.symbolAttributes = TypeData.GetAttributesInternal(this))
+          ? (this.symbolAttributes = TypeData.GetAttributes(this))
           : this.symbolAttributes;
 
         public bool IsAbstract
-          => (bool)(bool?)(this.isAbstract ??= GetType().IsAbstract);
+          => this.isAbstract ??= GetType().IsAbstract;
 
         public bool IsSealed
-          => (bool)(bool?)(this.isSealed ??= GetType().IsSealed);
+          => this.isSealed ??= GetType().IsSealed;
 
         public bool IsByRef
-          => (bool)(bool?)(this.isByRef ??= GetType().IsByRef);
+          => this.isByRef ??= GetType().IsByRef;
 
-#if !NETFRAMEWORK && !NETSTANDARD2_0
         public bool IsByRefLike
-          => (bool)(bool?)(this.isByRefLike ??= GetType().IsByRefLike);
-#endif
+          => this.isByRefLike ??= GetType().IsByRefLike;
 
         public bool IsDelegate
-          => (bool)(bool?)(this.isDelegate ??= TypeData.IsTypeDelegate(GetType()));
+          => this.isDelegate ??= TypeData.IsTypeDelegate(GetType());
 
         public bool IsSubclass
         {
@@ -431,16 +426,16 @@ namespace BionicCode.Utilities.Net
         }
 
         public bool IsGenericType
-          => (bool)(bool?)(this.isGenericType ??= GetType().IsGenericType);
+          => this.isGenericType ??= GetType().IsGenericType;
 
         public bool IsBuiltInType
-          => (bool)(bool?)(this.isBuiltInType ??= TypeData.IsTypeBuiltInType(this));
+          => this.isBuiltInType ??= TypeData.IsTypeBuiltInType(this);
 
         public bool IsGenericTypeDefinition
-          => (bool)(bool?)(this.isGenericTypeDefinition ??= GetType().IsGenericTypeDefinition);
+          => this.isGenericTypeDefinition ??= GetType().IsGenericTypeDefinition;
 
         public bool ContainsGenericParameters
-          => (bool)(bool?)(this.containsGenericParameters ??= GetType().ContainsGenericParameters);
+          => this.containsGenericParameters ??= GetType().ContainsGenericParameters;
 
         public GenericParameterAttributes GenericParameterAttributes
           => (GenericParameterAttributes)(GenericParameterAttributes?)(this.genericParameterAttributes ??= GetType().GenericParameterAttributes);
@@ -482,7 +477,7 @@ namespace BionicCode.Utilities.Net
             return !HelperExtensionsCommon.CodeProvider.IsValidIdentifier(typeName);
         }
 
-        private static bool CanDeclareExtensionMethodsInternal(TypeData typeData)
+        private static bool CanDeclareExtensionMethods(TypeData typeData)
         {
             Type typeInfo = typeData.GetType();
             if (!typeData.IsStatic || typeInfo.IsNested || typeInfo.IsGenericType)
@@ -504,7 +499,7 @@ namespace BionicCode.Utilities.Net
         /// <returns>A SymbolAttributes value that describes the kind and characteristics of the specified type, such as whether
         /// it is a class, struct, interface, enum, delegate, generic, static, abstract, or final. Returns
         /// SymbolAttributes.Undefined if the type does not match any recognized category.</returns>
-        internal static SymbolAttributes GetAttributesInternal(TypeData typeData)
+        private static SymbolAttributes GetAttributes(TypeData typeData)
         {
             Type type = typeData.GetType();
             if (typeData.IsDelegate)
@@ -652,7 +647,7 @@ namespace BionicCode.Utilities.Net
           => TypeData.ValueTaskType == type.GetType()
             || (type.IsGenericType && TypeData.ValueTaskGenericType == type.GenericTypeDefinitionData.GetType());
 
-        private static AccessModifier GetAccessModifierInternal(TypeData typeData)
+        private static AccessModifier GetAccessModifier(TypeData typeData)
         {
             Type typeInfo = typeData.GetType();
             return typeInfo.IsPublic ? AccessModifier.Public

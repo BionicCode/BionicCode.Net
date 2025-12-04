@@ -36,14 +36,12 @@ namespace BionicCode.Utilities.Net
         private bool? isSealed;
         private bool? canWrite;
         private bool? canRead;
+        private bool? isInit;
         private Func<object, object[], object> getInvocator;
         private Action<object, object, object[]> setInvocator;
         private string assemblyName;
         private SymbolComponentInfo symbolComponentInfo;
-
-#if !NETSTANDARD2_0
         private bool? isSetMethodReadOnly;
-#endif
 
         public PropertyData(PropertyInfo propertyInfo) : base(propertyInfo) => this.PropertyInfo = propertyInfo;
 
@@ -164,13 +162,16 @@ namespace BionicCode.Utilities.Net
           => PropertyData._ValueTaskResultPropertyData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(ValueTask<>).GetProperty(nameof(ValueTask<object>.Result)));
 
         public bool IsSealed
-          => (bool)(bool?)(this.isSealed ??= this.CanRead ? this.GetMethodData.IsSealed : this.SetMethodData.IsSealed);
+          => this.isSealed ??= this.CanRead ? this.GetMethodData.IsSealed : this.SetMethodData.IsSealed;
 
         public bool CanWrite
-          => (bool)(bool?)(this.canWrite ??= GetPropertyInfo().CanWrite);
+          => this.canWrite ??= GetPropertyInfo().CanWrite;
 
         public bool CanRead
-          => (bool)(bool?)(this.canRead ??= GetPropertyInfo().CanRead);
+          => this.canRead ??= GetPropertyInfo().CanRead;
+
+        public bool IsInit
+          => this.isInit ??= this.CanWrite && PropertyData.IsPropertyInit(this);
 
         public MethodData GetMethodData
           => this.getMethodData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetPropertyInfo().GetGetMethod(true));
@@ -222,13 +223,13 @@ namespace BionicCode.Utilities.Net
           => this.assemblyName ??= this.DeclaringTypeData.AssemblyName;
 
         public override bool IsStatic
-          => (bool)(bool?)(this.isStatic ??= this.CanRead ? this.GetMethodData.IsStatic : this.SetMethodData.IsStatic);
+          => this.isStatic ??= this.CanRead ? this.GetMethodData.IsStatic : this.SetMethodData.IsStatic;
 
         public bool IsSetMethodReadOnly
-          => (bool)(bool?)(this.isSetMethodReadOnly ??= this.CanWrite && this.SetMethodData.AttributeData.Any(data => data.AttributeType == typeof(IsReadOnlyAttribute)));
+          => this.isSetMethodReadOnly ??= this.CanWrite && this.SetMethodData.AttributeData.Any(data => data.AttributeType == typeof(IsReadOnlyAttribute));
 
         public bool IsOverride
-          => (bool)(bool?)(this.isOverride ??= this.CanRead ? this.GetMethodData.IsOverride : this.SetMethodData.IsOverride);
+          => this.isOverride ??= this.CanRead ? this.GetMethodData.IsOverride : this.SetMethodData.IsOverride;
 
         /// <summary>
         /// Determines the set of symbol attributes for the specified property based on its metadata and accessor
@@ -250,7 +251,7 @@ namespace BionicCode.Utilities.Net
                 propertyAttributes |= SymbolAttributes.Final;
             }
 
-            if (SymbolSignatureGenerator.ToDisplayNameInternal(propertyData))
+            if (propertyData.IsInit)
             {
                 propertyAttributes |= SymbolAttributes.Init;
             }
@@ -278,7 +279,21 @@ namespace BionicCode.Utilities.Net
             return propertyAttributes;
         }
 
-        internal static (AccessModifier PropertyModifier, AccessModifier GetMethodModifier, AccessModifier SetMethodModifier) GetPropertyAccessModifier(MethodData getMethodData, MethodData setMethodData)
+        private static bool IsPropertyInit(PropertyData propertyData)
+        {
+            if (propertyData.CanWrite)
+            {
+                Type[] requiredModifiers = propertyData.SetMethodData.GetMethodInfo().ReturnParameter.GetRequiredCustomModifiers();
+                if (requiredModifiers.Length > 0)
+                {
+                    return requiredModifiers.FirstOrDefault(type => type == typeof(IsExternalInit)) != default;
+                }
+            }
+
+            return false;
+        }
+
+        private static (AccessModifier PropertyModifier, AccessModifier GetMethodModifier, AccessModifier SetMethodModifier) GetPropertyAccessModifier(MethodData getMethodData, MethodData setMethodData)
         {
             AccessModifier getMethodModifier = getMethodData.AccessModifier;
             AccessModifier setMethodModifier = setMethodData.AccessModifier;
