@@ -480,15 +480,18 @@
             };
 
             SymbolAttributes symbolAttributes = fieldData.SymbolAttributes;
-            IEnumerable<CustomAttributeData> customAttributesData = fieldData.AttributeData;
-
-            if (symbolAttributes.HasFlag(SymbolAttributes.Final))
-            {
-                customAttributesData = customAttributesData.Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType).ToHashSet();
-            }
 
             if (!isCompact)
             {
+                IEnumerable<CustomAttributeData> customAttributesData = fieldData.AttributeData
+                    .Where(attributeData => attributeData.AttributeType != HelperExtensionsCommon.IsReadOnlyAttributeType)
+                    .ToHashSet();
+
+                if (symbolAttributes.HasFlag(SymbolAttributes.Final))
+                {
+                    customAttributesData = customAttributesData;
+                }
+
                 SymbolSignatureGenerator.AddCustomAttributes(symbolComponents, customAttributesData);
             }
 
