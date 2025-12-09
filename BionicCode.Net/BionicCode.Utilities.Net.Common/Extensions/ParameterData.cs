@@ -20,7 +20,7 @@
         private SymbolAttributes symbolAttributes;
         private IList<CustomAttributeData> attributeData;
         private bool? isRef;
-        private bool? isRefReadonly;
+        private bool? isRefReadOnly;
         private bool? isByRef;
         private bool? isIn;
         private bool? isOut;
@@ -59,8 +59,8 @@
         /// Gets a value indicating whether the current instance is marked as <see langword="ref"/> <see langword="readonly"/>.
         /// </summary>
         /// <value><c>true</c> if the parameter is marked as <see langword="ref"/> <see langword="readonly"/>; otherwise, <c>false</c>.</value>
-        public bool IsRefReadonly
-          => this.isRefReadonly ??= IsRefReadonlyInternal(this);
+        public bool IsRefReadOnly
+          => this.isRefReadOnly ??= IsRefReadOnlyInternal(this);
 
         /// <summary>
         /// Gets a value indicating whether the parameter is an input parameter (passed by  reference using the <see langword="in"/> keyword).
@@ -206,7 +206,7 @@
                 && parameterInfo.GetCustomAttribute<RequiresLocationAttribute>() is null;
         }
 
-        internal static bool IsRefReadonlyInternal(ParameterData parameterData)
+        internal static bool IsRefReadOnlyInternal(ParameterData parameterData)
         {
             if (!parameterData.IsByRef || parameterData.IsOut)
             {

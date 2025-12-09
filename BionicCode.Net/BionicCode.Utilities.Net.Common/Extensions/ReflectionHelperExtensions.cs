@@ -1703,7 +1703,7 @@
             ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
             ParameterData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
-            return typeData.IsRefReadonly;
+            return typeData.IsRefReadOnly;
         }
 
         /// <summary>

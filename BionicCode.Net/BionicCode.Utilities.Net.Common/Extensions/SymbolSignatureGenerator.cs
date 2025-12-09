@@ -433,7 +433,11 @@
                 SymbolSignatureGenerator.AddCustomAttributes(symbolComponents, customAttributesData);
             }
 
-            if (parameterData.IsRef)
+            if (parameterData.IsRefReadOnly)
+            {
+                symbolComponents.AddModifier("ref readonly");
+            }
+            else if (parameterData.IsRef)
             {
                 symbolComponents.AddModifier("ref");
             }
@@ -2054,7 +2058,11 @@
                         _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false);
                     }
 
-                    if (parameterData.IsRef)
+                    if (parameterData.IsRefReadOnly)
+                    {
+                        _ = signatureNameBuilder.Append("ref readonly ");
+                    }
+                    else if (parameterData.IsRef)
                     {
                         _ = signatureNameBuilder.Append("ref ");
                     }
@@ -2402,7 +2410,11 @@
                             _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false);
                         }
 
-                        if (parameterData.IsRef)
+                        if (parameterData.IsRefReadOnly)
+                        {
+                            _ = signatureNameBuilder.Append("ref readonly ");
+                        }
+                        else if (parameterData.IsRef)
                         {
                             _ = signatureNameBuilder.Append("ref ");
                         }
@@ -2514,7 +2526,11 @@
                         _ = signatureNameBuilder.AppendCustomAttributes(attributes, isAppendNewLineEnabled: false);
                     }
 
-                    if (parameterData.IsRef)
+                    if (parameterData.IsRefReadOnly)
+                    {
+                        _ = signatureNameBuilder.Append("ref readonly ");
+                    }
+                    else if (parameterData.IsRef)
                     {
                         _ = signatureNameBuilder.Append("ref ");
                     }
