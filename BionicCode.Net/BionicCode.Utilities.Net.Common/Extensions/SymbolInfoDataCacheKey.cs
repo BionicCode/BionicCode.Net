@@ -1,8 +1,6 @@
 ﻿namespace BionicCode.Utilities.Net
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
 
     internal readonly struct SymbolInfoDataCacheKey : IEquatable<SymbolInfoDataCacheKey>
@@ -15,7 +13,7 @@
         public readonly RuntimeMethodHandle SetMethodHandle { get; }
         public readonly RuntimeMethodHandle AddMethodHandle { get; }
         public readonly RuntimeMethodHandle RemoveMethodHandle { get; }
-        public readonly SymbolAttributes SymbolKind { get; }
+        public readonly SymbolKind SymbolKind { get; }
         public ParameterList ParameterList { get; }
 
         private SymbolInfoDataCacheKey(string name,
@@ -27,7 +25,7 @@
             RuntimeMethodHandle addMethodHandle,
             RuntimeMethodHandle removeMethodHandle,
             ParameterList parameterList,
-            SymbolAttributes symbolKind)
+            SymbolKind symbolKind)
         {
             this.Name = name;
             this.DeclaringTypeHandle = declaringTypeHandle;
@@ -57,7 +55,7 @@
                 addMethodHandle,
                 removeMethodHandle,
                 ParameterList.Empty,
-                SymbolAttributes.Event);
+                SymbolKind.MemberEvent);
         }
 
         public static SymbolInfoDataCacheKey CreateForProperty(PropertyInfo propertyInfo)
@@ -68,7 +66,7 @@
             RuntimeTypeHandle typeHandle = propertyInfo.PropertyType.TypeHandle;
             RuntimeMethodHandle getMethodHandle = propertyInfo.GetMethod?.MethodHandle ?? default;
             RuntimeMethodHandle setMethodHandle = propertyInfo.SetMethod?.MethodHandle ?? default;
-            ParameterList parameterList = MethodParameterInfo.ConvertFrom(propertyInfo.GetIndexParameters());
+            ParameterList parameterList = ParameterListBuilder.Create(propertyInfo.GetIndexParameters());
             return new SymbolInfoDataCacheKey(name,
                 declaringTypeHandle,
                 typeHandle,
@@ -78,7 +76,7 @@
                 default,
                 default,
                 parameterList,
-                SymbolAttributes.Property);
+                SymbolKind.MemberProperty);
         }
 
         public static SymbolInfoDataCacheKey CreateForMethod(MethodInfo methodInfo)
@@ -88,7 +86,7 @@
             string name = methodInfo.Name;
             RuntimeTypeHandle typeHandle = methodInfo.ReturnType.TypeHandle;
             RuntimeMethodHandle methodHandle = methodInfo.MethodHandle;
-            ParameterList parameterList = MethodParameterInfo.ConvertFrom(methodInfo.GetParameters());
+            ParameterList parameterList = ParameterListBuilder.Create(methodInfo.GetParameters());
             return new SymbolInfoDataCacheKey(name,
                 declaringTypeHandle,
                 typeHandle,
@@ -98,58 +96,50 @@
                 default,
                 default,
                 parameterList,
-                SymbolAttributes.Method);
+                SymbolKind.MemberMethod);
         }
 
-        public static SymbolInfoDataCacheKey CreateForAnonymousMethod(RuntimeTypeHandle declaringTypeHandle, RuntimeTypeHandle methodReturnTypeHandle, string methodName, ParameterList methodParameters)
+        public static SymbolInfoDataCacheKey CreateForAnonymousSymbol(RuntimeTypeHandle declaringTypeHandle, string symbolName, ParameterList? symbolParameters, SymbolKind symbolKind)
         {
-            ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(methodName, nameof(methodName));
-            ArgumentNullExceptionEx.th(methodName, nameof(methodName));
-            RuntimeTypeHandle declaringTypeHandle = methodInfo.DeclaringType.TypeHandle;
-            string name = methodInfo.Name;
-            RuntimeTypeHandle typeHandle = methodInfo.ReturnType.TypeHandle;
-            RuntimeMethodHandle methodHandle = methodInfo.MethodHandle;
-            ParameterList parameterList = MethodParameterInfo.ConvertFrom(methodInfo.GetParameters());
-            return new SymbolInfoDataCacheKey(name,
+            ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(symbolName, nameof(symbolName));
+
+            return new SymbolInfoDataCacheKey(symbolName,
                 declaringTypeHandle,
-                typeHandle,
-                methodHandle,
                 default,
                 default,
                 default,
                 default,
-                parameterList);
+                default,
+                default,
+                symbolParameters ?? ParameterList.Empty,
+                symbolKind);
         }
 
         public static SymbolInfoDataCacheKey CreateForType(Type type)
         {
             ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
-            RuntimeTypeHandle typeHandle = type.TypeHandle;
-            RuntimeTypeHandle declaringTypeHandle = default;
-            RuntimeTypeHandle methodTypeHandle = default;
-            RuntimeMethodHandle methodHandle = default;
-            ParameterList parameterList = ParameterList.Empty;
-            MethodInfo invokeMethod = default;
 
             if (type.IsDelegate())
             {
-                invokeMethod = type.GetMethod("Invoke");
-                methodHandle = invokeMethod.MethodHandle;
-                methodTypeHandle = invokeMethod.ReturnType.TypeHandle;
-                declaringTypeHandle = typeHandle;
-                parameterList = MethodParameterInfo.ConvertFrom(invokeMethod.GetParameters());
+                MethodInfo invokeMethod = type.GetMethod("Invoke");
+
+                return CreateForMethod(invokeMethod);
             }
 
+            RuntimeTypeHandle typeHandle = type.TypeHandle;
+            RuntimeTypeHandle declaringTypeHandle = default;
+            ParameterList parameterList = ParameterList.Empty;
             string name = type.FullName ?? type.Name;
             return new SymbolInfoDataCacheKey(name,
                 declaringTypeHandle,
-                invokeMethod is not null ? methodTypeHandle : typeHandle,
-                methodHandle,
+                typeHandle,
                 default,
                 default,
                 default,
                 default,
-                parameterList);
+                default,
+                parameterList,
+                SymbolKind.Type);
         }
 
         public static SymbolInfoDataCacheKey CreateForField(FieldInfo fieldInfo)
@@ -166,7 +156,8 @@
                 default,
                 default,
                 default,
-                ParameterList.Empty);
+                ParameterList.Empty,
+                SymbolKind.MemberField);
         }
 
         public static SymbolInfoDataCacheKey CreateForConstructor(ConstructorInfo constructorInfo)
@@ -175,7 +166,7 @@
             RuntimeTypeHandle declaringTypeHandle = constructorInfo.DeclaringType.TypeHandle;
             string name = constructorInfo.Name;
             RuntimeMethodHandle methodHandle = constructorInfo.MethodHandle;
-            ParameterList parameterList = MethodParameterInfo.ConvertFrom(constructorInfo.GetParameters());
+            ParameterList parameterList = ParameterListBuilder.Create(constructorInfo.GetParameters());
             return new SymbolInfoDataCacheKey(name,
                 declaringTypeHandle,
                 default,
@@ -184,7 +175,29 @@
                 default,
                 default,
                 default,
-                parameterList);
+                parameterList,
+                SymbolKind.Constructor);
+        }
+
+        public static SymbolInfoDataCacheKey CreateForParameter(ParameterInfo parameterInfo)
+        {
+            ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
+            RuntimeTypeHandle declaringTypeHandle = parameterInfo.Member.DeclaringType.TypeHandle;
+            string name = parameterInfo.Name;
+            RuntimeMethodHandle methodHandle = parameterInfo.Member is MethodBase methodInfo
+                ? methodInfo.MethodHandle
+                : default;
+            ParameterList parameterList = ParameterList.Empty;
+            return new SymbolInfoDataCacheKey(name,
+                declaringTypeHandle,
+                default,
+                methodHandle,
+                default,
+                default,
+                default,
+                default,
+                parameterList,
+                SymbolKind.MemberParameter);
         }
 
         public override int GetHashCode()
@@ -217,7 +230,7 @@
             && this.SetMethodHandle.Equals(other.SetMethodHandle)
             && this.AddMethodHandle.Equals(other.AddMethodHandle)
             && this.RemoveMethodHandle.Equals(other.RemoveMethodHandle)
-            && this.ParameterList, other.ParameterList);
+            && this.ParameterList.Equals(other.ParameterList);
 
         public static bool operator ==(SymbolInfoDataCacheKey left, SymbolInfoDataCacheKey right) => left.Equals(right);
         public static bool operator !=(SymbolInfoDataCacheKey left, SymbolInfoDataCacheKey right) => !(left == right);

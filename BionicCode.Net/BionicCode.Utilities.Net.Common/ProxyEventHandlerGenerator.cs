@@ -11,14 +11,14 @@
     {
         public static readonly object ConflictingMethodInfoExceptionDataKey = new object();
 
-        public static Delegate Generate<TEventSource>(string eventName, object target, string targetDelegateMethodName, MethodParameterInfo[] targetDelegateMethodParameterList)
+        public static Delegate Generate<TEventSource>(string eventName, object target, string targetDelegateMethodName, ParameterList targetDelegateMethodParameterList)
         {
             ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
             ArgumentNullExceptionEx.ThrowIfNull(target, nameof(target));
             ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(targetDelegateMethodName, nameof(targetDelegateMethodName));
 
             Type targetType = target.GetType();
-            IMemberDataCacheKey symbolCacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(targetType.TypeHandle, targetDelegateMethodName, targetDelegateMethodParameterList);
+            SymbolInfoDataCacheKey symbolCacheKey = SymbolInfoDataCacheKey.CreateForAnonymousSymbol(targetType.TypeHandle, targetDelegateMethodName, targetDelegateMethodParameterList, SymbolKind.MemberMethod);
             SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(symbolCacheKey, out MethodData proxyDelegateMethodData);
 
             symbolCacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(typeof(TEventSource).TypeHandle, eventName);
@@ -26,7 +26,7 @@
 
             TypeData eventHandlerTypeData = eventData.EventHandlerTypeData;
             MethodData invocatorData = eventData.InvocatorMethodData;
-            ParameterData[] eventHandlerParameters = invocatorData.Parameters;
+            ParameterList eventHandlerParameters = invocatorData.Parameters;
             Delegate eventHandler = GenerateProxy(eventHandlerParameters, eventHandlerTypeData, target, proxyDelegateMethodData);
             LogDebug("Dynamically generated proxy event handler.");
 

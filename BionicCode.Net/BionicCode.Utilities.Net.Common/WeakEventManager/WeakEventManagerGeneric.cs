@@ -48,13 +48,13 @@
 
             TypeData eventHandlerTypeData = this.EventSourceEventData.EventHandlerTypeData;
             MethodData invocatorData = eventHandlerTypeData.DelegateInvokeMethodData;
-            ParameterData[] eventHandlerParameters = invocatorData.Parameters;
-            bool isGenericHandler = false;
+            ParameterList proxyDelegateParameters = invocatorData.Parameters;
             string proxyDelegateName;
+
+            // Check whether this is a standard EventHandler/EventHandler<TEventArgs> signature (sender, event args) or a custom delegate signature
             if (!isCustomClientDelegate
-              && invocatorData.Parameters.Length == 2)
+              && invocatorData.Parameters.Count == 2)
             {
-                isGenericHandler = true;
                 proxyDelegateName = nameof(OnStronglyTypedEvent);
                 LogDebug($"Using '{proxyDelegateName}' event source proxy event handler.");
             }
@@ -66,7 +66,6 @@
 
             try
             {
-                MethodParameterInfo[] proxyDelegateParameters = eventHandlerParameters.Select(parameterData => new MethodParameterInfo(parameterData, isGenericHandler)).ToArray();
                 this.ProxyEventHandler = ProxyEventHandlerGenerator.Generate<TEventSource>(eventName, this, proxyDelegateName, proxyDelegateParameters);
 
                 Debug.Assert(this.ProxyEventHandler != null);

@@ -33,6 +33,7 @@
         private string assemblyName;
         private SymbolComponentInfo symbolComponentInfo;
         private object? defaultValue;
+        private ParameterKind? parameterKind;
 
         public ParameterData(ParameterInfo parameterInfo) : base(parameterInfo.Name)
         {
@@ -83,6 +84,14 @@
         /// <remarks>This property does not return whether the parameter is decorated with  the <c>System.Runtime.InteropServices.OptionalAttribuute</c>. It only checks whether the parameter is considered optional by the existance of a default value.</remarks>
         public bool IsOptional
           => this.isOptional ??= GetParameterInfo().HasDefaultValue;
+
+        public ParameterKind ParameterKind
+          => this.parameterKind ??= this.IsIn ? ParameterKind.In
+            : this.IsOut ? ParameterKind.Out
+            : this.IsRefReadOnly ? ParameterKind.RefReadOnly
+            : this.IsRef ? ParameterKind.Ref
+            : this.IsOptional ? ParameterKind.Optional
+            : ParameterKind.Undefined;
 
         /// <summary>
         /// Gets the default value for the parameter, if one is defined.

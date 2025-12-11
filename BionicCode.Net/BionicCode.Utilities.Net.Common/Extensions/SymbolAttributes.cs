@@ -85,24 +85,4 @@
         Init = 33554432,
         Constant = 67108864,
     }
-
-    internal enum SymbolKind
-    {
-        Undefined = 0,
-        Type,
-        MemberMethod,
-        MemberProperty,
-        MemberField,
-        MemberEvent,
-        Parameter,
-    }
-
-    internal enum  ParameterKind
-    {
-        Undefined = 0,
-        In,
-        Out,
-        Ref,
-        Optional,
-    }
 }

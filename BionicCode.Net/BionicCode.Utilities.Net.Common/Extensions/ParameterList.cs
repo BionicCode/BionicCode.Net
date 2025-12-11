@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
 
     internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<ParameterList>
     {
@@ -16,7 +17,19 @@
             this._hashCode = ComputeHashCode(this._items);
         }
 
+        public static ParameterList CreateFrom(IEnumerable<ParameterInfo> items)
+        {
+            if (items == null || !items.Any())
+            {
+                return Empty;
+            }
+
+            ParameterList parameterList = ParameterListBuilder.Create(items);
+            return parameterList;
+        }
+
         public int Count => this._items.Length;
+        public bool IsEmpty => this._items.Length == 0;
 
         public ParameterData this[int index] => this._items[index];
 

@@ -201,13 +201,13 @@
             eventData = (EventData)symbolInfoData;
         }
 
-        internal static void GetOrCreateSymbolInfoDataCacheEntry(IMemberDataCacheKey cacheKey, out MethodData methodData)
+        internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out MethodData methodData)
         {
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey,
               key =>
               {
                   Type[] parameterTypes = cacheKey.ParameterList
-              .Select(parameter => parameter.ParameterType)
+              .Select(parameter => parameter.ParameterTypeData)
               .ToArray();
 
                   Type[] genericTypeParameters = cacheKey.ParameterList
@@ -219,7 +219,7 @@
                   var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
 
 #if NET9_0_OR_GREATER
-          methodInfo = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle).GetMethod(cacheKey.MemberName, genericTypeParameters.Length, SymbolInfoData.AllMembersFlags, parameterTypes);
+                  methodInfo = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle).GetMethod(cacheKey.MemberName, genericTypeParameters.Length, SymbolInfoData.AllMembersFlags, parameterTypes);
 #else
                   List<MethodInfo> methodInfoCandidates = declaringType.GetMethods(SymbolInfoData.AllMembersFlags)
               .Where(method => method.Name.Equals(cacheKey.MemberName, StringComparison.Ordinal))
@@ -413,8 +413,8 @@
         /// <param name="memberName">The name of the member that should be looked up.</param>
         /// <param name="parameterList">The parameter list of the method or constructor.</param>
         /// <returns>A valid key that can be used to query the cache.</returns>
-        internal static IMemberDataCacheKey CreateMemberSymbolCacheKey(RuntimeTypeHandle declaringTypeHandle, string memberName, params MethodParameterInfo[] parameterList)
-          => new MemberDataCacheKey(declaringTypeHandle, memberName, parameterList);
+        internal static SymbolInfoDataCacheKey CreateMemberSymbolCacheKey(RuntimeTypeHandle declaringTypeHandle, string memberName, ParameterList parameterList)
+          => new SymbolInfoDataCacheKey(declaringTypeHandle, memberName, parameterList);
 
         /// <summary>
         /// Use with methods and constructors and provide the related parameter list.

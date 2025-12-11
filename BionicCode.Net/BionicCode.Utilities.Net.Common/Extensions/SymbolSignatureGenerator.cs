@@ -829,7 +829,7 @@
         //      ParameterInfo[] parameters = methodInfo.GetParameters();
         //      foreach (ParameterInfo parameter in parameters)
         //      {
-        //        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.EventName))
+        //        ParameterSyntax parameterSyntax = SyntaxFactory.MemberParameter(SyntaxFactory.Identifier(parameter.EventName))
         //          .WithType(SyntaxFactory.IdentifierName(IsPropertyInit(parameter.ParameterType, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
 
         //        if (parameter.IsRef())
@@ -920,7 +920,7 @@
         //      ParameterInfo[] parameters = methodInfo.GetParameters();
         //      foreach (ParameterInfo parameter in parameters)
         //      {
-        //        ParameterSyntax parameterSyntax = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.EventName))
+        //        ParameterSyntax parameterSyntax = SyntaxFactory.MemberParameter(SyntaxFactory.Identifier(parameter.EventName))
         //          .WithType(SyntaxFactory.IdentifierName(IsPropertyInit(parameter.ParameterType, isFullyQualifiedName, isDeclaringTypeIncluded: false)));
 
         //        if (parameter.IsRef())

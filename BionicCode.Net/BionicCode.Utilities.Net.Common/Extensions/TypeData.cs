@@ -57,7 +57,7 @@ namespace BionicCode.Utilities.Net
         private ConstructorData[] constructorsData;
         private IList<CustomAttributeData> attributeData;
         private string assemblyName;
-        private MethodData delegateInvokeMethodData;
+        private MethodData? delegateInvokeMethodData;
         private SymbolComponentInfo symbolComponentInfo;
         private SymbolComponentInfo compactSymbolComponentInfo;
         private bool? containsGenericParameters;
@@ -254,6 +254,18 @@ namespace BionicCode.Utilities.Net
 
             this.isAllConstructorsGenerated = true;
         }
+
+        /// <summary>
+        /// Retrieves metadata for the 'Invoke' method of the current delegate type.
+        /// </summary>
+        /// <returns>A <see cref="MethodData"/> instance containing information about the 'Invoke' method of the delegate. If the
+        /// type is not a delegate, an exception is thrown.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the current type is not a delegate. Use <see cref="IsDelegate"/> to verify whether the type is a
+        /// delegate before calling this method.</exception>
+        public MethodData GetDelegatInvokeMethod()
+          => this.delegateInvokeMethodData ??= this.IsDelegate
+            ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetType().GetMethod("Invoke"))
+            : throw new InvalidOperationException($"The current type is not a delegate. Call {nameof(this.IsDelegate)} to check whether the current type is a delegate.");
 
         public RuntimeTypeHandle Handle { get; }
         public string Namespace { get; }

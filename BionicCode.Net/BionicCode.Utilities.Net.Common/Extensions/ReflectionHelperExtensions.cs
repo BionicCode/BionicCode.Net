@@ -2333,7 +2333,7 @@
         /// </summary>
         /// <remarks>This method checks whether the delegate can be used as an event handler for the
         /// specified event by comparing the parameter types of the delegate's method and the event's handler type.
-        /// Parameter types must match in number and be assignable according to .NET type compatibility rules.</remarks>
+        /// MemberParameter types must match in number and be assignable according to .NET type compatibility rules.</remarks>
         /// <param name="clientHandler">The delegate to test for compatibility with the event's handler signature.</param>
         /// <param name="eventInfo">The event whose handler signature is used for compatibility comparison. Cannot be null.</param>
         /// <returns>true if the delegate's method parameters are assignable to the event handler's parameters; otherwise, false.</returns>

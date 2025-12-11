@@ -22,7 +22,7 @@
         private bool? isAsync;
         private bool? isSealed;
         private bool? isExtensionMethod;
-        private ParameterData[] parameters;
+        private ParameterList parameters;
         private TypeData[] genericTypeArguments;
         private bool? isOverride;
         private bool? isStatic;
@@ -310,8 +310,8 @@
             }
         }
 
-        public ParameterData[] Parameters
-          => this.parameters ??= GetMethodInfo().GetParameters().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+        public ParameterList Parameters
+          => this.parameters ??= new ParameterList(GetMethodInfo().GetParameters().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
 
         public TypeData[] GenericTypeArguments
         {
@@ -500,8 +500,8 @@
             }
 
             // Must have at least the 'this' parameter
-            ParameterData[] parameterInfoData = methodData.Parameters;
-            if (parameterInfoData.Length < 1)
+            ParameterList parameterInfoData = methodData.Parameters;
+            if (parameterInfoData.Count < 1)
             {
                 return false;
             }
