@@ -105,7 +105,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            foreach (PropertyInfo property in GetType().GetProperties(SymbolInfoData.AllMembersFlags))
+            foreach (PropertyInfo property in GetType().GetProperties(HelperExtensionsCommon.AllMembersFlags))
             {
                 PropertyData propertyData = GetProperty(property.Name);
                 yield return propertyData;
@@ -140,7 +140,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            foreach (MethodInfo method in GetType().GetMethods(SymbolInfoData.AllMembersFlags))
+            foreach (MethodInfo method in GetType().GetMethods(HelperExtensionsCommon.AllMembersFlags))
             {
                 MethodData methodData = GetMethod(method.Name);
                 yield return methodData;
@@ -175,7 +175,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            foreach (FieldInfo field in GetType().GetFields(SymbolInfoData.AllMembersFlags))
+            foreach (FieldInfo field in GetType().GetFields(HelperExtensionsCommon.AllMembersFlags))
             {
                 FieldData fieldData = GetField(field.Name);
                 yield return fieldData;
@@ -211,7 +211,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            foreach (EventInfo eventInfo in GetType().GetEvents(SymbolInfoData.AllMembersFlags))
+            foreach (EventInfo eventInfo in GetType().GetEvents(HelperExtensionsCommon.AllMembersFlags))
             {
                 EventData eventData = GetEvent(eventInfo.Name);
                 yield return eventData;
@@ -246,7 +246,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            foreach (ConstructorInfo constructor in GetType().GetConstructors(SymbolInfoData.AllMembersFlags))
+            foreach (ConstructorInfo constructor in GetType().GetConstructors(HelperExtensionsCommon.AllMembersFlags))
             {
                 ConstructorData constructorData = GetConstructor(constructor.Name);
                 yield return constructorData;
@@ -459,19 +459,19 @@ namespace BionicCode.Utilities.Net
           => this.interfacesData ??= GetType().GetInterfaces().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         public PropertyData[] PropertiesData
-          => this.propertiesData ??= GetType().GetProperties(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+          => this.propertiesData ??= GetType().GetProperties(HelperExtensionsCommon.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         public MethodData[] MethodsData
-          => this.methodsData ??= GetType().GetMethods(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+          => this.methodsData ??= GetType().GetMethods(HelperExtensionsCommon.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         public FieldData[] FieldsData
-          => this.fieldsData ??= GetType().GetFields(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+          => this.fieldsData ??= GetType().GetFields(HelperExtensionsCommon.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         public EventData[] EventsData
-          => this.eventsData ??= GetType().GetEvents(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+          => this.eventsData ??= GetType().GetEvents(HelperExtensionsCommon.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         public ConstructorData[] ConstructorsData
-          => this.constructorsData ??= GetType().GetConstructors(SymbolInfoData.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+          => this.constructorsData ??= GetType().GetConstructors(HelperExtensionsCommon.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         private static bool IsTypeStatic(TypeData typeData)
           => typeData.IsAbstract && typeData.IsSealed;

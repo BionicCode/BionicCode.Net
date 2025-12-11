@@ -14,82 +14,9 @@
         private static readonly ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoData> SymbolInfoDataCache = new ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoData>();
         private const string MemberNotFoundArgumentExceptionMessage = "Unable to find the {0} named '{1}'{2}on the type '{3}'.";
 
-        internal static void AddOrReplaceSymbolInfoDataCacheEntry(Type type)
-        {
-            SymbolInfoDataCacheKey cacheKey = new TypeDataCacheKey(type.TypeHandle);
-            if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
-            {
-                symbolInfoData = new TypeData(type);
-            }
-
-            SymbolReflectionInfoCache.SymbolInfoDataCache[cacheKey] = symbolInfoData;
-        }
-
-        internal static void AddOrReplaceSymbolInfoDataCacheEntry(MethodInfo methodInfo)
-        {
-            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(methodInfo.DeclaringType.TypeHandle, methodInfo.Name, methodInfo.GetParameters());
-            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(methodInfo));
-            SymbolReflectionInfoCache.SymbolInfoDataCache[cacheKey] = symbolInfoData;
-        }
-
-        internal static void AddOrReplaceSymbolInfoDataCacheEntry(ConstructorInfo constructorInfo)
-        {
-            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(constructorInfo.DeclaringType.TypeHandle, constructorInfo.Name, constructorInfo.GetParameters());
-            if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
-            {
-                symbolInfoData = new ConstructorData(constructorInfo);
-            }
-
-            SymbolReflectionInfoCache.SymbolInfoDataCache[cacheKey] = symbolInfoData;
-        }
-
-        internal static void AddOrReplaceSymbolInfoDataCacheEntry(FieldInfo fieldInfo)
-        {
-            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(fieldInfo.DeclaringType.TypeHandle, fieldInfo.Name);
-            if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
-            {
-                symbolInfoData = new FieldData(fieldInfo);
-            }
-
-            SymbolReflectionInfoCache.SymbolInfoDataCache[cacheKey] = symbolInfoData;
-        }
-
-        internal static void AddOrReplaceSymbolInfoDataCacheEntry(PropertyInfo propertyInfo)
-        {
-            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(propertyInfo.DeclaringType.TypeHandle, propertyInfo.Name);
-            if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
-            {
-                symbolInfoData = new PropertyData(propertyInfo);
-            }
-
-            SymbolReflectionInfoCache.SymbolInfoDataCache[cacheKey] = symbolInfoData;
-        }
-
-        internal static void AddOrReplaceSymbolInfoDataCacheEntry(EventInfo eventInfo)
-        {
-            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(eventInfo.DeclaringType.TypeHandle, eventInfo.Name);
-            if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
-            {
-                symbolInfoData = new EventData(eventInfo);
-            }
-
-            SymbolReflectionInfoCache.SymbolInfoDataCache[cacheKey] = symbolInfoData;
-        }
-
-        internal static void AddOrReplaceSymbolInfoDataCacheEntry(ParameterInfo parameterInfo)
-        {
-            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(parameterInfo.Member.DeclaringType.TypeHandle, parameterInfo.Name);
-            if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
-            {
-                symbolInfoData = new ParameterData(parameterInfo);
-            }
-
-            SymbolReflectionInfoCache.SymbolInfoDataCache[cacheKey] = symbolInfoData;
-        }
-
         internal static TypeData GetOrCreateSymbolInfoDataCacheEntry(Type type)
         {
-            SymbolInfoDataCacheKey cacheKey = new TypeDataCacheKey(type.TypeHandle);
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForType(type);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new TypeData(type));
 
             // REMOVE::after testing
@@ -100,7 +27,7 @@
 
         internal static MethodData GetOrCreateSymbolInfoDataCacheEntry(MethodInfo methodInfo)
         {
-            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(methodInfo.DeclaringType.TypeHandle, methodInfo.Name, methodInfo.GetParameters());
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForMethod(methodInfo);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(methodInfo));
 
             // REMOVE::after testing
@@ -111,7 +38,7 @@
 
         internal static ConstructorData GetOrCreateSymbolInfoDataCacheEntry(ConstructorInfo constructorInfo)
         {
-            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(constructorInfo.DeclaringType.TypeHandle, constructorInfo.Name, constructorInfo.GetParameters());
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForConstructor(constructorInfo);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new ConstructorData(constructorInfo));
 
             // REMOVE::after testing
@@ -122,7 +49,7 @@
 
         internal static FieldData GetOrCreateSymbolInfoDataCacheEntry(FieldInfo fieldInfo)
         {
-            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(fieldInfo.DeclaringType.TypeHandle, fieldInfo.Name);
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForField(fieldInfo);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new FieldData(fieldInfo));
 
             // REMOVE::after testing
@@ -133,7 +60,7 @@
 
         internal static PropertyData GetOrCreateSymbolInfoDataCacheEntry(PropertyInfo propertyInfo)
         {
-            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(propertyInfo.DeclaringType.TypeHandle, propertyInfo.Name);
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForProperty(propertyInfo);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new PropertyData(propertyInfo));
 
             // REMOVE::after testing
@@ -144,7 +71,7 @@
 
         internal static EventData GetOrCreateSymbolInfoDataCacheEntry(EventInfo eventInfo)
         {
-            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(eventInfo.DeclaringType.TypeHandle, eventInfo.Name);
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForEvent(eventInfo);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new EventData(eventInfo));
 
             // REMOVE::after testing
@@ -155,7 +82,7 @@
 
         internal static ParameterData GetOrCreateSymbolInfoDataCacheEntry(ParameterInfo parameterInfo)
         {
-            SymbolInfoDataCacheKey cacheKey = new MemberDataCacheKey(parameterInfo.Member.DeclaringType.TypeHandle, parameterInfo.Name);
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForParameter(parameterInfo);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new ParameterData(parameterInfo));
 
             // REMOVE::after testing
@@ -164,41 +91,42 @@
             return (ParameterData)symbolInfoData;
         }
 
-        internal static void GetOrCreateSymbolInfoDataCacheEntry(IMemberDataCacheKey cacheKey, out EventData eventData)
+        internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out EventData eventData)
         {
-            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey,
-              key =>
-              {
-                  var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
-                  EventInfo eventInfo = declaringType.GetEvent(cacheKey.MemberName, SymbolInfoData.AllMembersFlags);
-                  if (eventInfo is null)
-                  {
-                      if (declaringType.IsInterface)
-                      {
-                          Type[] implementedInterfaces = declaringType.GetInterfaces();
-                          foreach (Type implementedInterface in implementedInterfaces)
-                          {
-                              eventInfo = declaringType.GetEvent(cacheKey.MemberName, SymbolInfoData.AllMembersFlags);
-                              if (eventInfo != null)
-                              {
-                                  break;
-                              }
-                          }
-                      }
-
-                      if (eventInfo is null)
-                      {
-                          throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage, "event", cacheKey.MemberName, string.Empty, declaringType.ToFullDisplayName()), nameof(cacheKey));
-                      }
-                  }
-
-                  return new EventData(eventInfo);
-              });
+            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreateEventData(cacheKey));
 
             // REMOVE::after testing
             Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
 
             eventData = (EventData)symbolInfoData;
+        }
+
+        private static Func<SymbolInfoDataCacheKey, SymbolInfoData> CreateEventData(SymbolInfoDataCacheKey cacheKey)
+        {
+            return key =>
+            {
+                var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
+                EventInfo eventInfo = declaringType.GetEvent(cacheKey.SymbolName, HelperExtensionsCommon.AllMembersFlags);
+                if (eventInfo is null && declaringType.IsInterface)
+                {
+                    Type[] implementedInterfaces = declaringType.GetInterfaces();
+                    foreach (Type implementedInterface in implementedInterfaces)
+                    {
+                        eventInfo = declaringType.GetEvent(cacheKey.SymbolName, HelperExtensionsCommon.AllMembersFlags);
+                        if (eventInfo != null)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                if (eventInfo is null)
+                {
+                    throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage, "event", cacheKey.MemberName, string.Empty, declaringType.ToFullDisplayName()), nameof(cacheKey));
+                }
+
+                return new EventData(eventInfo);
+            };
         }
 
         internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out MethodData methodData)
@@ -219,9 +147,9 @@
                   var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
 
 #if NET9_0_OR_GREATER
-                  methodInfo = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle).GetMethod(cacheKey.MemberName, genericTypeParameters.Length, SymbolInfoData.AllMembersFlags, parameterTypes);
+                  methodInfo = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle).GetMethod(cacheKey.MemberName, genericTypeParameters.Length, HelperExtensionsCommon.AllMembersFlags, parameterTypes);
 #else
-                  List<MethodInfo> methodInfoCandidates = declaringType.GetMethods(SymbolInfoData.AllMembersFlags)
+                  List<MethodInfo> methodInfoCandidates = declaringType.GetMethods(HelperExtensionsCommon.AllMembersFlags)
               .Where(method => method.Name.Equals(cacheKey.MemberName, StringComparison.Ordinal))
               .ToList();
                   if (methodInfoCandidates.Count > 1)
@@ -287,7 +215,7 @@
               key =>
               {
                   var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
-                  FieldInfo fieldInfo = declaringType.GetField(cacheKey.MemberName, SymbolInfoData.AllMembersFlags);
+                  FieldInfo fieldInfo = declaringType.GetField(cacheKey.MemberName, HelperExtensionsCommon.AllMembersFlags);
                   if (fieldInfo is null)
                   {
                       throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage, "field", cacheKey.MemberName, string.Empty, declaringType.ToFullDisplayName()), nameof(cacheKey));
@@ -308,7 +236,7 @@
               key =>
               {
                   var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
-                  PropertyInfo propertyInfo = declaringType.GetProperty(cacheKey.MemberName, SymbolInfoData.AllMembersFlags);
+                  PropertyInfo propertyInfo = declaringType.GetProperty(cacheKey.MemberName, HelperExtensionsCommon.AllMembersFlags);
                   if (propertyInfo is null)
                   {
                       throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage, "property", cacheKey.MemberName, string.Empty, declaringType.ToFullDisplayName()), nameof(cacheKey));
@@ -333,7 +261,7 @@
               .ToArray();
 
                   var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
-                  ConstructorInfo constructorInfo = declaringType.GetConstructor(SymbolInfoData.AllMembersFlags, null, parameterTypes, Array.Empty<ParameterModifier>());
+                  ConstructorInfo constructorInfo = declaringType.GetConstructor(HelperExtensionsCommon.AllMembersFlags, null, parameterTypes, Array.Empty<ParameterModifier>());
                   if (constructorInfo is null)
                   {
                       throw new ArgumentException(string.Format(SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage, "constructor", cacheKey.MemberName, " that matches the provided parameter list ", declaringType.ToFullDisplayName()), nameof(cacheKey));

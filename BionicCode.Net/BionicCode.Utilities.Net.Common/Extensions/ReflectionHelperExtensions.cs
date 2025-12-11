@@ -25,6 +25,8 @@
         internal static readonly Type ExtensionAttributeType = typeof(ExtensionAttribute);
         internal static readonly Type IsReadOnlyAttributeType = typeof(IsReadOnlyAttribute);
 
+        internal const BindingFlags AllMembersFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
+
         /// <summary>
         /// The property genericTypeParameterIdentifier of an indexer property. This genericTypeParameterIdentifier is compiler generated and equals the typeName of the <see langword="static"/>field <see cref="System.Windows.Data.Binding.IndexerName" />.
         /// </summary>

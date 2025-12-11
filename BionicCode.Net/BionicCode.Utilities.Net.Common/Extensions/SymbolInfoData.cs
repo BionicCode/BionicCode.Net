@@ -13,8 +13,6 @@
             this.Indentation = 4;
         }
 
-        internal const BindingFlags AllMembersFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
-
         public abstract IList<CustomAttributeData> AttributeData { get; }
         public abstract SymbolAttributes SymbolAttributes { get; }
         public string Name { get; }
