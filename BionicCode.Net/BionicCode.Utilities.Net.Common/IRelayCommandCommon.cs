@@ -14,7 +14,7 @@
         /// <summary>
         /// Checks if the <see cref="ICommand"/> can execute.
         /// </summary>
-        /// <returns><c>true</c> when the <see cref="ICommand"/> can execute, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when the <see cref="ICommand"/> can execute, otherwise <see langword="false"/>.</returns>
         bool CanExecute();
 
         /// <summary>

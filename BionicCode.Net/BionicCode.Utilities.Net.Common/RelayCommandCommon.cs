@@ -22,13 +22,13 @@
         /// The registered CanExecute delegate that accepts a parameter of <typeparamref name="TParam"/>.
         /// </summary>
         /// <value>
-        /// <c>true</c> if the command can execute, otherwise <c>false</c>.</value>
+        /// <see langword="true"/> if the command can execute, otherwise <see langword="false"/>.</value>
         private readonly Func<bool> canExecuteDelegate;
 
         #region Constructors
 
         /// <summary>
-        ///   Creates a new synchronous parameterless command that can always execute (<see cref="CanExecute"/> will always return <c>true</c>)
+        ///   Creates a new synchronous parameterless command that can always execute (<see cref="CanExecute"/> will always return <see langword="true"/>)
         ///   <br/> and accepts a command parameter of type <typeparamref name="TParam"/>.
         /// </summary>
         /// <param name="execute">The execute handler.</param>
@@ -41,7 +41,7 @@
         }
 
         /// <summary>
-        ///   Creates a new parameterless synchronous command that can always execute (<see cref="CanExecute"/> will always return <c>true</c>) 
+        ///   Creates a new parameterless synchronous command that can always execute (<see cref="CanExecute"/> will always return <see langword="true"/>) 
         ///   <br/>and accepts a command parameter of type <typeparamref name="TParam"/>
         ///   <br/>and supports cancellation.
         /// </summary>
@@ -85,7 +85,7 @@
         /// <summary>
         ///   Determines whether this AsyncRelayCommandCommon can execute.
         /// </summary>
-        /// <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> if this command can be executed, otherwise <see langword="false"/>.</returns>
         public bool CanExecute() => this.canExecuteDelegate.Invoke();
 
         /// <inheritdoc />

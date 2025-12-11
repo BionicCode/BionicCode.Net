@@ -93,7 +93,7 @@
 
         internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out EventData eventData)
         {
-            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreateEventData(cacheKey));
+            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreateEventData);
 
             // REMOVE::after testing
             Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
@@ -101,112 +101,110 @@
             eventData = (EventData)symbolInfoData;
         }
 
-        private static Func<SymbolInfoDataCacheKey, SymbolInfoData> CreateEventData(SymbolInfoDataCacheKey cacheKey)
+        private static EventData CreateEventData(SymbolInfoDataCacheKey cacheKey)
         {
-            return key =>
+            var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
+            EventInfo eventInfo = declaringType.GetEvent(cacheKey.SymbolName, HelperExtensionsCommon.AllMembersFlags);
+            if (eventInfo is null && declaringType.IsInterface)
             {
-                var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
-                EventInfo eventInfo = declaringType.GetEvent(cacheKey.SymbolName, HelperExtensionsCommon.AllMembersFlags);
-                if (eventInfo is null && declaringType.IsInterface)
+                Type[] implementedInterfaces = declaringType.GetInterfaces();
+                foreach (Type implementedInterface in implementedInterfaces)
                 {
-                    Type[] implementedInterfaces = declaringType.GetInterfaces();
-                    foreach (Type implementedInterface in implementedInterfaces)
+                    eventInfo = declaringType.GetEvent(cacheKey.SymbolName, HelperExtensionsCommon.AllMembersFlags);
+                    if (eventInfo != null)
                     {
-                        eventInfo = declaringType.GetEvent(cacheKey.SymbolName, HelperExtensionsCommon.AllMembersFlags);
-                        if (eventInfo != null)
-                        {
-                            break;
-                        }
+                        break;
                     }
                 }
+            }
 
-                if (eventInfo is null)
-                {
-                    throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage, "event", cacheKey.MemberName, string.Empty, declaringType.ToFullDisplayName()), nameof(cacheKey));
-                }
+            if (eventInfo is null)
+            {
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage, "event", cacheKey.SymbolName, string.Empty, declaringType.ToFullDisplayName()), nameof(cacheKey));
+            }
 
-                return new EventData(eventInfo);
-            };
+            return new EventData(eventInfo);
         }
 
         internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out MethodData methodData)
         {
-            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey,
-              key =>
-              {
-                  Type[] parameterTypes = cacheKey.ParameterList
-              .Select(parameter => parameter.ParameterTypeData)
-              .ToArray();
-
-                  Type[] genericTypeParameters = cacheKey.ParameterList
-              .Where(parameter => parameter.IsGenericTypeParameter)
-              .Select(parameter => parameter.ParameterType)
-              .ToArray();
-
-                  MethodInfo methodInfo = null;
-                  var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
-
-#if NET9_0_OR_GREATER
-                  methodInfo = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle).GetMethod(cacheKey.MemberName, genericTypeParameters.Length, HelperExtensionsCommon.AllMembersFlags, parameterTypes);
-#else
-                  List<MethodInfo> methodInfoCandidates = declaringType.GetMethods(HelperExtensionsCommon.AllMembersFlags)
-              .Where(method => method.Name.Equals(cacheKey.MemberName, StringComparison.Ordinal))
-              .ToList();
-                  if (methodInfoCandidates.Count > 1)
-                  {
-                      foreach (MethodInfo candidate in methodInfoCandidates.Where(method => methodInfo.GetParameters().Length == parameterTypes.Length))
-                      {
-                          ParameterInfo[] candidateParameters = candidate.GetParameters();
-                          bool hasMismatch = false;
-                          for (int parameterIndex = 0; parameterIndex < parameterTypes.Length; parameterIndex++)
-                          {
-                              MethodParameterInfo predicateParameterInfo = cacheKey.ParameterList[parameterIndex];
-                              ParameterInfo candidateParameterInfo = candidateParameters[parameterIndex];
-                              Type candidateParameterType = candidateParameterInfo.ParameterType;
-
-                              if (predicateParameterInfo.IsGenericTypeParameter != candidateParameterType.IsGenericParameter
-                          && predicateParameterInfo.ParameterType != candidateParameterInfo.ParameterType)
-                              {
-                                  hasMismatch = true;
-                                  break;
-                              }
-                          }
-
-                          if (!hasMismatch)
-                          {
-                              methodInfo = candidate;
-                              break;
-                          }
-                      }
-                  }
-                  else
-                  {
-                      methodInfo = methodInfoCandidates.FirstOrDefault();
-                  }
-#endif
-
-                  if (methodInfo is null)
-                  {
-                      throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage, "method", cacheKey.MemberName, " that matches the provided parameter list ", declaringType.ToFullDisplayName()), nameof(cacheKey));
-                  }
-
-                  if (methodInfo.ContainsGenericParameters || methodInfo.IsGenericMethodDefinition)
-                  {
-                      if (genericTypeParameters.Length != methodInfo.GetGenericArguments().Length)
-                      {
-                          throw new ArgumentException($"The number of provided generic declaringType arguments ({genericTypeParameters.Length}) does not match the generic declaringType parameter count found on method {methodInfo.ToSignatureShortName()}.", nameof(cacheKey));
-                      }
-
-                      methodInfo = methodInfo.MakeGenericMethod(genericTypeParameters);
-                  }
-
-                  return new MethodData(methodInfo);
-              });
+            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreateMethodData);
 
             // REMOVE::after testing
             Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData?.GetType()}");
 
             methodData = (MethodData)symbolInfoData;
+        }
+
+        private static MethodData CreateMethodData(SymbolInfoDataCacheKey cacheKey)
+        {
+            Type[] parameterTypes = cacheKey.ParameterList
+                .Select(parameter => parameter.ParameterTypeData.GetType())
+                .ToArray();
+
+            Type[] genericTypeParameters = cacheKey.ParameterList
+                .Where(parameter => parameter.IsGenericTypeParamater)
+                .Select(parameter => parameter.ParameterTypeData.GetType())
+                .ToArray();
+
+            MethodInfo methodInfo = null;
+            Type declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
+
+#if NET9_0_OR_GREATER
+            methodInfo = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle).GetMethod(cacheKey.SymbolName, genericTypeParameters.Length, HelperExtensionsCommon.AllMembersFlags, parameterTypes);
+#else
+            List<MethodInfo> methodInfoCandidates = declaringType.GetMethods(HelperExtensionsCommon.AllMembersFlags)
+                .Where(method => method.Name.Equals(cacheKey.SymbolName, StringComparison.Ordinal))
+                .ToList();
+            if (methodInfoCandidates.Count > 1)
+            {
+                foreach (MethodInfo candidate in methodInfoCandidates.Where(method => methodInfo.GetParameters().Length == parameterTypes.Length))
+                {
+                    ParameterInfo[] candidateParameters = candidate.GetParameters();
+                    bool hasMismatch = false;
+                    for (int parameterIndex = 0; parameterIndex < parameterTypes.Length; parameterIndex++)
+                    {
+                        ParameterData predicateParameterInfo = cacheKey.ParameterList[parameterIndex];
+                        ParameterInfo candidateParameterInfo = candidateParameters[parameterIndex];
+                        Type candidateParameterType = candidateParameterInfo.ParameterType;
+
+                        if (predicateParameterInfo.IsGenericTypeParamater != candidateParameterType.IsGenericParameter
+                            && predicateParameterInfo.ParameterTypeData.GetType() != candidateParameterInfo.ParameterType)
+                        {
+                            hasMismatch = true;
+                            break;
+                        }
+                    }
+
+                    if (!hasMismatch)
+                    {
+                        methodInfo = candidate;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                methodInfo = methodInfoCandidates.FirstOrDefault();
+            }
+#endif
+
+            if (methodInfo is null)
+            {
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage, "method", cacheKey.SymbolName, " that matches the provided parameter list ", declaringType.ToFullDisplayName()), nameof(cacheKey));
+            }
+
+            if (methodInfo.ContainsGenericParameters || methodInfo.IsGenericMethodDefinition)
+            {
+                if (genericTypeParameters.Length != methodInfo.GetGenericArguments().Length)
+                {
+                    throw new ArgumentException($"The number of provided generic declaringType arguments ({genericTypeParameters.Length}) does not match the generic declaringType parameter count found on method {methodInfo.ToSignatureShortName()}.", nameof(cacheKey));
+                }
+
+                methodInfo = methodInfo.MakeGenericMethod(genericTypeParameters);
+            }
+
+            return new MethodData(methodInfo);
         }
 
         internal static void GetOrCreateSymbolInfoDataCacheEntry(IMemberDataCacheKey cacheKey, out FieldData fieldData)

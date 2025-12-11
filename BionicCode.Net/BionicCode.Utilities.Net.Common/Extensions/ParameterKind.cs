@@ -8,5 +8,7 @@
         Ref,
         RefReadOnly,
         Optional,
+        Params,
+        This,
     }
 }

@@ -282,9 +282,11 @@
             hashCode = (hashCode * -1521134295) + this.AddMethodHandle.GetHashCode();
             hashCode = (hashCode * -1521134295) + this.RemoveMethodHandle.GetHashCode();
 
-            foreach (object argument in this.ParameterList)
+            foreach (ParameterData parameterData in this.ParameterList)
             {
-                hashCode = (hashCode * -1521134295) + argument.GetHashCode();
+                hashCode = (hashCode * -1521134295) + parameterData.ParameterTypeData.Handle.GetHashCode();
+                hashCode = (hashCode * -1521134295) + (int)parameterData.ParameterKind; // e.g. Plain / In / Out / RefReadonly / etc.
+                hashCode = (hashCode * -1521134295) + (parameterData.IsGenericTypeParamater ? 1 : 0);
             }
 
             return hashCode;

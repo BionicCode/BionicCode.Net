@@ -18,7 +18,7 @@ namespace BionicCode.Utilities.Net
         /// Checks whether the specified property has errors or is valid.
         /// </summary>
         /// <param name="propertyName">The name of the property to check for errors.</param>
-        /// <returns><c>true</c> when the specified property has at least one error. Otherwise <c>false</c> when the property is valid.</returns>
+        /// <returns><see langword="true"/> when the specified property has at least one error. Otherwise <see langword="false"/> when the property is valid.</returns>
         bool PropertyHasError([CallerMemberName] string propertyName = null);
 
         /// <summary>

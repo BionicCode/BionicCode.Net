@@ -27,13 +27,13 @@ namespace BionicCode.Utilities.Net
         /// The registered CanExecute delegate that accepts a parameter of <typeparamref name="TParam"/>.
         /// </summary>
         /// <value>
-        /// <c>true</c> if the command can execute, otherwise <c>false</c>.</value>
+        /// <see langword="true"/> if the command can execute, otherwise <see langword="false"/>.</value>
         private readonly Func<TParam, bool> canExecuteDelegate;
 
         #region Constructors
 
         /// <summary>
-        ///   Creates a new asynchronous command that can always execute (<see cref="CanExecute"/> will always return <c>true</c>) 
+        ///   Creates a new asynchronous command that can always execute (<see cref="CanExecute"/> will always return <see langword="true"/>) 
         ///   <br/>and that accepts a command parameter of type <typeparamref name="TParam"/>
         ///   <br/>and supports cancellation.
         /// </summary>
@@ -44,7 +44,7 @@ namespace BionicCode.Utilities.Net
         }
 
         /// <summary>
-        ///   Creates a new asynchronous command that can always execute (<see cref="CanExecute"/> will always return <c>true</c>) 
+        ///   Creates a new asynchronous command that can always execute (<see cref="CanExecute"/> will always return <see langword="true"/>) 
         ///   <br/>and that accepts a command parameter of type <typeparamref name="TParam"/>.
         /// </summary>
         /// <param name="executeAsync">The awaitable execute handler.</param>
@@ -93,7 +93,7 @@ namespace BionicCode.Utilities.Net
         /// <param name="parameter">
         ///   Data used by the command. 
         /// </param>
-        /// <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> if this command can be executed, otherwise <see langword="false"/>.</returns>
         public bool CanExecute(TParam parameter) => this.canExecuteDelegate?.Invoke(parameter) ?? true;
 
         /// <inheritdoc />

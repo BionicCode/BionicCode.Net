@@ -16,7 +16,7 @@
         /// Checks if the <see cref="ICommand"/> can execute based on the command parameter.
         /// </summary>
         /// <param name="parameter">The command parameter.</param>
-        /// <returns><c>true</c> when the <see cref="ICommand"/> can execute, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when the <see cref="ICommand"/> can execute, otherwise <see langword="false"/>.</returns>
         bool CanExecute(TParam parameter);
 
         /// <summary>

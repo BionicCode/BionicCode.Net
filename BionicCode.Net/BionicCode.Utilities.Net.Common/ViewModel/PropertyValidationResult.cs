@@ -10,7 +10,7 @@
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="isValid"><c>true</c> when the validation has successfully passed. <c>false</c> when the validation has failed.</param>
+        /// <param name="isValid"><see langword="true"/> when the validation has successfully passed. <see langword="false"/> when the validation has failed.</param>
         /// <param name="errorMessages">A collection of error messasge objects that can be displayed in the UI. It's expected that the client will generate one message for each validation error of the currently validated property.</param>
         public PropertyValidationResult(bool isValid, IEnumerable<object> errorMessages)
         {
@@ -21,7 +21,7 @@
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="isValid"><c>true</c> when the validation has successfully passed. <c>false</c> when the validation has failed.</param>
+        /// <param name="isValid"><see langword="true"/> when the validation has successfully passed. <see langword="false"/> when the validation has failed.</param>
         /// <param name="errorMessage">An error messasge object that can be displayed in the UI.</param>
         public PropertyValidationResult(bool isValid, object errorMessage)
         {
@@ -50,7 +50,7 @@
         /// <summary>
         /// Returns whether tha validation was successful or has failed.
         /// </summary>
-        /// <value><c>true</c> when the validation has successfully passed. <c>false</c> when the validation has failed.</value>
+        /// <value><see langword="true"/> when the validation has successfully passed. <see langword="false"/> when the validation has failed.</value>
         public bool IsValid { get; }
 
         /// <summary>

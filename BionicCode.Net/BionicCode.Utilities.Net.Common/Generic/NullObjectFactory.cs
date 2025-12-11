@@ -8,7 +8,7 @@
     using System;
 
     /// <summary>
-    /// Implementation of <see cref="INullObject"/> and <see cref="IFactory{TCreate}"/>. Used to create an instance of a <see cref="INullObject"/> where <see cref="INullObject.IsNull"/> is set to <c>true</c> by default.
+    /// Implementation of <see cref="INullObject"/> and <see cref="IFactory{TCreate}"/>. Used to create an instance of a <see cref="INullObject"/> where <see cref="INullObject.IsNull"/> is set to <see langword="true"/> by default.
     /// </summary>
     /// <typeparam name="TObject"></typeparam>
     public class NullObjectFactory<TObject> : Factory<TObject> where TObject : INullObject

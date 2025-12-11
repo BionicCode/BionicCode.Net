@@ -16,7 +16,7 @@
         /// <param name="eventName">The name of the observed event.</param>
         /// <param name="eventSourceType">The type of the observable.</param>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterObserver(string eventName, Type eventSourceType, Delegate eventHandler);
 
         /// <summary>
@@ -25,8 +25,8 @@
         /// <param name="eventName">The name of the observed event.</param>
         /// <param name="eventSourceType">The type of the observable.</param>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
-        /// <param name="isMarshalEventToCurrentThreadEnabled"><c>true</c> if the current <see cref="SynchronizationContext"/> should be captured to execute the event handler.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <param name="isMarshalEventToCurrentThreadEnabled"><see langword="true"/> if the current <see cref="SynchronizationContext"/> should be captured to execute the event handler.</param>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterObserver(string eventName, Type eventSourceType, Delegate eventHandler, bool isMarshalEventToCurrentThreadEnabled);
 
         /// <summary>
@@ -36,7 +36,7 @@
         /// <param name="eventSourceType">The type of the observable.</param>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
         /// <param name="synchronizationContext">The <see cref="SynchronizationContext"/> that the event delegate is to be executed on.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterObserver(string eventName, Type eventSourceType, Delegate eventHandler, SynchronizationContext synchronizationContext);
 
         /// <summary>
@@ -46,7 +46,7 @@
         /// <param name="eventName">The name of the observed event.</param>
         /// <param name="eventSourceType">The type of the observable.</param>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterObserver<TEventArgs>(string eventName, Type eventSourceType, EventHandler<TEventArgs> eventHandler);
 
         /// <summary>
@@ -56,8 +56,8 @@
         /// <param name="eventName">The name of the observed event.</param>
         /// <param name="eventSourceType">The type of the observable.</param>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
-        /// <param name="isMarshalEventToCurrentThreadEnabled"><c>true</c> if the current <see cref="SynchronizationContext"/> should be captured to execute the event handler.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <param name="isMarshalEventToCurrentThreadEnabled"><see langword="true"/> if the current <see cref="SynchronizationContext"/> should be captured to execute the event handler.</param>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterObserver<TEventArgs>(string eventName, Type eventSourceType, EventHandler<TEventArgs> eventHandler, bool isMarshalEventToCurrentThreadEnabled);
 
         /// <summary>
@@ -68,7 +68,7 @@
         /// <param name="eventSourceType">The type of the observable.</param>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
         /// <param name="synchronizationContext">The <see cref="SynchronizationContext"/> that the event delegate is to be executed on.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterObserver<TEventArgs>(string eventName, Type eventSourceType, EventHandler<TEventArgs> eventHandler, SynchronizationContext synchronizationContext);
 
         /// <summary>
@@ -76,7 +76,7 @@
         /// </summary>
         /// <param name="eventName">The name of the observed event.</param>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterGlobalObserver(string eventName, Delegate eventHandler);
 
         /// <summary>
@@ -84,8 +84,8 @@
         /// </summary>
         /// <param name="eventName">The name of the observed event.</param>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
-        /// <param name="isMarshalEventToCurrentThreadEnabled"><c>true</c> if the current <see cref="SynchronizationContext"/> should be captured to execute the event handler.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <param name="isMarshalEventToCurrentThreadEnabled"><see langword="true"/> if the current <see cref="SynchronizationContext"/> should be captured to execute the event handler.</param>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterGlobalObserver(string eventName, Delegate eventHandler, bool isMarshalEventToCurrentThreadEnabled);
 
         /// <summary>
@@ -94,7 +94,7 @@
         /// <param name="eventName">The name of the observed event.</param>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
         /// <param name="synchronizationContext">The <see cref="SynchronizationContext"/> that the event delegate is to be executed on.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterGlobalObserver(string eventName, Delegate eventHandler, SynchronizationContext synchronizationContext);
 
         /// <summary>
@@ -103,7 +103,7 @@
         /// <typeparam name="TEventArgs">The type of the event args object.</typeparam>
         /// <param name="eventName">The name of the observed event.</param>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterGlobalObserver<TEventArgs>(string eventName, EventHandler<TEventArgs> eventHandler);
 
         /// <summary>
@@ -112,8 +112,8 @@
         /// <typeparam name="TEventArgs">The type of the event args object.</typeparam>
         /// <param name="eventName">The name of the observed event.</param>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
-        /// <param name="isMarshalEventToCurrentThreadEnabled"><c>true</c> if the current <see cref="SynchronizationContext"/> should be captured to execute the event handler.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <param name="isMarshalEventToCurrentThreadEnabled"><see langword="true"/> if the current <see cref="SynchronizationContext"/> should be captured to execute the event handler.</param>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterGlobalObserver<TEventArgs>(string eventName, EventHandler<TEventArgs> eventHandler, bool isMarshalEventToCurrentThreadEnabled);
 
         /// <summary>
@@ -123,22 +123,22 @@
         /// <param name="eventName">The name of the observed event.</param>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
         /// <param name="synchronizationContext">The <see cref="SynchronizationContext"/> that the event delegate is to be executed on.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterGlobalObserver<TEventArgs>(string eventName, EventHandler<TEventArgs> eventHandler, SynchronizationContext synchronizationContext);
 
         /// <summary>
         /// Registers a handler for any registered event source with a compatible event delegate signature.
         /// </summary>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterGlobalObserver(Delegate eventHandler);
 
         /// <summary>
         /// Registers a handler for any registered event source with a compatible event delegate signature.
         /// </summary>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
-        /// <param name="isMarshalEventToCurrentThreadEnabled"><c>true</c> if the current <see cref="SynchronizationContext"/> should be captured to execute the event handler.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <param name="isMarshalEventToCurrentThreadEnabled"><see langword="true"/> if the current <see cref="SynchronizationContext"/> should be captured to execute the event handler.</param>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterGlobalObserver(Delegate eventHandler, bool isMarshalEventToCurrentThreadEnabled);
 
         /// <summary>
@@ -146,7 +146,7 @@
         /// </summary>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
         /// <param name="synchronizationContext">The <see cref="SynchronizationContext"/> that the event delegate is to be executed on.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterGlobalObserver(Delegate eventHandler, SynchronizationContext synchronizationContext);
 
         /// <summary>
@@ -154,7 +154,7 @@
         /// </summary>
         /// <typeparam name="TEventArgs">The type of the event args object.</typeparam>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterGlobalObserver<TEventArgs>(EventHandler<TEventArgs> eventHandler);
 
         /// <summary>
@@ -162,8 +162,8 @@
         /// </summary>
         /// <typeparam name="TEventArgs">The type of the event args object.</typeparam>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
-        /// <param name="isMarshalEventToCurrentThreadEnabled"><c>true</c> if the current <see cref="SynchronizationContext"/> should be captured to execute the event handler.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <param name="isMarshalEventToCurrentThreadEnabled"><see langword="true"/> if the current <see cref="SynchronizationContext"/> should be captured to execute the event handler.</param>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterGlobalObserver<TEventArgs>(EventHandler<TEventArgs> eventHandler, bool isMarshalEventToCurrentThreadEnabled);
 
         /// <summary>
@@ -172,7 +172,7 @@
         /// <typeparam name="TEventArgs">The type of the event args object.</typeparam>
         /// <param name="eventHandler">A delegate that handles the specified event.</param>
         /// <param name="synchronizationContext">The <see cref="SynchronizationContext"/> that the event delegate is to be executed on.</param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterGlobalObserver<TEventArgs>(EventHandler<TEventArgs> eventHandler, SynchronizationContext synchronizationContext);
 
         /// <summary>
@@ -181,7 +181,7 @@
         /// <param name="eventName">The event name of the event that the delegate is handling.</param>
         /// <param name="eventSourceType">The type of the event publisher.</param>
         /// <param name="eventHandler">The event handler to remove.</param>
-        /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
         bool TryRemoveObserver(string eventName, Type eventSourceType, Delegate eventHandler);
 
         /// <summary>
@@ -191,14 +191,14 @@
         /// <param name="eventName">The event name of the event that the delegate is handling.</param>
         /// <param name="eventSourceType">The type of the event publisher.</param>
         /// <param name="eventHandler">The event handler to remove.</param>
-        /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
         bool TryRemoveObserver<TEventArgs>(string eventName, Type eventSourceType, EventHandler<TEventArgs> eventHandler);
 
         /// <summary>
         /// Removes all event handlers for a specified event no matter event publisher type.
         /// </summary>
         /// <param name="eventName">The event name of the event that the delegate is handling.</param>
-        /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
         bool TryRemoveAllObservers(string eventName);
 
         /// <summary>
@@ -206,14 +206,14 @@
         /// </summary>
         /// <param name="eventName">The event name of the event that the delegate is handling.</param>
         /// <param name="eventSourceType">The type of the event publisher.</param>
-        /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
         bool TryRemoveAllObservers(string eventName, Type eventSourceType);
 
         /// <summary>
         /// Removes all event handlers for a specified event publisher type.
         /// </summary>
         /// <param name="eventSourceType">The type of the event publisher.</param>
-        /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
         bool TryRemoveAllObservers(Type eventSourceType);
 
         /// <summary>
@@ -221,7 +221,7 @@
         /// </summary>
         /// <param name="eventName">The event name of the event that the delegate is handling.</param>
         /// <param name="eventHandler">The event handler to remove</param>
-        /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
         bool TryRemoveGlobalObserver(string eventName, Delegate eventHandler);
 
         /// <summary>
@@ -230,14 +230,14 @@
         /// <typeparam name="TEventArgs">The type of the event args object.</typeparam>
         /// <param name="eventName">The event name of the event that the delegate is handling.</param>
         /// <param name="eventHandler">The event handler to remove</param>
-        /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
         bool TryRemoveGlobalObserver<TEventArgs>(string eventName, EventHandler<TEventArgs> eventHandler);
 
         /// <summary>
         /// Removes the event handler for all registered events with a compatible event delegate signature.
         /// </summary>
         /// <param name="eventHandler">The event handler to remove.</param>
-        /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
         bool TryRemoveGlobalObserver(Delegate eventHandler);
 
         /// <summary>
@@ -245,7 +245,7 @@
         /// </summary>
         /// <typeparam name="TEventArgs">The type of the event args object.</typeparam>
         /// <param name="eventHandler">The event handler to remove.</param>
-        /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
         bool TryRemoveGlobalObserver<TEventArgs>(EventHandler<TEventArgs> eventHandler);
     }
 }

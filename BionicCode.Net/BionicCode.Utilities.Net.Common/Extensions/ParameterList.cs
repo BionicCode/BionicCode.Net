@@ -31,7 +31,16 @@
         public int Count => this._items.Length;
         public bool IsEmpty => this._items.Length == 0;
 
-        public ParameterData this[int index] => this._items[index];
+        public ParameterData this[int index]
+        {
+            get
+            {
+                ArgumentOutOfRangeException.ThrowIfLessThan(index, 0, nameof(index));
+                ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, this._items.Length, nameof(index));
+
+                return this._items[index];
+            }
+        }
 
         public IEnumerator<ParameterData> GetEnumerator()
             => ((IEnumerable<ParameterData>)this._items).GetEnumerator();

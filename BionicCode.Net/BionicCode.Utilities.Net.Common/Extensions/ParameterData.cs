@@ -34,6 +34,7 @@
         private SymbolComponentInfo symbolComponentInfo;
         private object? defaultValue;
         private ParameterKind? parameterKind;
+        private bool? isGenericTypeParamater;
 
         public ParameterData(ParameterInfo parameterInfo) : base(parameterInfo.Name)
         {
@@ -52,38 +53,45 @@
         /// <summary>
         /// Gets a value indicating whether the current type is passed by reference using the <see langword="ref"/> keyword.
         /// </summary>
-        /// <value><c>true</c> if the parameter is passed by reference using the <c>ref</c> keyword; otherwise, <c>false</c>.</value>
+        /// <value><see langword="true"/> if the parameter is passed by reference using the <c>ref</c> keyword; otherwise, <see langword="false"/>.</value>
         public bool IsRef
           => this.isRef ??= IsRefInternal(this);
 
         /// <summary>
         /// Gets a value indicating whether the current instance is marked as <see langword="ref"/> <see langword="readonly"/>.
         /// </summary>
-        /// <value><c>true</c> if the parameter is marked as <see langword="ref"/> <see langword="readonly"/>; otherwise, <c>false</c>.</value>
+        /// <value><see langword="true"/> if the parameter is marked as <see langword="ref"/> <see langword="readonly"/>; otherwise, <see langword="false"/>.</value>
         public bool IsRefReadOnly
           => this.isRefReadOnly ??= IsRefReadOnlyInternal(this);
 
         /// <summary>
         /// Gets a value indicating whether the parameter is an input parameter (passed by  reference using the <see langword="in"/> keyword).
         /// </summary>
-        /// <value><c>true</c> if the parameter is an input parameter; otherwise, <c>false</c>.</value>
+        /// <value><see langword="true"/> if the parameter is an input parameter; otherwise, <see langword="false"/>.</value>
         public bool IsIn
           => this.isIn ??= IsInParameter(this);
 
         /// <summary>
         /// Gets a value indicating whether the parameter is an output parameter (passed by reference using the <see langword="out"/> keyword.
         /// </summary>
-        /// <value><c>true</c> if the parameter is an output parameter; otherwise, <c>false</c>.</value>
+        /// <value><see langword="true"/> if the parameter is an output parameter; otherwise, <see langword="false"/>.</value>
         public bool IsOut
           => this.isOut ??= IsOutParameter(this);
 
         /// <summary>
         /// Gets a value indicating whether the parameter is optional.
         /// </summary>
-        /// <value><c>true</c> if the parameter is optional i.e. has a default value; otherwise, <c>false</c>.</value>
+        /// <value><see langword="true"/> if the parameter is optional i.e. has a default value; otherwise, <see langword="false"/>.</value>
         /// <remarks>This property does not return whether the parameter is decorated with  the <c>System.Runtime.InteropServices.OptionalAttribuute</c>. It only checks whether the parameter is considered optional by the existance of a default value.</remarks>
         public bool IsOptional
           => this.isOptional ??= GetParameterInfo().HasDefaultValue;
+
+        /// <summary>
+        /// Gets a value indicating whether the parameter type is a generic type parameter.
+        /// </summary>
+        /// <value><see langword="true"/> if the parameter type is a generic type parameter; otherwise, <see langword="false"/>.</value>
+        public bool IsGenericTypeParamater
+          => this.isGenericTypeParamater ??= this.ParameterTypeData.IsGenericTypeParameter;
 
         public ParameterKind ParameterKind
           => this.parameterKind ??= this.IsIn ? ParameterKind.In
@@ -91,6 +99,8 @@
             : this.IsRefReadOnly ? ParameterKind.RefReadOnly
             : this.IsRef ? ParameterKind.Ref
             : this.IsOptional ? ParameterKind.Optional
+            : this.IsParams ? ParameterKind.Params
+            : this.Member is MethodData methodData && methodData.IsExtensionMethod && this.Position == 0 ? ParameterKind.This
             : ParameterKind.Undefined;
 
         /// <summary>

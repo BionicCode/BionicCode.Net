@@ -9,7 +9,7 @@
         /// Converts the value of <see cref="AccessModifier"/> to a string representation.
         /// </summary>
         /// <param name="accessModifier"></param>
-        /// <param name="toUpperCase">Controls whether to convert the string's first character to uppercase (<paramref name="toUpperCase"/>=<c>true</c>). The default is lowercase (<paramref name="toUpperCase"/>=<c>true</c>.</param>
+        /// <param name="toUpperCase">Controls whether to convert the string's first character to uppercase (<paramref name="toUpperCase"/>=<see langword="true"/>). The default is lowercase (<paramref name="toUpperCase"/>=<see langword="true"/>.</param>
         /// <returns>The readable string representation of the enum value.</returns>
         /// <exception cref="NotSupportedException">The enum value is not supported. (This exception is only intended for internal maintenance and will never be thrown in production code)</exception>
         public static string ToDisplayStringValue(this AccessModifier accessModifier, bool toUpperCase = false)
@@ -40,7 +40,7 @@
         /// Converts the value of <see cref="TimeUnit"/> to a string representation.
         /// </summary>
         /// <param name="timeUnit"></param>
-        /// <param name="toUpperCase">Controls whether to convert the string's first character to uppercase (<paramref name="toUpperCase"/>=<c>true</c>). The default is lowercase (<paramref name="toUpperCase"/>=<c>true</c>.</param>
+        /// <param name="toUpperCase">Controls whether to convert the string's first character to uppercase (<paramref name="toUpperCase"/>=<see langword="true"/>). The default is lowercase (<paramref name="toUpperCase"/>=<see langword="true"/>.</param>
         /// <returns>The readable string representation of the enum value.</returns>
         /// <exception cref="NotSupportedException">The enum value is not supported. (This exception is only intended for internal maintenance and will never be thrown in production code)</exception>
         public static string ToDisplayStringValue(this TimeUnit timeUnit, bool toUpperCase = false)

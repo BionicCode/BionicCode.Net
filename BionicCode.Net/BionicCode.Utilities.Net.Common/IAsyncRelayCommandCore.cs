@@ -52,12 +52,12 @@
         /// <summary>
         /// Returns whether the command can be cancelled.
         /// </summary>
-        /// <value><c>true</c> if cancellation is allowed. Otherwise <c>false</c>.</value>
+        /// <value><see langword="true"/> if cancellation is allowed. Otherwise <see langword="false"/>.</value>
         bool CanBeCanceled { get; }
         /// <summary>
         /// Returns whether the command's executing operation was cancelled.
         /// </summary>
-        /// <value><c>true</c> if the last command execution was cancelled. Otherwise <c>false</c>.</value>
+        /// <value><see langword="true"/> if the last command execution was cancelled. Otherwise <see langword="false"/>.</value>
         bool IsCancelled { get; }
 
         /// <summary>

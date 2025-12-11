@@ -27,13 +27,13 @@ namespace BionicCode.Utilities.Net
         /// The registered parameterless CanExecute delegate.
         /// </summary>
         /// <value>
-        /// <c>true</c> if the command can execute, otherwise <c>false</c>.</value>
+        /// <see langword="true"/> if the command can execute, otherwise <see langword="false"/>.</value>
         private readonly Func<bool> canExecuteNoParamDelegate;
 
         #region Constructors
 
         /// <summary>
-        ///   Creates a new parameterless asynchronous command that can always execute (<see cref="CanExecute()"/> will always return <c>true</c>).
+        ///   Creates a new parameterless asynchronous command that can always execute (<see cref="CanExecute()"/> will always return <see langword="true"/>).
         /// </summary>
         /// <param name="executeAsyncNoParam">The awaitable execution handler.</param>
         protected AsyncRelayCommandCommon(Func<Task> executeAsyncNoParam)
@@ -42,7 +42,7 @@ namespace BionicCode.Utilities.Net
         }
 
         /// <summary>
-        ///   Creates a new parameterless asynchronous command that can always execute (<see cref="CanExecute()"/> will always return <c>true</c>)
+        ///   Creates a new parameterless asynchronous command that can always execute (<see cref="CanExecute()"/> will always return <see langword="true"/>)
         ///   <br/>and supports cancellation.
         /// </summary>
         /// <param name="executeAsyncNoParam">The awaitable execution handler.</param>
@@ -80,7 +80,7 @@ namespace BionicCode.Utilities.Net
         /// <summary>
         ///   Determines whether this AsyncRelayCommandCommon can execute.
         /// </summary>
-        /// <returns><c>true</c> if this command can be executed, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> if this command can be executed, otherwise <see langword="false"/>.</returns>
         public bool CanExecute() => this.canExecuteNoParamDelegate?.Invoke() ?? true;
 
         /// <inheritdoc />

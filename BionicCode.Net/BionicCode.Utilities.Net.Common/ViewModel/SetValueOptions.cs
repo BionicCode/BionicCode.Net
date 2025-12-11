@@ -13,7 +13,7 @@
             private static readonly Lazy<SetValueOptions> DefaultOptionsFactory = new Lazy<SetValueOptions>(() => new SetValueOptions());
 
             /// <summary>
-            ///  Gets the default behavior for the property set methods. <br/>By default the configuration sets <see cref="IsRejectEqualValuesEnabled"/> to <c>true</c>, <see cref="IsThrowExceptionOnValidationErrorEnabled"/> to <c>false</c> and <see cref="IsRejectInvalidValueEnabled"/> to <c>false</c>.
+            ///  Gets the default behavior for the property set methods. <br/>By default the configuration sets <see cref="IsRejectEqualValuesEnabled"/> to <see langword="true"/>, <see cref="IsThrowExceptionOnValidationErrorEnabled"/> to <see langword="false"/> and <see cref="IsRejectInvalidValueEnabled"/> to <see langword="false"/>.
             /// </summary>
             /// <value>An instance configured with the default values.</value>
             public static SetValueOptions Default => SetValueOptions.DefaultOptionsFactory.Value;
@@ -37,21 +37,21 @@
             /// <summary>
             /// Gets how the invalid property value is stored. Use this to ensure that the view model in a valid state.
             /// </summary>
-            /// <value>If <c>true</c> the invalid value is not stored to the backing field.<br/> The default is <c>false</c>.</value>
+            /// <value>If <see langword="true"/> the invalid value is not stored to the backing field.<br/> The default is <see langword="false"/>.</value>
             public bool IsRejectInvalidValueEnabled { get; }
             /// <summary>
             /// Gets if throwing an <exception cref="ArgumentException"></exception> on a failed validation is enabled. 
-            /// <br/>Use this when <c>ValidatesOnExceptions</c> on a <c>Binding</c> is set to <c>true</c>
+            /// <br/>Use this when <c>ValidatesOnExceptions</c> on a <c>Binding</c> is set to <see langword="true"/>
             /// </summary>
-            /// <value><c>true</c> if throwing an <exception cref="ArgumentException"></exception> on a failed validation is enabled. Otherwise <c>false</c>. 
-            /// <br/>The default is <c>false</c>.</value>
+            /// <value><see langword="true"/> if throwing an <exception cref="ArgumentException"></exception> on a failed validation is enabled. Otherwise <see langword="false"/>. 
+            /// <br/>The default is <see langword="false"/>.</value>
             public bool IsThrowExceptionOnValidationErrorEnabled { get; }
 
             /// <summary>
             /// Gets if the equality check before setting the value is enabled.
             /// </summary>
-            /// <value>If <c>true</c> the equality check before setting the value to avoid raising the <see cref="INotifyPropertyChanged.PropertyChanged"/> event on equality is enabled. If <c>false</c> equality check is deisabled. This will always raise the <see cref="INotifyPropertyChanged.PropertyChanged"/> event.
-            /// <br/>the default is <c>true</c>.</value>
+            /// <value>If <see langword="true"/> the equality check before setting the value to avoid raising the <see cref="INotifyPropertyChanged.PropertyChanged"/> event on equality is enabled. If <see langword="false"/> equality check is deisabled. This will always raise the <see cref="INotifyPropertyChanged.PropertyChanged"/> event.
+            /// <br/>the default is <see langword="true"/>.</value>
             public bool IsRejectEqualValuesEnabled { get; }
         }
     }

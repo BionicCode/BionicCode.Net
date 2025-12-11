@@ -82,7 +82,7 @@
         /// Removes the object at the beginning of the <see cref="Queue{T}"/>, and copies it to the result parameter.
         /// </summary>
         /// <param name="result">The removed object.</param>
-        /// <returns><c>true</c> if the object is successfully removed; <c>false</c> if the <see cref="Queue{T}"/> is empty.</returns>
+        /// <returns><see langword="true"/> if the object is successfully removed; <see langword="false"/> if the <see cref="Queue{T}"/> is empty.</returns>
         public new bool TryDequeue(out TItem result)
         {
             if (base.TryDequeue(out result))

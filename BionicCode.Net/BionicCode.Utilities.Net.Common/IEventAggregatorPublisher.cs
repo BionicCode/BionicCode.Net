@@ -14,7 +14,7 @@
         /// </summary>
         /// <param name="eventSource">The publisher instance.</param>
         /// <param name="eventNames">A collection of event names that define the observed events of the <paramref name="eventSource"/></param>
-        /// <returns><c>true</c> when registration was successful, otherwise <c>false</c>.</returns>
+        /// <returns><see langword="true"/> when registration was successful, otherwise <see langword="false"/>.</returns>
         bool TryRegisterObservable(object eventSource, IEnumerable<string> eventNames);
 
         /// <summary>
@@ -22,8 +22,8 @@
         /// </summary>
         /// <param name="eventSource">The event publisher instance.</param>
         /// <param name="eventNames">The names of the events to unregister.</param>
-        /// <param name="removeEventObservers">If <c>true</c> removes all event listeners of the specified events. The value is <c>false</c> by default.</param>
-        /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        /// <param name="removeEventObservers">If <see langword="true"/> removes all event listeners of the specified events. The value is <see langword="false"/> by default.</param>
+        /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
         bool TryRemoveObservable(
           object eventSource,
           IEnumerable<string> eventNames,
@@ -33,8 +33,8 @@
         /// Unregister the event publisher for all events.
         /// </summary>
         /// <param name="eventSource">The event publisher instance.</param>
-        /// <param name="removeEventObservers">If <c>true</c> removes all event listeners of the specified events. The value is <c>false</c> by default.</param>
-        /// <returns><c>true</c> when removal was successful, otherwise <c>false</c>.</returns>
+        /// <param name="removeEventObservers">If <see langword="true"/> removes all event listeners of the specified events. The value is <see langword="false"/> by default.</param>
+        /// <returns><see langword="true"/> when removal was successful, otherwise <see langword="false"/>.</returns>
         bool TryRemoveObservable(object eventSource, bool removeEventObservers = false);
     }
 }

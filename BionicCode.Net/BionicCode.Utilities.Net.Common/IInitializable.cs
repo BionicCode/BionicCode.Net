@@ -13,13 +13,13 @@
         /// <summary>
         /// Asynchronous method that executes the insatnce initialization routine.
         /// </summary>
-        /// <returns>Return <c>true</c> when initialized successfully, otherwise <c>false</c>.</returns>
+        /// <returns>Return <see langword="true"/> when initialized successfully, otherwise <see langword="false"/>.</returns>
         Task<bool> InitializeAsync();
 
         /// <summary>
         /// Returns whether the instance is already initialized.
         /// </summary>
-        /// <value><c>true</c> when <see cref="InitializeAsync"/> was already called, otherwise <c>false</c>.</value>
+        /// <value><see langword="true"/> when <see cref="InitializeAsync"/> was already called, otherwise <see langword="false"/>.</value>
         bool IsInitialized { get; }
     }
 }

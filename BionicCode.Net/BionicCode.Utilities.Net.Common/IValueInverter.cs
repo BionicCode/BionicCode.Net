@@ -19,7 +19,7 @@
         /// </summary>
         /// <param name="value"></param>
         /// <param name="invertedValue"></param>
-        /// <returns><c>true</c> when successful, otherwise <c>false</c></returns>
+        /// <returns><see langword="true"/> when successful, otherwise <see langword="false"/></returns>
         bool TryInvertValue(object value, out object invertedValue);
 
         /// <summary>

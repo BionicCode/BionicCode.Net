@@ -119,7 +119,7 @@
         /// <remarks>
         /// Use <see cref="InitializeServicesAsync(IServiceProvider)"/> to throw an <see cref="InvalidOperationException"/> when the initialization of an <see cref="IInitializable"/> implementations has failed. 
         /// <br/>
-        /// This is when <see cref="IInitializable.InitializeAsync"/> or <see cref="IInitializable.IsInitialized"/> returns <c>false</c>.
+        /// This is when <see cref="IInitializable.InitializeAsync"/> or <see cref="IInitializable.IsInitialized"/> returns <see langword="false"/>.
         /// </remarks>
         public static async Task<IServiceProvider> TryInitializeServicesAsync(this IServiceProvider serviceProvider)
           => await InitializeServicesAsync(serviceProvider, false).ConfigureAwait(false);
@@ -129,10 +129,10 @@
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <returns><see cref="IServiceProvider"/></returns>
-        /// <exception cref="InvalidOperationException">Thrown when the initialization of an <see cref="IInitializable"/> implementations has failed. This is when <see cref="IInitializable.InitializeAsync"/> or <see cref="IInitializable.IsInitialized"/> returns <c>false</c>.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when the initialization of an <see cref="IInitializable"/> implementations has failed. This is when <see cref="IInitializable.InitializeAsync"/> or <see cref="IInitializable.IsInitialized"/> returns <see langword="false"/>.</exception>
         /// <remarks>
         /// Throws and <see cref="InvalidOperationException"/> when the initialization of an <see cref="IInitializable"/> implementations has failed. <br/>
-        /// This is when <see cref="IInitializable.InitializeAsync"/> or <see cref="IInitializable.IsInitialized"/> returns <c>false</c>.
+        /// This is when <see cref="IInitializable.InitializeAsync"/> or <see cref="IInitializable.IsInitialized"/> returns <see langword="false"/>.
         /// <para>Use <see cref="TryInitializeServicesAsync(IServiceProvider)"/> to avoid throwing such an exception and proceed with the initialization.</para>
         /// </remarks>
         public static async Task<IServiceProvider> InitializeServicesAsync(this IServiceProvider serviceProvider)

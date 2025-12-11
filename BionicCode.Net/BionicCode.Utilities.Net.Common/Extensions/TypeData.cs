@@ -68,6 +68,7 @@ namespace BionicCode.Utilities.Net
         private bool isAllEventsGenerated;
         private bool isAllConstructorsGenerated;
         private bool? isByRefLike;
+        private bool? isGenericTypeParameter;
 
         public TypeData(Type type) : base(type.Name)
         {
@@ -436,6 +437,9 @@ namespace BionicCode.Utilities.Net
                 return this.delegateInvokeMethodData;
             }
         }
+
+        public bool IsGenericTypeParameter
+          => this.isGenericTypeParameter ??= GetType().IsGenericParameter;
 
         public bool IsGenericType
           => this.isGenericType ??= GetType().IsGenericType;
