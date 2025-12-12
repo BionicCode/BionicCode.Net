@@ -1,6 +1,7 @@
 ﻿namespace BionicCode.Utilities.Net
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Numerics;
     using System.Reflection;
@@ -100,20 +101,22 @@
         /// before using it in code that requires a defined enum value. This is especially useful when working with
         /// values from untrusted sources or deserialization.</remarks>
         /// <typeparam name="TEnum">The enumeration type against which to validate the value. Must be a struct that implements Enum.</typeparam>
-        /// <param name="raw">The value to validate. Can be an enum value or a convertible value representing an enum member.</param>
+        /// <param name="value">The value to validate. Can be an enum value or a convertible value representing an enum member (e.g. an <see langword="int"/> value).</param>
         /// <param name="paramName">The name of the parameter being validated. This value is used in any thrown exception to identify the
         /// invalid argument. Optional.</param>
         /// <exception cref="ArgumentException">Thrown if the provided value is an enum of a different type than <typeparamref name="TEnum"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if the provided value does not correspond to a defined member of <typeparamref name="TEnum"/>.</exception>
-        public static void ThrowIfEnumIsNotDefined<TEnum>(IConvertible raw, [CallerArgumentExpression(nameof(raw))] string? paramName = null) where TEnum : struct, Enum
+        public static void ThrowIfEnumIsNotDefined<TEnum>(IConvertible value, [CallerArgumentExpression(nameof(value))] string? paramName = null) where TEnum : struct, Enum
         {
-            TEnum parsedEnum = raw is Enum rawEnum
+            ArgumentNullException.ThrowIfNull(value, paramName);
+
+            TEnum parsedEnum = value is Enum rawEnum
                 ? (rawEnum is TEnum castEnum
                     ? castEnum
                     : throw new ArgumentException(
                         $"The enum value '{rawEnum.GetType().FullName}' is not of the expected type '{typeof(TEnum).FullName}'.",
                         paramName))
-                : Enum.Parse<TEnum>(raw.ToString(System.Globalization.CultureInfo.InvariantCulture), ignoreCase: true);
+                : Enum.Parse<TEnum>(value.ToString(System.Globalization.CultureInfo.InvariantCulture), ignoreCase: true);
 
             if (!Enum.IsDefined<TEnum>(parsedEnum))
             {
@@ -122,75 +125,105 @@
                     $"The value '{parsedEnum}' is not defined in enum '{typeof(TEnum).FullName}'.");
             }
         }
-    }
 
-    public class ArgumentOutOfRangeExceptionEx : System.ArgumentOutOfRangeException
-    {
-        public ArgumentOutOfRangeExceptionEx()
+        /// <summary>
+        /// Validates that the specified value corresponds to a defined value of the specified enumeration type, and
+        /// throws an exception if it does not.
+        /// </summary>
+        /// <remarks>Use this method to ensure that a value is a valid member of a specific enum type
+        /// before using it in code that requires a defined enum value. This is especially useful when working with
+        /// values from untrusted sources or deserialization.</remarks>
+        /// <typeparam name="TEnum">The enumeration type against which to validate the value. Must be a struct that implements Enum.</typeparam>
+        /// <param name="value">The value to validate. Can be an enum value or a convertible value representing an enum member.</param>
+        /// <param name="others">A list of valid enum values that <paramref name="value"/> must match.</param>
+        /// <param name="paramName">The name of the parameter being validated. This value is used in any thrown exception to identify the
+        /// invalid argument. Optional.</param>
+        /// <exception cref="ArgumentException">Thrown if the provided value is an enum of a different type than <typeparamref name="TEnum"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if the provided value does not correspond to a defined member of <typeparamref name="TEnum"/>.</exception>
+        public static void ThrowIfEnumIsNotEqual<TEnum>(IConvertible value, IEnumerable<TEnum> others, [CallerArgumentExpression(nameof(value))] string? paramName = null, string message = null) where TEnum : struct, Enum
         {
-        }
+            ArgumentNullException.ThrowIfNull(value, paramName);
+            ArgumentNullException.ThrowIfNull(others, nameof(others));
 
-        public ArgumentOutOfRangeExceptionEx(string paramName) : base(paramName)
-        {
-        }
-
-        public ArgumentOutOfRangeExceptionEx(string paramName, string message) : base(paramName, message)
-        {
-        }
-
-        public ArgumentOutOfRangeExceptionEx(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        public ArgumentOutOfRangeExceptionEx(string paramName, object actualValue, string message) : base(paramName, actualValue, message)
-        {
-        }
-
-        [DoesNotReturn]
-        private static void ThrowZero<T>(T value, string paramName)
-            => throw new System.ArgumentOutOfRangeException(paramName, value, "ExecuteDelegate must be non-zero.");
-
-        [DoesNotReturn]
-        private static void ThrowNegative<T>(T value, string paramName)
-            => throw new System.ArgumentOutOfRangeException(paramName, value, "ExecuteDelegate must be non-negative.");
-
-        [DoesNotReturn]
-        private static void ThrowNegativeOrZero<T>(T value, string paramName)
-            => throw new System.ArgumentOutOfRangeException(paramName, value, "ExecuteDelegate must be non-negative and non-zero.");
-
-        [DoesNotReturn]
-        private static void ThrowGreater<T>(T value, T other, string paramName)
-            => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be less or equal to {other}");
-
-        [DoesNotReturn]
-        private static void ThrowGreaterEqual<T>(T value, T other, string paramName)
-            => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be less than {other}");
-
-        [DoesNotReturn]
-        private static void ThrowLess<T>(T value, T other, string paramName)
-            => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be greater or equal to {other}");
-
-        [DoesNotReturn]
-        private static void ThrowLessEqual<T>(T value, T other, string paramName)
-            => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be greater than {other}");
-
-        [DoesNotReturn]
-        private static void ThrowEqual<T>(T value, T other, string paramName)
-            => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must not be equal to {other?.ToString() ?? "NULL"}");
-
-        [DoesNotReturn]
-        private static void ThrowNotEqual<T>(T value, T other, string paramName)
-            => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be equal to {other?.ToString() ?? "NULL"}");
-
-        /// <summary>Throws an <see cref="ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is zero.</summary>
-        /// <param name="value">The argument to validate as non-zero.</param>
-        /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
-        public static new void ThrowIfZero<T>(T value, [CallerArgumentExpression(nameof(value))] string? paramName = null)
-            where T : INumberBase<T>
-        {
-            if (value == T.Zero)
+            foreach (TEnum other in others)
             {
-                ThrowZero(value, paramName ?? nameof(value));
+                if (!value.Equals(other))
+                {
+                    throw new ArgumentOutOfRangeException(
+                        paramName,
+                        message ?? $"The value '{value}' is not equal to '{other}' in enum '{typeof(TEnum).FullName}'.");
+                }
+            }
+        }
+
+        public class ArgumentOutOfRangeExceptionEx : System.ArgumentOutOfRangeException
+        {
+            public ArgumentOutOfRangeExceptionEx()
+            {
+            }
+
+            public ArgumentOutOfRangeExceptionEx(string paramName) : base(paramName)
+            {
+            }
+
+            public ArgumentOutOfRangeExceptionEx(string paramName, string message) : base(paramName, message)
+            {
+            }
+
+            public ArgumentOutOfRangeExceptionEx(string message, Exception innerException) : base(message, innerException)
+            {
+            }
+
+            public ArgumentOutOfRangeExceptionEx(string paramName, object actualValue, string message) : base(paramName, actualValue, message)
+            {
+            }
+
+            [DoesNotReturn]
+            private static void ThrowZero<T>(T value, string paramName)
+                => throw new System.ArgumentOutOfRangeException(paramName, value, "ExecuteDelegate must be non-zero.");
+
+            [DoesNotReturn]
+            private static void ThrowNegative<T>(T value, string paramName)
+                => throw new System.ArgumentOutOfRangeException(paramName, value, "ExecuteDelegate must be non-negative.");
+
+            [DoesNotReturn]
+            private static void ThrowNegativeOrZero<T>(T value, string paramName)
+                => throw new System.ArgumentOutOfRangeException(paramName, value, "ExecuteDelegate must be non-negative and non-zero.");
+
+            [DoesNotReturn]
+            private static void ThrowGreater<T>(T value, T other, string paramName)
+                => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be less or equal to {other}");
+
+            [DoesNotReturn]
+            private static void ThrowGreaterEqual<T>(T value, T other, string paramName)
+                => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be less than {other}");
+
+            [DoesNotReturn]
+            private static void ThrowLess<T>(T value, T other, string paramName)
+                => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be greater or equal to {other}");
+
+            [DoesNotReturn]
+            private static void ThrowLessEqual<T>(T value, T other, string paramName)
+                => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be greater than {other}");
+
+            [DoesNotReturn]
+            private static void ThrowEqual<T>(T value, T other, string paramName)
+                => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must not be equal to {other?.ToString() ?? "NULL"}");
+
+            [DoesNotReturn]
+            private static void ThrowNotEqual<T>(T value, T other, string paramName)
+                => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be equal to {other?.ToString() ?? "NULL"}");
+
+            /// <summary>Throws an <see cref="ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is zero.</summary>
+            /// <param name="value">The argument to validate as non-zero.</param>
+            /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+            public static new void ThrowIfZero<T>(T value, [CallerArgumentExpression(nameof(value))] string? paramName = null)
+                where T : INumberBase<T>
+            {
+                if (value == T.Zero)
+                {
+                    ThrowZero(value, paramName ?? nameof(value));
+                }
             }
         }
     }

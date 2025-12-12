@@ -266,7 +266,7 @@
                 {
                     Type[] genericTypeParameters = new Type[methodInfo.GetGenericArguments().Length];
                     int genericTypeParameterIndex = 0;
-                    //Type[] typeArguments = methodInfo.GetGenericArguments();
+                    //ParameterType[] typeArguments = methodInfo.GetGenericArguments();
                     foreach (ParameterData parameterData in this.Parameters)
                     {
                         if (parameterData.ParameterTypeData.GetType().ContainsGenericParameters)

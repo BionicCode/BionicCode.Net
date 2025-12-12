@@ -484,11 +484,11 @@
         //    Func<dynamic> asyncValueTaskMethod = null;
         //    //if (profiledMethodInfo.IsGeneric)
         //    //{
-        //    //  Type[] genericTypeArguments = profiledMethodInfo.MethodInfo.GetGenericArguments();
+        //    //  ParameterType[] genericTypeArguments = profiledMethodInfo.MethodInfo.GetGenericArguments();
         //    //  ParameterInfo[] methodParameters = profiledMethodInfo.MethodInfo.GetParameters();
-        //    //  var genericParameterTypes = new Type[genericTypeArguments.Length];
+        //    //  var genericParameterTypes = new ParameterType[genericTypeArguments.Length];
         //    //  int genericParameterTypesIndex = 0;
-        //    //  foreach (Type genericTypeArgument in genericTypeArguments)
+        //    //  foreach (ParameterType genericTypeArgument in genericTypeArguments)
         //    //  {
         //    //    for (int genericParameterIndex = 0; genericParameterIndex < methodParameters.Length; genericParameterIndex++)
         //    //    {

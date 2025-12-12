@@ -61,7 +61,7 @@ namespace BionicCode.Utilities.Net
         private SymbolComponentInfo symbolComponentInfo;
         private SymbolComponentInfo compactSymbolComponentInfo;
         private bool? containsGenericParameters;
-        private readonly ConcurrentDictionary<string, SymbolInfoData> memberTable;
+        private readonly ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoData> memberTable;
         private bool isAllPropertiesGenerated;
         private bool isAllMethodsGenerated;
         private bool isAllFieldsGenerated;
@@ -74,24 +74,30 @@ namespace BionicCode.Utilities.Net
         {
             this.Handle = type.TypeHandle;
             this.Namespace = type.Namespace;
-            this.memberTable = new ConcurrentDictionary<string, SymbolInfoData>();
+            this.memberTable = new ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoData>();
         }
 
         public new Type GetType()
           => Type.GetTypeFromHandle(this.Handle);
 
-        public PropertyData GetProperty(string propertyName)
+        public PropertyData GetProperty(string propertyName, params MethodParameterInfo[] indexerPropertyParameters)
         {
-            SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(propertyName,
-              key =>
-              {
-                  IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, propertyName);
-                  SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out PropertyData propertyData);
+            ArgumentException.ThrowIfNullOrWhiteSpace(propertyName, nameof(propertyName));
 
-                  return propertyData;
-              });
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousProperty(this.Handle, propertyName, new MethodParameterInfoList(indexerPropertyParameters), SymbolKind.MemberProperty);
+            bool isKeyNormalized = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
+            if (isKeyNormalized)
+            {
+                _ = this.memberTable.TryGetValue(normalizedCacheKey, out SymbolInfoData symbolInfoData);
 
-            return (PropertyData)symbolInfoData;
+                return (PropertyData)symbolInfoData;
+            }
+
+            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out PropertyData propertyData);
+            _ = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out normalizedCacheKey);
+            _ = this.memberTable.TryAdd(normalizedCacheKey, propertyData);
+
+            return propertyData;
         }
 
         public IEnumerable<PropertyData> EnumerateProperties()
@@ -108,25 +114,35 @@ namespace BionicCode.Utilities.Net
 
             foreach (PropertyInfo property in GetType().GetProperties(HelperExtensionsCommon.AllMembersFlags))
             {
-                PropertyData propertyData = GetProperty(property.Name);
+                PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(property);
+                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForProperty(property);
+                _ = this.memberTable.TryAdd(cacheKey, propertyData);
+
                 yield return propertyData;
             }
 
             this.isAllPropertiesGenerated = true;
         }
 
-        public MethodData GetMethod(string methodName, params MethodParameterInfo[] parameterList)
+        public MethodData GetMethod(string methodName, int genericTypeParameterCount, params MethodParameterInfo[] parameterList)
         {
-            SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(methodName,
-              key =>
-              {
-                  IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, methodName, parameterList);
-                  SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out MethodData methodData);
+            ArgumentOutOfRangeException.ThrowIfNegative(genericTypeParameterCount, nameof(genericTypeParameterCount));
+            ArgumentException.ThrowIfNullOrWhiteSpace(methodName, nameof(methodName));
 
-                  return methodData;
-              });
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrConstructor(this.Handle, methodName, new MethodParameterInfoList(parameterList), genericTypeParameterCount, SymbolKind.MemberMethod);
+            bool isKeyNormalized = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
+            if (isKeyNormalized)
+            {
+                _ = this.memberTable.TryGetValue(normalizedCacheKey, out SymbolInfoData symbolInfoData);
 
-            return (MethodData)symbolInfoData;
+                return (MethodData)symbolInfoData;
+            }
+
+            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out MethodData methodData);
+            _ = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out normalizedCacheKey);
+            _ = this.memberTable.TryAdd(normalizedCacheKey, methodData);
+
+            return methodData;
         }
 
         public IEnumerable<MethodData> EnumerateMethods()
@@ -143,7 +159,10 @@ namespace BionicCode.Utilities.Net
 
             foreach (MethodInfo method in GetType().GetMethods(HelperExtensionsCommon.AllMembersFlags))
             {
-                MethodData methodData = GetMethod(method.Name);
+                MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(method);
+                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForMethod(method);
+                _ = this.memberTable.TryAdd(cacheKey, methodData);
+
                 yield return methodData;
             }
 
@@ -152,16 +171,22 @@ namespace BionicCode.Utilities.Net
 
         public FieldData GetField(string fieldName)
         {
-            SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(fieldName,
-              key =>
-              {
-                  IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, fieldName);
-                  SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out FieldData fieldData);
+            ArgumentException.ThrowIfNullOrWhiteSpace(fieldName, nameof(fieldName));
 
-                  return fieldData;
-              });
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousFieldOrEvent(this.Handle, fieldName, SymbolKind.MemberField);
+            bool isKeyNormalized = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
+            if (isKeyNormalized)
+            {
+                _ = this.memberTable.TryGetValue(normalizedCacheKey, out SymbolInfoData symbolInfoData);
 
-            return (FieldData)symbolInfoData;
+                return (FieldData)symbolInfoData;
+            }
+
+            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out FieldData fieldData);
+            _ = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out normalizedCacheKey);
+            _ = this.memberTable.TryAdd(normalizedCacheKey, fieldData);
+
+            return fieldData;
         }
 
         public IEnumerable<FieldData> EnumerateFields()
@@ -178,7 +203,10 @@ namespace BionicCode.Utilities.Net
 
             foreach (FieldInfo field in GetType().GetFields(HelperExtensionsCommon.AllMembersFlags))
             {
-                FieldData fieldData = GetField(field.Name);
+                FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(field);
+                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForField(field);
+                _ = this.memberTable.TryAdd(cacheKey, fieldData);
+
                 yield return fieldData;
             }
 
@@ -187,17 +215,22 @@ namespace BionicCode.Utilities.Net
 
         public EventData GetEvent(string eventName)
         {
-            SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(eventName,
-              key =>
-              {
+            ArgumentException.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
 
-                  IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, eventName);
-                  SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out EventData eventData);
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousFieldOrEvent(this.Handle, eventName, SymbolKind.MemberEvent);
+            bool isKeyNormalized = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
+            if (isKeyNormalized)
+            {
+                _ = this.memberTable.TryGetValue(normalizedCacheKey, out SymbolInfoData symbolInfoData);
 
-                  return eventData;
-              });
+                return (EventData)symbolInfoData;
+            }
 
-            return (EventData)symbolInfoData;
+            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out EventData eventData);
+            _ = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out normalizedCacheKey);
+            _ = this.memberTable.TryAdd(normalizedCacheKey, eventData);
+
+            return eventData;
         }
 
         public IEnumerable<EventData> EnumerateEvents()
@@ -214,25 +247,35 @@ namespace BionicCode.Utilities.Net
 
             foreach (EventInfo eventInfo in GetType().GetEvents(HelperExtensionsCommon.AllMembersFlags))
             {
-                EventData eventData = GetEvent(eventInfo.Name);
+                EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForEvent(eventInfo);
+                _ = this.memberTable.TryAdd(cacheKey, eventData);
+
                 yield return eventData;
             }
 
             this.isAllEventsGenerated = true;
         }
 
-        public ConstructorData GetConstructor(string constructorName, params MethodParameterInfo[] parameterList)
+        public ConstructorData GetConstructor(string constructorName, int genericTypeParameterCount, params MethodParameterInfo[] parameterList)
         {
-            SymbolInfoData symbolInfoData = this.memberTable.GetOrAdd(constructorName,
-              key =>
-              {
-                  IMemberDataCacheKey cacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(this.Handle, constructorName, parameterList);
-                  SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out ConstructorData constructorData);
+            ArgumentOutOfRangeException.ThrowIfNegative(genericTypeParameterCount, nameof(genericTypeParameterCount));
+            ArgumentException.ThrowIfNullOrWhiteSpace(constructorName, nameof(constructorName));
 
-                  return constructorData;
-              });
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrConstructor(this.Handle, constructorName, new MethodParameterInfoList(parameterList), genericTypeParameterCount, SymbolKind.Constructor);
+            bool isKeyNormalized = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
+            if (isKeyNormalized)
+            {
+                _ = this.memberTable.TryGetValue(normalizedCacheKey, out SymbolInfoData symbolInfoData);
 
-            return (ConstructorData)symbolInfoData;
+                return (ConstructorData)symbolInfoData;
+            }
+
+            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out ConstructorData constructorData);
+            _ = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out normalizedCacheKey);
+            _ = this.memberTable.TryAdd(normalizedCacheKey, constructorData);
+
+            return constructorData;
         }
 
         public IEnumerable<ConstructorData> EnumerateConstructors()
@@ -249,24 +292,15 @@ namespace BionicCode.Utilities.Net
 
             foreach (ConstructorInfo constructor in GetType().GetConstructors(HelperExtensionsCommon.AllMembersFlags))
             {
-                ConstructorData constructorData = GetConstructor(constructor.Name);
+                ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructor);
+                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForConstructor(constructor);
+                _ = this.memberTable.TryAdd(cacheKey, constructorData);
+
                 yield return constructorData;
             }
 
             this.isAllConstructorsGenerated = true;
         }
-
-        /// <summary>
-        /// Retrieves metadata for the 'Invoke' method of the current delegate type.
-        /// </summary>
-        /// <returns>A <see cref="MethodData"/> instance containing information about the 'Invoke' method of the delegate. If the
-        /// type is not a delegate, an exception is thrown.</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the current type is not a delegate. Use <see cref="IsDelegate"/> to verify whether the type is a
-        /// delegate before calling this method.</exception>
-        public MethodData GetDelegatInvokeMethod()
-          => this.delegateInvokeMethodData ??= this.IsDelegate
-            ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetType().GetMethod("Invoke"))
-            : throw new InvalidOperationException($"The current type is not a delegate. Call {nameof(this.IsDelegate)} to check whether the current type is a delegate.");
 
         public RuntimeTypeHandle Handle { get; }
         public string Namespace { get; }
@@ -419,6 +453,12 @@ namespace BionicCode.Utilities.Net
             }
         }
 
+        /// <summary>
+        /// If the TypeData represents a delegate, this property returns metadata information for the delegate's Invoke method.
+        /// </summary>
+        /// <remarks>This property is only valid when the current type represents a delegate. Accessing
+        /// this property when the type is not a delegate will result in an exception.</remarks>
+        /// <exception cref="InvalidOperationException">Thrown when the current TypeData does not represent a delegate type.</exception>
         public MethodData DelegateInvokeMethodData
         {
             get
@@ -639,7 +679,7 @@ namespace BionicCode.Utilities.Net
                     if (extensionMethodInfo == null
                       || !extensionMethodInfo.IsExtensionMethodOf(type))
                     {
-                        return false;
+                        continue;
                     }
 
                     if (extensionMethodInfo.ReturnType.GetProperty("IsCompleted") != null

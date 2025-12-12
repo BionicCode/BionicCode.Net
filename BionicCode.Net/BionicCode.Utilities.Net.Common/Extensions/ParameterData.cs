@@ -34,7 +34,7 @@
         private SymbolComponentInfo symbolComponentInfo;
         private object? defaultValue;
         private ParameterKind? parameterKind;
-        private bool? isGenericTypeParamater;
+        private bool? isGenericTypeParameter;
 
         public ParameterData(ParameterInfo parameterInfo) : base(parameterInfo.Name)
         {
@@ -93,8 +93,8 @@
         /// Gets a value indicating whether the parameter type is a generic type parameter.
         /// </summary>
         /// <value><see langword="true"/> if the parameter type is a generic type parameter; otherwise, <see langword="false"/>.</value>
-        public bool IsGenericTypeParamater
-          => this.isGenericTypeParamater ??= this.ParameterTypeData.IsGenericTypeParameter;
+        public bool IsGenericTypeParameter
+          => this.isGenericTypeParameter ??= this.ParameterTypeData.IsGenericTypeParameter;
 
         public ParameterKind ParameterKind
           => this.parameterKind ??= this.IsIn ? ParameterKind.In

@@ -11,17 +11,17 @@
     {
         public static readonly object ConflictingMethodInfoExceptionDataKey = new object();
 
-        public static Delegate Generate<TEventSource>(string eventName, object target, string targetDelegateMethodName, ParameterList targetDelegateMethodParameterList, int genericTypeParameterCount)
+        public static Delegate Generate<TEventSource>(string eventName, object target, string targetDelegateMethodName, ParameterList targetDelegateMethodParameterList)
         {
             ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
             ArgumentNullExceptionEx.ThrowIfNull(target, nameof(target));
             ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(targetDelegateMethodName, nameof(targetDelegateMethodName));
 
             Type targetType = target.GetType();
-            SymbolInfoDataCacheKey symbolCacheKey = SymbolInfoDataCacheKey.CreateForAnonymousSymbol(targetType.TypeHandle, targetDelegateMethodName, targetDelegateMethodParameterList, genericTypeParameterCount, SymbolKind.MemberMethod);
+            SymbolInfoDataCacheKey symbolCacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrProperty(targetType.TypeHandle, targetDelegateMethodName, targetDelegateMethodParameterList, targetDelegateMethodParameterList.GenericTypeParameterCount, SymbolKind.MemberMethod);
             SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(symbolCacheKey, out MethodData proxyDelegateMethodData);
 
-            symbolCacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(typeof(TEventSource).TypeHandle, eventName);
+            symbolCacheKey = SymbolInfoDataCacheKey.CreateForAnonymousFieldOrEvent(typeof(TEventSource).TypeHandle, eventName, SymbolKind.MemberEvent);
             SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(symbolCacheKey, out EventData eventData);
 
             TypeData eventHandlerTypeData = eventData.EventHandlerTypeData;

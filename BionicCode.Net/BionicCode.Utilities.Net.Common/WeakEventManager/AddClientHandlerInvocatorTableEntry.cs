@@ -16,7 +16,7 @@
 
         public Action<TEventSource, string, Delegate, SynchronizationContext> GetAddHandlerInvocator<TEventSource>()
           => typeof(TEventSource) != this.EventSourceType
-            ? throw new ArgumentException($"Type mismatch for generic type argument {nameof(TEventSource)}. Expected: {this.EventSourceType.FullName}; Found: {typeof(TEventSource).FullName}.")
+            ? throw new ArgumentException($"ParameterType mismatch for generic type argument {nameof(TEventSource)}. Expected: {this.EventSourceType.FullName}; Found: {typeof(TEventSource).FullName}.")
             : (Action<TEventSource, string, Delegate, SynchronizationContext>)this.addHandlerInvocator;
 
         public bool UseAddCustomHandlerMethod { get; }

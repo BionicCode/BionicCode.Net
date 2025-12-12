@@ -289,7 +289,7 @@
                 symbolComponents.ReturnType = delegateReturnTypeData.CompactSymbolComponentInfo;
             }
 
-            // Type name
+            // ParameterType name
             _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(typeData, isFullyQualifiedName, isGenericTypeParameterIncluded: false);
 
             if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))
@@ -454,7 +454,7 @@
                 symbolComponents.AddModifier("params");
             }
 
-            // Type name
+            // ParameterType name
             _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(parameterTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true);
             _ = symbolComponents.ValueNameBuilder.AppendDisplayNameInternal(parameterData);
 
@@ -862,10 +862,10 @@
 
         //      if (methodInfo.IsGenericMethod)
         //      {
-        //        Type[] typeArguments = methodInfo.GetGenericArguments();
+        //        ParameterType[] typeArguments = methodInfo.GetGenericArguments();
         //        for (int typeArgumentIndex = 0; typeArgumentIndex < typeArguments.Length; typeArgumentIndex++)
         //        {
-        //          Type typeArgument = typeArguments[typeArgumentIndex];
+        //          ParameterType typeArgument = typeArguments[typeArgumentIndex];
         //          //TypeParameterSyntax typeParameter = CreateMethodTypeParameter(typeArgument, isFullyQualifiedName);
         //          //methodGraph = methodGraph.AddTypeParameterListParameters(typeParameter);
 
@@ -882,8 +882,8 @@
         //              constraints = constraints.Add(SyntaxFactory.ClassOrStructConstraint(SyntaxKind.ClassConstraint));
         //            }
 
-        //            Type[] constraintTypes = typeArgument.GetGenericParameterConstraints();
-        //            foreach (Type constraintType in constraintTypes)
+        //            ParameterType[] constraintTypes = typeArgument.GetGenericParameterConstraints();
+        //            foreach (ParameterType constraintType in constraintTypes)
         //            {
         //              if (constraintType == typeof(object) || constraintType == typeof(ValueType))
         //              {
@@ -953,10 +953,10 @@
 
         //      if (methodInfo.IsGenericMethod)
         //      {
-        //        Type[] typeArguments = methodInfo.GetGenericArguments();
+        //        ParameterType[] typeArguments = methodInfo.GetGenericArguments();
         //        for (int typeArgumentIndex = 0; typeArgumentIndex < typeArguments.Length; typeArgumentIndex++)
         //        {
-        //          Type typeArgument = typeArguments[typeArgumentIndex];
+        //          ParameterType typeArgument = typeArguments[typeArgumentIndex];
         //          TypeParameterSyntax typeParameter = CreateMethodTypeParameter(typeArgument, isFullyQualifiedName);
         //          methodGraph = methodGraph.AddTypeParameterListParameters(typeParameter);
 
@@ -978,8 +978,8 @@
         //              constraints = constraints.Add(SyntaxFactory.ConstructorConstraint());
         //            }
 
-        //            Type[] constraintTypes = typeArgument.GetGenericParameterConstraints();
-        //            foreach (Type constraintType in constraintTypes)
+        //            ParameterType[] constraintTypes = typeArgument.GetGenericParameterConstraints();
+        //            foreach (ParameterType constraintType in constraintTypes)
         //            {
         //              if (constraintType == typeof(object) || constraintType == typeof(ValueType))
         //              {
@@ -1001,7 +1001,7 @@
         //      return methodGraph;
         //    }
 
-        //    private static TypeParameterSyntax CreateMethodTypeParameter(Type valueType, bool isFullyQualifiedName)
+        //    private static TypeParameterSyntax CreateMethodTypeParameter(ParameterType valueType, bool isFullyQualifiedName)
         //    {
         //      IEnumerable<Attribute> attributes = valueType.GetCustomAttributes();
         //      AttributeListSyntax attributeSyntaxList = SyntaxFactory.AttributeList();
@@ -1038,7 +1038,7 @@
         //      return symbolName;
         //    }
 
-        //    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, Type valueType, bool isFullyQualifiedName, bool isDeclaringTypeIncluded)
+        //    private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, ParameterType valueType, bool isFullyQualifiedName, bool isDeclaringTypeIncluded)
         //    {
         //      var typeReference = new CodeTypeReference(valueType);
         //      ReadOnlySpan<char> typeName = HelperExtensionsCommon.CodeProvider.GetTypeOutput(typeReference).AsSpan();
@@ -1068,8 +1068,8 @@
         //      {
         //        _ = nameBuilder.Append('<');
 
-        //        Type[] typeArguments = valueType.GetGenericArguments();
-        //        foreach (Type typeArgument in typeArguments)
+        //        ParameterType[] typeArguments = valueType.GetGenericArguments();
+        //        foreach (ParameterType typeArgument in typeArguments)
         //        {
         //          _ = nameBuilder.AppendDisplayNameInternal(typeArgument, isFullyQualifiedName, isDeclaringTypeIncluded)
         //            .Append(ParameterSeparator);
@@ -1084,7 +1084,7 @@
 
         //  private static StringBuilder AppendDisplayNameInternal(this StringBuilder nameBuilder, MemberInfo memberInfo, bool isFullyQualifiedName, bool isDeclaringTypeIncluded)
         //    {
-        //      if (memberInfo is Type valueType)
+        //      if (memberInfo is ParameterType valueType)
         //      {
         //        return nameBuilder.AppendDisplayNameInternal(valueType, isFullyQualifiedName, isDeclaringTypeIncluded);
         //      }
@@ -1114,7 +1114,7 @@
         //    }
         //    private static SymbolAttributes GetKind(this MemberInfo memberInfo)
         //    {
-        //      var valueType = memberInfo as Type;
+        //      var valueType = memberInfo as ParameterType;
         //      var propertyInfo = memberInfo as PropertyInfo;
         //      MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
         //        ?? valueType?.GetMethod("Invoke"); // MemberInfo is potentially a delegate
@@ -1327,7 +1327,7 @@
         //      {
         //        switch (memberInfo)
         //        {
-        //          case Type type:
+        //          case ParameterType type:
         //            return type.IsPublic ? AccessModifier.Public
         //              : type.IsNestedPrivate ? AccessModifier.Private
         //              : type.IsNestedAssembly ? AccessModifier.Internal
@@ -1365,7 +1365,7 @@
         //      }
         //      // TODO::Create valueType specific overloads to eliminate valueType switching and use cached reflection data
 
-        //      var valueType = memberInfo as Type;
+        //      var valueType = memberInfo as ParameterType;
         //      MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
         //        ?? valueType?.GetMethod("Invoke"); // MemberInfo is potentially a delegate
         //      MethodInfo propertyGetMethodInfo = propertyInfo?.GetGetMethod(true);
@@ -1493,7 +1493,7 @@
         //        || memberAttributes.HasFlag(SymbolAttributes.Delegate)
         //        || memberAttributes.HasFlag(SymbolAttributes.Event))
         //      {
-        //        Type returnType = fieldInfo?.FieldType
+        //        ParameterType returnType = fieldInfo?.FieldType
         //          ?? methodInfo?.ReturnType
         //          ?? propertyGetMethodInfo?.ReturnType
         //          ?? eventInfo?.EventHandlerType;
@@ -1515,7 +1515,7 @@
         //      }
         //      else
         //      {
-        //        _ = signatureNameBuilder.AppendDisplayNameInternal(memberInfo, isFullyQualifiedName: isFullyQualifiedName && memberAttributes.HasFlag(SymbolAttributes.Type), isDeclaringTypeIncluded: false);
+        //        _ = signatureNameBuilder.AppendDisplayNameInternal(memberInfo, isFullyQualifiedName: isFullyQualifiedName && memberAttributes.HasFlag(SymbolAttributes.ParameterType), isDeclaringTypeIncluded: false);
         //      }
 
         //      if (memberAttributes.HasFlag(SymbolAttributes.Constructor)
@@ -1629,7 +1629,7 @@
 
         //      if (memberAttributes.HasFlag(SymbolAttributes.Generic))
         //      {
-        //        Type[] genericTypeParameterDefinitions = Type.EmptyTypes;
+        //        ParameterType[] genericTypeParameterDefinitions = ParameterType.EmptyTypes;
         //        if (memberAttributes.HasFlag(SymbolAttributes.GenericType) && valueType.IsGenericTypeDefinition)
         //        {
         //          genericTypeParameterDefinitions = valueType.GetGenericTypeDefinition().GetGenericArguments();
@@ -1654,7 +1654,7 @@
 
         //      return fullMemberName;
         //    }
-        //    private static StringBuilder AppendInheritanceSignature(this StringBuilder memberNameBuilder, Type typeData, bool isFullyQualified)
+        //    private static StringBuilder AppendInheritanceSignature(this StringBuilder memberNameBuilder, ParameterType typeData, bool isFullyQualified)
         //    {
         //      bool isDelegate = HelperExtensionsCommon.DelegateType.IsAssignableFrom(typeData);
         //      if (isDelegate)
@@ -1663,7 +1663,7 @@
         //      }
 
         //      bool isSubclass = typeData.BaseType != typeof(object);
-        //      Type[] interfaces = typeData.GetInterfaces();
+        //      ParameterType[] interfaces = typeData.GetInterfaces();
         //      bool hasInterfaces = interfaces.Length > 0;
         //      if (isSubclass || hasInterfaces)
         //      {
@@ -1676,7 +1676,7 @@
         //          .Append(HelperExtensionsCommon.ParameterSeparator);
         //      }
 
-        //      foreach (Type interfaceData in interfaces)
+        //      foreach (ParameterType interfaceData in interfaces)
         //      {
         //        _ = memberNameBuilder.Append(isFullyQualified ? interfaceData.FullName : interfaceData.EventName)
         //          .Append(HelperExtensionsCommon.ParameterSeparator);
@@ -1689,13 +1689,13 @@
 
         //      return memberNameBuilder;
         //    }
-        //    private static StringBuilder AppendGenericTypeConstraints(this StringBuilder constraintBuilder, Type[] genericTypeDefinitionsData, bool isFullyQualified, bool isCompact)
+        //    private static StringBuilder AppendGenericTypeConstraints(this StringBuilder constraintBuilder, ParameterType[] genericTypeDefinitionsData, bool isFullyQualified, bool isCompact)
         //    {
         //      bool hasSingleNewLine = false;
         //      for (int genericTypeArgumentIndex = 0; genericTypeArgumentIndex < genericTypeDefinitionsData.Length; genericTypeArgumentIndex++)
         //      {
-        //        Type genericTypeDefinitionData = genericTypeDefinitionsData[genericTypeArgumentIndex];
-        //        Type[] constraints = genericTypeDefinitionData.GetGenericParameterConstraints();
+        //        ParameterType genericTypeDefinitionData = genericTypeDefinitionsData[genericTypeArgumentIndex];
+        //        ParameterType[] constraints = genericTypeDefinitionData.GetGenericParameterConstraints();
         //        if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.SpecialConstraintMask) == GenericParameterAttributes.None
         //          && constraints.Length == 0)
         //        {
@@ -1738,7 +1738,7 @@
         //            .Append(HelperExtensionsCommon.ParameterSeparator);
         //        }
 
-        //        foreach (Type constraint in constraints)
+        //        foreach (ParameterType constraint in constraints)
         //        {
         //          _ = constraintBuilder.AppendDisplayNameInternal(constraint, isFullyQualified, isDeclaringTypeIncluded: false)
         //            .Append(HelperExtensionsCommon.ParameterSeparator);
@@ -2392,7 +2392,7 @@
                   .Append(' ');
             }
 
-            // Type name
+            // ParameterType name
             _ = signatureNameBuilder.AppendDisplayNameInternal(typeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true);
 
             if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))

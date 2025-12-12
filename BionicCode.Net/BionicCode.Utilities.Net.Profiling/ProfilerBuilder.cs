@@ -20,7 +20,7 @@
         private int Iterations { get; set; }
         private int WarmupIterations { get; set; }
         private TimeUnit BaseUnit { get; set; }
-        //private Dictionary<Type, Assembly> TypeAssemblyTable { get; }
+        //private Dictionary<ParameterType, Assembly> TypeAssemblyTable { get; }
         private Func<ProfilerBatchResult, string, Task> AsyncProfilerLogger { get; set; }
         private Action<ProfilerBatchResult, string> ProfilerLogger { get; set; }
         private Runtime Runtime { get; set; }

@@ -1,63 +1,32 @@
 ﻿namespace BionicCode.Utilities.Net
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
 
     internal readonly struct MethodParameterInfo : IEquatable<MethodParameterInfo>
     {
-        public MethodParameterInfo(Type parameterType, bool isGenericTypeParameter)
-        {
-            this.ParameterType = parameterType;
-            this.IsGenericTypeParameter = isGenericTypeParameter;
-        }
-
-        public MethodParameterInfo(TypeData parameterType, bool isGenericTypeParameter)
-        {
-            this.ParameterType = parameterType.GetType();
-            this.IsGenericTypeParameter = isGenericTypeParameter;
-        }
-
-        public MethodParameterInfo(ParameterData parameterData, bool isGenericTypeParameter)
-        {
-            this.ParameterType = parameterData.ParameterTypeData.GetType();
-            this.IsGenericTypeParameter = isGenericTypeParameter;
-        }
-
-        public static ParameterList ConvertFrom(Type[] parameterList)
-          => new ParameterList(parameterList.Select(parameterType => new MethodParameterInfo(parameterType, parameterType.IsGenericParameter))
-            .ToArray());
-
-        public static MethodParameterInfo[] ConvertFrom(TypeData[] parameterList)
-          => parameterList.Select(parameterData => parameterData.GetType())
-            .Select(parameterType => new MethodParameterInfo(parameterType, parameterType.IsGenericParameter))
-            .ToArray();
-
-        public static MethodParameterInfo[] ConvertFrom(ParameterInfo[] parameterList)
-          => parameterList.Select(parameterInfo => parameterInfo.ParameterType)
-            .Select(parameterType => new MethodParameterInfo(parameterType, parameterType.IsGenericParameter))
-            .ToArray();
-
-        public static MethodParameterInfo[] ConvertFrom(ParameterData[] parameterList)
-          => parameterList.Select(parameterData => parameterData.ParameterTypeData.GetType())
-            .Select(parameterType => new MethodParameterInfo(parameterType, parameterType.IsGenericParameter))
-            .ToArray();
-
-        public Type ParameterType { get; }
-        public Type ParameterIndex { get; }
-        public Type ParameterName { get; }
+        public int Position { get; }
+        public RuntimeTypeHandle ParameterTypeHandle { get; }
+        public RuntimeTypeHandle DeclaringTypeHandle { get; }
+        public ParameterKind Kind { get; }
         public bool IsGenericTypeParameter { get; }
 
+        public MethodParameterInfo(Type type, int position, bool isGenericTypeParameter, ParameterKind kind, Type declaringType) : this()
+        {
+            this.Position = position;
+            this.IsGenericTypeParameter = isGenericTypeParameter;
+            this.ParameterTypeHandle = type.TypeHandle;
+            this.Kind = kind;
+            this.DeclaringTypeHandle = declaringType.TypeHandle;
+        }
+
         public override bool Equals(object obj) => obj is MethodParameterInfo info && Equals(info);
-        public bool Equals(MethodParameterInfo other) => other.ParameterType.Equals(this.ParameterType) && other.IsGenericTypeParameter == this.IsGenericTypeParameter;
+        public bool Equals(MethodParameterInfo other) => other.ParameterTypeHandle.Equals(this.ParameterTypeHandle)
+            && other.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle)
+            && other.Position == this.Position
+            && other.Kind.Equals(this.Kind)
+            && other.IsGenericTypeParameter.Equals(this.IsGenericTypeParameter);
 
         public override int GetHashCode()
-        {
-            int hashCode = 587076725;
-            hashCode = (hashCode * -1521134295) + EqualityComparer<Type>.Default.GetHashCode(this.ParameterType);
-            hashCode = (hashCode * -1521134295) + this.IsGenericTypeParameter.GetHashCode();
-            return hashCode;
-        }
+            => HashCode.Combine(this.ParameterTypeHandle, this.DeclaringTypeHandle, this.Position, this.Kind, this.IsGenericTypeParameter);
     }
 }

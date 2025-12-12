@@ -348,7 +348,7 @@
             ////var s = stringBuilder.ToString();
             ////var stringBuilder2 = new StringBuilder().AppendShortDisplayName(typeof(Generic.TestClassWithBaseClass<List<Queue<Task<string>>>, int>), true);
             ////var s2 = stringBuilder2.ToString();
-            ////Type subclassType = typeof(Generic.TestClassWithBaseClass<,>);
+            ////ParameterType subclassType = typeof(Generic.TestClassWithBaseClass<,>);
             ////var stringBuilder3 = new StringBuilder().AppendSignatureName(methodInfo, false, false);
             ////var s3 = stringBuilder3.ToString();
             ////ConstructorInfo constructorInfo = typeof(Task<>).MakeGenericType(typeof(Func<,,>)).GetConstructor(new[] { typeof(Func<>).MakeGenericType(typeof(Func<,,>)), typeof(CancellationToken) });

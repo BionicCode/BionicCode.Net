@@ -217,11 +217,10 @@
 
         private bool TryStartListeningAllInternal<TEventSource, TDelegate>(TDelegate eventHandler, SynchronizationContext synchronizationContext) where TDelegate : Delegate
         {
-            ITypeDataCacheKey key = SymbolReflectionInfoCache.CreateTypeSymbolCacheKey(typeof(TEventSource).TypeHandle);
             TypeData eventSourceData;
             try
             {
-                SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(key, out eventSourceData);
+                eventSourceData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(TEventSource));
             }
             catch (ArgumentException)
             {
@@ -249,8 +248,7 @@
 
         private void StartListeningAllInternal<TEventSource, TDelegate>(TDelegate eventHandler, SynchronizationContext synchronizationContext) where TDelegate : Delegate
         {
-            ITypeDataCacheKey key = SymbolReflectionInfoCache.CreateTypeSymbolCacheKey(typeof(TEventSource).TypeHandle);
-            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(key, out TypeData eventSourceData);
+            TypeData eventSourceData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(TEventSource));
             IEnumerable<EventData> allEventsOfEventSource = eventSourceData.EnumerateEvents();
             foreach (EventData eventData in allEventsOfEventSource)
             {
@@ -314,8 +312,8 @@
 
             //  for (int index = 0; index < invocatorParameters.Length; index++)
             //  {
-            //    Type invocatorParameterType = invocatorParameters[index].ParameterType;
-            //    Type eventHandlerParameterType = eventHandlerParameters[index].ParameterType;
+            //    ParameterType invocatorParameterType = invocatorParameters[index].ParameterType;
+            //    ParameterType eventHandlerParameterType = eventHandlerParameters[index].ParameterType;
             //    if (!eventHandlerParameterType.IsAssignableFrom(invocatorParameterType))
             //    {
             //      throw new EventHandlerMismatchException($"Wrong event handler signature. The parameter eventHandlerTypeDefinition at index {index} of the registered event handler does not match the event delegate {entry.EventInfo.EventHandlerType.FullName}. Found eventHandlerTypeDefinition {eventHandlerParameterType.FullName}. Expected eventHandlerTypeDefinition {invocatorParameterType.FullName}.");
