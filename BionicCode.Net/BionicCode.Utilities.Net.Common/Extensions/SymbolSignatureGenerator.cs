@@ -2045,10 +2045,10 @@
                   .Append(' ');
             }
 
-            ParameterData[] parameters = methodData.Parameters;
-            if (parameters.Length > 0)
+            ParameterList parameters = methodData.Parameters;
+            if (parameters.HasItems)
             {
-                for (int parameterIndex = 0; parameterIndex < parameters.Length; parameterIndex++)
+                for (int parameterIndex = 0; parameterIndex < parameters.Count; parameterIndex++)
                 {
                     ParameterData parameterData = parameters[parameterIndex];
 

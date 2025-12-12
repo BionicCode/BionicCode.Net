@@ -11,14 +11,14 @@
     {
         public static readonly object ConflictingMethodInfoExceptionDataKey = new object();
 
-        public static Delegate Generate<TEventSource>(string eventName, object target, string targetDelegateMethodName, ParameterList targetDelegateMethodParameterList)
+        public static Delegate Generate<TEventSource>(string eventName, object target, string targetDelegateMethodName, ParameterList targetDelegateMethodParameterList, int genericTypeParameterCount)
         {
             ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
             ArgumentNullExceptionEx.ThrowIfNull(target, nameof(target));
             ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(targetDelegateMethodName, nameof(targetDelegateMethodName));
 
             Type targetType = target.GetType();
-            SymbolInfoDataCacheKey symbolCacheKey = SymbolInfoDataCacheKey.CreateForAnonymousSymbol(targetType.TypeHandle, targetDelegateMethodName, targetDelegateMethodParameterList, SymbolKind.MemberMethod);
+            SymbolInfoDataCacheKey symbolCacheKey = SymbolInfoDataCacheKey.CreateForAnonymousSymbol(targetType.TypeHandle, targetDelegateMethodName, targetDelegateMethodParameterList, genericTypeParameterCount, SymbolKind.MemberMethod);
             SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(symbolCacheKey, out MethodData proxyDelegateMethodData);
 
             symbolCacheKey = SymbolReflectionInfoCache.CreateMemberSymbolCacheKey(typeof(TEventSource).TypeHandle, eventName);
@@ -33,7 +33,7 @@
             return eventHandler;
         }
 
-        private static Delegate GenerateProxy(ParameterData[] eventHandlerParameters, TypeData eventDelegateTypeData, object delegateMethodTarget, MethodData delegateMethodData)
+        private static Delegate GenerateProxy(ParameterList eventHandlerParameters, TypeData eventDelegateTypeData, object delegateMethodTarget, MethodData delegateMethodData)
         {
             var expressionParameters = new List<ParameterExpression>();
             foreach (ParameterData parameter in eventHandlerParameters)

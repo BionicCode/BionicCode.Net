@@ -39,6 +39,8 @@
         public ParameterData(ParameterInfo parameterInfo) : base(parameterInfo.Name)
         {
             this.DeclaringTypeHandle = parameterInfo.Member.DeclaringType.TypeHandle;
+            this.ParameterTypeHandle = parameterInfo.ParameterType.TypeHandle;
+            this.Position = parameterInfo.Position;
             this.ParameterInfo = parameterInfo;
         }
 
@@ -48,7 +50,8 @@
         public Type GetDeclaringType()
           => Type.GetTypeFromHandle(this.DeclaringTypeHandle);
 
-        public RuntimeTypeHandle DeclaringTypeHandle { get; set; }
+        public RuntimeTypeHandle DeclaringTypeHandle { get; }
+        public RuntimeTypeHandle ParameterTypeHandle { get; }
 
         /// <summary>
         /// Gets a value indicating whether the current type is passed by reference using the <see langword="ref"/> keyword.
@@ -98,9 +101,6 @@
             : this.IsOut ? ParameterKind.Out
             : this.IsRefReadOnly ? ParameterKind.RefReadOnly
             : this.IsRef ? ParameterKind.Ref
-            : this.IsOptional ? ParameterKind.Optional
-            : this.IsParams ? ParameterKind.Params
-            : this.Member is MethodData methodData && methodData.IsExtensionMethod && this.Position == 0 ? ParameterKind.This
             : ParameterKind.Undefined;
 
         /// <summary>
@@ -118,7 +118,10 @@
         /// </summary>
         /// <value>The position of the parameter.</value>
         public int Position
-          => this.position ??= GetParameterInfo().Position;
+        {
+            get => this.position ??= GetParameterInfo().Position;
+            init => this.position = value;
+        }
 
         public bool IsParams
           => this.isParams ??= GetParameterInfo().GetCustomAttribute<ParamArrayAttribute>() != null;

@@ -30,6 +30,7 @@
 
         public int Count => this._items.Length;
         public bool IsEmpty => this._items.Length == 0;
+        public bool HasItems => this._items.Length > 0;
 
         public ParameterData this[int index]
         {

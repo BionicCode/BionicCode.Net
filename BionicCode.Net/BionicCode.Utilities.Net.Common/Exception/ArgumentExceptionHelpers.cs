@@ -92,17 +92,34 @@
             }
         }
 
-        public static void ThrowIfEnumIsNotValid<TEnum>(IConvertible raw) where TEnum : struct, Enum
+        /// <summary>
+        /// Validates that the specified value corresponds to a defined value of the specified enumeration type, and
+        /// throws an exception if it does not.
+        /// </summary>
+        /// <remarks>Use this method to ensure that a value is a valid member of a specific enum type
+        /// before using it in code that requires a defined enum value. This is especially useful when working with
+        /// values from untrusted sources or deserialization.</remarks>
+        /// <typeparam name="TEnum">The enumeration type against which to validate the value. Must be a struct that implements Enum.</typeparam>
+        /// <param name="raw">The value to validate. Can be an enum value or a convertible value representing an enum member.</param>
+        /// <param name="paramName">The name of the parameter being validated. This value is used in any thrown exception to identify the
+        /// invalid argument. Optional.</param>
+        /// <exception cref="ArgumentException">Thrown if the provided value is an enum of a different type than <typeparamref name="TEnum"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if the provided value does not correspond to a defined member of <typeparamref name="TEnum"/>.</exception>
+        public static void ThrowIfEnumIsNotDefined<TEnum>(IConvertible raw, [CallerArgumentExpression(nameof(raw))] string? paramName = null) where TEnum : struct, Enum
         {
             TEnum parsedEnum = raw is Enum rawEnum
                 ? (rawEnum is TEnum castEnum
                     ? castEnum
-                    : throw new ArgumentException($"The enum value '{rawEnum.GetType().FullName}' is not of the expected type '{typeof(TEnum).FullName}'.", nameof(raw)))
+                    : throw new ArgumentException(
+                        $"The enum value '{rawEnum.GetType().FullName}' is not of the expected type '{typeof(TEnum).FullName}'.",
+                        paramName))
                 : Enum.Parse<TEnum>(raw.ToString(System.Globalization.CultureInfo.InvariantCulture), ignoreCase: true);
 
             if (!Enum.IsDefined<TEnum>(parsedEnum))
             {
-                throw new ArgumentOutOfRangeException(nameof(raw), $"The value '{parsedEnum}' is not defined in enum '{typeof(TEnum).FullName}'.");
+                throw new ArgumentOutOfRangeException(
+                    paramName,
+                    $"The value '{parsedEnum}' is not defined in enum '{typeof(TEnum).FullName}'.");
             }
         }
     }

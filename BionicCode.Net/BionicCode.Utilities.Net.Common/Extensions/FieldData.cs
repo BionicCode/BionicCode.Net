@@ -49,7 +49,7 @@
             this.setInvocator.Invoke(target, value);
         }
 
-        public RuntimeFieldHandle Handle { get; set; }
+        public RuntimeFieldHandle Handle { get; }
 
         public override AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
           ? (this.accessModifier = FieldData.GetAccessModifierInternal(this))
