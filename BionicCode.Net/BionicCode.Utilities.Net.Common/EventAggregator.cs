@@ -492,7 +492,7 @@
                 }
                 catch (ArgumentException e)
                 {
-                    MethodInfo delegateInvokeMethodInfo = handler.GetType().GetMethod("Invoke");
+                    MethodInfo delegateInvokeMethodInfo = handler.GetType().GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName);
                     string handlerSignatureParameterList = delegateInvokeMethodInfo?
                       .GetParameters()
                       .Select(parameterInfo => parameterInfo.ParameterType.FullName)

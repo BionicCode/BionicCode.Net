@@ -64,7 +64,7 @@
             ArgumentNullException.ThrowIfNull(eventInfo, nameof(eventInfo));
             ArgumentNullException.ThrowIfNull(clientHandler, nameof(clientHandler));
 
-            MethodInfo eventDelegateInvokeMethod = eventInfo.EventHandlerType.GetMethod("Invoke");
+            MethodInfo eventDelegateInvokeMethod = eventInfo.EventHandlerType.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName);
             ParameterInfo[] eventDelegateParameters = eventDelegateInvokeMethod.GetParameters();
 
             MethodInfo eventHandlerMethod = clientHandler.Method;

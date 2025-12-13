@@ -25,7 +25,23 @@
         internal static readonly Type ExtensionAttributeType = typeof(ExtensionAttribute);
         internal static readonly Type IsReadOnlyAttributeType = typeof(IsReadOnlyAttribute);
 
-        internal const BindingFlags AllMembersFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy | BindingFlags.DeclaredOnly;
+        /// <summary>
+        /// Specifies binding flags that include all instance and static members, regardless of visibility, declared
+        /// only on the current type.
+        /// </summary>
+        /// <remarks>This combination of flags is typically used when reflecting over a type to retrieve
+        /// all of its members, including public, non-public, static, and instance members, but excluding inherited
+        /// members from base types.</remarks>
+        internal const BindingFlags AllDeclaredMembersFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+        /// <summary>
+        /// Specifies binding flags that include all instance and static members, both public and non-public, across the
+        /// entire inheritance hierarchy except for members inherited from System.Object.
+        /// </summary>
+        /// <remarks>This constant is intended for use with reflection methods that require a
+        /// comprehensive set of binding flags to access all members of a type, including those declared in base
+        /// classes. It does not include the DeclaredOnly flag, so inherited members are included. Members inherited
+        /// from System.Object may still be excluded depending on the reflection API used.</remarks>
+        internal const BindingFlags AllMembersFullHierarchyFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
 
         /// <summary>
         /// The property genericTypeParameterIdentifier of an indexer property. This genericTypeParameterIdentifier is compiler generated and equals the typeName of the <see langword="static"/>field <see cref="System.Windows.Data.Binding.IndexerName" />.
@@ -33,6 +49,14 @@
         /// <typeName>The generated property genericTypeParameterIdentifier of an indexer is <c>Item</c>.</typeName>
         /// <remarks>This field exists to enable writing of cross-platform compatible reflection code without the requirement to import the PresentationFramework.dll.</remarks>
         public static readonly string IndexerName = "Item";
+
+        /// <summary>
+        /// Represents the name of the method used to invoke a delegate dynamically.
+        /// </summary>
+        /// <remarks>This constant can be used when generating or reflecting over code that requires the
+        /// standard delegate invocation method name. The value is case-sensitive and should match the method name
+        /// expected by the runtime or code generation tools.</remarks>
+        public static readonly string DelegateInvocatorMethodName = "Invoke";
 
 
 
@@ -2341,7 +2365,7 @@
         /// <returns>true if the delegate's method parameters are assignable to the event handler's parameters; otherwise, false.</returns>
         public static bool IsAssignable(this Delegate clientHandler, EventInfo eventInfo)
         {
-            MethodInfo eventDelegateInvokeMethod = eventInfo.EventHandlerType.GetMethod("Invoke");
+            MethodInfo eventDelegateInvokeMethod = eventInfo.EventHandlerType.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName);
             ParameterInfo[] eventDelegateParameters = eventDelegateInvokeMethod.GetParameters();
 
             MethodInfo eventHandlerMethod = clientHandler.Method;

@@ -61,7 +61,7 @@
           => this.removeMethodData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetEventInfo().GetRemoveMethod(true));
 
         public MethodData InvocatorMethodData
-          => this.invocatorMethodData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetEventInfo().GetRaiseMethod(true) ?? GetEventInfo().EventHandlerType.GetMethod("Invoke"));
+          => this.invocatorMethodData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetEventInfo().GetRaiseMethod(true) ?? GetEventInfo().EventHandlerType.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName));
 
         public TypeData EventHandlerTypeData
           => this.eventHandlerTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetEventInfo().EventHandlerType);

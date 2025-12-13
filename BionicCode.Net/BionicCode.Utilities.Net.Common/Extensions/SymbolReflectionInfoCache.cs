@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Collections.Immutable;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Globalization;
     using System.Linq;
@@ -128,37 +128,6 @@
             eventData = (EventData)symbolInfoData;
         }
 
-        private static EventData CreateEventData(SymbolInfoDataCacheKey cacheKey)
-        {
-            var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
-            EventInfo eventInfo = declaringType.GetEvent(cacheKey.SymbolName, HelperExtensionsCommon.AllMembersFlags);
-            if (eventInfo is null && declaringType.IsInterface)
-            {
-                Type[] implementedInterfaces = declaringType.GetInterfaces();
-                foreach (Type implementedInterface in implementedInterfaces)
-                {
-                    eventInfo = implementedInterface.GetEvent(cacheKey.SymbolName, HelperExtensionsCommon.AllMembersFlags);
-                    if (eventInfo is not null)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            if (eventInfo is null)
-            {
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
-                    "event",
-                    cacheKey.SymbolName,
-                    string.Empty,
-                    declaringType.ToFullDisplayName()),
-                    nameof(cacheKey));
-            }
-
-            return new EventData(eventInfo);
-        }
-
         internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out MethodData methodData)
         {
             bool isKeyNormalized = TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
@@ -193,64 +162,6 @@
             Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
 
             methodData = (MethodData)symbolInfoData;
-        }
-
-        private static MethodData CreateMethodData(SymbolInfoDataCacheKey cacheKey)
-        {
-            Type declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
-            ImmutableList<ParameterData> genericTypeParameters = cacheKey.ParameterList.GenericTypeParameters;
-
-            MethodInfo methodInfo;
-            if (cacheKey.MethodHandle != default)
-            {
-                methodInfo = MethodBase.GetMethodFromHandle(cacheKey.MethodHandle) as MethodInfo;
-            }
-            else
-            {
-                Type[] parameterTypes = Type.EmptyTypes;
-                if (cacheKey.ParameterList.HasItems)
-                {
-                    parameterTypes = cacheKey.ParameterList
-                    .Select(parameterData => parameterData.ParameterTypeData.GetType())
-                    .ToArray();
-                }
-                else if (cacheKey.MethodParameterInfos.HasItems)
-                {
-                    parameterTypes = cacheKey.MethodParameterInfos
-                    .Select(methodParameterInfo => Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle))
-                    .ToArray();
-                }
-
-                methodInfo = declaringType.GetMethod(
-                    cacheKey.SymbolName,
-                    genericTypeParameters.Count,
-                    HelperExtensionsCommon.AllMembersFlags,
-                    binder: null,
-                    types: parameterTypes,
-                    modifiers: null);
-            }
-
-            if (methodInfo is null)
-            {
-                throw new ArgumentException(string.Format(
-                    CultureInfo.CurrentCulture,
-                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
-                    "method",
-                    cacheKey.SymbolName,
-                    " that matches the provided parameter list ",
-                    declaringType.ToFullDisplayName()),
-                    nameof(cacheKey));
-            }
-
-            if (methodInfo.ContainsGenericParameters || methodInfo.IsGenericMethodDefinition)
-            {
-                Type[] typeArguments = genericTypeParameters
-                    .Select(parameterData => parameterData.ParameterTypeData.GetType())
-                    .ToArray();
-                methodInfo = methodInfo.MakeGenericMethod(typeArguments);
-            }
-
-            return new MethodData(methodInfo);
         }
 
         internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out FieldData fieldData)
@@ -289,34 +200,6 @@
             fieldData = (FieldData)symbolInfoData;
         }
 
-        private static FieldData CreateFieldData(SymbolInfoDataCacheKey cacheKey)
-        {
-            FieldInfo fieldInfo;
-            if (cacheKey.FieldHandle != default)
-            {
-                fieldInfo = FieldInfo.GetFieldFromHandle(cacheKey.FieldHandle);
-            }
-            else
-            {
-                var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
-                fieldInfo = declaringType.GetField(cacheKey.SymbolName, HelperExtensionsCommon.AllMembersFlags);
-            }
-
-            if (fieldInfo is null)
-            {
-                var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
-                throw new ArgumentException(string.Format(
-                    CultureInfo.CurrentCulture,
-                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
-                    "field",
-                    cacheKey.SymbolName,
-                    string.Empty,
-                    declaringType.ToFullDisplayName()), nameof(cacheKey));
-            }
-
-            return new FieldData(fieldInfo);
-        }
-
         internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out PropertyData propertyData)
         {
             bool isKeyNormalized = TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
@@ -353,44 +236,11 @@
             propertyData = (PropertyData)symbolInfoData;
         }
 
-        private static PropertyData CreatePropertyData(SymbolInfoDataCacheKey cacheKey)
+        internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out ParameterData parameterData)
         {
-            var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
-            Type[] indexerParameters = Type.EmptyTypes;
-            if (cacheKey.ParameterList.HasItems)
-            {
-                indexerParameters = cacheKey.ParameterList
-                .Select(parameterData => parameterData.ParameterTypeData.GetType())
-                .ToArray();
-            }
-            else if (cacheKey.MethodParameterInfos.HasItems)
-            {
-                indexerParameters = cacheKey.MethodParameterInfos
-                .Select(methodParameterInfo => Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle))
-                .ToArray();
-            }
-
-            // Find the property by name and parameter types (for indexers)
-            PropertyInfo propertyInfo = declaringType.GetProperty(
-                cacheKey.SymbolName,
-                HelperExtensionsCommon.AllMembersFlags,
-                null,
-                null,
-                cacheKey.ParameterList.Select(parameterData => parameterData.ParameterTypeData.GetType()).ToArray(),
-                null);
-            if (propertyInfo is null)
-            {
-                throw new ArgumentException(string.Format(
-                    CultureInfo.CurrentCulture,
-                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
-                    "property",
-                    cacheKey.SymbolName,
-                    string.Empty,
-                    declaringType.ToFullDisplayName()),
-                    nameof(cacheKey));
-            }
-
-            return new PropertyData(propertyInfo);
+            SymbolInfoDataCacheKey normalizedCacheKey = SymbolReflectionInfoCache.NormalizeKey(cacheKey);
+            _ = SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(normalizedCacheKey, out SymbolInfoData symbolInfoData);
+            parameterData = (ParameterData)symbolInfoData;
         }
 
         internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out ConstructorData constructorData)
@@ -429,41 +279,6 @@
             constructorData = (ConstructorData)symbolInfoData;
         }
 
-        private static ConstructorData CreateConstructorData(SymbolInfoDataCacheKey cacheKey)
-        {
-            ConstructorInfo constructorInfo;
-            if (cacheKey.MethodHandle != default)
-            {
-                constructorInfo = MethodBase.GetMethodFromHandle(cacheKey.MethodHandle) as ConstructorInfo;
-            }
-            else
-            {
-                var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
-                Type[] parameterTypes = cacheKey.ParameterList
-                    .Select(parameter => parameter.ParameterTypeData.GetType())
-                    .ToArray();
-                constructorInfo = declaringType.GetConstructor(
-                    HelperExtensionsCommon.AllMembersFlags,
-                    binder: null,
-                    types: parameterTypes,
-                    modifiers: null);
-            }
-
-            if (constructorInfo is null)
-            {
-                var declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
-                throw new ArgumentException(string.Format(
-                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
-                    "constructor",
-                    cacheKey.SymbolName,
-                    " that matches the provided parameter list ",
-                    declaringType.ToFullDisplayName()),
-                    nameof(cacheKey));
-            }
-
-            return new ConstructorData(constructorInfo);
-        }
-
         internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out TypeData typeData)
         {
             bool isKeyNormalized = TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
@@ -500,12 +315,6 @@
             typeData = (TypeData)symbolInfoData;
         }
 
-        private static TypeData CreateTypeData(SymbolInfoDataCacheKey cacheKey)
-        {
-            Type type = Type.GetTypeFromHandle(cacheKey.SymbolTypeHandle);
-            return new TypeData(type);
-        }
-
         internal static bool TryGetSymbolInfoDataCacheEntry<TEntry>(SymbolInfoDataCacheKey key, out TEntry entry)
           where TEntry : SymbolInfoData
         {
@@ -528,6 +337,356 @@
 
             normalizedCacheKey = cacheKey;
             return true;
+        }
+
+        /// <summary>
+        /// Normalizes a cache key for a symbol, returning a canonical key for anonymous symbols.
+        /// </summary>
+        /// <remarks>Normalization ensures that anonymous symbols are consistently mapped to a canonical
+        /// cache key, enabling reliable symbol identification and lookup. For non-anonymous symbols, the original key
+        /// is returned unchanged.
+        /// <para>Normalization also ensures that the related <see cref="SymbolInfoData"/> object is created and cached as its instance is required to derive the well-known key.</para></remarks>
+        /// <param name="cacheKey">The cache key representing the symbol to normalize. If the key refers to an anonymous symbol, it will be
+        /// mapped to a canonical equivalent.</param>
+        /// <returns>A normalized cache key that uniquely identifies the symbol. If the input key is already canonical, the same
+        /// key is returned.</returns>
+        /// <exception cref="NotSupportedException">Thrown if the symbol kind of <paramref name="cacheKey"/> is not supported for normalization.</exception>
+        public static SymbolInfoDataCacheKey NormalizeKey(SymbolInfoDataCacheKey cacheKey)
+        {
+            if (!cacheKey.IsAnonymousSymbolKey)
+            {
+                return cacheKey;
+            }
+
+            if (SymbolReflectionInfoCache.AnonymousSymbolDataCacheKeyMap.TryGetValue(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey))
+            {
+                return normalizedCacheKey;
+            }
+
+            SymbolInfoData symbolInfoData;
+            switch (cacheKey.SymbolKind)
+            {
+                case SymbolKind.MemberEvent:
+                    EventData eventData = CreateEventData(cacheKey);
+                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForEvent(eventData.GetEventInfo());
+                    symbolInfoData = eventData;
+                    break;
+                case SymbolKind.MemberMethod:
+                    MethodData methodData = CreateMethodData(cacheKey);
+                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForMethod(methodData.GetMethodInfo());
+                    symbolInfoData = methodData;
+                    break;
+                case SymbolKind.Constructor:
+                    ConstructorData constructorData = CreateConstructorData(cacheKey);
+                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForConstructor(constructorData.GetConstructorInfo());
+                    symbolInfoData = constructorData;
+                    break;
+                case SymbolKind.MemberField:
+                    FieldData fieldData = CreateFieldData(cacheKey);
+                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForField(fieldData.GetFieldInfo());
+                    symbolInfoData = fieldData;
+                    break;
+                case SymbolKind.MemberProperty:
+                    PropertyData propertyData = CreatePropertyData(cacheKey);
+                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForProperty(propertyData.GetPropertyInfo());
+                    symbolInfoData = propertyData;
+                    break;
+                case SymbolKind.Type:
+                    TypeData typeData = CreateTypeData(cacheKey);
+                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForType(typeData.GetType());
+                    symbolInfoData = typeData;
+                    break;
+                case SymbolKind.MemberParameter:
+                    ParameterData parameterData = get;
+                default:
+                    throw new NotSupportedException($"The symbol kind '{cacheKey.SymbolKind}' is not supported for normalization.");
+            }
+
+            _ = SymbolReflectionInfoCache.AnonymousSymbolDataCacheKeyMap.TryAdd(cacheKey, normalizedCacheKey);
+            _ = SymbolReflectionInfoCache.SymbolInfoDataCache.TryAdd(normalizedCacheKey, symbolInfoData);
+
+            return normalizedCacheKey;
+        }
+
+        private static TypeData CreateTypeData(SymbolInfoDataCacheKey cacheKey)
+        {
+            Type type = Type.GetTypeFromHandle(cacheKey.SymbolTypeHandle);
+            return new TypeData(type);
+        }
+
+        private static PropertyData CreatePropertyData(SymbolInfoDataCacheKey cacheKey)
+        {
+            Type declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
+            Type[] indexerParameters = Type.EmptyTypes;
+            if (cacheKey.ParameterList.HasItems)
+            {
+                indexerParameters = cacheKey.ParameterList
+                .Select(parameterData => parameterData.ParameterTypeData.GetType())
+                .ToArray();
+            }
+            else if (cacheKey.MethodParameterInfos.HasItems)
+            {
+                indexerParameters = cacheKey.MethodParameterInfos
+                .Select(methodParameterInfo => Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle))
+                .ToArray();
+            }
+
+            // Find the property by name and parameter types (for indexers)
+            PropertyInfo propertyInfo = declaringType.GetProperty(
+                cacheKey.SymbolName,
+                HelperExtensionsCommon.AllMembersFullHierarchyFlags,
+                null,
+                null,
+                indexerParameters,
+                null);
+            if (propertyInfo is null)
+            {
+                throw new ArgumentException(string.Format(
+                    CultureInfo.CurrentCulture,
+                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
+                    "property",
+                    cacheKey.SymbolName,
+                    string.Empty,
+                    declaringType.ToFullDisplayName()),
+                    nameof(cacheKey));
+            }
+
+            return new PropertyData(propertyInfo);
+        }
+
+        private static ConstructorData CreateConstructorData(SymbolInfoDataCacheKey cacheKey)
+        {
+            Type declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
+            ConstructorInfo constructorInfo;
+            if (cacheKey.MethodHandle != default)
+            {
+                constructorInfo = MethodBase.GetMethodFromHandle(cacheKey.MethodHandle) as ConstructorInfo;
+            }
+            else
+            {
+                Type[] parameterTypes = cacheKey.ParameterList
+                    .Select(parameter => parameter.ParameterTypeData.GetType())
+                    .ToArray();
+                constructorInfo = declaringType.GetConstructor(
+                    HelperExtensionsCommon.AllMembersFullHierarchyFlags,
+                    binder: null,
+                    types: parameterTypes,
+                    modifiers: null);
+            }
+
+            if (constructorInfo is null)
+            {
+                throw new ArgumentException(string.Format(
+                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
+                    "constructor",
+                    cacheKey.SymbolName,
+                    " that matches the provided parameter list ",
+                    declaringType.ToFullDisplayName()),
+                    nameof(cacheKey));
+            }
+
+            return new ConstructorData(constructorInfo);
+        }
+
+        private static FieldData CreateFieldData(SymbolInfoDataCacheKey cacheKey)
+        {
+            Type declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
+            FieldInfo fieldInfo;
+            if (cacheKey.FieldHandle != default)
+            {
+                fieldInfo = FieldInfo.GetFieldFromHandle(cacheKey.FieldHandle);
+            }
+            else
+            {
+                fieldInfo = declaringType.GetField(cacheKey.SymbolName, HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+            }
+
+            if (fieldInfo is null)
+            {
+                throw new ArgumentException(string.Format(
+                    CultureInfo.CurrentCulture,
+                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
+                    "field",
+                    cacheKey.SymbolName,
+                    string.Empty,
+                    declaringType.ToFullDisplayName()), nameof(cacheKey));
+            }
+
+            return new FieldData(fieldInfo);
+        }
+
+        private static MethodData CreateMethodData(SymbolInfoDataCacheKey cacheKey)
+        {
+            Type declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
+            MethodInfo methodInfo;
+            if (cacheKey.MethodHandle != default)
+            {
+                methodInfo = MethodBase.GetMethodFromHandle(cacheKey.MethodHandle) as MethodInfo;
+            }
+            else
+            {
+                Type[] parameterTypes = Type.EmptyTypes;
+                if (cacheKey.ParameterList.HasItems)
+                {
+                    parameterTypes = cacheKey.ParameterList
+                    .Select(parameterData => parameterData.ParameterTypeData.GetType())
+                    .ToArray();
+                }
+                else if (cacheKey.MethodParameterInfos.HasItems)
+                {
+                    parameterTypes = cacheKey.MethodParameterInfos
+                    .Select(methodParameterInfo => Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle))
+                    .ToArray();
+                }
+
+                methodInfo = declaringType.GetMethod(
+                    cacheKey.SymbolName,
+                    cacheKey.GenericTypeParameterCount,
+                    HelperExtensionsCommon.AllMembersFullHierarchyFlags,
+                    binder: null,
+                    types: parameterTypes,
+                    modifiers: null);
+            }
+
+            if (methodInfo is null)
+            {
+                throw new ArgumentException(string.Format(
+                    CultureInfo.CurrentCulture,
+                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
+                    "method",
+                    cacheKey.SymbolName,
+                    " that matches the provided parameter list ",
+                    declaringType.ToFullDisplayName()),
+                    nameof(cacheKey));
+            }
+
+            if (methodInfo.ContainsGenericParameters || methodInfo.IsGenericMethodDefinition)
+            {
+                IEnumerable<Type> genericTypeParameters = cacheKey.ParameterList.HasItems
+                    ? cacheKey.ParameterList.GenericTypeParameters
+                    .Select(parameterData => parameterData.ParameterTypeData.GetType())
+                    : cacheKey.MethodParameterInfos.GenericTypeParameters
+                    .Select(methodParameterInfo => Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle));
+                methodInfo = methodInfo.MakeGenericMethod(genericTypeParameters.ToArray());
+            }
+
+            return new MethodData(methodInfo);
+        }
+
+        private static EventData CreateEventData(SymbolInfoDataCacheKey cacheKey)
+        {
+            Type declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
+            EventInfo eventInfo = declaringType.GetEvent(cacheKey.SymbolName, HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+            if (eventInfo is null && declaringType.IsInterface)
+            {
+                Type[] implementedInterfaces = declaringType.GetInterfaces();
+                foreach (Type implementedInterface in implementedInterfaces)
+                {
+                    eventInfo = implementedInterface.GetEvent(cacheKey.SymbolName, HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+                    if (eventInfo is not null)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (eventInfo is null)
+            {
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
+                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
+                    "event",
+                    cacheKey.SymbolName,
+                    string.Empty,
+                    declaringType.ToFullDisplayName()),
+                    nameof(cacheKey));
+            }
+
+            return new EventData(eventInfo);
+        }
+
+        private static EventData CreateParameterData(SymbolInfoDataCacheKey cacheKey)
+        {
+            Type declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
+            MethodBase methodBase;
+
+            // If-statement order matters here. Order ifrom most specific to least specific i.e. best lookup performance to worst performance.
+            if (cacheKey.MethodHandle != default)
+            {
+                methodBase = MethodBase.GetMethodFromHandle(cacheKey.MethodHandle);
+            }
+            else if (declaringType.IsDelegate())
+            {
+                methodBase = declaringType.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+            }
+            else if (!string.IsNullOrWhiteSpace(cacheKey.ParameterMemberName))
+            {
+                MethodInfo[] methoCandidates = declaringType.GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+
+                // TODO::Find method based on parameter name and ParameterKind and position. When checking for parameter name also consider indexer where the name is 'Item'.
+
+                    .FirstOrDefault(methodInfo => methodInfo.Name.Equals(cacheKey.ParameterMemberName, StringComparison.Ordinal) && );
+                if (methodBase is null)
+                {
+                    PropertyInfo propertyInfo = declaringType.GetProperty(cacheKey.ParameterMemberName, HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+                    if (propertyInfo is not null)
+                    {
+                        methodBase = propertyInfo.GetMethod ?? propertyInfo.SetMethod;
+                    }
+                }
+                if (methodBase is null)
+                {
+                    methodBase = declaringType.GetConstructor(cacheKey.ParameterMemberName);
+                }
+            }
+            else
+            {
+                declaringType.GetMethod(cacheKey.SymbolName);
+                Type[] parameterTypes = cacheKey.MethodParameterInfos
+                    .Select(methodParameterInfo => Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle))
+                    .ToArray();
+                if (cacheKey.SymbolKind == SymbolKind.Constructor)
+                {
+                    methodBase = declaringType.GetConstructor(
+                        HelperExtensionsCommon.AllMembersFullHierarchyFlags,
+                        binder: null,
+                        types: parameterTypes,
+                        modifiers: null);
+                }
+                else
+                {
+                    methodBase = declaringType.GetMethod(
+                        cacheKey.SymbolName,
+                        cacheKey.GenericTypeParameterCount,
+                        HelperExtensionsCommon.AllMembersFullHierarchyFlags,
+                        binder: null,
+                        types: parameterTypes,
+                        modifiers: null);
+                }
+            }
+            if (methodBase is null)
+            {
+                throw new ArgumentException(string.Format(
+                    CultureInfo.CurrentCulture,
+                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
+                    "method or constructor",
+                    cacheKey.SymbolName,
+                    " that matches the provided parameter list ",
+                    declaringType.ToFullDisplayName()),
+                    nameof(cacheKey));
+            }
+            ParameterInfo parameterInfo = methodBase.GetParameters().FirstOrDefault(p => p.Name == cacheKey.SymbolName);
+            if (parameterInfo is null)
+            {
+                throw new ArgumentException(string.Format(
+                    CultureInfo.CurrentCulture,
+                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
+                    "parameter",
+                    cacheKey.SymbolName,
+                    string.Empty,
+                    methodBase.ToFullDisplayName()),
+                    nameof(cacheKey));
+            }
+            return new EventData(parameterInfo);
         }
     }
 }

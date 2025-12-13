@@ -5,7 +5,7 @@
     using System.Linq;
 
     /// <summary>
-    /// Additional mth functions
+    /// Additional math functions
     /// </summary>
     public static class Math
     {

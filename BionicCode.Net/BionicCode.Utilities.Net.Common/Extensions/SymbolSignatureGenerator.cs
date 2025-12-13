@@ -1117,7 +1117,7 @@
         //      var valueType = memberInfo as ParameterType;
         //      var propertyInfo = memberInfo as PropertyInfo;
         //      MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
-        //        ?? valueType?.GetMethod("Invoke"); // MemberInfo is potentially a delegate
+        //        ?? valueType?.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName); // MemberInfo is potentially a delegate
         //      MethodInfo propertyGetMethodInfo = propertyInfo?.GetGetMethod(true);
         //      MethodInfo propertySetMethodInfo = propertyInfo?.GetSetMethod(true);
         //      var constructorInfo = memberInfo as ConstructorInfo;
@@ -1367,7 +1367,7 @@
 
         //      var valueType = memberInfo as ParameterType;
         //      MethodInfo methodInfo = memberInfo as MethodInfo // MemberInfo is method
-        //        ?? valueType?.GetMethod("Invoke"); // MemberInfo is potentially a delegate
+        //        ?? valueType?.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName); // MemberInfo is potentially a delegate
         //      MethodInfo propertyGetMethodInfo = propertyInfo?.GetGetMethod(true);
         //      MethodInfo propertySetMethodInfo = propertyInfo?.GetSetMethod(true);
         //      var constructorInfo = memberInfo as ConstructorInfo;

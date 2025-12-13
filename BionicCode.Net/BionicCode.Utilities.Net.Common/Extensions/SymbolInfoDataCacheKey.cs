@@ -19,6 +19,7 @@
         /// </summary>
         /// <value>The name of the symbol, such as the method name, property name, event name, field name, or type name.</value>
         public readonly string SymbolName { get; }
+        public string ParameterMemberName { get; }
         /// <summary>
         /// Gets the runtime handle for the type that declares the current member.
         /// </summary>
@@ -34,7 +35,7 @@
         /// <value>The runtime type handle of the symbol's type. In case of a method this property returns the method type (return type of the method).
         /// For events, this returns the type handle of the event delegate.
         /// And for properties and fields this is the simple handle of the field/property type.<br/>
-        /// For anonymous members (if the key was created with the <see cref="CreateForAnonymousSymbol(RuntimeTypeHandle, string, ParameterList?, SymbolKind)"/> method, the value is <see langword="default"/>.</value>
+        /// For anonymous members (if the key was created with one of the <c>CreateForAnonymousSymbol()</c> overloads, the value is <see langword="default"/>.</value>
         public readonly RuntimeTypeHandle SymbolTypeHandle { get; }
         /// <summary>
         /// Gets the handle that represents the internal metadata of the method.
@@ -43,7 +44,7 @@
         /// can be used for advanced reflection scenarios. Accessing the handle is typically only necessary when
         /// interoperating with unmanaged code or performing operations that require direct access to method
         /// metadata.</remarks>
-        /// <value>The runtime method handle of the method. For anonymous members (if the key was created with the <see cref="CreateForAnonymousSymbol(RuntimeTypeHandle, string, ParameterList?, SymbolKind)"/> method, the value is <see langword="default"/>.</value>
+        /// <value>The runtime method handle of the method. For anonymous members (if the key was created with one of the <c>CreateForAnonymousSymbol()</c> overloads, the value is <see langword="default"/> (except the overloads for a parameter).</value>
         public readonly RuntimeMethodHandle MethodHandle { get; }
         /// <summary>
         /// Gets a handle to the internal metadata representation of the field.
@@ -91,18 +92,25 @@
         /// <summary>
         /// Gets the number of generic type parameters defined for the current type or method.
         /// </summary>
-        /// <value>The count of generic type parameters. For non-generic types or methods, this value defaults to <c>-1</c>. The value will only be &gt; -1 if the key was created with the <see cref="CreateForAnonymousMemberSymbol(RuntimeTypeHandle, string, ParameterList?, int, int, SymbolKind)"/> method. In this case the value is the provided generic type parameter count but never &lt; 0.</value>
+        /// <value>The count of generic type parameters. For non-generic types or methods, this value defaults to <c>-1</c>. The value will only be &gt; -1 if the key was created with the <see cref="CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle, string, MethodParameterInfoList?, int, SymbolKind)"/> and <see cref="CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle, string, ParameterList?, int, SymbolKind)"/> methods. In this case the value is the provided generic type parameter count but never &lt; 0.</value>
         public int GenericTypeParameterCount { get; }
         /// <summary>
         /// Gets the zero-based position of the parameter in the parameter list.
         /// </summary>
-        /// <value>The position of the parameter. For non-parameter symbols, this value defaults to <c>-1</c>. The value will only be &gt; -1 if the key was created with the <see cref="CreateForAnonymousMemberSymbol(RuntimeTypeHandle, string, ParameterList?, int, int, SymbolKind)"/> method for a parameter symbol.</value>
+        /// <value>The position of the parameter. For non-parameter symbols, this value defaults to <c>-1</c>. The value will only be &gt; -1 if the key was created with the <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, string, int, ParameterKind, string?)"/> or <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, string, int, RuntimeMethodHandle)"/> methods for a parameter symbol.</value>
         public int ParameterPosition { get; }
+
+        /// <summary>
+        /// Gets the kind of parameter represented by this instance.
+        /// </summary>
+        /// <value>Returns <see cref="ParameterKind.Undefined"/> except when explicitly set via the <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, string, int, ParameterKind, string?)"/> method to later help to resolve ambiguities.</value>
+        public ParameterKind ParameterKind { get; }
 
         private readonly int _hashCode;
         public bool IsAnonymousSymbolKey { get; }
 
         private SymbolInfoDataCacheKey(string name,
+            string parameterMemberName,
             RuntimeTypeHandle declaringTypeHandle,
             RuntimeTypeHandle typeHandle,
             RuntimeMethodHandle methodHandle,
@@ -119,6 +127,7 @@
             bool isAnonymousSymbolKey)
         {
             this.SymbolName = name;
+            this.ParameterMemberName = parameterMemberName;
             this.DeclaringTypeHandle = declaringTypeHandle;
             this.SymbolTypeHandle = typeHandle;
             this.MethodHandle = methodHandle;
@@ -146,6 +155,7 @@
             RuntimeMethodHandle removeMethodHandle = eventInfo.RemoveMethod.MethodHandle;
 
             return new SymbolInfoDataCacheKey(eventInfo.Name,
+                string.Empty,
                 declaringTypeHandle,
                 eventDelegateTypeHandle,
                 default,
@@ -171,6 +181,7 @@
             RuntimeMethodHandle setMethodHandle = propertyInfo.SetMethod?.MethodHandle ?? default;
 
             return new SymbolInfoDataCacheKey(propertyInfo.Name,
+                string.Empty,
                 declaringTypeHandle,
                 typeHandle,
                 default,
@@ -195,6 +206,7 @@
             RuntimeMethodHandle methodHandle = methodInfo.MethodHandle;
 
             return new SymbolInfoDataCacheKey(methodInfo.Name,
+                string.Empty,
                 declaringTypeHandle,
                 typeHandle,
                 methodHandle,
@@ -219,6 +231,7 @@
             RuntimeTypeHandle declaringTypeHandle = default;
 
             return new SymbolInfoDataCacheKey(type.FullName ?? type.Name,
+                string.Empty,
                 declaringTypeHandle,
                 typeHandle,
                 default,
@@ -243,6 +256,7 @@
             RuntimeFieldHandle handle = fieldInfo.FieldHandle;
 
             return new SymbolInfoDataCacheKey(fieldInfo.Name,
+                string.Empty,
                 declaringTypeHandle,
                 fieldTypeHandle,
                 default,
@@ -266,6 +280,7 @@
             RuntimeMethodHandle methodHandle = constructorInfo.MethodHandle;
 
             return new SymbolInfoDataCacheKey(constructorInfo.Name,
+                string.Empty,
                 declaringTypeHandle,
                 default,
                 methodHandle,
@@ -288,11 +303,14 @@
 
             RuntimeTypeHandle declaringTypeHandle = parameterInfo.Member.DeclaringType.TypeHandle;
             RuntimeTypeHandle parameterTypeHandle = parameterInfo.ParameterType.TypeHandle;
-            RuntimeMethodHandle methodHandle = parameterInfo.Member is MethodBase methodInfo
+            RuntimeMethodHandle methodHandle = parameterInfo.Member is MethodBase methodInfo // Method or Constructor parameter
                 ? methodInfo.MethodHandle
-                : default;
+                : parameterInfo.Member is PropertyInfo propertyInfo // Indexer parameter
+                    ? propertyInfo.GetMethod?.MethodHandle ?? propertyInfo.SetMethod?.MethodHandle ?? default
+                    : default;
 
             return new SymbolInfoDataCacheKey(parameterInfo.Name,
+                parameterInfo.Member.Name,
                 declaringTypeHandle,
                 parameterTypeHandle,
                 methodHandle,
@@ -332,6 +350,7 @@
             ArgumentOutOfRangeException.ThrowIfNegative(genericTypeParameterCount, paramName: nameof(genericTypeParameterCount));
 
             return new SymbolInfoDataCacheKey(memberName,
+                string.Empty,
                 declaringTypeHandle,
                 default,
                 default,
@@ -371,6 +390,7 @@
             ArgumentOutOfRangeException.ThrowIfNegative(genericTypeParameterCount, nameof(genericTypeParameterCount));
 
             return new SymbolInfoDataCacheKey(memberName,
+                string.Empty,
                 declaringTypeHandle,
                 default,
                 default,
@@ -394,18 +414,14 @@
         /// <param name="declaringTypeHandle">The runtime type handle representing the declaring type of the anonymous property.</param>
         /// <param name="propertyName">The name of the anonymous property. Cannot be null, empty, or consist only of white-space characters.</param>
         /// <param name="indexerParameters">The list of parameters for the anonymous indexer property. Can be <see cref="MethodParameterInfoList.Empty"/> or <see langword="null"/> to indicate no parameters in case of a normal property.</param>
-        /// <param name="symbolKind">The kind of symbol to associate with the cache key. Must be <see cref="SymbolKind.MemberProperty"/>.</param>
         /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous property.</returns>
         /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName"/> is null, empty, or consists only of white-space characters</exception>
-        /// <exception cref="ArgumentException">Thrown when the provided <paramref name="symbolKind"/> value is not defined in <see cref="SymbolKind"/>.</exception>
-        /// <exception cref="ArgumentException">Thrown when the provided <paramref name="symbolKind"/> value is not equal to <see cref="SymbolKind.MemberProperty"/>.</exception>
-        public static SymbolInfoDataCacheKey CreateForAnonymousProperty(RuntimeTypeHandle declaringTypeHandle, string propertyName, ParameterList? indexerParameters, SymbolKind symbolKind)
+        public static SymbolInfoDataCacheKey CreateForAnonymousProperty(RuntimeTypeHandle declaringTypeHandle, string propertyName, ParameterList? indexerParameters)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(propertyName, nameof(propertyName));
-            ArgumentExceptionEx.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
-            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(symbolKind, [SymbolKind.MemberProperty], nameof(symbolKind), "The symbol kind must be 'MemberProperty' for anonymous property symbols.");
 
             return new SymbolInfoDataCacheKey(propertyName,
+                string.Empty,
                 declaringTypeHandle,
                 default,
                 default,
@@ -418,7 +434,7 @@
                 MethodParameterInfoList.Empty,
                 -1,
                 -1,
-                symbolKind,
+                SymbolKind.MemberProperty,
                 true);
         }
 
@@ -429,18 +445,14 @@
         /// <param name="declaringTypeHandle">The runtime type handle representing the declaring type of the anonymous property.</param>
         /// <param name="propertyName">The name of the anonymous property. Cannot be null, empty, or consist only of white-space characters.</param>
         /// <param name="indexerParameters">The list of parameters for the anonymous indexer property. Can be <see cref="MethodParameterInfoList.Empty"/> or <see langword="null"/> to indicate no parameters in case of a normal property.</param>
-        /// <param name="symbolKind">The kind of symbol to associate with the cache key. Must be <see cref="SymbolKind.MemberProperty"/>.</param>
         /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous property.</returns>
         /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName"/> is null, empty, or consists only of white-space characters</exception>
-        /// <exception cref="ArgumentException">Thrown when the provided <paramref name="symbolKind"/> value is not defined in <see cref="SymbolKind"/>.</exception>
-        /// <exception cref="ArgumentException">Thrown when the provided <paramref name="symbolKind"/> value is not equal to <see cref="SymbolKind.MemberProperty"/>.</exception>
-        public static SymbolInfoDataCacheKey CreateForAnonymousProperty(RuntimeTypeHandle declaringTypeHandle, string propertyName, MethodParameterInfoList? indexerParameters, SymbolKind symbolKind)
+        public static SymbolInfoDataCacheKey CreateForAnonymousProperty(RuntimeTypeHandle declaringTypeHandle, string propertyName, MethodParameterInfoList? indexerParameters)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(propertyName, nameof(propertyName));
-            ArgumentExceptionEx.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
-            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(symbolKind, [SymbolKind.MemberProperty], nameof(symbolKind), "The symbol kind must be 'MemberProperty' for anonymous property symbols.");
 
             return new SymbolInfoDataCacheKey(propertyName,
+                string.Empty,
                 declaringTypeHandle,
                 default,
                 default,
@@ -453,7 +465,7 @@
                 indexerParameters ?? MethodParameterInfoList.Empty,
                 -1,
                 -1,
-                symbolKind,
+                SymbolKind.MemberProperty,
                 true);
         }
 
@@ -461,24 +473,30 @@
         /// Creates a new cache key for an anonymous parameter using the specified declaring type, symbol name, parameter position,
         /// generic type parameter count, and symbol kind.
         /// </summary>
-        /// <remarks>This method is used to create a unique cache key for symbols of which the caller does not have a direct representation (e.g. a <see cref="ParameterInfo"/> and instead only signature information is available.</remarks>
+        /// <remarks>This method is used to create a unique cache key for symbols of which the caller does not have a direct representation (e.g. a <see cref="ParameterInfo"/> and instead only signature information is available.<para/>
+        /// The parameter <paramref name="memberName"/> is optional. However, if not provided, the created key will be less efficient when used for lookups in caches. If parameter name and position matches multiple parameters, providing <paramref name="memberName"/> or even better the member's runtime handle via the <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, string, int, RuntimeMethodHandle)"/> overload will allow to resolve ambiguities that otherwise may throw an exception.
+        /// <para/>For better performance, the <paramref name="memberName"/> must be provided.
+        /// <br/>For best perfromance the overload <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, string, int, RuntimeMethodHandle)"/> should be used.</remarks>
         /// <param name="declaringTypeHandle">The runtime type handle representing the declaring type of the member that defines the anonymous parameter.</param>
-        /// <param name="parameterName">The name of the anonymous parameter. Cannot be null, empty, or consist only of white-space characters.</param>
+        /// <param name="parameterName">The name of the anonymous parameter. Can only be null, empty, or consist only of white-space characters when the parameter belongs to an indexer property (in this case <paramref name="memberName"/> must be <see cref="HelperExtensionsCommon.IndexerName"/>). For indexer properties this value will be ignored.</param>
         /// <param name="position">The index of the parameter.</param>
-        /// <param name="symbolKind">The kind of symbol to associate with the cache key. Must be <see cref="SymbolKind.MemberParameter"/>.</param>
+        /// <param name="parameterKind">Optional. Must be provided to avoid ambiguity which can throw exceptions during lookup when using this key.</param>
+        /// <param name="memberName">Optional: the name of the member that declares the parameter. You should provide the member name to improve performance. For best efficiency, provide the <paramref name="memberHandle"/> instead.
+        /// For indexer properties, the value must be <see cref="HelperExtensionsCommon.IndexerName"/>.</param>
         /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous parameter.</returns>
         /// <exception cref="ArgumentException">Thrown when <paramref name="parameterName"/> is null, empty, or consists only of white-space characters</exception>
-        /// <exception cref="ArgumentException">Thrown when the provided <paramref name="symbolKind"/> value is not defined in <see cref="SymbolKind"/>.</exception>
-        /// <exception cref="ArgumentException">Thrown when the provided <paramref name="symbolKind"/> value is not equal to <see cref="SymbolKind.MemberParameter"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="position"/> is negative.</exception>"
-        public static SymbolInfoDataCacheKey CreateForAnonymousParameter(RuntimeTypeHandle declaringTypeHandle, string parameterName, int position, SymbolKind symbolKind)
+        public static SymbolInfoDataCacheKey CreateForAnonymousParameter(RuntimeTypeHandle declaringTypeHandle, string parameterName, int position, ParameterKind parameterKind = ParameterKind.Undefined, string? memberName = null)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(parameterName, nameof(parameterName));
-            ArgumentExceptionEx.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
-            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(symbolKind, [SymbolKind.MemberParameter], nameof(symbolKind), "The symbol kind must be 'MemberParameter' for anonymous parameter symbols.");
+            if (!memberName.Equals(HelperExtensionsCommon.IndexerName, StringComparison.Ordinal))
+            {
+                ArgumentException.ThrowIfNullOrWhiteSpace(parameterName, nameof(parameterName));
+            }
+
             ArgumentOutOfRangeException.ThrowIfNegative(position, paramName: nameof(position));
 
             return new SymbolInfoDataCacheKey(parameterName,
+                memberName ?? string.Empty,
                 declaringTypeHandle,
                 default,
                 default,
@@ -491,7 +509,44 @@
                 MethodParameterInfoList.Empty,
                 position,
                 -1,
-                symbolKind,
+                SymbolKind.MemberParameter,
+                true);
+        }
+
+        /// <summary>
+        /// Creates a new cache key for an anonymous parameter using the specified declaring type, symbol name, parameter position and a declaring memeber reference.
+        /// </summary>
+        /// <remarks>This method is used to create a unique cache key for symbols of which the caller does not have a direct representation (e.g. a <see cref="ParameterInfo"/> and instead only signature information is available.<para/>
+        /// The parameter <paramref name="memberHandle"/> is optional. However, if not provided, the created key will be less efficient when used for lookups in caches. If parameter name and position matches multiple parameters, providing <paramref name="memberHandle"/> or the member name via the <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, string, int, string?)"/> overload will allow to resolve ambiguities that otherwise may throw an exception.
+        /// For best performance, the <paramref name="memberHandle"/> must be provided.</remarks>
+        /// <param name="declaringTypeHandle">The runtime type handle representing the declaring type of the member that defines the anonymous parameter.</param>
+        /// <param name="parameterName">The name of the anonymous parameter. Cannot be null, empty, or consist only of white-space characters.</param>
+        /// <param name="position">The index of the parameter.</param>
+        /// <param name="memberHandle">For best performance provide a <see cref="RuntimeMethodHandle"/> to the method or constructor that defines the parameter should be provided. Alternatively, call <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, string, int, string?)"/> which accepts the defining member name but will perform worse, but still better than the case where a member handle or member name are not provided.</param>
+        /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous parameter.</returns>
+        /// <remarks></remarks>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="parameterName"/> is null, empty, or consists only of white-space characters</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="position"/> is negative.</exception>"
+        public static SymbolInfoDataCacheKey CreateForAnonymousParameter(RuntimeTypeHandle declaringTypeHandle, string parameterName, int position, RuntimeMethodHandle memberHandle = default)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(parameterName, nameof(parameterName));
+            ArgumentOutOfRangeException.ThrowIfNegative(position, paramName: nameof(position));
+
+            return new SymbolInfoDataCacheKey(parameterName,
+                string.Empty,
+                declaringTypeHandle,
+                default,
+                memberHandle,
+                default,
+                default,
+                default,
+                default,
+                default,
+                ParameterList.Empty,
+                MethodParameterInfoList.Empty,
+                position,
+                -1,
+                SymbolKind.MemberParameter,
                 true);
         }
 
@@ -513,6 +568,7 @@
             ArgumentExceptionEx.ThrowIfEnumIsNotEqual(symbolKind, [SymbolKind.MemberEvent, SymbolKind.MemberField], nameof(symbolKind), "The symbol kind must be 'MemberEvent' or 'MemberField' for anonymous event or field symbols.");
 
             return new SymbolInfoDataCacheKey(symbolName,
+                string.Empty,
                 declaringTypeHandle,
                 default,
                 default,

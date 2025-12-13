@@ -168,7 +168,7 @@
             {
                 if (handlerInfo.TryGetClientHandler(out Delegate clientHandler))
                 {
-                    //MethodInfo invokeMethod = clientHandler.GetType().GetMethod("Invoke");
+                    //MethodInfo invokeMethod = clientHandler.GetType().GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName);
                     //_ = invokeMethod.Invoke(clientHandler.Target, new object[] { e });
                     _ = clientHandler.DynamicInvoke(e);
                 }

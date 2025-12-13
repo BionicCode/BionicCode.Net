@@ -5,6 +5,7 @@ namespace BionicCode.Utilities.Net
     using System.CodeDom;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
@@ -112,7 +113,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            foreach (PropertyInfo property in GetType().GetProperties(HelperExtensionsCommon.AllMembersFlags))
+            foreach (PropertyInfo property in GetType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
             {
                 PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(property);
                 SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForProperty(property);
@@ -140,7 +141,7 @@ namespace BionicCode.Utilities.Net
 
             SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out MethodData methodData);
             _ = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out normalizedCacheKey);
-            _ = this.memberTable.TryAdd(normalizedCacheKey, methodData);
+            _ = this.memberTable.get(normalizedCacheKey, methodData);
 
             return methodData;
         }
@@ -157,7 +158,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            foreach (MethodInfo method in GetType().GetMethods(HelperExtensionsCommon.AllMembersFlags))
+            foreach (MethodInfo method in GetType().GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
             {
                 MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(method);
                 SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForMethod(method);
@@ -201,7 +202,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            foreach (FieldInfo field in GetType().GetFields(HelperExtensionsCommon.AllMembersFlags))
+            foreach (FieldInfo field in GetType().GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
             {
                 FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(field);
                 SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForField(field);
@@ -245,7 +246,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            foreach (EventInfo eventInfo in GetType().GetEvents(HelperExtensionsCommon.AllMembersFlags))
+            foreach (EventInfo eventInfo in GetType().GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
             {
                 EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
                 SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForEvent(eventInfo);
@@ -290,7 +291,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            foreach (ConstructorInfo constructor in GetType().GetConstructors(HelperExtensionsCommon.AllMembersFlags))
+            foreach (ConstructorInfo constructor in GetType().GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
             {
                 ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructor);
                 SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForConstructor(constructor);
@@ -306,16 +307,16 @@ namespace BionicCode.Utilities.Net
         public string Namespace { get; }
 
         public bool IsAwaitable
-          => (bool)(bool?)(this.isAwaitable ??= TypeData.IsTypeAwaitable(this));
+          => this.isAwaitable ??= TypeData.IsTypeAwaitable(this);
 
         public bool IsAwaitableTask
-          => (bool)(bool?)(this.isAwaitableTask ??= TypeData.IsTypeAwaitable(this));
+          => this.isAwaitableTask ??= TypeData.IsTypeAwaitableTask(this);
 
         public bool IsAwaitableValueTask
-          => (bool)(bool?)(this.isAwaitableValueTask ??= TypeData.IsTypeAwaitableValueTask(this));
+          => this.isAwaitableValueTask ??= TypeData.IsTypeAwaitableValueTask(this);
 
         public bool IsValueType
-          => (bool)(bool?)(this.isValueType ??= GetType().IsValueType);
+          => this.isValueType ??= GetType().IsValueType;
 
         public TypeData GenericTypeDefinitionData
         {
@@ -470,7 +471,7 @@ namespace BionicCode.Utilities.Net
 
                 if (this.delegateInvokeMethodData is null)
                 {
-                    MethodInfo methodInfo = GetType().GetMethod("Invoke");
+                    MethodInfo methodInfo = GetType().GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName);
                     this.delegateInvokeMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
                 }
 
@@ -503,19 +504,19 @@ namespace BionicCode.Utilities.Net
           => this.interfacesData ??= GetType().GetInterfaces().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         public PropertyData[] PropertiesData
-          => this.propertiesData ??= GetType().GetProperties(HelperExtensionsCommon.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+          => this.propertiesData ??= GetType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         public MethodData[] MethodsData
-          => this.methodsData ??= GetType().GetMethods(HelperExtensionsCommon.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+          => this.methodsData ??= GetType().GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         public FieldData[] FieldsData
-          => this.fieldsData ??= GetType().GetFields(HelperExtensionsCommon.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+          => this.fieldsData ??= GetType().GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         public EventData[] EventsData
-          => this.eventsData ??= GetType().GetEvents(HelperExtensionsCommon.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+          => this.eventsData ??= GetType().GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         public ConstructorData[] ConstructorsData
-          => this.constructorsData ??= GetType().GetConstructors(HelperExtensionsCommon.AllMembersFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+          => this.constructorsData ??= GetType().GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         private static bool IsTypeStatic(TypeData typeData)
           => typeData.IsAbstract && typeData.IsSealed;
@@ -663,19 +664,51 @@ namespace BionicCode.Utilities.Net
                 return true;
             }
 
-            // The return valueType of the method is not directly returning an awaitable valueType.
-            // So, search for an extension method named "GetAwaiter" for the return valueType of the currently validated method that effectively converts the valueType into an awaitable object.
-            // By compiler convention the "GetAwaiter" method must return an awaiter object that implements the INotifyComplete interface
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            /* The return valueType of the method is not directly returning an awaitable valueType.
+               So, search for an extension method named "GetAwaiter" for the return valueType of the currently validated method that effectively converts the valueType into an awaitable object.
+               By compiler convention the "GetAwaiter" method must return an awaiter object that implements the INotifyComplete interface
+            */
+            Assembly[] assemblies;
+            try
             {
-                foreach (System.Reflection.TypeInfo typeInfo in assembly.GetExportedTypes())
+                assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            }
+            catch (AppDomainUnloadedException)
+            {
+                // REVIEW::Maybe better throw? But in which context would this be used where AppDomain is already unloaded?
+                // Considering that the type is not awaitable at this point could be wrong. Notifying the caller that the test could not be completely performed seems better.
+                // On the other habd if exception is thrown the user operates on an invalid AppDomain anyway. So, maybe it is better to fail fast (if application not already crashed).
+                return false;
+            }
+
+            foreach (Assembly assembly in assemblies)
+            {
+                Type[] exportedTypes;
+                try
                 {
-                    if (!typeInfo.CanDeclareExtensionMethods())
+                    exportedTypes = assembly.GetExportedTypes();
+                }
+                catch (FileNotFoundException)
+                {
+                    // REVIEW::Same reasoning: maybe better throw? 
+                    // Considering that the type is not awaitable at this point could be wrong. Notifying the caller that the test could not be completely performed seems better.
+                    continue;
+                }
+                catch (NotSupportedException)
+                {
+                    // REVIEW::Same reasoning: maybe better throw? 
+                    // Considering that the type is not awaitable at this point could be wrong. Notifying the caller that the test could not be completely performed seems better.
+                    continue;
+                }
+
+                foreach (Type exportedType in exportedTypes)
+                {
+                    if (!exportedType.CanDeclareExtensionMethods())
                     {
                         continue;
                     }
 
-                    MethodInfo extensionMethodInfo = typeInfo.GetMethod(nameof(Task.GetAwaiter), BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { type }, null);
+                    MethodInfo extensionMethodInfo = exportedType.GetMethod(nameof(Task.GetAwaiter), BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { type }, null);
                     if (extensionMethodInfo == null
                       || !extensionMethodInfo.IsExtensionMethodOf(type))
                     {

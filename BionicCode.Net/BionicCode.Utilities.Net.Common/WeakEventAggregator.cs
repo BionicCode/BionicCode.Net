@@ -302,7 +302,7 @@
         private void ThrowIfEventHandlerInvalid<TEventSource>(EventInfoTableEntry entry, Delegate eventHandler)
         {
             //ParameterInfo[] invocatorParameters = entry.InvocatorMethod.GetParameters();
-            //ParameterInfo[] eventHandlerParameters = eventHandler.GetType().GetMethod("Invoke")?.GetParameters();
+            //ParameterInfo[] eventHandlerParameters = eventHandler.GetType().GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName)?.GetParameters();
             //if (eventHandlerParameters != null)
             //{
             //  if (invocatorParameters.Length != eventHandlerParameters.Length)
