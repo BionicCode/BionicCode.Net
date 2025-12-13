@@ -21,7 +21,7 @@
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new TypeData(type));
 
             // REMOVE::after testing
-            Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
+            Debug.WriteLine($"Found SymbolInfoData entry for {type.GetType()}");
 
             return (TypeData)symbolInfoData;
         }
@@ -32,7 +32,7 @@
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(methodInfo));
 
             // REMOVE::after testing
-            Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
+            Debug.WriteLine($"Found SymbolInfoData entry for {methodInfo.GetType()}");
 
             return (MethodData)symbolInfoData;
         }
@@ -43,7 +43,7 @@
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new ConstructorData(constructorInfo));
 
             // REMOVE::after testing
-            Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
+            Debug.WriteLine($"Found SymbolInfoData entry for {constructorInfo.GetType()}");
 
             return (ConstructorData)symbolInfoData;
         }
@@ -54,7 +54,7 @@
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new FieldData(fieldInfo));
 
             // REMOVE::after testing
-            Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
+            Debug.WriteLine($"Found SymbolInfoData entry for {fieldInfo.GetType()}");
 
             return (FieldData)symbolInfoData;
         }
@@ -65,7 +65,7 @@
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new PropertyData(propertyInfo));
 
             // REMOVE::after testing
-            Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
+            Debug.WriteLine($"Found SymbolInfoData entry for {propertyInfo.GetType()}");
 
             return (PropertyData)symbolInfoData;
         }
@@ -76,7 +76,7 @@
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new EventData(eventInfo));
 
             // REMOVE::after testing
-            Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
+            Debug.WriteLine($"Found SymbolInfoData entry for {eventInfo.GetType()}");
 
             return (EventData)symbolInfoData;
         }
@@ -87,7 +87,7 @@
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new ParameterData(parameterInfo));
 
             // REMOVE::after testing
-            Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
+            Debug.WriteLine($"Found SymbolInfoData entry for {parameterInfo.GetType()}");
 
             return (ParameterData)symbolInfoData;
         }
@@ -326,17 +326,6 @@
             }
 
             return entry != null;
-        }
-
-        public static bool TryGetNormalizedKey(SymbolInfoDataCacheKey cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey)
-        {
-            if (cacheKey.IsAnonymousSymbolKey)
-            {
-                return SymbolReflectionInfoCache.AnonymousSymbolDataCacheKeyMap.TryGetValue(cacheKey, out normalizedCacheKey);
-            }
-
-            normalizedCacheKey = cacheKey;
-            return true;
         }
 
         /// <summary>
@@ -609,7 +598,7 @@
             Type declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
             MethodBase methodBase;
 
-            // If-statement order matters here. Order ifrom most specific to least specific i.e. best lookup performance to worst performance.
+            // REVIEW::If-statement order matters here. Order ifrom most specific to least specific i.e. best lookup performance to worst performance.
             if (cacheKey.MethodHandle != default)
             {
                 methodBase = MethodBase.GetMethodFromHandle(cacheKey.MethodHandle);
