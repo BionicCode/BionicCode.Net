@@ -170,7 +170,7 @@
         /// Gets a value indicating whether the parameter is passed by reference.
         /// </summary>
         internal bool IsByRef
-          => this.isByRef ??= this.ParameterTypeData.GetType().IsByRef;
+          => this.isByRef ??= this.ParameterTypeData.UnwrapType().IsByRef;
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
           ? (this.symbolAttributes = ParameterData.GetAttributesInternal(this))

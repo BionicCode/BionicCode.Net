@@ -14,7 +14,7 @@
 
         public ParameterList(ParameterData[] items)
         {
-            this._items = items ?? Array.Empty<ParameterData>();
+            this._items = items?.ToArray() ?? Array.Empty<ParameterData>();
             this._hashCode = ComputeHashCode(this._items);
         }
 

@@ -598,7 +598,7 @@
                 }
 
                 int hashCode = 1248511333;
-                hashCode = (hashCode * -1521134295) + this.SymbolName.GetHashCode();
+                hashCode = ((hashCode * -1521134295) + this.SymbolName?.GetHashCode(StringComparison.Ordinal)) ?? 1521134295;
                 hashCode = (hashCode * -1521134295) + this.DeclaringTypeHandle.GetHashCode();
                 hashCode = (hashCode * -1521134295) + this.SymbolTypeHandle.GetHashCode();
                 hashCode = (hashCode * -1521134295) + this.MethodHandle.GetHashCode();

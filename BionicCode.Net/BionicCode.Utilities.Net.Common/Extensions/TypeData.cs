@@ -78,7 +78,11 @@ namespace BionicCode.Utilities.Net
             this.memberTable = new ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoData>();
         }
 
-        public new Type GetType()
+        /// <summary>
+        /// Returns the underlying <see cref="Type"/> represented by this handle.
+        /// </summary>
+        /// <returns>A <see cref="Type"/> object that is referenced by this handle.</returns>
+        public Type UnwrapType()
           => Type.GetTypeFromHandle(this.Handle);
 
         public PropertyData GetProperty(string propertyName, params MethodParameterInfo[] indexerPropertyParameters)
@@ -113,7 +117,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            foreach (PropertyInfo property in GetType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
+            foreach (PropertyInfo property in UnwrapType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
             {
                 PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(property);
                 SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForProperty(property);
@@ -141,7 +145,7 @@ namespace BionicCode.Utilities.Net
 
             SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out MethodData methodData);
             _ = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out normalizedCacheKey);
-            _ = this.memberTable.get(normalizedCacheKey, methodData);
+            _ = this.memberTable.TryAdd(normalizedCacheKey, methodData);
 
             return methodData;
         }
@@ -158,7 +162,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            foreach (MethodInfo method in GetType().GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
+            foreach (MethodInfo method in UnwrapType().GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
             {
                 MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(method);
                 SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForMethod(method);
@@ -202,7 +206,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            foreach (FieldInfo field in GetType().GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
+            foreach (FieldInfo field in UnwrapType().GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
             {
                 FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(field);
                 SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForField(field);
@@ -246,7 +250,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            foreach (EventInfo eventInfo in GetType().GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
+            foreach (EventInfo eventInfo in UnwrapType().GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
             {
                 EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
                 SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForEvent(eventInfo);
@@ -291,7 +295,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            foreach (ConstructorInfo constructor in GetType().GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
+            foreach (ConstructorInfo constructor in UnwrapType().GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
             {
                 ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructor);
                 SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForConstructor(constructor);
@@ -316,7 +320,7 @@ namespace BionicCode.Utilities.Net
           => this.isAwaitableValueTask ??= TypeData.IsTypeAwaitableValueTask(this);
 
         public bool IsValueType
-          => this.isValueType ??= GetType().IsValueType;
+          => this.isValueType ??= UnwrapType().IsValueType;
 
         public TypeData GenericTypeDefinitionData
         {
@@ -328,7 +332,7 @@ namespace BionicCode.Utilities.Net
                 }
                 else
                 {
-                    Type genericTypeDefinitionType = GetType().GetGenericTypeDefinition();
+                    Type genericTypeDefinitionType = UnwrapType().GetGenericTypeDefinition();
                     this.genericTypeDefinitionData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(genericTypeDefinitionType);
                 }
 
@@ -342,7 +346,7 @@ namespace BionicCode.Utilities.Net
             {
                 if (this.genericTypeArguments is null)
                 {
-                    Type[] typeArguments = GetType().GetGenericArguments();
+                    Type[] typeArguments = UnwrapType().GetGenericArguments();
                     this.genericTypeArguments = typeArguments.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
                 }
 
@@ -354,7 +358,7 @@ namespace BionicCode.Utilities.Net
           => (bool)(bool?)(this.canDeclareExtensionMethod ??= TypeData.CanDeclareExtensionMethods(this));
 
         public override IList<CustomAttributeData> AttributeData
-          => this.attributeData ??= GetType().GetCustomAttributesData();
+          => this.attributeData ??= UnwrapType().GetCustomAttributesData();
 
         public AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
           ? (this.accessModifier = TypeData.GetAccessModifier(this))
@@ -400,7 +404,7 @@ namespace BionicCode.Utilities.Net
           => this.fullyQualifiedDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
 
         public override string AssemblyName
-          => this.assemblyName ??= GetType().Assembly.GetName().Name;
+          => this.assemblyName ??= UnwrapType().Assembly.GetName().Name;
 
         public bool IsStatic
           => this.isStatic ??= TypeData.IsTypeStatic(this);
@@ -410,19 +414,19 @@ namespace BionicCode.Utilities.Net
           : this.symbolAttributes;
 
         public bool IsAbstract
-          => this.isAbstract ??= GetType().IsAbstract;
+          => this.isAbstract ??= UnwrapType().IsAbstract;
 
         public bool IsSealed
-          => this.isSealed ??= GetType().IsSealed;
+          => this.isSealed ??= UnwrapType().IsSealed;
 
         public bool IsByRef
-          => this.isByRef ??= GetType().IsByRef;
+          => this.isByRef ??= UnwrapType().IsByRef;
 
         public bool IsByRefLike
-          => this.isByRefLike ??= GetType().IsByRefLike;
+          => this.isByRefLike ??= UnwrapType().IsByRefLike;
 
         public bool IsDelegate
-          => this.isDelegate ??= TypeData.IsTypeDelegate(GetType());
+          => this.isDelegate ??= TypeData.IsTypeDelegate(UnwrapType());
 
         public bool IsSubclass
         {
@@ -430,7 +434,7 @@ namespace BionicCode.Utilities.Net
             {
                 if (this.isSubclass is null)
                 {
-                    Type baseType = GetType().BaseType;
+                    Type baseType = UnwrapType().BaseType;
                     this.isSubclass = baseType != null
                       && baseType != typeof(object)
                       && baseType != typeof(ValueType);
@@ -444,7 +448,7 @@ namespace BionicCode.Utilities.Net
         {
             get
             {
-                Type baseType = GetType().BaseType;
+                Type baseType = UnwrapType().BaseType;
                 if (this.baseTypeData is null && this.IsSubclass)
                 {
                     this.baseTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(baseType);
@@ -471,7 +475,7 @@ namespace BionicCode.Utilities.Net
 
                 if (this.delegateInvokeMethodData is null)
                 {
-                    MethodInfo methodInfo = GetType().GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName);
+                    MethodInfo methodInfo = UnwrapType().GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName);
                     this.delegateInvokeMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
                 }
 
@@ -480,50 +484,50 @@ namespace BionicCode.Utilities.Net
         }
 
         public bool IsGenericTypeParameter
-          => this.isGenericTypeParameter ??= GetType().IsGenericParameter;
+          => this.isGenericTypeParameter ??= UnwrapType().IsGenericParameter;
 
         public bool IsGenericType
-          => this.isGenericType ??= GetType().IsGenericType;
+          => this.isGenericType ??= UnwrapType().IsGenericType;
 
         public bool IsBuiltInType
           => this.isBuiltInType ??= TypeData.IsTypeBuiltInType(this);
 
         public bool IsGenericTypeDefinition
-          => this.isGenericTypeDefinition ??= GetType().IsGenericTypeDefinition;
+          => this.isGenericTypeDefinition ??= UnwrapType().IsGenericTypeDefinition;
 
         public bool ContainsGenericParameters
-          => this.containsGenericParameters ??= GetType().ContainsGenericParameters;
+          => this.containsGenericParameters ??= UnwrapType().ContainsGenericParameters;
 
         public GenericParameterAttributes GenericParameterAttributes
-          => (GenericParameterAttributes)(GenericParameterAttributes?)(this.genericParameterAttributes ??= GetType().GenericParameterAttributes);
+          => (GenericParameterAttributes)(GenericParameterAttributes?)(this.genericParameterAttributes ??= UnwrapType().GenericParameterAttributes);
 
         public TypeData[] GenericParameterConstraintsData
-          => this.genericParameterConstraintsData ??= GetType().GetGenericParameterConstraints().Where(constraint => constraint != typeof(object) && constraint != typeof(ValueType)).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+          => this.genericParameterConstraintsData ??= UnwrapType().GetGenericParameterConstraints().Where(constraint => constraint != typeof(object) && constraint != typeof(ValueType)).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         public TypeData[] InterfacesData
-          => this.interfacesData ??= GetType().GetInterfaces().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+          => this.interfacesData ??= UnwrapType().GetInterfaces().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         public PropertyData[] PropertiesData
-          => this.propertiesData ??= GetType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+          => this.propertiesData ??= UnwrapType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         public MethodData[] MethodsData
-          => this.methodsData ??= GetType().GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+          => this.methodsData ??= UnwrapType().GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         public FieldData[] FieldsData
-          => this.fieldsData ??= GetType().GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+          => this.fieldsData ??= UnwrapType().GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         public EventData[] EventsData
-          => this.eventsData ??= GetType().GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+          => this.eventsData ??= UnwrapType().GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         public ConstructorData[] ConstructorsData
-          => this.constructorsData ??= GetType().GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+          => this.constructorsData ??= UnwrapType().GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
 
         private static bool IsTypeStatic(TypeData typeData)
           => typeData.IsAbstract && typeData.IsSealed;
 
         private static bool IsTypeBuiltInType(TypeData typeData)
         {
-            var typeReference = new CodeTypeReference(typeData.GetType());
+            var typeReference = new CodeTypeReference(typeData.UnwrapType());
             string typeName = HelperExtensionsCommon.CodeProvider.GetTypeOutput(typeReference);
             int typeNameStartIndex = typeName.LastIndexOf('.') + 1;
             if (typeNameStartIndex > 0)
@@ -536,7 +540,7 @@ namespace BionicCode.Utilities.Net
 
         private static bool CanDeclareExtensionMethods(TypeData typeData)
         {
-            Type typeInfo = typeData.GetType();
+            Type typeInfo = typeData.UnwrapType();
             if (!typeData.IsStatic || typeInfo.IsNested || typeInfo.IsGenericType)
             {
                 return false;
@@ -558,7 +562,7 @@ namespace BionicCode.Utilities.Net
         /// SymbolAttributes.Undefined if the type does not match any recognized category.</returns>
         private static SymbolAttributes GetAttributes(TypeData typeData)
         {
-            Type type = typeData.GetType();
+            Type type = typeData.UnwrapType();
             if (typeData.IsDelegate)
             {
                 SymbolAttributes delegateAttributes = SymbolAttributes.Delegate;
@@ -658,7 +662,7 @@ namespace BionicCode.Utilities.Net
                 return true;
             }
 
-            Type type = typeData.GetType();
+            Type type = typeData.UnwrapType();
             if (type.GetMethod(nameof(Task.GetAwaiter)) != null)
             {
                 return true;
@@ -729,16 +733,16 @@ namespace BionicCode.Utilities.Net
         }
 
         private static bool IsTypeAwaitableTask(TypeData type)
-          => TypeData.TaskType.IsAssignableFrom(type.GetType())
-            || TypeData.TaskType.IsAssignableFrom(type.BaseTypeData.GetType());
+          => TypeData.TaskType.IsAssignableFrom(type.UnwrapType())
+            || TypeData.TaskType.IsAssignableFrom(type.BaseTypeData.UnwrapType());
 
         private static bool IsTypeAwaitableValueTask(TypeData type)
-          => TypeData.ValueTaskType == type.GetType()
-            || (type.IsGenericType && TypeData.ValueTaskGenericType == type.GenericTypeDefinitionData.GetType());
+          => TypeData.ValueTaskType == type.UnwrapType()
+            || (type.IsGenericType && TypeData.ValueTaskGenericType == type.GenericTypeDefinitionData.UnwrapType());
 
         private static AccessModifier GetAccessModifier(TypeData typeData)
         {
-            Type typeInfo = typeData.GetType();
+            Type typeInfo = typeData.UnwrapType();
             return typeInfo.IsPublic ? AccessModifier.Public
               : typeInfo.IsNestedPrivate ? AccessModifier.Private
               : typeInfo.IsNestedAssembly ? AccessModifier.Internal

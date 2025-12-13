@@ -294,9 +294,9 @@
                 if (!isKeyNormalized)
                 {
                     // REMOVE::after testing
-                    Debug.WriteLine($"Normalized key for {typeData.GetType()}");
+                    Debug.WriteLine($"Normalized key for {typeData.UnwrapType()}");
 
-                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForType(typeData.GetType());
+                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForType(typeData.UnwrapType());
                     _ = SymbolReflectionInfoCache.AnonymousSymbolDataCacheKeyMap.TryAdd(cacheKey, normalizedCacheKey);
                     cacheKey = normalizedCacheKey;
                 }
@@ -304,7 +304,7 @@
                 _ = SymbolReflectionInfoCache.SymbolInfoDataCache.TryAdd(cacheKey, typeData);
 
                 // REMOVE::after testing
-                Debug.WriteLine($"Created SymbolInfoData entry for {typeData.GetType()}");
+                Debug.WriteLine($"Created SymbolInfoData entry for {typeData.UnwrapType()}");
 
                 return;
             }
@@ -393,7 +393,7 @@
                     break;
                 case SymbolKind.Type:
                     TypeData typeData = CreateTypeData(cacheKey);
-                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForType(typeData.GetType());
+                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForType(typeData.UnwrapType());
                     symbolInfoData = typeData;
                     break;
                 case SymbolKind.MemberParameter:
@@ -421,7 +421,7 @@
             if (cacheKey.ParameterList.HasItems)
             {
                 indexerParameters = cacheKey.ParameterList
-                .Select(parameterData => parameterData.ParameterTypeData.GetType())
+                .Select(parameterData => parameterData.ParameterTypeData.UnwrapType())
                 .ToArray();
             }
             else if (cacheKey.MethodParameterInfos.HasItems)
@@ -465,7 +465,7 @@
             else
             {
                 Type[] parameterTypes = cacheKey.ParameterList
-                    .Select(parameter => parameter.ParameterTypeData.GetType())
+                    .Select(parameter => parameter.ParameterTypeData.UnwrapType())
                     .ToArray();
                 constructorInfo = declaringType.GetConstructor(
                     HelperExtensionsCommon.AllMembersFullHierarchyFlags,
@@ -529,7 +529,7 @@
                 if (cacheKey.ParameterList.HasItems)
                 {
                     parameterTypes = cacheKey.ParameterList
-                    .Select(parameterData => parameterData.ParameterTypeData.GetType())
+                    .Select(parameterData => parameterData.ParameterTypeData.UnwrapType())
                     .ToArray();
                 }
                 else if (cacheKey.MethodParameterInfos.HasItems)
@@ -564,7 +564,7 @@
             {
                 IEnumerable<Type> genericTypeParameters = cacheKey.ParameterList.HasItems
                     ? cacheKey.ParameterList.GenericTypeParameters
-                    .Select(parameterData => parameterData.ParameterTypeData.GetType())
+                    .Select(parameterData => parameterData.ParameterTypeData.UnwrapType())
                     : cacheKey.MethodParameterInfos.GenericTypeParameters
                     .Select(methodParameterInfo => Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle));
                 methodInfo = methodInfo.MakeGenericMethod(genericTypeParameters.ToArray());

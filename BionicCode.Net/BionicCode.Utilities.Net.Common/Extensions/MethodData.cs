@@ -242,7 +242,7 @@
                 List<ParameterExpression> parameterExpressions = new List<ParameterExpression>();
                 foreach (ParameterData parameter in this.Parameters)
                 {
-                    ParameterExpression parameterExpression = Expression.Parameter(parameter.ParameterTypeData.GetType(), parameter.Name);
+                    ParameterExpression parameterExpression = Expression.Parameter(parameter.ParameterTypeData.UnwrapType(), parameter.Name);
                     parameterExpressions.Add(parameterExpression);
                 }
 
@@ -269,7 +269,7 @@
                     //ParameterType[] typeArguments = methodInfo.GetGenericArguments();
                     foreach (ParameterData parameterData in this.Parameters)
                     {
-                        if (parameterData.ParameterTypeData.GetType().ContainsGenericParameters)
+                        if (parameterData.ParameterTypeData.UnwrapType().ContainsGenericParameters)
                         {
                             int typeArgumentIndex = parameterData.GetParameterInfo().Position;
                             Type genericParameterType = invocationArguments[typeArgumentIndex].GetType();

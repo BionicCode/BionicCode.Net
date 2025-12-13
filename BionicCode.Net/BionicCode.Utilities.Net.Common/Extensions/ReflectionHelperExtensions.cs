@@ -1320,11 +1320,11 @@
 
         internal static PooledStringBuilder AppendDisplayNameInternal(this PooledStringBuilder nameBuilder, TypeData typeData, bool isFullyQualifiedName, bool isGenericTypeParameterIncluded)
         {
-            Type type = typeData.GetType();
+            Type type = typeData.UnwrapType();
             if (typeData.IsByRef)
             {
                 typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type.GetElementType());
-                type = typeData.GetType();
+                type = typeData.UnwrapType();
             }
 
             var typeReference = new CodeTypeReference(type);
@@ -1567,13 +1567,13 @@
 
             if (isSubclass)
             {
-                _ = memberNameBuilder.Append(isFullyQualified ? typeData.BaseTypeData.GetType().FullName : typeData.BaseTypeData.Name)
+                _ = memberNameBuilder.Append(isFullyQualified ? typeData.BaseTypeData.UnwrapType().FullName : typeData.BaseTypeData.Name)
                   .Append(HelperExtensionsCommon.ParameterSeparator);
             }
 
             foreach (TypeData interfaceData in interfaces)
             {
-                _ = memberNameBuilder.Append(isFullyQualified ? interfaceData.GetType().FullName : interfaceData.Name)
+                _ = memberNameBuilder.Append(isFullyQualified ? interfaceData.UnwrapType().FullName : interfaceData.Name)
                   .Append(HelperExtensionsCommon.ParameterSeparator);
             }
 

@@ -14,7 +14,7 @@
 
         public MethodParameterInfoList(MethodParameterInfo[] items)
         {
-            this._items = items ?? Array.Empty<MethodParameterInfo>();
+            this._items = items?.ToArray() ?? Array.Empty<MethodParameterInfo>();
             this._hashCode = ComputeHashCode(this._items);
         }
 

@@ -38,7 +38,7 @@
             var expressionParameters = new List<ParameterExpression>();
             foreach (ParameterData parameter in eventHandlerParameters)
             {
-                ParameterExpression expressionParameter = Expression.Parameter(parameter.ParameterTypeData.GetType(), parameter.Name);
+                ParameterExpression expressionParameter = Expression.Parameter(parameter.ParameterTypeData.UnwrapType(), parameter.Name);
                 expressionParameters.Add(expressionParameter);
             }
 
@@ -49,7 +49,7 @@
                 if (lastParameter.IsParams)
                 {
                     IEnumerable<Expression> paramsParameterArguments = expressionParameters.Skip(lastParameter.GetParameterInfo().Position)
-                                  .Select(parameter => Expression.TypeAs(parameter, lastParameter.ParameterTypeData.GetType().GetElementType()))
+                                  .Select(parameter => Expression.TypeAs(parameter, lastParameter.ParameterTypeData.UnwrapType().GetElementType()))
                                   .Cast<Expression>();
                     NewArrayExpression argsArray = Expression.NewArrayInit(typeof(object), paramsParameterArguments);
                     delegateParameters.RemoveRange(lastParameter.Position, expressionParameters.Count - lastParameter.Position);
@@ -70,7 +70,7 @@
                 throw;
             }
 
-            Type eventDelegateType = eventDelegateTypeData.GetType();
+            Type eventDelegateType = eventDelegateTypeData.UnwrapType();
             Delegate proxyEventSourceHandler = Expression.Lambda(eventDelegateType, method, expressionParameters).Compile();
 
             return proxyEventSourceHandler;
