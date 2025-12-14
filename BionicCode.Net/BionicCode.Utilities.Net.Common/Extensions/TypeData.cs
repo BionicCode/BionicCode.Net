@@ -90,17 +90,8 @@ namespace BionicCode.Utilities.Net
             ArgumentException.ThrowIfNullOrWhiteSpace(propertyName, nameof(propertyName));
 
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousProperty(this.Handle, propertyName, new MethodParameterInfoList(indexerPropertyParameters), SymbolKind.MemberProperty);
-            bool isKeyNormalized = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
-            if (isKeyNormalized)
-            {
-                _ = this.memberTable.TryGetValue(normalizedCacheKey, out SymbolInfoData symbolInfoData);
-
-                return (PropertyData)symbolInfoData;
-            }
-
-            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out PropertyData propertyData);
-            _ = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out normalizedCacheKey);
-            _ = this.memberTable.TryAdd(normalizedCacheKey, propertyData);
+            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ref cacheKey, out PropertyData propertyData);
+            _ = this.memberTable.TryAdd(cacheKey, propertyData);
 
             return propertyData;
         }
@@ -135,17 +126,8 @@ namespace BionicCode.Utilities.Net
             ArgumentException.ThrowIfNullOrWhiteSpace(methodName, nameof(methodName));
 
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrConstructor(this.Handle, methodName, new MethodParameterInfoList(parameterList), genericTypeParameterCount, SymbolKind.MemberMethod);
-            bool isKeyNormalized = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
-            if (isKeyNormalized)
-            {
-                _ = this.memberTable.TryGetValue(normalizedCacheKey, out SymbolInfoData symbolInfoData);
-
-                return (MethodData)symbolInfoData;
-            }
-
-            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out MethodData methodData);
-            _ = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out normalizedCacheKey);
-            _ = this.memberTable.TryAdd(normalizedCacheKey, methodData);
+            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ref cacheKey, out MethodData methodData);
+            _ = this.memberTable.TryAdd(cacheKey, methodData);
 
             return methodData;
         }
@@ -179,17 +161,8 @@ namespace BionicCode.Utilities.Net
             ArgumentException.ThrowIfNullOrWhiteSpace(fieldName, nameof(fieldName));
 
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousFieldOrEvent(this.Handle, fieldName, SymbolKind.MemberField);
-            bool isKeyNormalized = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
-            if (isKeyNormalized)
-            {
-                _ = this.memberTable.TryGetValue(normalizedCacheKey, out SymbolInfoData symbolInfoData);
-
-                return (FieldData)symbolInfoData;
-            }
-
-            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out FieldData fieldData);
-            _ = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out normalizedCacheKey);
-            _ = this.memberTable.TryAdd(normalizedCacheKey, fieldData);
+            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ref cacheKey, out FieldData fieldData);
+            _ = this.memberTable.TryAdd(cacheKey, fieldData);
 
             return fieldData;
         }
@@ -223,17 +196,8 @@ namespace BionicCode.Utilities.Net
             ArgumentException.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
 
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousFieldOrEvent(this.Handle, eventName, SymbolKind.MemberEvent);
-            bool isKeyNormalized = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
-            if (isKeyNormalized)
-            {
-                _ = this.memberTable.TryGetValue(normalizedCacheKey, out SymbolInfoData symbolInfoData);
-
-                return (EventData)symbolInfoData;
-            }
-
-            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out EventData eventData);
-            _ = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out normalizedCacheKey);
-            _ = this.memberTable.TryAdd(normalizedCacheKey, eventData);
+            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ref cacheKey, out EventData eventData);
+            _ = this.memberTable.TryAdd(cacheKey, eventData);
 
             return eventData;
         }
@@ -268,17 +232,8 @@ namespace BionicCode.Utilities.Net
             ArgumentException.ThrowIfNullOrWhiteSpace(constructorName, nameof(constructorName));
 
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrConstructor(this.Handle, constructorName, new MethodParameterInfoList(parameterList), genericTypeParameterCount, SymbolKind.Constructor);
-            bool isKeyNormalized = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
-            if (isKeyNormalized)
-            {
-                _ = this.memberTable.TryGetValue(normalizedCacheKey, out SymbolInfoData symbolInfoData);
-
-                return (ConstructorData)symbolInfoData;
-            }
-
-            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(cacheKey, out ConstructorData constructorData);
-            _ = SymbolReflectionInfoCache.TryGetNormalizedKey(cacheKey, out normalizedCacheKey);
-            _ = this.memberTable.TryAdd(normalizedCacheKey, constructorData);
+            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ref cacheKey, out ConstructorData constructorData);
+            _ = this.memberTable.TryAdd(cacheKey, constructorData);
 
             return constructorData;
         }

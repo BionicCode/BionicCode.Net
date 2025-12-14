@@ -24,6 +24,19 @@
         public ArgumentNullExceptionEx(string paramName, string message) : base(paramName, message)
         {
         }
+
+        /// <summary>
+        /// Throws an ArgumentNullException if the specified value is equal to the default value of its type.
+        /// </summary>
+        /// <remarks>Use this method to ensure that a value type parameter has been initialized and is not
+        /// equal to its default value. This is useful for validating struct parameters where the default value may be
+        /// invalid or unintended.</remarks>
+        /// <typeparam name="TStruct">The value type to check for the default value. Must be a struct.</typeparam>
+        /// <param name="value">The value to validate against its default value.</param>
+        /// <param name="paramName">The name of the parameter to include in the exception message. This value is typically provided
+        /// automatically and should not be set explicitly.</param>
+        public static void ThrowIfDefault<TStruct>(TStruct value, [CallerArgumentExpression(nameof(value))] string? paramName = null) where TStruct : struct
+            => ArgumentNullException.ThrowIfNull(value.Equals(default(TStruct)) ? null : value, paramName);
     }
 
     public class ArgumentExceptionEx : ArgumentException

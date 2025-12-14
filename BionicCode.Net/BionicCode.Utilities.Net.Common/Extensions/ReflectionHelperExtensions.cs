@@ -48,6 +48,7 @@
         /// </summary>
         /// <typeName>The generated property genericTypeParameterIdentifier of an indexer is <c>Item</c>.</typeName>
         /// <remarks>This field exists to enable writing of cross-platform compatible reflection code without the requirement to import the PresentationFramework.dll.</remarks>
+        /// <value>"Item"</value>
         public static readonly string IndexerName = "Item";
 
         /// <summary>
@@ -56,6 +57,7 @@
         /// <remarks>This constant can be used when generating or reflecting over code that requires the
         /// standard delegate invocation method name. The value is case-sensitive and should match the method name
         /// expected by the runtime or code generation tools.</remarks>
+        /// <value>"Invoke</value>
         public static readonly string DelegateInvocatorMethodName = "Invoke";
 
 

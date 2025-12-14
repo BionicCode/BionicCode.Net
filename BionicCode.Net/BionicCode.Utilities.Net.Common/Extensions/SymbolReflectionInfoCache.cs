@@ -92,228 +92,89 @@
             return (ParameterData)symbolInfoData;
         }
 
-        internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out EventData eventData)
-        {
-            bool isKeyNormalized = TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
-            if (isKeyNormalized)
-            {
-                cacheKey = normalizedCacheKey;
-            }
+        /// <summary>
+        /// Gets the existing symbol information data cache entry associated with the specified key, or creates a new
+        /// entry if one does not exist.
+        /// </summary>
+        /// <param name="cacheKey">A reference to the key used to identify the symbol information data cache entry. The key may be updated to
+        /// its normalized form.</param>
+        /// <param name="eventData">When this method returns, contains the event data associated with the cache entry identified by the
+        /// specified key.</param>
+        /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
+        internal static void GetOrCreateSymbolInfoDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey, out EventData eventData)
+            => GetOrCreateNormalizedSymbolInfoDataCacheEntry<EventData>(ref cacheKey, out eventData);
 
-            // At this point an anonymous key will always fail and therfore trigger actual normalization and creation of the well-known key.
-            if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
-            {
-                eventData = CreateEventData(cacheKey);
-                if (!isKeyNormalized)
-                {
-                    // REMOVE::after testing
-                    Debug.WriteLine($"Normalized key for {eventData.GetType()}");
+        /// <summary>
+        /// Gets the existing symbol information data cache entry associated with the specified key, or creates a new
+        /// entry if one does not exist.
+        /// </summary>
+        /// <param name="cacheKey">A reference to the key used to identify the symbol information data cache entry. The key may be updated to
+        /// its normalized form.</param>
+        /// <param name="methodData">When this method returns, contains the event data associated with the cache entry identified by the
+        /// specified key.</param>
+        /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
+        internal static void GetOrCreateSymbolInfoDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey, out MethodData methodData)
+            => GetOrCreateNormalizedSymbolInfoDataCacheEntry<MethodData>(ref cacheKey, out methodData);
 
-                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForEvent(eventData.GetEventInfo());
-                    _ = SymbolReflectionInfoCache.AnonymousSymbolDataCacheKeyMap.TryAdd(cacheKey, normalizedCacheKey);
-                    cacheKey = normalizedCacheKey;
-                }
+        /// <summary>
+        /// Gets the existing symbol information data cache entry associated with the specified key, or creates a new
+        /// entry if one does not exist.
+        /// </summary>
+        /// <param name="cacheKey">A reference to the key used to identify the symbol information data cache entry. The key may be updated to
+        /// its normalized form.</param>
+        /// <param name="fieldData">When this method returns, contains the event data associated with the cache entry identified by the
+        /// specified key.</param>
+        /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
+        internal static void GetOrCreateSymbolInfoDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey, out FieldData fieldData)
+            => GetOrCreateNormalizedSymbolInfoDataCacheEntry<FieldData>(ref cacheKey, out fieldData);
 
-                _ = SymbolReflectionInfoCache.SymbolInfoDataCache.TryAdd(cacheKey, eventData);
+        /// <summary>
+        /// Gets the existing symbol information data cache entry associated with the specified key, or creates a new
+        /// entry if one does not exist.
+        /// </summary>
+        /// <param name="cacheKey">A reference to the key used to identify the symbol information data cache entry. The key may be updated to
+        /// its normalized form.</param>
+        /// <param name="propertyData">When this method returns, contains the event data associated with the cache entry identified by the
+        /// specified key.</param>
+        /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
+        internal static void GetOrCreateSymbolInfoDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey, out PropertyData propertyData)
+            => GetOrCreateNormalizedSymbolInfoDataCacheEntry<PropertyData>(ref cacheKey, out propertyData);
 
-                // REMOVE::after testing
-                Debug.WriteLine($"Created SymbolInfoData entry for {eventData.GetType()}");
-
-                return;
-            }
-
-            // REMOVE::after testing
-            Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
-
-            eventData = (EventData)symbolInfoData;
-        }
-
-        internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out MethodData methodData)
-        {
-            bool isKeyNormalized = TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
-            if (isKeyNormalized)
-            {
-                cacheKey = normalizedCacheKey;
-            }
-
-            // At this point an anonymous key will always fail and therfore trigger actual normalization and creation of the well-known key.
-            if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
-            {
-                methodData = CreateMethodData(cacheKey);
-                if (!isKeyNormalized)
-                {
-                    // REMOVE::after testing
-                    Debug.WriteLine($"Normalized key for {methodData.GetType()}");
-
-                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForMethod(methodData.GetMethodInfo());
-                    _ = SymbolReflectionInfoCache.AnonymousSymbolDataCacheKeyMap.TryAdd(cacheKey, normalizedCacheKey);
-                    cacheKey = normalizedCacheKey;
-                }
-
-                _ = SymbolReflectionInfoCache.SymbolInfoDataCache.TryAdd(cacheKey, methodData);
-
-                // REMOVE::after testing
-                Debug.WriteLine($"Created SymbolInfoData entry for {methodData.GetType()}");
-
-                return;
-            }
-
-            // REMOVE::after testing
-            Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
-
-            methodData = (MethodData)symbolInfoData;
-        }
-
-        internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out FieldData fieldData)
-        {
-            bool isKeyNormalized = TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
-            if (isKeyNormalized)
-            {
-                cacheKey = normalizedCacheKey;
-            }
-
-            // At this point an anonymous key will always fail and therfore trigger actual normalization and creation of the well-known key.
-            if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
-            {
-                fieldData = CreateFieldData(cacheKey);
-                if (!isKeyNormalized)
-                {
-                    // REMOVE::after testing
-                    Debug.WriteLine($"Normalized key for {fieldData.GetType()}");
-
-                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForField(fieldData.GetFieldInfo());
-                    _ = SymbolReflectionInfoCache.AnonymousSymbolDataCacheKeyMap.TryAdd(cacheKey, normalizedCacheKey);
-                    cacheKey = normalizedCacheKey;
-                }
-
-                _ = SymbolReflectionInfoCache.SymbolInfoDataCache.TryAdd(cacheKey, fieldData);
-
-                // REMOVE::after testing
-                Debug.WriteLine($"Created SymbolInfoData entry for {fieldData.GetType()}");
-
-                return;
-            }
-
-            // REMOVE::after testing
-            Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
-
-            fieldData = (FieldData)symbolInfoData;
-        }
-
-        internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out PropertyData propertyData)
-        {
-            bool isKeyNormalized = TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
-            if (isKeyNormalized)
-            {
-                cacheKey = normalizedCacheKey;
-            }
-
-            // At this point an anonymous key will always fail and therfore trigger actual normalization and creation of the well-known key.
-            if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
-            {
-                propertyData = CreatePropertyData(cacheKey);
-                if (!isKeyNormalized)
-                {
-                    // REMOVE::after testing
-                    Debug.WriteLine($"Normalized key for {propertyData.GetType()}");
-
-                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForProperty(propertyData.GetPropertyInfo());
-                    _ = SymbolReflectionInfoCache.AnonymousSymbolDataCacheKeyMap.TryAdd(cacheKey, normalizedCacheKey);
-                    cacheKey = normalizedCacheKey;
-                }
-
-                _ = SymbolReflectionInfoCache.SymbolInfoDataCache.TryAdd(cacheKey, propertyData);
-
-                // REMOVE::after testing
-                Debug.WriteLine($"Created SymbolInfoData entry for {propertyData.GetType()}");
-
-                return;
-            }
-
-            // REMOVE::after testing
-            Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
-
-            propertyData = (PropertyData)symbolInfoData;
-        }
-
+        /// <summary>
+        /// Gets the existing symbol information data cache entry associated with the specified key, or creates a new
+        /// entry if one does not exist.
+        /// </summary>
+        /// <param name="cacheKey">A reference to the key used to identify the symbol information data cache entry. The key may be updated to
+        /// its normalized form.</param>
+        /// <param name="parameterData">When this method returns, contains the event data associated with the cache entry identified by the
+        /// specified key.</param>
+        /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
         internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out ParameterData parameterData)
-        {
-            SymbolInfoDataCacheKey normalizedCacheKey = SymbolReflectionInfoCache.NormalizeKey(cacheKey);
-            _ = SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(normalizedCacheKey, out SymbolInfoData symbolInfoData);
-            parameterData = (ParameterData)symbolInfoData;
-        }
+            => GetOrCreateNormalizedSymbolInfoDataCacheEntry<ParameterData>(ref cacheKey, out parameterData);
 
-        internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out ConstructorData constructorData)
-        {
-            bool isKeyNormalized = TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
-            if (isKeyNormalized)
-            {
-                cacheKey = normalizedCacheKey;
-            }
+        /// <summary>
+        /// Gets the existing symbol information data cache entry associated with the specified key, or creates a new
+        /// entry if one does not exist.
+        /// </summary>
+        /// <param name="cacheKey">A reference to the key used to identify the symbol information data cache entry. The key may be updated to
+        /// its normalized form.</param>
+        /// <param name="constructorData">When this method returns, contains the event data associated with the cache entry identified by the
+        /// specified key.</param>
+        /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
+        internal static void GetOrCreateSymbolInfoDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey, out ConstructorData constructorData)
+            => GetOrCreateNormalizedSymbolInfoDataCacheEntry<ConstructorData>(ref cacheKey, out constructorData);
 
-            // At this point an anonymous key will always fail and therfore trigger actual normalization and creation of the well-known key.
-            if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
-            {
-                constructorData = CreateConstructorData(cacheKey);
-                if (!isKeyNormalized)
-                {
-                    // REMOVE::after testing
-                    Debug.WriteLine($"Normalized key for {constructorData.GetType()}");
-
-                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForConstructor(constructorData.GetConstructorInfo());
-                    _ = SymbolReflectionInfoCache.AnonymousSymbolDataCacheKeyMap.TryAdd(cacheKey, normalizedCacheKey);
-                    cacheKey = normalizedCacheKey;
-                }
-
-                _ = SymbolReflectionInfoCache.SymbolInfoDataCache.TryAdd(cacheKey, constructorData);
-
-                // REMOVE::after testing
-                Debug.WriteLine($"Created SymbolInfoData entry for {constructorData.GetType()}");
-
-                return;
-            }
-
-            // REMOVE::after testing
-            Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
-
-            constructorData = (ConstructorData)symbolInfoData;
-        }
-
-        internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out TypeData typeData)
-        {
-            bool isKeyNormalized = TryGetNormalizedKey(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey);
-            if (isKeyNormalized)
-            {
-                cacheKey = normalizedCacheKey;
-            }
-
-            // At this point an anonymous key will always fail and therfore trigger actual normalization and creation of the well-known key.
-            if (!SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData symbolInfoData))
-            {
-                typeData = CreateTypeData(cacheKey);
-                if (!isKeyNormalized)
-                {
-                    // REMOVE::after testing
-                    Debug.WriteLine($"Normalized key for {typeData.UnwrapType()}");
-
-                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForType(typeData.UnwrapType());
-                    _ = SymbolReflectionInfoCache.AnonymousSymbolDataCacheKeyMap.TryAdd(cacheKey, normalizedCacheKey);
-                    cacheKey = normalizedCacheKey;
-                }
-
-                _ = SymbolReflectionInfoCache.SymbolInfoDataCache.TryAdd(cacheKey, typeData);
-
-                // REMOVE::after testing
-                Debug.WriteLine($"Created SymbolInfoData entry for {typeData.UnwrapType()}");
-
-                return;
-            }
-
-            // REMOVE::after testing
-            Debug.WriteLine($"Found SymbolInfoData entry for {symbolInfoData.GetType()}");
-
-            typeData = (TypeData)symbolInfoData;
-        }
+        /// <summary>
+        /// Gets the existing symbol information data cache entry associated with the specified key, or creates a new
+        /// entry if one does not exist.
+        /// </summary>
+        /// <param name="cacheKey">A reference to the key used to identify the symbol information data cache entry. The key may be updated to
+        /// its normalized form.</param>
+        /// <param name="typeData">When this method returns, contains the event data associated with the cache entry identified by the
+        /// specified key.</param>
+        /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
+        internal static void GetOrCreateSymbolInfoDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey, out TypeData typeData)
+            => GetOrCreateNormalizedSymbolInfoDataCacheEntry<TypeData>(ref cacheKey, out typeData);
 
         internal static bool TryGetSymbolInfoDataCacheEntry<TEntry>(SymbolInfoDataCacheKey key, out TEntry entry)
           where TEntry : SymbolInfoData
@@ -386,7 +247,10 @@
                     symbolInfoData = typeData;
                     break;
                 case SymbolKind.MemberParameter:
-                    ParameterData parameterData = get;
+                    ParameterData parameterData = CreateParameterData(cacheKey);
+                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForParameter(parameterData.GetParameterInfo());
+                    symbolInfoData = parameterData;
+                    break;
                 default:
                     throw new NotSupportedException($"The symbol kind '{cacheKey.SymbolKind}' is not supported for normalization.");
             }
@@ -593,89 +457,201 @@
             return new EventData(eventInfo);
         }
 
-        private static EventData CreateParameterData(SymbolInfoDataCacheKey cacheKey)
+        private static ParameterData CreateParameterData(SymbolInfoDataCacheKey cacheKey)
         {
+            ArgumentExceptionEx.ThrowIfEnumIsNotEqual<SymbolKind>(
+                cacheKey.SymbolKind,
+                new SymbolKind[] { SymbolKind.MemberParameter },
+                nameof(cacheKey),
+                $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a parameter symbol.");
+
             Type declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
-            MethodBase methodBase;
+            SymbolInfoDataCacheKey declaringTypeKey = SymbolInfoDataCacheKey.CreateForType(declaringType);
+            TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(declaringType);
+            ParameterData parameterDataCandidate = null;
 
             // REVIEW::If-statement order matters here. Order ifrom most specific to least specific i.e. best lookup performance to worst performance.
             if (cacheKey.MethodHandle != default)
             {
-                methodBase = MethodBase.GetMethodFromHandle(cacheKey.MethodHandle);
-            }
-            else if (declaringType.IsDelegate())
-            {
-                methodBase = declaringType.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, HelperExtensionsCommon.AllMembersFullHierarchyFlags);
-            }
-            else if (!string.IsNullOrWhiteSpace(cacheKey.ParameterMemberName))
-            {
-                MethodInfo[] methoCandidates = declaringType.GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
-
-                // TODO::Find method based on parameter name and ParameterKind and position. When checking for parameter name also consider indexer where the name is 'Item'.
-
-                    .FirstOrDefault(methodInfo => methodInfo.Name.Equals(cacheKey.ParameterMemberName, StringComparison.Ordinal) && );
-                if (methodBase is null)
+                MethodBase methodBase = MethodBase.GetMethodFromHandle(cacheKey.MethodHandle);
+                if (methodBase is ConstructorInfo constructorInfo)
                 {
-                    PropertyInfo propertyInfo = declaringType.GetProperty(cacheKey.ParameterMemberName, HelperExtensionsCommon.AllMembersFullHierarchyFlags);
-                    if (propertyInfo is not null)
-                    {
-                        methodBase = propertyInfo.GetMethod ?? propertyInfo.SetMethod;
-                    }
-                }
-                if (methodBase is null)
-                {
-                    methodBase = declaringType.GetConstructor(cacheKey.ParameterMemberName);
-                }
-            }
-            else
-            {
-                declaringType.GetMethod(cacheKey.SymbolName);
-                Type[] parameterTypes = cacheKey.MethodParameterInfos
-                    .Select(methodParameterInfo => Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle))
-                    .ToArray();
-                if (cacheKey.SymbolKind == SymbolKind.Constructor)
-                {
-                    methodBase = declaringType.GetConstructor(
-                        HelperExtensionsCommon.AllMembersFullHierarchyFlags,
-                        binder: null,
-                        types: parameterTypes,
-                        modifiers: null);
+                    ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+                    parameterDataCandidate = constructorData.Parameters.FirstOrDefault(
+                        parameterData => parameterData.Name.Equals(cacheKey.SymbolName, StringComparison.Ordinal)
+                        && parameterData.Position == cacheKey.ParameterPosition);
                 }
                 else
                 {
-                    methodBase = declaringType.GetMethod(
-                        cacheKey.SymbolName,
-                        cacheKey.GenericTypeParameterCount,
-                        HelperExtensionsCommon.AllMembersFullHierarchyFlags,
-                        binder: null,
-                        types: parameterTypes,
-                        modifiers: null);
+                    var methodInfo = (MethodInfo)methodBase;
+                    MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+                    parameterDataCandidate = methodData.Parameters.FirstOrDefault(
+                        parameterData => parameterData.Name.Equals(cacheKey.SymbolName, StringComparison.Ordinal)
+                        && parameterData.Position == cacheKey.ParameterPosition);
+                }
+
+                return parameterDataCandidate;
+            }
+            else if (declaringTypeData.IsDelegate)
+            {
+                MethodData methodData = declaringTypeData.DelegateInvokeMethodData;
+                parameterDataCandidate = methodData.Parameters.FirstOrDefault(
+                    parameterData => parameterData.Name.Equals(cacheKey.SymbolName, StringComparison.Ordinal)
+                    && parameterData.Position == cacheKey.ParameterPosition);
+
+                return parameterDataCandidate;
+            }
+            else
+            {
+                bool isParameterMethodNameDefined = !string.IsNullOrWhiteSpace(cacheKey.ParameterMemberName);
+                bool isParameterKindDefined = cacheKey.ParameterKind is not ParameterKind.Undefined;
+                bool isParameterizedSymbolKindDefined = cacheKey.ParameterizedSymbolKind is not ParameterizedSymbolKind.Undefined;
+                bool isAmbiguityExpected = !(isParameterMethodNameDefined && isParameterKindDefined && isParameterizedSymbolKindDefined);
+                bool isCandidateAmbiguous = false;
+                int discoveredMethodCandidateCount = 0;
+
+                if (cacheKey.ParameterizedSymbolKind is ParameterizedSymbolKind.MemberMethod or ParameterizedSymbolKind.Undefined)
+                {
+                    foreach (MethodData methodData in declaringTypeData.EnumerateMethods())
+                    {
+                        if (isParameterMethodNameDefined
+                            && !methodData.Name.Equals(cacheKey.ParameterMemberName, StringComparison.Ordinal))
+                        {
+                            continue;
+                        }
+
+                        if (methodData.Parameters.FirstOrDefault(parameterData => parameterData.Name == cacheKey.SymbolName) is not ParameterData parameterCandidate
+                            || parameterCandidate.Position != cacheKey.ParameterPosition)
+                        {
+                            continue;
+                        }
+
+                        if (isParameterKindDefined && cacheKey.ParameterKind != parameterCandidate.ParameterKind)
+                        {
+                            continue;
+                        }
+
+                        parameterDataCandidate = parameterCandidate;
+                        discoveredMethodCandidateCount++;
+                        isCandidateAmbiguous = isAmbiguityExpected && discoveredMethodCandidateCount > 1;
+
+                        ThrowIfParameterCandidateIsAmbiguous(isCandidateAmbiguous);
+                        if (!isAmbiguityExpected && discoveredMethodCandidateCount == 1)
+                        {
+                            break;
+                        }
+                    }
+
+                    // Early out if we have a definitive candidate and no ambiguity is expected.
+                    // Otherwise we need to continue searching to detect ambiguities.
+                    if (!isAmbiguityExpected && parameterDataCandidate is not null)
+                    {
+                        return parameterDataCandidate;
+                    }
+                }
+
+                if (cacheKey.ParameterizedSymbolKind is ParameterizedSymbolKind.Constructor or ParameterizedSymbolKind.Undefined)
+                {
+                    foreach (ConstructorData constructorData in declaringTypeData.EnumerateConstructors())
+                    {
+                        if (isParameterMethodNameDefined
+                            && !constructorData.Name.Equals(cacheKey.ParameterMemberName, StringComparison.Ordinal))
+                        {
+                            continue;
+                        }
+
+                        if (constructorData.Parameters.FirstOrDefault(parameterData => parameterData.Name == cacheKey.SymbolName) is not ParameterData parameterCandidate
+                            || parameterCandidate.Position != cacheKey.ParameterPosition)
+                        {
+                            continue;
+                        }
+
+                        if (isParameterKindDefined && cacheKey.ParameterKind != parameterCandidate.ParameterKind)
+                        {
+                            continue;
+                        }
+
+                        parameterDataCandidate = parameterCandidate;
+                        discoveredMethodCandidateCount++;
+                        isCandidateAmbiguous = isAmbiguityExpected && discoveredMethodCandidateCount > 1;
+
+                        ThrowIfParameterCandidateIsAmbiguous(isCandidateAmbiguous);
+                        if (!isAmbiguityExpected && discoveredMethodCandidateCount == 1)
+                        {
+                            break;
+                        }
+                    }
+
+                    // Early out if we have a definitive candidate and no ambiguity is expected.
+                    // Otherwise we need to continue searching to detect ambiguities.
+                    if (!isAmbiguityExpected && parameterDataCandidate is not null)
+                    {
+                        return parameterDataCandidate;
+                    }
+                }
+
+                if (cacheKey.ParameterizedSymbolKind is ParameterizedSymbolKind.MemberIndexerProperty or ParameterizedSymbolKind.Undefined)
+                {
+                    foreach (PropertyData propertyData in declaringTypeData.EnumerateProperties())
+                    {
+                        if (!propertyData.IsIndexer)
+                        {
+                            continue;
+                        }
+
+                        MethodData propertyAccessorData = propertyData.GetMethodData ?? propertyData.SetMethodData;
+                        if (propertyAccessorData.Parameters.FirstOrDefault(parameterData => parameterData.Name.Equals(cacheKey.SymbolName, StringComparison.Ordinal)) is not ParameterData parameterCandidate
+                            || parameterCandidate.Position != cacheKey.ParameterPosition)
+                        {
+                            continue;
+                        }
+
+                        if (isParameterKindDefined && cacheKey.ParameterKind != parameterCandidate.ParameterKind)
+                        {
+                            continue;
+                        }
+
+                        parameterDataCandidate = parameterCandidate;
+                        discoveredMethodCandidateCount++;
+                        isCandidateAmbiguous = isAmbiguityExpected && discoveredMethodCandidateCount > 1;
+
+                        ThrowIfParameterCandidateIsAmbiguous(isCandidateAmbiguous);
+                        if (!isAmbiguityExpected && discoveredMethodCandidateCount == 1)
+                        {
+                            break;
+                        }
+                    }
+
+                    // Early out if we have a definitive candidate and no ambiguity is expected.
+                    // Otherwise we need to continue searching to detect ambiguities.
+                    if (!isAmbiguityExpected && parameterDataCandidate is not null)
+                    {
+                        return parameterDataCandidate;
+                    }
                 }
             }
-            if (methodBase is null)
+
+            throw new ArgumentException(string.Format(
+                CultureInfo.CurrentCulture,
+                "No parameter named '{0}' could be found in type '{1}' that matches the provided constraints.",
+                cacheKey.SymbolName,
+                declaringType.ToFullDisplayName()), nameof(cacheKey));
+        }
+
+        private static void ThrowIfParameterCandidateIsAmbiguous(bool isCandidateAmbiguous)
+        {
+            if (isCandidateAmbiguous)
             {
-                throw new ArgumentException(string.Format(
-                    CultureInfo.CurrentCulture,
-                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
-                    "method or constructor",
-                    cacheKey.SymbolName,
-                    " that matches the provided parameter list ",
-                    declaringType.ToFullDisplayName()),
-                    nameof(cacheKey));
+                throw new AmbiguousMatchException("Multiple parameters found that match the provided constraints. To eliminate ambiguity please provide both member name for the method, constructor or indexer property that defines the parameter and the ParameterKind when creating the cache key.");
             }
-            ParameterInfo parameterInfo = methodBase.GetParameters().FirstOrDefault(p => p.Name == cacheKey.SymbolName);
-            if (parameterInfo is null)
-            {
-                throw new ArgumentException(string.Format(
-                    CultureInfo.CurrentCulture,
-                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
-                    "parameter",
-                    cacheKey.SymbolName,
-                    string.Empty,
-                    methodBase.ToFullDisplayName()),
-                    nameof(cacheKey));
-            }
-            return new EventData(parameterInfo);
+        }
+
+        private static void GetOrCreateNormalizedSymbolInfoDataCacheEntry<TSymbolInfoData>(ref SymbolInfoDataCacheKey cacheKey, out TSymbolInfoData result) where TSymbolInfoData : SymbolInfoData
+        {
+            SymbolInfoDataCacheKey normalizedCacheKey = SymbolReflectionInfoCache.NormalizeKey(cacheKey);
+            _ = SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(normalizedCacheKey, out SymbolInfoData symbolInfoData);
+            result = (TSymbolInfoData)symbolInfoData;
+            cacheKey = normalizedCacheKey;
         }
     }
 }
