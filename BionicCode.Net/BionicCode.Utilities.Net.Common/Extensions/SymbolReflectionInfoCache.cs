@@ -4,7 +4,6 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Globalization;
     using System.Linq;
     using System.Reflection;
     using Microsoft.CodeAnalysis;
@@ -201,6 +200,7 @@
         /// <returns>A normalized cache key that uniquely identifies the symbol. If the input key is already canonical, the same
         /// key is returned.</returns>
         /// <exception cref="NotSupportedException">Thrown if the symbol kind of <paramref name="cacheKey"/> is not supported for normalization.</exception>
+        /// <exception cref="InvalidReflectionCacheKeyException">Thrown if key's integrity is invalid as it contains information that makes symbol lookup impossible.</exception>
         public static SymbolInfoDataCacheKey NormalizeKey(SymbolInfoDataCacheKey cacheKey)
         {
             if (!cacheKey.IsAnonymousSymbolKey)
@@ -263,12 +263,30 @@
 
         private static TypeData CreateTypeData(SymbolInfoDataCacheKey cacheKey)
         {
+            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(
+                cacheKey.SymbolKind,
+                [SymbolKind.Type],
+                nameof(cacheKey),
+                 $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a type symbol.");
+
             Type type = Type.GetTypeFromHandle(cacheKey.SymbolTypeHandle);
+
+            if (type is null)
+            {
+                throw new InvalidReflectionCacheKeyException();
+            }
+
             return new TypeData(type);
         }
 
         private static PropertyData CreatePropertyData(SymbolInfoDataCacheKey cacheKey)
         {
+            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(
+                cacheKey.SymbolKind,
+                [SymbolKind.MemberProperty],
+                nameof(cacheKey),
+                 $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a property symbol.");
+
             Type declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
             Type[] indexerParameters = Type.EmptyTypes;
             if (cacheKey.ParameterList.HasItems)
@@ -292,16 +310,10 @@
                 null,
                 indexerParameters,
                 null);
+
             if (propertyInfo is null)
             {
-                throw new ArgumentException(string.Format(
-                    CultureInfo.CurrentCulture,
-                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
-                    "property",
-                    cacheKey.SymbolName,
-                    string.Empty,
-                    declaringType.ToFullDisplayName()),
-                    nameof(cacheKey));
+                throw new InvalidReflectionCacheKeyException();
             }
 
             return new PropertyData(propertyInfo);
@@ -309,6 +321,12 @@
 
         private static ConstructorData CreateConstructorData(SymbolInfoDataCacheKey cacheKey)
         {
+            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(
+                cacheKey.SymbolKind,
+                [SymbolKind.Constructor],
+                nameof(cacheKey),
+                 $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a constructor symbol.");
+
             Type declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
             ConstructorInfo constructorInfo;
             if (cacheKey.MethodHandle != default)
@@ -329,13 +347,7 @@
 
             if (constructorInfo is null)
             {
-                throw new ArgumentException(string.Format(
-                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
-                    "constructor",
-                    cacheKey.SymbolName,
-                    " that matches the provided parameter list ",
-                    declaringType.ToFullDisplayName()),
-                    nameof(cacheKey));
+                throw new InvalidReflectionCacheKeyException();
             }
 
             return new ConstructorData(constructorInfo);
@@ -343,6 +355,12 @@
 
         private static FieldData CreateFieldData(SymbolInfoDataCacheKey cacheKey)
         {
+            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(
+                cacheKey.SymbolKind
+                , [SymbolKind.MemberField],
+                nameof(cacheKey),
+                $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a field symbol.");
+
             Type declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
             FieldInfo fieldInfo;
             if (cacheKey.FieldHandle != default)
@@ -356,13 +374,7 @@
 
             if (fieldInfo is null)
             {
-                throw new ArgumentException(string.Format(
-                    CultureInfo.CurrentCulture,
-                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
-                    "field",
-                    cacheKey.SymbolName,
-                    string.Empty,
-                    declaringType.ToFullDisplayName()), nameof(cacheKey));
+                throw new InvalidReflectionCacheKeyException();
             }
 
             return new FieldData(fieldInfo);
@@ -370,6 +382,12 @@
 
         private static MethodData CreateMethodData(SymbolInfoDataCacheKey cacheKey)
         {
+            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(
+                cacheKey.SymbolKind,
+                [SymbolKind.MemberMethod],
+                nameof(cacheKey),
+                $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a method symbol.");
+
             Type declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
             MethodInfo methodInfo;
             if (cacheKey.MethodHandle != default)
@@ -403,14 +421,7 @@
 
             if (methodInfo is null)
             {
-                throw new ArgumentException(string.Format(
-                    CultureInfo.CurrentCulture,
-                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
-                    "method",
-                    cacheKey.SymbolName,
-                    " that matches the provided parameter list ",
-                    declaringType.ToFullDisplayName()),
-                    nameof(cacheKey));
+                throw new InvalidReflectionCacheKeyException();
             }
 
             if (methodInfo.ContainsGenericParameters || methodInfo.IsGenericMethodDefinition)
@@ -428,6 +439,11 @@
 
         private static EventData CreateEventData(SymbolInfoDataCacheKey cacheKey)
         {
+            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(cacheKey.SymbolKind,
+                [SymbolKind.MemberEvent],
+                nameof(cacheKey),
+                $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating an event symbol.");
+
             Type declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
             EventInfo eventInfo = declaringType.GetEvent(cacheKey.SymbolName, HelperExtensionsCommon.AllMembersFullHierarchyFlags);
             if (eventInfo is null && declaringType.IsInterface)
@@ -445,13 +461,7 @@
 
             if (eventInfo is null)
             {
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                    SymbolReflectionInfoCache.MemberNotFoundArgumentExceptionMessage,
-                    "event",
-                    cacheKey.SymbolName,
-                    string.Empty,
-                    declaringType.ToFullDisplayName()),
-                    nameof(cacheKey));
+                throw new InvalidReflectionCacheKeyException();
             }
 
             return new EventData(eventInfo);
@@ -631,18 +641,14 @@
                 }
             }
 
-            throw new ArgumentException(string.Format(
-                CultureInfo.CurrentCulture,
-                "No parameter named '{0}' could be found in type '{1}' that matches the provided constraints.",
-                cacheKey.SymbolName,
-                declaringType.ToFullDisplayName()), nameof(cacheKey));
+            throw new InvalidReflectionCacheKeyException();
         }
 
         private static void ThrowIfParameterCandidateIsAmbiguous(bool isCandidateAmbiguous)
         {
             if (isCandidateAmbiguous)
             {
-                throw new AmbiguousMatchException("Multiple parameters found that match the provided constraints. To eliminate ambiguity please provide both member name for the method, constructor or indexer property that defines the parameter and the ParameterKind when creating the cache key.");
+                throw new AmbiguousMatchException("Multiple symbols were found that match the provided constraints. To eliminate ambiguity, please provide both member name for the method, constructor or indexer property that defines the parameter and the ParameterKind when creating the cache key. For parameters you can also provide a RuntimeMethodHandle from the member that defines the parameter.");
             }
         }
 

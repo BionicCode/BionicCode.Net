@@ -1958,15 +1958,25 @@
         /// <param name="obj">The object to be cast to the specified type. Cannot be null.</param>
         /// <param name="type">The target type to cast the object to. Cannot be null.</param>
         /// <returns>A dynamic value representing the object cast to the specified type.</returns>
-        public static dynamic Cast(this object obj, Type type)
+        public static dynamic Cast<TSource>(this TSource obj, Type type)
         {
             ArgumentNullExceptionEx.ThrowIfNull(obj, nameof(obj));
             ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
 
-            return typeof(HelperExtensionsCommon).GetMethod(nameof(HelperExtensionsCommon.Cast), BindingFlags.Static | BindingFlags.NonPublic, null, new[] { typeof(object) }, null).GetGenericMethodDefinition().MakeGenericMethod(type).Invoke(obj, null);
-        }
+            TypeData reflectionExtensionsTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(HelperExtensionsCommon));
+            foreach (MethodData methodData in reflectionExtensionsTypeData.EnumerateMethods())
+            {
+                if (methodData.Name.Equals(nameof(HelperExtensionsCommon.Cast), StringComparison.Ordinal)
+                && methodData.IsGenericMethodDefinition
+                && methodData.Parameters.Count == 1
+                && methodData.Parameters.GenericTypeParameterCount == 2)
+                {
+                    methodData.GetGenericMethodDefinition()
+                 .MakeGenericMethod(obj.GetType(), type).Invoke(obj, [obj]);
+                }
 
-        private static T Cast<T>(this object obj) => (T)obj;
+        private static TDestination Cast<TSource, TDestination>(this TSource obj)
+            => obj is TDestination destination ? destination : throw new InvalidCastException($"Cannot cast object of type '{typeof(TSource).FullName}' to type '{typeof(TDestination).FullName}'.");
 
         /// <summary>
         /// Converts the specified string to an HTML-encoded representation suitable for display in web pages.

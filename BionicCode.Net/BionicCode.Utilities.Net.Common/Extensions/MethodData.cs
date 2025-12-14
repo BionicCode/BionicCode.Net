@@ -1,7 +1,9 @@
 ﻿namespace BionicCode.Utilities.Net
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
@@ -12,6 +14,7 @@
     internal sealed class MethodData : MemberInfoData
     {
         private static readonly Type AsyncStateMachineAttributeType = typeof(AsyncStateMachineAttribute);
+        private static readonly ConcurrentDictionary<InvocatorKey, Delegate> InvocatorCache = new ConcurrentDictionary<InvocatorKey, Delegate>();
 
         private SymbolAttributes symbolAttributes;
         private AccessModifier accessModifier;
@@ -175,11 +178,18 @@
             }
         }
 
-        public Func<object, object[], object> GetInvocator()
+        public Func<TTarget, TResult> GetInvocator<TTarget, TResult>(IEnumerable<object> args)
         {
-            if (this.invocator is null)
+            (Delegate invocator, Type invocatorType) invocatorInfo = GetInvocatorFromCache<TTarget, TResult>(args);
+
+            if (this.invocator.inv is null)
             {
                 InitializeInvocator();
+            }
+
+            else
+            {
+                this.invocator = invocatorInfo.invocator.Cast(invocatorDelegate.GetType());
             }
 
             return this.invocator;
@@ -254,8 +264,20 @@
             return this.awaitableTaskInvocator;
         }
 
-        private void InitializeInvocator() => this.invocator = (invocationTarget, invocationArguments)
-          => GetMethodInfo().Invoke(invocationTarget, invocationArguments);
+        private (Delegate invocator, Type invocatorType) GetInvocatorFromCache<TTarget, TResult>(IEnumerable<object> args)
+        {
+            var key = new InvocatorKey(typeof(TTarget).TypeHandle,
+              args.Select(arg => arg.GetType().TypeHandle).ToArray(),
+              typeof(TResult).TypeHandle);
+            if (!MethodData.InvocatorCache.TryGetValue(key, out Delegate invocator))
+            {
+                MethodInfo methodInfo = GetMethodInfo();
+                invocator = methodInfo.CreateDelegate<Func<TTarget, IEnumerable<object>, TResult>>();
+                _ = MethodData.InvocatorCache.TryAdd(key, invocator);
+            }
+
+            return (invocator, invocator.GetType());
+        }
 
         private void InitializeAwaitableTaskInvocator()
         {
@@ -571,6 +593,33 @@
               : methodInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
               : methodInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
               : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
+        }
+
+        private readonly struct InvocatorKey : IEquatable<InvocatorKey>
+        {
+            public InvocatorKey(RuntimeTypeHandle targetTypeHandle, RuntimeTypeHandle[] argumentTypeHandles, RuntimeTypeHandle returnTypeHandle) : this()
+            {
+                this.TargetTypeHandle = targetTypeHandle;
+                this.ArgumentTypeHandles = argumentTypeHandles;
+                this.ReturnTypeHandle = returnTypeHandle;
+            }
+
+            public RuntimeTypeHandle TargetTypeHandle { get; }
+            public RuntimeTypeHandle[] ArgumentTypeHandles { get; }
+            public RuntimeTypeHandle ReturnTypeHandle { get; }
+
+            public bool Equals(InvocatorKey other) => this.TargetTypeHandle.Equals(other.TargetTypeHandle)
+                && this.ArgumentTypeHandles.SequenceEqual(other.ArgumentTypeHandles)
+                && this.ReturnTypeHandle.Equals(other.ReturnTypeHandle);
+
+            public override bool Equals([NotNullWhen(true)] object obj)
+                => obj is InvocatorKey invocatorKey && base.Equals(invocatorKey);
+
+            public override int GetHashCode()
+                => HashCode.Combine(this.TargetTypeHandle, this.ArgumentTypeHandles, this.ReturnTypeHandle);
+
+            public static bool operator ==(InvocatorKey left, InvocatorKey right) => left.Equals(right);
+            public static bool operator !=(InvocatorKey left, InvocatorKey right) => !(left == right);
         }
     }
 }

@@ -89,26 +89,46 @@ namespace BionicCode.Utilities.Net
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(propertyName, nameof(propertyName));
 
-            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousProperty(this.Handle, propertyName, new MethodParameterInfoList(indexerPropertyParameters), SymbolKind.MemberProperty);
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousProperty(this.Handle, propertyName, new MethodParameterInfoList(indexerPropertyParameters));
             SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ref cacheKey, out PropertyData propertyData);
             _ = this.memberTable.TryAdd(cacheKey, propertyData);
 
             return propertyData;
         }
 
-        public IEnumerable<PropertyData> EnumerateProperties()
+        /// <summary>
+        /// Returns an enumerable collection of property metadata for the current type, using the specified binding
+        /// flags to control which properties are included.
+        /// </summary>
+        /// <remarks>Properties are returned from a cache when available; otherwise, they are retrieved
+        /// and cached on demand. Subsequent calls may be more efficient due to caching. The enumeration includes
+        /// properties from base types according to the specified binding flags.</remarks>
+        /// <param name="bindingFlags">A bitwise combination of BindingFlags values that determines which properties to include in the enumeration.
+        /// The default value includes all public and non-public instance and static properties from the entire
+        /// inheritance hierarchy.</param>
+        /// <returns>An enumerable collection of PropertyData objects representing the properties of the current type that match
+        /// the specified binding flags.</returns>
+        public IEnumerable<PropertyData> EnumerateProperties(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
         {
+            int cachedPropertyCount = 0;
+
+            // Return already cached cachedProperties first
+            IEnumerable<PropertyData> cachedProperties = this.memberTable.Values.OfType<PropertyData>();
+            foreach (PropertyData property in cachedProperties)
+            {
+                cachedPropertyCount++;
+                yield return property;
+            }
+
+            // If all cachedProperties are already generated, exit. Else generate the remaining cachedProperties.
             if (this.isAllPropertiesGenerated)
             {
-                foreach (PropertyData property in this.memberTable.Values.OfType<PropertyData>())
-                {
-                    yield return property;
-                }
-
                 yield break;
             }
 
-            foreach (PropertyInfo property in UnwrapType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
+            IEnumerable<PropertyInfo> remainingProperties = UnwrapType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+                .Skip(cachedPropertyCount);
+            foreach (PropertyInfo property in remainingProperties)
             {
                 PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(property);
                 SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForProperty(property);
@@ -132,19 +152,39 @@ namespace BionicCode.Utilities.Net
             return methodData;
         }
 
-        public IEnumerable<MethodData> EnumerateMethods()
+        /// <summary>
+        /// Returns an enumerable collection of method metadata for the current type, using the specified binding flags
+        /// to control method selection.
+        /// </summary>
+        /// <remarks>The returned collection includes both cached and newly discovered methods. Methods
+        /// are enumerated in the order they are retrieved. Subsequent calls may return cached results for previously
+        /// enumerated methods. This method does not guarantee thread safety; concurrent access may require external
+        /// synchronization.</remarks>
+        /// <param name="bindingFlags">A bitwise combination of BindingFlags values that determines which methods to include in the enumeration.
+        /// The default value includes all instance and static methods declared on the type and its base types.</param>
+        /// <returns>An enumerable collection of MethodData objects representing the methods defined on the current type and its
+        /// base types, as specified by the binding flags.</returns>
+        public IEnumerable<MethodData> EnumerateMethods(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
         {
+            int cachedMethodCount = 0;
+
+            // Return already cached cachedMethods first
+            IEnumerable<MethodData> cachedMethods = this.memberTable.Values.OfType<MethodData>();
+            foreach (MethodData method in cachedMethods)
+            {
+                cachedMethodCount++;
+                yield return method;
+            }
+
+            // If all cachedMethods are already generated, exit. Else generate the remaining cachedMethods.
             if (this.isAllMethodsGenerated)
             {
-                foreach (MethodData method in this.memberTable.Values.OfType<MethodData>())
-                {
-                    yield return method;
-                }
-
                 yield break;
             }
 
-            foreach (MethodInfo method in UnwrapType().GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
+            IEnumerable<MethodInfo> remainingMethods = UnwrapType().GetMethods(bindingFlags)
+                .Skip(cachedMethodCount);
+            foreach (MethodInfo method in remainingMethods)
             {
                 MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(method);
                 SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForMethod(method);
@@ -169,17 +209,25 @@ namespace BionicCode.Utilities.Net
 
         public IEnumerable<FieldData> EnumerateFields()
         {
+            int cachedFieldCount = 0;
+
+            // Return already cached cachedFields first
+            IEnumerable<FieldData> cachedFields = this.memberTable.Values.OfType<FieldData>();
+            foreach (FieldData field in cachedFields)
+            {
+                cachedFieldCount++;
+                yield return field;
+            }
+
+            // If all cachedFields are already generated, exit. Else generate the remaining cachedFields.
             if (this.isAllFieldsGenerated)
             {
-                foreach (FieldData field in this.memberTable.Values.OfType<FieldData>())
-                {
-                    yield return field;
-                }
-
                 yield break;
             }
 
-            foreach (FieldInfo field in UnwrapType().GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
+            IEnumerable<FieldInfo> remainingFields = UnwrapType().GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+                .Skip(cachedFieldCount);
+            foreach (FieldInfo field in remainingFields)
             {
                 FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(field);
                 SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForField(field);
@@ -204,17 +252,25 @@ namespace BionicCode.Utilities.Net
 
         public IEnumerable<EventData> EnumerateEvents()
         {
+            int cachedEventCount = 0;
+
+            // Return already cached cachedFields first
+            IEnumerable<EventData> cachedEvents = this.memberTable.Values.OfType<EventData>();
+            foreach (EventData eventData in cachedEvents)
+            {
+                cachedEventCount++;
+                yield return eventData;
+            }
+
+            // If all events are already generated, exit. Else generate the remaining events.
             if (this.isAllEventsGenerated)
             {
-                foreach (EventData eventData in this.memberTable.Values.OfType<EventData>())
-                {
-                    yield return eventData;
-                }
-
                 yield break;
             }
 
-            foreach (EventInfo eventInfo in UnwrapType().GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
+            IEnumerable<EventInfo> remainingEvents = UnwrapType().GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+                .Skip(cachedEventCount);
+            foreach (EventInfo eventInfo in remainingEvents)
             {
                 EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
                 SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForEvent(eventInfo);
@@ -240,17 +296,25 @@ namespace BionicCode.Utilities.Net
 
         public IEnumerable<ConstructorData> EnumerateConstructors()
         {
+            int cachedConstructorCount = 0;
+
+            // Return already cached cachedConstructors first
+            IEnumerable<ConstructorData> cachedConstructors = this.memberTable.Values.OfType<ConstructorData>();
+            foreach (ConstructorData constructor in cachedConstructors)
+            {
+                cachedConstructorCount++;
+                yield return constructor;
+            }
+
+            // If all cachedConstructors are already generated, exit. Else generate the remaining cachedConstructors.
             if (this.isAllConstructorsGenerated)
             {
-                foreach (ConstructorData constructor in this.memberTable.Values.OfType<ConstructorData>())
-                {
-                    yield return constructor;
-                }
-
                 yield break;
             }
 
-            foreach (ConstructorInfo constructor in UnwrapType().GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags))
+            IEnumerable<ConstructorInfo> remainingConstructors = UnwrapType().GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+                .Skip(cachedConstructorCount);
+            foreach (ConstructorInfo constructor in remainingConstructors)
             {
                 ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructor);
                 SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForConstructor(constructor);
@@ -430,7 +494,7 @@ namespace BionicCode.Utilities.Net
 
                 if (this.delegateInvokeMethodData is null)
                 {
-                    MethodInfo methodInfo = UnwrapType().GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName);
+                    MethodInfo methodInfo = UnwrapType().GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     this.delegateInvokeMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
                 }
 
