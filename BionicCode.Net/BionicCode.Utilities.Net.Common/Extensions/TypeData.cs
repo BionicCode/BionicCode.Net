@@ -89,7 +89,10 @@ namespace BionicCode.Utilities.Net
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(propertyName, nameof(propertyName));
 
-            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousProperty(this.Handle, propertyName, new MethodParameterInfoList(indexerPropertyParameters));
+            MethodParameterInfoList indexerParameters = indexerPropertyParameters is null || indexerPropertyParameters.Length == 0
+                ? MethodParameterInfoList.Empty
+                : new MethodParameterInfoList(indexerPropertyParameters);
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousProperty(this.Handle, propertyName, indexerParameters);
             SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ref cacheKey, out PropertyData propertyData);
             _ = this.memberTable.TryAdd(cacheKey, propertyData);
 
@@ -126,7 +129,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            IEnumerable<PropertyInfo> remainingProperties = UnwrapType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+            IEnumerable<PropertyInfo> remainingProperties = UnwrapType().GetProperties(bindingFlags)
                 .Skip(cachedPropertyCount);
             foreach (PropertyInfo property in remainingProperties)
             {
@@ -145,7 +148,15 @@ namespace BionicCode.Utilities.Net
             ArgumentOutOfRangeException.ThrowIfNegative(genericTypeParameterCount, nameof(genericTypeParameterCount));
             ArgumentException.ThrowIfNullOrWhiteSpace(methodName, nameof(methodName));
 
-            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrConstructor(this.Handle, methodName, new MethodParameterInfoList(parameterList), genericTypeParameterCount, SymbolKind.MemberMethod);
+            MethodParameterInfoList symbolParameters = parameterList is null || parameterList.Length == 0
+                ? MethodParameterInfoList.Empty
+                : new MethodParameterInfoList(parameterList);
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrConstructor(
+                this.Handle,
+                methodName,
+                symbolParameters,
+                genericTypeParameterCount,
+                SymbolKind.MemberMethod);
             SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ref cacheKey, out MethodData methodData);
             _ = this.memberTable.TryAdd(cacheKey, methodData);
 
@@ -200,14 +211,17 @@ namespace BionicCode.Utilities.Net
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(fieldName, nameof(fieldName));
 
-            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousFieldOrEvent(this.Handle, fieldName, SymbolKind.MemberField);
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousFieldOrEvent(
+                this.Handle,
+                fieldName,
+                SymbolKind.MemberField);
             SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ref cacheKey, out FieldData fieldData);
             _ = this.memberTable.TryAdd(cacheKey, fieldData);
 
             return fieldData;
         }
 
-        public IEnumerable<FieldData> EnumerateFields()
+        public IEnumerable<FieldData> EnumerateFields(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
         {
             int cachedFieldCount = 0;
 
@@ -225,7 +239,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            IEnumerable<FieldInfo> remainingFields = UnwrapType().GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+            IEnumerable<FieldInfo> remainingFields = UnwrapType().GetFields(bindingFlags)
                 .Skip(cachedFieldCount);
             foreach (FieldInfo field in remainingFields)
             {
@@ -243,14 +257,17 @@ namespace BionicCode.Utilities.Net
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
 
-            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousFieldOrEvent(this.Handle, eventName, SymbolKind.MemberEvent);
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousFieldOrEvent(
+                this.Handle,
+                eventName,
+                SymbolKind.MemberEvent);
             SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ref cacheKey, out EventData eventData);
             _ = this.memberTable.TryAdd(cacheKey, eventData);
 
             return eventData;
         }
 
-        public IEnumerable<EventData> EnumerateEvents()
+        public IEnumerable<EventData> EnumerateEvents(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
         {
             int cachedEventCount = 0;
 
@@ -268,7 +285,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            IEnumerable<EventInfo> remainingEvents = UnwrapType().GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+            IEnumerable<EventInfo> remainingEvents = UnwrapType().GetEvents(bindingFlags)
                 .Skip(cachedEventCount);
             foreach (EventInfo eventInfo in remainingEvents)
             {
@@ -287,14 +304,22 @@ namespace BionicCode.Utilities.Net
             ArgumentOutOfRangeException.ThrowIfNegative(genericTypeParameterCount, nameof(genericTypeParameterCount));
             ArgumentException.ThrowIfNullOrWhiteSpace(constructorName, nameof(constructorName));
 
-            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrConstructor(this.Handle, constructorName, new MethodParameterInfoList(parameterList), genericTypeParameterCount, SymbolKind.Constructor);
+            MethodParameterInfoList symbolParameters = parameterList is null || parameterList.Length == 0
+                ? MethodParameterInfoList.Empty
+                : new MethodParameterInfoList(parameterList);
+            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrConstructor(
+                this.Handle,
+                constructorName,
+                symbolParameters,
+                genericTypeParameterCount,
+                SymbolKind.Constructor);
             SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ref cacheKey, out ConstructorData constructorData);
             _ = this.memberTable.TryAdd(cacheKey, constructorData);
 
             return constructorData;
         }
 
-        public IEnumerable<ConstructorData> EnumerateConstructors()
+        public IEnumerable<ConstructorData> EnumerateConstructors(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
         {
             int cachedConstructorCount = 0;
 
@@ -312,7 +337,7 @@ namespace BionicCode.Utilities.Net
                 yield break;
             }
 
-            IEnumerable<ConstructorInfo> remainingConstructors = UnwrapType().GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+            IEnumerable<ConstructorInfo> remainingConstructors = UnwrapType().GetConstructors(bindingFlags)
                 .Skip(cachedConstructorCount);
             foreach (ConstructorInfo constructor in remainingConstructors)
             {
@@ -494,8 +519,7 @@ namespace BionicCode.Utilities.Net
 
                 if (this.delegateInvokeMethodData is null)
                 {
-                    MethodInfo methodInfo = UnwrapType().GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                    this.delegateInvokeMethodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+                    this.delegateInvokeMethodData = GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, 0);
                 }
 
                 return this.delegateInvokeMethodData;

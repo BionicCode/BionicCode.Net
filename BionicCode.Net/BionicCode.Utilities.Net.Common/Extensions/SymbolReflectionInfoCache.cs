@@ -394,6 +394,12 @@
             {
                 methodInfo = MethodBase.GetMethodFromHandle(cacheKey.MethodHandle) as MethodInfo;
             }
+            else if (ReferenceEquals(cacheKey.ParameterList, ParameterList.Empty)
+                && ReferenceEquals(cacheKey.MethodParameterInfos, MethodParameterInfoList.Empty)
+                && cacheKey.GenericTypeParameterCount == 0)
+            {
+                methodInfo = declaringType.GetMethod(cacheKey.SymbolName, HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+            }
             else
             {
                 Type[] parameterTypes = Type.EmptyTypes;
@@ -417,6 +423,11 @@
                     binder: null,
                     types: parameterTypes,
                     modifiers: null);
+
+                if (methodInfo is null)
+                {
+
+                }
             }
 
             if (methodInfo is null)

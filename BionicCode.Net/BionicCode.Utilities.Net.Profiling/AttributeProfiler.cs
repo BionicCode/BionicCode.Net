@@ -286,7 +286,7 @@
             return await ProfileMembersAsync(targetMembers, targetInstance, typeDataToProfile, cancellationToken);
         }
 
-        protected async Task<ProfilerBatchResultGroupCollection> ProfileMembersAsync(IEnumerable<ProfiledMemberInfo> memberInfos, object profiledInstance, TypeData typeDataToProfile, CancellationToken cancellationToken)
+        protected async Task<ProfilerBatchResultGroupCollection> ProfileMembersAsync<TInstance>(IEnumerable<ProfiledMemberInfo> memberInfos, TInstance profiledInstance, TypeData typeDataToProfile, CancellationToken cancellationToken)
         {
             var resultGroups = new ProfilerBatchResultGroupCollection(typeDataToProfile);
             foreach (ProfiledMemberInfo memberInfo in memberInfos)
@@ -357,7 +357,7 @@
                         }
                         else
                         {
-                            invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, arguments, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.MethodData.SymbolComponentInfo, method.Namespace, method.AssemblyName, synchronousMethodInvocator: method.MethodData.GetInvocator(), ProfiledTargetType.Method);
+                            invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, arguments, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.MethodData.SymbolComponentInfo, method.Namespace, method.AssemblyName, synchronousMethodInvocator: method.MethodData.GetInvocator(t), ProfiledTargetType.Method);
                         }
 
                         var context = new ProfilerContext(invocationInfo, method.SourceFilePath, method.LineNumber, this.Configuration.WarmupIterations, this.Configuration.Iterations, method.TargetFramework, this.Configuration.BaseUnit, this.Configuration.ProfilerLogger, this.Configuration.AsyncProfilerLogger);

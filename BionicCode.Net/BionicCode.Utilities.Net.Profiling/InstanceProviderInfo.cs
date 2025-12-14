@@ -37,7 +37,7 @@
         {
             if (this.IsAwaitable)
             {
-                throw new InvalidOperationException($"The factory method awaitable. Check {nameof(this.IsAwaitable)} to ensure that the instance provider is not an awaitable method.");
+                throw new InvalidOperationException($"The factory method is awaitable. Check {nameof(this.IsAwaitable)} to ensure that the instance provider is not an awaitable method.");
             }
 
             if (this.instance is null)

@@ -1949,48 +1949,49 @@
         //  return null;
         //}
 
-        private static MethodData? CastMethodData;
-        /// <summary>
-        /// Casts the specified source object to the given target type at runtime using reflection.
-        /// </summary>
-        /// <remarks>This method performs a dynamic cast at runtime by locating and invoking a generic
-        /// cast method via reflection. Use this method when the target type is not known at compile time. Both the
-        /// source object and target type must be non-null. The returned object should be used with care, as runtime
-        /// casting errors may occur if the types are incompatible.</remarks>
-        /// <typeparam name="TSource">The type of the source object to cast.</typeparam>
-        /// <param name="source">The object instance to cast to the specified target type. Cannot be null.</param>
-        /// <param name="targetType">The type to which the source object will be cast. Cannot be null.</param>
-        /// <returns>A dynamic object representing the source cast to the specified target type.</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the generic cast method cannot be located in the HelperExtensionsCommon type.</exception>
-        public static dynamic Cast<TSource>(this TSource source, Type targetType)
-        {
-            ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
-            ArgumentNullExceptionEx.ThrowIfNull(targetType, nameof(targetType));
+        //private static MethodData? CastMethodData;
+        ///// <summary>
+        ///// Casts the specified source object to the given target type at runtime using reflection.
+        ///// </summary>
+        ///// <remarks>This method performs a dynamic cast at runtime by locating and invoking a generic
+        ///// cast method via reflection. Use this method when the target type is not known at compile time. Both the
+        ///// source object and target type must be non-null. The returned object should be used with care, as runtime
+        ///// casting errors may occur if the types are incompatible.</remarks>
+        ///// <typeparam name="TSource">The type of the source object to cast.</typeparam>
+        ///// <param name="source">The object instance to cast to the specified target type. Cannot be null.</param>
+        ///// <param name="targetType">The type to which the source object will be cast. Cannot be null.</param>
+        ///// <returns>A dynamic object representing the source cast to the specified target type.</returns>
+        ///// <exception cref="InvalidOperationException">Thrown if the generic cast method cannot be located in the HelperExtensionsCommon type.</exception>
+        //public static object Cast<TSource>(this TSource source, Type targetType)
+        //{
+        //    ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+        //    ArgumentNullExceptionEx.ThrowIfNull(targetType, nameof(targetType));
 
-            if (HelperExtensionsCommon.CastMethodData is null)
-            {
-                TypeData reflectionExtensionsTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(HelperExtensionsCommon));
-                foreach (MethodData methodData in reflectionExtensionsTypeData.EnumerateMethods())
-                {
-                    if (methodData.Name.Equals(nameof(HelperExtensionsCommon.Cast), StringComparison.Ordinal)
-                    && methodData.IsGenericMethodDefinition
-                    && methodData.Parameters.Count == 1
-                    && methodData.Parameters.GenericTypeParameterCount == 2)
-                    {
-                        HelperExtensionsCommon.CastMethodData = methodData.MakeGenericMethodData(source.GetType(), targetType);
-                        break;
-                    }
-                }
-            }
+        //    if (HelperExtensionsCommon.CastMethodData is null)
+        //    {
+        //        TypeData reflectionExtensionsTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(HelperExtensionsCommon));
+        //        foreach (MethodData methodData in reflectionExtensionsTypeData.EnumerateMethods())
+        //        {
+        //            if (methodData.Name.Equals(nameof(HelperExtensionsCommon.Cast), StringComparison.Ordinal)
+        //            && methodData.IsGenericMethodDefinition
+        //            && methodData.Parameters.Count == 1
+        //            && methodData.Parameters.GenericTypeParameterCount == 2)
+        //            {
+        //                HelperExtensionsCommon.CastMethodData = methodData;
+        //                break;
+        //            }
+        //        }
+        //    }
 
-            return HelperExtensionsCommon.CastMethodData?.Invoke(source, [source]) ?? throw new InvalidOperationException($"Failed to locate generic method '{nameof(HelperExtensionsCommon.Cast)}' in type '{typeof(HelperExtensionsCommon).FullName}'.");
-        }
+        //    MethodData finalizedCastMethodData = HelperExtensionsCommon.CastMethodData?.MakeGenericMethodData(source.GetType(), targetType);
+        //    return finalizedCastMethodData.Invoke<TSource, TSource[], TResult>(source, [source]) ?? throw new InvalidOperationException($"Failed to locate generic method '{nameof(HelperExtensionsCommon.Cast)}' in type '{typeof(HelperExtensionsCommon).FullName}'.");
+        //}
 
-        // Reflection-invoked generic method for dynamic casting
-        private static TDestination Cast<TSource, TDestination>(this TSource obj)
-            => obj is TDestination destination
-            ? destination
-            : throw new InvalidCastException($"Cannot cast object of targetType '{typeof(TSource).FullName}' to targetType '{typeof(TDestination).FullName}'.");
+        //// Reflection-invoked generic method for dynamic casting
+        //private static TDestination Cast<TSource, TDestination>(this TSource obj)
+        //    => obj is TDestination destination
+        //    ? destination
+        //    : throw new InvalidCastException($"Cannot cast object of targetType '{typeof(TSource).FullName}' to targetType '{typeof(TDestination).FullName}'.");
 
         /// <summary>
         /// Converts the specified string to an HTML-encoded representation suitable for display in web pages.
