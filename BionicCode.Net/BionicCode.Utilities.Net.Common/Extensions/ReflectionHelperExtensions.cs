@@ -27,9 +27,9 @@
 
         /// <summary>
         /// Specifies binding flags that include all instance and static members, regardless of visibility, declared
-        /// only on the current type.
+        /// only on the current targetType.
         /// </summary>
-        /// <remarks>This combination of flags is typically used when reflecting over a type to retrieve
+        /// <remarks>This combination of flags is typically used when reflecting over a targetType to retrieve
         /// all of its members, including public, non-public, static, and instance members, but excluding inherited
         /// members from base types.</remarks>
         internal const BindingFlags AllDeclaredMembersFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
@@ -38,7 +38,7 @@
         /// entire inheritance hierarchy except for members inherited from System.Object.
         /// </summary>
         /// <remarks>This constant is intended for use with reflection methods that require a
-        /// comprehensive set of binding flags to access all members of a type, including those declared in base
+        /// comprehensive set of binding flags to access all members of a targetType, including those declared in base
         /// classes. It does not include the DeclaredOnly flag, so inherited members are included. Members inherited
         /// from System.Object may still be excluded depending on the reflection API used.</remarks>
         internal const BindingFlags AllMembersFullHierarchyFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
@@ -64,16 +64,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace and the declaring type (in case of a member), but with attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace and the declaring targetType (in case of a member), but with attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="methodInfo">The <see cref="MethodInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"public MyClass(Action&lt;TParam&gt; doSomething, [CallerMemberName] string value = null)"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="MethodInfo"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureShortName(MethodInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Use <see cref="ToRuntimeSignatureShortName(MethodInfo)"/> to return a signature using the resolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(MethodInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
@@ -87,16 +87,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="methodInfo">The <see cref="MethodInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"public MyClass&lt;TParam&gt;.MyClass(Action&lt;TParam&gt; doSomething, [CallerMemberName] string value = null)"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="MethodInfo"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureName(MethodInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Use <see cref="ToRuntimeSignatureName(MethodInfo)"/> to return a signature using the resolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(MethodInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
@@ -110,16 +110,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="methodInfo">The <see cref="MethodInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"public MyClass(Action&lt;int&gt; doSomething, [CallerMemberName] string value = null)"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="MethodInfo"/> instance.<br/>
-        /// Use <see cref="ToSignatureShortName(MethodInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Use <see cref="ToSignatureShortName(MethodInfo)"/> to return a signature using the unresolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(MethodInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
@@ -133,16 +133,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="methodInfo">The <see cref="MethodInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"public MyClass&lt;int&gt;.MyClass(Action&lt;int&gt; doSomething, [CallerMemberName] string value = null)"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="MethodInfo"/> instance.<br/>
-        /// Use <see cref="ToSignatureName(MethodInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Use <see cref="ToSignatureName(MethodInfo)"/> to return a signature using the unresolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(MethodInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
@@ -156,16 +156,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace and the declaring type (in case of a member), but with attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace and the declaring targetType (in case of a member), but with attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="type">The <see cref="Type"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"[Obsolete("Stop using this class")] public class MyClass&lt;T&gt;"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="Type"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureShortName(Type)"/> to return a signature using the resolved generic type parameters instead.
+        /// Use <see cref="ToRuntimeSignatureShortName(Type)"/> to return a signature using the resolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(TypeInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
@@ -179,16 +179,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="type">The <see cref="Type"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"[Obsolete("Stop using this class")] public class MyClass&lt;T&gt;"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="Type"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureName(Type)"/> to return a signature using the resolved generic type parameters instead.
+        /// Use <see cref="ToRuntimeSignatureName(Type)"/> to return a signature using the resolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(Type, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
@@ -202,16 +202,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="type">The <see cref="Type"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"[Obsolete("Stop using this class")] public class MyClass&lt;string&gt;"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="Type"/> instance.<br/>
-        /// Use <see cref="ToSignatureShortName(Type)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Use <see cref="ToSignatureShortName(Type)"/> to return a signature using the unresolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(Type, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
@@ -225,16 +225,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="type">The <see cref="Type"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"[Obsolete("Stop using this class")] public class MyClass&lt;string&gt;"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="Type"/> instance.<br/>
-        /// Use <see cref="ToSignatureName(Type)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Use <see cref="ToSignatureName(Type)"/> to return a signature using the unresolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(Type, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
@@ -248,16 +248,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace and the declaring type (in case of a member), but with attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace and the declaring targetType (in case of a member), but with attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"[JsonPropertyName("my_property")] public T myField;"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="FieldInfo"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureShortName(FieldInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Use <see cref="ToRuntimeSignatureShortName(FieldInfo)"/> to return a signature using the resolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(FieldInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
@@ -271,16 +271,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"[JsonPropertyName("my_property")] public T MyClass&lt;T&gt;.myField;"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="FieldInfo"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureName(FieldInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Use <see cref="ToRuntimeSignatureName(FieldInfo)"/> to return a signature using the resolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(FieldInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
@@ -294,16 +294,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"[JsonPropertyName("my_property")] public string myField;"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="FieldInfo"/> instance.<br/>
-        /// Use <see cref="ToSignatureShortName(FieldInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Use <see cref="ToSignatureShortName(FieldInfo)"/> to return a signature using the unresolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(FieldInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
@@ -317,16 +317,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"[JsonPropertyName("my_property")] public string MyClass&lt;string&gt;.myField;"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="FieldInfo"/> instance.<br/>
-        /// Use <see cref="ToSignatureName(FieldInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Use <see cref="ToSignatureName(FieldInfo)"/> to return a signature using the unresolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(FieldInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
@@ -340,16 +340,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace and the declaring type (in case of a member), but with attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace and the declaring targetType (in case of a member), but with attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"[Required(ErrorMessage = "MyProperty is required.")] public T MyProperty { get; set; }"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="PropertyInfo"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureShortName(PropertyInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Use <see cref="ToRuntimeSignatureShortName(PropertyInfo)"/> to return a signature using the resolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(PropertyInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
@@ -363,16 +363,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"[Required(ErrorMessage = "MyProperty is required.")] public T MyClass&lt;T&gt;.MyProperty { get; set; }"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="PropertyInfo"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureName(PropertyInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Use <see cref="ToRuntimeSignatureName(PropertyInfo)"/> to return a signature using the resolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(PropertyInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
@@ -386,16 +386,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"[Required(ErrorMessage = "MyProperty is required.")] public int MyProperty { get; set; }"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="PropertyInfo"/> instance.<br/>
-        /// Use <see cref="ToSignatureShortName(PropertyInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Use <see cref="ToSignatureShortName(PropertyInfo)"/> to return a signature using the unresolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(PropertyInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
@@ -409,16 +409,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"[Required(ErrorMessage = "MyProperty is required.")] public int MyClass&lt;int&gt;.MyProperty { get; set; }"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="PropertyInfo"/> instance.<br/>
-        /// Use <see cref="ToSignatureName(PropertyInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Use <see cref="ToSignatureName(PropertyInfo)"/> to return a signature using the unresolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(PropertyInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
@@ -432,16 +432,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace and the declaring type (in case of a member), but with attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace and the declaring targetType (in case of a member), but with attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="constructorInfo">The <see cref="ConstructorInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"public MyClass(Action&lt;TParam&gt; doSomething, [CallerMemberName] string value = null)"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="ConstructorInfo"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureShortName(ConstructorInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Use <see cref="ToRuntimeSignatureShortName(ConstructorInfo)"/> to return a signature using the resolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(ConstructorInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
@@ -455,16 +455,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="constructorInfo">The <see cref="ConstructorInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"public MyClass&lt;TParam&gt;.MyClass(Action&lt;TParam&gt; doSomething, [CallerMemberName] string value = null)"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="ConstructorInfo"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureName(ConstructorInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Use <see cref="ToRuntimeSignatureName(ConstructorInfo)"/> to return a signature using the resolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(ConstructorInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
@@ -478,16 +478,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="constructorInfo">The <see cref="ConstructorInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"public MyClass(Action&lt;int&gt; doSomething, [CallerMemberName] string value = null)"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="ConstructorInfo"/> instance.<br/>
-        /// Use <see cref="ToSignatureShortName(ConstructorInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Use <see cref="ToSignatureShortName(ConstructorInfo)"/> to return a signature using the unresolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(ConstructorInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
@@ -501,16 +501,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="constructorInfo">The <see cref="ConstructorInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"public MyClass&lt;int&gt;.MyClass(Action&lt;int&gt; doSomething, [CallerMemberName] string value = null)"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="ConstructorInfo"/> instance.<br/>
-        /// Use <see cref="ToSignatureName(ConstructorInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Use <see cref="ToSignatureName(ConstructorInfo)"/> to return a signature using the unresolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(ConstructorInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
@@ -524,16 +524,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace and the declaring type (in case of a member), but with attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace and the declaring targetType (in case of a member), but with attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="eventInfo">The <see cref="EventInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"[Obsolete("Use NewEvent instead.")] public event EventHandler&lt;TEventArgs&gt; Completed;"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="EventInfo"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureShortName(EventInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Use <see cref="ToRuntimeSignatureShortName(EventInfo)"/> to return a signature using the resolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
@@ -547,16 +547,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="eventInfo">The <see cref="EventInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"[Obsolete("Use NewEvent instead.")] public event EventHandler&lt;TEventArgs&gt; MyClass&lt;TEventArgs&gt;.Completed;"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="EventInfo"/> instance.<br/>
-        /// Use <see cref="ToRuntimeSignatureName(EventInfo)"/> to return a signature using the resolved generic type parameters instead.
+        /// Use <see cref="ToRuntimeSignatureName(EventInfo)"/> to return a signature using the resolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
@@ -570,16 +570,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="eventInfo">The <see cref="EventInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"[Obsolete("Use NewEvent instead.")] public event EventHandler&lt;CompletedEventArgs&gt; Completed;"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="EventInfo"/> instance.<br/>
-        /// Use <see cref="ToSignatureShortName(EventInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Use <see cref="ToSignatureShortName(EventInfo)"/> to return a signature using the unresolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
@@ -593,16 +593,16 @@
 
         /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
-        /// <br/>The Signature will be generated without namespace, but with the declaring type (in case of a member), attributes and the resolved runtime generic type argument names.
+        /// <br/>The Signature will be generated without namespace, but with the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
         /// </summary>
         /// <param name="eventInfo">The <see cref="EventInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
-        /// A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
         /// <br/>For example, <c>"[Obsolete("Use NewEvent instead.")] public event EventHandler&lt;CompletedEventArgs&gt; MyClass&lt;CompletedEventArgs&gt;.Completed;"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="EventInfo"/> instance.<br/>
-        /// Use <see cref="ToSignatureName(EventInfo)"/> to return a signature using the unresolved generic type parameters instead.
+        /// Use <see cref="ToSignatureName(EventInfo)"/> to return a signature using the unresolved generic targetType parameters instead.
         /// Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
@@ -792,19 +792,19 @@
         }
 
         /// <summary>
-        /// Gets the ordered base type hierarchy (ancestor inheritance tree) of a specified type, starting from the root type (most distant base class or most distant implemented interface) and includes the current type (the tree's leaf) as the last item.
+        /// Gets the ordered base targetType hierarchy (ancestor inheritance tree) of a specified targetType, starting from the root targetType (most distant base class or most distant implemented interface) and includes the current targetType (the tree's leaf) as the last item.
         /// </summary>
-        /// <param name="type">The type of which the ancestor hierarchy to return.</param>
+        /// <param name="type">The targetType of which the ancestor hierarchy to return.</param>
         /// <param name="includeInterfaces"><see langword="true"/> if interfaces should be included. Otherwise <see langword="false"/>. 
-        /// If type <paramref name="type"/> is itself an interface then the <paramref name="includeInterfaces"/> parameter is ignored and all implemented interfaces will be returned.
+        /// If targetType <paramref name="type"/> is itself an interface then the <paramref name="includeInterfaces"/> parameter is ignored and all implemented interfaces will be returned.
         /// The default is <see langword="false"/>.</param>
         /// <returns>A <see cref="List{Type}"/> that contains the ordered base types of <paramref name="type"/> (ancestor hierarchy) starting with the root (the most distant base class or most distant interface in case <paramref name="includeInterfaces"/> evaluates to <see langword="true"/>). 
         /// If <paramref name="includeInterfaces"/> is <see langword="true"/> then the result also contains all implemented interfaces. 
         /// <br/>The last item in the collection is always the current <paramref name="type"/> value (the hierarchy leaf). 
-        /// <br/>The language base types <see cref="object" /> and <see cref="ValueType"/> are excluded from the result, except the current <paramref name="type"/> is itself of type <see cref="object"/>.
-        /// <br/>If <paramref name="type"/> does not have a parent inheritance tree or does not implement any interfaces or is of type <see cref="object"/> or a value type (<see cref="Type.IsValueType"/> returns <see langword="true"/>) then the result collection will only contain the current <paramref name="type"/> value.</returns>
-        /// <remarks>The type <see cref="object"/> (the root type for reference types) and the type <see cref="ValueType"/> (the base type for value types) are not included in the hierarchy.
-        /// <br/>This means, if <paramref name="type"/> is of type <see cref="object"/> or a value type (<see cref="Type.IsValueType"/> returns <see langword="true"/>) then the result will only contain the current <paramref name="type"/> or in case of a value type additionally the implemented interfaces.
+        /// <br/>The language base types <see cref="object" /> and <see cref="ValueType"/> are excluded from the result, except the current <paramref name="type"/> is itself of targetType <see cref="object"/>.
+        /// <br/>If <paramref name="type"/> does not have a parent inheritance tree or does not implement any interfaces or is of targetType <see cref="object"/> or a value targetType (<see cref="Type.IsValueType"/> returns <see langword="true"/>) then the result collection will only contain the current <paramref name="type"/> value.</returns>
+        /// <remarks>The targetType <see cref="object"/> (the root targetType for reference types) and the targetType <see cref="ValueType"/> (the base targetType for value types) are not included in the hierarchy.
+        /// <br/>This means, if <paramref name="type"/> is of targetType <see cref="object"/> or a value targetType (<see cref="Type.IsValueType"/> returns <see langword="true"/>) then the result will only contain the current <paramref name="type"/> or in case of a value targetType additionally the implemented interfaces.
         /// </remarks>
         /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
         public static ImmutableList<Type> GetTypeHierarchy(this Type type, bool includeInterfaces = false)
@@ -991,7 +991,7 @@
         }
 
         /// <summary>
-        /// Extension method to convert generic and non-generic type name to a readable fully qualified display name.
+        /// Extension method to convert generic and non-generic targetType name to a readable fully qualified display name.
         /// </summary>
         /// <returns>
         /// A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
@@ -1105,14 +1105,14 @@
         }
 
         /// <summary>
-        /// Appends a human-readable display name for the specified type to the provided StringBuilder instance.
+        /// Appends a human-readable display name for the specified targetType to the provided StringBuilder instance.
         /// </summary>
-        /// <remarks>The display name includes type information in a format suitable for display in user
-        /// interfaces or logs. If the type is a generic type and isGenericTypeParameterIncluded is true, the generic
-        /// type parameters are included in the display name.</remarks>
-        /// <param name="nameBuilder">The StringBuilder to which the display name of the type will be appended. Cannot be null.</param>
-        /// <param name="type">The type whose display name is to be appended. Cannot be null.</param>
-        /// <param name="isGenericTypeParameterIncluded">true to include generic type parameter names in the display name; otherwise, false. The default is true.</param>
+        /// <remarks>The display name includes targetType information in a format suitable for display in user
+        /// interfaces or logs. If the targetType is a generic targetType and isGenericTypeParameterIncluded is true, the generic
+        /// targetType parameters are included in the display name.</remarks>
+        /// <param name="nameBuilder">The StringBuilder to which the display name of the targetType will be appended. Cannot be null.</param>
+        /// <param name="type">The targetType whose display name is to be appended. Cannot be null.</param>
+        /// <param name="isGenericTypeParameterIncluded">true to include generic targetType parameter names in the display name; otherwise, false. The default is true.</param>
         /// <returns>The StringBuilder instance with the appended display name.</returns>
         public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, Type type, bool isGenericTypeParameterIncluded = true)
         {
@@ -1132,7 +1132,7 @@
         /// the method's characteristics and the value of isDeclaringTypeIncluded.</remarks>
         /// <param name="nameBuilder">The StringBuilder to which the display name of the method will be appended. Cannot be null.</param>
         /// <param name="methodInfo">The MethodInfo representing the method whose display name is to be appended. Cannot be null.</param>
-        /// <param name="isDeclaringTypeIncluded">true to include the declaring type in the display name; otherwise, false. The default is false.</param>
+        /// <param name="isDeclaringTypeIncluded">true to include the declaring targetType in the display name; otherwise, false. The default is false.</param>
         /// <returns>The StringBuilder instance with the method's display name appended.</returns>
         public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, MethodInfo methodInfo, bool isDeclaringTypeIncluded = false)
         {
@@ -1148,11 +1148,11 @@
         /// Appends a display-friendly name for the specified event to the provided StringBuilder instance.
         /// </summary>
         /// <remarks>This method does not clear or reset the contents of the StringBuilder. It appends the
-        /// event's display name to the existing content. The format of the display name may include the declaring type
+        /// event's display name to the existing content. The format of the display name may include the declaring targetType
         /// if isDeclaringTypeIncluded is set to true.</remarks>
         /// <param name="nameBuilder">The StringBuilder to which the event's display name will be appended. Cannot be null.</param>
         /// <param name="eventInfo">The EventInfo representing the event whose display name is to be appended. Cannot be null.</param>
-        /// <param name="isDeclaringTypeIncluded">true to include the declaring type in the display name; otherwise, false. The default is false.</param>
+        /// <param name="isDeclaringTypeIncluded">true to include the declaring targetType in the display name; otherwise, false. The default is false.</param>
         /// <returns>The same StringBuilder instance provided in nameBuilder, with the event's display name appended.</returns>
         public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, EventInfo eventInfo, bool isDeclaringTypeIncluded = false)
         {
@@ -1168,11 +1168,11 @@
         /// Appends the display name of the specified constructor to the provided StringBuilder instance.
         /// </summary>
         /// <remarks>The display name includes the constructor's signature and, optionally, the declaring
-        /// type if specified. This method does not clear or reset the StringBuilder; it appends to its existing
+        /// targetType if specified. This method does not clear or reset the StringBuilder; it appends to its existing
         /// content.</remarks>
         /// <param name="nameBuilder">The StringBuilder to which the constructor's display name will be appended. Cannot be null.</param>
         /// <param name="constructorInfo">The ConstructorInfo representing the constructor whose display name is to be appended. Cannot be null.</param>
-        /// <param name="isDeclaringTypeIncluded">true to include the declaring type in the display name; otherwise, false. The default is false.</param>
+        /// <param name="isDeclaringTypeIncluded">true to include the declaring targetType in the display name; otherwise, false. The default is false.</param>
         /// <returns>The StringBuilder instance with the constructor's display name appended.</returns>
         public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, ConstructorInfo constructorInfo, bool isDeclaringTypeIncluded = false)
         {
@@ -1189,10 +1189,10 @@
         /// </summary>
         /// <remarks>This method is useful for generating human-readable representations of property
         /// names, such as for logging or UI display. The format of the display name may vary depending on whether the
-        /// declaring type is included.</remarks>
+        /// declaring targetType is included.</remarks>
         /// <param name="nameBuilder">The StringBuilder to which the property's display name will be appended. Cannot be null.</param>
         /// <param name="propertyInfo">The PropertyInfo representing the property whose display name is to be appended. Cannot be null.</param>
-        /// <param name="isDeclaringTypeIncluded">true to include the declaring type in the display name; otherwise, false. The default is false.</param>
+        /// <param name="isDeclaringTypeIncluded">true to include the declaring targetType in the display name; otherwise, false. The default is false.</param>
         /// <returns>The same StringBuilder instance provided in nameBuilder, with the property's display name appended.</returns>
         public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, PropertyInfo propertyInfo, bool isDeclaringTypeIncluded = false)
         {
@@ -1223,12 +1223,12 @@
         /// <summary>
         /// Appends the display name of the specified field to the provided StringBuilder instance.
         /// </summary>
-        /// <remarks>The display name includes the field's name and, optionally, its declaring type if
+        /// <remarks>The display name includes the field's name and, optionally, its declaring targetType if
         /// isDeclaringTypeIncluded is set to true. This method does not clear or reset the StringBuilder; it appends to
         /// its existing content.</remarks>
         /// <param name="nameBuilder">The StringBuilder to which the display name will be appended. Cannot be null.</param>
         /// <param name="fieldInfo">The FieldInfo representing the field whose display name is to be appended. Cannot be null.</param>
-        /// <param name="isDeclaringTypeIncluded">true to include the declaring type in the display name; otherwise, false. The default is false.</param>
+        /// <param name="isDeclaringTypeIncluded">true to include the declaring targetType in the display name; otherwise, false. The default is false.</param>
         /// <returns>The same StringBuilder instance with the field's display name appended.</returns>
         public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, FieldInfo fieldInfo, bool isDeclaringTypeIncluded = false)
         {
@@ -1241,15 +1241,15 @@
         }
 
         /// <summary>
-        /// Appends the fully qualified display name of the specified type to the provided StringBuilder instance.
+        /// Appends the fully qualified display name of the specified targetType to the provided StringBuilder instance.
         /// </summary>
-        /// <remarks>This method appends the namespace and type name, including generic type parameters if
+        /// <remarks>This method appends the namespace and targetType name, including generic targetType parameters if
         /// specified, to the end of the provided StringBuilder. The method does not clear or modify the existing
-        /// contents of the StringBuilder except to append the type's display name.</remarks>
+        /// contents of the StringBuilder except to append the targetType's display name.</remarks>
         /// <param name="nameBuilder">The StringBuilder to which the fully qualified display name will be appended. Cannot be null.</param>
-        /// <param name="type">The type whose fully qualified display name is to be appended. Cannot be null.</param>
-        /// <param name="isGenericTypeParameterIncluded">true to include generic type parameter names in the display name; otherwise, false. The default is true.</param>
-        /// <returns>The StringBuilder instance with the fully qualified display name of the specified type appended.</returns>
+        /// <param name="type">The targetType whose fully qualified display name is to be appended. Cannot be null.</param>
+        /// <param name="isGenericTypeParameterIncluded">true to include generic targetType parameter names in the display name; otherwise, false. The default is true.</param>
+        /// <returns>The StringBuilder instance with the fully qualified display name of the specified targetType appended.</returns>
         public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, Type type, bool isGenericTypeParameterIncluded = true)
         {
             ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
@@ -1589,10 +1589,10 @@
 
         // TODO::Test if checking get() is enough to determine if a property is overridden
         /// <summary>
-        /// Determines whether the specified type represents a delegate type.
+        /// Determines whether the specified targetType represents a delegate targetType.
         /// </summary>
-        /// <param name="type">The type to evaluate. Cannot be null.</param>
-        /// <returns>true if the specified type is a delegate; otherwise, false.</returns>
+        /// <param name="type">The targetType to evaluate. Cannot be null.</param>
+        /// <returns>true if the specified targetType is a delegate; otherwise, false.</returns>
         public static bool IsDelegate(this Type type)
         {
             ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
@@ -1687,8 +1687,8 @@
         /// <summary>
         /// Extension method to check if a <see cref="Type"/> is static.
         /// </summary>
-        /// <param genericTypeParameterIdentifier="type">The extended <see cref="Type"/> instance.</param>
-        /// <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="type"/> is static. Otherwise <see langword="false"/>.</returns>
+        /// <param genericTypeParameterIdentifier="targetType">The extended <see cref="Type"/> instance.</param>
+        /// <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="targetType"/> is static. Otherwise <see langword="false"/>.</returns>
         public static bool IsStatic(this Type type)
         {
             ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
@@ -1698,10 +1698,10 @@
         }
 
         /// <summary>
-        /// Determines whether the specified type is a built-in .NET type.
+        /// Determines whether the specified targetType is a built-in .NET targetType.
         /// </summary>
-        /// <param name="type">The type to evaluate. Cannot be null.</param>
-        /// <returns><see langword="true"/> if the specified type is a built-in .NET type; otherwise, <see langword="false"/>.</returns>
+        /// <param name="type">The targetType to evaluate. Cannot be null.</param>
+        /// <returns><see langword="true"/> if the specified targetType is a built-in .NET targetType; otherwise, <see langword="false"/>.</returns>
         public static bool IsBuiltInType(this Type type)
         {
             ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
@@ -1761,8 +1761,8 @@
         /// <summary>
         /// Extension method that checks if the provided <see cref="Type"/> is qualified to define extension methods.
         /// </summary>
-        /// <param genericTypeParameterIdentifier="type">The extended <see cref="Type"/> instance.</param>
-        /// <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="type"/> is allowed to define extension methods. Otherwise <see langword="false"/>.</returns>
+        /// <param genericTypeParameterIdentifier="targetType">The extended <see cref="Type"/> instance.</param>
+        /// <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="targetType"/> is allowed to define extension methods. Otherwise <see langword="false"/>.</returns>
         /// <remarks>To be able to define extension methods a class must be static, non-generic, a top level valueType. 
         /// <br/>In addition this method checks if the declaring class and the method are both decorated with the <see cref="ExtensionAttribute"/> which is added by the compiler.</remarks>
         public static bool CanDeclareExtensionMethods(this Type type)
@@ -1820,14 +1820,14 @@
 
         /// <summary>
         /// Determines whether the specified method is an extension method whose first parameter is compatible with the
-        /// given instance type.
+        /// given instance targetType.
         /// </summary>
         /// <remarks>Use this method to verify whether a given <see cref="MethodInfo"/> represents an
-        /// extension method that can be applied to instances of a specific type. This is useful when reflecting over
-        /// methods to identify applicable extension methods for a type.</remarks>
-        /// <typeparam name="TInstance">The type to check as the target of the extension method. Must be a type derived from <see cref="Type"/>.</typeparam>
+        /// extension method that can be applied to instances of a specific targetType. This is useful when reflecting over
+        /// methods to identify applicable extension methods for a targetType.</remarks>
+        /// <typeparam name="TInstance">The targetType to check as the target of the extension method. Must be a targetType derived from <see cref="Type"/>.</typeparam>
         /// <param name="methodInfo">The method information to evaluate as a potential extension method.</param>
-        /// <returns>true if the method is an extension method and its first parameter type is assignable from <typeparamref
+        /// <returns>true if the method is an extension method and its first parameter targetType is assignable from <typeparamref
         /// name="TInstance"/>; otherwise, false.</returns>
         public static bool IsExtensionMethodOf<TInstance>(this MethodInfo methodInfo) where TInstance : Type
         {
@@ -1893,10 +1893,10 @@
         }
 
         /// <summary>
-        /// Determines whether the specified type is a read-only struct.
+        /// Determines whether the specified targetType is a read-only struct.
         /// </summary>
-        /// <param name="type">The type to evaluate. Cannot be null.</param>
-        /// <returns>true if the specified type is a read-only struct; otherwise, false.</returns>
+        /// <param name="type">The targetType to evaluate. Cannot be null.</param>
+        /// <returns>true if the specified targetType is a read-only struct; otherwise, false.</returns>
         public static bool IsReadOnlyStruct(this Type type)
         {
             ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
@@ -1917,20 +1917,20 @@
         //  // So search for an extension method named "GetAwaiter" for the return valueType that effectively converts the valueType into an awaitable object.
         //  foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
         //  {
-        //    foreach (TypeInfo type in assembly.GetExportedTypes())
+        //    foreach (TypeInfo targetType in assembly.GetExportedTypes())
         //    {
-        //      if (!type.IsSealed || type.IsGenericType)
+        //      if (!targetType.IsSealed || targetType.IsGenericType)
         //      {
         //        continue;
         //      }
 
-        //      getAwaiterMethodInfo = type.GetMethod(nameof(Task.GetAwaiter), BindingFlags.Static | BindingFlags.Public, null, new[] { obj.GetType() }, null);
+        //      getAwaiterMethodInfo = targetType.GetMethod(nameof(Task.GetAwaiter), BindingFlags.Static | BindingFlags.Public, null, new[] { obj.GetType() }, null);
         //      if (getAwaiterMethodInfo != null)
         //      {
         //        return (Task)getAwaiterMethodInfo.Invoke(obj, null);
         //      }
 
-        //      //foreach (MethodInfo extensionMethodCandidate in type.GetMethods(BindingFlags.Static | BindingFlags.Public))
+        //      //foreach (MethodInfo extensionMethodCandidate in targetType.GetMethods(BindingFlags.Static | BindingFlags.Public))
         //      //{
         //      //  if (!extensionMethodCandidate.EventName.Equals(nameof(Task.GetAwaiter), StringComparison.Ordinal))
         //      //  {
@@ -1949,34 +1949,48 @@
         //  return null;
         //}
 
+        private static MethodData? CastMethodData;
         /// <summary>
-        /// Casts the specified object to the given type at runtime and returns the result as a dynamic value.
+        /// Casts the specified source object to the given target type at runtime using reflection.
         /// </summary>
-        /// <remarks>This method performs a runtime cast using reflection and returns the result as a
-        /// dynamic value. If the cast is not valid, a runtime exception may be thrown. Use this method when the target
-        /// type is not known at compile time.</remarks>
-        /// <param name="obj">The object to be cast to the specified type. Cannot be null.</param>
-        /// <param name="type">The target type to cast the object to. Cannot be null.</param>
-        /// <returns>A dynamic value representing the object cast to the specified type.</returns>
-        public static dynamic Cast<TSource>(this TSource obj, Type type)
+        /// <remarks>This method performs a dynamic cast at runtime by locating and invoking a generic
+        /// cast method via reflection. Use this method when the target type is not known at compile time. Both the
+        /// source object and target type must be non-null. The returned object should be used with care, as runtime
+        /// casting errors may occur if the types are incompatible.</remarks>
+        /// <typeparam name="TSource">The type of the source object to cast.</typeparam>
+        /// <param name="source">The object instance to cast to the specified target type. Cannot be null.</param>
+        /// <param name="targetType">The type to which the source object will be cast. Cannot be null.</param>
+        /// <returns>A dynamic object representing the source cast to the specified target type.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the generic cast method cannot be located in the HelperExtensionsCommon type.</exception>
+        public static dynamic Cast<TSource>(this TSource source, Type targetType)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(obj, nameof(obj));
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
+            ArgumentNullExceptionEx.ThrowIfNull(targetType, nameof(targetType));
 
-            TypeData reflectionExtensionsTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(HelperExtensionsCommon));
-            foreach (MethodData methodData in reflectionExtensionsTypeData.EnumerateMethods())
+            if (HelperExtensionsCommon.CastMethodData is null)
             {
-                if (methodData.Name.Equals(nameof(HelperExtensionsCommon.Cast), StringComparison.Ordinal)
-                && methodData.IsGenericMethodDefinition
-                && methodData.Parameters.Count == 1
-                && methodData.Parameters.GenericTypeParameterCount == 2)
+                TypeData reflectionExtensionsTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(HelperExtensionsCommon));
+                foreach (MethodData methodData in reflectionExtensionsTypeData.EnumerateMethods())
                 {
-                    methodData.GetGenericMethodDefinition()
-                 .MakeGenericMethod(obj.GetType(), type).Invoke(obj, [obj]);
+                    if (methodData.Name.Equals(nameof(HelperExtensionsCommon.Cast), StringComparison.Ordinal)
+                    && methodData.IsGenericMethodDefinition
+                    && methodData.Parameters.Count == 1
+                    && methodData.Parameters.GenericTypeParameterCount == 2)
+                    {
+                        HelperExtensionsCommon.CastMethodData = methodData.MakeGenericMethodData(source.GetType(), targetType);
+                        break;
+                    }
                 }
+            }
 
+            return HelperExtensionsCommon.CastMethodData?.Invoke(source, [source]) ?? throw new InvalidOperationException($"Failed to locate generic method '{nameof(HelperExtensionsCommon.Cast)}' in type '{typeof(HelperExtensionsCommon).FullName}'.");
+        }
+
+        // Reflection-invoked generic method for dynamic casting
         private static TDestination Cast<TSource, TDestination>(this TSource obj)
-            => obj is TDestination destination ? destination : throw new InvalidCastException($"Cannot cast object of type '{typeof(TSource).FullName}' to type '{typeof(TDestination).FullName}'.");
+            => obj is TDestination destination
+            ? destination
+            : throw new InvalidCastException($"Cannot cast object of targetType '{typeof(TSource).FullName}' to targetType '{typeof(TDestination).FullName}'.");
 
         /// <summary>
         /// Converts the specified string to an HTML-encoded representation suitable for display in web pages.
@@ -2107,7 +2121,7 @@
 
         /// <summary>
         /// Appends an HTML-formatted representation of the specified symbol component, including attributes, modifiers,
-        /// type, name, parameters, and constraints, to the provided string builder.
+        /// targetType, name, parameters, and constraints, to the provided string builder.
         /// </summary>
         /// <remarks>The generated HTML includes semantic CSS classes for syntax highlighting and is
         /// intended for use in documentation or code display scenarios. The method does not encode user-provided
@@ -2122,7 +2136,7 @@
                 foreach (SymbolComponentInfo attribute in symbolComponentInfo.CustomAttributes)
                 {
                     _ = signatureBuilder.Append($"<span class=\"syntax-delimiter\">[</span>")
-                      .Append($"<span class=\"syntax-type\">")
+                      .Append($"<span class=\"syntax-targetType\">")
                       .Append(attribute.Name);
 
                     bool hasConstructorArgs = symbolComponentInfo.CustomAttributeConstructorArgs.Any();
@@ -2154,7 +2168,7 @@
 
                     if (hasArguments)
                     {
-                        _ = signatureBuilder.Append($"<span class=\"syntax-type\">")
+                        _ = signatureBuilder.Append($"<span class=\"syntax-targetType\">")
                           .Append(')');
                     }
 
@@ -2202,7 +2216,7 @@
                 }
                 else
                 {
-                    _ = signatureBuilder.Append($"<span class=\"syntax-type\">");
+                    _ = signatureBuilder.Append($"<span class=\"syntax-targetType\">");
                 }
 
                 _ = signatureBuilder.Append(symbolComponentInfo.Name)
@@ -2229,7 +2243,7 @@
                 _ = signatureBuilder.Append($"<span class=\"syntax-delimiter\">")
                   .Append('<'.ToHtmlEncodedReadOnlySpan())
                   .Append("</span>")
-                  .Append($"<span class=\"syntax-type\">");
+                  .Append($"<span class=\"syntax-targetType\">");
 
                 foreach (SymbolComponentInfo typeParameter in symbolComponentInfo.GenericTypeParameters)
                 {
@@ -2258,7 +2272,7 @@
                 }
 
                 _ = signatureBuilder.Append("</span>")
-                  .Append($"<span class=\"syntax-type\">");
+                  .Append($"<span class=\"syntax-targetType\">");
 
                 foreach (SymbolComponentInfo parameter in symbolComponentInfo.Parameters)
                 {
@@ -2322,7 +2336,7 @@
                       .Append("where")
                       .Append(' ')
                       .Append("</span>")
-                      .Append($"<span class=\"syntax-type\">")
+                      .Append($"<span class=\"syntax-targetType\">")
                       .Append(constraintInfo.Name)
                       .Append(' ')
                       .Append("</span>")
@@ -2343,7 +2357,7 @@
                         }
                         else
                         {
-                            _ = signatureBuilder.Append($"<span class=\"syntax-type\">")
+                            _ = signatureBuilder.Append($"<span class=\"syntax-targetType\">")
                               .Append(constraint.Name)
                               .Append(',')
                               .Append(' ')
@@ -2370,8 +2384,8 @@
         /// Determines whether the specified delegate is compatible with the signature of the given event.
         /// </summary>
         /// <remarks>This method checks whether the delegate can be used as an event handler for the
-        /// specified event by comparing the parameter types of the delegate's method and the event's handler type.
-        /// MemberParameter types must match in number and be assignable according to .NET type compatibility rules.</remarks>
+        /// specified event by comparing the parameter types of the delegate's method and the event's handler targetType.
+        /// MemberParameter types must match in number and be assignable according to .NET targetType compatibility rules.</remarks>
         /// <param name="clientHandler">The delegate to test for compatibility with the event's handler signature.</param>
         /// <param name="eventInfo">The event whose handler signature is used for compatibility comparison. Cannot be null.</param>
         /// <returns>true if the delegate's method parameters are assignable to the event handler's parameters; otherwise, false.</returns>
