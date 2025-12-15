@@ -1718,8 +1718,8 @@
         {
             ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
-            ParameterData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
-            return typeData.IsRef;
+            ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
+            return parameterData.IsRef;
         }
 
         /// <summary>
@@ -1730,8 +1730,24 @@
         {
             ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
-            ParameterData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
-            return typeData.IsRefReadOnly;
+            ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
+            return parameterData.IsRefReadOnly;
+        }
+
+        /// <summary>
+        /// Determines whether the specified parameter is marked with the <see langword="params"/> modifier.
+        /// </summary>
+        /// <remarks>Use this method to check if a method parameter accepts a variable number of arguments
+        /// using the <see langword="params"/> keyword in its declaration.</remarks>
+        /// <param name="parameterInfo">The parameter to inspect for the <see langword="params"/> modifier. Cannot be null.</param>
+        /// <returns>true if the parameter is a parameter array (marked with the <see langword="params"/> modifier); otherwise,
+        /// false.</returns>
+        public static bool IsParams(this ParameterInfo parameterInfo)
+        {
+            ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
+
+            ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
+            return parameterData.IsParams;
         }
 
         /// <summary>
@@ -1742,8 +1758,8 @@
         {
             ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
-            ParameterData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
-            return typeData.IsIn;
+            ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
+            return parameterData.IsIn;
         }
 
         /// <summary>
@@ -1754,8 +1770,8 @@
         {
             ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
-            ParameterData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
-            return typeData.IsOut;
+            ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
+            return parameterData.IsOut;
         }
 
         /// <summary>

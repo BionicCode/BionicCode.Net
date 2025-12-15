@@ -46,10 +46,10 @@
         private bool? isGenericTypeMethod;
         private MethodData genericMethodDefinitionData;
         private bool? isReturnValueByRef;
-        private Func<object, object[], object>? invocator;
-        private Func<object, object[], Task> awaitableTaskInvocator;
-        private Func<object, object[], dynamic> awaitableGenericValueTaskInvocator;
-        private Func<object, object[], ValueTask> awaitableValueTaskInvocator;
+        private Func<object, object[], object>? Invocator;
+        private Func<object, object[], Task>? awaitableTaskInvocator;
+        private Func<object, object[], dynamic>? awaitableGenericValueTaskInvocator;
+        private Func<object, object[], ValueTask>? awaitableValueTaskInvocator;
         private string assemblyName;
         private bool? isReturnValueReadOnly;
 
@@ -75,13 +75,13 @@
         {
             ArgumentOutOfRangeException.ThrowIfNotEqual(this.Parameters.Count, args.Length, nameof(args));
 
-            if (this.invocator is null)
+            if (this.Invocator is null)
             {
                 InitializeInvocator(args);
             }
 
             // REVIEW::Will this work with void methods?
-            return this.invocator.Invoke(target, args);
+            return this.Invocator.Invoke(target, args);
         }
 
         public async Task InvokeAwaitableTaskAsync(object target, params object[] args)
@@ -194,12 +194,12 @@
         {
             ArgumentOutOfRangeException.ThrowIfNotEqual(this.Parameters.Count, args.Length, nameof(args));
 
-            if (this.invocator is null)
+            if (this.Invocator is null)
             {
                 InitializeInvocator(args);
             }
 
-            return this.invocator;
+            return this.Invocator;
         }
 
         public Func<object, object[], object> GetAwaitableGenericValueTaskInvocator(params object[] args)
@@ -253,7 +253,7 @@
             return this.awaitableTaskInvocator;
         }
 
-        public Func<object, object[], Task> CreateFastInvocator<TResult>(params object[] args)
+        public Func<object, object[], Task> CreateFastAsyncInvocator<TResult>(params object[] args)
         {
             ArgumentOutOfRangeException.ThrowIfNotEqual(this.Parameters.Count, args.Length, nameof(args));
 
@@ -279,13 +279,38 @@
             return this.awaitableTaskInvocator;
         }
 
+        private Func<object, object[], object> CreateFastInvocator<TResult>(params object[] args)
+        {
+            ArgumentOutOfRangeException.ThrowIfNotEqual(this.Parameters.Count, args.Length, nameof(args));
+
+            if (MethodData.Invocator is null)
+            {
+                List<ParameterExpression> parameterExpressions = new List<ParameterExpression>();
+                ParameterExpression parameterExpression = Expression.Parameter(typeof(object), "targetInstance");
+                ParameterExpression parameterExpression = Expression.Parameter(typeof(object[]), "args");
+                for (int index = 0; index < args.Length; index++)
+                {
+                    object runtimeArgument = args[index];
+                    ParameterData parameterData = this.Parameters[index];
+                    ParameterExpression parameterExpression = Expression.Parameter(runtimeArgument.GetType(), parameterData.Name);
+                    parameterExpressions.Add(parameterExpression);
+                }
+
+                MethodCallExpression expressionBody = Expression.Call(Expression.Parameter(typeof(object), "invocationTarget"), GetMethodInfo(), parameterExpressions);
+                Expression<Func<object, object[], object>> lambdaExpression = Expression.Lambda<Func<object, object[], object>>(expressionBody, parameterExpressions);
+                MethodData.Invocator = lambdaExpression.Compile();
+            }
+
+            return MethodData.Invocator;
+        }
+
         private void InitializeInvocator(object[] args)
         {
             MethodData invocatorData = MakeClosedGenericMethodData(args);
 
             // REVIEW::Will this work when method (current MethodData) is declared on an interface?
             // Probably requries instance for CreateDelegate() call for interface methods.
-            this.invocator = invocatorData.GetMethodInfo().CreateDelegate<Func<object, object[], object>>();
+            this.Invocator = invocatorData.GetMethodInfo().CreateDelegate<Func<object, object[], object>>();
         }
 
         private void InitializeAwaitableTaskInvocator(object[] args)
