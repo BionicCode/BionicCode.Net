@@ -70,6 +70,8 @@ namespace BionicCode.Utilities.Net
         private bool isAllConstructorsGenerated;
         private bool? isByRefLike;
         private bool? isGenericTypeParameter;
+        private bool? isGenericMethodParameter;
+        private bool? isGenericParameter;
 
         public TypeData(Type type) : base(type.Name)
         {
@@ -527,7 +529,13 @@ namespace BionicCode.Utilities.Net
         }
 
         public bool IsGenericTypeParameter
-          => this.isGenericTypeParameter ??= UnwrapType().IsGenericParameter;
+          => this.isGenericTypeParameter ??= UnwrapType().IsGenericTypeParameter;
+
+        public bool IsGenericMethodParameter
+          => this.isGenericMethodParameter ??= UnwrapType().IsGenericMethodParameter;
+
+        public bool IsGenericParameter
+          => this.isGenericParameter ??= UnwrapType().IsGenericParameter;
 
         public bool IsGenericType
           => this.isGenericType ??= UnwrapType().IsGenericType;

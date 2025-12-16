@@ -25,11 +25,11 @@
         }
 
         public int Count => this._items.Length;
-        public int GenericTypeParameterCount => this.GenericTypeParameters.Count;
+        public int GenericTypeParameterCount => this.GenericMethodParameters.Count;
         public bool IsEmpty => this._items.Length == 0;
         public bool HasItems => this._items.Length > 0;
-        public ImmutableList<ParameterData> GenericTypeParameters
-            => this.genericTypeParameters ??= ImmutableList.CreateRange(this._items.Where(parameterData => parameterData.IsGenericTypeParameter));
+        public ImmutableList<ParameterData> GenericMethodParameters
+            => this.genericTypeParameters ??= ImmutableList.CreateRange(this._items.Where(parameterData => parameterData.IsGenericMethodParameter));
 
         public ParameterData this[int index]
         {

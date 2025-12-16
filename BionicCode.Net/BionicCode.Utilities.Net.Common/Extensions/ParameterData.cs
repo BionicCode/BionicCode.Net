@@ -35,6 +35,7 @@
         private object? defaultValue;
         private ParameterKind? parameterKind;
         private bool? isGenericTypeParameter;
+        private bool? isGenericMethodParameter;
 
         public ParameterData(ParameterInfo parameterInfo) : base(parameterInfo.Name)
         {
@@ -95,6 +96,9 @@
         /// <value><see langword="true"/> if the parameter type is a generic type parameter; otherwise, <see langword="false"/>.</value>
         public bool IsGenericTypeParameter
           => this.isGenericTypeParameter ??= this.ParameterTypeData.IsGenericTypeParameter;
+
+        public bool IsGenericMethodParameter
+          => this.isGenericMethodParameter ??= this.ParameterTypeData.IsGenericMethodParameter;
 
         public ParameterKind ParameterKind
           => this.parameterKind ??= this.IsIn ? ParameterKind.In

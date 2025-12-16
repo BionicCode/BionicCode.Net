@@ -28,20 +28,15 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<BuildDocFx Condition="$(TargetFramework) != 'net6.0-windows'">false</BuildDocFx>
-	</PropertyGroup>
-	
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-windows' OR '$(TargetFramework)' == 'net5.0-windows'">
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<BuildDocFx Condition="$(TargetFramework) != 'net6.0-windows'">false</BuildDocFx>
 		<BaseOutputPath>../../Assemblies</BaseOutputPath>
 		<RootNamespace>BionicCode.Utilities.Net</RootNamespace>
 	</PropertyGroup>
 	
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
+	<PropertyGroup>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 	

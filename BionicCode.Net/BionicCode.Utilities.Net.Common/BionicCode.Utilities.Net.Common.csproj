@@ -26,12 +26,11 @@
 		<PackageIconUrl />
 	</PropertyGroup>
 	
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-windows' OR '$(TargetFramework)' == 'net5.0-windows'">
+	<PropertyGroup>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<BuildDocFx Condition="$(TargetFramework) != 'net6.0-windows'">false</BuildDocFx>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<BaseOutputPath>../../Assemblies</BaseOutputPath>
 		<ProduceReferenceAssembly>True</ProduceReferenceAssembly>
@@ -42,7 +41,7 @@
 		<AnalysisLevel>latest-all</AnalysisLevel>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
+	<PropertyGroup>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 

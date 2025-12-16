@@ -1,9 +1,8 @@
 ﻿namespace BionicCode.Utilities.Net
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Numerics;
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
@@ -169,75 +168,52 @@
             }
         }
 
-        public class ArgumentOutOfRangeExceptionEx : System.ArgumentOutOfRangeException
+        /// <summary>
+        /// Throws an exception if the specified enumerable is null or contains no elements.
+        /// </summary>
+        /// <remarks>This method is typically used to validate method arguments that are expected to be
+        /// non-null and contain at least one element. If the enumerable is null, an ArgumentNullException is thrown by
+        /// ArgumentNullException.ThrowIfNull.</remarks>
+        /// <param name="value">The enumerable to validate. Cannot be null.</param>
+        /// <param name="paramName">The name of the parameter representing the enumerable. This value is used in the exception message if an
+        /// exception is thrown.</param>
+        /// <param name="message">The custom error message to include in the exception if the enumerable is empty. If null, a default message
+        /// is used.</param>
+        /// <exception cref="ArgumentException">Thrown if the enumerable is empty.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the enumerable is null.</exception>"
+        public static void ThrowIfEnumerableIsNullOrEmpty(IEnumerable value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string message = null)
         {
-            public ArgumentOutOfRangeExceptionEx()
+            ArgumentNullException.ThrowIfNull(value, paramName);
+            IEnumerator enumerator = value.GetEnumerator();
+            if (!enumerator.MoveNext())
             {
+                throw new ArgumentException(
+                    message ?? "The enumerable is empty.",
+                    paramName);
             }
+        }
+    }
 
-            public ArgumentOutOfRangeExceptionEx(string paramName) : base(paramName)
-            {
-            }
+    public class ArgumentOutOfRangeExceptionEx : System.ArgumentOutOfRangeException
+    {
+        public ArgumentOutOfRangeExceptionEx()
+        {
+        }
 
-            public ArgumentOutOfRangeExceptionEx(string paramName, string message) : base(paramName, message)
-            {
-            }
+        public ArgumentOutOfRangeExceptionEx(string paramName) : base(paramName)
+        {
+        }
 
-            public ArgumentOutOfRangeExceptionEx(string message, Exception innerException) : base(message, innerException)
-            {
-            }
+        public ArgumentOutOfRangeExceptionEx(string paramName, string message) : base(paramName, message)
+        {
+        }
 
-            public ArgumentOutOfRangeExceptionEx(string paramName, object actualValue, string message) : base(paramName, actualValue, message)
-            {
-            }
+        public ArgumentOutOfRangeExceptionEx(string message, Exception innerException) : base(message, innerException)
+        {
+        }
 
-            [DoesNotReturn]
-            private static void ThrowZero<T>(T value, string paramName)
-                => throw new System.ArgumentOutOfRangeException(paramName, value, "ExecuteDelegate must be non-zero.");
-
-            [DoesNotReturn]
-            private static void ThrowNegative<T>(T value, string paramName)
-                => throw new System.ArgumentOutOfRangeException(paramName, value, "ExecuteDelegate must be non-negative.");
-
-            [DoesNotReturn]
-            private static void ThrowNegativeOrZero<T>(T value, string paramName)
-                => throw new System.ArgumentOutOfRangeException(paramName, value, "ExecuteDelegate must be non-negative and non-zero.");
-
-            [DoesNotReturn]
-            private static void ThrowGreater<T>(T value, T other, string paramName)
-                => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be less or equal to {other}");
-
-            [DoesNotReturn]
-            private static void ThrowGreaterEqual<T>(T value, T other, string paramName)
-                => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be less than {other}");
-
-            [DoesNotReturn]
-            private static void ThrowLess<T>(T value, T other, string paramName)
-                => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be greater or equal to {other}");
-
-            [DoesNotReturn]
-            private static void ThrowLessEqual<T>(T value, T other, string paramName)
-                => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be greater than {other}");
-
-            [DoesNotReturn]
-            private static void ThrowEqual<T>(T value, T other, string paramName)
-                => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must not be equal to {other?.ToString() ?? "NULL"}");
-
-            [DoesNotReturn]
-            private static void ThrowNotEqual<T>(T value, T other, string paramName)
-                => throw new System.ArgumentOutOfRangeException(paramName, value, $"ExecuteDelegate must be equal to {other?.ToString() ?? "NULL"}");
-
-            /// <summary>Throws an <see cref="ArgumentOutOfRangeExceptionEx"/> if <paramref name="value"/> is zero.</summary>
-            /// <param name="value">The argument to validate as non-zero.</param>
-            /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
-            public static new void ThrowIfZero<T>(T value, [CallerArgumentExpression(nameof(value))] string? paramName = null)
-                where T : INumberBase<T>
-            {
-                if (value == T.Zero)
-                {
-                    ThrowZero(value, paramName ?? nameof(value));
-                }
-            }
+        public ArgumentOutOfRangeExceptionEx(string paramName, object actualValue, string message) : base(paramName, actualValue, message)
+        {
         }
     }
 }
