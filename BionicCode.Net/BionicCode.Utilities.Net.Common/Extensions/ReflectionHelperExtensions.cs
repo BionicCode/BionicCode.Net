@@ -1429,9 +1429,9 @@
             }
 
             // Could be an open generic valueType. Therefore we need to obtain all definitions.
-            TypeData[] genericTypeArguments = methodData.GenericTypeArguments;
+            TypeData[] genericTypeArguments = methodData.GenericMethodArguments;
             TypeData[] genericTypeParameterDefinitions = methodData.IsGenericMethodDefinition
-              ? methodData.GenericTypeArguments
+              ? methodData.GenericMethodArguments
               : Array.Empty<TypeData>();
 
             AppendGenericParameters(nameBuilder, isFullyQualified, genericTypeParameterDefinitions, genericTypeArguments);

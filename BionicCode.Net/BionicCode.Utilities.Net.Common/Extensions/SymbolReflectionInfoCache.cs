@@ -499,7 +499,7 @@
 
             if (methodData.ContainsGenericParameters || methodData.IsGenericMethodDefinition)
             {
-                IEnumerable<TypeData> genericTypeParameters = methodData.GenericTypeArguments;
+                IEnumerable<TypeData> genericTypeParameters = methodData.GenericMethodArguments;
                 methodData = methodData.MakeGenericMethodData(genericTypeParameters.ToArray());
             }
 

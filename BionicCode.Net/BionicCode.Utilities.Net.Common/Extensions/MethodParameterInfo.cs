@@ -8,12 +8,12 @@
         public RuntimeTypeHandle ParameterTypeHandle { get; }
         public RuntimeTypeHandle DeclaringTypeHandle { get; }
         public ParameterKind Kind { get; }
-        public bool IsGenericTypeParameter { get; }
+        public bool IsGenericMethodParameter { get; }
 
-        public MethodParameterInfo(Type type, int position, bool isGenericTypeParameter, ParameterKind kind, Type declaringType) : this()
+        public MethodParameterInfo(Type type, int position, bool isGenericMethodParameter, ParameterKind kind, Type declaringType) : this()
         {
             this.Position = position;
-            this.IsGenericTypeParameter = isGenericTypeParameter;
+            this.IsGenericMethodParameter = isGenericMethodParameter;
             this.ParameterTypeHandle = type.TypeHandle;
             this.Kind = kind;
             this.DeclaringTypeHandle = declaringType.TypeHandle;
@@ -24,9 +24,9 @@
             && other.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle)
             && other.Position == this.Position
             && other.Kind.Equals(this.Kind)
-            && other.IsGenericTypeParameter.Equals(this.IsGenericTypeParameter);
+            && other.IsGenericMethodParameter.Equals(this.IsGenericMethodParameter);
 
         public override int GetHashCode()
-            => HashCode.Combine(this.ParameterTypeHandle, this.DeclaringTypeHandle, this.Position, this.Kind, this.IsGenericTypeParameter);
+            => HashCode.Combine(this.ParameterTypeHandle, this.DeclaringTypeHandle, this.Position, this.Kind, this.IsGenericMethodParameter);
     }
 }
