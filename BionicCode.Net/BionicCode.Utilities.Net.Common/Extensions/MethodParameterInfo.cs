@@ -10,13 +10,13 @@
         public ParameterKind Kind { get; }
         public bool IsGenericMethodParameter { get; }
 
-        public MethodParameterInfo(Type type, int position, bool isGenericMethodParameter, ParameterKind kind, Type declaringType) : this()
+        public MethodParameterInfo(RuntimeTypeHandle parameterTypeHandle, int position, bool isGenericMethodParameter, ParameterKind kind, RuntimeTypeHandle declaringTypeHandle) : this()
         {
             this.Position = position;
             this.IsGenericMethodParameter = isGenericMethodParameter;
-            this.ParameterTypeHandle = type.TypeHandle;
+            this.ParameterTypeHandle = parameterTypeHandle;
             this.Kind = kind;
-            this.DeclaringTypeHandle = declaringType.TypeHandle;
+            this.DeclaringTypeHandle = declaringTypeHandle;
         }
 
         public override bool Equals(object obj) => obj is MethodParameterInfo info && Equals(info);

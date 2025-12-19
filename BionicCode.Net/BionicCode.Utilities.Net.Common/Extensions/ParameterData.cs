@@ -132,34 +132,14 @@
 
         public ParameterInfo ParameterInfo { get; }
 
-        public MemberInfoData Member
-        {
-            get
+        public MemberInfoData MemberData
+            => this.member ??= GetParameterInfo().Member switch
             {
-                MemberInfo member = GetParameterInfo().Member;
-                if (this.member is null)
-                {
-                    if (member is ConstructorInfo constructorInfo)
-                    {
-                        this.member = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
-                    }
-                    else if (member is PropertyInfo propertyInfo)
-                    {
-                        this.member = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
-                    }
-                    else if (member is MethodInfo methodInfo)
-                    {
-                        this.member = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-                    }
-                    else
-                    {
-                        throw new NotImplementedException();
-                    }
-                }
-
-                return this.member;
-            }
-        }
+                ConstructorInfo constructorInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo),
+                PropertyInfo propertyInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo),
+                MethodInfo methodInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo),
+                _ => throw new NotImplementedException(),
+            };
 
         public TypeData ParameterTypeData
           => this.parameterTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetParameterInfo().ParameterType);
@@ -217,7 +197,7 @@
           => this.Name;
 
         public override string AssemblyName
-          => this.assemblyName ??= this.Member.AssemblyName;
+          => this.assemblyName ??= this.MemberData.AssemblyName;
 
         internal static bool IsRefInternal(ParameterData parameterData)
         {

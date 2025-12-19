@@ -159,7 +159,7 @@
 
             symbolComponents.ReturnType = methodData.ReturnTypeData.CompactSymbolComponentInfo;
 
-            // Member name
+            // MemberData name
             _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(methodData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: false, isDeclaringTypeIncluded);
 
             symbolComponents.IsExtensionMethodParameter = methodData.IsExtensionMethod;
@@ -754,7 +754,7 @@
                 symbolComponents.AddModifier("static");
             }
 
-            // Member name
+            // MemberData name
             _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(constructorData, isFullyQualifiedName, isGenericTypeParameterIncluded: false, isDeclaringTypeIncluded);
 
             ParameterData[] parameters = constructorData.Parameters;
@@ -1502,13 +1502,13 @@
         //          .Append(' ');
         //      }
 
-        //      if (memberAttributes.HasFlag(SymbolAttributes.Member) && (!isDeclaringTypeIncluded || isFullyQualifiedName))
+        //      if (memberAttributes.HasFlag(SymbolAttributes.MemberData) && (!isDeclaringTypeIncluded || isFullyQualifiedName))
         //      {
         //        _ = signatureNameBuilder.AppendDisplayNameInternal(memberInfo.DeclaringType, isFullyQualifiedName, isDeclaringTypeIncluded: false)
         //          .Append('.');
         //      }
 
-        //      // Member or valueType name
+        //      // MemberData or valueType name
         //      if (memberAttributes.HasFlag(SymbolAttributes.IndexerProperty))
         //      {
         //        _ = signatureNameBuilder.Append("this");
@@ -1832,7 +1832,7 @@
             _ = signatureNameBuilder.AppendDisplayNameInternal(propertyTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
               .Append(' ');
 
-            // Member name
+            // MemberData name
             if (symbolAttributes.HasFlag(SymbolAttributes.IndexerProperty))
             {
                 _ = signatureNameBuilder.Append("this")
@@ -2034,7 +2034,7 @@
             _ = signatureNameBuilder.AppendDisplayNameInternal(returnTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
               .Append(' ');
 
-            // Member name
+            // MemberData name
             _ = signatureNameBuilder.AppendDisplayNameInternal(methodData, isFullyQualifiedName, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded)
               .Append('(');
 
@@ -2511,7 +2511,7 @@
                   .Append(' ');
             }
 
-            // Member name
+            // MemberData name
             _ = signatureNameBuilder.AppendDisplayNameInternal(constructorData, isFullyQualifiedName, isGenericTypeParameterIncluded: false, isDeclaringTypeIncluded)
               .Append('(');
 

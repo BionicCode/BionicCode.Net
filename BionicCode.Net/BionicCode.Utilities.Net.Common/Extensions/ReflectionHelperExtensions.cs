@@ -1990,8 +1990,8 @@
         //        {
         //            if (methodData.Name.Equals(nameof(HelperExtensionsCommon.Cast), StringComparison.Ordinal)
         //            && methodData.IsGenericMethodDefinition
-        //            && methodData.Parameters.Count == 1
-        //            && methodData.Parameters.GenericTypeParameterCount == 2)
+        //            && methodData.Types.Count == 1
+        //            && methodData.Types.GenericTypeParameterCount == 2)
         //            {
         //                HelperExtensionsCommon.CastMethodData = methodData;
         //                break;
