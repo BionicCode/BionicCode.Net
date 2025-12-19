@@ -24,7 +24,7 @@
         public ReadOnlyCollection<(string PropertyName, string PropertyValue)> CustomAttributeNamedArgs { get; }
         public ReadOnlyCollection<SymbolComponentInfo> Parameters { get; }
 
-        private string name;
+        private string? name;
         public string Name
         {
             get
@@ -32,7 +32,7 @@
                 if (this.name is null)
                 {
                     this.name = this.NameBuilder?.ToString() ?? string.Empty;
-                    this.NameBuilder.Recycle();
+                    this.NameBuilder?.Recycle();
                 }
 
                 return this.name;
@@ -47,7 +47,7 @@
                 if (this.valueName is null)
                 {
                     this.valueName = this.ValueNameBuilder?.ToString() ?? string.Empty;
-                    this.ValueNameBuilder.Recycle();
+                    this.ValueNameBuilder?.Recycle();
                 }
 
                 return this.valueName;

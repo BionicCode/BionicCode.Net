@@ -1,41 +1,45 @@
 ﻿namespace BionicCode.Utilities.Net
 {
     using System;
-    using System.Linq;
     using System.Reflection;
-    using Microsoft.CodeAnalysis;
 
     internal sealed class ConstructorData : MemberInfoData
     {
-        private string displayName;
-        private string shortDisplayName;
-        private string fullyQualifiedDisplayName;
-        private string signature;
-        private string shortSignature;
-        private string shortCompactSignature;
-        private string fullyQualifiedSignature;
-        private string fullyQualifiedRuntimeSignature;
-        private string runtimeSignature;
-        private string runtimeShortSignature;
-        private string runtimeShortCompactSignature;
+        private string? displayName;
+        private string? shortDisplayName;
+        private string? fullyQualifiedDisplayName;
+        private string? signature;
+        private string? shortSignature;
+        private string? shortCompactSignature;
+        private string? fullyQualifiedSignature;
+        private string? fullyQualifiedRuntimeSignature;
+        private string? runtimeSignature;
+        private string? runtimeShortSignature;
+        private string? runtimeShortCompactSignature;
         private SymbolAttributes symbolAttributes;
         private AccessModifier accessModifier;
-        private ParameterData[] parameters;
+        private ParameterList? parameters;
         private bool? isStatic;
-        private Func<object[], object> invocator;
-        private string assemblyName;
-        private SymbolComponentInfo symbolComponentInfo;
+        private Func<object[], object>? invocator;
+        private string? assemblyName;
+        private SymbolComponentInfo? symbolComponentInfo;
 
-        public ConstructorData(ConstructorInfo constructorInfo) : base(constructorInfo) => this.Handle = constructorInfo.MethodHandle;
+        public ConstructorData(ConstructorInfo constructorInfo) : base(constructorInfo)
+        {
+            ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
+
+            this.Handle = constructorInfo.MethodHandle;
+        }
 
         public ConstructorInfo GetConstructorInfo()
-          => (ConstructorInfo)MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle);
+          => (ConstructorInfo)MethodInfo.GetMethodFromHandle(this.Handle, this.DeclaringTypeHandle)!;
 
         protected override MemberInfo GetMemberInfo()
           => GetConstructorInfo();
 
         public object Invoke(params object[] arguments)
         {
+            //  TODO::Implement fast invocator pattern
             if (this.invocator is null)
             {
                 InitializeInvocator();
@@ -64,8 +68,8 @@
           ? (this.accessModifier = ConstructorData.GetAccessModifierInternal(this))
           : this.accessModifier;
 
-        public ParameterData[] Parameters
-          => this.parameters ??= GetConstructorInfo().GetParameters().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+        public ParameterList Parameters
+          => this.parameters ??= ParameterListBuilder.Create(GetConstructorInfo().GetParameters());
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
           ? (this.symbolAttributes = ConstructorData.GetAttributesInternal(this))

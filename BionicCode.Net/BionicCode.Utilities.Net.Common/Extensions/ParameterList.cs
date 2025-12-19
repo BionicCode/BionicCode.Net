@@ -17,18 +17,22 @@
         public ParameterList(IEnumerable<ParameterData> items)
         {
             this.Parameters = items.ToImmutableList();
-            this.GenericMethodParameters = this.Parameters
-                .Where(parameterData => parameterData.IsGenericMethodParameter)
-                .ToImmutableList();
+            ArgumentNullExceptionEx.ThrowIfNullOrEmpty(this.Parameters, nameof(items));
+
+            this.DeclaringMember = this.Parameters.FirstOrDefault()?.MemberData;
+            if (!this.Parameters.All(parameter => ReferenceEquals(parameter.MemberData, this.DeclaringMember)))
+            {
+                throw new ArgumentException("All parameters must belong to the same member.", nameof(items));
+            }
+
             this._hashCode = ComputeHashCode(this.Parameters);
         }
 
         public int Count => this.Parameters.Count;
-        public int GenericMethodParameterCount => this.GenericMethodParameters.Count;
         public bool IsEmpty => this.Parameters.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<ParameterData> Parameters { get; }
-        public ImmutableList<ParameterData> GenericMethodParameters { get; }
+        public MemberInfoData? DeclaringMember { get; }
 
         public ParameterData this[int index]
         {
@@ -48,18 +52,20 @@
             => this.Parameters.GetEnumerator();
 
         public bool Equals(ParameterList? other)
-            => other != null && this.Parameters.SequenceEqual(other.Parameters);
+            => other != null && this.Parameters.SequenceEqual(other.Parameters)
+                && this.DeclaringMember == other.DeclaringMember;
 
         public override bool Equals(object? obj)
             => obj is ParameterList other && Equals(other);
 
         public override int GetHashCode() => this._hashCode;
 
-        private static int ComputeHashCode(IEnumerable<ParameterData> items)
+        private int ComputeHashCode(IEnumerable<ParameterData> items)
         {
             unchecked
             {
                 int hash = 17;
+                hash = (hash * 31) + HashCode.Combine(this.Count, this.DeclaringMember);
                 foreach (ParameterData item in items)
                 {
                     hash = (hash * 31) + item.GetHashCode();

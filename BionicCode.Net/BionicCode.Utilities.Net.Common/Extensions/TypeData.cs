@@ -18,23 +18,23 @@ namespace BionicCode.Utilities.Net
         private static readonly Type ValueTaskGenericType = typeof(ValueTask<>);
         private static readonly Type DelegateType = typeof(Delegate);
 
-        private string displayName;
-        private string shortDisplayName;
-        private string fullyQualifiedDisplayName;
+        private string? displayName;
+        private string? shortDisplayName;
+        private string? fullyQualifiedDisplayName;
         private SymbolAttributes symbolAttributes;
         private AccessModifier accessModifier;
         private bool? canDeclareExtensionMethod;
         private bool? isAwaitable;
         private bool? isAwaitableTask;
         private bool? isAwaitableValueTask;
-        private string signature;
-        private string shortSignature;
-        private string fullyQualifiedRuntimeSignature;
-        private string runtimeSignature;
-        private string runtimeShortSignature;
-        private string runtimeShortCompactSignature;
-        private string shortCompactSignature;
-        private string fullyQualifiedSignature;
+        private string? signature;
+        private string? shortSignature;
+        private string? fullyQualifiedRuntimeSignature;
+        private string? runtimeSignature;
+        private string? runtimeShortSignature;
+        private string? runtimeShortCompactSignature;
+        private string? shortCompactSignature;
+        private string? fullyQualifiedSignature;
         private bool? isStatic;
         private bool? isBuiltInType;
         private bool? isAbstract;
@@ -45,22 +45,22 @@ namespace BionicCode.Utilities.Net
         private bool? isDelegate;
         private bool? isGenericType;
         private bool? isGenericTypeDefinition;
-        private TypeData[] genericTypeArguments;
-        private TypeData[] genericParameterConstraintsData;
+        private TypeList? genericTypeArguments;
+        private TypeList? genericParameterConstraintsData;
         private GenericParameterAttributes? genericParameterAttributes;
-        private TypeData genericTypeDefinitionData;
-        private TypeData baseTypeData;
-        private TypeData[] interfacesData;
-        private PropertyData[] propertiesData;
-        private MethodData[] methodsData;
-        private FieldData[] fieldsData;
-        private EventData[] eventsData;
-        private ConstructorData[] constructorsData;
-        private IList<CustomAttributeData> attributeData;
-        private string assemblyName;
+        private TypeData? genericTypeDefinitionData;
+        private TypeData? baseTypeData;
+        private TypeList? interfacesData;
+        private PropertyList? propertiesData;
+        private MethodList? methodsData;
+        private FieldList? fieldsData;
+        private EventList? eventsData;
+        private ConstructorList? constructorsData;
+        private IList<CustomAttributeData>? attributeData;
+        private string? assemblyName;
         private MethodData? delegateInvokeMethodData;
-        private SymbolComponentInfo symbolComponentInfo;
-        private SymbolComponentInfo compactSymbolComponentInfo;
+        private SymbolComponentInfo? symbolComponentInfo;
+        private SymbolComponentInfo? compactSymbolComponentInfo;
         private bool? containsGenericParameters;
         private readonly ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoData> memberTable;
         private bool isAllPropertiesGenerated;
@@ -75,8 +75,10 @@ namespace BionicCode.Utilities.Net
 
         public TypeData(Type type) : base(type.Name)
         {
+            ArgumentNullException.ThrowIfNull(type, nameof(type));
+
             this.Handle = type.TypeHandle;
-            this.Namespace = type.Namespace;
+            this.Namespace = type.Namespace ?? string.Empty;
             this.memberTable = new ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoData>();
         }
 
@@ -85,7 +87,7 @@ namespace BionicCode.Utilities.Net
         /// </summary>
         /// <returns>A <see cref="Type"/> object that is referenced by this handle.</returns>
         public Type UnwrapType()
-          => Type.GetTypeFromHandle(this.Handle);
+          => Type.GetTypeFromHandle(this.Handle)!;
 
         public PropertyData GetProperty(string propertyName, params MethodParameterInfo[] indexerPropertyParameters)
         {
@@ -386,14 +388,14 @@ namespace BionicCode.Utilities.Net
             }
         }
 
-        public TypeData[] GenericTypeArguments
+        public TypeList GenericTypeArguments
         {
             get
             {
                 if (this.genericTypeArguments is null)
                 {
                     Type[] typeArguments = UnwrapType().GetGenericArguments();
-                    this.genericTypeArguments = typeArguments.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+                    this.genericTypeArguments = TypeListBuilder.Create(typeArguments);
                 }
 
                 return this.genericTypeArguments;
@@ -550,28 +552,28 @@ namespace BionicCode.Utilities.Net
           => this.containsGenericParameters ??= UnwrapType().ContainsGenericParameters;
 
         public GenericParameterAttributes GenericParameterAttributes
-          => (GenericParameterAttributes)(GenericParameterAttributes?)(this.genericParameterAttributes ??= UnwrapType().GenericParameterAttributes);
+          => this.genericParameterAttributes ??= UnwrapType().GenericParameterAttributes;
 
-        public TypeData[] GenericParameterConstraintsData
-          => this.genericParameterConstraintsData ??= UnwrapType().GetGenericParameterConstraints().Where(constraint => constraint != typeof(object) && constraint != typeof(ValueType)).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+        public TypeList GenericParameterConstraintsData
+          => this.genericParameterConstraintsData ??= TypeListBuilder.Create(UnwrapType().GetGenericParameterConstraints().Where(constraint => constraint != typeof(object) && constraint != typeof(ValueType)));
 
-        public TypeData[] InterfacesData
-          => this.interfacesData ??= UnwrapType().GetInterfaces().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+        public TypeList InterfacesData
+          => this.interfacesData ??= TypeListBuilder.Create(UnwrapType().GetInterfaces());
 
-        public PropertyData[] PropertiesData
-          => this.propertiesData ??= UnwrapType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+        public PropertyList PropertiesData
+          => this.propertiesData ??= PropertyListBuilder.Create(UnwrapType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags));
 
-        public MethodData[] MethodsData
-          => this.methodsData ??= UnwrapType().GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+        public MethodList MethodsData
+          => this.methodsData ??= MethodListBuilder.Create(UnwrapType().GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags));
 
-        public FieldData[] FieldsData
-          => this.fieldsData ??= UnwrapType().GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+        public FieldList FieldsData
+          => this.fieldsData ??= FieldListBuilder.Create(UnwrapType().GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags));
 
-        public EventData[] EventsData
-          => this.eventsData ??= UnwrapType().GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+        public EventList EventsData
+          => this.eventsData ??= EventListBuilder.Create(UnwrapType().GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags));
 
-        public ConstructorData[] ConstructorsData
-          => this.constructorsData ??= UnwrapType().GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags).Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray();
+        public ConstructorList ConstructorsData
+          => this.constructorsData ??= ConstructorListBuilder.Create(UnwrapType().GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags));
 
         private static bool IsTypeStatic(TypeData typeData)
           => typeData.IsAbstract && typeData.IsSealed;
@@ -597,7 +599,7 @@ namespace BionicCode.Utilities.Net
                 return false;
             }
 
-            Attribute typeExtensionAttribute = typeInfo.GetCustomAttribute(HelperExtensionsCommon.ExtensionAttributeType, false);
+            Attribute? typeExtensionAttribute = typeInfo.GetCustomAttribute(HelperExtensionsCommon.ExtensionAttributeType, false);
             return typeExtensionAttribute != null;
         }
 
@@ -763,7 +765,7 @@ namespace BionicCode.Utilities.Net
                         continue;
                     }
 
-                    MethodInfo extensionMethodInfo = exportedType.GetMethod(nameof(Task.GetAwaiter), BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { type }, null);
+                    MethodInfo? extensionMethodInfo = exportedType.GetMethod(nameof(Task.GetAwaiter), BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { type }, null);
                     if (extensionMethodInfo == null
                       || !extensionMethodInfo.IsExtensionMethodOf(type))
                     {

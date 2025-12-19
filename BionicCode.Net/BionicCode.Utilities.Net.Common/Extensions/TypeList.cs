@@ -17,18 +17,14 @@
         public TypeList(IEnumerable<TypeData> items)
         {
             this.Types = items.ToImmutableList();
-            this.GenericTypeParameters = this.Types
-                .Where(typeData => typeData.IsGenericMethodParameter)
-                .ToImmutableList();
+            ArgumentNullExceptionEx.ThrowIfNullOrEmpty(this.Types, nameof(items));
             this._hashCode = ComputeHashCode(this.Types);
         }
 
         public int Count => this.Types.Count;
-        public int GenericMethodParameterCount => this.GenericTypeParameters.Count;
         public bool IsEmpty => this.Types.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<TypeData> Types { get; }
-        public ImmutableList<TypeData> GenericTypeParameters { get; }
 
         public TypeData this[int index]
         {

@@ -18,7 +18,7 @@
     internal sealed class ParameterData : SymbolInfoData
     {
         private SymbolAttributes symbolAttributes;
-        private IList<CustomAttributeData> attributeData;
+        private IList<CustomAttributeData>? attributeData;
         private bool? isRef;
         private bool? isRefReadOnly;
         private bool? isByRef;
@@ -27,19 +27,20 @@
         private bool? isOptional;
         private bool? isParams;
         private int? position;
-        private TypeData parameterTypeData;
-        private TypeData declaringTypeData;
-        private MemberInfoData member;
-        private string assemblyName;
-        private SymbolComponentInfo symbolComponentInfo;
+        private TypeData? parameterTypeData;
+        private TypeData? declaringTypeData;
+        private MemberInfoData? member;
+        private string? assemblyName;
+        private SymbolComponentInfo? symbolComponentInfo;
         private object? defaultValue;
         private ParameterKind? parameterKind;
         private bool? isGenericTypeParameter;
         private bool? isGenericMethodParameter;
 
-        public ParameterData(ParameterInfo parameterInfo) : base(parameterInfo.Name)
+        public ParameterData(ParameterInfo parameterInfo) : base(parameterInfo?.Name)
         {
-            this.DeclaringTypeHandle = parameterInfo.Member.DeclaringType.TypeHandle;
+            ArgumentNullException.ThrowIfNull(parameterInfo, nameof(parameterInfo));
+            this.DeclaringTypeHandle = parameterInfo.Member.DeclaringType?.TypeHandle ?? default;
             this.ParameterTypeHandle = parameterInfo.ParameterType.TypeHandle;
             this.Position = parameterInfo.Position;
             this.ParameterInfo = parameterInfo;
@@ -49,7 +50,7 @@
           => this.ParameterInfo;
 
         public Type GetDeclaringType()
-          => Type.GetTypeFromHandle(this.DeclaringTypeHandle);
+          => Type.GetTypeFromHandle(this.DeclaringTypeHandle)!;
 
         public RuntimeTypeHandle DeclaringTypeHandle { get; }
         public RuntimeTypeHandle ParameterTypeHandle { get; }

@@ -36,6 +36,31 @@
         /// automatically and should not be set explicitly.</param>
         public static void ThrowIfDefault<TStruct>(TStruct value, [CallerArgumentExpression(nameof(value))] string? paramName = null) where TStruct : struct
             => ArgumentNullException.ThrowIfNull(value.Equals(default(TStruct)) ? null : value, paramName);
+
+        /// <summary>
+        /// Throws an exception if the specified enumerable is null or contains no elements.
+        /// </summary>
+        /// <remarks>This method is typically used to validate method arguments that are expected to be
+        /// non-null and contain at least one element. If the enumerable is null, an ArgumentNullException is thrown by
+        /// ArgumentNullException.ThrowIfNull.</remarks>
+        /// <param name="value">The enumerable to validate. Cannot be null.</param>
+        /// <param name="paramName">The name of the parameter representing the enumerable. This value is used in the exception message if an
+        /// exception is thrown.</param>
+        /// <param name="message">The custom error message to include in the exception if the enumerable is empty. If null, a default message
+        /// is used.</param>
+        /// <exception cref="ArgumentException">Thrown if the enumerable is empty.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the enumerable is null.</exception>"
+        public static void ThrowIfNullOrEmpty(IEnumerable value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+        {
+            ArgumentNullException.ThrowIfNull(value, paramName);
+            IEnumerator enumerator = value.GetEnumerator();
+            if (!enumerator.MoveNext())
+            {
+                throw new ArgumentException(
+                    message ?? "The enumerable is empty.",
+                    paramName);
+            }
+        }
     }
 
     public class ArgumentExceptionEx : ArgumentException
@@ -165,31 +190,6 @@
                         paramName,
                         message ?? $"The value '{value}' is not equal to '{other}' in enum '{typeof(TEnum).FullName}'.");
                 }
-            }
-        }
-
-        /// <summary>
-        /// Throws an exception if the specified enumerable is null or contains no elements.
-        /// </summary>
-        /// <remarks>This method is typically used to validate method arguments that are expected to be
-        /// non-null and contain at least one element. If the enumerable is null, an ArgumentNullException is thrown by
-        /// ArgumentNullException.ThrowIfNull.</remarks>
-        /// <param name="value">The enumerable to validate. Cannot be null.</param>
-        /// <param name="paramName">The name of the parameter representing the enumerable. This value is used in the exception message if an
-        /// exception is thrown.</param>
-        /// <param name="message">The custom error message to include in the exception if the enumerable is empty. If null, a default message
-        /// is used.</param>
-        /// <exception cref="ArgumentException">Thrown if the enumerable is empty.</exception>
-        /// <exception cref="ArgumentNullException">Thrown if the enumerable is null.</exception>"
-        public static void ThrowIfEnumerableIsNullOrEmpty(IEnumerable value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string message = null)
-        {
-            ArgumentNullException.ThrowIfNull(value, paramName);
-            IEnumerator enumerator = value.GetEnumerator();
-            if (!enumerator.MoveNext())
-            {
-                throw new ArgumentException(
-                    message ?? "The enumerable is empty.",
-                    paramName);
             }
         }
     }

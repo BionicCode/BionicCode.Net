@@ -5,29 +5,34 @@
 
     internal sealed class FieldData : MemberInfoData
     {
-        private string displayName;
-        private string shortDisplayName;
-        private string fullyQualifiedDisplayName;
-        private string signature;
-        private string shortSignature;
-        private string shortCompactSignature;
-        private string fullyQualifiedSignature;
-        private string fullyQualifiedRuntimeSignature;
-        private string runtimeSignature;
-        private string runtimeShortSignature;
-        private string runtimeShortCompactSignature;
+        private string? displayName;
+        private string? shortDisplayName;
+        private string? fullyQualifiedDisplayName;
+        private string? signature;
+        private string? shortSignature;
+        private string? shortCompactSignature;
+        private string? fullyQualifiedSignature;
+        private string? fullyQualifiedRuntimeSignature;
+        private string? runtimeSignature;
+        private string? runtimeShortSignature;
+        private string? runtimeShortCompactSignature;
         private SymbolAttributes symbolAttributes;
         private AccessModifier accessModifier;
         private bool? isStatic;
-        private TypeData fieldTypeData;
+        private TypeData? fieldTypeData;
         private bool? isRef;
         private bool? isConst;
-        private Func<object, object> getInvocator;
-        private Action<object, object> setInvocator;
-        private string assemblyName;
-        private SymbolComponentInfo symbolComponentInfo;
+        private Func<object, object>? getInvocator;
+        private Action<object, object>? setInvocator;
+        private string? assemblyName;
+        private SymbolComponentInfo? symbolComponentInfo;
 
-        public FieldData(FieldInfo fieldInfo) : base(fieldInfo) => this.Handle = fieldInfo.FieldHandle;
+        public FieldData(FieldInfo fieldInfo) : base(fieldInfo)
+        {
+            ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+
+            this.Handle = fieldInfo.FieldHandle;
+        }
 
         public FieldInfo GetFieldInfo()
           => FieldInfo.GetFieldFromHandle(this.Handle);
@@ -37,6 +42,7 @@
 
         public object GetValue(object target)
         {
+            // TODO::Implemnt fast invocator pattern
             this.getInvocator ??= invocationTarget => GetFieldInfo().GetValue(invocationTarget);
 
             return this.getInvocator.Invoke(target);

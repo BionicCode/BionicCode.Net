@@ -5,31 +5,36 @@
 
     internal sealed class EventData : MemberInfoData
     {
-        private string displayName;
-        private string shortDisplayName;
-        private string fullyQualifiedDisplayName;
-        private string signature;
-        private string shortSignature;
-        private string shortCompactSignature;
-        private string fullyQualifiedSignature;
-        private string fullyQualifiedRuntimeSignature;
-        private string runtimeSignature;
-        private string runtimeShortSignature;
-        private string runtimeShortCompactSignature;
+        private string? displayName;
+        private string? shortDisplayName;
+        private string? fullyQualifiedDisplayName;
+        private string? signature;
+        private string? shortSignature;
+        private string? shortCompactSignature;
+        private string? fullyQualifiedSignature;
+        private string? fullyQualifiedRuntimeSignature;
+        private string? runtimeSignature;
+        private string? runtimeShortSignature;
+        private string? runtimeShortCompactSignature;
         private SymbolAttributes symbolAttributes;
         private readonly EventInfo eventInfo;
         private bool? isOverride;
-        private MethodData addMethodData;
-        private MethodData removeMethodData;
-        private MethodData invocatorMethodData;
+        private MethodData? addMethodData;
+        private MethodData? removeMethodData;
+        private MethodData? invocatorMethodData;
         private AccessModifier accessModifier;
         private bool? isStatic;
-        private TypeData eventHandlerTypeData;
-        private Func<object, object[], object> invocator;
-        private string assemblyName;
-        private SymbolComponentInfo symbolComponentInfo;
+        private TypeData? eventHandlerTypeData;
+        private Func<object, object[], object>? invocator;
+        private string? assemblyName;
+        private SymbolComponentInfo? symbolComponentInfo;
 
-        public EventData(EventInfo eventInfo) : base(eventInfo) => this.eventInfo = eventInfo;
+        public EventData(EventInfo eventInfo) : base(eventInfo)
+        {
+            ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
+
+            this.eventInfo = eventInfo;
+        }
 
         public EventInfo GetEventInfo()
           => this.eventInfo;
@@ -39,6 +44,8 @@
 
         public object RaiseEvent(object target, params object[] arguments)
         {
+            // TODO::Implement fast invocator pattern
+
             this.invocator ??= this.InvocatorMethodData.Invoke;
 
             return this.invocator.Invoke(target, arguments);
@@ -54,20 +61,24 @@
         public void RemoveEventHandler(object eventSource, Delegate handler)
           => GetEventInfo().RemoveEventHandler(eventSource, handler);
 
-        public MethodData AddMethodData
-          => this.addMethodData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetEventInfo().GetAddMethod(true));
+        public MethodData? AddMethodData
+          => this.addMethodData ??= GetEventInfo().GetAddMethod(true) is MethodInfo addMethod
+            ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(addMethod)
+            : null;
 
-        public MethodData RemoveMethodData
-          => this.removeMethodData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetEventInfo().GetRemoveMethod(true));
+        public MethodData? RemoveMethodData
+          => this.removeMethodData ??= GetEventInfo().GetRemoveMethod(true) is MethodInfo removeMethod
+            ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(removeMethod)
+            : null;
 
-        public MethodData InvocatorMethodData
-          => this.invocatorMethodData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetEventInfo().GetRaiseMethod(true) ?? GetEventInfo().EventHandlerType.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName));
+        public MethodData? InvocatorMethodData
+          => this.invocatorMethodData ??= this.EventHandlerTypeData?.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, 0);
 
         public TypeData EventHandlerTypeData
           => this.eventHandlerTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetEventInfo().EventHandlerType);
 
         public override bool IsStatic
-          => this.isStatic ??= this.AddMethodData.IsStatic;
+          => this.isStatic ??= this.AddMethodData?.IsStatic ?? false;
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
           ? (this.symbolAttributes = EventData.GetAttributesInternal(this))
@@ -123,9 +134,9 @@
         /// Abstract, Static, Virtual, or Override.</returns>
         private static SymbolAttributes GetAttributesInternal(EventData eventData)
         {
-            MethodData eventAddMethodData = eventData.AddMethodData;
+            MethodData? eventAddMethodData = eventData.AddMethodData;
             SymbolAttributes eventAttributes = SymbolAttributes.Event;
-            MethodInfo addHandlerMethod = eventAddMethodData.GetMethodInfo();
+            MethodInfo addHandlerMethod = eventAddMethodData!.GetMethodInfo();
             if (addHandlerMethod.IsFinal)
             {
                 eventAttributes |= SymbolAttributes.Final;
@@ -155,6 +166,6 @@
         }
 
         private static AccessModifier GetAccessModifierInternal(EventData eventData)
-          => eventData.AddMethodData.AccessModifier;
+          => eventData.AddMethodData?.AccessModifier ?? AccessModifier.Undefined;
     }
 }

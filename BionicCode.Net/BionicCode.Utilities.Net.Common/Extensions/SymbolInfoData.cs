@@ -9,6 +9,8 @@
     {
         protected SymbolInfoData(string name)
         {
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(name, nameof(name));
+
             this.Name = name;
             this.Indentation = 4;
         }
@@ -114,6 +116,8 @@
             get => this.indentation;
             set
             {
+                ArgumentOutOfRangeException.ThrowIfLessThan(value, 0, nameof(value));
+
                 this.indentation = value;
                 this.IndentationString = new string(' ', this.indentation);
             }

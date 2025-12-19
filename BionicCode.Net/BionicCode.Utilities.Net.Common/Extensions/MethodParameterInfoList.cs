@@ -17,18 +17,22 @@
         public MethodParameterInfoList(IEnumerable<MethodParameterInfo> items)
         {
             this.Parameters = items.ToImmutableList();
-            this.GenericMethodParameters = this.Parameters
-                .Where(parameter => parameter.IsGenericMethodParameter)
-                .ToImmutableList();
+            ArgumentNullExceptionEx.ThrowIfNullOrEmpty(this.Parameters, nameof(items));
+
+            this.DeclaringMemberTypeHandle = this.Parameters.FirstOrDefault().DeclaringTypeHandle;
+            if (!this.Parameters.All(parameter => parameter.DeclaringTypeHandle.Equals(this.DeclaringMemberTypeHandle)))
+            {
+                throw new ArgumentException("All parameters must belong to the same member.", nameof(items));
+            }
+
             this._hashCode = ComputeHashCode(this.Parameters);
         }
 
         public int Count => this.Parameters.Count;
-        public int GenericTypeParameterCount => this.GenericMethodParameters.Count;
         public bool IsEmpty => this.Parameters.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<MethodParameterInfo> Parameters { get; }
-        public ImmutableList<MethodParameterInfo> GenericMethodParameters { get; }
+        public RuntimeTypeHandle DeclaringMemberTypeHandle { get; }
 
         public MethodParameterInfo this[int index]
         {
@@ -48,18 +52,20 @@
             => this.Parameters.GetEnumerator();
 
         public bool Equals(MethodParameterInfoList? other)
-            => other != null && this.Parameters.SequenceEqual(other.Parameters);
+            => other != null && this.Parameters.SequenceEqual(other.Parameters)
+                && this.DeclaringMemberTypeHandle.Equals(other.DeclaringMemberTypeHandle);
 
         public override bool Equals(object? obj)
             => obj is MethodParameterInfoList other && Equals(other);
 
         public override int GetHashCode() => this._hashCode;
 
-        private static int ComputeHashCode(IEnumerable<MethodParameterInfo> items)
+        private int ComputeHashCode(IEnumerable<MethodParameterInfo> items)
         {
             unchecked
             {
                 int hash = 17;
+                hash = (hash * 31) + this.DeclaringMemberTypeHandle.GetHashCode();
                 foreach (MethodParameterInfo item in items)
                 {
                     hash = (hash * 31) + item.GetHashCode();
