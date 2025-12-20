@@ -22,8 +22,9 @@
         private TypeData? fieldTypeData;
         private bool? isRef;
         private bool? isConst;
-        private Func<object, object>? getInvocator;
-        private Action<object, object>? setInvocator;
+        private bool? isInitOnly;
+        private MethodData? getValueInvocator;
+        private MethodData? setValueInvocator;
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
 
@@ -40,22 +41,54 @@
         protected override MemberInfo GetMemberInfo()
           => GetFieldInfo();
 
-        public object GetValue(object target)
-        {
-            // TODO::Implemnt fast invocator pattern
-            this.getInvocator ??= invocationTarget => GetFieldInfo().GetValue(invocationTarget);
+        public object? GetValue(object? target)
+            => this.GetValueInvocator.Invoke(target);
 
-            return this.getInvocator.Invoke(target);
-        }
-
-        public void SetValue(object target, object value)
-        {
-            this.setInvocator ??= (invocationTarget, fieldValue) => GetFieldInfo().SetValue(invocationTarget, fieldValue);
-
-            this.setInvocator.Invoke(target, value);
-        }
+        public void SetValue(object? target, object? value)
+            => _ = this.SetValueInvocator.Invoke(target, value);
 
         public RuntimeFieldHandle Handle { get; }
+
+        public MethodData GetValueInvocator
+        {
+            get
+            {
+                if (this.getValueInvocator is null)
+                {
+                    MethodInfo? fieldAccessor = GetFieldInfo().GetType().GetMethod(nameof(FieldInfo.GetValue));
+                    if (fieldAccessor is null)
+                    {
+                        throw new InvalidOperationException("Unable to retrieve field accessor method info.");
+                    }
+
+                    MethodData fieldAccessorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldAccessor!);
+                    this.getValueInvocator = fieldAccessorData.GetInvocator();
+                }
+
+                return this.getValueInvocator;
+
+            }
+        }
+
+        public MethodData SetValueInvocator
+        {
+            get
+            {
+                if (this.setValueInvocator is null)
+                {
+                    MethodInfo? fieldAccessor = GetFieldInfo().GetType().GetMethod(nameof(FieldInfo.SetValue));
+                    if (fieldAccessor is null)
+                    {
+                        throw new InvalidOperationException("Unable to retrieve field accessor method info.");
+                    }
+
+                    MethodData fieldAccessorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldAccessor!);
+                    this.setValueInvocator = fieldAccessorData.GetInvocator();
+                }
+
+                return this.setValueInvocator;
+            }
+        }
 
         public override AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
           ? (this.accessModifier = FieldData.GetAccessModifierInternal(this))
@@ -116,20 +149,26 @@
         public bool IsConst
           => this.isConst ??= IsFieldConst(this);
 
+        public bool IsInitOnly
+          => this.isInitOnly ??= GetFieldInfo().IsInitOnly;
+
+        public bool IsReadonly
+          => this.IsInitOnly && !this.IsConst;
+
         /// <summary>
         /// Determines the set of symbol attributes for the specified field based on its metadata and characteristics.
         /// </summary>
         /// <remarks>The returned attributes reflect the field's characteristics, including whether it is
         /// static, constant, read-only, or by-reference. This method is intended for internal use when mapping field
-        /// metadata to symbol attributes.</remarks>
+        /// metadata to symbol attributes.<para/>
+        /// For performance reasons avoid querying the attributes and prefer reading the particular property or properties.</remarks>
         /// <param name="fieldData">The field metadata used to evaluate and construct the corresponding symbol attributes.</param>
         /// <returns>A bitwise combination of <see cref="SymbolAttributes"/> values that represent the attributes of the field,
         /// such as static, constant, or by-reference.</returns>
         private static SymbolAttributes GetAttributes(FieldData fieldData)
         {
-            FieldInfo fieldInfo = fieldData.GetFieldInfo();
             SymbolAttributes fieldAttributes = SymbolAttributes.Field;
-            if (fieldInfo.IsInitOnly)
+            if (fieldData.IsInitOnly)
             {
                 fieldAttributes |= SymbolAttributes.Final;
             }
@@ -157,13 +196,12 @@
 
         private static AccessModifier GetAccessModifierInternal(FieldData fieldData)
         {
-            FieldInfo fieldInfo = fieldData.GetFieldInfo();
-            return fieldInfo.IsPublic ? AccessModifier.Public
-              : fieldInfo.IsPrivate ? AccessModifier.Private
-              : fieldInfo.IsAssembly ? AccessModifier.Internal
-              : fieldInfo.IsFamily ? AccessModifier.Protected
-              : fieldInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
-              : fieldInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
+            return fieldData.IsPublic ? AccessModifier.Public
+              : fieldData.IsPrivate ? AccessModifier.Private
+              : fieldData.IsAssembly ? AccessModifier.Internal
+              : fieldData.IsFamily ? AccessModifier.Protected
+              : fieldData.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
+              : fieldData.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
               : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
         }
     }

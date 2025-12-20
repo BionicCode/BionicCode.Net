@@ -1921,6 +1921,13 @@
             return typeData.SymbolAttributes.HasFlag(SymbolAttributes.ReadOnlyStruct);
         }
 
+        public static bool IsReadOnly(this FieldInfo fieldInfo)
+        {
+            ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+            return fieldData.IsReadonly;
+        }
+
         //public static object GetAwaiter(this object obj)
         //{
         //  MethodInfo getAwaiterMethodInfo = obj.GetType().GetMethod(nameof(Task.GetAwaiter));

@@ -61,6 +61,24 @@
                     paramName);
             }
         }
+
+        /// <summary>
+        /// Throws an ArgumentException if the specified value is not null.
+        /// </summary>
+        /// <param name="value">The object to check for null. No exception is thrown if this value is null.</param>
+        /// <param name="paramName">The name of the parameter being checked. This value is used in the exception message. If not specified, the
+        /// caller argument expression is used.</param>
+        /// <param name="message">The custom error message to include in the exception. If null, a default message is used.</param>
+        /// <exception cref="ArgumentException">Thrown if value is not null.</exception>
+        public static void ThrowIfNotNull(object value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+        {
+            if (value is not null)
+            {
+                throw new ArgumentException(
+                    message ?? "The argument must be null.",
+                    paramName);
+            }
+        }
     }
 
     public class ArgumentExceptionEx : ArgumentException

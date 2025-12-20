@@ -6,6 +6,9 @@
     internal enum SymbolAttributes
     {
         Undefined = 0,
+        /// <summary>
+        /// Indicates that the item is read-only and cannot be modified further.
+        /// </summary>
         Final = 1,
         Virtual = 2,
         Abstract = 4,
@@ -54,7 +57,7 @@
         Field = 2048 | Member,
         ReadOnlyField = Final | Field,
         RefField = ByReference | Field,
-        StaticField = Static | Property,
+        StaticField = Static | Field,
         StaticReadOnlyField = Static | Final | Field,
         ConstantField = Constant | Field,
         Event = 4096 | Member,

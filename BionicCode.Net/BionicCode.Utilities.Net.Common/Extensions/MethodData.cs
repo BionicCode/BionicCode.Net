@@ -48,17 +48,19 @@
         private bool? isGenericTypeMethod;
         private MethodData? genericMethodDefinitionData;
         private bool? isReturnValueByRef;
-        private volatile Func<object?, object[]?, object?>? _invocator;
-        private Func<object?, object[]?, Task>? _asyncTaskInvocator;
-        private Func<object?, object[]?, Task<object?>>? _asyncGenericTaskInvocator;
-        private Func<object?, object[]?, ValueTask<object?>>? _asyncGenericValueTaskInvocator;
-        private Func<object?, object[]?, ValueTask>? _asyncValueTaskInvocator;
+        private volatile Func<object?, object?[]?, object?>? _invocator;
+        private volatile Func<object?, object?[]?, Task>? _asyncTaskInvocator;
+        private volatile Func<object?, object?[]?, Task<object?>>? _asyncGenericTaskInvocator;
+        private volatile Func<object?, object?[]?, ValueTask<object?>>? _asyncGenericValueTaskInvocator;
+        private volatile Func<object?, object?[]?, ValueTask>? _asyncValueTaskInvocator;
         private string? assemblyName;
         private bool? isReturnValueReadOnly;
         private bool? containsGenericParameters;
         private bool? _hasParamsParameter;
         private bool? _isVoidMethod;
         private bool? _isAwaitableGenericTask;
+        private bool? _isAbstract;
+        private bool? _isVirtual;
 
         public MethodData(MethodInfo methodInfo) : base(methodInfo)
         {
@@ -95,7 +97,7 @@
         /// parameters.</exception>
         /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="ture"/>)
         /// you must call the <see cref="InvokeOpenGeneric(object, IEnumerable{TypeData}, object[])"/> overload and provide the generic type parameter arguments.</remarks>
-        public object? Invoke(object? target, params object[] args)
+        public object? Invoke(object? target, params object?[]? args)
         {
             if (!this.IsStatic)
             {
@@ -112,15 +114,20 @@
                 throw new InvalidOperationException($"Cannot invoke generic methods that are not closed. Call {nameof(InvokeOpenGeneric)} instead to ensure the generic method is properly closed by specifying generic type arguments.");
             }
 
-            if (this.HasParamsParameter)
+            if (this.Parameters.HasItems)
             {
-                // Insufficient number of arguments provided for method invocation with 'params' parameter.
-                // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
-                ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
-            }
-            else
-            {
-                ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                ArgumentNullException.ThrowIfNull(args, nameof(args));
+
+                if (this.HasParamsParameter)
+                {
+                    // Insufficient number of arguments provided for method invocation with 'params' parameter.
+                    // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
+                    ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
+                }
+                else
+                {
+                    ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                }
             }
 
             MethodData invocatorMethod = GetInvocatorInternal(Array.Empty<TypeData>(), args);
@@ -145,7 +152,7 @@
         /// <returns>The return value of the invoked method, or null if the method has no return value.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the declaring type is a generic type definition or contains unassigned generic parameters, or if
         /// the method itself is not a closed generic method.</exception>
-        public object? InvokeOpenGeneric(object? target, IEnumerable<TypeData> genericMethodParameters, params object[] args)
+        public object? InvokeOpenGeneric(object? target, IEnumerable<TypeData> genericMethodParameters, params object?[]? args)
         {
             if (!this.IsOpenGenericMethodOrGenericMethodDefinition)
             {
@@ -162,15 +169,20 @@
                 throw new InvalidOperationException("Cannot invoke methods declared on generic type definitions or types that contain generic parameters. Ensure the declaring generic type is properly closed.");
             }
 
-            if (this.HasParamsParameter)
+            if (this.Parameters.HasItems)
             {
-                // Insufficient number of arguments provided for method invocation with 'params' parameter.
-                // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
-                ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
-            }
-            else
-            {
-                ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                ArgumentNullException.ThrowIfNull(args, nameof(args));
+
+                if (this.HasParamsParameter)
+                {
+                    // Insufficient number of arguments provided for method invocation with 'params' parameter.
+                    // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
+                    ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
+                }
+                else
+                {
+                    ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                }
             }
 
             ArgumentNullException.ThrowIfNull(genericMethodParameters, nameof(genericMethodParameters));
@@ -184,7 +196,7 @@
             return invocatorMethod._invocator!.Invoke(target, args);
         }
 
-        public async Task InvokeTaskAsync(object? target, params object[] args)
+        public async Task InvokeTaskAsync(object? target, params object?[]? args)
         {
             if (!this.IsAwaitableTask)
             {
@@ -206,15 +218,20 @@
                 throw new InvalidOperationException($"Cannot invoke generic methods that are not closed. Call {nameof(InvokeOpenGenericTaskAsync)}' instaed to ensure the generic method is properly closed by specifying generic type arguments.");
             }
 
-            if (this.HasParamsParameter)
+            if (this.Parameters.HasItems)
             {
-                // Insufficient number of arguments provided for method invocation with 'params' parameter.
-                // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
-                ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
-            }
-            else
-            {
-                ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                ArgumentNullException.ThrowIfNull(args, nameof(args));
+
+                if (this.HasParamsParameter)
+                {
+                    // Insufficient number of arguments provided for method invocation with 'params' parameter.
+                    // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
+                    ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
+                }
+                else
+                {
+                    ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                }
             }
 
             MethodData invocatorMethod = GetInvocatorInternal(Array.Empty<TypeData>(), args);
@@ -223,7 +240,7 @@
             await invocatorMethod._asyncTaskInvocator!.Invoke(target, args).ConfigureAwait(false);
         }
 
-        public async Task InvokeOpenGenericTaskAsync(object? target, IEnumerable<TypeData> genericMethodParameters, params object[] args)
+        public async Task InvokeOpenGenericTaskAsync(object? target, IEnumerable<TypeData> genericMethodParameters, params object?[]? args)
         {
             if (!this.IsAwaitableTask)
             {
@@ -240,15 +257,20 @@
                 throw new InvalidOperationException("Cannot invoke methods declared on generic type definitions or types that contain generic parameters. Ensure the declaring generic type is properly closed.");
             }
 
-            if (this.HasParamsParameter)
+            if (this.Parameters.HasItems)
             {
-                // Insufficient number of arguments provided for method invocation with 'params' parameter.
-                // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
-                ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
-            }
-            else
-            {
-                ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                ArgumentNullException.ThrowIfNull(args, nameof(args));
+
+                if (this.HasParamsParameter)
+                {
+                    // Insufficient number of arguments provided for method invocation with 'params' parameter.
+                    // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
+                    ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
+                }
+                else
+                {
+                    ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                }
             }
 
             ArgumentNullException.ThrowIfNull(genericMethodParameters, nameof(genericMethodParameters));
@@ -262,7 +284,7 @@
             await invocatorMethod._asyncTaskInvocator!.Invoke(target, args).ConfigureAwait(false);
         }
 
-        public async Task<object?> InvokeTaskWithResultAsync(object? target, params object[] args)
+        public async Task<object?> InvokeTaskWithResultAsync(object? target, params object?[]? args)
         {
             if (!this.IsAwaitableGenericTask)
             {
@@ -284,15 +306,20 @@
                 throw new InvalidOperationException($"Cannot invoke generic methods that are not closed. Call {nameof(InvokeOpenGenericTaskWithResultAsync)}' to ensure the generic method is properly closed by specifying generic type arguments.");
             }
 
-            if (this.HasParamsParameter)
+            if (this.Parameters.HasItems)
             {
-                // Insufficient number of arguments provided for method invocation with 'params' parameter.
-                // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
-                ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
-            }
-            else
-            {
-                ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                ArgumentNullException.ThrowIfNull(args, nameof(args));
+
+                if (this.HasParamsParameter)
+                {
+                    // Insufficient number of arguments provided for method invocation with 'params' parameter.
+                    // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
+                    ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
+                }
+                else
+                {
+                    ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                }
             }
 
             MethodData invocatorMethod = GetInvocatorInternal(Array.Empty<TypeData>(), args);
@@ -301,7 +328,7 @@
             return await invocatorMethod._asyncGenericTaskInvocator!.Invoke(target, args).ConfigureAwait(false);
         }
 
-        public async Task<object?> InvokeOpenGenericTaskWithResultAsync(object? target, IEnumerable<TypeData> genericMethodParameters, params object[] args)
+        public async Task<object?> InvokeOpenGenericTaskWithResultAsync(object? target, IEnumerable<TypeData> genericMethodParameters, params object?[]? args)
         {
             if (!this.IsAwaitableGenericTask)
             {
@@ -318,15 +345,20 @@
                 throw new InvalidOperationException("Cannot invoke methods declared on generic type definitions or types that contain generic parameters. Ensure the declaring generic type is properly closed.");
             }
 
-            if (this.HasParamsParameter)
+            if (this.Parameters.HasItems)
             {
-                // Insufficient number of arguments provided for method invocation with 'params' parameter.
-                // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
-                ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
-            }
-            else
-            {
-                ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                ArgumentNullException.ThrowIfNull(args, nameof(args));
+
+                if (this.HasParamsParameter)
+                {
+                    // Insufficient number of arguments provided for method invocation with 'params' parameter.
+                    // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
+                    ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
+                }
+                else
+                {
+                    ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                }
             }
 
             ArgumentNullException.ThrowIfNull(genericMethodParameters, nameof(genericMethodParameters));
@@ -340,7 +372,7 @@
             return await invocatorMethod._asyncGenericTaskInvocator!.Invoke(target, args).ConfigureAwait(false);
         }
 
-        public async ValueTask InvokeValueTaskAsync(object? target, params object[] args)
+        public async ValueTask InvokeValueTaskAsync(object? target, params object?[]? args)
         {
             if (!this.IsAwaitableValueTask)
             {
@@ -362,15 +394,20 @@
                 throw new InvalidOperationException($"Cannot invoke generic methods that are not closed. Call {nameof(InvokeOpenGenericValueTaskAsync)} Ensure the generic method is properly closed by specifying generic type arguments.");
             }
 
-            if (this.HasParamsParameter)
+            if (this.Parameters.HasItems)
             {
-                // Insufficient number of arguments provided for method invocation with 'params' parameter.
-                // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
-                ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
-            }
-            else
-            {
-                ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                ArgumentNullException.ThrowIfNull(args, nameof(args));
+
+                if (this.HasParamsParameter)
+                {
+                    // Insufficient number of arguments provided for method invocation with 'params' parameter.
+                    // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
+                    ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
+                }
+                else
+                {
+                    ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                }
             }
 
             MethodData invocatorMethod = GetInvocatorInternal(Array.Empty<TypeData>(), args);
@@ -379,7 +416,7 @@
             await invocatorMethod._asyncValueTaskInvocator!.Invoke(target, args).ConfigureAwait(false);
         }
 
-        public async ValueTask InvokeOpenGenericValueTaskAsync(object? target, IEnumerable<TypeData> genericMethodParameters, params object[] args)
+        public async ValueTask InvokeOpenGenericValueTaskAsync(object? target, IEnumerable<TypeData> genericMethodParameters, params object?[]? args)
         {
             if (!this.IsAwaitableValueTask)
             {
@@ -396,15 +433,20 @@
                 throw new InvalidOperationException("Cannot invoke methods declared on generic type definitions or types that contain generic parameters. Ensure the declaring generic type is properly closed.");
             }
 
-            if (this.HasParamsParameter)
+            if (this.Parameters.HasItems)
             {
-                // Insufficient number of arguments provided for method invocation with 'params' parameter.
-                // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
-                ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
-            }
-            else
-            {
-                ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                ArgumentNullException.ThrowIfNull(args, nameof(args));
+
+                if (this.HasParamsParameter)
+                {
+                    // Insufficient number of arguments provided for method invocation with 'params' parameter.
+                    // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
+                    ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
+                }
+                else
+                {
+                    ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                }
             }
 
             ArgumentNullException.ThrowIfNull(genericMethodParameters, nameof(genericMethodParameters));
@@ -418,7 +460,7 @@
             await invocatorMethod._asyncValueTaskInvocator!.Invoke(target, args).ConfigureAwait(false);
         }
 
-        public async ValueTask<object?> InvokeValueTaskWithResultAsync(object? target, params object[] args)
+        public async ValueTask<object?> InvokeValueTaskWithResultAsync(object? target, params object?[]? args)
         {
             if (!this.IsAwaitableGenericValueTask)
             {
@@ -440,15 +482,20 @@
                 throw new InvalidOperationException($"Cannot invoke generic methods that are not closed. Call {nameof(InvokeOpenGenericValueTaskWithResultAsync)} Ensure the generic method is properly closed by specifying generic type arguments.");
             }
 
-            if (this.HasParamsParameter)
+            if (this.Parameters.HasItems)
             {
-                // Insufficient number of arguments provided for method invocation with 'params' parameter.
-                // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
-                ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
-            }
-            else
-            {
-                ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                ArgumentNullException.ThrowIfNull(args, nameof(args));
+
+                if (this.HasParamsParameter)
+                {
+                    // Insufficient number of arguments provided for method invocation with 'params' parameter.
+                    // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
+                    ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
+                }
+                else
+                {
+                    ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                }
             }
 
             MethodData invocatorMethod = GetInvocatorInternal(Array.Empty<TypeData>(), args);
@@ -457,7 +504,7 @@
             return await invocatorMethod._asyncGenericValueTaskInvocator!.Invoke(target, args).ConfigureAwait(false);
         }
 
-        public async ValueTask<object?> InvokeOpenGenericValueTaskWithResultAsync(object? target, IEnumerable<TypeData> genericMethodParameters, params object[] args)
+        public async ValueTask<object?> InvokeOpenGenericValueTaskWithResultAsync(object? target, IEnumerable<TypeData> genericMethodParameters, params object?[]? args)
         {
             if (!this.IsAwaitableGenericValueTask)
             {
@@ -474,15 +521,20 @@
                 throw new InvalidOperationException("Cannot invoke methods declared on generic type definitions or types that contain generic parameters. Ensure the declaring generic type is properly closed.");
             }
 
-            if (this.HasParamsParameter)
+            if (this.Parameters.HasItems)
             {
-                // Insufficient number of arguments provided for method invocation with 'params' parameter.
-                // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
-                ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
-            }
-            else
-            {
-                ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                ArgumentNullException.ThrowIfNull(args, nameof(args));
+
+                if (this.HasParamsParameter)
+                {
+                    // Insufficient number of arguments provided for method invocation with 'params' parameter.
+                    // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
+                    ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.Parameters.Count - 1, nameof(args));
+                }
+                else
+                {
+                    ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
+                }
             }
 
             ArgumentNullException.ThrowIfNull(genericMethodParameters, nameof(genericMethodParameters));
@@ -496,7 +548,7 @@
             return await invocatorMethod._asyncGenericValueTaskInvocator!.Invoke(target, args).ConfigureAwait(false);
         }
 
-        public MethodData GetInvocator(params object[] args)
+        public MethodData GetInvocator(params object?[]? args)
         {
             if (this.IsOpenGenericMethodOrGenericMethodDefinition)
             {
@@ -525,7 +577,7 @@
             return invocatorMethod;
         }
 
-        public MethodData GetOpenGenericInvocator(object? target, IEnumerable<TypeData> genericMethodParameters, params object[] args)
+        public MethodData GetOpenGenericInvocator(object? target, IEnumerable<TypeData> genericMethodParameters, params object?[]? args)
         {
             if (!this.IsOpenGenericMethodOrGenericMethodDefinition)
             {
@@ -562,21 +614,20 @@
             return invocatorMethod;
         }
 
-        private MethodData GetInvocatorInternal(TypeData[] genericMethodParameters, params object[] args)
+        private MethodData GetInvocatorInternal(TypeData[] genericMethodParameters, params object?[]? args)
         {
-            MethodData invocatorSource = GetOrCreateFastInvocator(genericMethodParameters, args);
+            MethodData invocatorSource = this.HasInvocatorGenerated
+                // 'this' is already a closed generic method with constructed invocator.
+                // Reason: only closed generic methods can have invocator/are invocable...
+                ? this
+
+                // ...otherwise generate or get cached invocator
+                : GetOrCreateFastInvocator(genericMethodParameters, args);
             return invocatorSource;
         }
 
-        private MethodData GetOrCreateFastInvocator(TypeData[] genericMethodParameters, params object[] args)
+        private MethodData GetOrCreateFastInvocator(TypeData[] genericMethodParameters, params object?[]? args)
         {
-            // 'this' is already a closed generic method with constructed invocator.
-            // Reason: only closed generic methods can have invocator/are invocable.
-            if (this._invocator is not null)
-            {
-                return this;
-            }
-
             MethodData methodData = GetOrConstructGenericMethod(genericMethodParameters);
             ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
             ParameterExpression argsParam = Expression.Parameter(typeof(object[]), "args");
@@ -747,6 +798,12 @@
         public bool IsAwaitable
           => this.isAwaitable ??= this.ReturnTypeData.IsAwaitable;
 
+        public bool IsAbstract
+          => this._isAbstract ??= GetMethodInfo().IsAbstract;
+
+        public bool IsVirtual
+            => this._isVirtual ??= GetMethodInfo().IsVirtual;
+
         public bool IsAwaitableTask
         {
             get
@@ -838,6 +895,13 @@
                 return this._isAwaitableGenericTask.Value;
             }
         }
+
+        internal bool HasInvocatorGenerated
+            => this._invocator is not null
+                && this._asyncTaskInvocator is not null
+                && this._asyncGenericTaskInvocator is not null
+                && this._asyncValueTaskInvocator is not null
+                && this._asyncGenericValueTaskInvocator is not null;
 
         public bool IsOverride
           => this.isOverride ??= MethodData.IsMethodOverride(this);
@@ -954,19 +1018,19 @@
         /// <summary>
         /// Determines the set of symbol attributes for the specified closedGenericMethoMethodInfo based on its metadata and characteristics.
         /// </summary>
+        /// <remarks>For performance reasons avoid querying the attributes and prefer reading the particular property or properties.</remarks>
         /// <param name="methodData">The closedGenericMethoMethodInfo metadata used to evaluate and determine the applicable symbol attributes.</param>
         /// <returns>A bitwise combination of SymbolAttributes values that describe the closedGenericMethoMethodInfo's characteristics, such as whether
         /// it is static, abstract, virtual, final, override, or generic.</returns>
         private static SymbolAttributes GetAttributes(MethodData methodData)
         {
-            MethodInfo methodInfo = methodData.GetMethodInfo();
             SymbolAttributes methodAttributes = SymbolAttributes.Method;
-            if (methodInfo.IsFinal)
+            if (methodData.IsSealed)
             {
                 methodAttributes |= SymbolAttributes.Final;
             }
 
-            if (methodInfo.IsAbstract)
+            if (methodData.IsAbstract)
             {
                 methodAttributes |= SymbolAttributes.Abstract;
             }
@@ -976,7 +1040,7 @@
                 methodAttributes |= SymbolAttributes.Static;
             }
 
-            if (methodInfo.IsVirtual)
+            if (methodData.IsVirtual)
             {
                 methodAttributes |= SymbolAttributes.Virtual;
             }
@@ -1002,13 +1066,12 @@
 
         private static AccessModifier GetAccessModifier(MethodData methodData)
         {
-            MethodInfo methodInfo = methodData.GetMethodInfo();
-            return methodInfo.IsPublic ? AccessModifier.Public
-              : methodInfo.IsPrivate ? AccessModifier.Private
-              : methodInfo.IsAssembly ? AccessModifier.Internal
-              : methodInfo.IsFamily ? AccessModifier.Protected
-              : methodInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
-              : methodInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
+            return methodData.IsPublic ? AccessModifier.Public
+              : methodData.IsPrivate ? AccessModifier.Private
+              : methodData.IsAssembly ? AccessModifier.Internal
+              : methodData.IsFamily ? AccessModifier.Protected
+              : methodData.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
+              : methodData.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
               : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
         }
 

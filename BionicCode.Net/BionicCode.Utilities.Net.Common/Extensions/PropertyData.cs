@@ -246,6 +246,7 @@ namespace BionicCode.Utilities.Net
         /// Determines the set of symbol attributes for the specified property based on its metadata and accessor
         /// methods.
         /// </summary>
+        /// <remarks>For performance reasons avoid querying the attributes and prefer reading the particular property or properties.</remarks>
         /// <param name="propertyData">The metadata describing the property for which to retrieve symbol attributes. Cannot be null.</param>
         /// <returns>A bitwise combination of SymbolAttributes values that represent the characteristics of the property, such as
         /// whether it is static, abstract, virtual, an indexer, or has other modifiers.</returns>
@@ -256,8 +257,7 @@ namespace BionicCode.Utilities.Net
               : SymbolAttributes.Property;
 
             MethodData? accessorData = propertyData.GetMethodData ?? propertyData.SetMethodData;
-            MethodInfo? accessorMethodInfo = accessorData?.GetMethodInfo();
-            if (accessorMethodInfo is null)
+            if (accessorData is null)
             {
                 return SymbolAttributes.Undefined;
             }
@@ -272,7 +272,7 @@ namespace BionicCode.Utilities.Net
                 propertyAttributes |= SymbolAttributes.Init;
             }
 
-            if (accessorMethodInfo.IsAbstract)
+            if (accessorData.IsAbstract)
             {
                 propertyAttributes |= SymbolAttributes.Abstract;
             }
@@ -282,7 +282,7 @@ namespace BionicCode.Utilities.Net
                 propertyAttributes |= SymbolAttributes.Static;
             }
 
-            if (accessorMethodInfo.IsVirtual)
+            if (accessorData.IsVirtual)
             {
                 propertyAttributes |= SymbolAttributes.Virtual;
             }

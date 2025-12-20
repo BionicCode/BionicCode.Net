@@ -72,6 +72,11 @@ namespace BionicCode.Utilities.Net
         private bool? isGenericTypeParameter;
         private bool? isGenericMethodParameter;
         private bool? isGenericParameter;
+        private bool? _isEnum;
+        private bool? _isClass;
+        private bool? _isInterface;
+        private bool? _isStruct;
+        private bool? _isReadOnlyStruct;
 
         public TypeData(Type type) : base(type.Name)
         {
@@ -370,6 +375,9 @@ namespace BionicCode.Utilities.Net
         public bool IsValueType
           => this.isValueType ??= UnwrapType().IsValueType;
 
+        public bool IsEnum
+          => this._isEnum ??= UnwrapType().IsEnum;
+
         public TypeData GenericTypeDefinitionData
         {
             get
@@ -452,7 +460,7 @@ namespace BionicCode.Utilities.Net
           => this.fullyQualifiedDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
 
         public override string AssemblyName
-          => this.assemblyName ??= UnwrapType().Assembly.GetName().Name;
+          => this.assemblyName ??= UnwrapType().Assembly.GetName().Name ?? string.Empty;
 
         public bool IsStatic
           => this.isStatic ??= TypeData.IsTypeStatic(this);
@@ -476,14 +484,26 @@ namespace BionicCode.Utilities.Net
         public bool IsDelegate
           => this.isDelegate ??= TypeData.IsTypeDelegate(UnwrapType());
 
+        public bool IsClass
+          => this._isClass ??= UnwrapType().IsClass;
+
+        public bool IsInterface
+            => this._isInterface ??= UnwrapType().IsInterface;
+
+        public bool IsStruct
+            => this._isStruct ??= UnwrapType().IsValueType;
+
+        public bool IsReadOnlyStruct
+            => this._isReadOnlyStruct ??= IsReadOnlyStructInternal(this);
+
         public bool IsSubclass
         {
             get
             {
                 if (this.isSubclass is null)
                 {
-                    Type baseType = UnwrapType().BaseType;
-                    this.isSubclass = baseType != null
+                    Type? baseType = UnwrapType().BaseType;
+                    this.isSubclass = baseType is not null
                       && baseType != typeof(object)
                       && baseType != typeof(ValueType);
                 }
@@ -492,14 +512,16 @@ namespace BionicCode.Utilities.Net
             }
         }
 
-        public TypeData BaseTypeData
+        public TypeData? BaseTypeData
         {
             get
             {
-                Type baseType = UnwrapType().BaseType;
                 if (this.baseTypeData is null && this.IsSubclass)
                 {
-                    this.baseTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(baseType);
+                    Type? baseType = UnwrapType().BaseType;
+                    this.baseTypeData = baseType is null
+                        ? null
+                        : SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(baseType);
                 }
 
                 return this.baseTypeData;
@@ -518,13 +540,10 @@ namespace BionicCode.Utilities.Net
             {
                 if (!this.IsDelegate)
                 {
-                    throw new InvalidOperationException($"The current type is not a delegate. Call {nameof(this.IsDelegate)} to check whether the current type is a delegate.");
+                    throw new InvalidOperationException($"The current type is not a delegate. Call {nameof(this.IsDelegate)} before accessing this property to check whether the current type is a delegate.");
                 }
 
-                if (this.delegateInvokeMethodData is null)
-                {
-                    this.delegateInvokeMethodData = GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, 0);
-                }
+                this.delegateInvokeMethodData ??= GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, 0);
 
                 return this.delegateInvokeMethodData;
             }
@@ -608,14 +627,14 @@ namespace BionicCode.Utilities.Net
         /// </summary>
         /// <remarks>The returned SymbolAttributes value may include multiple flags combined using a
         /// bitwise OR to represent all applicable characteristics of the type. This method does not perform validation
-        /// on the input; callers should ensure that typeData is valid and represents a supported type.</remarks>
+        /// on the input; callers should ensure that typeData is valid and represents a supported type.<para/>
+        /// For performance reasons avoid querying the attributes and prefer reading the particular property or properties.</remarks>
         /// <param name="typeData">The TypeData instance representing the type for which to retrieve symbol attributes. Cannot be null.</param>
         /// <returns>A SymbolAttributes value that describes the kind and characteristics of the specified type, such as whether
         /// it is a class, struct, interface, enum, delegate, generic, static, abstract, or final. Returns
         /// SymbolAttributes.Undefined if the type does not match any recognized category.</returns>
         private static SymbolAttributes GetAttributes(TypeData typeData)
         {
-            Type type = typeData.UnwrapType();
             if (typeData.IsDelegate)
             {
                 SymbolAttributes delegateAttributes = SymbolAttributes.Delegate;
@@ -627,10 +646,10 @@ namespace BionicCode.Utilities.Net
                 return delegateAttributes;
             }
 
-            if (type.IsClass)
+            if (typeData.IsClass)
             {
                 SymbolAttributes classAttributes = SymbolAttributes.Class;
-                if (type.IsAbstract)
+                if (typeData.IsAbstract)
                 {
                     classAttributes |= SymbolAttributes.Abstract;
                 }
@@ -653,19 +672,19 @@ namespace BionicCode.Utilities.Net
                 return classAttributes;
             }
 
-            if (type.IsInterface)
+            if (typeData.IsInterface)
             {
                 SymbolAttributes interfaceAttributes = SymbolAttributes.Interface;
                 return interfaceAttributes;
             }
 
-            if (type.IsEnum)
+            if (typeData.IsEnum)
             {
                 SymbolAttributes enumAttributes = SymbolAttributes.Enum;
                 return enumAttributes;
             }
 
-            if (type.IsValueType)
+            if (typeData.IsValueType)
             {
                 SymbolAttributes structAttributes = SymbolAttributes.Struct;
 
@@ -679,7 +698,7 @@ namespace BionicCode.Utilities.Net
                     structAttributes |= SymbolAttributes.ByReference;
                 }
 
-                bool isReadOnlyStruct = TypeData.IsReadOnlyStructInternal(type);
+                bool isReadOnlyStruct = typeData.IsReadOnlyStruct;
                 if (isReadOnlyStruct)
                 {
                     structAttributes |= SymbolAttributes.Final;
@@ -698,8 +717,8 @@ namespace BionicCode.Utilities.Net
             return TypeData.DelegateType.IsAssignableFrom(type);
         }
 
-        private static bool IsReadOnlyStructInternal(Type type)
-          => type.IsValueType && type.GetCustomAttribute(HelperExtensionsCommon.IsReadOnlyAttributeType) != null;
+        private static bool IsReadOnlyStructInternal(TypeData typeData)
+          => typeData.IsValueType && typeData.UnwrapType().GetCustomAttribute(HelperExtensionsCommon.IsReadOnlyAttributeType) != null;
 
         /// <summary>
         /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.
@@ -787,7 +806,7 @@ namespace BionicCode.Utilities.Net
 
         private static bool IsTypeAwaitableTask(TypeData type)
           => TypeData.TaskType.IsAssignableFrom(type.UnwrapType())
-            || TypeData.TaskType.IsAssignableFrom(type.BaseTypeData.UnwrapType());
+            || (type.BaseTypeData?.UnwrapType() is Type baseType && TypeData.TaskType.IsAssignableFrom(baseType));
 
         private static bool IsTypeAwaitableValueTask(TypeData type)
           => TypeData.ValueTaskType == type.UnwrapType()
@@ -795,15 +814,14 @@ namespace BionicCode.Utilities.Net
 
         private static AccessModifier GetAccessModifier(TypeData typeData)
         {
-            Type typeInfo = typeData.UnwrapType();
-            return typeInfo.IsPublic ? AccessModifier.Public
-              : typeInfo.IsNestedPrivate ? AccessModifier.Private
-              : typeInfo.IsNestedAssembly ? AccessModifier.Internal
-              : typeInfo.IsNestedFamily ? AccessModifier.Protected
-              : typeInfo.IsNestedPublic ? AccessModifier.Public
-              : typeInfo.IsNestedFamORAssem ? AccessModifier.ProtectedInternal
-              : typeInfo.IsNestedFamANDAssem ? AccessModifier.PrivateProtected
-              : !typeInfo.IsVisible ? AccessModifier.Internal
+            return typeData.IsPublic ? AccessModifier.Public
+              : typeData.IsNestedPrivate ? AccessModifier.Private
+              : typeData.IsNestedAssembly ? AccessModifier.Internal
+              : typeData.IsNestedFamily ? AccessModifier.Protected
+              : typeData.IsNestedPublic ? AccessModifier.Public
+              : typeData.IsNestedFamORAssem ? AccessModifier.ProtectedInternal
+              : typeData.IsNestedFamANDAssem ? AccessModifier.PrivateProtected
+              : !typeData.IsVisible ? AccessModifier.Internal
               : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
         }
     }

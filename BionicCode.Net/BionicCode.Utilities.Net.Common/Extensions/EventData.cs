@@ -129,6 +129,7 @@
         /// <summary>
         /// Determines the set of symbol attributes for the specified event based on its add method characteristics.
         /// </summary>
+        /// <remarks>For performance reasons avoid querying the attributes and prefer reading the particular property or properties.</remarks>
         /// <param name="eventData">The event metadata used to evaluate and derive the corresponding symbol attributes.</param>
         /// <returns>A bitwise combination of SymbolAttributes values that represent the attributes of the event, such as Final,
         /// Abstract, Static, Virtual, or Override.</returns>
@@ -136,28 +137,27 @@
         {
             MethodData? eventAddMethodData = eventData.AddMethodData;
             SymbolAttributes eventAttributes = SymbolAttributes.Event;
-            MethodInfo addHandlerMethod = eventAddMethodData!.GetMethodInfo();
-            if (addHandlerMethod.IsFinal)
+            if (eventAddMethodData?.IsSealed ?? false)
             {
                 eventAttributes |= SymbolAttributes.Final;
             }
 
-            if (addHandlerMethod.IsAbstract)
+            if (eventAddMethodData?.IsAbstract ?? false)
             {
                 eventAttributes |= SymbolAttributes.Abstract;
             }
 
-            if (eventAddMethodData.IsStatic)
+            if (eventAddMethodData?.IsStatic ?? false)
             {
                 eventAttributes |= SymbolAttributes.Static;
             }
 
-            if (addHandlerMethod.IsVirtual)
+            if (eventAddMethodData?.IsVirtual ?? false)
             {
                 eventAttributes |= SymbolAttributes.Virtual;
             }
 
-            if (eventAddMethodData.IsOverride)
+            if (eventAddMethodData?.IsOverride ?? false)
             {
                 eventAttributes |= SymbolAttributes.Override;
             }

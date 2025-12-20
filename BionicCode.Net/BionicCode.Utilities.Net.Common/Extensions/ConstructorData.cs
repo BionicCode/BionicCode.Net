@@ -119,6 +119,7 @@
         /// <summary>
         /// Determines the symbol attributes for a constructor based on the specified constructor data.
         /// </summary>
+        /// <remarks>For performance reasons avoid querying the attributes and prefer reading the particular property or properties.</remarks>
         /// <param name="constructorData">The data describing the constructor, including whether it is static.</param>
         /// <returns>A combination of symbol attributes representing the constructor's characteristics. Includes the static
         /// attribute if the constructor is static.</returns>
@@ -136,14 +137,13 @@
 
         private static AccessModifier GetAccessModifierInternal(ConstructorData constructorData)
         {
-            ConstructorInfo constructorInfo = constructorData.GetConstructorInfo();
-            return constructorInfo.IsPublic ? AccessModifier.Public
-              : constructorInfo.IsPrivate ? AccessModifier.Private
-              : constructorInfo.IsAssembly ? AccessModifier.Internal
-              : constructorInfo.IsFamily ? AccessModifier.Protected
-              : constructorInfo.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
-              : constructorInfo.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
-              : constructorInfo.IsStatic ? AccessModifier.Undefined
+            return constructorData.IsPublic ? AccessModifier.Public
+              : constructorData.IsPrivate ? AccessModifier.Private
+              : constructorData.IsAssembly ? AccessModifier.Internal
+              : constructorData.IsFamily ? AccessModifier.Protected
+              : constructorData.IsFamilyOrAssembly ? AccessModifier.ProtectedInternal
+              : constructorData.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
+              : constructorData.IsStatic ? AccessModifier.Undefined
               : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
         }
     }

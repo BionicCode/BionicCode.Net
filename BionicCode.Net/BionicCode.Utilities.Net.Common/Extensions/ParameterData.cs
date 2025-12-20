@@ -246,6 +246,7 @@
         /// <summary>
         /// Determines the set of symbol attributes for a parameter based on its metadata.
         /// </summary>
+        /// <remarks>For performance reasons avoid querying the attributes and prefer reading the particular property or properties.</remarks>
         /// <param name="parameterData">The metadata describing the parameter, including its direction and optionality.</param>
         /// <returns>A bitwise combination of SymbolAttributes flags that represent the parameter's characteristics, such as In,
         /// Out, Ref, and Optional.</returns>
