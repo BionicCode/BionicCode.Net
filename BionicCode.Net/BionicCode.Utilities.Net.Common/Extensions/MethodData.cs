@@ -1,22 +1,17 @@
 ﻿namespace BionicCode.Utilities.Net
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.Diagnostics;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using System.Linq.Expressions;
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
 
-    internal sealed class MethodData : MemberInfoData
+    internal sealed class MethodData : MemberInfoData, IMethodDataInvoker
     {
         private static readonly Type AsyncStateMachineAttributeType = typeof(AsyncStateMachineAttribute);
-        private static readonly ConcurrentDictionary<InvocatorKeyMapKey, SymbolInfoDataCacheKey> InvocatorKeyMap = new ConcurrentDictionary<InvocatorKeyMapKey, SymbolInfoDataCacheKey>();
 
         private SymbolAttributes symbolAttributes;
         private AccessModifier accessModifier;
@@ -62,7 +57,7 @@
         private bool? _isAbstract;
         private bool? _isVirtual;
 
-        public MethodData(MethodInfo methodInfo) : base(methodInfo)
+        public MethodData(MethodInfo methodInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(methodInfo, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(methodInfo, nameof(methodInfo));
 
@@ -622,124 +617,8 @@
                 ? this
 
                 // ...otherwise generate or get cached invocator
-                : GetOrCreateFastInvocator(genericMethodParameters, args);
+                : DelegateProvider.GetOrCreateFastMethodInvocator(this, genericMethodParameters);
             return invocatorSource;
-        }
-
-        private MethodData GetOrCreateFastInvocator(TypeData[] genericMethodParameters, params object?[]? args)
-        {
-            MethodData methodData = GetOrConstructGenericMethod(genericMethodParameters);
-            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
-            ParameterExpression argsParam = Expression.Parameter(typeof(object[]), "args");
-
-            Expression? instance = null;
-            if (!methodData.IsStatic)
-            {
-                instance = Expression.Convert(targetParam, methodData.DeclaringTypeData.UnwrapType()!);
-            }
-
-            UnaryExpression[] callArgs = methodData.Parameters.Select((parameter, index) =>
-                Expression.Convert(
-                    Expression.ArrayIndex(argsParam, Expression.Constant(index)),
-                    parameter.ParameterTypeData.UnwrapType())).ToArray();
-
-            MethodInfo methodInfo = methodData.GetMethodInfo();
-            Expression call = methodData.IsStatic
-                ? Expression.Call(methodInfo, callArgs)
-                : Expression.Call(instance!, methodInfo, callArgs); // instance required for non-static :contentReference[oaicite:7]{index=7}
-
-            Expression body = methodData.IsVoidMethod
-                ? Expression.Block(call, Expression.Constant(null, typeof(object)))
-                : methodData.IsAwaitableGenericTask
-                    ? Expression.Convert(call, typeof(Task<object>))
-                    : methodData.IsAwaitableGenericValueTask
-                        ? Expression.Convert(call, typeof(ValueTask<object>))
-                        : methodData.IsAwaitableValueTask
-                            ? Expression.Convert(call, typeof(ValueTask))
-                            : methodData.IsAwaitableTask
-                                ? Expression.Convert(call, typeof(Task))
-                                : Expression.Convert(call, typeof(object));
-
-            Func<object?, object[]?, object?>? invocator = null;
-            Func<object?, object[]?, Task<object?>>? awaitableGenericTaskInvocator = null;
-            Func<object?, object[]?, ValueTask<object?>>? awaitableGenericValueTaskInvocator = null;
-            Func<object?, object[]?, ValueTask>? awaitableValueTaskInvocator = null;
-            Func<object?, object[]?, Task>? awaitableTaskInvocator = null;
-            if (methodData.IsAwaitableGenericTask)
-            {
-                awaitableGenericTaskInvocator = Expression.Lambda<Func<object?, object[]?, Task<object?>>>(body, targetParam, argsParam).Compile();
-            }
-            else if (methodData.IsAwaitableGenericValueTask)
-            {
-                awaitableGenericValueTaskInvocator = Expression.Lambda<Func<object?, object[]?, ValueTask<object?>>>(body, targetParam, argsParam).Compile();
-            }
-            else if (methodData.IsAwaitableValueTask)
-            {
-                awaitableValueTaskInvocator = Expression.Lambda<Func<object?, object[]?, ValueTask>>(body, targetParam, argsParam).Compile();
-            }
-            else if (methodData.IsAwaitableTask)
-            {
-                awaitableTaskInvocator = Expression.Lambda<Func<object?, object[]?, Task>>(body, targetParam, argsParam).Compile();
-            }
-            else
-            {
-                invocator = Expression.Lambda<Func<object?, object[]?, object?>>(body, targetParam, argsParam).Compile();
-            }
-
-            // only the closed generic method data holds the constructed invocator
-            if (this.IsOpenGenericMethodOrGenericMethodDefinition)
-            {
-                methodData._invocator = invocator;
-                methodData._asyncTaskInvocator = awaitableTaskInvocator;
-                methodData._asyncGenericTaskInvocator = awaitableGenericTaskInvocator;
-                methodData._asyncGenericValueTaskInvocator = awaitableGenericValueTaskInvocator;
-                methodData._asyncValueTaskInvocator = awaitableValueTaskInvocator;
-            }
-            else // Since 'this' is already a closed generic method, we can set the generated invocator directly on it.
-            {
-                this._invocator = invocator;
-                this._asyncTaskInvocator = awaitableTaskInvocator;
-                this._asyncGenericTaskInvocator = awaitableGenericTaskInvocator;
-                this._asyncGenericValueTaskInvocator = awaitableGenericValueTaskInvocator;
-                this._asyncValueTaskInvocator = awaitableValueTaskInvocator;
-            }
-
-            return methodData;
-        }
-
-        private MethodData GetOrConstructGenericMethod(TypeData[] genericMethodParameters)
-        {
-            MethodData methodData = this;
-            if (this.IsOpenGenericMethodOrGenericMethodDefinition)
-            {
-                // Try get cached constructed invocator for the specified generic method parameters.
-                var invocatorKeyMapKey = InvocatorKeyMapKey.Create(genericMethodParameters);
-                if (MethodData.InvocatorKeyMap.TryGetValue(invocatorKeyMapKey, out SymbolInfoDataCacheKey symbolInfoCachekey)
-                    && SymbolReflectionInfoCache.TryGetSymbolInfoDataCacheEntry(symbolInfoCachekey, out MethodData? cachedMethodData))
-                {
-                    methodData = cachedMethodData!;
-                }
-                else // Create closed generic method data for the specified generic method parameters.
-                {
-                    MethodData closedGenericMethodData = GetOrMakeClosedGenericMethodData(genericMethodParameters);
-                    MethodInfo closedGenericMethodMethodInfo = closedGenericMethodData.GetMethodInfo();
-                    _ = MethodData.InvocatorKeyMap.TryAdd(invocatorKeyMapKey, SymbolInfoDataCacheKey.CreateForMethod(closedGenericMethodMethodInfo));
-                    methodData = closedGenericMethodData;
-                }
-            }
-
-            return methodData;
-        }
-
-        private MethodData GetOrMakeClosedGenericMethodData(TypeData[] genericMethodParameters)
-        {
-            MethodData? closedGenericMethodData = this;
-            if (this.IsGenericMethodDefinition || this.ContainsGenericParameters)
-            {
-                closedGenericMethodData = MakeGenericMethodData(genericMethodParameters);
-            }
-
-            return closedGenericMethodData!;
         }
 
         public RuntimeMethodHandle Handle { get; }
@@ -897,7 +776,8 @@
         }
 
         internal bool HasInvocatorGenerated
-            => this._invocator is not null
+            => !this.IsOpenGenericMethodOrGenericMethodDefinition
+                && this._invocator is not null
                 && this._asyncTaskInvocator is not null
                 && this._asyncGenericTaskInvocator is not null
                 && this._asyncValueTaskInvocator is not null
@@ -1075,51 +955,14 @@
               : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
         }
 
-        private readonly struct InvocatorKeyMapKey : IEquatable<InvocatorKeyMapKey>
-        {
-            public ImmutableList<RuntimeTypeHandle> MethodParameterTypeHandles { get; }
-            private readonly int? _hashCode;
+        #region IMethodDataInvoker
 
-            public InvocatorKeyMapKey(ImmutableList<RuntimeTypeHandle> methodParameterTypeHandles) : this()
-            {
-                ArgumentNullExceptionEx.ThrowIfNullOrEmpty(methodParameterTypeHandles, nameof(methodParameterTypeHandles), "Method parameter type handles must be provided to create an invocator map key.");
+        void IMethodDataInvoker.SetInvocator(Func<object?, object?[]?, object?>? invocator) => this._invocator = invocator;
+        void IMethodDataInvoker.SetInvocator(Func<object?, object?[]?, Task>? asyncTaskInvocator) => this._asyncTaskInvocator = asyncTaskInvocator;
+        void IMethodDataInvoker.SetInvocator(Func<object?, object?[]?, Task<object?>>? asyncGenericTaskInvocator) => this._asyncGenericTaskInvocator = asyncGenericTaskInvocator;
+        void IMethodDataInvoker.SetInvocator(Func<object?, object?[]?, ValueTask>? asyncValueTaskInvocator) => this._asyncValueTaskInvocator = asyncValueTaskInvocator;
+        void IMethodDataInvoker.SetInvocator(Func<object?, object?[]?, ValueTask<object?>>? asyncGenericValueTaskInvocator) => this._asyncGenericValueTaskInvocator = asyncGenericValueTaskInvocator;
 
-                this.MethodParameterTypeHandles = methodParameterTypeHandles;
-                this._hashCode = ComputeHashCode();
-            }
-
-            public static InvocatorKeyMapKey Create(IEnumerable<RuntimeTypeHandle> methodParameterTypeHandles)
-                => new InvocatorKeyMapKey(methodParameterTypeHandles.ToImmutableList());
-
-            public static InvocatorKeyMapKey Create(IEnumerable<TypeData> methodParameterTypeDatas)
-                => new InvocatorKeyMapKey(methodParameterTypeDatas.Select(typeData => typeData.Handle).ToImmutableList());
-
-            public bool Equals(InvocatorKeyMapKey other)
-                => this.MethodParameterTypeHandles.SequenceEqual(other.MethodParameterTypeHandles);
-
-            public override bool Equals([NotNullWhen(true)] object obj)
-                => obj is InvocatorKeyMapKey invocatorKey && base.Equals(invocatorKey);
-
-            public override int GetHashCode()
-                => this._hashCode ?? ComputeHashCode();
-
-            private int ComputeHashCode()
-            {
-                int hashCode = 1248511333;
-                foreach (RuntimeTypeHandle typeHandle in this.MethodParameterTypeHandles)
-                {
-                    unchecked
-                    {
-                        int currentHash = typeHandle.GetHashCode();
-                        hashCode = (hashCode * 397) ^ currentHash;
-                    }
-                }
-
-                return hashCode;
-            }
-
-            public static bool operator ==(InvocatorKeyMapKey left, InvocatorKeyMapKey right) => left.Equals(right);
-            public static bool operator !=(InvocatorKeyMapKey left, InvocatorKeyMapKey right) => !(left == right);
-        }
+        # endregion IMethodDataInvoker
     }
 }

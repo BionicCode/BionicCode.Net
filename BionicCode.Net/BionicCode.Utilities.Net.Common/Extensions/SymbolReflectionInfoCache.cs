@@ -28,7 +28,7 @@
         internal static MethodData GetOrCreateSymbolInfoDataCacheEntry(MethodInfo methodInfo)
         {
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForMethod(methodInfo);
-            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(methodInfo));
+            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(methodInfo, cacheKey));
 
             // REMOVE::after testing
             Debug.WriteLine($"Found SymbolInfoData entry for {methodInfo.GetType()}");
@@ -39,7 +39,7 @@
         internal static ConstructorData GetOrCreateSymbolInfoDataCacheEntry(ConstructorInfo constructorInfo)
         {
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForConstructor(constructorInfo);
-            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new ConstructorData(constructorInfo));
+            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new ConstructorData(constructorInfo, cacheKey));
 
             // REMOVE::after testing
             Debug.WriteLine($"Found SymbolInfoData entry for {constructorInfo.GetType()}");
@@ -50,7 +50,7 @@
         internal static FieldData GetOrCreateSymbolInfoDataCacheEntry(FieldInfo fieldInfo)
         {
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForField(fieldInfo);
-            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new FieldData(fieldInfo));
+            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new FieldData(fieldInfo, cacheKey));
 
             // REMOVE::after testing
             Debug.WriteLine($"Found SymbolInfoData entry for {fieldInfo.GetType()}");
@@ -61,7 +61,7 @@
         internal static PropertyData GetOrCreateSymbolInfoDataCacheEntry(PropertyInfo propertyInfo)
         {
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForProperty(propertyInfo);
-            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new PropertyData(propertyInfo));
+            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new PropertyData(propertyInfo, cacheKey));
 
             // REMOVE::after testing
             Debug.WriteLine($"Found SymbolInfoData entry for {propertyInfo.GetType()}");
@@ -72,7 +72,7 @@
         internal static EventData GetOrCreateSymbolInfoDataCacheEntry(EventInfo eventInfo)
         {
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForEvent(eventInfo);
-            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new EventData(eventInfo));
+            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new EventData(eventInfo, cacheKey));
 
             // REMOVE::after testing
             Debug.WriteLine($"Found SymbolInfoData entry for {eventInfo.GetType()}");
@@ -83,7 +83,7 @@
         internal static ParameterData GetOrCreateSymbolInfoDataCacheEntry(ParameterInfo parameterInfo)
         {
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForParameter(parameterInfo);
-            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new ParameterData(parameterInfo));
+            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new ParameterData(parameterInfo, cacheKey));
 
             // REMOVE::after testing
             Debug.WriteLine($"Found SymbolInfoData entry for {parameterInfo.GetType()}");
@@ -106,10 +106,11 @@
             {
                 GetOrCreateNormalizedSymbolInfoDataCacheEntry<EventData>(ref cacheKey, out eventData);
             }
-            else
+            else // Optimization: Avoid normalization for non-anonymous symbols
             {
-                // Optimization: Avoid normalization for non-anonymous symbols
-                eventData = (EventData)SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreateEventData(cacheKey));
+                eventData = SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? cachedSymbolInfoData)
+                    ? (EventData)cachedSymbolInfoData
+                    : CreateEventData(cacheKey);
             }
         }
 
@@ -128,10 +129,11 @@
             {
                 GetOrCreateNormalizedSymbolInfoDataCacheEntry<MethodData>(ref cacheKey, out methodData);
             }
-            else
+            else // Optimization: Avoid normalization for non-anonymous symbols
             {
-                // Optimization: Avoid normalization for non-anonymous symbols
-                methodData = (MethodData)SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreateMethodData(cacheKey));
+                methodData = SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? cachedSymbolInfoData)
+                    ? (MethodData)cachedSymbolInfoData
+                    : CreateMethodData(cacheKey);
             }
         }
 
@@ -150,10 +152,11 @@
             {
                 GetOrCreateNormalizedSymbolInfoDataCacheEntry<FieldData>(ref cacheKey, out fieldData);
             }
-            else
+            else // Optimization: Avoid normalization for non-anonymous symbols
             {
-                // Optimization: Avoid normalization for non-anonymous symbols
-                fieldData = (FieldData)SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreateFieldData(cacheKey));
+                fieldData = SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? cachedFieldData)
+                    ? (FieldData)cachedFieldData
+                    : CreateFieldData(cacheKey);
             }
         }
 
@@ -172,10 +175,11 @@
             {
                 GetOrCreateNormalizedSymbolInfoDataCacheEntry<PropertyData>(ref cacheKey, out propertyData);
             }
-            else
+            else // Optimization: Avoid normalization for non-anonymous symbols
             {
-                // Optimization: Avoid normalization for non-anonymous symbols
-                propertyData = (PropertyData)SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreatePropertyData(cacheKey));
+                propertyData = SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? cachedSymbolInfoData)
+                    ? (PropertyData)cachedSymbolInfoData
+                    : CreatePropertyData(cacheKey);
             }
         }
 
@@ -194,10 +198,11 @@
             {
                 GetOrCreateNormalizedSymbolInfoDataCacheEntry<ParameterData>(ref cacheKey, out parameterData);
             }
-            else
+            else // Optimization: Avoid normalization for non-anonymous symbols
             {
-                // Optimization: Avoid normalization for non-anonymous symbols
-                parameterData = (ParameterData)SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreateParameterData(cacheKey));
+                parameterData = SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? cachedSymbolInfoData)
+                    ? (ParameterData)cachedSymbolInfoData
+                    : CreateParameterData(cacheKey);
             }
         }
 
@@ -216,10 +221,11 @@
             {
                 GetOrCreateNormalizedSymbolInfoDataCacheEntry<ConstructorData>(ref cacheKey, out constructorData);
             }
-            else
+            else // Optimization: Avoid normalization for non-anonymous symbols
             {
-                // Optimization: Avoid normalization for non-anonymous symbols
-                constructorData = (ConstructorData)SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreateConstructorData(cacheKey));
+                constructorData = SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? cachedSymbolInfoData)
+                    ? (ConstructorData)cachedSymbolInfoData
+                    : CreateConstructorData(cacheKey);
             }
         }
 
@@ -238,10 +244,11 @@
             {
                 GetOrCreateNormalizedSymbolInfoDataCacheEntry<TypeData>(ref cacheKey, out typeData);
             }
-            else
+            else // Optimization: Avoid normalization for non-anonymous symbols
             {
-                // Optimization: Avoid normalization for non-anonymous symbols
-                typeData = (TypeData)SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreateTypeData(cacheKey));
+                typeData = SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(cacheKey, out SymbolInfoData? cachedSymbolData)
+                    ? (TypeData)cachedSymbolData
+                    : CreateTypeData(cacheKey);
             }
         }
 
@@ -283,45 +290,37 @@
             {
                 case SymbolKind.MemberEvent:
                     EventData eventData = CreateEventData(cacheKey);
-                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForEvent(eventData.GetEventInfo());
-                    symbolInfoData = eventData;
+                    normalizedCacheKey = eventData.CacheKey;
                     break;
                 case SymbolKind.MemberMethod:
                     MethodData methodData = CreateMethodData(cacheKey);
-                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForMethod(methodData.GetMethodInfo());
-                    symbolInfoData = methodData;
+                    normalizedCacheKey = methodData.CacheKey;
                     break;
                 case SymbolKind.Constructor:
                     ConstructorData constructorData = CreateConstructorData(cacheKey);
-                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForConstructor(constructorData.GetConstructorInfo());
-                    symbolInfoData = constructorData;
+                    normalizedCacheKey = constructorData.CacheKey;
                     break;
                 case SymbolKind.MemberField:
                     FieldData fieldData = CreateFieldData(cacheKey);
-                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForField(fieldData.GetFieldInfo());
-                    symbolInfoData = fieldData;
+                    normalizedCacheKey = fieldData.CacheKey;
                     break;
                 case SymbolKind.MemberProperty:
                     PropertyData propertyData = CreatePropertyData(cacheKey);
-                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForProperty(propertyData.GetPropertyInfo());
-                    symbolInfoData = propertyData;
+                    normalizedCacheKey = propertyData.CacheKey;
                     break;
                 case SymbolKind.Type:
                     TypeData typeData = CreateTypeData(cacheKey);
-                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForType(typeData.UnwrapType());
-                    symbolInfoData = typeData;
+                    normalizedCacheKey = typeData.CacheKey;
                     break;
                 case SymbolKind.MemberParameter:
                     ParameterData parameterData = CreateParameterData(cacheKey);
-                    normalizedCacheKey = SymbolInfoDataCacheKey.CreateForParameter(parameterData.GetParameterInfo());
-                    symbolInfoData = parameterData;
+                    normalizedCacheKey = parameterData.CacheKey;
                     break;
                 default:
                     throw new NotSupportedException($"The symbol kind '{cacheKey.SymbolKind}' is not supported for normalization.");
             }
 
             _ = SymbolReflectionInfoCache.AnonymousSymbolDataCacheKeyMap.TryAdd(cacheKey, normalizedCacheKey);
-            _ = SymbolReflectionInfoCache.SymbolInfoDataCache.TryAdd(normalizedCacheKey, symbolInfoData);
 
             return normalizedCacheKey;
         }
@@ -341,7 +340,7 @@
                 throw new InvalidReflectionCacheKeyException();
             }
 
-            return new TypeData(type);
+            return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
         }
 
         private static PropertyData CreatePropertyData(SymbolInfoDataCacheKey cacheKey)
@@ -368,7 +367,7 @@
             }
 
             // Find the property by name and parameter types (for indexers)
-            PropertyInfo propertyInfo = declaringType.GetProperty(
+            PropertyInfo? propertyInfo = declaringType?.GetProperty(
                 cacheKey.SymbolName,
                 HelperExtensionsCommon.AllMembersFullHierarchyFlags,
                 null,
@@ -381,7 +380,7 @@
                 throw new InvalidReflectionCacheKeyException();
             }
 
-            return new PropertyData(propertyInfo);
+            return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
         }
 
         private static ConstructorData CreateConstructorData(SymbolInfoDataCacheKey cacheKey)
@@ -415,7 +414,7 @@
                 throw new InvalidReflectionCacheKeyException();
             }
 
-            return new ConstructorData(constructorInfo);
+            return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
         }
 
         private static FieldData CreateFieldData(SymbolInfoDataCacheKey cacheKey)
@@ -442,7 +441,7 @@
                 throw new InvalidReflectionCacheKeyException();
             }
 
-            return new FieldData(fieldInfo);
+            return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
         }
 
         private static MethodData CreateMethodData(SymbolInfoDataCacheKey cacheKey)
@@ -533,7 +532,7 @@
                 throw new InvalidReflectionCacheKeyException();
             }
 
-            return new EventData(eventInfo);
+            return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
         }
 
         private static ParameterData CreateParameterData(SymbolInfoDataCacheKey cacheKey)
@@ -547,12 +546,17 @@
             Type declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
             SymbolInfoDataCacheKey declaringTypeKey = SymbolInfoDataCacheKey.CreateForType(declaringType);
             TypeData declaringTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(declaringType);
-            ParameterData parameterDataCandidate = null;
+            ParameterData? parameterDataCandidate = null;
 
             // REVIEW::If-statement order matters here. Order ifrom most specific to least specific i.e. best lookup performance to worst performance.
             if (cacheKey.MethodHandle != default)
             {
-                MethodBase methodBase = MethodBase.GetMethodFromHandle(cacheKey.MethodHandle);
+                MethodBase? methodBase = MethodBase.GetMethodFromHandle(cacheKey.MethodHandle);
+                if (methodBase is null)
+                {
+                    throw new InvalidReflectionCacheKeyException();
+                }
+
                 if (methodBase is ConstructorInfo constructorInfo)
                 {
                     ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
@@ -569,7 +573,7 @@
                         && parameterData.Position == cacheKey.ParameterPosition);
                 }
 
-                return parameterDataCandidate;
+                return parameterDataCandidate ?? throw new InvalidReflectionCacheKeyException();
             }
             else if (declaringTypeData.IsDelegate)
             {
@@ -578,7 +582,10 @@
                     parameterData => parameterData.Name.Equals(cacheKey.SymbolName, StringComparison.Ordinal)
                     && parameterData.Position == cacheKey.ParameterPosition);
 
-                return parameterDataCandidate;
+                if (parameterDataCandidate is not null)
+                {
+                    return parameterDataCandidate;
+                }
             }
             else
             {

@@ -9,8 +9,10 @@
         private IList<CustomAttributeData> attributeData;
         private TypeData declaringTypeData;
 
-        protected MemberInfoData(MemberInfo memberInfo) : base(memberInfo.Name)
+        protected MemberInfoData(MemberInfo memberInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(memberInfo.Name, symbolInfoDataCacheKey)
         {
+            ArgumentNullException.ThrowIfNull(memberInfo, nameof(memberInfo));
+
             this.DeclaringTypeHandle = memberInfo.DeclaringType.TypeHandle;
             this.Namespace = memberInfo.DeclaringType.Namespace;
         }

@@ -28,9 +28,9 @@
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
 
-        public FieldData(FieldInfo fieldInfo) : base(fieldInfo)
+        public FieldData(FieldInfo fieldInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(fieldInfo, symbolInfoDataCacheKey)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+            ArgumentNullException.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
             this.Handle = fieldInfo.FieldHandle;
         }

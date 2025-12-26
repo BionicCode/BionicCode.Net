@@ -29,9 +29,9 @@
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
 
-        public EventData(EventInfo eventInfo) : base(eventInfo)
+        public EventData(EventInfo eventInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(eventInfo, symbolInfoDataCacheKey)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
+            ArgumentNullException.ThrowIfNull(eventInfo, nameof(eventInfo));
 
             this.eventInfo = eventInfo;
         }

@@ -7,12 +7,14 @@
     [DebuggerDisplay("{RuntimeShortSignature}")]
     internal abstract class SymbolInfoData
     {
-        protected SymbolInfoData(string name)
+        protected SymbolInfoData(string name, SymbolInfoDataCacheKey cacheKey)
         {
             ArgumentNullException.ThrowIfNullOrWhiteSpace(name, nameof(name));
+            ArgumentNullExceptionEx.ThrowIfDefault(cacheKey, nameof(cacheKey));
 
             this.Name = name;
             this.Indentation = 4;
+            this.CacheKey = cacheKey;
         }
 
         public abstract IList<CustomAttributeData> AttributeData { get; }
@@ -128,5 +130,7 @@
         /// </summary>
         /// <value>The spaces to indent a line based on the <see cref="Indentation"/> property.</value>
         public string IndentationString { get; private set; }
+
+        public SymbolInfoDataCacheKey CacheKey { get; }
     }
 }

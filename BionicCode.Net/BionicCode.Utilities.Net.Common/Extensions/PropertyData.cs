@@ -40,7 +40,7 @@ namespace BionicCode.Utilities.Net
         private SymbolComponentInfo? symbolComponentInfo;
         private bool? isSetMethodReadOnly;
 
-        public PropertyData(PropertyInfo propertyInfo) : base(propertyInfo)
+        public PropertyData(PropertyInfo propertyInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(propertyInfo, symbolInfoDataCacheKey)
         {
             ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 

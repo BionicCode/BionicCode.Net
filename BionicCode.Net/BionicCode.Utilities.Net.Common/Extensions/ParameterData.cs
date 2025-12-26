@@ -37,7 +37,7 @@
         private bool? isGenericTypeParameter;
         private bool? isGenericMethodParameter;
 
-        public ParameterData(ParameterInfo parameterInfo) : base(parameterInfo?.Name)
+        public ParameterData(ParameterInfo parameterInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(parameterInfo.Name, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(parameterInfo, nameof(parameterInfo));
             this.DeclaringTypeHandle = parameterInfo.Member.DeclaringType?.TypeHandle ?? default;

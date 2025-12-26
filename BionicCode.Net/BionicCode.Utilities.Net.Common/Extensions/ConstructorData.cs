@@ -24,9 +24,9 @@
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
 
-        public ConstructorData(ConstructorInfo constructorInfo) : base(constructorInfo)
+        public ConstructorData(ConstructorInfo constructorInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(constructorInfo, symbolInfoDataCacheKey)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
+            ArgumentNullException.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
             this.Handle = constructorInfo.MethodHandle;
         }
