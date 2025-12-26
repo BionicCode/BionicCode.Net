@@ -11,20 +11,28 @@
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
 
+    // For value-type instance targets, a correct setter requires ref.
+    public delegate void ValueTypeFieldSetter<TTarget, TValue>(ref TTarget target, TValue? value) where TTarget : struct;
+
     internal static class DelegateProvider
     {
-        private static readonly ConcurrentDictionary<InvocatorKeyMapKey, SymbolInfoDataCacheKey> InvocatorKeyMap = new ConcurrentDictionary<InvocatorKeyMapKey, SymbolInfoDataCacheKey>();
+        private static readonly ConcurrentDictionary<InvokerKeyMapKey, SymbolInfoDataCacheKey> InvocatorKeyMap = new ConcurrentDictionary<InvokerKeyMapKey, SymbolInfoDataCacheKey>();
 
         public static MethodData GetOrCreateFastMethodInvocator(MethodData targetMethodData, TypeData[] genericMethodParameters)
         {
-            if (!targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition && targetMethodData.HasInvocatorGenerated)
-            { }
+            // If the method is not a generic method definition or an open generic method and already has an invocator, return it directly.
+            if (!targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition && ((IMethodDataInvoker)targetMethodData).IsInvocable)
+            {
+                return targetMethodData;
+            }
 
+            // Get or construct the (closed) generic method data if required.
             MethodData methodData = targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition
                 ? DelegateProvider.GetOrConstructGenericMethod(targetMethodData, genericMethodParameters)
                 : targetMethodData;
 
-            if (((IMethodDataInvoker)methodData).HasConstructedInvocator)
+            // If the closed method has already a generated invoker, it will be returned directly.
+            if (((IMethodDataInvoker)methodData).IsInvocable)
             {
                 return methodData;
             }
@@ -93,8 +101,8 @@
             methodInvoker.SetInvoker(invocator);
             methodInvoker.SetInvoker(awaitableTaskInvocator);
             methodInvoker.SetInvoker(awaitableGenericTaskInvocator);
-            methodInvoker.SetInvocator(awaitableGenericValueTaskInvocator);
-            methodInvoker.SetInvocator(awaitableValueTaskInvocator);
+            methodInvoker.SetInvoker(awaitableGenericValueTaskInvocator);
+            methodInvoker.SetInvoker(awaitableValueTaskInvocator);
 
             return methodData;
         }
@@ -104,7 +112,7 @@
             MethodData methodData;
 
             // Try get cached constructed invocator for the specified generic method parameters.
-            var invocatorKeyMapKey = InvocatorKeyMapKey.Create(genericMethodParameters);
+            var invocatorKeyMapKey = InvokerKeyMapKey.Create(genericMethodParameters);
             if (DelegateProvider.InvocatorKeyMap.TryGetValue(invocatorKeyMapKey, out SymbolInfoDataCacheKey symbolInfoCachekey)
                 && SymbolReflectionInfoCache.TryGetSymbolInfoDataCacheEntry(symbolInfoCachekey, out MethodData? cachedMethodData))
             {
@@ -120,12 +128,122 @@
             return methodData;
         }
 
-        private readonly struct InvocatorKeyMapKey : IEquatable<InvocatorKeyMapKey>
+        public static Func<object?, object?> CreateGetter(FieldData fieldData)
+        {
+            ArgumentNullException.ThrowIfNull(fieldData, nameof(fieldData));
+            ArgumentNullException.ThrowIfNull(fieldData.DeclaringTypeData, nameof(fieldData));
+
+            FieldInfo field = fieldData.GetFieldInfo();
+
+            // (object? target) => (object?)((TDeclaring)target).Field
+            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
+
+            Expression fieldAccess =
+                field.IsStatic
+                    ? Expression.Field(expression: null, field) // static: no instance
+                    : Expression.Field(
+                        Expression.Convert(targetParam, field.DeclaringType), // cast/unbox
+                        field);
+
+            // Box value types
+            UnaryExpression body = Expression.Convert(fieldAccess, typeof(object));
+
+            return Expression
+                .Lambda<Func<object?, object?>>(body, targetParam)
+                .Compile(); // compiles to a delegate 
+        }
+
+        public static Action<object?, object?> CreateSetter(FieldData fieldData)
+        {
+            ArgumentNullException.ThrowIfNull(fieldData, nameof(fieldData));
+            ArgumentNullException.ThrowIfNull(fieldData.DeclaringTypeData, nameof(fieldData));
+
+            FieldInfo field = fieldData.GetFieldInfo();
+
+            // Reject const / readonly up front (you can choose a different exception type if desired)
+            if (fieldData.IsConst) // const 
+            {
+                throw new InvalidOperationException("Cannot create a setter for a literal (const) field.");
+            }
+
+            if (fieldData.IsInitOnly) // readonly 
+            {
+                throw new InvalidOperationException("Cannot create a setter for an initonly (readonly) field.");
+            }
+
+            // Important: setting instance fields on a boxed struct would modify only a copy.
+            if (!fieldData.IsStatic && fieldData.DeclaringTypeData.IsStruct)
+            {
+                throw new NotSupportedException(
+                    "Cannot create an object-based setter for an instance field declared on a value type. " +
+                    $"You need a ref-based setter; call {nameof(CreateStructSetter)} instead.");
+            }
+
+            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
+            ParameterExpression valueParam = Expression.Parameter(typeof(object), "value");
+
+            Expression fieldAccess =
+                field.IsStatic
+                    ? Expression.Field(expression: null, field)
+                    : Expression.Field(
+                        Expression.Convert(targetParam, field.DeclaringType),
+                        field);
+
+            BinaryExpression assign = Expression.Assign(
+                fieldAccess,
+                Expression.Convert(valueParam, field.FieldType)); // Expression.Assign 
+
+            // Action<...> requires a void body -> wrap assignment in a void block.
+            BlockExpression body = Expression.Block(assign, Expression.Empty());
+
+            return Expression
+                .Lambda<Action<object?, object?>>(body, targetParam, valueParam)
+                .Compile();
+        }
+
+        public static ValueTypeFieldSetter<TTarget, TValue> CreateStructSetter<TTarget, TValue>(FieldData fieldData)
+            where TTarget : struct
+        {
+            ArgumentNullException.ThrowIfNull(fieldData, nameof(fieldData));
+            ArgumentNullException.ThrowIfNull(fieldData.DeclaringTypeData, nameof(fieldData));
+
+            FieldInfo field = fieldData.GetFieldInfo();
+            if (fieldData.DeclaringTypeData.UnwrapType() != typeof(TTarget))
+            {
+                throw new ArgumentException("Field declaring type must exactly match TTarget.", nameof(field));
+            }
+
+            if (field.IsLiteral)
+            {
+                throw new InvalidOperationException("Cannot create a setter for a literal (const) field.");
+            }
+
+            if (field.IsInitOnly)
+            {
+                throw new InvalidOperationException("Cannot create a setter for an initonly (readonly) field.");
+            }
+
+            // (ref TTarget target, TValue value) => target.Field = value;
+            ParameterExpression targetByRef = Expression.Parameter(typeof(TTarget).MakeByRefType(), "target");
+            ParameterExpression valueParam = Expression.Parameter(typeof(TValue), "value");
+
+            MemberExpression fieldAccess = Expression.Field(targetByRef, field);
+            BinaryExpression assign = Expression.Assign(fieldAccess, Expression.Convert(valueParam, field.FieldType));
+            BlockExpression body = Expression.Block(assign, Expression.Empty());
+
+            return Expression
+                .Lambda<ValueTypeFieldSetter<TTarget, TValue>>(body, targetByRef, valueParam)
+                .Compile();
+        }
+
+        #region InvokerKeyMapKey
+
+        private readonly struct InvokerKeyMapKey : IEquatable<InvokerKeyMapKey>
         {
             public ImmutableList<RuntimeTypeHandle> MethodParameterTypeHandles { get; }
             private readonly int? _hashCode;
 
-            public InvocatorKeyMapKey(ImmutableList<RuntimeTypeHandle> methodParameterTypeHandles) : this()
+            public InvokerKeyMapKey(ImmutableList<RuntimeTypeHandle> methodParameterTypeHandles) : this()
             {
                 ArgumentNullExceptionEx.ThrowIfNullOrEmpty(methodParameterTypeHandles, nameof(methodParameterTypeHandles), "Method parameter type handles must be provided to create an invocator map key.");
 
@@ -133,17 +251,17 @@
                 this._hashCode = ComputeHashCode();
             }
 
-            public static InvocatorKeyMapKey Create(IEnumerable<RuntimeTypeHandle> methodParameterTypeHandles)
-                => new InvocatorKeyMapKey(methodParameterTypeHandles.ToImmutableList());
+            public static InvokerKeyMapKey Create(IEnumerable<RuntimeTypeHandle> methodParameterTypeHandles)
+                => new InvokerKeyMapKey(methodParameterTypeHandles.ToImmutableList());
 
-            public static InvocatorKeyMapKey Create(IEnumerable<TypeData> methodParameterTypeDatas)
-                => new InvocatorKeyMapKey(methodParameterTypeDatas.Select(typeData => typeData.Handle).ToImmutableList());
+            public static InvokerKeyMapKey Create(IEnumerable<TypeData> methodParameterTypeDatas)
+                => new InvokerKeyMapKey(methodParameterTypeDatas.Select(typeData => typeData.Handle).ToImmutableList());
 
-            public bool Equals(InvocatorKeyMapKey other)
+            public bool Equals(InvokerKeyMapKey other)
                 => this.MethodParameterTypeHandles.SequenceEqual(other.MethodParameterTypeHandles);
 
             public override bool Equals([NotNullWhen(true)] object obj)
-                => obj is InvocatorKeyMapKey invocatorKey && base.Equals(invocatorKey);
+                => obj is InvokerKeyMapKey invocatorKey && base.Equals(invocatorKey);
 
             public override int GetHashCode()
                 => this._hashCode ?? ComputeHashCode();
@@ -163,8 +281,10 @@
                 return hashCode;
             }
 
-            public static bool operator ==(InvocatorKeyMapKey left, InvocatorKeyMapKey right) => left.Equals(right);
-            public static bool operator !=(InvocatorKeyMapKey left, InvocatorKeyMapKey right) => !(left == right);
+            public static bool operator ==(InvokerKeyMapKey left, InvokerKeyMapKey right) => left.Equals(right);
+            public static bool operator !=(InvokerKeyMapKey left, InvokerKeyMapKey right) => !(left == right);
         }
+
+        #endregion InvokerKeyMapKey
     }
 }

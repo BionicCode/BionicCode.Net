@@ -1,9 +1,10 @@
 ﻿namespace BionicCode.Utilities.Net
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Reflection;
 
-    internal sealed class FieldData : MemberInfoData
+    internal sealed class FieldData : MemberInfoData, IFieldDataInvoker
     {
         private string? displayName;
         private string? shortDisplayName;
@@ -29,8 +30,9 @@
         private bool? _isFamily;
         private bool? _isFamilyOrAssembly;
         private bool? _isFamilyAndAssembly;
-        private MethodData? getValueInvocator;
-        private MethodData? setValueInvocator;
+        private Func<object?, object?>? _getValueInvoker;
+        private Action<object?, object?>? _referenceTypeSetValueInvoker;
+        private readonly ConcurrentDictionary<RuntimeTypeHandle, Delegate> _valueTypeSetValueInvokerTable;
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
 
@@ -38,6 +40,7 @@
         {
             ArgumentNullException.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
+            this._valueTypeSetValueInvokerTable = new ConcurrentDictionary<RuntimeTypeHandle, Delegate>();
             this.Handle = fieldInfo.FieldHandle;
         }
 
@@ -48,53 +51,91 @@
           => GetFieldInfo();
 
         public object? GetValue(object? target)
-            => this.GetValueInvocator.Invoke(target);
+            => (this._getValueInvoker ??= DelegateProvider.CreateGetter(this)).Invoke(target);
 
+        /// <summary>
+        /// Sets the value of a field on a struct instance using the specified value.
+        /// </summary>
+        /// <remarks>Use this method to set the value of a field on a struct instance when direct
+        /// assignment is not possible, such as when working with reflection. This method enforces type compatibility
+        /// between the target struct and the value being assigned.<para/>
+        /// For fields declared on a reference type or static fields use <see cref="SetValue(object?, object?)"/> instead.</remarks>
+        /// <typeparam name="TTarget">The type of the struct containing the field to set. Must be a value type.</typeparam>
+        /// <typeparam name="TValue">The type of the value to assign to the field.</typeparam>
+        /// <param name="target">A reference to the struct instance whose field value will be set.</param>
+        /// <param name="value">The value to assign to the field. The type must match the field's type. Can be null for nullable fields.</param>
+        /// <exception cref="InvalidOperationException">Thrown if the field is static or if the declaring type is not a value type.</exception>
+        /// <exception cref="ArgumentException">Thrown if the target type does not match the declaring type of the field.</exception>
+        /// <exception cref="ArgumentException">Thrown if the value type does not match the field type.</exception>
+        public void SetStructValue<TTarget, TValue>(ref TTarget target, TValue? value) where TTarget : struct
+        {
+            ArgumentExceptionEx.ThrowIfNotOfType(typeof(TTarget), this.DeclaringTypeData.UnwrapType());
+
+            if (value is not null)
+            {
+                ArgumentExceptionEx.ThrowIfNotOfType(value.GetType(), this.FieldTypeData.UnwrapType(), $"The type of the value must be the same type as the field. Found {value.GetType().FullName} but expected {this.FieldTypeData.UnwrapType().FullName}.");
+            }
+
+            if (this.IsStatic)
+            {
+                throw new InvalidOperationException($"Cannot set struct instance field value on a static field. Call {nameof(SetValue)} instead");
+            }
+
+            if (!this.DeclaringTypeData.IsStruct)
+            {
+                throw new InvalidOperationException($"Target type is not a value type. Call {nameof(SetValue)} instead");
+            }
+
+            ValueTypeFieldSetter<TTarget, TValue> invoker;
+            if (this._valueTypeSetValueInvokerTable.TryGetValue(target.GetType().TypeHandle, out Delegate cachedInvoker))
+            {
+                invoker = (ValueTypeFieldSetter<TTarget, TValue>)cachedInvoker;
+            }
+            else
+            {
+                invoker = DelegateProvider.CreateStructSetter<TTarget, TValue>(this);
+                this._valueTypeSetValueInvokerTable[target.GetType().TypeHandle] = invoker;
+            }
+
+            invoker.Invoke(ref target, value);
+        }
+
+        /// <summary>
+        /// Sets the value of the field on the specified target object.
+        /// </summary>
+        /// <param name="target">The object whose field value will be set. Must be an instance of the declaring type if the field is not
+        /// static; otherwise, this parameter is ignored.</param>
+        /// <param name="value">The value to assign to the field. The value must be of the same type as the field or null if the field type
+        /// is a reference type.</param>
+        /// <remarks>Use this method to set the value of a field on an object instance or a static field.
+        /// For fields declared on value types use <see cref="SetStructValue{TTarget, TValue}(ref TTarget, TValue?)"/> instead.</remarks>
+        /// <exception cref="InvalidOperationException">Thrown if the declaring type of the field is not a value type.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the target is null for an instance field.</exception>
+        /// <exception cref="ArgumentException">Thrown if the value is not of the same type as the field.</exception>
+        /// <exception cref="ArgumentException">Thrown if the target is not of the declaring type for an instance field.</exception>"
         public void SetValue(object? target, object? value)
-            => _ = this.SetValueInvocator.Invoke(target, value);
+        {
+            if (value is not null)
+            {
+                ArgumentExceptionEx.ThrowIfNotOfType(value.GetType(), this.FieldTypeData.UnwrapType(), $"The type of the value must be the same type as the field. Found {value.GetType().FullName} but expected {this.FieldTypeData.UnwrapType().FullName}.");
+            }
+
+            if (!this.IsStatic)
+            {
+                ArgumentNullException.ThrowIfNull(target, nameof(target));
+                ArgumentExceptionEx.ThrowIfNotOfType(target.GetType(), this.DeclaringTypeData.UnwrapType());
+            }
+
+            if (!this.DeclaringTypeData.IsStruct)
+            {
+                throw new InvalidOperationException("Target type is not a value type.");
+            }
+
+            this._referenceTypeSetValueInvoker ??= DelegateProvider.CreateSetter(this);
+            this._referenceTypeSetValueInvoker.Invoke(target, value);
+        }
 
         public RuntimeFieldHandle Handle { get; }
-
-        public MethodData GetValueInvocator
-        {
-            get
-            {
-                if (this.getValueInvocator is null)
-                {
-                    MethodInfo? fieldAccessor = GetFieldInfo().GetType().GetMethod(nameof(FieldInfo.GetValue));
-                    if (fieldAccessor is null)
-                    {
-                        throw new InvalidOperationException("Unable to retrieve field accessor method info.");
-                    }
-
-                    MethodData fieldAccessorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldAccessor!);
-                    this.getValueInvocator = fieldAccessorData.GetInvoker();
-                }
-
-                return this.getValueInvocator;
-
-            }
-        }
-
-        public MethodData SetValueInvocator
-        {
-            get
-            {
-                if (this.setValueInvocator is null)
-                {
-                    MethodInfo? fieldAccessor = GetFieldInfo().GetType().GetMethod(nameof(FieldInfo.SetValue));
-                    if (fieldAccessor is null)
-                    {
-                        throw new InvalidOperationException("Unable to retrieve field accessor method info.");
-                    }
-
-                    MethodData fieldAccessorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldAccessor!);
-                    this.setValueInvocator = fieldAccessorData.GetInvoker();
-                }
-
-                return this.setValueInvocator;
-            }
-        }
 
         public override AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
           ? (this.accessModifier = FieldData.GetAccessModifierInternal(this))
@@ -179,6 +220,8 @@
         public override bool IsFamilyAndAssembly
             => this._isFamilyAndAssembly ??= GetFieldInfo().IsFamilyAndAssembly;
 
+        bool IFieldDataInvoker.IsInvocable { get; }
+
         /// <summary>
         /// Determines the set of symbol attributes for the specified field based on its metadata and characteristics.
         /// </summary>
@@ -228,5 +271,12 @@
               : fieldData.IsFamilyAndAssembly ? AccessModifier.PrivateProtected
               : throw new InvalidOperationException("Unable to identify the accessibility of the Types.");
         }
+
+        #region IFieldDataInvoker
+
+        void IFieldDataInvoker.SetGetterInvoker(Func<object?, object?>? getInvoker) => throw new NotImplementedException();
+        void IFieldDataInvoker.SetSetterInvoker(Action<object?, object?>? setInvoker) => throw new NotImplementedException();
+
+        #endregion IFieldDataInvoker
     }
 }

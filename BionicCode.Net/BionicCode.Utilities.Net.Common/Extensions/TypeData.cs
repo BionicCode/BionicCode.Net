@@ -491,7 +491,7 @@ namespace BionicCode.Utilities.Net
             => this._isInterface ??= UnwrapType().IsInterface;
 
         public bool IsStruct
-            => this._isStruct ??= UnwrapType().IsValueType;
+            => this._isStruct ??= this.IsValueType;
 
         public bool IsReadOnlyStruct
             => this._isReadOnlyStruct ??= IsReadOnlyStructInternal(this);

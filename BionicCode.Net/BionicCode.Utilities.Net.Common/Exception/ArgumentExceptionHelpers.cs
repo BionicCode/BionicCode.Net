@@ -113,8 +113,10 @@
         /// calling.</remarks>
         /// <param name="eventInfo">The event metadata that defines the expected event handler signature. Cannot be null.</param>
         /// <param name="clientHandler">The delegate to validate as a potential event handler for the event. Cannot be null.</param>
+        /// <param name="paramName"></param>
+        /// <param name="message"></param>
         /// <exception cref="EventHandlerMismatchException">Thrown if the delegate's signature does not match the event handler type required by the event.</exception>
-        public static void ThrowIfNotAssignable(EventInfo eventInfo, Delegate clientHandler)
+        public static void ThrowIfNotAssignable(EventInfo eventInfo, Delegate clientHandler, [CallerArgumentExpression(nameof(eventInfo))] string? paramName = null, string? message = null)
         {
             ArgumentNullException.ThrowIfNull(eventInfo, nameof(eventInfo));
             ArgumentNullException.ThrowIfNull(clientHandler, nameof(clientHandler));
@@ -129,8 +131,7 @@
 
             if (eventDelegateParameters.Length != clientHandlerParameters.Length)
             {
-                string message = ExceptionMessages.GetHandlerDelegateSignatureMismatchExceptionMessage(eventInfo, eventHandlerMethod, "Invalid parameter count.");
-                throw new EventHandlerMismatchException(message);
+                throw new EventHandlerMismatchException(message ?? ExceptionMessages.GetHandlerDelegateSignatureMismatchExceptionMessage(eventInfo, eventHandlerMethod, "Invalid parameter count."));
             }
 
             for (int parameterIndex = 0; parameterIndex < eventDelegateParameters.Length; parameterIndex++)
@@ -139,11 +140,11 @@
                 Type eventHandlerParameterType = clientHandlerParameters[parameterIndex].ParameterType;
                 if (!eventHandlerParameterType.IsAssignableFrom(eventDelegateParameterType))
                 {
-                    string message = ExceptionMessages.GetHandlerDelegateSignatureMismatchExceptionMessage(
+                    string exceptionMessage = message ?? ExceptionMessages.GetHandlerDelegateSignatureMismatchExceptionMessage(
                         eventInfo,
                         eventHandlerMethod,
                         $"Unable to cast parameter of type '{eventDelegateParameterType.FullName}' at parameter index '{parameterIndex}' of the event delegate to type '{eventHandlerParameterType.FullName}' of the event handler.");
-                    throw new EventHandlerMismatchException(message);
+                    throw new EventHandlerMismatchException(exceptionMessage);
                 }
             }
         }
@@ -208,6 +209,18 @@
                         paramName,
                         message ?? $"The value '{value}' is not equal to '{other}' in enum '{typeof(TEnum).FullName}'.");
                 }
+            }
+        }
+
+        public static void ThrowIfNotOfType(Type value, Type other, [CallerArgumentExpression(nameof(value))] string? paramName = null)
+        {
+            ArgumentNullException.ThrowIfNull(value, paramName);
+            ArgumentNullException.ThrowIfNull(other, nameof(other));
+            if (value != other)
+            {
+                throw new ArgumentException(
+                    $"The type '{value.FullName}' is not of the expected type '{other.FullName}'.",
+                    paramName);
             }
         }
     }
