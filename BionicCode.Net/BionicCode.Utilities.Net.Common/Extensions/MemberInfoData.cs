@@ -23,6 +23,12 @@
         protected abstract MemberInfo GetMemberInfo();
         public RuntimeTypeHandle DeclaringTypeHandle { get; }
         public abstract bool IsStatic { get; }
+        public abstract bool IsPublic { get; }
+        public abstract bool IsPrivate { get; }
+        public abstract bool IsAssembly { get; }
+        public abstract bool IsFamily { get; }
+        public abstract bool IsFamilyOrAssembly { get; }
+        public abstract bool IsFamilyAndAssembly { get; }
         public abstract AccessModifier AccessModifier { get; }
         public string Namespace { get; }
 

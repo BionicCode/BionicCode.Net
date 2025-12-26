@@ -5,10 +5,11 @@
 
     internal interface IMethodDataInvoker
     {
-        void SetInvocator(Func<object?, object?[]?, object?>? invocator);
-        void SetInvocator(Func<object?, object?[]?, Task>? asyncTaskInvocator);
-        void SetInvocator(Func<object?, object?[]?, Task<object?>>? asyncGenericTaskInvocator);
-        void SetInvocator(Func<object?, object?[]?, ValueTask>? asyncValueTaskInvocator);
-        void SetInvocator(Func<object?, object?[]?, ValueTask<object?>>? asyncGenericValueTaskInvocator);
+        bool IsInvocable { get; }
+        void SetInvoker(Func<object?, object?[]?, object?>? invocator);
+        void SetInvoker(Func<object?, object?[]?, Task>? asyncTaskInvocator);
+        void SetInvoker(Func<object?, object?[]?, Task<object?>>? asyncGenericTaskInvocator);
+        void SetInvoker(Func<object?, object?[]?, ValueTask>? asyncValueTaskInvocator);
+        void SetInvoker(Func<object?, object?[]?, ValueTask<object?>>? asyncGenericValueTaskInvocator);
     }
 }

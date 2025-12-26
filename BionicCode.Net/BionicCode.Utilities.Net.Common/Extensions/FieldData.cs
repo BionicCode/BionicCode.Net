@@ -23,6 +23,12 @@
         private bool? isRef;
         private bool? isConst;
         private bool? isInitOnly;
+        private bool? _isPublic;
+        private bool? _isPrivate;
+        private bool? _isAssembly;
+        private bool? _isFamily;
+        private bool? _isFamilyOrAssembly;
+        private bool? _isFamilyAndAssembly;
         private MethodData? getValueInvocator;
         private MethodData? setValueInvocator;
         private string? assemblyName;
@@ -62,7 +68,7 @@
                     }
 
                     MethodData fieldAccessorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldAccessor!);
-                    this.getValueInvocator = fieldAccessorData.GetInvocator();
+                    this.getValueInvocator = fieldAccessorData.GetInvoker();
                 }
 
                 return this.getValueInvocator;
@@ -83,7 +89,7 @@
                     }
 
                     MethodData fieldAccessorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldAccessor!);
-                    this.setValueInvocator = fieldAccessorData.GetInvocator();
+                    this.setValueInvocator = fieldAccessorData.GetInvoker();
                 }
 
                 return this.setValueInvocator;
@@ -154,6 +160,24 @@
 
         public bool IsReadonly
           => this.IsInitOnly && !this.IsConst;
+
+        public override bool IsPublic
+            => this._isPublic ??= GetFieldInfo().IsPublic;
+
+        public override bool IsPrivate
+            => this._isPrivate ??= GetFieldInfo().IsPrivate;
+
+        public override bool IsAssembly
+            => this._isAssembly ??= GetFieldInfo().IsAssembly;
+
+        public override bool IsFamily
+            => this._isFamily ??= GetFieldInfo().IsFamily;
+
+        public override bool IsFamilyOrAssembly
+            => this._isFamilyOrAssembly ??= GetFieldInfo().IsFamilyOrAssembly;
+
+        public override bool IsFamilyAndAssembly
+            => this._isFamilyAndAssembly ??= GetFieldInfo().IsFamilyAndAssembly;
 
         /// <summary>
         /// Determines the set of symbol attributes for the specified field based on its metadata and characteristics.

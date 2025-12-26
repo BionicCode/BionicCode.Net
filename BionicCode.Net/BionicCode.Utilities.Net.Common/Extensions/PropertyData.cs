@@ -34,6 +34,12 @@ namespace BionicCode.Utilities.Net
         private bool? canWrite;
         private bool? canRead;
         private bool? isInit;
+        private bool? _isPublic;
+        private bool? _isPrivate;
+        private bool? _isAssembly;
+        private bool? _isFamily;
+        private bool? _isFamilyOrAssembly;
+        private bool? _isFamilyAndAssembly;
         private Func<object, object[], object>? getInvocator;
         private Action<object, object, object[]>? setInvocator;
         private string? assemblyName;
@@ -241,6 +247,31 @@ namespace BionicCode.Utilities.Net
         public bool IsOverride
           => this.isOverride ??= (this.CanRead && this.GetMethodData!.IsOverride)
             || (this.CanWrite && this.SetMethodData!.IsOverride);
+
+        public override bool IsPublic
+            => this._isPublic ??= this.AccessModifier == AccessModifier.Public;
+
+        public override bool IsPrivate
+            => this._isPrivate ??= this.AccessModifier == AccessModifier.Private;
+
+        /// <summary>
+        /// Gets a value indicating whether the member has internal accessibility within its assembly.
+        /// </summary>
+        public override bool IsAssembly
+            => this._isAssembly ??= this.AccessModifier == AccessModifier.Internal;
+
+        /// <summary>
+        /// Gets a value indicating whether the member is protected and thus accessible only within its own class or by
+        /// derived class instances.
+        /// </summary>
+        public override bool IsFamily
+            => this._isFamily ??= this.AccessModifier == AccessModifier.Protected;
+
+        public override bool IsFamilyOrAssembly
+            => this._isFamilyOrAssembly ??= this.AccessModifier == AccessModifier.ProtectedInternal;
+
+        public override bool IsFamilyAndAssembly
+            => this._isFamilyAndAssembly ??= this.AccessModifier == AccessModifier.PrivateProtected;
 
         /// <summary>
         /// Determines the set of symbol attributes for the specified property based on its metadata and accessor

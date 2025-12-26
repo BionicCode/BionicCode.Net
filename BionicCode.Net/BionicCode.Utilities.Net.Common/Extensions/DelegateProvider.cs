@@ -17,9 +17,17 @@
 
         public static MethodData GetOrCreateFastMethodInvocator(MethodData targetMethodData, TypeData[] genericMethodParameters)
         {
+            if (!targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition && targetMethodData.HasInvocatorGenerated)
+            { }
+
             MethodData methodData = targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition
                 ? DelegateProvider.GetOrConstructGenericMethod(targetMethodData, genericMethodParameters)
                 : targetMethodData;
+
+            if (((IMethodDataInvoker)methodData).HasConstructedInvocator)
+            {
+                return methodData;
+            }
 
             ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
             ParameterExpression argsParam = Expression.Parameter(typeof(object[]), "args");
@@ -82,9 +90,9 @@
                 ? (IMethodDataInvoker)methodData // only the closed generic method data holds the constructed invocator
                 : (IMethodDataInvoker)targetMethodData; // Since targetMethodData is already a closed generic method, we can set the generated invocator directly on it.
 
-            methodInvoker.SetInvocator(invocator);
-            methodInvoker.SetInvocator(awaitableTaskInvocator);
-            methodInvoker.SetInvocator(awaitableGenericTaskInvocator);
+            methodInvoker.SetInvoker(invocator);
+            methodInvoker.SetInvoker(awaitableTaskInvocator);
+            methodInvoker.SetInvoker(awaitableGenericTaskInvocator);
             methodInvoker.SetInvocator(awaitableGenericValueTaskInvocator);
             methodInvoker.SetInvocator(awaitableValueTaskInvocator);
 

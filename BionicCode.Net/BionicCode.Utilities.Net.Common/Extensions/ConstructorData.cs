@@ -20,6 +20,12 @@
         private AccessModifier accessModifier;
         private ParameterList? parameters;
         private bool? isStatic;
+        private bool? _isPublic;
+        private bool? _isPrivate;
+        private bool? _isAssembly;
+        private bool? _isFamily;
+        private bool? _isFamilyOrAssembly;
+        private bool? _isFamilyAndAssembly;
         private Func<object[], object>? invocator;
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
@@ -114,7 +120,26 @@
         public override string AssemblyName
           => this.assemblyName ??= this.DeclaringTypeData.AssemblyName;
 
-        public override bool IsStatic => this.isStatic ??= GetConstructorInfo().IsStatic;
+        public override bool IsStatic
+            => this.isStatic ??= GetConstructorInfo().IsStatic;
+
+        public override bool IsPublic
+            => this._isPublic ??= GetConstructorInfo().IsPublic;
+
+        public override bool IsPrivate
+            => this._isPrivate ??= GetConstructorInfo().IsPrivate;
+
+        public override bool IsAssembly
+            => this._isAssembly ??= GetConstructorInfo().IsAssembly;
+
+        public override bool IsFamily
+            => this._isFamily ??= GetConstructorInfo().IsFamily;
+
+        public override bool IsFamilyOrAssembly
+            => this._isFamilyOrAssembly ??= GetConstructorInfo().IsFamilyOrAssembly;
+
+        public override bool IsFamilyAndAssembly
+            => this._isFamilyAndAssembly ??= GetConstructorInfo().IsFamilyAndAssembly;
 
         /// <summary>
         /// Determines the symbol attributes for a constructor based on the specified constructor data.

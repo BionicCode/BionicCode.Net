@@ -24,6 +24,12 @@
         private MethodData? invocatorMethodData;
         private AccessModifier accessModifier;
         private bool? isStatic;
+        private bool? _isPublic;
+        private bool? _isPrivate;
+        private bool? _isAssembly;
+        private bool? _isFamily;
+        private bool? _isFamilyOrAssembly;
+        private bool? _isFamilyAndAssembly;
         private TypeData? eventHandlerTypeData;
         private Func<object, object[], object>? invocator;
         private string? assemblyName;
@@ -124,7 +130,32 @@
           => this.assemblyName ??= this.DeclaringTypeData.AssemblyName;
 
         public bool IsOverride
-          => this.isOverride ??= this.AddMethodData.IsOverride;
+          => this.isOverride ??= this.AddMethodData!.IsOverride;
+
+        public override bool IsPublic
+            => this._isPublic ??= this.AccessModifier == AccessModifier.Public;
+
+        public override bool IsPrivate
+            => this._isPrivate ??= this.AccessModifier == AccessModifier.Private;
+
+        /// <summary>
+        /// Gets a value indicating whether the member has internal accessibility within its assembly.
+        /// </summary>
+        public override bool IsAssembly
+            => this._isAssembly ??= this.AccessModifier == AccessModifier.Internal;
+
+        /// <summary>
+        /// Gets a value indicating whether the member is protected and thus accessible only within its own class or by
+        /// derived class instances.
+        /// </summary>
+        public override bool IsFamily
+            => this._isFamily ??= this.AccessModifier == AccessModifier.Protected;
+
+        public override bool IsFamilyOrAssembly
+            => this._isFamilyOrAssembly ??= this.AccessModifier == AccessModifier.ProtectedInternal;
+
+        public override bool IsFamilyAndAssembly
+            => this._isFamilyAndAssembly ??= this.AccessModifier == AccessModifier.PrivateProtected;
 
         /// <summary>
         /// Determines the set of symbol attributes for the specified event based on its add method characteristics.

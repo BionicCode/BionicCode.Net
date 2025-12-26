@@ -43,11 +43,11 @@
         private bool? isGenericTypeMethod;
         private MethodData? genericMethodDefinitionData;
         private bool? isReturnValueByRef;
-        private volatile Func<object?, object?[]?, object?>? _invocator;
-        private volatile Func<object?, object?[]?, Task>? _asyncTaskInvocator;
-        private volatile Func<object?, object?[]?, Task<object?>>? _asyncGenericTaskInvocator;
-        private volatile Func<object?, object?[]?, ValueTask<object?>>? _asyncGenericValueTaskInvocator;
-        private volatile Func<object?, object?[]?, ValueTask>? _asyncValueTaskInvocator;
+        private volatile Func<object?, object?[]?, object?>? _invoker;
+        private volatile Func<object?, object?[]?, Task>? _asyncTaskInvoker;
+        private volatile Func<object?, object?[]?, Task<object?>>? _asyncGenericTaskInvoker;
+        private volatile Func<object?, object?[]?, ValueTask<object?>>? _asyncGenericValueTaskInvoker;
+        private volatile Func<object?, object?[]?, ValueTask>? _asyncValueTaskInvoker;
         private string? assemblyName;
         private bool? isReturnValueReadOnly;
         private bool? containsGenericParameters;
@@ -56,6 +56,12 @@
         private bool? _isAwaitableGenericTask;
         private bool? _isAbstract;
         private bool? _isVirtual;
+        private bool? _isPublic;
+        private bool? _isPrivate;
+        private bool? _isAssembly;
+        private bool? _isFamily;
+        private bool? _isFamilyOrAssembly;
+        private bool? _isFamilyAndAssembly;
 
         public MethodData(MethodInfo methodInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(methodInfo, symbolInfoDataCacheKey)
         {
@@ -125,10 +131,10 @@
                 }
             }
 
-            MethodData invocatorMethod = GetInvocatorInternal(Array.Empty<TypeData>(), args);
+            MethodData invocatorMethod = GetInvokerInternal(Array.Empty<TypeData>(), args);
             Debug.Assert(invocatorMethod is not null);
 
-            return invocatorMethod._invocator!.Invoke(target, args);
+            return invocatorMethod._invoker!.Invoke(target, args);
         }
 
         /// <summary>
@@ -185,10 +191,10 @@
             TypeData[] genericMethodTypeDataParameters = genericMethodParameters.ToArray();
             ArgumentOutOfRangeException.ThrowIfNotEqual(genericMethodTypeDataParameters.Length, this.GenericMethodArguments.Count, nameof(genericMethodParameters));
 
-            MethodData invocatorMethod = GetInvocatorInternal(genericMethodTypeDataParameters, args);
+            MethodData invocatorMethod = GetInvokerInternal(genericMethodTypeDataParameters, args);
             Debug.Assert(invocatorMethod is not null);
 
-            return invocatorMethod._invocator!.Invoke(target, args);
+            return invocatorMethod._invoker!.Invoke(target, args);
         }
 
         public async Task InvokeTaskAsync(object? target, params object?[]? args)
@@ -229,10 +235,10 @@
                 }
             }
 
-            MethodData invocatorMethod = GetInvocatorInternal(Array.Empty<TypeData>(), args);
+            MethodData invocatorMethod = GetInvokerInternal(Array.Empty<TypeData>(), args);
             Debug.Assert(invocatorMethod is not null);
 
-            await invocatorMethod._asyncTaskInvocator!.Invoke(target, args).ConfigureAwait(false);
+            await invocatorMethod._asyncTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
         }
 
         public async Task InvokeOpenGenericTaskAsync(object? target, IEnumerable<TypeData> genericMethodParameters, params object?[]? args)
@@ -273,10 +279,10 @@
             TypeData[] genericMethodTypeDataParameters = genericMethodParameters.ToArray();
             ArgumentOutOfRangeException.ThrowIfNotEqual(genericMethodTypeDataParameters.Length, this.GenericMethodArguments.Count, nameof(genericMethodParameters));
 
-            MethodData invocatorMethod = GetInvocatorInternal(genericMethodTypeDataParameters, args);
+            MethodData invocatorMethod = GetInvokerInternal(genericMethodTypeDataParameters, args);
             Debug.Assert(invocatorMethod is not null);
 
-            await invocatorMethod._asyncTaskInvocator!.Invoke(target, args).ConfigureAwait(false);
+            await invocatorMethod._asyncTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
         }
 
         public async Task<object?> InvokeTaskWithResultAsync(object? target, params object?[]? args)
@@ -317,10 +323,10 @@
                 }
             }
 
-            MethodData invocatorMethod = GetInvocatorInternal(Array.Empty<TypeData>(), args);
+            MethodData invocatorMethod = GetInvokerInternal(Array.Empty<TypeData>(), args);
             Debug.Assert(invocatorMethod is not null);
 
-            return await invocatorMethod._asyncGenericTaskInvocator!.Invoke(target, args).ConfigureAwait(false);
+            return await invocatorMethod._asyncGenericTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
         }
 
         public async Task<object?> InvokeOpenGenericTaskWithResultAsync(object? target, IEnumerable<TypeData> genericMethodParameters, params object?[]? args)
@@ -361,10 +367,10 @@
             TypeData[] genericMethodTypeDataParameters = genericMethodParameters.ToArray();
             ArgumentOutOfRangeException.ThrowIfNotEqual(genericMethodTypeDataParameters.Length, this.GenericMethodArguments.Count, nameof(genericMethodParameters));
 
-            MethodData invocatorMethod = GetInvocatorInternal(genericMethodTypeDataParameters, args);
+            MethodData invocatorMethod = GetInvokerInternal(genericMethodTypeDataParameters, args);
             Debug.Assert(invocatorMethod is not null);
 
-            return await invocatorMethod._asyncGenericTaskInvocator!.Invoke(target, args).ConfigureAwait(false);
+            return await invocatorMethod._asyncGenericTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
         }
 
         public async ValueTask InvokeValueTaskAsync(object? target, params object?[]? args)
@@ -405,10 +411,10 @@
                 }
             }
 
-            MethodData invocatorMethod = GetInvocatorInternal(Array.Empty<TypeData>(), args);
+            MethodData invocatorMethod = GetInvokerInternal(Array.Empty<TypeData>(), args);
             Debug.Assert(invocatorMethod is not null);
 
-            await invocatorMethod._asyncValueTaskInvocator!.Invoke(target, args).ConfigureAwait(false);
+            await invocatorMethod._asyncValueTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
         }
 
         public async ValueTask InvokeOpenGenericValueTaskAsync(object? target, IEnumerable<TypeData> genericMethodParameters, params object?[]? args)
@@ -449,10 +455,10 @@
             TypeData[] genericMethodTypeDataParameters = genericMethodParameters.ToArray();
             ArgumentOutOfRangeException.ThrowIfNotEqual(genericMethodTypeDataParameters.Length, this.GenericMethodArguments.Count, nameof(genericMethodParameters));
 
-            MethodData invocatorMethod = GetInvocatorInternal(genericMethodTypeDataParameters, args);
+            MethodData invocatorMethod = GetInvokerInternal(genericMethodTypeDataParameters, args);
             Debug.Assert(invocatorMethod is not null);
 
-            await invocatorMethod._asyncValueTaskInvocator!.Invoke(target, args).ConfigureAwait(false);
+            await invocatorMethod._asyncValueTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
         }
 
         public async ValueTask<object?> InvokeValueTaskWithResultAsync(object? target, params object?[]? args)
@@ -493,10 +499,10 @@
                 }
             }
 
-            MethodData invocatorMethod = GetInvocatorInternal(Array.Empty<TypeData>(), args);
+            MethodData invocatorMethod = GetInvokerInternal(Array.Empty<TypeData>(), args);
             Debug.Assert(invocatorMethod is not null);
 
-            return await invocatorMethod._asyncGenericValueTaskInvocator!.Invoke(target, args).ConfigureAwait(false);
+            return await invocatorMethod._asyncGenericValueTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
         }
 
         public async ValueTask<object?> InvokeOpenGenericValueTaskWithResultAsync(object? target, IEnumerable<TypeData> genericMethodParameters, params object?[]? args)
@@ -537,17 +543,17 @@
             TypeData[] genericMethodTypeDataParameters = genericMethodParameters.ToArray();
             ArgumentOutOfRangeException.ThrowIfNotEqual(genericMethodTypeDataParameters.Length, this.GenericMethodArguments.Count, nameof(genericMethodParameters));
 
-            MethodData invocatorMethod = GetInvocatorInternal(genericMethodTypeDataParameters, args);
+            MethodData invocatorMethod = GetInvokerInternal(genericMethodTypeDataParameters, args);
             Debug.Assert(invocatorMethod is not null);
 
-            return await invocatorMethod._asyncGenericValueTaskInvocator!.Invoke(target, args).ConfigureAwait(false);
+            return await invocatorMethod._asyncGenericValueTaskInvoker!.Invoke(target, args).ConfigureAwait(false);
         }
 
-        public MethodData GetInvocator(params object?[]? args)
+        public MethodData GetInvoker(params object?[]? args)
         {
             if (this.IsOpenGenericMethodOrGenericMethodDefinition)
             {
-                throw new InvalidOperationException($"Cannot invoke generic methods that are not closed. Call {nameof(InvokeOpenGeneric)} instead to ensure the generic method is properly closed by specifying generic type arguments.");
+                throw new InvalidOperationException($"Cannot invoke generic methods that are not closed. Call {nameof(GetOpenGenericInvoker)} instead to ensure the generic method is properly closed by specifying generic type arguments.");
             }
 
             if (this.DeclaringTypeData.IsGenericTypeDefinition || this.DeclaringTypeData.ContainsGenericParameters)
@@ -566,17 +572,17 @@
                 ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
             }
 
-            MethodData invocatorMethod = GetInvocatorInternal(Array.Empty<TypeData>(), args);
+            MethodData invocatorMethod = GetInvokerInternal(Array.Empty<TypeData>(), args);
             Debug.Assert(invocatorMethod is not null);
 
             return invocatorMethod;
         }
 
-        public MethodData GetOpenGenericInvocator(object? target, IEnumerable<TypeData> genericMethodParameters, params object?[]? args)
+        public MethodData GetOpenGenericInvoker(object? target, IEnumerable<TypeData> genericMethodParameters, params object?[]? args)
         {
             if (!this.IsOpenGenericMethodOrGenericMethodDefinition)
             {
-                throw new InvalidOperationException($"Cannot invoke non-generic methods using {nameof(InvokeOpenGeneric)}. Call '{nameof(Invoke)}' instead.");
+                throw new InvalidOperationException($"Cannot invoke non-generic methods using {nameof(GetOpenGenericInvoker)}. Call '{nameof(GetInvoker)}' instead.");
             }
 
             if (!this.IsStatic)
@@ -603,15 +609,15 @@
             TypeData[] genericMethodTypeDataParameters = genericMethodParameters.ToArray();
             ArgumentOutOfRangeException.ThrowIfNotEqual(genericMethodTypeDataParameters.Length, this.GenericMethodArguments.Count, nameof(genericMethodParameters));
 
-            MethodData invocatorMethod = GetInvocatorInternal(genericMethodTypeDataParameters, args);
+            MethodData invocatorMethod = GetInvokerInternal(genericMethodTypeDataParameters, args);
             Debug.Assert(invocatorMethod is not null);
 
             return invocatorMethod;
         }
 
-        private MethodData GetInvocatorInternal(TypeData[] genericMethodParameters, params object?[]? args)
+        private MethodData GetInvokerInternal(TypeData[] genericMethodParameters, params object?[]? args)
         {
-            MethodData invocatorSource = this.HasInvocatorGenerated
+            MethodData invocatorSource = ((IMethodDataInvoker)this).IsInvocable
                 // 'this' is already a closed generic method with constructed invocator.
                 // Reason: only closed generic methods can have invocator/are invocable...
                 ? this
@@ -775,14 +781,6 @@
             }
         }
 
-        internal bool HasInvocatorGenerated
-            => !this.IsOpenGenericMethodOrGenericMethodDefinition
-                && this._invocator is not null
-                && this._asyncTaskInvocator is not null
-                && this._asyncGenericTaskInvocator is not null
-                && this._asyncValueTaskInvocator is not null
-                && this._asyncGenericValueTaskInvocator is not null;
-
         public bool IsOverride
           => this.isOverride ??= MethodData.IsMethodOverride(this);
 
@@ -856,8 +854,31 @@
         public bool IsOpenGenericMethodOrGenericMethodDefinition
           => (this.IsGenericMethod && this.ContainsGenericParameters) || this.IsGenericMethodDefinition;
 
-        private bool HasConstructedInvocator
-            => this._invocator is not null;
+        bool IMethodDataInvoker.IsInvocable
+            => !this.IsOpenGenericMethodOrGenericMethodDefinition
+                && this._invoker is not null
+                && this._asyncTaskInvoker is not null
+                && this._asyncGenericTaskInvoker is not null
+                && this._asyncValueTaskInvoker is not null
+                && this._asyncGenericValueTaskInvoker is not null;
+
+        public override bool IsPublic
+            => this._isPublic ??= GetMethodInfo().IsPublic;
+
+        public override bool IsPrivate
+            => this._isPrivate ??= GetMethodInfo().IsPrivate;
+
+        public override bool IsAssembly
+            => this._isAssembly ??= GetMethodInfo().IsAssembly;
+
+        public override bool IsFamily
+            => this._isFamily ??= GetMethodInfo().IsFamily;
+
+        public override bool IsFamilyOrAssembly
+            => this._isFamilyOrAssembly ??= GetMethodInfo().IsFamilyOrAssembly;
+
+        public override bool IsFamilyAndAssembly
+            => this._isFamilyAndAssembly ??= GetMethodInfo().IsFamilyAndAssembly;
 
         private static bool IsMethodExtensionMethod(MethodData methodData)
         {
@@ -957,11 +978,11 @@
 
         #region IMethodDataInvoker
 
-        void IMethodDataInvoker.SetInvocator(Func<object?, object?[]?, object?>? invocator) => this._invocator = invocator;
-        void IMethodDataInvoker.SetInvocator(Func<object?, object?[]?, Task>? asyncTaskInvocator) => this._asyncTaskInvocator = asyncTaskInvocator;
-        void IMethodDataInvoker.SetInvocator(Func<object?, object?[]?, Task<object?>>? asyncGenericTaskInvocator) => this._asyncGenericTaskInvocator = asyncGenericTaskInvocator;
-        void IMethodDataInvoker.SetInvocator(Func<object?, object?[]?, ValueTask>? asyncValueTaskInvocator) => this._asyncValueTaskInvocator = asyncValueTaskInvocator;
-        void IMethodDataInvoker.SetInvocator(Func<object?, object?[]?, ValueTask<object?>>? asyncGenericValueTaskInvocator) => this._asyncGenericValueTaskInvocator = asyncGenericValueTaskInvocator;
+        void IMethodDataInvoker.SetInvoker(Func<object?, object?[]?, object?>? invocator) => this._invoker = invocator;
+        void IMethodDataInvoker.SetInvoker(Func<object?, object?[]?, Task>? asyncTaskInvocator) => this._asyncTaskInvoker = asyncTaskInvocator;
+        void IMethodDataInvoker.SetInvoker(Func<object?, object?[]?, Task<object?>>? asyncGenericTaskInvocator) => this._asyncGenericTaskInvoker = asyncGenericTaskInvocator;
+        void IMethodDataInvoker.SetInvoker(Func<object?, object?[]?, ValueTask>? asyncValueTaskInvocator) => this._asyncValueTaskInvoker = asyncValueTaskInvocator;
+        void IMethodDataInvoker.SetInvoker(Func<object?, object?[]?, ValueTask<object?>>? asyncGenericValueTaskInvocator) => this._asyncGenericValueTaskInvoker = asyncGenericValueTaskInvocator;
 
         # endregion IMethodDataInvoker
     }
