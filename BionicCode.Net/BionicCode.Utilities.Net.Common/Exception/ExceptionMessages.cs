@@ -18,5 +18,6 @@ namespace BionicCode.Utilities.Net
         public static string GetModificationOfReadOnlyCollectionNotSupportedExceptionMessage(IEnumerable collection) => $"The {collection.GetType().ToDisplayName()} is read-only.";
         public static string GetModificationOfImmutableCollectionNotSupportedExceptionMessage(IEnumerable collection) => $"The {collection.GetType().ToDisplayName()} is immutable.";
         public static string GetHandlerDelegateSignatureMismatchExceptionMessage(EventInfo eventInfo, MethodInfo eventHandlerMethodInfo, string because) => $"Event handler delegate signature mismatch. Expected signature as required by event source: '{eventInfo.EventHandlerType.ToSignatureName()}'. Found signature on provided event handler: '{eventHandlerMethodInfo.ToSignatureName()}'. Because: {because}";
+        public static string GetTypeMismatchExceptionMessage(Type first, string nameOfFirst, Type second, string nameOfSecond) => $"Type mismatch. The '{nameOfFirst}' must be of the same type as the '{nameOfSecond}'. Found {first.FullName} but expected {second.FullName}.";
     }
 }

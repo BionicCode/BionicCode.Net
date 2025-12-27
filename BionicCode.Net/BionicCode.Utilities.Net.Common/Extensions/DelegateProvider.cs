@@ -11,8 +11,17 @@
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
 
-    // For value-type instance targets, a correct setter requires ref.
-    public delegate void ValueTypeFieldSetter<TTarget, TValue>(ref TTarget target, TValue? value) where TTarget : struct;
+    /// <summary>
+    /// Represents a method that sets the value of a field on a value declaringType instance.
+    /// </summary>
+    /// <remarks>This delegate is typically used to update fields on value declaringType instances, such as structs,
+    /// where direct assignment is required. The target parameter is passed by reference to allow modification of the
+    /// original instance.</remarks>
+    /// <typeparam name="TTarget">The value declaringType whose field will be set.</typeparam>
+    /// <typeparam name="TValue">The declaringType of the value to assign to the field.</typeparam>
+    /// <param name="target">A reference to the value declaringType instance whose field will be set.</param>
+    /// <param name="value">The value to assign to the field. May be null if the field declaringType allows null values.</param>
+    public delegate void ValueTypeMemberSetter<TTarget, TValue>(ref TTarget target, TValue? value) where TTarget : struct;
 
     internal static class DelegateProvider
     {
@@ -142,7 +151,7 @@
                 field.IsStatic
                     ? Expression.Field(expression: null, field) // static: no instance
                     : Expression.Field(
-                        Expression.Convert(targetParam, field.DeclaringType), // cast/unbox
+                        Expression.Convert(targetParam, fieldData.DeclaringTypeData.UnwrapType()), // cast/unbox
                         field);
 
             // Box value types
@@ -158,17 +167,15 @@
             ArgumentNullException.ThrowIfNull(fieldData, nameof(fieldData));
             ArgumentNullException.ThrowIfNull(fieldData.DeclaringTypeData, nameof(fieldData));
 
-            FieldInfo field = fieldData.GetFieldInfo();
-
-            // Reject const / readonly up front (you can choose a different exception type if desired)
+            // Reject const / readonly up front
             if (fieldData.IsConst) // const 
             {
-                throw new InvalidOperationException("Cannot create a setter for a literal (const) field.");
+                throw new InvalidOperationException("Cannot create a setter for a 'const' field.");
             }
 
-            if (fieldData.IsInitOnly) // readonly 
+            if (fieldData.IsReadonly) // readonly 
             {
-                throw new InvalidOperationException("Cannot create a setter for an initonly (readonly) field.");
+                throw new InvalidOperationException("Cannot create a setter for a 'readonly' field.");
             }
 
             // Important: setting instance fields on a boxed struct would modify only a copy.
@@ -176,22 +183,23 @@
             {
                 throw new NotSupportedException(
                     "Cannot create an object-based setter for an instance field declared on a value type. " +
-                    $"You need a ref-based setter; call {nameof(CreateStructSetter)} instead.");
+                    $"You need a ref-based setter: call {nameof(CreateStructSetter)} instead.");
             }
 
             ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
             ParameterExpression valueParam = Expression.Parameter(typeof(object), "value");
 
+            FieldInfo field = fieldData.GetFieldInfo();
             Expression fieldAccess =
-                field.IsStatic
+                fieldData.IsStatic
                     ? Expression.Field(expression: null, field)
                     : Expression.Field(
-                        Expression.Convert(targetParam, field.DeclaringType),
+                        Expression.Convert(targetParam, fieldData.DeclaringTypeData.UnwrapType()),
                         field);
 
             BinaryExpression assign = Expression.Assign(
                 fieldAccess,
-                Expression.Convert(valueParam, field.FieldType)); // Expression.Assign 
+                Expression.Convert(valueParam, fieldData.FieldTypeData.UnwrapType())); // Expression.Assign 
 
             // Action<...> requires a void body -> wrap assignment in a void block.
             BlockExpression body = Expression.Block(assign, Expression.Empty());
@@ -201,38 +209,168 @@
                 .Compile();
         }
 
-        public static ValueTypeFieldSetter<TTarget, TValue> CreateStructSetter<TTarget, TValue>(FieldData fieldData)
+        public static ValueTypeMemberSetter<TTarget, TValue> CreateStructSetter<TTarget, TValue>(FieldData fieldData)
             where TTarget : struct
         {
             ArgumentNullException.ThrowIfNull(fieldData, nameof(fieldData));
             ArgumentNullException.ThrowIfNull(fieldData.DeclaringTypeData, nameof(fieldData));
 
-            FieldInfo field = fieldData.GetFieldInfo();
-            if (fieldData.DeclaringTypeData.UnwrapType() != typeof(TTarget))
+            Type declaringType = fieldData.DeclaringTypeData.UnwrapType();
+            Type targetType = typeof(TTarget);
+            ArgumentExceptionEx.ThrowIfNotAssignableTo(
+                targetType,
+                declaringType,
+                ExceptionMessages.GetTypeMismatchExceptionMessage(
+                        targetType,
+                        "target type",
+                        declaringType,
+                        "declaring type"));
+
+            Type valueType = typeof(TValue);
+            Type fieldType = fieldData.FieldTypeData.UnwrapType();
+            ArgumentExceptionEx.ThrowIfNotAssignableTo(
+                valueType,
+                fieldType,
+                ExceptionMessages.GetTypeMismatchExceptionMessage(
+                        valueType,
+                        "value type",
+                        fieldType,
+                        "field type"));
+
+            if (fieldData.IsConst)
             {
-                throw new ArgumentException("Field declaring type must exactly match TTarget.", nameof(field));
+                throw new InvalidOperationException("Cannot create a setter for a 'const' field.");
             }
 
-            if (field.IsLiteral)
+            if (fieldData.IsReadonly)
             {
-                throw new InvalidOperationException("Cannot create a setter for a literal (const) field.");
-            }
-
-            if (field.IsInitOnly)
-            {
-                throw new InvalidOperationException("Cannot create a setter for an initonly (readonly) field.");
+                throw new InvalidOperationException("Cannot create a setter for a 'readonly' field.");
             }
 
             // (ref TTarget target, TValue value) => target.Field = value;
-            ParameterExpression targetByRef = Expression.Parameter(typeof(TTarget).MakeByRefType(), "target");
-            ParameterExpression valueParam = Expression.Parameter(typeof(TValue), "value");
+            ParameterExpression targetByRef = Expression.Parameter(targetType.MakeByRefType(), "target");
+            ParameterExpression valueParam = Expression.Parameter(valueType, "value");
 
+            FieldInfo field = fieldData.GetFieldInfo();
             MemberExpression fieldAccess = Expression.Field(targetByRef, field);
-            BinaryExpression assign = Expression.Assign(fieldAccess, Expression.Convert(valueParam, field.FieldType));
+            BinaryExpression assign = Expression.Assign(fieldAccess, Expression.Convert(valueParam, fieldType));
             BlockExpression body = Expression.Block(assign, Expression.Empty());
 
             return Expression
-                .Lambda<ValueTypeFieldSetter<TTarget, TValue>>(body, targetByRef, valueParam)
+                .Lambda<ValueTypeMemberSetter<TTarget, TValue>>(body, targetByRef, valueParam)
+                .Compile();
+        }
+
+        public static Func<object?, object?> CreateGetter(PropertyData propertyData)
+        {
+            ArgumentNullException.ThrowIfNull(propertyData, nameof(propertyData));
+            ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
+
+            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
+
+            PropertyInfo property = propertyData.GetPropertyInfo();
+            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
+            Expression propertyAccess =
+                propertyData.IsStatic
+                    ? Expression.Property(expression: null, property) // static: no instance
+                    : Expression.Property(
+                        Expression.Convert(targetParam, declaringType), // cast/unbox
+                        property);
+
+            // Box value types
+            UnaryExpression body = Expression.Convert(propertyAccess, typeof(object));
+
+            return Expression
+                .Lambda<Func<object?, object?>>(body, targetParam)
+                .Compile(); // compiles to a delegate 
+        }
+
+        public static Action<object?, object?> CreateSetter(PropertyData propertyData)
+        {
+            ArgumentNullException.ThrowIfNull(propertyData, nameof(propertyData));
+            ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
+
+            // Reject readonly up front
+            if (propertyData.IsReadOnly)
+            {
+                throw new InvalidOperationException("Cannot create a setter for an read-only property.");
+            }
+
+            // Important: setting instance properties on a boxed struct would modify only a copy.
+            if (!propertyData.IsStatic && propertyData.DeclaringTypeData.IsStruct)
+            {
+                throw new NotSupportedException(
+                    "Cannot create an object-based setter for an instance property declared on a value type. " +
+                    $"You need a ref-based setter: call {nameof(CreateStructSetter)} instead.");
+            }
+
+            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
+            ParameterExpression valueParam = Expression.Parameter(typeof(object), "value");
+
+            PropertyInfo property = propertyData.GetPropertyInfo();
+            Expression propertyAccess =
+                propertyData.IsStatic
+                    ? Expression.Property(expression: null, property)
+                    : Expression.Property(
+                        Expression.Convert(targetParam, propertyData.DeclaringTypeData.UnwrapType()),
+                        property);
+
+            BinaryExpression assign = Expression.Assign(
+                propertyAccess,
+                Expression.Convert(valueParam, propertyData.PropertyTypeData.UnwrapType())); // Expression.Assign 
+
+            // Action<...> requires a void body -> wrap assignment in a void block.
+            BlockExpression body = Expression.Block(assign, Expression.Empty());
+
+            return Expression
+                .Lambda<Action<object?, object?>>(body, targetParam, valueParam)
+                .Compile();
+        }
+
+        public static ValueTypeMemberSetter<TTarget, TValue> CreateStructSetter<TTarget, TValue>(PropertyData propertyData)
+            where TTarget : struct
+        {
+            ArgumentNullException.ThrowIfNull(propertyData, nameof(propertyData));
+            ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
+
+            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
+            Type targetType = typeof(TTarget);
+            ArgumentExceptionEx.ThrowIfNotAssignableTo(
+                targetType,
+                declaringType,
+                ExceptionMessages.GetTypeMismatchExceptionMessage(
+                        targetType,
+                        "target type",
+                        declaringType,
+                        "declaring type"));
+
+            Type valueType = typeof(TValue);
+            Type propertyType = propertyData.PropertyTypeData.UnwrapType();
+            ArgumentExceptionEx.ThrowIfNotAssignableTo(
+                valueType,
+                propertyType,
+                ExceptionMessages.GetTypeMismatchExceptionMessage(
+                        valueType,
+                        "value type",
+                        propertyType,
+                        "property type"));
+
+            if (propertyData.IsReadOnly)
+            {
+                throw new InvalidOperationException("Cannot create a setter for an read-only property.");
+            }
+
+            // (ref TTarget target, TValue value) => target.Property = value;
+            ParameterExpression targetByRef = Expression.Parameter(typeof(TTarget).MakeByRefType(), "target");
+            ParameterExpression valueParam = Expression.Parameter(typeof(TValue), "value");
+
+            PropertyInfo property = propertyData.GetPropertyInfo();
+            MemberExpression propertyAccess = Expression.Property(targetByRef, property);
+            BinaryExpression assign = Expression.Assign(propertyAccess, Expression.Convert(valueParam, propertyType));
+            BlockExpression body = Expression.Block(assign, Expression.Empty());
+
+            return Expression
+                .Lambda<ValueTypeMemberSetter<TTarget, TValue>>(body, targetByRef, valueParam)
                 .Compile();
         }
 
@@ -245,7 +383,7 @@
 
             public InvokerKeyMapKey(ImmutableList<RuntimeTypeHandle> methodParameterTypeHandles) : this()
             {
-                ArgumentNullExceptionEx.ThrowIfNullOrEmpty(methodParameterTypeHandles, nameof(methodParameterTypeHandles), "Method parameter type handles must be provided to create an invocator map key.");
+                ArgumentNullExceptionEx.ThrowIfNullOrEmpty(methodParameterTypeHandles, nameof(methodParameterTypeHandles), "Method parameter declaringType handles must be provided to create an invocator map key.");
 
                 this.MethodParameterTypeHandles = methodParameterTypeHandles;
                 this._hashCode = ComputeHashCode();

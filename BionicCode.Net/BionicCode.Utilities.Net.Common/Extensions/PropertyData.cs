@@ -178,6 +178,9 @@ namespace BionicCode.Utilities.Net
         public bool CanWrite
           => this.canWrite ??= GetPropertyInfo().CanWrite;
 
+        public bool IsReadOnly
+          => !this.CanWrite;
+
         public bool CanRead
           => this.canRead ??= GetPropertyInfo().CanRead;
 

@@ -160,9 +160,10 @@
         /// <param name="value">The value to validate. Can be an enum value or a convertible value representing an enum member (e.g. an <see langword="int"/> value).</param>
         /// <param name="paramName">The name of the parameter being validated. This value is used in any thrown exception to identify the
         /// invalid argument. Optional.</param>
+        /// <param name="message">An optional exception message.</param>
         /// <exception cref="ArgumentException">Thrown if the provided value is an enum of a different type than <typeparamref name="TEnum"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if the provided value does not correspond to a defined member of <typeparamref name="TEnum"/>.</exception>
-        public static void ThrowIfEnumIsNotDefined<TEnum>(IConvertible value, [CallerArgumentExpression(nameof(value))] string? paramName = null) where TEnum : struct, Enum
+        public static void ThrowIfEnumIsNotDefined<TEnum>(IConvertible value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null) where TEnum : struct, Enum
         {
             ArgumentNullException.ThrowIfNull(value, paramName);
 
@@ -170,7 +171,7 @@
                 ? (rawEnum is TEnum castEnum
                     ? castEnum
                     : throw new ArgumentException(
-                        $"The enum value '{rawEnum.GetType().FullName}' is not of the expected type '{typeof(TEnum).FullName}'.",
+                        $"Type mismatch. The enum value '{rawEnum.GetType().FullName}' is not of the expected type '{typeof(TEnum).FullName}'.",
                         paramName))
                 : Enum.Parse<TEnum>(value.ToString(System.Globalization.CultureInfo.InvariantCulture), ignoreCase: true);
 
@@ -178,7 +179,7 @@
             {
                 throw new ArgumentOutOfRangeException(
                     paramName,
-                    $"The value '{parsedEnum}' is not defined in enum '{typeof(TEnum).FullName}'.");
+                    message ?? $"The value '{parsedEnum}' is not defined in enum '{typeof(TEnum).FullName}'.");
             }
         }
 
@@ -194,9 +195,10 @@
         /// <param name="others">A list of valid enum values that <paramref name="value"/> must match.</param>
         /// <param name="paramName">The name of the parameter being validated. This value is used in any thrown exception to identify the
         /// invalid argument. Optional.</param>
+        /// <param name="message">An optional exception message.</param>
         /// <exception cref="ArgumentException">Thrown if the provided value is an enum of a different type than <typeparamref name="TEnum"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if the provided value does not correspond to a defined member of <typeparamref name="TEnum"/>.</exception>
-        public static void ThrowIfEnumIsNotEqual<TEnum>(IConvertible value, IEnumerable<TEnum> others, [CallerArgumentExpression(nameof(value))] string? paramName = null, string message = null) where TEnum : struct, Enum
+        public static void ThrowIfEnumIsNotEqual<TEnum>(IConvertible value, IEnumerable<TEnum> others, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null) where TEnum : struct, Enum
         {
             ArgumentNullException.ThrowIfNull(value, paramName);
             ArgumentNullException.ThrowIfNull(others, nameof(others));
@@ -212,14 +214,44 @@
             }
         }
 
-        public static void ThrowIfNotOfType(Type value, Type other, [CallerArgumentExpression(nameof(value))] string? paramName = null)
+        /// <summary>
+        /// Throws an exception if the specified type does not match the expected type.
+        /// </summary>
+        /// <param name="value">The type to validate. Cannot be null.</param>
+        /// <param name="other">The expected type to compare against. Cannot be null.</param>
+        /// <param name="paramName">The name of the parameter representing the type to validate. This value is typically provided automatically
+        /// and should not be set explicitly.</param>
+        /// <param name="message">An optional exception message.</param>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not equal to <paramref name="other"/>.</exception>
+        public static void ThrowIfNotOfType(Type value, Type other, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
         {
             ArgumentNullException.ThrowIfNull(value, paramName);
             ArgumentNullException.ThrowIfNull(other, nameof(other));
             if (value != other)
             {
                 throw new ArgumentException(
-                    $"The type '{value.FullName}' is not of the expected type '{other.FullName}'.",
+                    message ?? $"The type '{value.FullName}' is not of the expected type '{other.FullName}'.",
+                    paramName);
+            }
+        }
+
+        /// <summary>
+        /// Throws an exception if the specified type is not assignable to the target type.
+        /// </summary>
+        /// <param name="value">The type to validate for assignability. Cannot be null.</param>
+        /// <param name="target">The target type to check assignability against. Cannot be null.</param>
+        /// <param name="paramName">The name of the parameter representing the type to validate. This value is typically provided automatically
+        /// and should not be set explicitly in most cases.</param>
+        /// <param name="message">An optional exception message.</param>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not assignable to <paramref name="target"/>.</exception>
+        public static void ThrowIfNotAssignableTo(Type value, Type target, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+        {
+            ArgumentNullException.ThrowIfNull(value, paramName);
+            ArgumentNullException.ThrowIfNull(target, nameof(target));
+            if (!value.IsAssignableTo(target))
+            {
+                throw new ArgumentException(
+                    message ?? $"The type '{value.FullName}' is not assignable to the type '{target.FullName}'.",
                     paramName);
             }
         }

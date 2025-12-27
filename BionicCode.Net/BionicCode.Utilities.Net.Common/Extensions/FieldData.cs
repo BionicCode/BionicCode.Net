@@ -69,11 +69,29 @@
         /// <exception cref="ArgumentException">Thrown if the value type does not match the field type.</exception>
         public void SetStructValue<TTarget, TValue>(ref TTarget target, TValue? value) where TTarget : struct
         {
-            ArgumentExceptionEx.ThrowIfNotOfType(typeof(TTarget), this.DeclaringTypeData.UnwrapType());
+            Type declaringType = this.DeclaringTypeData.UnwrapType();
+            Type targetType = typeof(TTarget);
+            ArgumentExceptionEx.ThrowIfNotOfType(
+                targetType,
+                declaringType,
+                ExceptionMessages.GetTypeMismatchExceptionMessage(
+                        targetType,
+                        "target type",
+                        declaringType,
+                        "declaring type"));
 
             if (value is not null)
             {
-                ArgumentExceptionEx.ThrowIfNotOfType(value.GetType(), this.FieldTypeData.UnwrapType(), $"The type of the value must be the same type as the field. Found {value.GetType().FullName} but expected {this.FieldTypeData.UnwrapType().FullName}.");
+                Type valueType = typeof(TValue);
+                Type fieldType = this.FieldTypeData.UnwrapType();
+                ArgumentExceptionEx.ThrowIfNotAssignableTo(
+                    valueType,
+                    fieldType,
+                    ExceptionMessages.GetTypeMismatchExceptionMessage(
+                            valueType,
+                            "value type",
+                            fieldType,
+                            "field type"));
             }
 
             if (this.IsStatic)
@@ -86,17 +104,14 @@
                 throw new InvalidOperationException($"Target type is not a value type. Call {nameof(SetValue)} instead");
             }
 
-            ValueTypeFieldSetter<TTarget, TValue> invoker;
-            if (this._valueTypeSetValueInvokerTable.TryGetValue(target.GetType().TypeHandle, out Delegate cachedInvoker))
+            RuntimeTypeHandle targetTypeHandle = targetType.TypeHandle;
+            if (!this._valueTypeSetValueInvokerTable.TryGetValue(targetTypeHandle, out Delegate? cachedInvoker))
             {
-                invoker = (ValueTypeFieldSetter<TTarget, TValue>)cachedInvoker;
-            }
-            else
-            {
-                invoker = DelegateProvider.CreateStructSetter<TTarget, TValue>(this);
-                this._valueTypeSetValueInvokerTable[target.GetType().TypeHandle] = invoker;
+                ValueTypeMemberSetter<TTarget, TValue> newInvoker = DelegateProvider.CreateStructSetter<TTarget, TValue>(this);
+                cachedInvoker = this._valueTypeSetValueInvokerTable.GetOrAdd(targetTypeHandle, newInvoker);
             }
 
+            ValueTypeMemberSetter<TTarget, TValue> invoker = (ValueTypeMemberSetter<TTarget, TValue>)cachedInvoker;
             invoker.Invoke(ref target, value);
         }
 
@@ -108,27 +123,45 @@
         /// <param name="value">The value to assign to the field. The value must be of the same type as the field or null if the field type
         /// is a reference type.</param>
         /// <remarks>Use this method to set the value of a field on an object instance or a static field.
-        /// For fields declared on value types use <see cref="SetStructValue{TTarget, TValue}(ref TTarget, TValue?)"/> instead.</remarks>
+        /// For fields declared on value types use <see cref="SetStructValue{TTarget, TValue}(ref TTarget, TValue)"/> instead.</remarks>
         /// <exception cref="InvalidOperationException">Thrown if the declaring type of the field is not a value type.</exception>
         /// <exception cref="ArgumentNullException">Thrown if the target is null for an instance field.</exception>
         /// <exception cref="ArgumentException">Thrown if the value is not of the same type as the field.</exception>
         /// <exception cref="ArgumentException">Thrown if the target is not of the declaring type for an instance field.</exception>"
         public void SetValue(object? target, object? value)
         {
-            if (value is not null)
-            {
-                ArgumentExceptionEx.ThrowIfNotOfType(value.GetType(), this.FieldTypeData.UnwrapType(), $"The type of the value must be the same type as the field. Found {value.GetType().FullName} but expected {this.FieldTypeData.UnwrapType().FullName}.");
-            }
-
             if (!this.IsStatic)
             {
                 ArgumentNullException.ThrowIfNull(target, nameof(target));
-                ArgumentExceptionEx.ThrowIfNotOfType(target.GetType(), this.DeclaringTypeData.UnwrapType());
+                Type targetType = target.GetType();
+                Type declaringType = this.DeclaringTypeData.UnwrapType();
+                ArgumentExceptionEx.ThrowIfNotAssignableTo(
+                    targetType,
+                    declaringType,
+                    ExceptionMessages.GetTypeMismatchExceptionMessage(
+                            targetType,
+                            "target type",
+                            declaringType,
+                            "declaring type"));
             }
 
-            if (!this.DeclaringTypeData.IsStruct)
+            if (value is not null)
             {
-                throw new InvalidOperationException("Target type is not a value type.");
+                Type valueType = value.GetType();
+                Type fieldType = this.FieldTypeData.UnwrapType();
+                ArgumentExceptionEx.ThrowIfNotAssignableTo(
+                    valueType,
+                    fieldType,
+                    ExceptionMessages.GetTypeMismatchExceptionMessage(
+                            valueType,
+                            "value type",
+                            fieldType,
+                            "field type"));
+            }
+
+            if (this.DeclaringTypeData.IsStruct)
+            {
+                throw new InvalidOperationException($"Target type is a value type. Call {nameof(SetStructValue)} instead.");
             }
 
             this._referenceTypeSetValueInvoker ??= DelegateProvider.CreateSetter(this);
