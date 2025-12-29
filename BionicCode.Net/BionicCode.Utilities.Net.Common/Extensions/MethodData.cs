@@ -342,6 +342,10 @@
                     if (this.Parameters.Count > 1)
                     {
                         ArgumentNullException.ThrowIfNull(args, nameof(args));
+                    }
+
+                    if (args is not null)
+                    {
                         ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.Parameters.Count, nameof(args));
                     }
                 }
@@ -404,7 +408,7 @@
                 ? this
 
                 // ...otherwise generate or get cached invocator
-                : DelegateProvider.GetOrCreateFastMethodInvocator(this, genericMethodParameters);
+                : DelegateProvider.GetOrCreateFastMethodInvoker(this, genericMethodParameters);
             return invocatorSource;
         }
 

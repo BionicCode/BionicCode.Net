@@ -27,7 +27,7 @@
     {
         private static readonly ConcurrentDictionary<InvokerKeyMapKey, SymbolInfoDataCacheKey> InvocatorKeyMap = new ConcurrentDictionary<InvokerKeyMapKey, SymbolInfoDataCacheKey>();
 
-        public static MethodData GetOrCreateFastMethodInvocator(MethodData targetMethodData, TypeData[] genericMethodParameters)
+        public static MethodData GetOrCreateFastMethodInvoker(MethodData targetMethodData, TypeData[] genericMethodParameters)
         {
             // If the method is not a generic method definition or an open generic method and already has an invocator, return it directly.
             if (!targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition && ((IMethodDataInvoker)targetMethodData).IsInvocable)
@@ -135,6 +135,13 @@
             }
 
             return methodData;
+        }
+
+        public static MethodData GetOrCreateFastEventInvoker(EventData eventData)
+        {
+            MethodData targetMethodData = eventData.EventInvokerMethodData;
+
+            return GetOrCreateFastMethodInvoker(targetMethodData!, Array.Empty<TypeData>());
         }
 
         public static Func<object?, object?> CreateGetter(FieldData fieldData)
@@ -283,6 +290,58 @@
             return Expression
                 .Lambda<Func<object?, object?>>(body, targetParam)
                 .Compile(); // compiles to a delegate 
+        }
+
+        public static Func<object?, object?[]?, object?> CreateIndexerGetter(PropertyData propertyData)
+        {
+            ArgumentNullException.ThrowIfNull(propertyData, nameof(propertyData));
+            ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
+            ArgumentExceptionEx.ThrowIfFalse(
+                propertyData.IsIndexer,
+                nameof(propertyData),
+                "The provided property must be an indexer to create an indexer getter.");
+
+            // (object? target, object?[]? indices) => (object?)((TDeclaring)target)[convertedIndices...]
+            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
+            ParameterExpression indicesParam = Expression.Parameter(typeof(object[]), "indices");
+
+            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
+
+            ImmutableArray<ParameterInfo> indexParameters = propertyData.IndexerParameters.AsParameterInfoArray();
+
+            // Validate that indices length matches the number of index parameters when not null.
+            // We do this inside the expression so the check happens at runtime.
+            Expression[] indexExpressions = new Expression[indexParameters.Length];
+            for (int i = 0; i < indexParameters.Length; i++)
+            {
+                ParameterInfo indexParameterInfo = indexParameters[i];
+                Type parameterType = indexParameterInfo.ParameterType;
+
+                // indices[i]
+                BinaryExpression indexAccess = Expression.ArrayIndex(
+                    indicesParam,
+                    Expression.Constant(i));
+
+                // (TIndexType)indices[i]
+                UnaryExpression convertedIndex = Expression.Convert(indexAccess, parameterType);
+                indexExpressions[i] = convertedIndex;
+            }
+
+            Expression? instanceExpression = propertyData.IsStatic
+                ? null
+                : Expression.Convert(targetParam, declaringType);
+
+            // Access the indexer: target[index0, index1, ...]
+            PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
+            IndexExpression propertyAccess = Expression.MakeIndex(instanceExpression, propertyInfo, indexExpressions);
+
+            // Box the result
+            UnaryExpression body = Expression.Convert(propertyAccess, typeof(object));
+
+            // Build the delegate: Func<object?, object?[]?, object?>
+            return Expression
+                .Lambda<Func<object?, object?[]?, object?>>(body, targetParam, indicesParam)
+                .Compile();
         }
 
         public static Action<object?, object?> CreateSetter(PropertyData propertyData)

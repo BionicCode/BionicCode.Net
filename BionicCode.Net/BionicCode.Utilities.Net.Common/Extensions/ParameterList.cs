@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
+    using System.Reflection;
 
     internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<ParameterList>
     {
@@ -27,6 +28,16 @@
 
             this._hashCode = ComputeHashCode(this.Parameters);
         }
+
+        public ImmutableList<ParameterInfo> AsParameterInfoList()
+            => this.Parameters
+                .Select(parameterData => parameterData.GetParameterInfo())
+                .ToImmutableList();
+
+        public ImmutableArray<ParameterInfo> AsParameterInfoArray()
+            => this.Parameters
+                .Select(parameterData => parameterData.GetParameterInfo())
+                .ToImmutableArray();
 
         public int Count => this.Parameters.Count;
         public bool IsEmpty => this.Parameters.IsEmpty;

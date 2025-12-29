@@ -31,7 +31,6 @@
         private bool? _isFamilyOrAssembly;
         private bool? _isFamilyAndAssembly;
         private TypeData? eventHandlerTypeData;
-        private Func<object, object[], object>? invocator;
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
 
@@ -48,13 +47,72 @@
         protected override MemberInfo GetMemberInfo()
           => GetEventInfo();
 
-        public object RaiseEvent(object target, params object[] arguments)
+        public object? RaiseEvent(object? target, params object?[]? arguments)
         {
-            // TODO::Implement fast invocator pattern
+            ThrowIfTargetIsNullOrTargetTypeIsNotMatchingDeclaringTypeForInstanceMember(target);
+            ThrowIfInvalidMethodArguments(arguments);
 
-            this.invocator ??= this.InvocatorMethodData.Invoke;
+            return this.EventInvokerMethodData.Invoke(target, arguments);
+        }
 
-            return this.invocator.Invoke(target, arguments);
+        private void ThrowIfTargetIsNullOrTargetTypeIsNotMatchingDeclaringTypeForInstanceMember(object? target)
+        {
+            if (!this.IsStatic)
+            {
+                ArgumentNullException.ThrowIfNull(target, nameof(target));
+
+                Type targetType = target.GetType();
+                Type declaringType = this.DeclaringTypeData.UnwrapType();
+                ArgumentExceptionEx.ThrowIfNotAssignableTo(
+                    targetType,
+                    declaringType,
+                    nameof(target),
+                    ExceptionMessages.GetTypeMismatchExceptionMessage(
+                            targetType,
+                            "target type",
+                            declaringType,
+                            "declaring type"));
+            }
+        }
+
+        private void ThrowIfInvalidMethodArguments(object?[]? args)
+        {
+            // Validate arguments against method parameters
+            if (this.EventInvokerMethodData.Parameters.HasItems)
+            {
+                if (this.EventInvokerMethodData.HasParamsParameter)
+                {
+                    // NULL is valid for 'args' if there is only a single non-params parameter since params can be empty.
+                    // Additionally, no need to check 'args' for NULL if there is only the params parameter.
+                    // However, NULL is not valid for 'args' if there are more than a single non-params parameters.
+                    if (this.EventInvokerMethodData.Parameters.Count > 2)
+                    {
+                        ArgumentNullException.ThrowIfNull(args, nameof(args));
+
+                        // Insufficient number of arguments provided for method invocation with 'params' parameter.
+                        // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
+                        ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, this.EventInvokerMethodData.Parameters.Count - 1, nameof(args));
+                    }
+                }
+                else
+                {
+                    // NULL is valid for 'args' if there is only a single non-params parameter.
+                    // However, NULL is not valid for 'args' if there are more than a single non-params parameters.
+                    if (this.EventInvokerMethodData.Parameters.Count > 1)
+                    {
+                        ArgumentNullException.ThrowIfNull(args, nameof(args));
+                    }
+
+                    if (args is not null)
+                    {
+                        ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, this.EventInvokerMethodData.Parameters.Count, nameof(args));
+                    }
+                }
+            }
+            else if (args is not null && args.Length > 0) // Method has no parameters but arguments were provided.
+            {
+                throw new ArgumentException("Method has no parameters but arguments were provided.", nameof(args));
+            }
         }
 
         public override AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
@@ -77,8 +135,8 @@
             ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(removeMethod)
             : null;
 
-        public MethodData? InvocatorMethodData
-          => this.invocatorMethodData ??= this.EventHandlerTypeData?.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, 0);
+        public MethodData EventInvokerMethodData
+          => this.invocatorMethodData ??= this.EventHandlerTypeData?.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, 0)!;
 
         public TypeData EventHandlerTypeData
           => this.eventHandlerTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetEventInfo().EventHandlerType);

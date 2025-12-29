@@ -25,7 +25,7 @@
             SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(symbolCacheKey, out EventData eventData);
 
             TypeData eventHandlerTypeData = eventData.EventHandlerTypeData;
-            MethodData invocatorData = eventData.InvocatorMethodData;
+            MethodData invocatorData = eventData.EventInvokerMethodData;
             ParameterList eventHandlerParameters = invocatorData.Parameters;
             Delegate eventHandler = GenerateProxy(eventHandlerParameters, eventHandlerTypeData, target, proxyDelegateMethodData);
             LogDebug("Dynamically generated proxy event handler.");

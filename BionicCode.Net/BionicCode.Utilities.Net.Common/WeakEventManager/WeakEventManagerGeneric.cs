@@ -74,7 +74,7 @@
             {
                 MethodInfo attachingMethodInfo = e.Data[ProxyEventHandlerGenerator.ConflictingMethodInfoExceptionDataKey] as MethodInfo
                   ?? GetType().GetMethod(proxyDelegateName, BindingFlags.NonPublic | BindingFlags.Instance);
-                string exceptionMessage = string.Format(InternalDelegateSignatureMismatchExceptionMessage, eventData.InvocatorMethodData.RuntimeShortSignature, attachingMethodInfo.ToRuntimeSignatureShortName());
+                string exceptionMessage = string.Format(InternalDelegateSignatureMismatchExceptionMessage, eventData.EventInvokerMethodData.RuntimeShortSignature, attachingMethodInfo.ToRuntimeSignatureShortName());
                 throw new EventHandlerMismatchException(exceptionMessage, e);
             }
 

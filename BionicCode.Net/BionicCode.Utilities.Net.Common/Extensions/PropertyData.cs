@@ -40,7 +40,7 @@ namespace BionicCode.Utilities.Net
         private bool? _isFamily;
         private bool? _isFamilyOrAssembly;
         private bool? _isFamilyAndAssembly;
-        private Func<object, object[], object>? getInvocator;
+        private Func<object?, object?[]?, object?>? getInvocator;
         private Action<object, object, object[]>? setInvocator;
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
@@ -102,7 +102,7 @@ namespace BionicCode.Utilities.Net
         }
 
         private void InitializeGetInvocator()
-          => this.getInvocator = (invocationTarget, indexerIndex) => GetPropertyInfo().GetValue(invocationTarget, indexerIndex);
+          => this.getInvocator ??= DelegateProvider.CreateGetter(this);
 
         private void InitializeSetInvocator()
           => this.setInvocator = (invocationTarget, propertyValue, indexerIndex) => GetPropertyInfo().SetValue(invocationTarget, propertyValue, indexerIndex);

@@ -255,6 +255,42 @@
                     paramName);
             }
         }
+
+        /// <summary>
+        /// Throws an ArgumentException if the specified condition is false.
+        /// </summary>
+        /// <param name="value">The condition to evaluate. If <see langword="false"/>, an exception is thrown.</param>
+        /// <param name="paramName">The name of the parameter or expression that failed the condition. If not specified, the caller argument
+        /// expression is used.</param>
+        /// <param name="message">The error message to include in the exception. If null, a default message is used.</param>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="value"/> is <see langword="false"/>.</exception>
+        public static void ThrowIfFalse(bool value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+        {
+            if (!value)
+            {
+                throw new ArgumentException(
+                    message ?? "The condition is FALSE.",
+                    paramName);
+            }
+        }
+
+        /// <summary>
+        /// Throws an ArgumentException if the specified condition is <see langword="true"/>.
+        /// </summary>
+        /// <param name="value">The condition to evaluate. If <see langword="true"/>, an exception is thrown.</param>
+        /// <param name="paramName">The name of the parameter that caused the exception. This value is typically provided automatically by the
+        /// compiler.</param>
+        /// <param name="message">The error message to include in the exception. If null, a default message is used.</param>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is <see langword="true"/>.</exception>
+        public static void ThrowIfTrue(bool value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+        {
+            if (value)
+            {
+                throw new ArgumentException(
+                    message ?? "The condition is TRUE.",
+                    paramName);
+            }
+        }
     }
 
     public class ArgumentOutOfRangeExceptionEx : System.ArgumentOutOfRangeException
