@@ -121,6 +121,7 @@
             if (message is null)
             {
                 ArgumentNullException.ThrowIfNull(value, paramName);
+                return;
             }
 
             if (value is null)
@@ -505,16 +506,50 @@
         /// exception is thrown.</param>
         /// <param name="message">An optional custom error message for the exception. If <see langword="null"/>, a default message is used.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is less than <paramref name="other"/>.</exception>
-        public static void ThrowIfLessThan<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null) where T : IComparable<T>
+        public static void ThrowIfLessThan<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+            where T : IComparable<T>
         {
             if (message is null)
             {
                 ArgumentOutOfRangeException.ThrowIfLessThan(value, other, paramName);
+                return;
             }
 
             ArgumentNullException.ThrowIfNull(value, paramName);
             ArgumentNullException.ThrowIfNull(other, nameof(other));
             if (value.CompareTo(other) < 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    paramName,
+                    message);
+            }
+        }
+
+        /// <summary>
+        /// Throws an exception if the specified value is not equal to the expected value.
+        /// </summary>
+        /// <remarks>Both <paramref name="value"/> and <paramref name="other"/> must not be null. Equality
+        /// is determined using <see cref="EqualityComparer{T}.Default"/>.</remarks>
+        /// <typeparam name="T">The type of the values to compare.</typeparam>
+        /// <param name="value">The value to validate for equality.</param>
+        /// <param name="other">The value to compare against the validated value.</param>
+        /// <param name="paramName">The name of the parameter representing the value being validated. Used in the exception message if thrown.</param>
+        /// <param name="message">The custom error message to include in the exception if the values are not equal. If null, a default message
+        /// is used.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="value"/> is not equal to <paramref name="other"/>.</exception>
+        public static void ThrowIfNotEqual<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+        {
+#if NET10_0_OR_GREATER
+            if (message is null)
+            {
+                ArgumentOutOfRangeException.ThrowIfNotEqual(value, other, paramName);
+                return;
+            }
+#endif
+
+            ArgumentNullException.ThrowIfNull(value, paramName);
+            ArgumentNullException.ThrowIfNull(other, nameof(other));
+            if (!EqualityComparer<T>.Default.Equals(value, other))
             {
                 throw new ArgumentOutOfRangeException(
                     paramName,

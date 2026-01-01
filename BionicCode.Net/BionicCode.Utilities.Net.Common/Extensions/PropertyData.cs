@@ -64,7 +64,7 @@ namespace BionicCode.Utilities.Net
         protected override MemberInfo GetMemberInfo()
           => GetPropertyInfo();
 
-        public object? GetValue(object? target, object[]? indexerPropertyIndex = null)
+        public object? GetValue<TIndex>(object? target, object[]? indexerPropertyIndex = null)
         {
             if (!this.CanRead)
             {
@@ -113,6 +113,110 @@ namespace BionicCode.Utilities.Net
             {
                 Func<object?, object?> propertySetInvoker = GetGetInvokerInternal();
                 return propertySetInvoker.Invoke(target);
+            }
+        }
+
+        public object? GetIndexerValue<TIndex>(object? target, TIndex? indexerPropertyIndex)
+        {
+            if (!this.CanRead)
+            {
+                throw new InvalidOperationException($"The property '{this.FullyQualifiedSignature}' does not have a getter.");
+            }
+
+            if (this.DeclaringTypeData.IsStruct)
+            {
+                throw new InvalidOperationException($"Use the '{nameof(SetStructValue)}' method to set property values on struct types.");
+            }
+
+            if (this.IsIndexer)
+            {
+                ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyIndex, nameof(indexerPropertyIndex), "Indexer property index cannot be null for indexer properties.");
+                ArgumentOutOfRangeExceptionAdvanced.ThrowIfLessThan(
+                    1,
+                    this.IndexerParameters.Count,
+                    nameof(indexerPropertyIndex),
+                    $"Indexer property index count does not match the indexer parameter count of property '{this.FullyQualifiedSignature}'. Expected: {this.IndexerParameters.Count} inndex parameters.");
+            }
+
+            if (!this.IsStatic)
+            {
+                if (target is null)
+                {
+                    throw new ArgumentNullException(nameof(target), "Target object cannot be null for instance properties.");
+                }
+
+                Type targetType = target.GetType();
+                ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                    targetType,
+                    this.DeclaringTypeData.UnwrapType(),
+                    nameof(target),
+                    $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {this.DeclaringTypeData.FullyQualifiedSignature}");
+            }
+
+            object? invocationTarget = this.IsStatic
+                ? null
+                : target;
+            if (this.IsIndexer)
+            {
+                Func<object?, object[], object?> propertyGetInvoker = GetIndexerGetInvokerInternal();
+                return propertyGetInvoker.Invoke(invocationTarget, indexerPropertyIndex!);
+            }
+            else
+            {
+                Func<object?, object?> propertySetInvoker = GetGetInvokerInternal();
+                return propertySetInvoker.Invoke(target);
+            }
+        }
+
+        public void SetValue(object? target, object? value, object[]? indexerPropertyIndex = null)
+        {
+            if (this.IsReadOnly)
+            {
+                throw new InvalidOperationException($"The property '{this.FullyQualifiedSignature}' does not have a setter.");
+            }
+
+            if (this.DeclaringTypeData.IsStruct)
+            {
+                throw new InvalidOperationException($"Use the '{nameof(SetStructValue)}' method to set property values on struct types.");
+            }
+
+            if (this.IsIndexer)
+            {
+                ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyIndex, nameof(indexerPropertyIndex), "Indexer property index cannot be null for indexer properties.");
+                ArgumentOutOfRangeExceptionAdvanced.ThrowIfLessThan(
+                    indexerPropertyIndex!.Length,
+                    this.IndexerParameters.Count,
+                    nameof(indexerPropertyIndex),
+                    $"Indexer property index count does not match the indexer parameter count of property '{this.FullyQualifiedSignature}'.");
+            }
+
+            if (!this.IsStatic)
+            {
+                if (target is null)
+                {
+                    throw new ArgumentNullException(nameof(target), "Target object cannot be null for instance properties.");
+                }
+
+                Type targetType = target.GetType();
+                ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                    targetType,
+                    this.DeclaringTypeData.UnwrapType(),
+                    nameof(target),
+                    $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {this.DeclaringTypeData.FullyQualifiedSignature}");
+            }
+
+            object? invocationTarget = this.IsStatic
+                ? null
+                : target;
+            if (this.IsIndexer)
+            {
+                Action<object?, object[], object?> propertySetInvoker = GetIndexerSetInvokerInternal();
+                propertySetInvoker(invocationTarget, indexerPropertyIndex!, value);
+            }
+            else
+            {
+                Action<object?, object?> propertySetInvoker = GetSetInvokerInternal();
+                propertySetInvoker(invocationTarget, value);
             }
         }
 

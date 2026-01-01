@@ -38,6 +38,10 @@
     /// <param name="value">The value to assign to the indexer property. Can be null for reference types or nullable value types.</param>
     public delegate void ValueTypeIndexerPropertySetter<TTarget, TValue>(ref TTarget target, object?[]? indices, TValue? value) where TTarget : struct;
 
+    public delegate TValue IndexerPropertyGetter<TIndex, TValue>(object target, TIndex index);
+    public delegate TValue IndexerPropertyGetter<TIndex1, TIndex2, TValue>(object target, TIndex1 index1, TIndex2 index2);
+    public delegate TValue IndexerPropertyGetter<TIndex1, TIndex2, TIndex3, TValue>(object target, TIndex1 index1, TIndex2 index2, TIndex3 index3);
+
     internal static class DelegateProvider
     {
         private static readonly ConcurrentDictionary<InvokerKeyMapKey, SymbolInfoDataCacheKey> InvocatorKeyMap = new ConcurrentDictionary<InvokerKeyMapKey, SymbolInfoDataCacheKey>();
@@ -381,6 +385,69 @@
             return Expression
                 .Lambda<Func<object?, object?>>(body, targetParam)
                 .Compile(); // compiles to a delegate 
+        }
+
+        /// <summary>
+        /// Creates a strongly-typed delegate that retrieves the value of a single-parameter indexer property.
+        /// </summary>
+        /// <remarks>The created delegate can be used to efficiently access the value of an indexer
+        /// property at runtime, given a target object and an index value. The property must be readable, must be an
+        /// indexer, and must have exactly one index parameter. This method does not support indexers with multiple
+        /// parameters.</remarks>
+        /// <typeparam name="TIndex">The type of the index parameter for the indexer property.</typeparam>
+        /// <typeparam name="TValue">The type of the value returned by the indexer property.</typeparam>
+        /// <param name="propertyData">The metadata describing the indexer property for which to create a getter. Must represent a readable indexer
+        /// with exactly one index parameter.</param>
+        /// <returns>An <see cref="IndexerPropertyGetter{TIndex, TValue}"/> delegate that gets the value of the specified indexer
+        /// property.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the specified <paramref name="propertyData"/> already has a getter invoker generated.</exception>
+        public static IndexerPropertyGetter<TIndex, TValue> CreateIndexerGetter<TIndex, TValue>(PropertyData propertyData)
+        {
+            if (propertyData is IPropertyDataInvoker propertyDataInvoker && propertyDataInvoker.HasGetter)
+            {
+                throw new InvalidOperationException("The 'PropertyData' has already the get invoker generated.");
+            }
+
+            ArgumentNullException.ThrowIfNull(propertyData, nameof(propertyData));
+            ArgumentExceptionAdvanced.ThrowIfFalse(
+                propertyData.IsIndexer,
+                nameof(propertyData),
+                "The provided property must be an indexer to create an indexer getter.");
+            ArgumentOutOfRangeExceptionAdvanced.ThrowIfNotEqual(
+                1,
+                propertyData.IndexerParameters.Count,
+                nameof(propertyData),
+                "The provided indexer property must have exactly one index parameter to create a single-index indexer getter.");
+            ArgumentExceptionAdvanced.ThrowIfFalse(
+                propertyData.CanRead,
+                nameof(propertyData),
+                "Cannot create a getter for a write-only property.");
+            ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
+
+            // (object? target, object?[]? indices) => (object?)((TDeclaring)target)[convertedIndices...]
+            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
+            ParameterExpression indicesParam = Expression.Parameter(typeof(TIndex), "index");
+
+            BinaryExpression indexAccess = Expression.ArrayIndex(indicesParam, Expression.Constant(0));
+            UnaryExpression convertedIndex = Expression.Convert(indexAccess, typeof(TIndex));
+
+            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
+
+            Expression? instanceExpression = propertyData.IsStatic
+                ? null
+                : Expression.Convert(targetParam, declaringType);
+
+            // Access the indexer: target[index0, index1, ...]
+            PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
+            IndexExpression propertyAccess = Expression.MakeIndex(instanceExpression, propertyInfo, [convertedIndex]);
+
+            // Box the result
+            UnaryExpression body = Expression.Convert(propertyAccess, typeof(TValue));
+
+            // Build the delegate: Func<object?, object?[]?, object?>
+            return Expression
+                .Lambda<IndexerPropertyGetter<TIndex, TValue>>(body, targetParam, indicesParam)
+                .Compile();
         }
 
         /// <summary>
