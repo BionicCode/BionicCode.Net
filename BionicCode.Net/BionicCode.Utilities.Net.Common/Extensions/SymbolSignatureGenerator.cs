@@ -282,7 +282,7 @@
             MethodData delegateInvocatorData = null;
             TypeData delegateReturnTypeData = null;
 
-            // Set return valueType
+            // SetValue return valueType
             if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))
             {
                 delegateReturnTypeData = typeData.DelegateInvokeMethodData.ReturnTypeData;
@@ -654,7 +654,7 @@
                 symbolComponents.AddModifier("override");
             }
 
-            // Set return valueType
+            // SetValue return valueType
             symbolComponents.ReturnType = propertyData.PropertyTypeData.CompactSymbolComponentInfo;
 
             if (symbolAttributes.HasFlag(SymbolAttributes.IndexerProperty))
@@ -1486,7 +1486,7 @@
         //          .Append(' ');
         //      }
 
-        //      // Set return valueType
+        //      // SetValue return valueType
         //      if (memberAttributes.HasFlag(SymbolAttributes.Method)
         //        || memberAttributes.HasFlag(SymbolAttributes.Property)
         //        || memberAttributes.HasFlag(SymbolAttributes.Field)
@@ -1828,7 +1828,7 @@
                 propertyTypeData = propertyTypeData.GenericTypeDefinitionData;
             }
 
-            // Set return valueType
+            // SetValue return valueType
             _ = signatureNameBuilder.AppendDisplayNameInternal(propertyTypeData, isFullyQualifiedName, isGenericTypeParameterIncluded: true)
               .Append(' ');
 
@@ -2378,7 +2378,7 @@
 
             MethodData delegateInvocatorData = null;
 
-            // Set return valueType
+            // SetValue return valueType
             if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))
             {
                 delegateInvocatorData = typeData.DelegateInvokeMethodData;

@@ -17,7 +17,7 @@
         public PropertyList(IEnumerable<PropertyData> items)
         {
             this.Properties = items.ToImmutableList();
-            ArgumentNullExceptionEx.ThrowIfNullOrEmpty(this.Properties, nameof(items));
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Properties, nameof(items));
 
             this.DeclaringTypeHandle = this.Properties.FirstOrDefault()!.DeclaringTypeHandle;
             if (!this.Properties.All(property => property.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle)))

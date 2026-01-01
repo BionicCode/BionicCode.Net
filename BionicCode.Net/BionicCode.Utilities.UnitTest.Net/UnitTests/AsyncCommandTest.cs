@@ -225,14 +225,14 @@ namespace BionicCode.Utilities.Net.UnitTest
         private bool CanExecuteTestNoParamCommand() => true;
         private void ExecuteTestCommand(string commandParameter)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(commandParameter, nameof(commandParameter));
 
             Thread.Sleep(this.AsyncDelay);
         }
 
         private void ExecuteTestCommandWithExecutionCount(string commandParameter)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(commandParameter, nameof(commandParameter));
 
             _ = Interlocked.Increment(ref this.totalCommandsCompletedCount);
             Thread.Sleep(this.AsyncDelay);
@@ -242,7 +242,7 @@ namespace BionicCode.Utilities.Net.UnitTest
 
         private async Task ExecuteTestCommandAsync(string commandParameter)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(commandParameter, nameof(commandParameter));
 
             await Task.Delay(this.AsyncDelay);
         }
@@ -252,7 +252,7 @@ namespace BionicCode.Utilities.Net.UnitTest
 
         private async Task ExecuteCancellableTestCommandAsync(string commandParameter, CancellationToken cancellationToken)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(commandParameter, nameof(commandParameter));
 
             await Task.Delay(this.LongRunningAsyncDelay, cancellationToken);
         }
@@ -262,7 +262,7 @@ namespace BionicCode.Utilities.Net.UnitTest
 
         private void ExecuteCancellableTestCommand(string commandParameter, CancellationToken cancellationToken)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(commandParameter, nameof(commandParameter));
 
             var spinWait = new SpinWait();
             while (!cancellationToken.IsCancellationRequested)
@@ -275,7 +275,7 @@ namespace BionicCode.Utilities.Net.UnitTest
 
         private void ExecuteCancellableTestCommandWithoutThrowingCancellationException(string commandParameter, CancellationToken cancellationToken)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(commandParameter, nameof(commandParameter));
 
             var spinWait = new SpinWait();
             while (!cancellationToken.IsCancellationRequested)
@@ -299,7 +299,7 @@ namespace BionicCode.Utilities.Net.UnitTest
 
         private async Task ExecuteThrowingTestCommandAsync(string commandParameter)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(commandParameter, nameof(commandParameter));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(commandParameter, nameof(commandParameter));
 
             await Task.Delay(this.AsyncDelay);
             throw new InvalidOperationException("From async test method.");

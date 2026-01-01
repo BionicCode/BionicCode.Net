@@ -34,7 +34,7 @@
         /// <param name="execute">The execute handler.</param>
         protected RelayCommandCommon(Action execute)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(execute, nameof(execute));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(execute, nameof(execute));
 
             this.cancellableExecuteDelegate = cancellationToken => execute.Invoke();
             this.canExecuteDelegate = () => true;
@@ -48,7 +48,7 @@
         /// <param name="execute">The execute handler.</param>
         protected RelayCommandCommon(Action<CancellationToken> execute)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(execute, nameof(execute));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(execute, nameof(execute));
 
             this.cancellableExecuteDelegate = execute;
             this.canExecuteDelegate = () => true;
@@ -61,7 +61,7 @@
         /// <param name="canExecute">The can execute handler.</param>
         protected RelayCommandCommon(Action execute, Func<bool> canExecute)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(execute, nameof(execute));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(execute, nameof(execute));
 
             this.cancellableExecuteDelegate = cancellationToken => execute.Invoke();
             this.canExecuteDelegate = canExecute is null ? () => true : canExecute;
@@ -74,7 +74,7 @@
         /// <param name="canExecute">The can execute handler.</param>
         protected RelayCommandCommon(Action<CancellationToken> execute, Func<bool> canExecute)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(execute, nameof(execute));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(execute, nameof(execute));
 
             this.cancellableExecuteDelegate = execute;
             this.canExecuteDelegate = canExecute is null ? () => true : canExecute;

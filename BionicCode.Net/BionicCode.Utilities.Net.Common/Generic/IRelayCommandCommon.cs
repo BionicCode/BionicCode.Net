@@ -56,7 +56,7 @@
         /// <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.  
         /// </remarks>
         /// <exception cref="OperationCanceledException">If the executing command delegate was cancelled.</exception>
-        /// <exception cref="ArgumentOutOfRangeExceptionEx"><paramref name="timeout>"/>.<see cref="TimeSpan.TotalMilliseconds"/> is less than -1 or greater than <see cref="int.MaxValue"/> (or <see cref="uint.MaxValue"/> - 1 on some versions of .NET). 
+        /// <exception cref="ArgumentOutOfRangeExceptionAdvanced"><paramref name="timeout>"/>.<see cref="TimeSpan.TotalMilliseconds"/> is less than -1 or greater than <see cref="int.MaxValue"/> (or <see cref="uint.MaxValue"/> - 1 on some versions of .NET). 
         /// <br/>Note that this upper bound is more restrictive than <see cref="TimeSpan.MaxValue"/>.</exception>
         void Execute(TParam parameter, TimeSpan timeout);
 
@@ -74,7 +74,7 @@
         /// <remarks>If the registered command handler is asynchronous (awaitable), then the execution is asynchronous otherwise the delegate is executed synchronously.  
         /// </remarks>
         /// <exception cref="OperationCanceledException">If the executing command delegate was cancelled.</exception>
-        /// <exception cref="ArgumentOutOfRangeExceptionEx"><paramref name="timeout>"/>.TotalMilliseconds is less than -1 or greater than <see cref="int.MaxValue"/> (or <see cref="uint.MaxValue"/> - 1 on some versions of .NET). Note that this upper bound is more restrictive than <see cref="TimeSpan.MaxValue"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeExceptionAdvanced"><paramref name="timeout>"/>.TotalMilliseconds is less than -1 or greater than <see cref="int.MaxValue"/> (or <see cref="uint.MaxValue"/> - 1 on some versions of .NET). Note that this upper bound is more restrictive than <see cref="TimeSpan.MaxValue"/>.</exception>
         void Execute(TParam parameter, TimeSpan timeout, CancellationToken cancellationToken);
     }
 }

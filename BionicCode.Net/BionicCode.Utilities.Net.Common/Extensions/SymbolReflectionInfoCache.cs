@@ -327,7 +327,7 @@
 
         private static TypeData CreateTypeData(SymbolInfoDataCacheKey cacheKey)
         {
-            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotEqual(
                 cacheKey.SymbolKind,
                 [SymbolKind.Type],
                 nameof(cacheKey),
@@ -345,7 +345,7 @@
 
         private static PropertyData CreatePropertyData(SymbolInfoDataCacheKey cacheKey)
         {
-            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotEqual(
                 cacheKey.SymbolKind,
                 [SymbolKind.MemberProperty],
                 nameof(cacheKey),
@@ -385,7 +385,7 @@
 
         private static ConstructorData CreateConstructorData(SymbolInfoDataCacheKey cacheKey)
         {
-            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotEqual(
                 cacheKey.SymbolKind,
                 [SymbolKind.Constructor],
                 nameof(cacheKey),
@@ -419,7 +419,7 @@
 
         private static FieldData CreateFieldData(SymbolInfoDataCacheKey cacheKey)
         {
-            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotEqual(
                 cacheKey.SymbolKind
                 , [SymbolKind.MemberField],
                 nameof(cacheKey),
@@ -446,7 +446,7 @@
 
         private static MethodData CreateMethodData(SymbolInfoDataCacheKey cacheKey)
         {
-            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotEqual(
                 cacheKey.SymbolKind,
                 [SymbolKind.MemberMethod],
                 nameof(cacheKey),
@@ -507,7 +507,7 @@
 
         private static EventData CreateEventData(SymbolInfoDataCacheKey cacheKey)
         {
-            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(cacheKey.SymbolKind,
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotEqual(cacheKey.SymbolKind,
                 [SymbolKind.MemberEvent],
                 nameof(cacheKey),
                 $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating an event symbol.");
@@ -537,7 +537,7 @@
 
         private static ParameterData CreateParameterData(SymbolInfoDataCacheKey cacheKey)
         {
-            ArgumentExceptionEx.ThrowIfEnumIsNotEqual<SymbolKind>(
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotEqual<SymbolKind>(
                 cacheKey.SymbolKind,
                 new SymbolKind[] { SymbolKind.MemberParameter },
                 nameof(cacheKey),

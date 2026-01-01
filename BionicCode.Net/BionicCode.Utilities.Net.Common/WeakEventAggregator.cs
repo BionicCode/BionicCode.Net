@@ -25,7 +25,7 @@
         /// <inheritdoc />
         public void StartBroadcasting(object eventSource)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventSource, nameof(eventSource));
 
             StartBroadcastingInternal(eventSource, null);
         }
@@ -33,8 +33,8 @@
         /// <inheritdoc />
         public void StartBroadcasting(object eventSource, params string[] eventNames)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
-            ArgumentNullExceptionEx.ThrowIfNull(eventNames, nameof(eventNames));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventSource, nameof(eventSource));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventNames, nameof(eventNames));
 
             StartBroadcastingInternal(eventSource, eventNames);
         }
@@ -42,8 +42,8 @@
         /// <inheritdoc />
         public void StartBroadcasting(object eventSource, IEnumerable<string> eventNames)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
-            ArgumentNullExceptionEx.ThrowIfNull(eventNames, nameof(eventNames));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventSource, nameof(eventSource));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventNames, nameof(eventNames));
 
             StartBroadcastingInternal(eventSource, eventNames);
         }
@@ -66,8 +66,8 @@
         /// <inheritdoc />
         public void StopBroadcasting(object eventSource, bool removeListeners, params string[] eventNames)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
-            ArgumentNullExceptionEx.ThrowIfNull(eventNames, nameof(eventNames));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventSource, nameof(eventSource));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventNames, nameof(eventNames));
 
             StopBroadcastingInternal(eventSource, eventNames, removeListeners);
         }
@@ -75,8 +75,8 @@
         /// <inheritdoc />
         public void StopBroadcasting(object eventSource, IEnumerable<string> eventNames, bool removeListeners)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
-            ArgumentNullExceptionEx.ThrowIfNull(eventNames, nameof(eventNames));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventSource, nameof(eventSource));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventNames, nameof(eventNames));
 
             StopBroadcastingInternal(eventSource, eventNames, removeListeners);
         }
@@ -84,7 +84,7 @@
         /// <inheritdoc />
         public void StopBroadcasting(object eventSource, bool removeListeners)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventSource, nameof(eventSource));
 
             StopBroadcastingInternal(eventSource, null, removeListeners);
         }
@@ -109,8 +109,8 @@
         /// <inheritdoc /> 
         public void StartListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler) where TDelegate : Delegate
         {
-            ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
-            ArgumentNullExceptionEx.ThrowIfNull(eventHandler, nameof(eventHandler));
+            ArgumentExceptionAdvanced.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventHandler, nameof(eventHandler));
 
             StartListeningInternal<TEventSource>(eventName, eventHandler, null);
         }
@@ -118,8 +118,8 @@
         /// <inheritdoc /> 
         public void StartListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler, bool executeOnCurrentSynchronizationContext) where TDelegate : Delegate
         {
-            ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
-            ArgumentNullExceptionEx.ThrowIfNull(eventHandler, nameof(eventHandler));
+            ArgumentExceptionAdvanced.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventHandler, nameof(eventHandler));
 
             SynchronizationContext capturedSynchronizationContext = executeOnCurrentSynchronizationContext
               ? SynchronizationContext.Current
@@ -130,9 +130,9 @@
         /// <inheritdoc /> 
         public void StartListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler, SynchronizationContext synchronizationContext) where TDelegate : Delegate
         {
-            ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
-            ArgumentNullExceptionEx.ThrowIfNull(eventHandler, nameof(eventHandler));
-            ArgumentNullExceptionEx.ThrowIfNull(synchronizationContext, nameof(synchronizationContext));
+            ArgumentExceptionAdvanced.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventHandler, nameof(eventHandler));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(synchronizationContext, nameof(synchronizationContext));
 
             StartListeningInternal<TEventSource>(eventName, eventHandler, synchronizationContext);
         }
@@ -140,7 +140,7 @@
         /// <inheritdoc /> 
         public bool TryStartListeningAll<TEventSource, TDelegate>(TDelegate eventHandler) where TDelegate : Delegate
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventHandler, nameof(eventHandler));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventHandler, nameof(eventHandler));
 
             return TryStartListeningAllInternal<TEventSource, TDelegate>(eventHandler, null);
         }
@@ -148,8 +148,8 @@
         /// <inheritdoc /> 
         public bool TryStartListeningAll<TEventSource, TDelegate>(TDelegate eventHandler, SynchronizationContext synchronizationContext) where TDelegate : Delegate
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventHandler, nameof(eventHandler));
-            ArgumentNullExceptionEx.ThrowIfNull(synchronizationContext, nameof(synchronizationContext));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventHandler, nameof(eventHandler));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(synchronizationContext, nameof(synchronizationContext));
 
             return TryStartListeningAllInternal<TEventSource, TDelegate>(eventHandler, synchronizationContext);
         }
@@ -157,7 +157,7 @@
         /// <inheritdoc /> 
         public void StartListeningAll<TEventSource, TDelegate>(TDelegate eventHandler) where TDelegate : Delegate
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventHandler, nameof(eventHandler));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventHandler, nameof(eventHandler));
 
             StartListeningAllInternal<TEventSource, TDelegate>(eventHandler, null);
         }
@@ -165,8 +165,8 @@
         /// <inheritdoc /> 
         public void StartListeningAll<TEventSource, TDelegate>(TDelegate eventHandler, SynchronizationContext synchronizationContext) where TDelegate : Delegate
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventHandler, nameof(eventHandler));
-            ArgumentNullExceptionEx.ThrowIfNull(synchronizationContext, nameof(synchronizationContext));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventHandler, nameof(eventHandler));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(synchronizationContext, nameof(synchronizationContext));
 
             StartListeningAllInternal<TEventSource, TDelegate>(eventHandler, synchronizationContext);
         }
@@ -252,7 +252,7 @@
             IEnumerable<EventData> allEventsOfEventSource = eventSourceData.EnumerateEvents();
             foreach (EventData eventData in allEventsOfEventSource)
             {
-                ArgumentExceptionEx.ThrowIfNotAssignable(eventData.GetEventInfo(), eventHandler);
+                ArgumentExceptionAdvanced.ThrowIfEventHandlerNotAssignable(eventHandler, eventData.GetEventInfo());
                 StartListeningInternal<TEventSource>(eventData.Name, eventHandler, synchronizationContext);
 
                 Debug.WriteLine($"Registered event handler for event {eventData.Name}.");
@@ -281,8 +281,8 @@
         /// <inheritdoc />
         public void StopListening<TEventSource, TDelegate>(string eventName, TDelegate eventHandler) where TDelegate : Delegate
         {
-            ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
-            ArgumentNullExceptionEx.ThrowIfNull(eventHandler, nameof(eventHandler));
+            ArgumentExceptionAdvanced.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventHandler, nameof(eventHandler));
 
             this.registrationService.UnregisterHandler<TEventSource>(eventName, eventHandler);
         }
@@ -290,7 +290,7 @@
         /// <inheritdoc />
         public void StopListeningAll<TEventSource>(string eventName)
         {
-            ArgumentExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
+            ArgumentExceptionAdvanced.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
 
             this.registrationService.UnregisterAllHandlersFromEvent<TEventSource>(eventName);
         }

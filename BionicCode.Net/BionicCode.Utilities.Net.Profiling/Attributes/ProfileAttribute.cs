@@ -10,7 +10,7 @@
     /// To start profiling create a configurator by calling <see cref="Profiler.CreateProfilerBuilder{T}"/>. This returns a <see cref="ProfilerBuilder"/> for a particular <see cref="Type"/> that allows the configuration of the profiling session.
     /// <br/>Finalize the step by calling <see cref="ProfilerBuilder.RunAsync"/> to start the profiling for the current type.
     /// <para>
-    /// By default the profiler uses the latest released .NET runtime to execute the profiling. Set the <seealso cref="ProfileAttribute.TargetFramework"/> property to define
+    /// By default the profiler uses the latest released .NET runtime to execute the profiling. SetValue the <seealso cref="ProfileAttribute.TargetFramework"/> property to define
     /// </para>
     /// </remarks>
     [System.AttributeUsage(
@@ -22,7 +22,7 @@
         /// <summary>
         /// Constructor. 
         /// This default constructor configures the profiler to use the latest released .NET runtime to execute the profiling. 
-        /// Set the <seealso cref="ProfileAttribute.TargetFramework"/> property or use the overload to configure a different .NET runtme.
+        /// SetValue the <seealso cref="ProfileAttribute.TargetFramework"/> property or use the overload to configure a different .NET runtme.
         /// </summary>
         /// <param name="sourceFilePath"></param>
         /// <param name="lineNumber"></param>

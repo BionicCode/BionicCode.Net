@@ -412,7 +412,7 @@
                               ? ProfiledTargetType.IndexerGet
                               : ProfiledTargetType.PropertyGet;
 
-                            invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, argument, property.Signature, property.DisplayName, property.ShortSignature, property.ShortDisplayName, property.PropertyData.SymbolComponentInfo, property.Namespace, property.AssemblyName, propertyGetInvocator: property.PropertyData.GetGetInvocator(), targetType);
+                            invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, argument, property.Signature, property.DisplayName, property.ShortSignature, property.ShortDisplayName, property.PropertyData.SymbolComponentInfo, property.Namespace, property.AssemblyName, propertyGetInvocator: property.PropertyData.GetGetInvoker(), targetType);
                             var context = new ProfilerContext(invocationInfo, property.SourceFilePath, property.LineNumber, this.Configuration.WarmupIterations, this.Configuration.Iterations, property.TargetFramework, this.Configuration.BaseUnit, this.Configuration.ProfilerLogger, this.Configuration.AsyncProfilerLogger);
                             ProfilerBatchResult propertyGetResult = await Profiler.LogTimeInternalAsync(context);
                             propertyGetResult.Index = 0;
@@ -435,7 +435,7 @@
                               ? ProfiledTargetType.IndexerSet
                               : ProfiledTargetType.PropertySet;
 
-                            invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, argument, property.Signature, property.DisplayName, property.ShortSignature, property.ShortDisplayName, property.PropertyData.SymbolComponentInfo, property.Namespace, property.AssemblyName, propertySetInvocator: property.PropertyData.GetSetInvocator(), targetType);
+                            invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, argument, property.Signature, property.DisplayName, property.ShortSignature, property.ShortDisplayName, property.PropertyData.SymbolComponentInfo, property.Namespace, property.AssemblyName, propertySetInvocator: property.PropertyData.GetSetInvoker(), targetType);
                             var context = new ProfilerContext(invocationInfo, property.SourceFilePath, property.LineNumber, this.Configuration.WarmupIterations, this.Configuration.Iterations, property.TargetFramework, this.Configuration.BaseUnit, this.Configuration.ProfilerLogger, this.Configuration.AsyncProfilerLogger);
                             ProfilerBatchResult propertySetResult = await Profiler.LogTimeInternalAsync(context);
                             propertySetResult.Index = 1;

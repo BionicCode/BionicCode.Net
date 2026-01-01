@@ -17,7 +17,7 @@
         public MethodList(IEnumerable<MethodData> items)
         {
             this.Methods = items.ToImmutableList();
-            ArgumentNullExceptionEx.ThrowIfNullOrEmpty(this.Methods, nameof(items));
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Methods, nameof(items));
 
             this.DeclaringTypeHandle = this.Methods.FirstOrDefault()!.DeclaringTypeHandle;
             if (!this.Methods.All(method => method.DeclaringTypeData.Equals(this.DeclaringTypeHandle)))

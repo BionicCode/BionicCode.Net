@@ -138,7 +138,7 @@
         }
 
         /// <summary>
-        /// Set the number of iterations.
+        /// SetValue the number of iterations.
         /// </summary>
         /// <param name="iterations">The number of iterations to perform when executing the target code. The default is <c>1</c>.</param>
         /// <returns>
@@ -149,7 +149,7 @@
         {
             if (iterations < 0)
             {
-                throw new ArgumentOutOfRangeExceptionEx(ExceptionMessages.GetArgumentExceptionMessage_ProfilerRunCount(), nameof(iterations));
+                throw new ArgumentOutOfRangeExceptionAdvanced(ExceptionMessages.GetArgumentExceptionMessage_ProfilerRunCount(), nameof(iterations));
             }
 
             this.Iterations = iterations;
@@ -157,7 +157,7 @@
         }
 
         /// <summary>
-        /// Set whether types that were decorated with the <see cref="ProfilerAutoDiscoverAttribute"/> attribute should be included in addition to the explicitly specified types.
+        /// SetValue whether types that were decorated with the <see cref="ProfilerAutoDiscoverAttribute"/> attribute should be included in addition to the explicitly specified types.
         /// </summary>
         /// <param name="isAutoDiscoverEnabled"><see langword="true"/> to include types that were decorated with the <see cref="ProfilerAutoDiscoverAttribute"/> attribute. The default is <see langword="true"/> if the builder was obtained by calling the parameterless <see cref="Profiler.CreateProfilerBuilder()"/>. Otherwise, the default is <see langword="false"/></param>
         /// <returns>
@@ -170,7 +170,7 @@
         }
 
         /// <summary>
-        /// Set the time unit that the results are converted to.
+        /// SetValue the time unit that the results are converted to.
         /// </summary>
         /// <param name="timeUnit">The unit that all result related time is presented in. The default is <see cref="TimeUnit.Microsecond"/>.</param>
         /// <returns>
@@ -183,7 +183,7 @@
         }
 
         /// <summary>
-        /// Set a log delegate that allows to output the result to a sink, e.g. a file or application logger.
+        /// SetValue a log delegate that allows to output the result to a sink, e.g. a file or application logger.
         /// </summary>
         /// <param name="profilerLogger">A delegate that is invoked by profiler to pass in the result.</param>
         /// <returns>
@@ -196,7 +196,7 @@
         }
 
         /// <summary>
-        /// Set a log delegate that allows to asynchronously output the result to a sink, e.g. a file or application logger.
+        /// SetValue a log delegate that allows to asynchronously output the result to a sink, e.g. a file or application logger.
         /// </summary>
         /// <param name="asyncProfilerLogger">An asynchronous delegate that is invoked by profiler to pass in the result.</param>
         /// <returns>
@@ -278,7 +278,7 @@
         {
             if (warmupIterations < 0)
             {
-                throw new ArgumentOutOfRangeExceptionEx(ExceptionMessages.GetArgumentExceptionMessage_ProfilerWarmupCount(), nameof(warmupIterations));
+                throw new ArgumentOutOfRangeExceptionAdvanced(ExceptionMessages.GetArgumentExceptionMessage_ProfilerWarmupCount(), nameof(warmupIterations));
             }
 
             this.WarmupIterations = warmupIterations;

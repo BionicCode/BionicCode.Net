@@ -17,7 +17,7 @@
         public EventList(IEnumerable<EventData> items)
         {
             this.Events = items.ToImmutableList();
-            ArgumentNullExceptionEx.ThrowIfNullOrEmpty(this.Events, nameof(items));
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Events, nameof(items));
 
             this.DeclaringTypeHandle = this.Events.FirstOrDefault()!.DeclaringTypeHandle;
             if (!this.Events.All(property => property.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle)))

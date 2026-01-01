@@ -13,9 +13,9 @@
 
         public static Delegate Generate<TEventSource>(string eventName, object target, string targetDelegateMethodName, ParameterList targetDelegateMethodParameterList)
         {
-            ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
-            ArgumentNullExceptionEx.ThrowIfNull(target, nameof(target));
-            ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(targetDelegateMethodName, nameof(targetDelegateMethodName));
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(target, nameof(target));
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(targetDelegateMethodName, nameof(targetDelegateMethodName));
 
             Type targetType = target.GetType();
             SymbolInfoDataCacheKey symbolCacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrProperty(targetType.TypeHandle, targetDelegateMethodName, targetDelegateMethodParameterList, targetDelegateMethodParameterList, SymbolKind.MemberMethod);

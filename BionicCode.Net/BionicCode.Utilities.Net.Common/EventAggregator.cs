@@ -36,8 +36,8 @@
         /// <inheritdoc />
         public bool TryRegisterObservable(object eventSource, IEnumerable<string> eventNames)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventSource, nameof(eventSource));
-            ArgumentNullExceptionEx.ThrowIfNull(eventNames, nameof(eventNames));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventSource, nameof(eventSource));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventNames, nameof(eventNames));
 
             foreach (string eventName in eventNames.Distinct())
             {

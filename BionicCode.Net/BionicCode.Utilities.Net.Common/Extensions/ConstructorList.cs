@@ -17,7 +17,7 @@
         public ConstructorList(IEnumerable<ConstructorData> items)
         {
             this.Constructors = items.ToImmutableList();
-            ArgumentNullExceptionEx.ThrowIfNullOrEmpty(this.Constructors, nameof(items));
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Constructors, nameof(items));
 
             this.DeclaringTypeHandle = this.Constructors.FirstOrDefault()!.DeclaringTypeHandle;
             if (!this.Constructors.All(method => method.DeclaringTypeData.Equals(this.DeclaringTypeHandle)))

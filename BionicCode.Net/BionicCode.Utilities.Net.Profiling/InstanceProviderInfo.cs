@@ -56,7 +56,7 @@
                 }
                 else if (this.propertyData != null)
                 {
-                    this.instance = this.propertyData.Get(target, this.ArgumentList);
+                    this.instance = this.propertyData.GetValue(target, this.ArgumentList);
                 }
             }
 

@@ -6,21 +6,49 @@
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
-    public class ArgumentNullExceptionEx : System.ArgumentNullException
+    /// <summary>
+    /// Represents an exception that is thrown when a null argument is passed to a method that does not accept it, with
+    /// additional static methods for argument validation.
+    /// </summary>
+    /// <remarks>Use ArgumentNullExceptionAdvanced to perform advanced argument validation scenarios, such as
+    /// checking for default struct values or empty enumerables, in addition to standard null checks. This class extends
+    /// ArgumentNullException and provides static helper methods to simplify common validation patterns.</remarks>
+    public class ArgumentNullExceptionAdvanced : System.ArgumentNullException
     {
-        public ArgumentNullExceptionEx()
+        /// <summary>
+        /// Initializes a new instance of the ArgumentNullExceptionAdvanced class.
+        /// </summary>
+        public ArgumentNullExceptionAdvanced()
         {
         }
 
-        public ArgumentNullExceptionEx(string paramName) : base(paramName)
+        /// <summary>
+        /// Initializes a new instance of the ArgumentNullExceptionAdvanced class with the name of the parameter that caused
+        /// the exception.
+        /// </summary>
+        /// <param name="paramName">The name of the parameter that is null and caused the exception.</param>
+        public ArgumentNullExceptionAdvanced(string paramName) : base(paramName)
         {
         }
 
-        public ArgumentNullExceptionEx(string message, Exception innerException) : base(message, innerException)
+        /// <summary>
+        /// Initializes a new instance of the ArgumentNullExceptionAdvanced class with a specified error message and a
+        /// reference to the inner exception that is the cause of this exception.
+        /// </summary>
+        /// <param name="message">The message that describes the error.</param>
+        /// <param name="innerException">The exception that is the cause of the current exception, or a null reference if no inner exception is
+        /// specified.</param>
+        public ArgumentNullExceptionAdvanced(string message, Exception innerException) : base(message, innerException)
         {
         }
 
-        public ArgumentNullExceptionEx(string paramName, string message) : base(paramName, message)
+        /// <summary>
+        /// Initializes a new instance of the ArgumentNullExceptionAdvanced class with a specified parameter name and error
+        /// message.
+        /// </summary>
+        /// <param name="paramName">The name of the parameter that caused the exception.</param>
+        /// <param name="message">The message that describes the error.</param>
+        public ArgumentNullExceptionAdvanced(string paramName, string message) : base(paramName, message)
         {
         }
 
@@ -79,27 +107,88 @@
                     paramName);
             }
         }
+
+        /// <summary>
+        /// Throws an ArgumentException if the specified value is null.
+        /// </summary>
+        /// <param name="value">The object to validate for null. If this value is null, an exception is thrown.</param>
+        /// <param name="paramName">The name of the parameter being validated. This value is used in the exception message to identify the
+        /// parameter. If not specified, the caller argument expression is used.</param>
+        /// <param name="message">An optional custom message to include in the exception. If null, a default message is used.</param>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is null.</exception>
+        public static void ThrowIfNull(object? value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+        {
+            if (message is null)
+            {
+                ArgumentNullException.ThrowIfNull(value, paramName);
+            }
+
+            if (value is null)
+            {
+                throw new ArgumentException(
+                    message ?? "The argument must be null.",
+                    paramName);
+            }
+        }
     }
 
-    public class ArgumentExceptionEx : ArgumentException
+    /// <summary>
+    /// Represents an exception that is thrown when an argument does not meet the requirements of a method, providing
+    /// additional static validation utilities for argument checking.
+    /// </summary>
+    /// <remarks>Use ArgumentExceptionAdvanced to perform advanced argument validation scenarios, such as verifying
+    /// delegate compatibility with events, enum value validity, or type assignability. The static methods in this class
+    /// throw appropriate exceptions when validation fails, helping to enforce correct usage of method parameters and
+    /// improve error reporting. This class extends ArgumentException to provide more specialized argument validation
+    /// patterns commonly needed in application and library development.</remarks>
+    public class ArgumentExceptionAdvanced : ArgumentException
     {
-        public ArgumentExceptionEx()
+        /// <summary>
+        /// Initializes a new instance of the ArgumentExceptionAdvanced class.
+        /// </summary>
+        public ArgumentExceptionAdvanced()
         {
         }
 
-        public ArgumentExceptionEx(string message) : base(message)
+        /// <summary>
+        /// Initializes a new instance of the ArgumentExceptionAdvanced class with a specified error message.
+        /// </summary>
+        /// <param name="message">The message that describes the error.</param>
+        public ArgumentExceptionAdvanced(string message) : base(message)
         {
         }
 
-        public ArgumentExceptionEx(string message, Exception innerException) : base(message, innerException)
+        /// <summary>
+        /// Initializes a new instance of the ArgumentExceptionAdvanced class with a specified error message and a reference
+        /// to the inner exception that is the cause of this exception.
+        /// </summary>
+        /// <param name="message">The error message that explains the reason for the exception.</param>
+        /// <param name="innerException">The exception that is the cause of the current exception, or a null reference if no inner exception is
+        /// specified.</param>
+        public ArgumentExceptionAdvanced(string message, Exception innerException) : base(message, innerException)
         {
         }
 
-        public ArgumentExceptionEx(string message, string paramName) : base(message, paramName)
+        /// <summary>
+        /// Initializes a new instance of the ArgumentExceptionAdvanced class with a specified error message and the name of
+        /// the parameter that caused this exception.
+        /// </summary>
+        /// <param name="message">The message that describes the error.</param>
+        /// <param name="paramName">The name of the parameter that caused the exception.</param>
+        public ArgumentExceptionAdvanced(string message, string paramName) : base(message, paramName)
         {
         }
 
-        public ArgumentExceptionEx(string message, string paramName, Exception innerException) : base(message, paramName, innerException)
+        /// <summary>
+        /// Initializes a new instance of the ArgumentExceptionAdvanced class with a specified error message, the name of the
+        /// parameter that caused the exception, and a reference to the inner exception that is the cause of this
+        /// exception.
+        /// </summary>
+        /// <param name="message">The error message that explains the reason for the exception.</param>
+        /// <param name="paramName">The name of the parameter that caused the current exception.</param>
+        /// <param name="innerException">The exception that is the cause of the current exception, or a null reference if no inner exception is
+        /// specified.</param>
+        public ArgumentExceptionAdvanced(string message, string paramName, Exception innerException) : base(message, paramName, innerException)
         {
         }
 
@@ -111,27 +200,28 @@
         /// validation checks that the number and types of parameters in the delegate match those expected by the event.
         /// This method does not check for null arguments; callers should ensure arguments are not null before
         /// calling.</remarks>
-        /// <param name="eventInfo">The event metadata that defines the expected event handler signature. Cannot be null.</param>
+        /// <param name="targetEvent">The event metadata that defines the expected event handler signature. Cannot be null.</param>
         /// <param name="clientHandler">The delegate to validate as a potential event handler for the event. Cannot be null.</param>
         /// <param name="paramName"></param>
         /// <param name="message"></param>
         /// <exception cref="EventHandlerMismatchException">Thrown if the delegate's signature does not match the event handler type required by the event.</exception>
-        public static void ThrowIfNotAssignable(EventInfo eventInfo, Delegate clientHandler, [CallerArgumentExpression(nameof(eventInfo))] string? paramName = null, string? message = null)
+        public static void ThrowIfEventHandlerNotAssignable(Delegate clientHandler, EventInfo targetEvent, [CallerArgumentExpression(nameof(clientHandler))] string? paramName = null, string? message = null)
         {
-            ArgumentNullException.ThrowIfNull(eventInfo, nameof(eventInfo));
+            ArgumentNullException.ThrowIfNull(targetEvent, nameof(targetEvent));
             ArgumentNullException.ThrowIfNull(clientHandler, nameof(clientHandler));
 
-            MethodInfo eventDelegateInvokeMethod = eventInfo.EventHandlerType.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName);
+            Type? eventType = targetEvent.EventHandlerType;
+            MethodInfo eventDelegateInvokeMethod = eventType.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName);
             ParameterInfo[] eventDelegateParameters = eventDelegateInvokeMethod.GetParameters();
 
-            MethodInfo eventHandlerMethod = clientHandler.Method;
-            ParameterInfo[] clientHandlerParameters = eventHandlerMethod.GetParameters();
+            MethodInfo clientHandlerMethod = clientHandler.Method;
+            ParameterInfo[] clientHandlerParameters = clientHandlerMethod.GetParameters();
 
             /* Validate the event EventHandler */
 
             if (eventDelegateParameters.Length != clientHandlerParameters.Length)
             {
-                throw new EventHandlerMismatchException(message ?? ExceptionMessages.GetHandlerDelegateSignatureMismatchExceptionMessage(eventInfo, eventHandlerMethod, "Invalid parameter count."));
+                throw new EventHandlerMismatchException(message ?? ExceptionMessages.GetHandlerDelegateSignatureMismatchExceptionMessage(targetEvent, clientHandlerMethod, "Invalid parameter count."));
             }
 
             for (int parameterIndex = 0; parameterIndex < eventDelegateParameters.Length; parameterIndex++)
@@ -141,9 +231,62 @@
                 if (!eventHandlerParameterType.IsAssignableFrom(eventDelegateParameterType))
                 {
                     string exceptionMessage = message ?? ExceptionMessages.GetHandlerDelegateSignatureMismatchExceptionMessage(
-                        eventInfo,
-                        eventHandlerMethod,
-                        $"Unable to cast parameter of type '{eventDelegateParameterType.FullName}' at parameter index '{parameterIndex}' of the event delegate to type '{eventHandlerParameterType.FullName}' of the event handler.");
+                        targetEvent,
+                        clientHandlerMethod,
+                        $"The parameter '{paramName}' is incompatible with the event {eventType.ToFullyQualifiedSignatureName}. Reason: Unable to cast parameter of type '{eventDelegateParameterType.ToFullyQualifiedSignatureName()}' at parameter index '{parameterIndex}' of the event delegate to type '{eventHandlerParameterType.ToFullyQualifiedSignatureName()}' of the event handler.");
+                    throw new EventHandlerMismatchException(exceptionMessage);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Validates that the specified event handler delegate is compatible with the target event's signature, and
+        /// throws an exception if the handler cannot be assigned to the event.
+        /// </summary>
+        /// <remarks>This method checks both the number and types of parameters in the event handler
+        /// delegate against the target event's expected signature. Use this method to ensure that event handler
+        /// assignment will succeed at runtime and to provide clear error reporting when mismatches occur.</remarks>
+        /// <param name="clientHandler">The delegate to validate as an event handler. Cannot be null.</param>
+        /// <param name="targetEvent">The event metadata describing the target event whose handler signature is to be validated. Cannot be null.</param>
+        /// <param name="paramName">The name of the parameter representing the event handler delegate, used in exception messages for clarity.
+        /// Optional.</param>
+        /// <param name="message">A custom error message to include in the exception if the handler is not assignable. If null, a default
+        /// message is used.</param>
+        /// <exception cref="EventHandlerMismatchException">Thrown if the event handler delegate does not match the target event's signature, such as parameter count or
+        /// type incompatibility.</exception>
+        internal static void ThrowIfEventHandlerNotAssignable(Delegate clientHandler, EventData targetEvent, [CallerArgumentExpression(nameof(clientHandler))] string? paramName = null, string? message = null)
+        {
+            // TODO::Make this method public (requires EventData to be public too)
+
+            ArgumentNullException.ThrowIfNull(targetEvent, nameof(targetEvent));
+            ArgumentNullException.ThrowIfNull(clientHandler, nameof(clientHandler));
+
+            MethodData eventDelegateInvokeMethod = targetEvent.EventInvokerMethodData;
+            ParameterList eventDelegateParameters = eventDelegateInvokeMethod.Parameters;
+
+            MethodInfo clientHandlerMethod = clientHandler.Method;
+            ParameterInfo[] clientHandlerParameters = clientHandlerMethod.GetParameters();
+
+            /* Validate the event EventHandler */
+
+            if (eventDelegateParameters.Count != clientHandlerParameters.Length)
+            {
+                throw new EventHandlerMismatchException(message ?? ExceptionMessages.GetHandlerDelegateSignatureMismatchExceptionMessage(
+                    targetEvent.GetEventInfo(),
+                    clientHandlerMethod,
+                    "Invalid parameter count."));
+            }
+
+            for (int parameterIndex = 0; parameterIndex < eventDelegateParameters.Count; parameterIndex++)
+            {
+                Type eventDelegateParameterType = eventDelegateParameters[parameterIndex].ParameterTypeData.UnwrapType();
+                Type eventHandlerParameterType = clientHandlerParameters[parameterIndex].ParameterType;
+                if (!eventHandlerParameterType.IsAssignableFrom(eventDelegateParameterType))
+                {
+                    string exceptionMessage = message ?? ExceptionMessages.GetHandlerDelegateSignatureMismatchExceptionMessage(
+                        targetEvent.GetEventInfo(),
+                        clientHandlerMethod,
+                        $"The parameter '{paramName}' is incompatible with the event {targetEvent.FullyQualifiedSignature}. Reason: Unable to cast parameter of type '{eventDelegateParameterType.ToFullyQualifiedSignatureName()}' at parameter index '{parameterIndex}' of the event delegate to type '{eventHandlerParameterType.ToFullyQualifiedSignatureName()}' of the event handler.");
                     throw new EventHandlerMismatchException(exceptionMessage);
                 }
             }
@@ -293,26 +436,90 @@
         }
     }
 
-    public class ArgumentOutOfRangeExceptionEx : System.ArgumentOutOfRangeException
+    /// <summary>
+    /// Represents an exception that is thrown when the value of an argument is outside the allowable range, providing
+    /// additional context or customization beyond the standard ArgumentOutOfRangeException.
+    /// </summary>
+    /// <remarks>Use ArgumentOutOfRangeExceptionAdvanced to signal that a method argument falls outside the expected
+    /// range and to provide enhanced or customized exception details. This class extends ArgumentOutOfRangeException
+    /// and can be used in scenarios where more specific exception handling or messaging is required.</remarks>
+    public class ArgumentOutOfRangeExceptionAdvanced : System.ArgumentOutOfRangeException
     {
-        public ArgumentOutOfRangeExceptionEx()
+        /// <summary>
+        /// Initializes a new instance of the ArgumentOutOfRangeExceptionAdvanced class.
+        /// </summary>
+        public ArgumentOutOfRangeExceptionAdvanced()
         {
         }
 
-        public ArgumentOutOfRangeExceptionEx(string paramName) : base(paramName)
+        /// <summary>
+        /// Initializes a new instance of the ArgumentOutOfRangeExceptionAdvanced class with the name of the parameter that
+        /// caused the exception.
+        /// </summary>
+        /// <param name="paramName">The name of the parameter that caused the exception.</param>
+        public ArgumentOutOfRangeExceptionAdvanced(string paramName) : base(paramName)
         {
         }
 
-        public ArgumentOutOfRangeExceptionEx(string paramName, string message) : base(paramName, message)
+        /// <summary>
+        /// Initializes a new instance of the ArgumentOutOfRangeExceptionAdvanced class with a specified parameter name and
+        /// error message.
+        /// </summary>
+        /// <param name="paramName">The name of the parameter that caused the exception.</param>
+        /// <param name="message">The error message that explains the reason for the exception.</param>
+        public ArgumentOutOfRangeExceptionAdvanced(string paramName, string message) : base(paramName, message)
         {
         }
 
-        public ArgumentOutOfRangeExceptionEx(string message, Exception innerException) : base(message, innerException)
+        /// <summary>
+        /// Initializes a new instance of the ArgumentOutOfRangeExceptionAdvanced class with a specified error message and a
+        /// reference to the inner exception that is the cause of this exception.
+        /// </summary>
+        /// <param name="message">The error message that explains the reason for the exception.</param>
+        /// <param name="innerException">The exception that is the cause of the current exception, or a null reference if no inner exception is
+        /// specified.</param>
+        public ArgumentOutOfRangeExceptionAdvanced(string message, Exception innerException) : base(message, innerException)
         {
         }
 
-        public ArgumentOutOfRangeExceptionEx(string paramName, object actualValue, string message) : base(paramName, actualValue, message)
+        /// <summary>
+        /// Initializes a new instance of the ArgumentOutOfRangeExceptionAdvanced class with the name of the parameter that
+        /// caused the exception, the actual value of the argument, and a specified error message.
+        /// </summary>
+        /// <param name="paramName">The name of the parameter that caused the exception. Cannot be null.</param>
+        /// <param name="actualValue">The actual value of the argument that caused the exception. This value is typically outside the allowable
+        /// range of values as defined by the invoked method.</param>
+        /// <param name="message">The error message that explains the reason for the exception.</param>
+        public ArgumentOutOfRangeExceptionAdvanced(string paramName, object actualValue, string message) : base(paramName, actualValue, message)
         {
+        }
+
+        /// <summary>
+        /// Throws an exception if the specified value is less than the provided comparison value.
+        /// </summary>
+        /// <typeparam name="T">The type of the values to compare. Must implement <see cref="IComparable{T}"/>.</typeparam>
+        /// <param name="value">The value to validate against the comparison value.</param>
+        /// <param name="other">The value to compare with <paramref name="value"/>. <paramref name="value"/> must not be less than this
+        /// value.</param>
+        /// <param name="paramName">The name of the parameter representing <paramref name="value"/>. Used in the exception message if an
+        /// exception is thrown.</param>
+        /// <param name="message">An optional custom error message for the exception. If <see langword="null"/>, a default message is used.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is less than <paramref name="other"/>.</exception>
+        public static void ThrowIfLessThan<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null) where T : IComparable<T>
+        {
+            if (message is null)
+            {
+                ArgumentOutOfRangeException.ThrowIfLessThan(value, other, paramName);
+            }
+
+            ArgumentNullException.ThrowIfNull(value, paramName);
+            ArgumentNullException.ThrowIfNull(other, nameof(other));
+            if (value.CompareTo(other) < 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    paramName,
+                    message);
+            }
         }
     }
 }

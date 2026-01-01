@@ -369,10 +369,10 @@
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="genericTypeParameterCount"/> is negative.</exception>"
         public static SymbolInfoDataCacheKey CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle declaringTypeHandle, string memberName, ParameterList? symbolParameters, int genericTypeParameterCount, SymbolKind symbolKind)
         {
-            ArgumentNullExceptionEx.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
             ArgumentException.ThrowIfNullOrWhiteSpace(memberName, nameof(memberName));
-            ArgumentExceptionEx.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
-            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(symbolKind, [SymbolKind.MemberMethod, SymbolKind.Constructor], nameof(symbolKind), "The symbol kind must be 'MemberMethod' or 'Constructor' for anonymous method symbols.");
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotEqual(symbolKind, [SymbolKind.MemberMethod, SymbolKind.Constructor], nameof(symbolKind), "The symbol kind must be 'MemberMethod' or 'Constructor' for anonymous method symbols.");
             ArgumentOutOfRangeException.ThrowIfNegative(genericTypeParameterCount, paramName: nameof(genericTypeParameterCount));
 
             return new SymbolInfoDataCacheKey(memberName,
@@ -413,10 +413,10 @@
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="genericTypeParameterCount"/> is negative.</exception>"
         public static SymbolInfoDataCacheKey CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle declaringTypeHandle, string memberName, MethodParameterInfoList? symbolParameters, int genericTypeParameterCount, SymbolKind symbolKind)
         {
-            ArgumentNullExceptionEx.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
             ArgumentException.ThrowIfNullOrWhiteSpace(memberName, nameof(memberName));
-            ArgumentExceptionEx.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
-            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(symbolKind, [SymbolKind.MemberMethod, SymbolKind.Constructor], nameof(symbolKind), "The symbol kind must be 'MemberMethod' or 'Constructor' for anonymous method symbols.");
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotEqual(symbolKind, [SymbolKind.MemberMethod, SymbolKind.Constructor], nameof(symbolKind), "The symbol kind must be 'MemberMethod' or 'Constructor' for anonymous method symbols.");
             ArgumentOutOfRangeException.ThrowIfNegative(genericTypeParameterCount, nameof(genericTypeParameterCount));
 
             return new SymbolInfoDataCacheKey(memberName,
@@ -451,7 +451,7 @@
         /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName"/> is null, empty, or consists only of white-space characters</exception>
         public static SymbolInfoDataCacheKey CreateForAnonymousProperty(RuntimeTypeHandle declaringTypeHandle, string propertyName, ParameterList? indexerParameters)
         {
-            ArgumentNullExceptionEx.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
             ArgumentException.ThrowIfNullOrWhiteSpace(propertyName, nameof(propertyName));
 
             return new SymbolInfoDataCacheKey(propertyName,
@@ -486,7 +486,7 @@
         /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName"/> is null, empty, or consists only of white-space characters</exception>
         public static SymbolInfoDataCacheKey CreateForAnonymousProperty(RuntimeTypeHandle declaringTypeHandle, string propertyName, MethodParameterInfoList? indexerParameters)
         {
-            ArgumentNullExceptionEx.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
             ArgumentException.ThrowIfNullOrWhiteSpace(propertyName, nameof(propertyName));
 
             return new SymbolInfoDataCacheKey(propertyName,
@@ -531,7 +531,7 @@
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="position"/> is negative.</exception>
         public static SymbolInfoDataCacheKey CreateForAnonymousParameter(RuntimeTypeHandle declaringTypeHandle, string parameterName, int position, ParameterKind parameterKind = ParameterKind.Undefined, string? memberName = null, ParameterizedSymbolKind parameterizedSymbolKind = ParameterizedSymbolKind.Undefined)
         {
-            ArgumentNullExceptionEx.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
             ArgumentException.ThrowIfNullOrWhiteSpace(parameterName, nameof(parameterName));
             ArgumentOutOfRangeException.ThrowIfNegative(position, paramName: nameof(position));
 
@@ -575,8 +575,8 @@
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(parameterName, nameof(parameterName));
             ArgumentOutOfRangeException.ThrowIfNegative(position, paramName: nameof(position));
-            ArgumentNullExceptionEx.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
-            ArgumentNullExceptionEx.ThrowIfDefault(memberHandle, nameof(memberHandle));
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(memberHandle, nameof(memberHandle));
 
             return new SymbolInfoDataCacheKey(parameterName,
                 string.Empty,
@@ -612,10 +612,10 @@
         /// <exception cref="ArgumentException">Thrown when the provided <paramref name="symbolKind"/> value is not equal to <see cref="SymbolKind.MemberEvent"/> or <see cref="SymbolKind.MemberField"/>.</exception>
         public static SymbolInfoDataCacheKey CreateForAnonymousFieldOrEvent(RuntimeTypeHandle declaringTypeHandle, string symbolName, SymbolKind symbolKind)
         {
-            ArgumentNullExceptionEx.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
             ArgumentException.ThrowIfNullOrWhiteSpace(symbolName, nameof(symbolName));
-            ArgumentExceptionEx.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
-            ArgumentExceptionEx.ThrowIfEnumIsNotEqual(symbolKind, [SymbolKind.MemberEvent, SymbolKind.MemberField], nameof(symbolKind), "The symbol kind must be 'MemberEvent' or 'MemberField' for anonymous event or field symbols.");
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotEqual(symbolKind, [SymbolKind.MemberEvent, SymbolKind.MemberField], nameof(symbolKind), "The symbol kind must be 'MemberEvent' or 'MemberField' for anonymous event or field symbols.");
 
             return new SymbolInfoDataCacheKey(symbolName,
                 string.Empty,

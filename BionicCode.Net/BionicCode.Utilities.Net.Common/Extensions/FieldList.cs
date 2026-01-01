@@ -17,7 +17,7 @@
         public FieldList(IEnumerable<FieldData> items)
         {
             this.Fields = items.ToImmutableList();
-            ArgumentNullExceptionEx.ThrowIfNullOrEmpty(this.Fields, nameof(items));
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Fields, nameof(items));
             this.DeclaringTypeHandle = this.Fields.FirstOrDefault()!.DeclaringTypeHandle;
             if (!this.Fields.All(field => field.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle)))
             {

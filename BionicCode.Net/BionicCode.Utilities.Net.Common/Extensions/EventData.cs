@@ -63,7 +63,7 @@
 
                 Type targetType = target.GetType();
                 Type declaringType = this.DeclaringTypeData.UnwrapType();
-                ArgumentExceptionEx.ThrowIfNotAssignableTo(
+                ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                     targetType,
                     declaringType,
                     nameof(target),

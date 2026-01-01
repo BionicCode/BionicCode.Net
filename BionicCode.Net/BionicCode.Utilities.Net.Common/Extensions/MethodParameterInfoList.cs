@@ -17,7 +17,7 @@
         public MethodParameterInfoList(IEnumerable<MethodParameterInfo> items)
         {
             this.Parameters = items.ToImmutableList();
-            ArgumentNullExceptionEx.ThrowIfNullOrEmpty(this.Parameters, nameof(items));
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Parameters, nameof(items));
 
             this.DeclaringMemberTypeHandle = this.Parameters.FirstOrDefault().DeclaringTypeHandle;
             if (!this.Parameters.All(parameter => parameter.DeclaringTypeHandle.Equals(this.DeclaringMemberTypeHandle)))

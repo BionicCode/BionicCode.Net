@@ -79,7 +79,7 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureShortName(this MethodInfo methodInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
             return methodData.ShortSignature;
@@ -102,10 +102,33 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureName(this MethodInfo methodInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
             return methodData.Signature;
+        }
+
+        /// <summary>
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated including the namespace, the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
+        /// </summary>
+        /// <param name="methodInfo">The <see cref="MethodInfo"/> object to generate the symbol signature for.</param>
+        /// <returns>
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
+        /// <br/>For example, <c>"public MyNamespace.MyClass&lt;TParam&gt;.MyClass(Action&lt;TParam&gt; doSomething, [CallerMemberName] string value = null)"</c>.
+        /// </returns>
+        /// <remarks>
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="MethodInfo"/> instance.<br/>
+        /// Use <see cref="ToRuntimeSignatureName(MethodInfo)"/> to return a signature using the resolved generic targetType parameters instead.
+        /// Or use <see cref="ToDisplayName(MethodInfo, bool)"/> to return the plain symbol name.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
+        public static string ToFullyQualifiedSignatureName(this MethodInfo methodInfo)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
+
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            return methodData.FullyQualifiedSignature;
         }
 
         /// <summary>
@@ -125,7 +148,7 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureShortName(this MethodInfo methodInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
             return methodData.RuntimeShortSignature;
@@ -148,7 +171,7 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureName(this MethodInfo methodInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
             return methodData.RuntimeSignature;
@@ -166,12 +189,12 @@
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="Type"/> instance.<br/>
         /// Use <see cref="ToRuntimeSignatureShortName(Type)"/> to return a signature using the resolved generic targetType parameters instead.
-        /// Or use <see cref="ToDisplayName(TypeInfo, bool)"/> to return the plain symbol name.
+        /// Or use <see cref="ToDisplayName(TypeInfo)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
         public static string ToSignatureShortName(this Type type)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             return typeData.ShortSignature;
@@ -189,15 +212,38 @@
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="Type"/> instance.<br/>
         /// Use <see cref="ToRuntimeSignatureName(Type)"/> to return a signature using the resolved generic targetType parameters instead.
-        /// Or use <see cref="ToDisplayName(Type, bool)"/> to return the plain symbol name.
+        /// Or use <see cref="ToDisplayName(Type)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
         public static string ToSignatureName(this Type type)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             return typeData.Signature;
+        }
+
+        /// <summary>
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated including the namespace, the declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> object to generate the symbol signature for.</param>
+        /// <returns>
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
+        /// <br/>For example, <c>"[Obsolete("Stop using this class")] public class MyNamespace.MyClass&lt;T&gt;"</c>.
+        /// </returns>
+        /// <remarks>
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="Type"/> instance.<br/>
+        /// Use <see cref="ToRuntimeSignatureName(Type)"/> to return a signature using the resolved generic targetType parameters instead.
+        /// Or use <see cref="ToDisplayName(Type)"/> to return the plain symbol name.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
+        public static string ToFullyQualifiedSignatureName(this Type type)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
+
+            TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
+            return typeData.FullyQualifiedSignature;
         }
 
         /// <summary>
@@ -212,12 +258,12 @@
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="Type"/> instance.<br/>
         /// Use <see cref="ToSignatureShortName(Type)"/> to return a signature using the unresolved generic targetType parameters instead.
-        /// Or use <see cref="ToDisplayName(Type, bool)"/> to return the plain symbol name.
+        /// Or use <see cref="ToDisplayName(Type)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureShortName(this Type type)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             return typeData.RuntimeShortSignature;
@@ -235,12 +281,12 @@
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="Type"/> instance.<br/>
         /// Use <see cref="ToSignatureName(Type)"/> to return a signature using the unresolved generic targetType parameters instead.
-        /// Or use <see cref="ToDisplayName(Type, bool)"/> to return the plain symbol name.
+        /// Or use <see cref="ToDisplayName(Type,)"/> to return the plain symbol name.
         /// </remarks>
         /// <exception cref="ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureName(this Type type)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             return typeData.RuntimeSignature;
@@ -253,7 +299,7 @@
         /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
         /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
-        /// <br/>For example, <c>"[JsonPropertyName("my_property")] public T myField;"</c>.
+        /// <br/>For example, <c>"[JsonPropertyName("my_property")] public T _myField;"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="FieldInfo"/> instance.<br/>
@@ -263,7 +309,7 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureShortName(this FieldInfo fieldInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
             FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
             return fieldData.ShortSignature;
@@ -276,7 +322,7 @@
         /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
         /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
-        /// <br/>For example, <c>"[JsonPropertyName("my_property")] public T MyClass&lt;T&gt;.myField;"</c>.
+        /// <br/>For example, <c>"[JsonPropertyName("my_property")] public T MyClass&lt;T&gt;._myField;"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="FieldInfo"/> instance.<br/>
@@ -286,10 +332,33 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureName(this FieldInfo fieldInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
             FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
             return fieldData.Signature;
+        }
+
+        /// <summary>
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated including the namespace, declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
+        /// </summary>
+        /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
+        /// <returns>
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
+        /// <br/>For example, <c>"[JsonPropertyName("my_property")] public T MyNamespace.MyClass&lt;T&gt;._myField;"</c>.
+        /// </returns>
+        /// <remarks>
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="FieldInfo"/> instance.<br/>
+        /// Use <see cref="ToRuntimeSignatureName(FieldInfo)"/> to return a signature using the resolved generic targetType parameters instead.
+        /// Or use <see cref="ToDisplayName(FieldInfo, bool)"/> to return the plain symbol name.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
+        public static string ToFullyQualifiedSignatureName(this FieldInfo fieldInfo)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+
+            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+            return fieldData.FullyQualifiedSignature;
         }
 
         /// <summary>
@@ -299,7 +368,7 @@
         /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
         /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
-        /// <br/>For example, <c>"[JsonPropertyName("my_property")] public string myField;"</c>.
+        /// <br/>For example, <c>"[JsonPropertyName("my_property")] public string _myField;"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="FieldInfo"/> instance.<br/>
@@ -309,7 +378,7 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureShortName(this FieldInfo fieldInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
             FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
             return fieldData.RuntimeShortSignature;
@@ -322,7 +391,7 @@
         /// <param name="fieldInfo">The <see cref="FieldInfo"/> object to generate the symbol signature for.</param>
         /// <returns>
         /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
-        /// <br/>For example, <c>"[JsonPropertyName("my_property")] public string MyClass&lt;string&gt;.myField;"</c>.
+        /// <br/>For example, <c>"[JsonPropertyName("my_property")] public string MyClass&lt;string&gt;._myField;"</c>.
         /// </returns>
         /// <remarks>
         /// The method uses caching to improve performance for repeated calls with the same <see cref="FieldInfo"/> instance.<br/>
@@ -332,7 +401,7 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="fieldInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureName(this FieldInfo fieldInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
             FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
             return fieldData.RuntimeSignature;
@@ -355,7 +424,7 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureShortName(this PropertyInfo propertyInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
             PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
             return propertyData.ShortSignature;
@@ -378,10 +447,33 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureName(this PropertyInfo propertyInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
             PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
             return propertyData.Signature;
+        }
+
+        /// <summary>
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated including the namespace, declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
+        /// </summary>
+        /// <param name="propertyInfo">The <see cref="PropertyInfo"/> object to generate the symbol signature for.</param>
+        /// <returns>
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
+        /// <br/>For example, <c>"[Required(ErrorMessage = "MyProperty is required.")] public T MyNamespace.MyClass&lt;T&gt;.MyProperty { get; set; }"</c>.
+        /// </returns>
+        /// <remarks>
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="PropertyInfo"/> instance.<br/>
+        /// Use <see cref="ToRuntimeSignatureName(PropertyInfo)"/> to return a signature using the resolved generic targetType parameters instead.
+        /// Or use <see cref="ToDisplayName(PropertyInfo, bool)"/> to return the plain symbol name.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+        public static string ToFullyQualifiedSignatureName(this PropertyInfo propertyInfo)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
+
+            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+            return propertyData.FullyQualifiedSignature;
         }
 
         /// <summary>
@@ -401,7 +493,7 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureShortName(this PropertyInfo propertyInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
             PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
             return propertyData.RuntimeShortSignature;
@@ -424,7 +516,7 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureName(this PropertyInfo propertyInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
             PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
             return propertyData.RuntimeSignature;
@@ -447,7 +539,7 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureShortName(this ConstructorInfo constructorInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
             ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
             return constructorData.ShortSignature;
@@ -470,10 +562,33 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureName(this ConstructorInfo constructorInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
             ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
             return constructorData.Signature;
+        }
+
+        /// <summary>
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated including the namespace, declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
+        /// </summary>
+        /// <param name="constructorInfo">The <see cref="ConstructorInfo"/> object to generate the symbol signature for.</param>
+        /// <returns>
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
+        /// <br/>For example, <c>"public MyNamespace.MyClass&lt;TParam&gt;.MyClass(Action&lt;TParam&gt; doSomething, [CallerMemberName] string value = null)"</c>.
+        /// </returns>
+        /// <remarks>
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="ConstructorInfo"/> instance.<br/>
+        /// Use <see cref="ToRuntimeSignatureName(ConstructorInfo)"/> to return a signature using the resolved generic targetType parameters instead.
+        /// Or use <see cref="ToDisplayName(ConstructorInfo, bool)"/> to return the plain symbol name.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
+        public static string ToFullyQualifiedSignatureName(this ConstructorInfo constructorInfo)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
+
+            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+            return constructorData.FullyQualifiedSignature;
         }
 
         /// <summary>
@@ -493,7 +608,7 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureShortName(this ConstructorInfo constructorInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
             ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
             return constructorData.RuntimeShortSignature;
@@ -516,7 +631,7 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="constructorInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureName(this ConstructorInfo constructorInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
             ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
             return constructorData.RuntimeSignature;
@@ -539,7 +654,7 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureShortName(this EventInfo eventInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
             EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
             return eventData.ShortSignature;
@@ -562,7 +677,30 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
         public static string ToSignatureName(this EventInfo eventInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
+
+            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+            return eventData.Signature;
+        }
+
+        /// <summary>
+        /// Extension method to convert generic and non-generic symbols to a readable signature.
+        /// <br/>The Signature will be generated including namespace, declaring targetType (in case of a member), attributes and the resolved runtime generic targetType argument names.
+        /// </summary>
+        /// <param name="eventInfo">The <see cref="EventInfo"/> object to generate the symbol signature for.</param>
+        /// <returns>
+        /// A readable signature of the symbol, that includes the targetType, name and parameters and also resolves generic targetType parameters. 
+        /// <br/>For example, <c>"[Obsolete("Use NewEvent instead.")] public event EventHandler&lt;TEventArgs&gt; MyNamespace.MyClass&lt;TEventArgs&gt;.Completed;"</c>.
+        /// </returns>
+        /// <remarks>
+        /// The method uses caching to improve performance for repeated calls with the same <see cref="EventInfo"/> instance.<br/>
+        /// Use <see cref="ToRuntimeSignatureName(EventInfo)"/> to return a signature using the resolved generic targetType parameters instead.
+        /// Or use <see cref="ToDisplayName(EventInfo, bool)"/> to return the plain symbol name.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
+        public static string ToFullyQualifiedSignatureName(this EventInfo eventInfo)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
             EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
             return eventData.Signature;
@@ -585,7 +723,7 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureShortName(this EventInfo eventInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
             EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
             return eventData.RuntimeShortSignature;
@@ -608,7 +746,7 @@
         /// <exception cref="ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
         public static string ToRuntimeSignatureName(this EventInfo eventInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
             EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
             return eventData.RuntimeSignature;
@@ -705,7 +843,7 @@
         /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
         public static AccessModifier GetAccessModifier(this Type type)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             TypeData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             return entry.AccessModifier;
@@ -721,7 +859,7 @@
         /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
         public static AccessModifier GetAccessModifier(this MethodInfo method)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(method, nameof(method));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(method, nameof(method));
 
             MethodData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(method);
             return entry.AccessModifier;
@@ -737,7 +875,7 @@
         /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
         public static AccessModifier GetAccessModifier(this ConstructorInfo constructor)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(constructor, nameof(constructor));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(constructor, nameof(constructor));
 
             ConstructorData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructor);
             return entry.AccessModifier;
@@ -753,7 +891,7 @@
         /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
         public static AccessModifier GetAccessModifier(this PropertyInfo property)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(property, nameof(property));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(property, nameof(property));
 
             PropertyData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(property);
             return entry.AccessModifier;
@@ -769,7 +907,7 @@
         /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
         public static AccessModifier GetAccessModifier(this EventInfo eventInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
             EventData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
             return entry.AccessModifier;
@@ -785,7 +923,7 @@
         /// <remarks>For a <see cref="PropertyInfo"/> the property accessors with the least restriction provides the access modifier for the property. This is a compiler rule.</remarks>
         public static AccessModifier GetAccessModifier(this FieldInfo field)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(field, nameof(field));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(field, nameof(field));
 
             FieldData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(field);
             return entry.AccessModifier;
@@ -809,7 +947,7 @@
         /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
         public static ImmutableList<Type> GetTypeHierarchy(this Type type, bool includeInterfaces = false)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             if (type == typeof(object) || type.IsValueType)
             {
@@ -860,7 +998,7 @@
         /// </remarks>
         public static string ToDisplayName(this Type type)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             return typeData.DisplayName;
@@ -879,7 +1017,7 @@
         /// </remarks>
         public static string ToDisplayName(this MethodInfo methodInfo, bool isDeclaringTypeIncluded = false)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
             return isDeclaringTypeIncluded
@@ -900,7 +1038,7 @@
         /// </remarks>
         public static string ToDisplayName(this ConstructorInfo constructorInfo, bool isDeclaringTypeIncluded = false)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
             ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
             return isDeclaringTypeIncluded
@@ -921,7 +1059,7 @@
         /// </remarks>
         public static string ToDisplayName(this PropertyInfo propertyInfo, bool isDeclaringTypeIncluded = false)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
             PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
             return isDeclaringTypeIncluded
@@ -942,7 +1080,7 @@
         /// </remarks>
         public static string ToDisplayName(this FieldInfo fieldInfo, bool isDeclaringTypeIncluded = false)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
             FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
             return isDeclaringTypeIncluded
@@ -963,7 +1101,7 @@
         /// </remarks>
         public static string ToDisplayName(this ParameterInfo parameterInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
             ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
             return parameterData.DisplayName;
@@ -982,7 +1120,7 @@
         /// </remarks>
         public static string ToDisplayName(this EventInfo eventInfo, bool isDeclaringTypeIncluded = false)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
             EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
             return isDeclaringTypeIncluded
@@ -1003,7 +1141,7 @@
         /// </remarks>
         public static string ToFullDisplayName(this Type type)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             return typeData.FullyQualifiedDisplayName;
@@ -1022,7 +1160,7 @@
         /// </remarks>
         public static string ToFullDisplayName(this MethodInfo methodInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
             return methodData.FullyQualifiedDisplayName;
@@ -1041,7 +1179,7 @@
         /// </remarks>
         public static string ToFullDisplayName(this ConstructorInfo constructorInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
             ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
             return constructorData.FullyQualifiedDisplayName;
@@ -1060,7 +1198,7 @@
         /// </remarks>
         public static string ToFullDisplayName(this PropertyInfo propertyInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
             PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
             return propertyData.FullyQualifiedDisplayName;
@@ -1079,7 +1217,7 @@
         /// </remarks>
         public static string ToFullDisplayName(this FieldInfo fieldInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
             FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
             return fieldData.FullyQualifiedDisplayName;
@@ -1098,7 +1236,7 @@
         /// </remarks>
         public static string ToFullDisplayName(this EventInfo eventInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
             EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
             return eventData.FullyQualifiedDisplayName;
@@ -1116,8 +1254,8 @@
         /// <returns>The StringBuilder instance with the appended display name.</returns>
         public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, Type type, bool isGenericTypeParameterIncluded = true)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), typeData, isFullyQualifiedName: false, isGenericTypeParameterIncluded);
@@ -1136,8 +1274,8 @@
         /// <returns>The StringBuilder instance with the method's display name appended.</returns>
         public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, MethodInfo methodInfo, bool isDeclaringTypeIncluded = false)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
             _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), methodData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -1156,8 +1294,8 @@
         /// <returns>The same StringBuilder instance provided in nameBuilder, with the event's display name appended.</returns>
         public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, EventInfo eventInfo, bool isDeclaringTypeIncluded = false)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-            ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
             EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
             _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), eventData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -1176,8 +1314,8 @@
         /// <returns>The StringBuilder instance with the constructor's display name appended.</returns>
         public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, ConstructorInfo constructorInfo, bool isDeclaringTypeIncluded = false)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-            ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
             ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
             _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), constructorData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -1196,8 +1334,8 @@
         /// <returns>The same StringBuilder instance provided in nameBuilder, with the property's display name appended.</returns>
         public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, PropertyInfo propertyInfo, bool isDeclaringTypeIncluded = false)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-            ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
             PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
             _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), propertyData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -1212,8 +1350,8 @@
         /// <returns>The same StringBuilder instance with the display name of the parameter appended.</returns>
         public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, ParameterInfo parameterInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-            ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
             ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
             _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), parameterData);
@@ -1232,8 +1370,8 @@
         /// <returns>The same StringBuilder instance with the field's display name appended.</returns>
         public static StringBuilder AppendDisplayName(this StringBuilder nameBuilder, FieldInfo fieldInfo, bool isDeclaringTypeIncluded = false)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-            ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
             FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
             _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), fieldData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -1252,8 +1390,8 @@
         /// <returns>The StringBuilder instance with the fully qualified display name of the specified targetType appended.</returns>
         public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, Type type, bool isGenericTypeParameterIncluded = true)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), typeData, isFullyQualifiedName: true, isGenericTypeParameterIncluded);
@@ -1262,8 +1400,8 @@
 
         public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, MethodInfo methodInfo, bool isDeclaringTypeIncluded = true)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
             _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), methodData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -1272,8 +1410,8 @@
 
         public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, EventInfo eventInfo, bool isDeclaringTypeIncluded = true)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-            ArgumentNullExceptionEx.ThrowIfNull(eventInfo, nameof(eventInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
             EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
             _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), eventData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -1282,8 +1420,8 @@
 
         public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, ConstructorInfo constructorInfo, bool isDeclaringTypeIncluded = true)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-            ArgumentNullExceptionEx.ThrowIfNull(constructorInfo, nameof(constructorInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
             ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
             _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), constructorData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -1292,8 +1430,8 @@
 
         public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, PropertyInfo propertyInfo, bool isDeclaringTypeIncluded = true)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-            ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
             PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
             _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), propertyData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -1302,8 +1440,8 @@
 
         public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, ParameterInfo parameterInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-            ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
             ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
             _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), parameterData);
@@ -1312,8 +1450,8 @@
 
         public static StringBuilder AppendFullDisplayName(this StringBuilder nameBuilder, FieldInfo fieldInfo, bool isDeclaringTypeIncluded = true)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(nameBuilder, nameof(nameBuilder));
-            ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
             FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
             _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), fieldData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
@@ -1429,10 +1567,10 @@
             }
 
             // Could be an open generic valueType. Therefore we need to obtain all definitions.
-            TypeData[] genericTypeArguments = methodData.GenericMethodArguments;
-            TypeData[] genericTypeParameterDefinitions = methodData.IsGenericMethodDefinition
+            TypeList genericTypeArguments = methodData.GenericMethodArguments;
+            TypeList genericTypeParameterDefinitions = methodData.IsGenericMethodDefinition
               ? methodData.GenericMethodArguments
-              : Array.Empty<TypeData>();
+              : TypeList.Empty;
 
             AppendGenericParameters(nameBuilder, isFullyQualified, genericTypeParameterDefinitions, genericTypeArguments);
             return nameBuilder;
@@ -1446,22 +1584,22 @@
             }
 
             // Could be an open generic valueType. Therefore we need to obtain all definitions.
-            TypeData[] genericTypeArguments = typeData.GenericTypeArguments;
-            TypeData[] genericTypeParameterDefinitions = typeData.IsGenericTypeDefinition
+            TypeList genericTypeArguments = typeData.GenericTypeArguments;
+            TypeList genericTypeParameterDefinitions = typeData.IsGenericTypeDefinition
               ? typeData.GenericTypeArguments
-              : Array.Empty<TypeData>();
+              : TypeList.Empty;
 
             AppendGenericParameters(nameBuilder, isFullyQualified, genericTypeParameterDefinitions, genericTypeArguments);
             return nameBuilder;
         }
 
-        private static void AppendGenericParameters(PooledStringBuilder nameBuilder, bool isFullyQualified, TypeData[] genericTypeParameterDefinitions, TypeData[] genericTypeArguments)
+        private static void AppendGenericParameters(PooledStringBuilder nameBuilder, bool isFullyQualified, TypeList genericTypeParameterDefinitions, TypeList genericTypeArguments)
         {
             _ = nameBuilder.Append('<');
-            for (int typeArgumentIndex = 0; typeArgumentIndex < genericTypeArguments.Length; typeArgumentIndex++)
+            for (int typeArgumentIndex = 0; typeArgumentIndex < genericTypeArguments.Count; typeArgumentIndex++)
             {
                 TypeData genericParameterTypeData = genericTypeArguments[typeArgumentIndex];
-                if (genericTypeParameterDefinitions.Length > 0)
+                if (genericTypeParameterDefinitions.Count > 0)
                 {
                     TypeData genericTypeParameterDefinitionData = genericTypeParameterDefinitions[typeArgumentIndex];
                     if ((genericTypeParameterDefinitionData.GenericParameterAttributes & GenericParameterAttributes.Covariant) != 0)
@@ -1485,15 +1623,15 @@
               .Append('>');
         }
 
-        internal static PooledStringBuilder AppendGenericTypeConstraints(this PooledStringBuilder constraintBuilder, TypeData[] genericTypeDefinitionsData, bool isFullyQualified, bool isSingleLine, ReadOnlySpan<char> lineIndentation)
+        internal static PooledStringBuilder AppendGenericTypeConstraints(this PooledStringBuilder constraintBuilder, TypeList genericTypeDefinitionsData, bool isFullyQualified, bool isSingleLine, ReadOnlySpan<char> lineIndentation)
         {
             bool hasSingleNewLine = false;
-            for (int genericTypeArgumentIndex = 0; genericTypeArgumentIndex < genericTypeDefinitionsData.Length; genericTypeArgumentIndex++)
+            for (int genericTypeArgumentIndex = 0; genericTypeArgumentIndex < genericTypeDefinitionsData.Count; genericTypeArgumentIndex++)
             {
                 TypeData genericTypeDefinitionData = genericTypeDefinitionsData[genericTypeArgumentIndex];
-                TypeData[] constraints = genericTypeDefinitionData.GenericParameterConstraintsData;
+                TypeList constraints = genericTypeDefinitionData.GenericParameterConstraintsData;
                 if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.SpecialConstraintMask) == GenericParameterAttributes.None
-                  && constraints.Length == 0)
+                  && constraints.Count == 0)
                 {
                     continue;
                 }
@@ -1560,8 +1698,8 @@
             }
 
             bool isSubclass = typeData.IsSubclass;
-            TypeData[] interfaces = typeData.InterfacesData;
-            bool hasInterfaces = interfaces.Length > 0;
+            TypeList interfaces = typeData.InterfacesData;
+            bool hasInterfaces = interfaces.Count > 0;
             if (isSubclass || hasInterfaces)
             {
                 _ = memberNameBuilder.Append(" : ");
@@ -1595,7 +1733,7 @@
         /// <returns>true if the specified targetType is a delegate; otherwise, false.</returns>
         public static bool IsDelegate(this Type type)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             return typeData.IsDelegate;
@@ -1604,7 +1742,7 @@
         // TODO::Test if checking get() is enough to determine if a property is overridden
         public static bool IsOverride(this PropertyInfo propertyInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
             PropertyData memberInfoData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
             return memberInfoData.IsOverride;
@@ -1612,14 +1750,14 @@
 
         internal static bool IsOverrideInternal(this PropertyInfo propertyInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
             return propertyInfo.CanRead ? propertyInfo.GetGetMethod(true).IsOverride() : propertyInfo.GetSetMethod().IsOverride();
         }
 
         public static bool IsConst(this FieldInfo fieldInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
             FieldData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
             return methodData.SymbolAttributes.HasFlag(SymbolAttributes.Constant);
@@ -1627,7 +1765,7 @@
 
         public static bool IsOverride(this MethodInfo methodInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
             return methodData.IsOverride;
@@ -1635,7 +1773,7 @@
 
         public static bool IsInitOnly(this PropertyInfo propertyInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(propertyInfo, nameof(propertyInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
             PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
             return propertyData.SymbolAttributes.HasFlag(SymbolAttributes.InitProperty);
@@ -1650,7 +1788,7 @@
         /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned valueType that would make the valueType awaitable. If this fails too, the method is not awaitable.</remarks>
         public static bool IsAwaitable(this MethodInfo methodInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
             return methodData.IsAwaitable;
@@ -1665,7 +1803,7 @@
         /// <br/>If that fails too, it checks whether there exists any extension method named "GetAwaiter" for the returned valueType that would make the valueType awaitable. If this fails too, the method is not awaitable.</remarks>
         public static bool IsAwaitable(this Type type)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             return typeData.IsAwaitable;
@@ -1678,7 +1816,7 @@
         /// <returns>true if the method is marked as asynchronous; otherwise, false.</returns>
         public static bool IsMarkedAsync(this MethodInfo methodInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
             return methodData.IsAsync;
@@ -1691,7 +1829,7 @@
         /// <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="targetType"/> is static. Otherwise <see langword="false"/>.</returns>
         public static bool IsStatic(this Type type)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             return typeData.IsStatic;
@@ -1704,7 +1842,7 @@
         /// <returns><see langword="true"/> if the specified targetType is a built-in .NET targetType; otherwise, <see langword="false"/>.</returns>
         public static bool IsBuiltInType(this Type type)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             return typeData.IsBuiltInType;
@@ -1716,7 +1854,7 @@
         /// <returns><see langword="true"/> if the <paramref name="parameterInfo"/> represents a <see langword="ref"/> parameter. Otherwise <see langword="false"/>.</returns>
         public static bool IsRef(this ParameterInfo parameterInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
             ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
             return parameterData.IsRef;
@@ -1728,7 +1866,7 @@
         /// <returns><see langword="true"/> if the <paramref name="parameterInfo"/> represents a <see langword="ref"/> parameter. Otherwise <see langword="false"/>.</returns>
         public static bool IsRefReadonly(this ParameterInfo parameterInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
             ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
             return parameterData.IsRefReadOnly;
@@ -1744,7 +1882,7 @@
         /// false.</returns>
         public static bool IsParams(this ParameterInfo parameterInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
             ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
             return parameterData.IsParams;
@@ -1756,7 +1894,7 @@
         /// <returns><see langword="true"/> if the <paramref name="parameterInfo"/> represents a <see langword="ref"/> parameter. Otherwise <see langword="false"/>.</returns>
         public static bool IsIn(this ParameterInfo parameterInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
             ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
             return parameterData.IsIn;
@@ -1768,7 +1906,7 @@
         /// <returns><see langword="true"/> if the <paramref name="parameterInfo"/> represents a <see langword="ref"/> parameter. Otherwise <see langword="false"/>.</returns>
         public static bool IsOut(this ParameterInfo parameterInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(parameterInfo, nameof(parameterInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
             ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
             return parameterData.IsOut;
@@ -1783,7 +1921,7 @@
         /// <br/>In addition this method checks if the declaring class and the method are both decorated with the <see cref="ExtensionAttribute"/> which is added by the compiler.</remarks>
         public static bool CanDeclareExtensionMethods(this Type type)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             return typeData.CanDeclareExtensionMethod;
@@ -1796,7 +1934,7 @@
         /// <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="methodInfo"/> is an extension method. Otherwise <see langword="false"/>.</returns>
         public static bool IsExtensionMethod(this MethodInfo methodInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
             return methodData.IsExtensionMethod;
@@ -1847,7 +1985,7 @@
         /// name="TInstance"/>; otherwise, false.</returns>
         public static bool IsExtensionMethodOf<TInstance>(this MethodInfo methodInfo) where TInstance : Type
         {
-            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
 
@@ -1878,8 +2016,8 @@
         /// <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="methodInfo"/> is an extension method for <paramref genericTypeParameterIdentifier="typeToExtend"/>. Otherwise <see langword="false"/>.</returns>
         public static bool IsExtensionMethodOf(this MethodInfo methodInfo, Type typeToExtend)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(typeToExtend, nameof(typeToExtend));
-            ArgumentNullExceptionEx.ThrowIfNull(methodInfo, nameof(methodInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(typeToExtend, nameof(typeToExtend));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
 
@@ -1915,7 +2053,7 @@
         /// <returns>true if the specified targetType is a read-only struct; otherwise, false.</returns>
         public static bool IsReadOnlyStruct(this Type type)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
             return typeData.SymbolAttributes.HasFlag(SymbolAttributes.ReadOnlyStruct);
@@ -1923,7 +2061,7 @@
 
         public static bool IsReadOnly(this FieldInfo fieldInfo)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(fieldInfo, nameof(fieldInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
             FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
             return fieldData.IsReadonly;
         }
@@ -1987,8 +2125,8 @@
         ///// <exception cref="InvalidOperationException">Thrown if the generic cast method cannot be located in the HelperExtensionsCommon type.</exception>
         //public static object Cast<TSource>(this TSource source, Type targetType)
         //{
-        //    ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
-        //    ArgumentNullExceptionEx.ThrowIfNull(targetType, nameof(targetType));
+        //    ArgumentNullExceptionAdvanced.ThrowIfNull(source, nameof(source));
+        //    ArgumentNullExceptionAdvanced.ThrowIfNull(targetType, nameof(targetType));
 
         //    if (HelperExtensionsCommon.CastMethodData is null)
         //    {

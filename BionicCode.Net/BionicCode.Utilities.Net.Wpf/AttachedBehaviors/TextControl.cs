@@ -31,7 +31,7 @@ namespace BionicCode.Utilities.Net
           new PropertyMetadata(string.Empty, TextControl.OnTextChanged));
 
         /// <summary>
-        /// Set method of attached property <see cref="TextProperty"/>.
+        /// SetValue method of attached property <see cref="TextProperty"/>.
         /// </summary>
         /// <param name="attachingElement">The attaching <see cref="TextBlock"/> or <see cref="RichTextBox"/>.</param>
         /// <param name="value">The text to display.</param>
@@ -57,7 +57,7 @@ namespace BionicCode.Utilities.Net
           new PropertyMetadata(Brushes.DarkRed, TextControl.OnHighlightColorsChanged));
 
         /// <summary>
-        /// Set method of attached property <see cref="HighlightBackgroundProperty"/>.
+        /// SetValue method of attached property <see cref="HighlightBackgroundProperty"/>.
         /// </summary>
         /// <param name="attachingElement">The attaching <see cref="TextBlock"/> or <see cref="RichTextBox"/>.</param>
         /// <param name="value">The <see cref="Brush"/> for the background of the highlight text ranges.</param>
@@ -84,7 +84,7 @@ namespace BionicCode.Utilities.Net
           new PropertyMetadata(default(Brush), TextControl.OnHighlightColorsChanged));
 
         /// <summary>
-        /// Set method of attached property <see cref="HighlightForegroundProperty"/>.
+        /// SetValue method of attached property <see cref="HighlightForegroundProperty"/>.
         /// </summary>
         /// <param name="attachingElement">The attaching <see cref="TextBlock"/> or <see cref="RichTextBox"/>.</param>
         /// <param name="value">The <see cref="Brush"/> for the foreground of the highlight text ranges.</param>
@@ -111,7 +111,7 @@ namespace BionicCode.Utilities.Net
           new PropertyMetadata(default(bool), TextControl.OnIsHighlightingEnabledChanged));
 
         /// <summary>
-        /// Set method of attached property <see cref="IsHighlightingEnabledProperty"/>.
+        /// SetValue method of attached property <see cref="IsHighlightingEnabledProperty"/>.
         /// </summary>
         /// <param name="attachingElement">The attaching <see cref="TextBlock"/> or <see cref="RichTextBox"/>.</param>
         /// <param name="value"><c>true</c> to enable the attached <see cref="TextControl"/> behavior or <c>false</c> to disable it.</param>
@@ -139,7 +139,7 @@ namespace BionicCode.Utilities.Net
           new PropertyMetadata(new HighlightRangeCollection(), TextControl.OnRangeAdded));
 
         /// <summary>
-        /// Set method of attached property <see cref="HighlightRangesProperty"/>.
+        /// SetValue method of attached property <see cref="HighlightRangesProperty"/>.
         /// </summary>
         /// <param name="attachingElement">The attaching <see cref="TextBlock"/> or <see cref="RichTextBox"/>.</param>
         /// <param name="value">A <see cref="HighlightRangeCollection"/>.</param>

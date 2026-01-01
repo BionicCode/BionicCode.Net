@@ -69,11 +69,21 @@
         /// <exception cref="ArgumentException">Thrown if the value type does not match the field type.</exception>
         public void SetStructValue<TTarget, TValue>(ref TTarget target, TValue? value) where TTarget : struct
         {
+            if (this.IsStatic)
+            {
+                throw new InvalidOperationException($"Cannot set struct instance field value on a static field. Call '{nameof(SetValue)}' instead");
+            }
+
+            if (!this.DeclaringTypeData.IsStruct)
+            {
+                throw new InvalidOperationException($"Target type is not a value type. Call '{nameof(SetValue)}' instead");
+            }
+
             Type declaringType = this.DeclaringTypeData.UnwrapType();
             Type targetType = typeof(TTarget);
-            ArgumentExceptionEx.ThrowIfNotOfType(
-                targetType,
+            ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                 declaringType,
+                targetType,
                 ExceptionMessages.GetTypeMismatchExceptionMessage(
                         targetType,
                         "target type",
@@ -84,7 +94,7 @@
             {
                 Type valueType = typeof(TValue);
                 Type fieldType = this.FieldTypeData.UnwrapType();
-                ArgumentExceptionEx.ThrowIfNotAssignableTo(
+                ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                     valueType,
                     fieldType,
                     ExceptionMessages.GetTypeMismatchExceptionMessage(
@@ -94,23 +104,8 @@
                             "field type"));
             }
 
-            if (this.IsStatic)
-            {
-                throw new InvalidOperationException($"Cannot set struct instance field value on a static field. Call {nameof(SetValue)} instead");
-            }
-
-            if (!this.DeclaringTypeData.IsStruct)
-            {
-                throw new InvalidOperationException($"Target type is not a value type. Call {nameof(SetValue)} instead");
-            }
-
             RuntimeTypeHandle targetTypeHandle = targetType.TypeHandle;
-            if (!this._valueTypeSetValueInvokerTable.TryGetValue(targetTypeHandle, out Delegate? cachedInvoker))
-            {
-                ValueTypeMemberSetter<TTarget, TValue> newInvoker = DelegateProvider.CreateStructSetter<TTarget, TValue>(this);
-                cachedInvoker = this._valueTypeSetValueInvokerTable.GetOrAdd(targetTypeHandle, newInvoker);
-            }
-
+            Delegate? cachedInvoker = this._valueTypeSetValueInvokerTable.GetOrAdd(targetTypeHandle, targetTypeHandle => DelegateProvider.CreateStructSetter<TTarget, TValue>(this));
             ValueTypeMemberSetter<TTarget, TValue> invoker = (ValueTypeMemberSetter<TTarget, TValue>)cachedInvoker;
             invoker.Invoke(ref target, value);
         }
@@ -135,7 +130,7 @@
                 ArgumentNullException.ThrowIfNull(target, nameof(target));
                 Type targetType = target.GetType();
                 Type declaringType = this.DeclaringTypeData.UnwrapType();
-                ArgumentExceptionEx.ThrowIfNotAssignableTo(
+                ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                     targetType,
                     declaringType,
                     ExceptionMessages.GetTypeMismatchExceptionMessage(
@@ -149,7 +144,7 @@
             {
                 Type valueType = value.GetType();
                 Type fieldType = this.FieldTypeData.UnwrapType();
-                ArgumentExceptionEx.ThrowIfNotAssignableTo(
+                ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                     valueType,
                     fieldType,
                     ExceptionMessages.GetTypeMismatchExceptionMessage(

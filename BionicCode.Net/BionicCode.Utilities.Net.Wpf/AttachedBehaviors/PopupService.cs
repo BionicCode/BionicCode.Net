@@ -8,7 +8,7 @@ namespace BionicCode.Utilities.Net
 
 #if !NETSTANDARD
     /// <summary>
-    /// Set of attached behaviors for the <see cref="System.Windows.Controls.Primitives.Popup"/> control.
+    /// SetValue of attached behaviors for the <see cref="System.Windows.Controls.Primitives.Popup"/> control.
     /// </summary>
     /// <seealso href="https://github.com/BionicCode/BionicCode.Net#popup">See advanced example</seealso>
     public class PopupService : DependencyObject

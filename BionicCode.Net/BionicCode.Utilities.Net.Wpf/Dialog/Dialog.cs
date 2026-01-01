@@ -71,7 +71,7 @@ namespace BionicCode.Utilities.Net
           "DataTemplateSelector", typeof(DataTemplateSelector), typeof(Dialog), new PropertyMetadata(default(DataTemplateSelector)));
 
         /// <summary>
-        /// Set method of the attached <see cref="DataTemplateSelectorProperty"/> property.
+        /// SetValue method of the attached <see cref="DataTemplateSelectorProperty"/> property.
         /// </summary>
         /// <param name="attachingElement">The attached <see cref="FrameworkElement"/>.</param>
         /// <param name="value">A <see cref="DataTemplateSelector"/> implementation for the window's content.</param>
@@ -94,7 +94,7 @@ namespace BionicCode.Utilities.Net
           "Style", typeof(Style), typeof(Dialog), new PropertyMetadata(default(Style)));
 
         /// <summary>
-        /// Set method of the attached property <see cref="StyleProperty"/>.
+        /// SetValue method of the attached property <see cref="StyleProperty"/>.
         /// </summary>
         /// <param name="attachingElement">The attached <see cref="FrameworkElement"/>.</param>
         /// <param name="value">The <see cref="Style"/> for the dialog <see cref="Window"/>.</param>
@@ -118,7 +118,7 @@ namespace BionicCode.Utilities.Net
           "IsClosable", typeof(bool), typeof(Dialog), new PropertyMetadata(default(bool)));
 
         /// <summary>
-        /// Set method of the <see cref="IsClosableProperty"/> attached property.
+        /// SetValue method of the <see cref="IsClosableProperty"/> attached property.
         /// </summary>
         /// <param name="attachingElement">The attached <see cref="FrameworkElement"/>.</param>
         /// <param name="value"><c>true</c> to allow the user to close the <see cref="Window"/>, otherwise <c>false</c>. The default is <c>false</c>.</param>
@@ -142,7 +142,7 @@ namespace BionicCode.Utilities.Net
           "IsModal", typeof(bool), typeof(Dialog), new PropertyMetadata(default(bool)));
 
         /// <summary>
-        /// Set method of the <see cref="IsModalProperty"/> attached property.
+        /// SetValue method of the <see cref="IsModalProperty"/> attached property.
         /// </summary>
         /// <param name="attachingElement">The attached <see cref="FrameworkElement"/>.</param>
         /// <param name="value"><c>true</c> to show the <see cref="Window"/> modal, otherwise <c>false</c>. The default is <c>false</c>.</param>

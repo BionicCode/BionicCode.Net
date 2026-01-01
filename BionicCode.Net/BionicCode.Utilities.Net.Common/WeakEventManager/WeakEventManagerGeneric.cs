@@ -127,8 +127,8 @@
 
         public static void AddEventHandler<TEventHandler>(TEventSource eventSource, string eventName, TEventHandler handler, SynchronizationContext synchronizationContext) where TEventHandler : Delegate
         {
-            ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
-            ArgumentNullExceptionEx.ThrowIfNull(handler, nameof(handler));
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(handler, nameof(handler));
 
             lock (WeakEventManager<TEventSource>.SyncLock)
             {
@@ -259,7 +259,7 @@
                 object adjustedEventSource = eventSource ?? WeakEventManager<TEventSource>.DummyEventSourceForStaticEventHandlers;
 
                 weakEventManager = WeakEventManagerTable.GetOrCreateWeakEventManager<TEventSource>(adjustedEventSource, eventName, isCustomClientDelegate);
-                ArgumentExceptionEx.ThrowIfNotAssignable(weakEventManager.EventSourceEventData.GetEventInfo(), clientHandler);
+                ArgumentExceptionAdvanced.ThrowIfEventHandlerNotAssignable(clientHandler, weakEventManager.EventSourceEventData);
 
                 weakEventManager.RegisterHandler(clientHandlerAdapterInvocator, clientHandler, adjustedEventSource, capturedSynchronizationContext);
             }
@@ -270,8 +270,8 @@
 
         public static void RemoveEventHandler<THandler>(TEventSource eventSource, string eventName, THandler handler) where THandler : Delegate
         {
-            ArgumentNullExceptionEx.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
-            ArgumentNullExceptionEx.ThrowIfNull(handler, nameof(handler));
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(handler, nameof(handler));
 
             lock (ManagedWeakTable.TableLock)
             {

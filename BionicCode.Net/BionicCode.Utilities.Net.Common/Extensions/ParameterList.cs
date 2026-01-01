@@ -18,7 +18,7 @@
         public ParameterList(IEnumerable<ParameterData> items)
         {
             this.Parameters = items.ToImmutableList();
-            ArgumentNullExceptionEx.ThrowIfNullOrEmpty(this.Parameters, nameof(items));
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Parameters, nameof(items));
 
             this.DeclaringMember = this.Parameters.FirstOrDefault()?.MemberData;
             if (!this.Parameters.All(parameter => ReferenceEquals(parameter.MemberData, this.DeclaringMember)))

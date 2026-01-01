@@ -58,7 +58,7 @@ namespace BionicCode.Utilities.Net
         /// <param name="canExecuteNoParam">The execution status handler.</param>
         protected AsyncRelayCommandCommon(Func<Task> executeAsyncNoParam, Func<bool> canExecuteNoParam)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(executeAsyncNoParam, nameof(executeAsyncNoParam));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(executeAsyncNoParam, nameof(executeAsyncNoParam));
 
             this.cancellableAsyncNoParamExecuteDelegate = cancellationToken => executeAsyncNoParam.Invoke();
             this.canExecuteNoParamDelegate = canExecuteNoParam ?? (() => true);
@@ -103,7 +103,7 @@ namespace BionicCode.Utilities.Net
         /// <br/><br/>Repeated or concurrent calls are synchronized.
         /// </remarks>
         /// <exception cref="OperationCanceledException">If the executing command delegate was cancelled.</exception>
-        /// <exception cref="ArgumentOutOfRangeExceptionEx"><paramref name="timeout>"/>.TotalMilliseconds is less than -1 or greater than <see cref="int.MaxValue"/> (or <see cref="uint.MaxValue"/> - 1 on some versions of .NET). Note that this upper bound is more restrictive than <see cref="TimeSpan.MaxValue"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeExceptionAdvanced"><paramref name="timeout>"/>.TotalMilliseconds is less than -1 or greater than <see cref="int.MaxValue"/> (or <see cref="uint.MaxValue"/> - 1 on some versions of .NET). Note that this upper bound is more restrictive than <see cref="TimeSpan.MaxValue"/>.</exception>
         public virtual async Task ExecuteAsync(TimeSpan timeout, CancellationToken cancellationToken) => await ExecuteAsync(Timeout.InfiniteTimeSpan, timeout, cancellationToken).ConfigureAwait(false);
 
         public virtual async Task ExecuteAsync(TimeSpan pendingTimeout, TimeSpan executingTimeout, CancellationToken cancellationToken)

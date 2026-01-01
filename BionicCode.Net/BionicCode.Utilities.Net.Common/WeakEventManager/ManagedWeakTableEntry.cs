@@ -14,8 +14,8 @@
 
         protected ManagedWeakTableEntry(object referenceTarget, Type referenceTargetType, Guid id)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(referenceTargetType, nameof(referenceTargetType));
-            ArgumentNullExceptionEx.ThrowIfNull(referenceTarget, nameof(referenceTarget));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(referenceTargetType, nameof(referenceTargetType));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(referenceTarget, nameof(referenceTarget));
 
             this.ReferenceTarget = InitializeWeakReference(referenceTarget);
             this.ReferenceTargetType = referenceTargetType;

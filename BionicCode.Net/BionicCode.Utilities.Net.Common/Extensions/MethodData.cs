@@ -364,7 +364,7 @@
 
                 Type targetType = target.GetType();
                 Type declaringType = this.DeclaringTypeData.UnwrapType();
-                ArgumentExceptionEx.ThrowIfNotAssignableTo(
+                ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
                     targetType,
                     declaringType,
                     nameof(target),
@@ -639,14 +639,6 @@
         public bool IsOpenGenericMethodOrGenericMethodDefinition
           => (this.IsGenericMethod && this.ContainsGenericParameters) || this.IsGenericMethodDefinition;
 
-        bool IMethodDataInvoker.IsInvocable
-            => !this.IsOpenGenericMethodOrGenericMethodDefinition
-                && this._invoker is not null
-                && this._asyncTaskInvoker is not null
-                && this._asyncGenericTaskInvoker is not null
-                && this._asyncValueTaskInvoker is not null
-                && this._asyncGenericValueTaskInvoker is not null;
-
         public override bool IsPublic
             => this._isPublic ??= GetMethodInfo().IsPublic;
 
@@ -762,6 +754,14 @@
         }
 
         #region IMethodDataInvoker
+
+        bool IMethodDataInvoker.IsInvocable
+            => !this.IsOpenGenericMethodOrGenericMethodDefinition
+                && this._invoker is not null
+                && this._asyncTaskInvoker is not null
+                && this._asyncGenericTaskInvoker is not null
+                && this._asyncValueTaskInvoker is not null
+                && this._asyncGenericValueTaskInvoker is not null;
 
         void IMethodDataInvoker.SetInvoker(Func<object?, object?[]?, object?>? invocator) => this._invoker = invocator;
         void IMethodDataInvoker.SetInvoker(Func<object?, object?[]?, Task>? asyncTaskInvocator) => this._asyncTaskInvoker = asyncTaskInvocator;

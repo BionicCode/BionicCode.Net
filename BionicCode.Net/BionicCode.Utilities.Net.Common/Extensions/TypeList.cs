@@ -17,7 +17,7 @@
         public TypeList(IEnumerable<TypeData> items)
         {
             this.Types = items.ToImmutableList();
-            ArgumentNullExceptionEx.ThrowIfNullOrEmpty(this.Types, nameof(items));
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Types, nameof(items));
             this._hashCode = ComputeHashCode(this.Types);
         }
 

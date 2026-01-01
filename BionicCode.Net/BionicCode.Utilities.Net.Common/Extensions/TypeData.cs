@@ -712,7 +712,7 @@ namespace BionicCode.Utilities.Net
 
         private static bool IsTypeDelegate(Type type)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(type, nameof(type));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             return TypeData.DelegateType.IsAssignableFrom(type);
         }

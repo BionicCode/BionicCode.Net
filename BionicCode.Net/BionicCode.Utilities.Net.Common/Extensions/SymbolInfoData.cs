@@ -10,7 +10,7 @@
         protected SymbolInfoData(string name, SymbolInfoDataCacheKey cacheKey)
         {
             ArgumentNullException.ThrowIfNullOrWhiteSpace(name, nameof(name));
-            ArgumentNullExceptionEx.ThrowIfDefault(cacheKey, nameof(cacheKey));
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey, nameof(cacheKey));
 
             this.Name = name;
             this.Indentation = 4;

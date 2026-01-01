@@ -54,8 +54,8 @@
         {
             get
             {
-                ArgumentOutOfRangeExceptionEx.ThrowIfNegative(index, nameof(index));
-                ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(index, this.Count, nameof(index));
+                ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(index, nameof(index));
+                ArgumentOutOfRangeExceptionAdvanced.ThrowIfGreaterThanOrEqual(index, this.Count, nameof(index));
 
                 WeakReference<object> reference = this.Items[index];
                 bool isAlive = reference.TryGetTarget(out object target);
@@ -75,8 +75,8 @@
 
             set
             {
-                ArgumentOutOfRangeExceptionEx.ThrowIfNegative(index, nameof(index));
-                ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(index, this.Count, nameof(index));
+                ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(index, nameof(index));
+                ArgumentOutOfRangeExceptionAdvanced.ThrowIfGreaterThanOrEqual(index, this.Count, nameof(index));
                 if (this.IsReadOnly)
                 {
                     throw new NotSupportedException("Collection is read-only");
@@ -124,7 +124,7 @@
 
         public WeakCollection(ICollection<WeakReference<object>> collection)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(collection, nameof(collection));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(collection, nameof(collection));
 
             this.Items = collection.Select(WeakReferencePool.GetOrCreate).ToList();
             this.IsReadOnly = collection.IsReadOnly;
@@ -132,7 +132,7 @@
 
         public WeakCollection(IEnumerable<WeakReference<object>> items)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(items, nameof(items));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(items, nameof(items));
 
             this.Items = items.Select(WeakReferencePool.GetOrCreate).ToList();
             this.IsReadOnly = false;
@@ -146,7 +146,7 @@
 
         public WeakCollection(ICollection<WeakReference<object>> collection, bool isReadOnly)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(collection, nameof(collection));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(collection, nameof(collection));
 
             this.Items = collection.Select(WeakReferencePool.GetOrCreate).ToList();
             this.IsReadOnly = collection.IsReadOnly || isReadOnly;
@@ -154,7 +154,7 @@
 
         public WeakCollection(IEnumerable<TItem> items, bool isReadOnly)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(items, nameof(items));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(items, nameof(items));
 
             this.Items = items.Select(WeakReferencePool.GetOrCreate).ToList();
             this.IsReadOnly = isReadOnly;
@@ -284,9 +284,9 @@
         /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
         public void CopyTo(TItem[] array, int arrayIndex)
         {
-            ArgumentNullExceptionEx.ThrowIfNull(array, nameof(array));
-            ArgumentOutOfRangeExceptionEx.ThrowIfNegative(arrayIndex, nameof(arrayIndex));
-            ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(arrayIndex, array.Length, nameof(arrayIndex));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(array, nameof(array));
+            ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(arrayIndex, nameof(arrayIndex));
+            ArgumentOutOfRangeExceptionAdvanced.ThrowIfGreaterThanOrEqual(arrayIndex, array.Length, nameof(arrayIndex));
             int availableArrayLength = array.Length - arrayIndex;
             if (availableArrayLength < this.Items.Count)
             {
