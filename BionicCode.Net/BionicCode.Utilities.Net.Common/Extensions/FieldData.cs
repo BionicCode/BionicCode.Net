@@ -86,7 +86,7 @@
                 targetType,
                 ExceptionMessages.GetTypeMismatchExceptionMessage(
                         targetType,
-                        "target type",
+                        nameof(TTarget),
                         declaringType,
                         "declaring type"));
 
@@ -99,7 +99,7 @@
                     fieldType,
                     ExceptionMessages.GetTypeMismatchExceptionMessage(
                             valueType,
-                            "value type",
+                            nameof(TValue),
                             fieldType,
                             "field type"));
             }
@@ -135,7 +135,7 @@
                     declaringType,
                     ExceptionMessages.GetTypeMismatchExceptionMessage(
                             targetType,
-                            "target type",
+                            nameof(target),
                             declaringType,
                             "declaring type"));
             }
@@ -149,7 +149,7 @@
                     fieldType,
                     ExceptionMessages.GetTypeMismatchExceptionMessage(
                             valueType,
-                            "value type",
+                            nameof(value),
                             fieldType,
                             "field type"));
             }

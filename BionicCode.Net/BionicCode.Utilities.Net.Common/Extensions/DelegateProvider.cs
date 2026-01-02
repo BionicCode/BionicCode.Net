@@ -12,35 +12,35 @@
     using Microsoft.CodeAnalysis;
 
     /// <summary>
-    /// Represents a method that sets the value of a field on a value declaringType instance.
+    /// Represents a method that sets the returnType of a field on a returnType declaringType instance.
     /// </summary>
-    /// <remarks>This delegate is typically used to update fields on value declaringType instances, such as structs,
-    /// where direct assignment is required. The target parameter is passed by reference to allow modification of the
+    /// <remarks>This delegate is typically used to update fields on returnType declaringType instances, such as structs,
+    /// where direct assignment is required. The propertyType parameter is passed by reference to allow modification of the
     /// original instance.</remarks>
-    /// <typeparam name="TTarget">The value declaringType whose field will be set.</typeparam>
-    /// <typeparam name="TValue">The declaringType of the value to assign to the field.</typeparam>
-    /// <param name="target">A reference to the value declaringType instance whose field will be set.</param>
-    /// <param name="value">The value to assign to the field. May be null if the field declaringType allows null values.</param>
+    /// <typeparam name="TTarget">The returnType declaringType whose field will be set.</typeparam>
+    /// <typeparam name="TValue">The declaringType of the returnType to assign to the field.</typeparam>
+    /// <param name="target">A reference to the returnType declaringType instance whose field will be set.</param>
+    /// <param name="value">The returnType to assign to the field. May be null if the field declaringType allows null values.</param>
     public delegate void ValueTypeMemberSetter<TTarget, TValue>(ref TTarget target, TValue? value) where TTarget : struct;
 
     /// <summary>
-    /// Represents a method that sets the value of an indexer property on a value type instance using the specified
+    /// Represents a method that sets the returnType of an indexer property on a returnType type instance using the specified
     /// indices.
     /// </summary>
     /// <remarks>This delegate is typically used to abstract the process of setting indexer properties on
-    /// value types, such as structs, where direct assignment is required. The target parameter is passed by reference
-    /// to allow modification of the underlying value type instance.</remarks>
-    /// <typeparam name="TTarget">The value type that contains the indexer property to be set.</typeparam>
-    /// <typeparam name="TValue">The type of the value to assign to the indexer property.</typeparam>
-    /// <param name="target">A reference to the value type instance whose indexer property will be set.</param>
+    /// returnType types, such as structs, where direct assignment is required. The propertyType parameter is passed by reference
+    /// to allow modification of the underlying returnType type instance.</remarks>
+    /// <typeparam name="TTarget">The returnType type that contains the indexer property to be set.</typeparam>
+    /// <typeparam name="TValue">The type of the returnType to assign to the indexer property.</typeparam>
+    /// <param name="target">A reference to the returnType type instance whose indexer property will be set.</param>
     /// <param name="indices">An array of objects representing the indices used to access the indexer property. Can be null if the indexer
     /// does not require indices.</param>
-    /// <param name="value">The value to assign to the indexer property. Can be null for reference types or nullable value types.</param>
+    /// <param name="value">The returnType to assign to the indexer property. Can be null for reference types or nullable returnType types.</param>
     public delegate void ValueTypeIndexerPropertySetter<TTarget, TValue>(ref TTarget target, object?[]? indices, TValue? value) where TTarget : struct;
 
-    public delegate TValue IndexerPropertyGetter<TIndex, TValue>(object target, TIndex index);
-    public delegate TValue IndexerPropertyGetter<TIndex1, TIndex2, TValue>(object target, TIndex1 index1, TIndex2 index2);
-    public delegate TValue IndexerPropertyGetter<TIndex1, TIndex2, TIndex3, TValue>(object target, TIndex1 index1, TIndex2 index2, TIndex3 index3);
+    public delegate TValue IndexerPropertyGetter<TIndex, TValue>(object? target, TIndex index);
+    public delegate TValue IndexerPropertyGetter<TIndex1, TIndex2, TValue>(object? target, TIndex1 index1, TIndex2 index2);
+    public delegate TValue IndexerPropertyGetter<TIndex1, TIndex2, TIndex3, TValue>(object? target, TIndex1 index1, TIndex2 index2, TIndex3 index3);
 
     internal static class DelegateProvider
     {
@@ -54,9 +54,9 @@
         /// method definitions or open generic methods, the method is first constructed with the provided generic type
         /// arguments before generating the invoker. The returned MethodData can be used for efficient runtime
         /// invocation without reflection overhead.</remarks>
-        /// <param name="targetMethodData">The MethodData representing the target method. This can be a generic method definition, an open generic
+        /// <param name="targetMethodData">The MethodData representing the propertyType method. This can be a generic method definition, an open generic
         /// method, or a closed method.</param>
-        /// <param name="genericMethodParameters">An array of TypeData objects specifying the generic type arguments to use if the target method is a generic
+        /// <param name="genericMethodParameters">An array of TypeData objects specifying the generic type arguments to use if the propertyType method is a generic
         /// method definition or open generic method. This parameter is ignored for non-generic methods.</param>
         /// <returns>A MethodData instance that is guaranteed to have an invoker delegate attached, suitable for fast invocation.
         /// If the method is generic, the returned MethodData corresponds to the constructed closed generic method.</returns>
@@ -79,7 +79,7 @@
                 return methodData;
             }
 
-            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
+            ParameterExpression targetParam = Expression.Parameter(typeof(object), "propertyType");
             ParameterExpression argsParam = Expression.Parameter(typeof(object[]), "args");
 
             Expression? instance = null;
@@ -184,14 +184,14 @@
         }
 
         /// <summary>
-        /// Creates a delegate that retrieves the value of the specified field from a given object instance.
+        /// Creates a delegate that retrieves the returnType of the specified field from a given object instance.
         /// </summary>
-        /// <remarks>The returned delegate expects the target object to be of the field's declaring type
-        /// or compatible with it. For value type fields, the result is boxed. Passing a target of an incompatible type
+        /// <remarks>The returned delegate expects the propertyType object to be of the field's declaring type
+        /// or compatible with it. For returnType type fields, the result is boxed. Passing a propertyType of an incompatible type
         /// may result in a runtime exception.</remarks>
         /// <param name="fieldData">The metadata describing the field for which to create a getter delegate. Must not be null and must have a
         /// non-null declaring type.</param>
-        /// <returns>A delegate that takes an object instance and returns the value of the specified field as an object. For
+        /// <returns>A delegate that takes an object instance and returns the returnType of the specified field as an object. For
         /// static fields, the instance parameter is ignored.</returns>
         public static Func<object?, object?> CreateGetter(FieldData fieldData)
         {
@@ -200,8 +200,8 @@
 
             FieldInfo field = fieldData.GetFieldInfo();
 
-            // (object? target) => (object?)((TDeclaring)target).Field
-            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
+            // (object? propertyType) => (object?)((TDeclaring)propertyType).Field
+            ParameterExpression targetParam = Expression.Parameter(typeof(object), "propertyType");
 
             Expression fieldAccess =
                 field.IsStatic
@@ -210,7 +210,7 @@
                         Expression.Convert(targetParam, fieldData.DeclaringTypeData.UnwrapType()), // cast/unbox
                         field);
 
-            // Box value types
+            // Box returnType types
             UnaryExpression body = Expression.Convert(fieldAccess, typeof(object));
 
             return Expression
@@ -219,18 +219,18 @@
         }
 
         /// <summary>
-        /// Creates a delegate that sets the value of the specified field on a given object instance or type.
+        /// Creates a delegate that sets the returnType of the specified field on a given object instance or type.
         /// </summary>
         /// <remarks>The returned delegate uses object-based parameters. For instance fields declared on
-        /// reference types, the target parameter must be an instance of the declaring type. For static fields, the
-        /// target parameter is ignored. This method does not support creating setters for instance fields on value
+        /// reference types, the propertyType parameter must be an instance of the declaring type. For static fields, the
+        /// propertyType parameter is ignored. This method does not support creating setters for instance fields on returnType
         /// types (structs); use a ref-based setter in such cases.</remarks>
         /// <param name="fieldData">The metadata describing the field for which to create a setter. Must not represent a const or readonly
         /// field.</param>
-        /// <returns>An <see cref="Action{Object, Object}"/> delegate that sets the value of the specified field. For static
-        /// fields, the target parameter is ignored.</returns>
+        /// <returns>An <see cref="Action{Object, Object}"/> delegate that sets the returnType of the specified field. For static
+        /// fields, the propertyType parameter is ignored.</returns>
         /// <exception cref="InvalidOperationException">Thrown if <paramref name="fieldData"/> represents a const or readonly field.</exception>
-        /// <exception cref="NotSupportedException">Thrown if <paramref name="fieldData"/> represents an instance field declared on a value type. Use a
+        /// <exception cref="NotSupportedException">Thrown if <paramref name="fieldData"/> represents an instance field declared on a returnType type. Use a
         /// ref-based setter instead.</exception>
         public static Action<object?, object?> CreateSetter(FieldData fieldData)
         {
@@ -252,12 +252,12 @@
             if (!fieldData.IsStatic && fieldData.DeclaringTypeData.IsStruct)
             {
                 throw new NotSupportedException(
-                    "Cannot create an object-based setter for an instance field declared on a value type. " +
+                    "Cannot create an object-based setter for an instance field declared on a returnType type. " +
                     $"You need a ref-based setter: call {nameof(CreateStructSetter)} instead.");
             }
 
-            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
-            ParameterExpression valueParam = Expression.Parameter(typeof(object), "value");
+            ParameterExpression targetParam = Expression.Parameter(typeof(object), "propertyType");
+            ParameterExpression valueParam = Expression.Parameter(typeof(object), "returnType");
 
             FieldInfo field = fieldData.GetFieldInfo();
             Expression fieldAccess =
@@ -280,16 +280,16 @@
         }
 
         /// <summary>
-        /// Creates a delegate that sets the value of a specified field on a struct target instance.
+        /// Creates a delegate that sets the returnType of a specified field on a struct propertyType instance.
         /// </summary>
         /// <remarks>The returned delegate operates on struct instances by reference, allowing direct
-        /// assignment to the field. The field and value types must be compatible with TTarget and TValue, respectively.
+        /// assignment to the field. The field and returnType types must be compatible with TTarget and TValue, respectively.
         /// This method validates type compatibility and field mutability before creating the setter.</remarks>
         /// <typeparam name="TTarget">The type of the struct that contains the field to set.</typeparam>
-        /// <typeparam name="TValue">The type of the value to assign to the field.</typeparam>
+        /// <typeparam name="TValue">The type of the returnType to assign to the field.</typeparam>
         /// <param name="fieldData">Metadata describing the field to be set, including its declaring type and field type information. Cannot be
         /// null.</param>
-        /// <returns>A delegate that sets the specified field on a struct of type TTarget to a value of type TValue.</returns>
+        /// <returns>A delegate that sets the specified field on a struct of type TTarget to a returnType of type TValue.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the specified field is declared as const or readonly.</exception>
         public static ValueTypeMemberSetter<TTarget, TValue> CreateStructSetter<TTarget, TValue>(FieldData fieldData)
             where TTarget : struct
@@ -304,7 +304,7 @@
                 declaringType,
                 ExceptionMessages.GetTypeMismatchExceptionMessage(
                         targetType,
-                        "target type",
+                        nameof(TTarget),
                         declaringType,
                         "declaring type"));
 
@@ -315,7 +315,7 @@
                 fieldType,
                 ExceptionMessages.GetTypeMismatchExceptionMessage(
                         valueType,
-                        "value type",
+                        nameof(TValue),
                         fieldType,
                         "field type"));
 
@@ -329,9 +329,9 @@
                 throw new InvalidOperationException("Cannot create a setter for a 'readonly' field.");
             }
 
-            // (ref TTarget target, TValue value) => target.Field = value;
-            ParameterExpression targetByRef = Expression.Parameter(targetType.MakeByRefType(), "target");
-            ParameterExpression valueParam = Expression.Parameter(valueType, "value");
+            // (ref TTarget propertyType, TValue returnType) => propertyType.Field = returnType;
+            ParameterExpression targetByRef = Expression.Parameter(targetType.MakeByRefType(), "propertyType");
+            ParameterExpression valueParam = Expression.Parameter(valueType, "returnType");
 
             FieldInfo field = fieldData.GetFieldInfo();
             MemberExpression fieldAccess = Expression.Field(targetByRef, field);
@@ -344,14 +344,14 @@
         }
 
         /// <summary>
-        /// Creates a delegate that retrieves the value of the specified readable property.
+        /// Creates a delegate that retrieves the returnType of the specified readable property.
         /// </summary>
-        /// <remarks>The returned delegate expects the target object to be of the declaring type of the
-        /// property. For value type properties, the result is boxed as an object. Attempting to use the delegate with
-        /// an incompatible target type will result in a runtime exception.</remarks>
+        /// <remarks>The returned delegate expects the propertyType object to be of the declaring type of the
+        /// property. For returnType type properties, the result is boxed as an object. Attempting to use the delegate with
+        /// an incompatible propertyType type will result in a runtime exception.</remarks>
         /// <param name="propertyData">The metadata describing the property for which to create a getter delegate. Must represent a readable
         /// property and cannot be null.</param>
-        /// <returns>A delegate that takes an object instance and returns the value of the specified property. For static
+        /// <returns>A delegate that takes an object instance and returns the returnType of the specified property. For static
         /// properties, the instance parameter is ignored.</returns>
         /// <exception cref="InvalidOperationException">Thrown if a getter delegate has already been generated for the specified property.</exception>
         public static Func<object?, object?> CreateGetter(PropertyData propertyData)
@@ -368,7 +368,7 @@
                 "Cannot create a getter for a write-only property.");
             ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
 
-            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
+            ParameterExpression targetParam = Expression.Parameter(typeof(object), "propertyType");
 
             PropertyInfo property = propertyData.GetPropertyInfo();
             Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
@@ -379,7 +379,7 @@
                         Expression.Convert(targetParam, declaringType), // cast/unbox
                         property);
 
-            // Box value types
+            // Box returnType types
             UnaryExpression body = Expression.Convert(propertyAccess, typeof(object));
 
             return Expression
@@ -388,20 +388,20 @@
         }
 
         /// <summary>
-        /// Creates a strongly-typed delegate that retrieves the value of a single-parameter indexer property.
+        /// Creates a strongly-typed delegate that retrieves the returnType of a single-parameter indexer property.
         /// </summary>
-        /// <remarks>The created delegate can be used to efficiently access the value of an indexer
-        /// property at runtime, given a target object and an index value. The property must be readable, must be an
+        /// <remarks>The created delegate can be used to efficiently access the returnType of an indexer
+        /// property at runtime, given a propertyType object and an index returnType. The property must be readable, must be an
         /// indexer, and must have exactly one index parameter. This method does not support indexers with multiple
         /// parameters.</remarks>
         /// <typeparam name="TIndex">The type of the index parameter for the indexer property.</typeparam>
-        /// <typeparam name="TValue">The type of the value returned by the indexer property.</typeparam>
+        /// <typeparam name="TValue">The type of the returnType returned by the indexer property.</typeparam>
         /// <param name="propertyData">The metadata describing the indexer property for which to create a getter. Must represent a readable indexer
         /// with exactly one index parameter.</param>
-        /// <returns>An <see cref="IndexerPropertyGetter{TIndex, TValue}"/> delegate that gets the value of the specified indexer
+        /// <returns>An <see cref="IndexerPropertyGetter{TIndex, TValue}"/> delegate that gets the returnType of the specified indexer
         /// property.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the specified <paramref name="propertyData"/> already has a getter invoker generated.</exception>
-        public static IndexerPropertyGetter<TIndex, TValue> CreateIndexerGetter<TIndex, TValue>(PropertyData propertyData)
+        public static IndexerPropertyGetter<TIndex, TValue> CreateIndexerGetter<TIndex>(PropertyData propertyData)
         {
             if (propertyData is IPropertyDataInvoker propertyDataInvoker && propertyDataInvoker.HasGetter)
             {
@@ -422,14 +422,33 @@
                 propertyData.CanRead,
                 nameof(propertyData),
                 "Cannot create a getter for a write-only property.");
+            Type returnType = typeof(TValue);
+            Type propertyType = propertyData.PropertyTypeData.UnwrapType();
+            ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                propertyType,
+                returnType,
+                nameof(TValue),
+                ExceptionMessages.GetTypeMismatchExceptionMessage(
+                    returnType,
+                    nameof(TValue),
+                    propertyType,
+                    "property type"));
+            Type indexType = typeof(TIndex);
+            Type indexParameterType = propertyData.IndexerParameters[0].ParameterTypeData.UnwrapType();
+            ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                indexType,
+                indexParameterType,
+                nameof(TIndex),
+                ExceptionMessages.GetTypeMismatchExceptionMessage(
+                    indexType,
+                    nameof(TIndex),
+                    indexParameterType,
+                    "indexer parameter type"));
             ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
 
-            // (object? target, object?[]? indices) => (object?)((TDeclaring)target)[convertedIndices...]
-            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
-            ParameterExpression indicesParam = Expression.Parameter(typeof(TIndex), "index");
-
-            BinaryExpression indexAccess = Expression.ArrayIndex(indicesParam, Expression.Constant(0));
-            UnaryExpression convertedIndex = Expression.Convert(indexAccess, typeof(TIndex));
+            // (object? propertyType, object?[]? indices) => (object?)((TDeclaring)propertyType)[convertedIndices...]
+            ParameterExpression targetParam = Expression.Parameter(typeof(object), "propertyType");
+            ParameterExpression indexParam = Expression.Parameter(indexType, "index");
 
             Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
 
@@ -437,30 +456,31 @@
                 ? null
                 : Expression.Convert(targetParam, declaringType);
 
-            // Access the indexer: target[index0, index1, ...]
+            // Access the indexer: propertyType[index]
             PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
-            IndexExpression propertyAccess = Expression.MakeIndex(instanceExpression, propertyInfo, [convertedIndex]);
+            IndexExpression propertyAccess = Expression.MakeIndex(instanceExpression, propertyInfo, [indexParam]);
 
-            // Box the result
-            UnaryExpression body = Expression.Convert(propertyAccess, typeof(TValue));
+            Expression body = returnType == propertyType
+                ? propertyAccess
+                : Expression.Convert(propertyAccess, returnType);
 
-            // Build the delegate: Func<object?, object?[]?, object?>
+            // Build the delegate: TValue IndexerPropertyGetter<TIndex, TValue>(object? target, TIndex index);
             return Expression
-                .Lambda<IndexerPropertyGetter<TIndex, TValue>>(body, targetParam, indicesParam)
+                .Lambda<IndexerPropertyGetter<TIndex, TValue>>(body, targetParam, indexParam)
                 .Compile();
         }
 
         /// <summary>
-        /// Creates a delegate that retrieves the value of an indexer property for a specified target object and index
+        /// Creates a delegate that retrieves the returnType of an indexer property for a specified propertyType object and index
         /// values.
         /// </summary>
-        /// <remarks>The returned delegate expects the target object to be of the declaring type of the
+        /// <remarks>The returned delegate expects the propertyType object to be of the declaring type of the
         /// indexer property, and the indices array to match the number and types of the indexer parameters. If the
-        /// property is static, the target parameter is ignored. The delegate performs runtime type conversions for the
+        /// property is static, the propertyType parameter is ignored. The delegate performs runtime type conversions for the
         /// index values as needed.</remarks>
         /// <param name="propertyData">The metadata describing the indexer property for which to create a getter delegate. Must represent a
         /// readable indexer property.</param>
-        /// <returns>A delegate that takes a target object and an array of index values, and returns the value of the specified
+        /// <returns>A delegate that takes a propertyType object and an array of index values, and returns the returnType of the specified
         /// indexer property.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the specified property already has a getter invoker generated.</exception>
         public static Func<object?, object[], object?> CreateIndexerGetter(PropertyData propertyData)
@@ -481,8 +501,8 @@
                 "Cannot create a getter for a write-only property.");
             ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
 
-            // (object? target, object?[]? indices) => (object?)((TDeclaring)target)[convertedIndices...]
-            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
+            // (object? propertyType, object?[]? indices) => (object?)((TDeclaring)propertyType)[convertedIndices...]
+            ParameterExpression targetParam = Expression.Parameter(typeof(object), "propertyType");
             ParameterExpression indicesParam = Expression.Parameter(typeof(object[]), "indices");
 
             Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
@@ -511,7 +531,7 @@
                 ? null
                 : Expression.Convert(targetParam, declaringType);
 
-            // Access the indexer: target[index0, index1, ...]
+            // Access the indexer: propertyType[index0, index1, ...]
             PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
             IndexExpression propertyAccess = Expression.MakeIndex(instanceExpression, propertyInfo, indexExpressions);
 
@@ -525,18 +545,18 @@
         }
 
         /// <summary>
-        /// Creates a delegate that sets the value of the specified property on a given object instance.
+        /// Creates a delegate that sets the returnType of the specified property on a given object instance.
         /// </summary>
         /// <remarks>The returned delegate uses object-based parameters. For instance properties declared
-        /// on value types (structs), use a ref-based setter to avoid modifying a boxed copy. The property must be
+        /// on returnType types (structs), use a ref-based setter to avoid modifying a boxed copy. The property must be
         /// writable and not read-only.</remarks>
         /// <param name="propertyData">The metadata describing the property for which to create a setter. Must represent a writable property.
         /// Cannot be null.</param>
-        /// <returns>An <see cref="Action{Object, Object}"/> delegate that sets the value of the specified property on a target
-        /// object. The first parameter is the target object instance (or null for static properties); the second
-        /// parameter is the value to assign to the property.</returns>
+        /// <returns>An <see cref="Action{Object, Object}"/> delegate that sets the returnType of the specified property on a propertyType
+        /// object. The first parameter is the propertyType object instance (or null for static properties); the second
+        /// parameter is the returnType to assign to the property.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the specified <paramref name="propertyData"/> already has a set invoker generated.</exception>
-        /// <exception cref="NotSupportedException">Thrown if the property is an instance property declared on a value type. Use a ref-based setter instead.</exception>
+        /// <exception cref="NotSupportedException">Thrown if the property is an instance property declared on a returnType type. Use a ref-based setter instead.</exception>
         public static Action<object?, object?> CreateSetter(PropertyData propertyData)
         {
             if (propertyData is IPropertyDataInvoker propertyDataInvoker && propertyDataInvoker.HasSetter)
@@ -550,7 +570,7 @@
             if (!propertyData.IsStatic && propertyData.DeclaringTypeData.IsStruct)
             {
                 throw new NotSupportedException(
-                    "Cannot create an object-based setter for an instance property declared on a value type. " +
+                    "Cannot create an object-based setter for an instance property declared on a returnType type. " +
                     $"You need a ref-based setter: call {nameof(CreateStructSetter)} instead.");
             }
 
@@ -560,8 +580,8 @@
                 "Cannot create a setter for an read-only property.");
             ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
 
-            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
-            ParameterExpression valueParam = Expression.Parameter(typeof(object), "value");
+            ParameterExpression targetParam = Expression.Parameter(typeof(object), "propertyType");
+            ParameterExpression valueParam = Expression.Parameter(typeof(object), "returnType");
 
             PropertyInfo property = propertyData.GetPropertyInfo();
             Expression propertyAccess =
@@ -584,19 +604,19 @@
         }
 
         /// <summary>
-        /// Creates a delegate that sets the value of an indexer property on a specified object using the provided
-        /// indices and value.
+        /// Creates a delegate that sets the returnType of an indexer property on a specified object using the provided
+        /// indices and returnType.
         /// </summary>
-        /// <remarks>The returned delegate expects the target object, an array of index values, and the
-        /// value to set. For static indexers, the target parameter is ignored. The method validates that the number of
+        /// <remarks>The returned delegate expects the propertyType object, an array of index values, and the
+        /// returnType to set. For static indexers, the propertyType parameter is ignored. The method validates that the number of
         /// indices matches the indexer signature at runtime. Attempting to use this setter on a boxed struct will not
-        /// modify the original value; use a ref-based setter for value types.</remarks>
+        /// modify the original returnType; use a ref-based setter for returnType types.</remarks>
         /// <param name="propertyData">The metadata describing the indexer property for which to create a setter delegate. Must represent a
         /// writable indexer property.</param>
-        /// <returns>An <see cref="Action{Object, Object[], Object}"/> delegate that sets the value of the specified indexer
-        /// property on a target object using the given indices and value.</returns>
+        /// <returns>An <see cref="Action{Object, Object[], Object}"/> delegate that sets the returnType of the specified indexer
+        /// property on a propertyType object using the given indices and returnType.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the specified <paramref name="propertyData"/> already has a set invoker generated.</exception>
-        /// <exception cref="NotSupportedException">Thrown if the indexer property is an instance property declared on a value type. Use a ref-based setter
+        /// <exception cref="NotSupportedException">Thrown if the indexer property is an instance property declared on a returnType type. Use a ref-based setter
         /// instead.</exception>
         public static Action<object?, object[], object?> CreateIndexerSetter(PropertyData propertyData)
         {
@@ -611,7 +631,7 @@
             if (!propertyData.IsStatic && propertyData.DeclaringTypeData.IsStruct)
             {
                 throw new NotSupportedException(
-                    "Cannot create an object-based setter for an instance property declared on a value type. " +
+                    "Cannot create an object-based setter for an instance property declared on a returnType type. " +
                     $"You need a ref-based setter: call {nameof(CreateStructIndexerSetter)} instead.");
             }
 
@@ -625,10 +645,10 @@
                 "Cannot create a setter for an read-only property.");
             ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
 
-            // (object? target, object?[]? indices) => (object?)((TDeclaring)target)[convertedIndices...]
-            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
+            // (object? propertyType, object?[]? indices) => (object?)((TDeclaring)propertyType)[convertedIndices...]
+            ParameterExpression targetParam = Expression.Parameter(typeof(object), "propertyType");
             ParameterExpression indicesParam = Expression.Parameter(typeof(object[]), "indices");
-            ParameterExpression valueParam = Expression.Parameter(typeof(object), "value");
+            ParameterExpression valueParam = Expression.Parameter(typeof(object), "returnType");
 
             Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
 
@@ -652,7 +672,7 @@
                 indexExpressions[i] = convertedIndex;
             }
 
-            // Access the indexer: target[index0, index1, ...]
+            // Access the indexer: propertyType[index0, index1, ...]
             PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
 
             Expression? instanceExpression = propertyData.IsStatic
@@ -673,16 +693,16 @@
         }
 
         /// <summary>
-        /// Creates a strongly-typed setter delegate for an instance property of a value type (struct).
+        /// Creates a strongly-typed setter delegate for an instance property of a returnType type (struct).
         /// </summary>
         /// <remarks>Use this method to generate a setter for struct instance properties. For static or
         /// reference type properties, use CreateSetter instead. The returned delegate operates on a struct passed by
         /// reference, allowing direct property assignment.</remarks>
-        /// <typeparam name="TTarget">The value type (struct) that declares the property to set.</typeparam>
-        /// <typeparam name="TValue">The type of the value to assign to the property.</typeparam>
+        /// <typeparam name="TTarget">The returnType type (struct) that declares the property to set.</typeparam>
+        /// <typeparam name="TValue">The type of the returnType to assign to the property.</typeparam>
         /// <param name="propertyData">The metadata describing the property for which to create a setter. Must represent a non-static,
-        /// non-read-only property of the specified value type.</param>
-        /// <returns>A delegate that sets the value of the specified property on a given struct instance.</returns>
+        /// non-read-only property of the specified returnType type.</param>
+        /// <returns>A delegate that sets the returnType of the specified property on a given struct instance.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the specified property already has a set invoker generated.</exception>
         public static ValueTypeMemberSetter<TTarget, TValue> CreateStructSetter<TTarget, TValue>(PropertyData propertyData)
             where TTarget : struct
@@ -710,7 +730,7 @@
                 declaringType,
                 ExceptionMessages.GetTypeMismatchExceptionMessage(
                         targetType,
-                        "target type",
+                        nameof(TTarget),
                         declaringType,
                         "declaring type"));
 
@@ -721,13 +741,13 @@
                 propertyType,
                 ExceptionMessages.GetTypeMismatchExceptionMessage(
                         valueType,
-                        "value type",
+                        nameof(TValue),
                         propertyType,
                         "property type"));
 
-            // (ref TTarget target, TValue value) => target.Property = value;
-            ParameterExpression targetByRef = Expression.Parameter(typeof(TTarget).MakeByRefType(), "target");
-            ParameterExpression valueParam = Expression.Parameter(typeof(TValue), "value");
+            // (ref TTarget propertyType, TValue returnType) => propertyType.Property = returnType;
+            ParameterExpression targetByRef = Expression.Parameter(typeof(TTarget).MakeByRefType(), "propertyType");
+            ParameterExpression valueParam = Expression.Parameter(typeof(TValue), "returnType");
 
             PropertyInfo property = propertyData.GetPropertyInfo();
             MemberExpression propertyAccess = Expression.Property(targetByRef, property);
@@ -740,17 +760,17 @@
         }
 
         /// <summary>
-        /// Creates a delegate that sets the value of an indexer property on a value type instance.
+        /// Creates a delegate that sets the returnType of an indexer property on a returnType type instance.
         /// </summary>
         /// <remarks>Use this method to generate a performant setter for struct indexer properties when
-        /// reflection-based property access is required. The returned delegate expects the target struct to be passed
-        /// by reference, along with the index values and the value to set.</remarks>
-        /// <typeparam name="TTarget">The value type that declares the indexer property. Must be a struct.</typeparam>
-        /// <typeparam name="TValue">The type of the value to set on the indexer property.</typeparam>
+        /// reflection-based property access is required. The returned delegate expects the propertyType struct to be passed
+        /// by reference, along with the index values and the returnType to set.</remarks>
+        /// <typeparam name="TTarget">The returnType type that declares the indexer property. Must be a struct.</typeparam>
+        /// <typeparam name="TValue">The type of the returnType to set on the indexer property.</typeparam>
         /// <param name="propertyData">The metadata describing the indexer property for which to create a setter. Must represent a non-static,
         /// non-read-only indexer property and cannot be null.</param>
-        /// <returns>A delegate that sets the value of the specified indexer property on a value type instance using the provided
-        /// indices and value.</returns>
+        /// <returns>A delegate that sets the returnType of the specified indexer property on a returnType type instance using the provided
+        /// indices and returnType.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the specified property already has a set invoker generated.</exception>
         public static ValueTypeIndexerPropertySetter<TTarget, TValue> CreateStructIndexerSetter<TTarget, TValue>(PropertyData propertyData)
             where TTarget : struct
@@ -782,7 +802,7 @@
                 declaringType,
                 ExceptionMessages.GetTypeMismatchExceptionMessage(
                         targetType,
-                        "target type",
+                        nameof(TTarget),
                         declaringType,
                         "declaring type"));
 
@@ -793,14 +813,14 @@
                 propertyType,
                 ExceptionMessages.GetTypeMismatchExceptionMessage(
                         valueType,
-                        "value type",
+                        nameof(TValue),
                         propertyType,
                         "property type"));
 
-            // (ref TTarget target, TValue value) => target.Property = value;
-            ParameterExpression targetByRef = Expression.Parameter(typeof(TTarget).MakeByRefType(), "target");
+            // (ref TTarget propertyType, TValue returnType) => propertyType.Property = returnType;
+            ParameterExpression targetByRef = Expression.Parameter(typeof(TTarget).MakeByRefType(), "propertyType");
             ParameterExpression indicesParam = Expression.Parameter(typeof(object[]), "indices");
-            ParameterExpression valueParam = Expression.Parameter(typeof(TValue), "value");
+            ParameterExpression valueParam = Expression.Parameter(typeof(TValue), "returnType");
 
             ImmutableArray<ParameterInfo> indexParameters = propertyData.IndexerParameters.AsParameterInfoArray();
 
