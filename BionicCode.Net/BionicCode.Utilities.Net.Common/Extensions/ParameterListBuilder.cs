@@ -16,7 +16,7 @@
             }
 
             List<ParameterData> parameters = new List<ParameterData>(parameterInfoList.Count);
-            MemberInfoData? member = null;
+            MemberData? member = null;
             foreach (ParameterInfo parameterInfo in parameterInfoList)
             {
                 ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);

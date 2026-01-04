@@ -1516,7 +1516,7 @@
             return nameBuilder;
         }
 
-        internal static PooledStringBuilder AppendDisplayNameInternal(this PooledStringBuilder nameBuilder, MemberInfoData memberInfoData, bool isFullyQualifiedName, bool isGenericTypeParameterIncluded, bool isDeclaringTypeIncluded)
+        internal static PooledStringBuilder AppendDisplayNameInternal(this PooledStringBuilder nameBuilder, MemberData memberInfoData, bool isFullyQualifiedName, bool isGenericTypeParameterIncluded, bool isDeclaringTypeIncluded)
         {
             if (isFullyQualifiedName || isDeclaringTypeIncluded)
             {

@@ -4,21 +4,25 @@
     using System.Collections.Generic;
     using System.Reflection;
 
-    internal abstract class MemberInfoData : SymbolInfoData
+    internal abstract class MemberData : SymbolInfoData
     {
         private IList<CustomAttributeData> attributeData;
         private TypeData declaringTypeData;
 
-        protected MemberInfoData(MemberInfo memberInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(memberInfo.Name, symbolInfoDataCacheKey)
+        protected MemberData(MemberInfo memberInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(memberInfo.Name, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(memberInfo, nameof(memberInfo));
+            if (memberInfo.DeclaringType is null)
+            {
+                throw new NotSupportedException($"Member '{memberInfo.Name}' has no declaring type.");
+            }
 
             this.DeclaringTypeHandle = memberInfo.DeclaringType.TypeHandle;
-            this.Namespace = memberInfo.DeclaringType.Namespace;
+            this.Namespace = memberInfo.DeclaringType.Namespace ?? string.Empty;
         }
 
         private Type GetDeclaringType()
-          => Type.GetTypeFromHandle(this.DeclaringTypeHandle);
+          => Type.GetTypeFromHandle(this.DeclaringTypeHandle)!;
 
         protected abstract MemberInfo GetMemberInfo();
         public RuntimeTypeHandle DeclaringTypeHandle { get; }

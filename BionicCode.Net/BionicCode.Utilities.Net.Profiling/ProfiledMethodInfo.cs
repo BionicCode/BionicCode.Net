@@ -22,7 +22,7 @@
 
         public bool IsGeneric => this.MethodData.IsGenericMethod;
 
-        public override MemberInfoData MemberInfoData => this.MethodData;
+        public override MemberData MemberInfoData => this.MethodData;
         public IList<MethodArgumentInfo> ArgumentInfo { get; }
     }
 }

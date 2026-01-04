@@ -15,7 +15,7 @@
         public bool IsIndexer => this.PropertyData.IsIndexer;
 
         public string MethodReturnTypeDisplayName => this.PropertyData.PropertyTypeData.DisplayName;
-        public override MemberInfoData MemberInfoData => this.PropertyData;
+        public override MemberData MemberInfoData => this.PropertyData;
         public IList<PropertyArgumentInfo> Arguments { get; }
     }
 }

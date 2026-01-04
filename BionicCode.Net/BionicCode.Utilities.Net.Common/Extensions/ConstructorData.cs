@@ -3,7 +3,7 @@
     using System;
     using System.Reflection;
 
-    internal sealed class ConstructorData : MemberInfoData
+    internal sealed class ConstructorData : MemberData
     {
         private string? displayName;
         private string? shortDisplayName;

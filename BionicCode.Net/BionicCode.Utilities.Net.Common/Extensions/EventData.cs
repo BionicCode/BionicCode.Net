@@ -3,7 +3,7 @@
     using System;
     using System.Reflection;
 
-    internal sealed class EventData : MemberInfoData
+    internal sealed class EventData : MemberData
     {
         private string? displayName;
         private string? shortDisplayName;

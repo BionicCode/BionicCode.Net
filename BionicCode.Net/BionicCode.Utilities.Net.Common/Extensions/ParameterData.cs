@@ -29,7 +29,7 @@
         private int? position;
         private TypeData? parameterTypeData;
         private TypeData? declaringTypeData;
-        private MemberInfoData? member;
+        private MemberData? member;
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
         private object? defaultValue;
@@ -133,7 +133,7 @@
 
         public ParameterInfo ParameterInfo { get; }
 
-        public MemberInfoData MemberData
+        public MemberData MemberData
             => this.member ??= GetParameterInfo().Member switch
             {
                 ConstructorInfo constructorInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo),

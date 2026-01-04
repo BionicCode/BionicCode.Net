@@ -61,7 +61,7 @@
                 case TypeData typeData:
                     _ = nameBuilder.AppendDisplayNameInternal(typeData, isFullyQualifiedName, isGenericTypeParameterIncluded);
                     break;
-                case MemberInfoData memberInfoData:
+                case MemberData memberInfoData:
                     _ = nameBuilder.AppendDisplayNameInternal(memberInfoData, isFullyQualifiedName, isGenericTypeParameterIncluded, isDeclaringTypeIncluded);
                     break;
                 default:

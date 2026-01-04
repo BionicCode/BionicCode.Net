@@ -8,7 +8,7 @@ namespace BionicCode.Utilities.Net
     using System.Runtime.CompilerServices;
     using Microsoft.CodeAnalysis;
 
-    internal sealed class PropertyData : MemberInfoData, IPropertyDataInvoker
+    internal sealed class PropertyData : MemberData, IPropertyDataInvoker
     {
         private string? displayName;
         private string? shortDisplayName;
@@ -64,16 +64,35 @@ namespace BionicCode.Utilities.Net
         protected override MemberInfo GetMemberInfo()
           => GetPropertyInfo();
 
-        public object? GetValue<TIndex>(object? target, object[]? indexerPropertyIndex = null)
+        /// <summary>
+        /// Gets the value of the property represented by this instance for the specified target object and optional
+        /// index parameters.
+        /// </summary>
+        /// <remarks>For indexer properties, the number and types of elements in indexerPropertyIndex must
+        /// match the indexer parameters defined by the property. For static properties, the target parameter is
+        /// ignored.
+        /// <para/>
+        /// If types are known at compiletime use a strictly typed overload instead to boopst performance (e.g. avoid boxing).</remarks>
+        /// <param name="target">The object whose property value is to be retrieved. For static properties, this parameter is ignored. For
+        /// instance properties, this must be an object assignable to the declaring type; cannot be null for instance
+        /// properties.</param>
+        /// <param name="indexerPropertyIndex">An array of objects representing the index values for indexed (indexer) properties. Must be non-null and
+        /// match the number of indexer parameters if the property is an indexer; otherwise, this parameter is ignored.</param>
+        /// <returns>The value of the property for the specified target object and index parameters, or null if the property
+        /// value is null.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the property does not have a getter or if the declaring type is a value type.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the target is null for an instance property, or if indexerPropertyIndex is null for an indexer
+        /// property.</exception>
+        public object? GetValue(object? target, object[]? indexerPropertyIndex = null)
         {
             if (!this.CanRead)
             {
                 throw new InvalidOperationException($"The property '{this.FullyQualifiedSignature}' does not have a getter.");
             }
 
-            if (this.DeclaringTypeData.IsStruct)
+            if (this.DeclaringTypeData.IsValueType)
             {
-                throw new InvalidOperationException($"Use the '{nameof(SetStructValue)}' method to set property values on struct types.");
+                throw new InvalidOperationException(ExceptionMessages.GetDeclaringTypeOfMemberIsValueTypeWrongInvokerExceptionMessage(this, nameof(SetStructValue)));
             }
 
             if (this.IsIndexer)
@@ -123,9 +142,9 @@ namespace BionicCode.Utilities.Net
                 throw new InvalidOperationException($"The property '{this.FullyQualifiedSignature}' does not have a getter.");
             }
 
-            if (this.DeclaringTypeData.IsStruct)
+            if (this.DeclaringTypeData.IsValueType)
             {
-                throw new InvalidOperationException($"Use the '{nameof(SetStructValue)}' method to set property values on struct types.");
+                throw new InvalidOperationException(ExceptionMessages.GetDeclaringTypeOfMemberIsValueTypeWrongInvokerExceptionMessage(this, nameof(GetStructIndexerValue)));
             }
 
             if (this.IsIndexer)
@@ -168,16 +187,80 @@ namespace BionicCode.Utilities.Net
             }
         }
 
+        public object? GetStructIndexerValue<TTarget, TIndex>(object? target, TIndex? indexerPropertyIndex) where TTarget : struct
+        {
+            if (!this.CanRead)
+            {
+                throw new InvalidOperationException($"The property '{this.FullyQualifiedSignature}' does not have a getter.");
+            }
+
+            if (!this.DeclaringTypeData.IsValueType)
+            {
+                throw new InvalidOperationException(ExceptionMessages.GetDeclaringTypeOfMemberIsReferenceTypeWrongInvokerExceptionMessage(this, nameof(GetIndexerValue)));
+            }
+
+            if (this.IsIndexer)
+            {
+                ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyIndex, nameof(indexerPropertyIndex), "Indexer property index cannot be null for indexer properties.");
+                ArgumentOutOfRangeExceptionAdvanced.ThrowIfLessThan(
+                    1,
+                    this.IndexerParameters.Count,
+                    nameof(indexerPropertyIndex),
+                    $"Indexer property index count does not match the indexer parameter count of property '{this.FullyQualifiedSignature}'. Expected: {this.IndexerParameters.Count} inndex parameters.");
+            }
+
+            if (!this.IsStatic)
+            {
+                if (target is null)
+                {
+                    throw new ArgumentNullException(nameof(target), "Target object cannot be null for instance properties.");
+                }
+
+                Type targetType = target.GetType();
+                ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                    targetType,
+                    this.DeclaringTypeData.UnwrapType(),
+                    nameof(target),
+                    $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {this.DeclaringTypeData.FullyQualifiedSignature}");
+            }
+
+            object? invocationTarget = this.IsStatic
+                ? null
+                : target;
+            if (this.IsIndexer)
+            {
+                Func<object?, object[], object?> propertyGetInvoker = GetIndexerGetInvokerInternal();
+                return propertyGetInvoker.Invoke(invocationTarget, indexerPropertyIndex!);
+            }
+            else
+            {
+                Func<object?, object?> propertySetInvoker = GetGetInvokerInternal();
+                return propertySetInvoker.Invoke(target);
+            }
+        }
+
+        /// <summary>
+        /// Sets the value of the property on the specified target object, optionally using index parameters for indexer
+        /// properties.
+        /// </summary>
+        /// <remarks>For indexer properties, the number and types of elements in indexerPropertyIndex must
+        /// match the indexer parameters defined by the property. 
+        /// <para/>
+        /// If types are known at compiletime use a strictly typed overload instead to boopst performance (e.g. avoid boxing).</remarks>
+        /// <param name="target">The object whose property value will be set. For static properties, this parameter is ignored. For instance
+        /// properties, this cannot be null and must be assignable to the declaring type of the property.</param>
+        /// <param name="value">The value to assign to the property.</param>
+        /// <param name="indexerPropertyIndex">An array of index values to use if the property is an indexer. The number of elements must match the number
+        /// of indexer parameters. This parameter is required for indexer properties and ignored for non-indexer
+        /// properties.</param>
+        /// <exception cref="InvalidOperationException">Thrown if the property is read-only or if the declaring type is a value type.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the target object is null for an instance property, or if indexerPropertyIndex is null for an
+        /// indexer property.</exception>
         public void SetValue(object? target, object? value, object[]? indexerPropertyIndex = null)
         {
             if (this.IsReadOnly)
             {
                 throw new InvalidOperationException($"The property '{this.FullyQualifiedSignature}' does not have a setter.");
-            }
-
-            if (this.DeclaringTypeData.IsStruct)
-            {
-                throw new InvalidOperationException($"Use the '{nameof(SetStructValue)}' method to set property values on struct types.");
             }
 
             if (this.IsIndexer)
@@ -220,16 +303,16 @@ namespace BionicCode.Utilities.Net
             }
         }
 
-        public void SetValue(object? target, object? value, object[]? indexerPropertyIndex = null)
+        public void SetValue<TTarget, TValue>(TTarget? target, TValue? value, object[]? indexerPropertyIndex = null)
         {
             if (this.IsReadOnly)
             {
                 throw new InvalidOperationException($"The property '{this.FullyQualifiedSignature}' does not have a setter.");
             }
 
-            if (this.DeclaringTypeData.IsStruct)
+            if (this.DeclaringTypeData.IsValueType)
             {
-                throw new InvalidOperationException($"Use the '{nameof(SetStructValue)}' method to set property values on struct types.");
+                throw new InvalidOperationException(ExceptionMessages.GetDeclaringTypeOfMemberIsValueTypeWrongInvokerExceptionMessage(this, nameof(SetStructValue)));
             }
 
             if (this.IsIndexer)
@@ -279,9 +362,9 @@ namespace BionicCode.Utilities.Net
                 throw new InvalidOperationException($"The property '{this.FullyQualifiedSignature}' does not have a setter.");
             }
 
-            if (!this.DeclaringTypeData.IsStruct)
+            if (!this.DeclaringTypeData.IsValueType)
             {
-                throw new InvalidOperationException($"Use the '{nameof(SetValue)}' method to set property values on reference types.");
+                throw new InvalidOperationException(ExceptionMessages.GetDeclaringTypeOfMemberIsReferenceTypeWrongInvokerExceptionMessage(this, nameof(SetValue)));
             }
 
             if (this.IsStatic)
@@ -368,9 +451,9 @@ namespace BionicCode.Utilities.Net
                 throw new InvalidOperationException($"The property '{this.Signature}' does not have a setter.");
             }
 
-            if (!this.DeclaringTypeData.IsStruct)
+            if (!this.DeclaringTypeData.IsValueType)
             {
-                throw new InvalidOperationException($"The property '{this.Signature}' is not declared on a struct type. Use {nameof(GetSetInvoker)} instead.");
+                throw new InvalidOperationException(ExceptionMessages.GetDeclaringTypeOfMemberIsValueTypeWrongInvokerExceptionMessage(this, nameof(GetIndexerSetInvoker)));
             }
 
             return GetStructIndexerSetInvokerInternal<TTarget, TValue>();
@@ -406,7 +489,7 @@ namespace BionicCode.Utilities.Net
 
             if (!this.DeclaringTypeData.IsStruct)
             {
-                throw new InvalidOperationException($"The property '{this.FullyQualifiedSignature}' is not declared on a struct type. Use {nameof(GetIndexerSetInvoker)} instead.");
+                throw new InvalidOperationException(ExceptionMessages.GetDeclaringTypeOfMemberIsReferenceTypeWrongInvokerExceptionMessage(this, nameof(GetSetInvoker)));
             }
 
             return GetStructSetInvokerInternal<TTarget, TValue>();

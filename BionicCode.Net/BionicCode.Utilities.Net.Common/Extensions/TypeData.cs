@@ -372,12 +372,6 @@ namespace BionicCode.Utilities.Net
         public bool IsAwaitableValueTask
           => this.isAwaitableValueTask ??= TypeData.IsTypeAwaitableValueTask(this);
 
-        public bool IsValueType
-          => this.isValueType ??= UnwrapType().IsValueType;
-
-        public bool IsEnum
-          => this._isEnum ??= UnwrapType().IsEnum;
-
         public TypeData GenericTypeDefinitionData
         {
             get
@@ -490,8 +484,14 @@ namespace BionicCode.Utilities.Net
         public bool IsInterface
             => this._isInterface ??= UnwrapType().IsInterface;
 
+        public bool IsEnum
+          => this._isEnum ??= UnwrapType().IsEnum;
+
+        public bool IsValueType
+          => this.isValueType ??= UnwrapType().IsValueType;
+
         public bool IsStruct
-            => this._isStruct ??= this.IsValueType;
+            => this._isStruct ??= !this.IsEnum && this.IsValueType;
 
         public bool IsReadOnlyStruct
             => this._isReadOnlyStruct ??= IsReadOnlyStructInternal(this);
@@ -561,6 +561,9 @@ namespace BionicCode.Utilities.Net
         public bool IsGenericType
           => this.isGenericType ??= UnwrapType().IsGenericType;
 
+        /// <summary>
+        /// Gets a value indicating whether the type is a built-in .NET type.
+        /// </summary>
         public bool IsBuiltInType
           => this.isBuiltInType ??= TypeData.IsTypeBuiltInType(this);
 
@@ -718,7 +721,7 @@ namespace BionicCode.Utilities.Net
         }
 
         private static bool IsReadOnlyStructInternal(TypeData typeData)
-          => typeData.IsValueType && typeData.UnwrapType().GetCustomAttribute(HelperExtensionsCommon.IsReadOnlyAttributeType) != null;
+          => typeData.IsStruct && typeData.UnwrapType().GetCustomAttribute(HelperExtensionsCommon.IsReadOnlyAttributeType) != null;
 
         /// <summary>
         /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.

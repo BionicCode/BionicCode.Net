@@ -4,7 +4,7 @@
     using System.Collections.Concurrent;
     using System.Reflection;
 
-    internal sealed class FieldData : MemberInfoData, IFieldDataInvoker
+    internal sealed class FieldData : MemberData, IFieldDataInvoker
     {
         private string? displayName;
         private string? shortDisplayName;
@@ -74,9 +74,9 @@
                 throw new InvalidOperationException($"Cannot set struct instance field value on a static field. Call '{nameof(SetValue)}' instead");
             }
 
-            if (!this.DeclaringTypeData.IsStruct)
+            if (!this.DeclaringTypeData.IsValueType)
             {
-                throw new InvalidOperationException($"Target type is not a value type. Call '{nameof(SetValue)}' instead");
+                throw new InvalidOperationException(ExceptionMessages.GetDeclaringTypeOfMemberIsReferenceTypeWrongInvokerExceptionMessage(this, nameof(SetValue)));
             }
 
             Type declaringType = this.DeclaringTypeData.UnwrapType();
@@ -154,9 +154,9 @@
                             "field type"));
             }
 
-            if (this.DeclaringTypeData.IsStruct)
+            if (this.DeclaringTypeData.IsValueType)
             {
-                throw new InvalidOperationException($"Target type is a value type. Call {nameof(SetStructValue)} instead.");
+                throw new InvalidOperationException(ExceptionMessages.GetDeclaringTypeOfMemberIsValueTypeWrongInvokerExceptionMessage(this, nameof(SetStructValue)));
             }
 
             this._referenceTypeSetValueInvoker ??= DelegateProvider.CreateSetter(this);

@@ -2,7 +2,7 @@
 {
     internal abstract class ProfiledMemberInfo
     {
-        public abstract MemberInfoData MemberInfoData { get; }
+        public abstract MemberData MemberInfoData { get; }
         public string AssemblyName { get; }
         public int LineNumber { get; }
         public string SourceFilePath { get; }

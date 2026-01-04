@@ -43,7 +43,7 @@
         public bool IsEmpty => this.Parameters.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<ParameterData> Parameters { get; }
-        public MemberInfoData? DeclaringMember { get; }
+        public MemberData? DeclaringMember { get; }
 
         public ParameterData this[int index]
         {

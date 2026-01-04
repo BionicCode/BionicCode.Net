@@ -16,7 +16,7 @@
             }
 
             List<MethodParameterInfo> parameters = new List<MethodParameterInfo>(parameterDataList.Count);
-            MemberInfoData? member = null;
+            MemberData? member = null;
             foreach (ParameterData parameterData in parameterDataList)
             {
                 if (member == null)
@@ -50,7 +50,7 @@
             }
 
             List<MethodParameterInfo> parameters = new List<MethodParameterInfo>(parameterInfoList.Count);
-            MemberInfoData? member = null;
+            MemberData? member = null;
             foreach (ParameterInfo parameterInfo in parameterInfoList)
             {
                 ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);

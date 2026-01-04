@@ -12,7 +12,7 @@
         }
 
         public ConstructorData ConstructorData { get; }
-        public override MemberInfoData MemberInfoData => this.ConstructorData;
+        public override MemberData MemberInfoData => this.ConstructorData;
         public IList<MethodArgumentInfo> ArgumentInfo { get; }
     }
 }

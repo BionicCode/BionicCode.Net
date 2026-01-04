@@ -9,7 +9,7 @@
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
 
-    internal sealed class MethodData : MemberInfoData, IMethodDataInvoker
+    internal sealed class MethodData : MemberData, IMethodDataInvoker
     {
         private static readonly Type AsyncStateMachineAttributeType = typeof(AsyncStateMachineAttribute);
 
