@@ -888,19 +888,13 @@
                 .Compile();
         }
 
+
         /// <summary>
-        /// Creates a delegate that retrieves the returnType of an indexer property for a specified propertyType object and index
-        /// values.
+        /// 
         /// </summary>
-        /// <remarks>The returned delegate expects the propertyType object to be of the declaring type of the
-        /// indexer property, and the indices array to match the number and types of the indexer parameters. If the
-        /// property is static, the propertyType parameter is ignored. The delegate performs runtime type conversions for the
-        /// index values as needed.</remarks>
-        /// <param name="propertyData">The metadata describing the indexer property for which to create a getter delegate. Must represent a
-        /// readable indexer property.</param>
-        /// <returns>A delegate that takes a propertyType object and an array of index values, and returns the returnType of the specified
-        /// indexer property.</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the specified property already has a getter invoker generated.</exception>
+        /// <param name="propertyData"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public static Func<object?, object[], object?> CreateIndexerGetter(PropertyData propertyData)
         {
             if (propertyData is IPropertyDataInvoker propertyDataInvoker && propertyDataInvoker.HasGetter)
@@ -909,6 +903,19 @@
             }
 
             ArgumentNullException.ThrowIfNull(propertyData, nameof(propertyData));
+            TypeData declaringTypeData = propertyData.DeclaringTypeData;
+            ArgumentNullException.ThrowIfNull(declaringTypeData, nameof(propertyData));
+            Type targetType = typeof(object);
+            Type declaringType = declaringTypeData.UnwrapType();
+            ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                targetType,
+                declaringType,
+                "target",
+                ExceptionMessages.GetTypeMismatchExceptionMessage(
+                    targetType,
+                    "target",
+                    declaringType,
+                    "declaring type"));
             ArgumentExceptionAdvanced.ThrowIfFalse(
                 propertyData.IsIndexer,
                 nameof(propertyData),
@@ -917,13 +924,10 @@
                 propertyData.CanRead,
                 nameof(propertyData),
                 "Cannot create a getter for a write-only property.");
-            ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
 
             // (object? propertyType, object?[]? indices) => (object?)((TDeclaring)propertyType)[convertedIndices...]
-            ParameterExpression targetParam = Expression.Parameter(typeof(object), "propertyType");
+            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
             ParameterExpression indicesParam = Expression.Parameter(typeof(object[]), "indices");
-
-            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
 
             ImmutableArray<ParameterInfo> indexParameters = propertyData.IndexerParameters.AsParameterInfoArray();
 
@@ -958,7 +962,7 @@
 
             // Build the delegate: Func<object?, object?[]?, object?>
             return Expression
-                .Lambda<Func<object?, object?[]?, object?>>(body, targetParam, indicesParam)
+                .Lambda<Func<object?, object[], object?>>(body, targetParam, indicesParam)
                 .Compile();
         }
 

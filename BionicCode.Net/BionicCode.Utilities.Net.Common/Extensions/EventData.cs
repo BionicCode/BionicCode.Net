@@ -37,6 +37,10 @@
         public EventData(EventInfo eventInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(eventInfo, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(eventInfo, nameof(eventInfo));
+            if (eventInfo.EventHandlerType is null)
+            {
+                throw new NotSupportedException($"Event '{eventInfo.Name}' of type '{eventInfo.DeclaringType?.FullName}' has no event handler type defined, which is not supported.");
+            }
 
             this.eventInfo = eventInfo;
         }

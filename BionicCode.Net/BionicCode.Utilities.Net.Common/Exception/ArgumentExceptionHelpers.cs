@@ -3,6 +3,7 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Numerics;
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
@@ -62,8 +63,15 @@
         /// <param name="value">The value to validate against its default value.</param>
         /// <param name="paramName">The name of the parameter to include in the exception message. This value is typically provided
         /// automatically and should not be set explicitly.</param>
-        public static void ThrowIfDefault<TStruct>(TStruct value, [CallerArgumentExpression(nameof(value))] string? paramName = null) where TStruct : struct
-            => ArgumentNullException.ThrowIfNull(value.Equals(default(TStruct)) ? null : value, paramName);
+        public static void ThrowIfDefault<TStruct>(TStruct value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null) where TStruct : struct
+        {
+            if (EqualityComparer<TStruct>.Default.Equals(value, default))
+            {
+                throw new ArgumentNullExceptionAdvanced(
+                    paramName,
+                    message ?? "The argument is equal to the default value of its value type.");
+            }
+        }
 
         /// <summary>
         /// Throws an exception if the specified enumerable is null or contains no elements.
@@ -98,12 +106,12 @@
         /// caller argument expression is used.</param>
         /// <param name="message">The custom error message to include in the exception. If null, a default message is used.</param>
         /// <exception cref="ArgumentException">Thrown if value is not null.</exception>
-        public static void ThrowIfNotNull(object value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+        public static void ThrowIfNotNull<TValue>(TValue value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
         {
             if (value is not null)
             {
                 throw new ArgumentException(
-                    message ?? "The argument must be null.",
+                    message ?? $"The argument must be 'null'. Allowed: 'null', Found: '{value.GetType().ToFullyQualifiedSignatureName()}'",
                     paramName);
             }
         }
@@ -116,19 +124,13 @@
         /// parameter. If not specified, the caller argument expression is used.</param>
         /// <param name="message">An optional custom message to include in the exception. If null, a default message is used.</param>
         /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is null.</exception>
-        public static void ThrowIfNull(object? value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+        public static void ThrowIfNull<TValue>(TValue value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null) where TValue : class
         {
-            if (message is null)
-            {
-                ArgumentNullException.ThrowIfNull(value, paramName);
-                return;
-            }
-
             if (value is null)
             {
-                throw new ArgumentException(
-                    message ?? "The argument must be null.",
-                    paramName);
+                throw new ArgumentNullException(
+                    paramName,
+                    message ?? "The argument must not be 'null'.");
             }
         }
     }
@@ -211,8 +213,8 @@
             ArgumentNullException.ThrowIfNull(targetEvent, nameof(targetEvent));
             ArgumentNullException.ThrowIfNull(clientHandler, nameof(clientHandler));
 
-            Type? eventType = targetEvent.EventHandlerType;
-            MethodInfo eventDelegateInvokeMethod = eventType.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName);
+            Type eventType = targetEvent.EventHandlerType!;
+            MethodInfo eventDelegateInvokeMethod = eventType.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName)!;
             ParameterInfo[] eventDelegateParameters = eventDelegateInvokeMethod.GetParameters();
 
             MethodInfo clientHandlerMethod = clientHandler.Method;
@@ -234,7 +236,7 @@
                     string exceptionMessage = message ?? ExceptionMessages.GetHandlerDelegateSignatureMismatchExceptionMessage(
                         targetEvent,
                         clientHandlerMethod,
-                        $"The parameter '{paramName}' is incompatible with the event {eventType.ToFullyQualifiedSignatureName}. Reason: Unable to cast parameter of type '{eventDelegateParameterType.ToFullyQualifiedSignatureName()}' at parameter index '{parameterIndex}' of the event delegate to type '{eventHandlerParameterType.ToFullyQualifiedSignatureName()}' of the event handler.");
+                        $"The parameter '{paramName}' is incompatible with the event {eventType.ToFullyQualifiedSignatureName()}. Reason: Unable to cast parameter of type '{eventDelegateParameterType.ToFullyQualifiedSignatureName()}' at parameter index '{parameterIndex}' of the event delegate to type '{eventHandlerParameterType.ToFullyQualifiedSignatureName()}' of the event handler.");
                     throw new EventHandlerMismatchException(exceptionMessage);
                 }
             }
@@ -349,13 +351,16 @@
 
             foreach (TEnum other in others)
             {
-                if (!value.Equals(other))
+                if (value.Equals(other))
                 {
-                    throw new ArgumentOutOfRangeException(
-                        paramName,
-                        message ?? $"The value '{value}' is not equal to '{other}' in enum '{typeof(TEnum).FullName}'.");
+                    return;
                 }
             }
+
+            string allowedValues = string.Join(", ", others);
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                message ?? $"The argument is not of the expected value. Allowed: {allowedValues}, Found: '{value}'.");
         }
 
         /// <summary>
@@ -374,7 +379,7 @@
             if (value != other)
             {
                 throw new ArgumentException(
-                    message ?? $"The type '{value.FullName}' is not of the expected type '{other.FullName}'.",
+                    message ?? $"The provided type is not of the expected type. Allowed: '{other.FullName}', Found: '{value.FullName}'.",
                     paramName);
             }
         }
@@ -395,7 +400,7 @@
             if (!value.IsAssignableTo(target))
             {
                 throw new ArgumentException(
-                    message ?? $"The type '{value.FullName}' is not assignable to the type '{target.FullName}'.",
+                    message ?? $"The provided type is not assignable to the expected type. Allowed: '{target.FullName}', Found: '{value.FullName}'.",
                     paramName);
             }
         }
@@ -413,7 +418,7 @@
             if (!value)
             {
                 throw new ArgumentException(
-                    message ?? "The condition is FALSE.",
+                    message ?? "The condition is 'FALSE'. Allowed: 'TRUE'.",
                     paramName);
             }
         }
@@ -431,7 +436,7 @@
             if (value)
             {
                 throw new ArgumentException(
-                    message ?? "The condition is TRUE.",
+                    message ?? "The condition is 'TRUE'. Allowed: 'FALSE'.",
                     paramName);
             }
         }
@@ -496,9 +501,9 @@
         }
 
         /// <summary>
-        /// Throws an exception if the specified value is less than the provided comparison value.
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> if the specified value is less than the provided comparison value.
         /// </summary>
-        /// <typeparam name="T">The type of the values to compare. Must implement <see cref="IComparable{T}"/>.</typeparam>
+        /// <typeparam name="TValue">The type of the values to compare. Must implement <see cref="IComparable{T}"/>.</typeparam>
         /// <param name="value">The value to validate against the comparison value.</param>
         /// <param name="other">The value to compare with <paramref name="value"/>. <paramref name="value"/> must not be less than this
         /// value.</param>
@@ -506,54 +511,175 @@
         /// exception is thrown.</param>
         /// <param name="message">An optional custom error message for the exception. If <see langword="null"/>, a default message is used.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is less than <paramref name="other"/>.</exception>
-        public static void ThrowIfLessThan<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
-            where T : IComparable<T>
+        public static void ThrowIfLessThan<TValue>(TValue value, TValue other, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+            where TValue : IComparable<TValue>
         {
-            if (message is null)
-            {
-                ArgumentOutOfRangeException.ThrowIfLessThan(value, other, paramName);
-                return;
-            }
-
             ArgumentNullException.ThrowIfNull(value, paramName);
             ArgumentNullException.ThrowIfNull(other, nameof(other));
             if (value.CompareTo(other) < 0)
             {
                 throw new ArgumentOutOfRangeException(
                     paramName,
-                    message);
+                    value,
+                    message ?? $"Value is less than the expected value. Allowed: {paramName} < {other}, Found: '{value}'");
             }
         }
 
         /// <summary>
-        /// Throws an exception if the specified value is not equal to the expected value.
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> if the specified value is not equal to the expected value.
         /// </summary>
         /// <remarks>Both <paramref name="value"/> and <paramref name="other"/> must not be null. Equality
         /// is determined using <see cref="EqualityComparer{T}.Default"/>.</remarks>
-        /// <typeparam name="T">The type of the values to compare.</typeparam>
+        /// <typeparam name="TValue">The type of the values to compare.</typeparam>
         /// <param name="value">The value to validate for equality.</param>
         /// <param name="other">The value to compare against the validated value.</param>
         /// <param name="paramName">The name of the parameter representing the value being validated. Used in the exception message if thrown.</param>
         /// <param name="message">The custom error message to include in the exception if the values are not equal. If null, a default message
         /// is used.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="value"/> is not equal to <paramref name="other"/>.</exception>
-        public static void ThrowIfNotEqual<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+        public static void ThrowIfNotEqual<TValue>(TValue value, TValue other, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
         {
-#if NET10_0_OR_GREATER
-            if (message is null)
-            {
-                ArgumentOutOfRangeException.ThrowIfNotEqual(value, other, paramName);
-                return;
-            }
-#endif
-
             ArgumentNullException.ThrowIfNull(value, paramName);
             ArgumentNullException.ThrowIfNull(other, nameof(other));
-            if (!EqualityComparer<T>.Default.Equals(value, other))
+            if (!EqualityComparer<TValue>.Default.Equals(value, other))
             {
                 throw new ArgumentOutOfRangeException(
                     paramName,
-                    message);
+                    value,
+                    message ?? $"Value is not equal to the expected value. Allowed: {paramName} = {other}, Found: '{value}'");
+            }
+        }
+
+        /// <summary>
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> if the specified value is negative.
+        /// </summary>
+        /// <typeparam name="TValue">The numeric type of the value to check. Must implement <see cref="INumberBase{TValue}"/>.</typeparam>
+        /// <param name="value">The value to validate. If this value is negative, an exception is thrown.</param>
+        /// <param name="paramName">The name of the parameter that caused the exception. This value is typically provided automatically and is
+        /// used in the exception message.</param>
+        /// <param name="message">An optional custom message to include in the exception. If null, a default message is used.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is negative.</exception>
+        public static void ThrowIfNegative<TValue>(TValue value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+            where TValue : INumberBase<TValue>
+        {
+            if (TValue.IsNegative(value))
+            {
+                throw new ArgumentOutOfRangeException(
+                    paramName,
+                    value,
+                    message ?? $"The argument must not be negative. Allowed: {paramName} >= 0, Found: '{value}'.");
+            }
+        }
+
+        /// <summary>
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> if the specified value is less than or equal to zero.
+        /// </summary>
+        /// <typeparam name="TValue">The numeric type of the value to validate. Must implement <see cref="INumberBase{TValue}"/>.</typeparam>
+        /// <param name="value">The value to validate. Must be greater than zero.</param>
+        /// <param name="paramName">The name of the parameter being validated. This value is used in the exception if one is thrown. If not
+        /// specified, the compiler will supply the argument expression.</param>
+        /// <param name="message">The error message to include in the exception. If null, a default message is used.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is less than or equal to zero.</exception>
+        public static void ThrowIfNegativeOrZero<TValue>(TValue value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+            where TValue : INumberBase<TValue>
+        {
+            if (TValue.IsNegative(value) || TValue.IsZero(value))
+            {
+                throw new ArgumentOutOfRangeException(
+                    paramName,
+                    value,
+                    message ?? $"The argument must be greater than zero. Allowed: {paramName} > 0, Found: '{value}'.");
+            }
+        }
+
+        /// <summary>
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> if the specified value is equal to a disallowed value.
+        /// </summary>
+        /// <remarks>Use this method to enforce that a value does not match a specific disallowed value,
+        /// such as a sentinel or reserved value. The comparison uses the default equality comparer for the
+        /// type.</remarks>
+        /// <typeparam name="TValue">The type of the values to compare.</typeparam>
+        /// <param name="value">The value to validate against the disallowed value.</param>
+        /// <param name="other">The value that is not allowed. If <paramref name="value"/> is equal to this value, an exception is thrown.</param>
+        /// <param name="paramName">The name of the parameter that caused the exception. This value is typically provided automatically and
+        /// should not be set manually.</param>
+        /// <param name="message">The error message to include in the exception. If null, a default message is used.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is equal to <paramref name="other"/>.</exception>
+        public static void ThrowIfEqual<TValue>(TValue value, TValue other, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+        {
+            if (EqualityComparer<TValue>.Default.Equals(value, other))
+            {
+                throw new ArgumentOutOfRangeException(
+                    paramName,
+                    value,
+                    message ?? $"Value is equal to the disallowed value. Allowed: {paramName} != {other}, Found: '{value}'");
+            }
+        }
+
+        /// <summary>
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> if the specified value is greater than the allowed maximum.
+        /// </summary>
+        /// <typeparam name="TValue">The type of the values to compare. Must implement <see cref="IComparable{TValue}"/>.</typeparam>
+        /// <param name="value">The value to validate against the maximum allowed value.</param>
+        /// <param name="other">The maximum allowed value. If <paramref name="value"/> is greater than this value, an exception is thrown.</param>
+        /// <param name="paramName">The name of the parameter representing the value being checked. This is used in the exception message.
+        /// Optional.</param>
+        /// <param name="message">The custom error message to include in the exception. If null, a default message is used. Optional.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is greater than <paramref name="other"/>.</exception>
+        public static void ThrowIfGreaterThan<TValue>(TValue value, TValue other, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+            where TValue : IComparable<TValue>
+        {
+            if (value.CompareTo(other) > 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    paramName,
+                    value,
+                    message ?? $"Value is greater than the allowed maximum. Allowed: {paramName} <= {other}, Found: '{value}'");
+            }
+        }
+
+        /// <summary>
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> if a specified value is greater than or equal to a given comparison value.
+        /// </summary>
+        /// <typeparam name="TValue">The type of the values to compare. Must implement <see cref="IComparable{TValue}"/>.</typeparam>
+        /// <param name="value">The value to validate against the comparison value.</param>
+        /// <param name="other">The value to compare against. The method throws if <paramref name="value"/> is greater than or equal to this
+        /// value.</param>
+        /// <param name="paramName">The name of the parameter that caused the exception. This value is typically provided automatically and
+        /// should not be set manually.</param>
+        /// <param name="message">The error message to include in the exception. If null, a default message is used.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is greater than or equal to <paramref name="other"/>.</exception>
+        public static void ThrowIfGreaterThanOrEqual<TValue>(TValue value, TValue other, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+            where TValue : IComparable<TValue>
+        {
+            if (value.CompareTo(other) >= 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    paramName,
+                    value,
+                    message ?? $"Value is greater than or equal to the disallowed value. Allowed: {paramName} < {other}, Found: '{value}'");
+            }
+        }
+
+        /// <summary>
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> if the specified value is less than or equal to a given comparison value.
+        /// </summary>
+        /// <typeparam name="TValue">The type of the values to compare. Must implement <see cref="IComparable{TValue}"/>.</typeparam>
+        /// <param name="value">The value to validate. Must be greater than <paramref name="other"/> to avoid an exception.</param>
+        /// <param name="other">The value to compare against. <paramref name="value"/> must be greater than this value.</param>
+        /// <param name="paramName">The name of the parameter representing <paramref name="value"/>. Used in the exception message. This
+        /// parameter is typically supplied automatically and should not be set manually.</param>
+        /// <param name="message">An optional custom message to include in the exception. If null, a default message is used.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="value"/> is less than or equal to <paramref name="other"/>.</exception>
+        public static void ThrowIfLessThanOrEqual<TValue>(TValue value, TValue other, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+            where TValue : IComparable<TValue>
+        {
+            if (value.CompareTo(other) <= 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    paramName,
+                    value,
+                    message ?? $"Value is less than or equal to the disallowed value. Allowed: {paramName} > {other}, Found: '{value}'");
             }
         }
     }

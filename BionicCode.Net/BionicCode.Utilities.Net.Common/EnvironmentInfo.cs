@@ -42,16 +42,16 @@ namespace BionicCode.Utilities.Net
         public string RuntimeVersion { get; }
         public string MachineName { get; }
 
-        public bool Equals(EnvironmentInfo other) => this.RuntimeVersion == other.RuntimeVersion
-          && this.OperatingSystemArchitecture == other.OperatingSystemArchitecture
-          && this.ProcessArchitecture == other.ProcessArchitecture
+        public bool Equals(EnvironmentInfo other) => this.RuntimeVersion.Equals(other.RuntimeVersion, StringComparison.Ordinal)
+          && this.OperatingSystemArchitecture.Equals(other.OperatingSystemArchitecture, StringComparison.Ordinal)
+          && this.ProcessArchitecture.Equals(other.ProcessArchitecture, StringComparison.Ordinal)
           && this.ThreadCount == other.ThreadCount
           && this.ProcessorLogicalCoreCount == other.ProcessorLogicalCoreCount
           && this.ProcessorCoreCount == other.ProcessorCoreCount
           && this.ProcessorSpeed == other.ProcessorSpeed
-          && this.ProcessorName == other.ProcessorName;
+          && this.ProcessorName.Equals(other.ProcessorName, StringComparison.Ordinal);
 
-        public override bool Equals(object obj) => base.Equals(obj);
+        public override bool Equals(object obj) => obj is EnvironmentInfo environmentInfo && Equals(environmentInfo);
 
         public override int GetHashCode()
         {

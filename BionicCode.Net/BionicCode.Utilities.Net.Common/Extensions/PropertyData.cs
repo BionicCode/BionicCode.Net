@@ -45,7 +45,7 @@ namespace BionicCode.Utilities.Net
         private Action<object?, object[], object?>? _indexerPropertySetInvoker;
         private Func<object?, object?>? _propertyGetInvoker;
         private Action<object?, object?>? _propertySetInvoker;
-        private readonly ConcurrentDictionary<RuntimeTypeHandle, Delegate> _valueTypeSetValueInvokerTable;
+        private readonly ConcurrentDictionary<RuntimeTypeHandle, Delegate> _invokerTable;
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
         private bool? isSetMethodReadOnly;
@@ -54,7 +54,7 @@ namespace BionicCode.Utilities.Net
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
-            this._valueTypeSetValueInvokerTable = new ConcurrentDictionary<RuntimeTypeHandle, Delegate>();
+            this._invokerTable = new ConcurrentDictionary<RuntimeTypeHandle, Delegate>();
             this.PropertyInfo = propertyInfo;
         }
 
@@ -72,18 +72,16 @@ namespace BionicCode.Utilities.Net
         /// match the indexer parameters defined by the property. For static properties, the target parameter is
         /// ignored.
         /// <para/>
-        /// If types are known at compiletime use a strictly typed overload instead to boopst performance (e.g. avoid boxing).</remarks>
+        /// If types are known at compile time use a strictly typed overload instead to boost performance (e.g. avoid boxing).</remarks>
         /// <param name="target">The object whose property value is to be retrieved. For static properties, this parameter is ignored. For
         /// instance properties, this must be an object assignable to the declaring type; cannot be null for instance
         /// properties.</param>
-        /// <param name="indexerPropertyIndex">An array of objects representing the index values for indexed (indexer) properties. Must be non-null and
-        /// match the number of indexer parameters if the property is an indexer; otherwise, this parameter is ignored.</param>
         /// <returns>The value of the property for the specified target object and index parameters, or null if the property
         /// value is null.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the property does not have a getter or if the declaring type is a value type.</exception>
         /// <exception cref="ArgumentNullException">Thrown if the target is null for an instance property, or if indexerPropertyIndex is null for an indexer
         /// property.</exception>
-        public object? GetValue(object? target, object[]? indexerPropertyIndex = null)
+        public object? GetValue(object? target)
         {
             if (!this.CanRead)
             {
@@ -97,12 +95,7 @@ namespace BionicCode.Utilities.Net
 
             if (this.IsIndexer)
             {
-                ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyIndex, nameof(indexerPropertyIndex), "Indexer property index cannot be null for indexer properties.");
-                ArgumentOutOfRangeExceptionAdvanced.ThrowIfLessThan(
-                    indexerPropertyIndex!.Length,
-                    this.IndexerParameters.Count,
-                    nameof(indexerPropertyIndex),
-                    $"Indexer property index count does not match the indexer parameter count of property '{this.FullyQualifiedSignature}'.");
+                throw new InvalidOperationException($"The property '{this.FullyQualifiedSignature}' is an indexer property. Use one of the overloads that accepts indexer parameters.");
             }
 
             if (!this.IsStatic)
@@ -123,19 +116,53 @@ namespace BionicCode.Utilities.Net
             object? invocationTarget = this.IsStatic
                 ? null
                 : target;
-            if (this.IsIndexer)
-            {
-                Func<object?, object[], object?> propertyGetInvoker = GetIndexerGetInvokerInternal();
-                return propertyGetInvoker.Invoke(invocationTarget, indexerPropertyIndex!);
-            }
-            else
-            {
-                Func<object?, object?> propertySetInvoker = GetGetInvokerInternal();
-                return propertySetInvoker.Invoke(target);
-            }
+
+            Func<object?, object?> propertySetInvoker = GetPropertyGetterInternal();
+            return propertySetInvoker.Invoke(target);
         }
 
-        public object? GetIndexerValue<TIndex>(object? target, TIndex? indexerPropertyIndex)
+        public object? GetIndexerValue(object? target, object[] indexerPropertyIndex)
+        {
+            if (!this.CanRead)
+            {
+                throw new InvalidOperationException($"The property '{this.FullyQualifiedSignature}' does not have a getter.");
+            }
+
+            if (!this.IsIndexer)
+            {
+                throw new InvalidOperationException($"The property '{this.FullyQualifiedSignature}' is not an indexer property. Use one of the overloads without indexer parameters instead.");
+            }
+
+            ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyIndex, nameof(indexerPropertyIndex), "Indexer property index cannot be null for indexer properties.");
+            ArgumentOutOfRangeExceptionAdvanced.ThrowIfLessThan(
+                indexerPropertyIndex!.Length,
+                this.IndexerParameters.Count,
+                nameof(indexerPropertyIndex),
+                $"Indexer property index count does not match the indexer parameter count of property '{this.FullyQualifiedSignature}'.");
+
+            if (!this.IsStatic)
+            {
+                if (target is null)
+                {
+                    throw new ArgumentNullException(nameof(target), "Target object cannot be null for instance properties.");
+                }
+
+                Type targetType = target.GetType();
+                ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                    targetType,
+                    this.DeclaringTypeData.UnwrapType(),
+                    nameof(target),
+                    $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {this.DeclaringTypeData.FullyQualifiedSignature}");
+            }
+
+            object? invocationTarget = this.IsStatic
+                ? null
+                : target;
+            Func<object?, object[], object?> propertyGetInvoker = GetIndexerGetterInternal();
+            return propertyGetInvoker.Invoke(invocationTarget, indexerPropertyIndex!);
+        }
+
+        public object? GetIndexerValue<TTarget, TIndex>(TTarget? target, TIndex indexerPropertyIndex)
         {
             if (!this.CanRead)
             {
@@ -147,15 +174,17 @@ namespace BionicCode.Utilities.Net
                 throw new InvalidOperationException(ExceptionMessages.GetDeclaringTypeOfMemberIsValueTypeWrongInvokerExceptionMessage(this, nameof(GetStructIndexerValue)));
             }
 
-            if (this.IsIndexer)
+            if (!this.IsIndexer)
             {
-                ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyIndex, nameof(indexerPropertyIndex), "Indexer property index cannot be null for indexer properties.");
-                ArgumentOutOfRangeExceptionAdvanced.ThrowIfLessThan(
-                    1,
-                    this.IndexerParameters.Count,
-                    nameof(indexerPropertyIndex),
-                    $"Indexer property index count does not match the indexer parameter count of property '{this.FullyQualifiedSignature}'. Expected: {this.IndexerParameters.Count} inndex parameters.");
+                throw new InvalidOperationException($"The property '{this.FullyQualifiedSignature}' is not an indexer property. Use one of the overloads without indexer parameters instead.");
             }
+
+            ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyIndex, nameof(indexerPropertyIndex), "Indexer property index cannot be null for indexer properties.");
+            ArgumentOutOfRangeExceptionAdvanced.ThrowIfLessThan(
+                1,
+                this.IndexerParameters.Count,
+                nameof(indexerPropertyIndex),
+                $"Indexer property index count does not match the indexer parameter count of property '{this.FullyQualifiedSignature}'. Please use the appropriate overload that accepts the correct number of indexer parameters. Expected: {this.IndexerParameters.Count} index parameters but found 1.");
 
             if (!this.IsStatic)
             {
@@ -175,16 +204,8 @@ namespace BionicCode.Utilities.Net
             object? invocationTarget = this.IsStatic
                 ? null
                 : target;
-            if (this.IsIndexer)
-            {
-                Func<object?, object[], object?> propertyGetInvoker = GetIndexerGetInvokerInternal();
-                return propertyGetInvoker.Invoke(invocationTarget, indexerPropertyIndex!);
-            }
-            else
-            {
-                Func<object?, object?> propertySetInvoker = GetGetInvokerInternal();
-                return propertySetInvoker.Invoke(target);
-            }
+            Func<object?, object[], object?> propertyGetInvoker = GetIndexerGetterInternal();
+            return propertyGetInvoker.Invoke(invocationTarget, indexerPropertyIndex!);
         }
 
         public object? GetStructIndexerValue<TTarget, TIndex>(object? target, TIndex? indexerPropertyIndex) where TTarget : struct
@@ -229,12 +250,12 @@ namespace BionicCode.Utilities.Net
                 : target;
             if (this.IsIndexer)
             {
-                Func<object?, object[], object?> propertyGetInvoker = GetIndexerGetInvokerInternal();
+                Func<object?, object[], object?> propertyGetInvoker = GetIndexerGetterInternal();
                 return propertyGetInvoker.Invoke(invocationTarget, indexerPropertyIndex!);
             }
             else
             {
-                Func<object?, object?> propertySetInvoker = GetGetInvokerInternal();
+                Func<object?, object?> propertySetInvoker = GetPropertyGetterInternal();
                 return propertySetInvoker.Invoke(target);
             }
         }
@@ -462,7 +483,7 @@ namespace BionicCode.Utilities.Net
         private ValueTypeIndexerPropertySetter<TTarget, TValue> GetStructIndexerSetInvokerInternal<TTarget, TValue>() where TTarget : struct
         {
             RuntimeTypeHandle targetTypeHandle = typeof(TTarget).TypeHandle;
-            Delegate? cachedInvoker = this._valueTypeSetValueInvokerTable.GetOrAdd(targetTypeHandle, targetTypeHandle => DelegateProvider.CreateStructIndexerSetter<TTarget, TValue>(this));
+            Delegate? cachedInvoker = this._invokerTable.GetOrAdd(targetTypeHandle, targetTypeHandle => DelegateProvider.CreateStructIndexerSetter<TTarget, TValue>(this));
             ValueTypeIndexerPropertySetter<TTarget, TValue> invoker = (ValueTypeIndexerPropertySetter<TTarget, TValue>)cachedInvoker;
 
             return invoker;
@@ -498,7 +519,7 @@ namespace BionicCode.Utilities.Net
         private ValueTypeMemberSetter<TTarget, TValue> GetStructSetInvokerInternal<TTarget, TValue>() where TTarget : struct
         {
             RuntimeTypeHandle targetTypeHandle = typeof(TTarget).TypeHandle;
-            Delegate? cachedInvoker = this._valueTypeSetValueInvokerTable.GetOrAdd(targetTypeHandle, targetTypeHandle => DelegateProvider.CreateStructSetter<TTarget, TValue>(this));
+            Delegate? cachedInvoker = this._invokerTable.GetOrAdd(targetTypeHandle, _ => DelegateProvider.CreateStructSetter<TTarget, TValue>(this));
             ValueTypeMemberSetter<TTarget, TValue> invoker = (ValueTypeMemberSetter<TTarget, TValue>)cachedInvoker;
 
             return invoker;
@@ -552,20 +573,21 @@ namespace BionicCode.Utilities.Net
                 throw new InvalidOperationException($"The property '{this.FullyQualifiedSignature}' does not have a getter.");
             }
 
-            return GetGetInvokerInternal();
+            return GetPropertyGetterInternal();
         }
 
-        private Func<object?, object?> GetGetInvokerInternal()
+        private Func<object?, object?> GetPropertyGetterInternal()
             => this._propertyGetInvoker ??= DelegateProvider.CreateGetter(this);
 
         /// <summary>
         /// Retrieves a delegate that gets the value of the indexer property represented by this instance.
         /// </summary>
         /// <remarks>Use this method to obtain a strongly-typed accessor for indexer properties. For
-        /// non-indexer properties, use GetGetInvoker instead.</remarks>
+        /// non-indexer properties, use GetGetInvoker instead.<para/>
+        /// If types are known at compile time use a strictly typed generic overload to significantly improve performance.</remarks>
         /// <returns>A delegate that takes a target object and an array of index values, and returns the value of the indexer
         /// property.</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the property represented by this instance is not an indexer property.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the property represented by this instance is not an indexer property or does not have a getter.</exception>
         public Func<object?, object[], object?> GetIndexerGetInvoker()
         {
             if (!this.IsIndexer)
@@ -578,11 +600,61 @@ namespace BionicCode.Utilities.Net
                 throw new InvalidOperationException($"The property '{this.FullyQualifiedSignature}' does not have a getter.");
             }
 
-            return GetIndexerGetInvokerInternal();
+            return GetIndexerGetterInternal();
+        }
+        public IndexerPropertyGetter<TTarget, TIndex, TValue> GetIndexerGetInvoker<TTarget, TIndex, TValue>()
+        {
+            if (!this.IsIndexer)
+            {
+                throw new InvalidOperationException($"The property '{this.FullyQualifiedSignature}' is not an indexer property. Use {nameof(GetGetInvoker)} instead.");
+            }
+
+            if (!this.CanRead)
+            {
+                throw new InvalidOperationException($"The property '{this.FullyQualifiedSignature}' does not have a getter.");
+            }
+
+            ArgumentOutOfRangeExceptionAdvanced.ThrowIfNotEqual(
+                1,
+                this.IndexerParameters.Count,
+                nameof(TIndex),
+                $"Indexer property parameter count mismatch. Expected 1 indexer parameter but found {this.IndexerParameters.Count}. Please use the appropriate overload that matches the number of indexer parameters.");
+
+            return GetIndexerGetterInternal();
         }
 
-        private Func<object?, object[], object?> GetIndexerGetInvokerInternal()
+        private Func<object?, object[], object?> GetIndexerGetterInternal()
             => this._indexerPropertyGetInvoker ??= DelegateProvider.CreateIndexerGetter(this);
+
+        private IndexerPropertyGetter<TTarget, TIndex, TValue> GetIndexerGetterInternal<TTarget, TIndex, TValue>()
+        {
+            RuntimeTypeHandle targetTypeHandle = typeof(TTarget).TypeHandle;
+            Delegate invoker = this._invokerTable.GetOrAdd(
+                targetTypeHandle,
+                _ => DelegateProvider.CreateIndexerGetter<TTarget, TIndex, TValue>(this));
+
+            return (IndexerPropertyGetter<TTarget, TIndex, TValue>)invoker;
+        }
+
+        private IndexerPropertyGetter<TTarget, TIndex1, TIndex2, TValue> GetIndexerGetterInternal<TTarget, TIndex1, TIndex2, TValue>()
+        {
+            RuntimeTypeHandle targetTypeHandle = typeof(TTarget).TypeHandle;
+            Delegate invoker = this._invokerTable.GetOrAdd(
+                targetTypeHandle,
+                _ => DelegateProvider.CreateIndexerGetter<TTarget, TIndex1, TIndex2, TValue>(this));
+
+            return (IndexerPropertyGetter<TTarget, TIndex1, TIndex2, TValue>)invoker;
+        }
+
+        private IndexerPropertyGetter<TTarget, TIndex1, TIndex2, TIndex3, TValue> GetIndexerGetterInternal<TTarget, TIndex1, TIndex2, TIndex3, TValue>()
+        {
+            RuntimeTypeHandle targetTypeHandle = typeof(TTarget).TypeHandle;
+            Delegate invoker = this._invokerTable.GetOrAdd(
+                targetTypeHandle,
+                _ => DelegateProvider.CreateIndexerGetter<TTarget, TIndex1, TIndex2, TIndex3, TValue>(this));
+
+            return (IndexerPropertyGetter<TTarget, TIndex1, TIndex2, TIndex3, TValue>)invoker;
+        }
 
         private void GetAccessors()
         {

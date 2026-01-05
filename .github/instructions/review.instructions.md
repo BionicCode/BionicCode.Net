@@ -2,6 +2,8 @@
 
 When performing a code review, always include a **Call-tree coverage footer** at the end of the review.
 
+When reviewing, prefer a **Clean Code** lens (readability, naming, and complexity) **without** requesting changes that conflict with the repository’s `.editorconfig` or established local conventions. Avoid broad refactors unless explicitly requested.
+
 ## Call-tree coverage footer format
 
 Include the following items:
