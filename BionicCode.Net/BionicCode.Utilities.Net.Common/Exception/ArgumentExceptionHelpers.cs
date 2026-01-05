@@ -117,14 +117,14 @@
         }
 
         /// <summary>
-        /// Throws an ArgumentException if the specified value is null.
+        /// Throws an ArgumentException if the specified value is a reference type and null.
         /// </summary>
         /// <param name="value">The object to validate for null. If this value is null, an exception is thrown.</param>
         /// <param name="paramName">The name of the parameter being validated. This value is used in the exception message to identify the
         /// parameter. If not specified, the caller argument expression is used.</param>
         /// <param name="message">An optional custom message to include in the exception. If null, a default message is used.</param>
         /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is null.</exception>
-        public static void ThrowIfNull<TValue>(TValue value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null) where TValue : class
+        public static void ThrowIfNull<TValue>(TValue value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
         {
             if (value is null)
             {

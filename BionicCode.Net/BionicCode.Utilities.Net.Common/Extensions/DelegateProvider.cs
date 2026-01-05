@@ -38,6 +38,7 @@
     /// <param name="value">The returnType to assign to the indexer property. Can be null for reference types or nullable returnType types.</param>
     public delegate void ValueTypeIndexerPropertySetter<TTarget, TValue>(ref TTarget target, object?[]? indices, TValue? value) where TTarget : struct;
 
+    public delegate TValue PropertyGetter<TTarget, TValue>(TTarget target);
     public delegate TValue IndexerPropertyGetter<TTarget, TIndex, TValue>(TTarget target, TIndex index);
     public delegate TValue IndexerPropertyGetter<TTarget, TIndex1, TIndex2, TValue>(TTarget target, TIndex1 index1, TIndex2 index2);
     public delegate TValue IndexerPropertyGetter<TTarget, TIndex1, TIndex2, TIndex3, TValue>(TTarget target, TIndex1 index1, TIndex2 index2, TIndex3 index3);
@@ -355,6 +356,43 @@
         /// properties, the instance parameter is ignored.</returns>
         /// <exception cref="InvalidOperationException">Thrown if a getter delegate has already been generated for the specified property.</exception>
         public static Func<object?, object?> CreateGetter(PropertyData propertyData)
+        {
+            if (propertyData is IPropertyDataInvoker propertyDataInvoker && propertyDataInvoker.HasGetter)
+            {
+                throw new InvalidOperationException("The 'PropertyData' has already the get invoker generated.");
+            }
+
+            ArgumentExceptionAdvanced.ThrowIfTrue(
+                propertyData.IsIndexer,
+                nameof(propertyData),
+                "The provided property is an indexer. Use the appropriate indexer getter creation method instead.");
+            ArgumentNullException.ThrowIfNull(propertyData, nameof(propertyData));
+            ArgumentExceptionAdvanced.ThrowIfFalse(
+                propertyData.CanRead,
+                nameof(propertyData),
+                "Cannot create a getter for a write-only property.");
+            ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
+
+            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
+
+            PropertyInfo property = propertyData.GetPropertyInfo();
+            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
+            Expression propertyAccess =
+                propertyData.IsStatic
+                    ? Expression.Property(expression: null, property) // static: no instance
+                    : Expression.Property(
+                        Expression.Convert(targetParam, declaringType), // cast/unbox
+                        property);
+
+            // Box returnType types
+            UnaryExpression body = Expression.Convert(propertyAccess, typeof(object));
+
+            return Expression
+                .Lambda<Func<object?, object?>>(body, targetParam)
+                .Compile(); // compiles to a delegate 
+        }
+
+        public static PropertyGetter<TTarget, TValue> CreateGetter<TTarget, TValue>(PropertyData propertyData)
         {
             if (propertyData is IPropertyDataInvoker propertyDataInvoker && propertyDataInvoker.HasGetter)
             {

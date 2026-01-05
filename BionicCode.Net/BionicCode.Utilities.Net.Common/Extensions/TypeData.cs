@@ -490,6 +490,9 @@ namespace BionicCode.Utilities.Net
         public bool IsValueType
           => this.isValueType ??= UnwrapType().IsValueType;
 
+        public bool IsReferenceType
+          => !this.IsValueType;
+
         public bool IsStruct
             => this._isStruct ??= !this.IsEnum && this.IsValueType;
 
