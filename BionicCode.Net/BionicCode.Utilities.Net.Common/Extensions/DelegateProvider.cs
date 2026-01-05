@@ -12,36 +12,47 @@
     using Microsoft.CodeAnalysis;
 
     /// <summary>
-    /// Represents a method that sets the returnType of a field on a returnType declaringType instance.
+    /// Represents a method that sets the field on a value type instance.
     /// </summary>
-    /// <remarks>This delegate is typically used to update fields on returnType declaringType instances, such as structs,
+    /// <remarks>This delegate is typically used to update fields on value type instances, such as structs,
     /// where direct assignment is required. The propertyType parameter is passed by reference to allow modification of the
     /// original instance.</remarks>
-    /// <typeparam name="TTarget">The returnType declaringType whose field will be set.</typeparam>
-    /// <typeparam name="TValue">The declaringType of the returnType to assign to the field.</typeparam>
-    /// <param name="target">A reference to the returnType declaringType instance whose field will be set.</param>
-    /// <param name="value">The returnType to assign to the field. May be null if the field declaringType allows null values.</param>
+    /// <typeparam name="TTarget">The value type whose field will be set.</typeparam>
+    /// <typeparam name="TValue">The type of the value to assign to the field.</typeparam>
+    /// <param name="target">A reference to the value type instance whose field will be set.</param>
+    /// <param name="value">The value to assign to the field. May be null if the field allows null values.</param>
     public delegate void ValueTypeMemberSetter<TTarget, TValue>(ref TTarget target, TValue? value) where TTarget : struct;
 
     /// <summary>
-    /// Represents a method that sets the returnType of an indexer property on a returnType type instance using the specified
+    /// Represents a method that sets an indexer property on a value type instance using the specified
     /// indices.
     /// </summary>
     /// <remarks>This delegate is typically used to abstract the process of setting indexer properties on
-    /// returnType types, such as structs, where direct assignment is required. The propertyType parameter is passed by reference
-    /// to allow modification of the underlying returnType type instance.</remarks>
-    /// <typeparam name="TTarget">The returnType type that contains the indexer property to be set.</typeparam>
-    /// <typeparam name="TValue">The type of the returnType to assign to the indexer property.</typeparam>
-    /// <param name="target">A reference to the returnType type instance whose indexer property will be set.</param>
+    /// value types, such as structs, where direct assignment is required. The propertyType parameter is passed by reference
+    /// to allow modification of the underlying value type instance.</remarks>
+    /// <typeparam name="TTarget">The value type that contains the indexer property to be set.</typeparam>
+    /// <typeparam name="TValue">The type of the value to assign to the indexer property.</typeparam>
+    /// <param name="target">A reference to the value type instance whose indexer property will be set.</param>
     /// <param name="indices">An array of objects representing the indices used to access the indexer property. Can be null if the indexer
     /// does not require indices.</param>
-    /// <param name="value">The returnType to assign to the indexer property. Can be null for reference types or nullable returnType types.</param>
-    public delegate void ValueTypeIndexerPropertySetter<TTarget, TValue>(ref TTarget target, object?[]? indices, TValue? value) where TTarget : struct;
+    /// <param name="value">The value to assign to the indexer property. Can be null for reference types or nullable value types.</param>
+    public delegate void ValueTypeIndexerPropertySetter<TTarget, TValue>(ref TTarget target, TValue value, params object[] indices) where TTarget : struct;
+
+    public delegate void PropertySetter<TTarget, TValue>(TTarget target, TValue value);
+    public delegate void ValueTypePropertySetter<TTarget, TValue>(ref TTarget target, TValue value) where TTarget : struct;
+    public delegate void IndexerPropertySetter<TTarget, TValue, TIndex>(TTarget target, TValue value, params TIndex[] index);
+    public delegate void ValueTypeIndexerPropertySetter<TTarget, TValue, TIndex>(ref TTarget target, TValue value, TIndex index) where TTarget : struct;
+    public delegate void IndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2>(TTarget target, TValue value, TIndex1 index1, TIndex2 index2);
+    public delegate void ValueTypeIndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2>(ref TTarget target, TValue value, TIndex1 index1, TIndex2 index2) where TTarget : struct;
+    public delegate void IndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2, TIndex3>(TTarget target, TValue value, TIndex1 index1, TIndex2 index2, TIndex3 index3);
+    public delegate void ValueTypeIndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2, TIndex3>(ref TTarget target, TValue value, TIndex1 index1, TIndex2 index2, TIndex3 index3) where TTarget : struct;
+
 
     public delegate TValue PropertyGetter<TTarget, TValue>(TTarget target);
-    public delegate TValue IndexerPropertyGetter<TTarget, TIndex, TValue>(TTarget target, TIndex index);
-    public delegate TValue IndexerPropertyGetter<TTarget, TIndex1, TIndex2, TValue>(TTarget target, TIndex1 index1, TIndex2 index2);
-    public delegate TValue IndexerPropertyGetter<TTarget, TIndex1, TIndex2, TIndex3, TValue>(TTarget target, TIndex1 index1, TIndex2 index2, TIndex3 index3);
+    public delegate TValue IndexerPropertyGetter<TTarget, TValue>(TTarget target, params object[] index);
+    public delegate TValue IndexerPropertyGetter<TTarget, TValue, TIndex>(TTarget target, params TIndex[] index);
+    public delegate TValue IndexerPropertyGetter<TTarget, TValue, TIndex1, TIndex2>(TTarget target, TIndex1 index1, TIndex2 index2);
+    public delegate TValue IndexerPropertyGetter<TTarget, TValue, TIndex1, TIndex2, TIndex3>(TTarget target, TIndex1 index1, TIndex2 index2, TIndex3 index3);
 
     internal static class DelegateProvider
     {
@@ -392,6 +403,20 @@
                 .Compile(); // compiles to a delegate 
         }
 
+        /// <summary>
+        /// Creates a strongly-typed delegate that retrieves the value of a specified property from a target object.
+        /// </summary>
+        /// <remarks>The created delegate provides efficient access to the property value and supports
+        /// both static and instance properties. For indexer properties, use the appropriate indexer getter creation
+        /// method instead.</remarks>
+        /// <typeparam name="TTarget">The type of the object that declares the property.</typeparam>
+        /// <typeparam name="TValue">The type of the value returned by the property getter.</typeparam>
+        /// <param name="propertyData">The metadata describing the property for which to create a getter. Must represent a readable, non-indexer
+        /// property.</param>
+        /// <returns>A delegate that, when invoked with a target object, returns the value of the specified property.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the specified property already has a getter invoker generated.</exception>
+        /// <exception cref="ArgumentException">Thrown if the property is an indexer, is write-only, if the type parameters are incompatible with the
+        /// property or declaring type, or if the property type cannot be cast to the specified return type.</exception>
         public static PropertyGetter<TTarget, TValue> CreateGetter<TTarget, TValue>(PropertyData propertyData)
         {
             if (propertyData is IPropertyDataInvoker propertyDataInvoker && propertyDataInvoker.HasGetter)
@@ -410,22 +435,61 @@
                 "Cannot create a getter for a write-only property.");
             ArgumentNullException.ThrowIfNull(propertyData.DeclaringTypeData, nameof(propertyData));
 
-            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
+            Type targetType = typeof(TTarget);
+            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
+            ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                targetType,
+                declaringType,
+                nameof(TTarget),
+                ExceptionMessages.GetTypeMismatchExceptionMessage(
+                    targetType,
+                    nameof(TTarget),
+                    declaringType,
+                    "declaring type"));
+
+            Type returnType = typeof(TValue);
+            Type propertyType = propertyData.PropertyTypeData.UnwrapType();
+            if (!propertyData.PropertyTypeData.IsValueType)
+            {
+                ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                propertyType,
+                returnType,
+                nameof(TValue),
+                ExceptionMessages.GetTypeMismatchExceptionMessage(
+                    propertyType,
+                    "property type",
+                    returnType,
+                    nameof(TValue)));
+            }
+
+            ParameterExpression targetParam = Expression.Parameter(targetType, "target");
+
+            Expression? instanceExpression = propertyData.IsStatic
+                ? null
+                : targetType != declaringType
+                    ? Expression.Convert(targetParam, declaringType)
+                    : targetParam;
 
             PropertyInfo property = propertyData.GetPropertyInfo();
-            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
-            Expression propertyAccess =
-                propertyData.IsStatic
-                    ? Expression.Property(expression: null, property) // static: no instance
-                    : Expression.Property(
-                        Expression.Convert(targetParam, declaringType), // cast/unbox
-                        property);
+            Expression propertyAccess = Expression.Property(instanceExpression, property);
 
-            // Box returnType types
-            UnaryExpression body = Expression.Convert(propertyAccess, typeof(object));
+            Expression body;
+            try
+            {
+                body = returnType == propertyType
+                        ? propertyAccess
+                        : Expression.Convert(propertyAccess, returnType);
+            }
+            catch (InvalidOperationException e)
+            {
+                throw new ArgumentException(
+                    $"The provided argument {nameof(TValue)} is incompatible with the property type. Cast from {propertyData.PropertyTypeData.FullyQualifiedSignature} to the provided {returnType.FullName} is not natively supported.",
+                    nameof(TValue),
+                    e);
+            }
 
             return Expression
-                .Lambda<Func<object?, object?>>(body, targetParam)
+                .Lambda<PropertyGetter<TTarget, TValue>>(body, targetParam)
                 .Compile(); // compiles to a delegate 
         }
 
@@ -445,7 +509,7 @@
         /// <returns>A delegate that gets the value of the specified indexer property for a given target object and index.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the specified property already has a getter invoker generated.</exception>
         /// <exception cref="ArgumentException">Thrown if the specified property is not a single-parameter indexer, or if the types specified by TTarget, TIndex, or TValue are not compatible with the declaring type, index parameter type, or property type.</exception>
-        public static IndexerPropertyGetter<TTarget, TIndex, TValue> CreateIndexerGetter<TTarget, TIndex, TValue>(PropertyData propertyData)
+        public static IndexerPropertyGetter<TTarget, TValue, TIndex> CreateIndexerGetter<TTarget, TValue, TIndex>(PropertyData propertyData)
         {
             if (propertyData is IPropertyDataInvoker propertyDataInvoker && propertyDataInvoker.HasGetter)
             {
@@ -470,11 +534,11 @@
                 propertyData.IsIndexer,
                 nameof(propertyData),
                 "The provided property must be an indexer to create an indexer getter.");
-            ArgumentOutOfRangeExceptionAdvanced.ThrowIfNotEqual(
-                1,
-                propertyData.IndexerParameters.Count,
-                nameof(propertyData),
-                "The provided indexer property must have exactly a single index parameter to create a 1D indexer getter.");
+            //ArgumentOutOfRangeExceptionAdvanced.ThrowIfNotEqual(
+            //    1,
+            //    propertyData.IndexerParameters.Count,
+            //    nameof(propertyData),
+            //    "The provided indexer property must have exactly a single index parameter to create a 1D indexer getter.");
             ArgumentExceptionAdvanced.ThrowIfFalse(
                 propertyData.CanRead,
                 nameof(propertyData),
@@ -510,25 +574,40 @@
                             "indexer parameter type"));
             }
 
-            // (object? propertyType, object?[]? indices) => (object?)((TDeclaring)propertyType)[convertedIndices...]
+            // (TTarget target, TIndex[] indices)
             ParameterExpression targetParam = Expression.Parameter(targetType, "target");
-            ParameterExpression indexParam = Expression.Parameter(indexType, "index");
+            ParameterExpression indicesParam = Expression.Parameter(typeof(TIndex[]), "indices");
 
-            Expression castedIndexParam;
-            try
+            Expression[] indexExpressions = new Expression[propertyData.IndexerParameters.Count];
+            for (int i = 0; i < propertyData.IndexerParameters.Count; i++)
             {
-                // Use provided argument type and cast to indexer parameter type if needed.
-                castedIndexParam = indexType != indexParameterType
-                    ? Expression.Convert(indexParam, indexParameterType)
-                    : indexParam;
+                ParameterData indexParameterData = propertyData.IndexerParameters[i];
+
+                // indices[i]
+                BinaryExpression indexAccess = Expression.ArrayIndex(
+                    indicesParam,
+                    Expression.Constant(i));
+
+                // (TIndexType)indices[i]
+                Expression castedIndexParam;
+                try
+                {
+                    // Use provided argument type and cast to indexer parameter type if needed.
+                    castedIndexParam = indexType != indexParameterType
+                        ? Expression.Convert(indexAccess, indexParameterType)
+                        : indicesParam;
+                }
+                catch (InvalidOperationException e)
+                {
+                    throw new ArgumentException(
+                        $"The provided argument '{nameof(TIndex)}' is incompatible with the property's index parameter type. Cast from the provided '{indexType.FullName} to {indexerParameterTypeData.FullyQualifiedSignature}' is not natively supported.",
+                        nameof(TIndex),
+                        e);
+                }
+
+                indexExpressions[i] = castedIndexParam;
             }
-            catch (InvalidOperationException e)
-            {
-                throw new ArgumentException(
-                    $"The provided argument {nameof(TIndex)} is incompatible with the property's index parameter type. Cast from the provided {indexType.FullName} to {indexerParameterTypeData.FullyQualifiedSignature} is not natively supported.",
-                    nameof(TIndex),
-                    e);
-            }
+
 
             Expression? instanceExpression = propertyData.IsStatic
                 ? null
@@ -538,7 +617,7 @@
 
             // Access the indexer: propertyType[index]
             PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
-            IndexExpression propertyAccess = Expression.MakeIndex(instanceExpression, propertyInfo, [castedIndexParam]);
+            IndexExpression propertyAccess = Expression.MakeIndex(instanceExpression, propertyInfo, indexExpressions);
 
             Expression body;
             try
@@ -556,7 +635,132 @@
             }
 
             return Expression
-                .Lambda<IndexerPropertyGetter<TTarget, TIndex, TValue>>(body, targetParam, indexParam)
+                .Lambda<IndexerPropertyGetter<TTarget, TValue, TIndex>>(body, targetParam, indicesParam)
+                .Compile();
+        }
+
+        /// <summary>
+        /// Creates a strongly typed getter delegate for a single-parameter indexer property on the specified target
+        /// type.
+        /// </summary>
+        /// <remarks>The created delegate provides efficient, strongly typed access to the indexer
+        /// property. The property described by propertyData must be an indexer with exactly one index parameter, and
+        /// the types specified by TTarget, TIndex, and TValue must be compatible with the declaring type, index
+        /// parameter type, and property type, respectively.</remarks>
+        /// <typeparam name="TTarget">The type of the object that declares the indexer property.</typeparam>
+        /// <typeparam name="TValue">The type of the value returned by the indexer.</typeparam>
+        /// <param name="propertyData">The metadata describing the indexer property for which to create the getter. Must represent a readable
+        /// indexer with exactly one index parameter.</param>
+        /// <returns>A delegate that gets the value of the specified indexer property for a given target object and index.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the specified property already has a getter invoker generated.</exception>
+        /// <exception cref="ArgumentException">Thrown if the specified property is not a single-parameter indexer, or if the types specified by TTarget, TIndex, or TValue are not compatible with the declaring type, index parameter type, or property type.</exception>
+        public static IndexerPropertyGetter<TTarget, TValue> CreateIndexerGetter<TTarget, TValue>(PropertyData propertyData)
+        {
+            if (propertyData is IPropertyDataInvoker propertyDataInvoker && propertyDataInvoker.HasGetter)
+            {
+                throw new InvalidOperationException("The 'PropertyData' has already the get invoker generated.");
+            }
+
+            ArgumentNullException.ThrowIfNull(propertyData, nameof(propertyData));
+            TypeData declaringTypeData = propertyData.DeclaringTypeData;
+            ArgumentNullException.ThrowIfNull(declaringTypeData, nameof(propertyData));
+            Type targetType = typeof(TTarget);
+            Type declaringType = declaringTypeData.UnwrapType();
+            ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                targetType,
+                declaringType,
+                nameof(TTarget),
+                ExceptionMessages.GetTypeMismatchExceptionMessage(
+                    targetType,
+                    nameof(TTarget),
+                    declaringType,
+                    "declaring type"));
+            ArgumentExceptionAdvanced.ThrowIfFalse(
+                propertyData.IsIndexer,
+                nameof(propertyData),
+                "The provided property must be an indexer to create an indexer getter.");
+            ;
+            ArgumentExceptionAdvanced.ThrowIfFalse(
+                propertyData.CanRead,
+                nameof(propertyData),
+                "Cannot create a getter for a write-only property.");
+            Type returnType = typeof(TValue);
+            Type propertyType = propertyData.PropertyTypeData.UnwrapType();
+            if (!propertyData.PropertyTypeData.IsValueType)
+            {
+                ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                propertyType,
+                returnType,
+                nameof(TValue),
+                ExceptionMessages.GetTypeMismatchExceptionMessage(
+                    propertyType,
+                    "property type",
+                    returnType,
+                    nameof(TValue)));
+            }
+
+            // (TTarget target, object[] indices)
+            ParameterExpression targetParam = Expression.Parameter(targetType, "target");
+            ParameterExpression indicesParam = Expression.Parameter(typeof(object[]), "indices");
+
+            ImmutableArray<ParameterInfo> indexParameters = propertyData.IndexerParameters.AsParameterInfoArray();
+            Expression[] indexExpressions = new Expression[indexParameters.Length];
+            for (int i = 0; i < propertyData.IndexerParameters.Count; i++)
+            {
+                ParameterData indexParameterData = propertyData.IndexerParameters[i];
+                Type indexParameterType = indexParameterData.ParameterTypeData.UnwrapType();
+
+                // indices[i]
+                BinaryExpression indexAccess = Expression.ArrayIndex(
+                    indicesParam,
+                    Expression.Constant(i));
+
+                // (TIndexType)indices[i]
+                Expression castedIndexParam;
+                try
+                {
+                    // Use provided argument type and cast to indexer parameter type if needed.
+                    castedIndexParam = Expression.Convert(indexAccess, indexParameterType);
+                }
+                catch (InvalidOperationException e)
+                {
+                    throw new ArgumentException(
+                        $"The provided indexer argument at position '{i}' is incompatible with the property's index parameter type. Cast to '{indexParameterData.FullyQualifiedSignature}' is not natively supported.",
+                        $"Index {i}",
+                        e);
+                }
+
+                indexExpressions[i] = castedIndexParam;
+            }
+
+
+            Expression? instanceExpression = propertyData.IsStatic
+                ? null
+                : targetType != declaringType
+                    ? Expression.Convert(targetParam, declaringType)
+                    : targetParam;
+
+            // Access the indexer: propertyType[index]
+            PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
+            IndexExpression propertyAccess = Expression.MakeIndex(instanceExpression, propertyInfo, indexExpressions);
+
+            Expression body;
+            try
+            {
+                body = returnType == propertyType
+                        ? propertyAccess
+                        : Expression.Convert(propertyAccess, returnType);
+            }
+            catch (InvalidOperationException e)
+            {
+                throw new ArgumentException(
+                    $"The provided argument {nameof(TValue)} is incompatible with the property type. Cast from {propertyData.PropertyTypeData.FullyQualifiedSignature} to the provided {returnType.FullName} is not natively supported.",
+                    nameof(TValue),
+                    e);
+            }
+
+            return Expression
+                .Lambda<IndexerPropertyGetter<TTarget, TValue>>(body, targetParam, indicesParam)
                 .Compile();
         }
 
@@ -578,7 +782,7 @@
         /// <exception cref="InvalidOperationException">Thrown if the specified property already has a getter invoker generated.</exception>
         /// <exception cref="ArgumentException">Thrown if the property is not an indexer, does not have exactly two index parameters, is write-only, or if
         /// the provided type arguments are incompatible with the property or its index parameters.</exception>
-        public static IndexerPropertyGetter<TTarget, TIndex1, TIndex2, TValue> CreateIndexerGetter<TTarget, TIndex1, TIndex2, TValue>(PropertyData propertyData)
+        public static IndexerPropertyGetter<TTarget, TValue, TIndex1, TIndex2> CreateIndexerGetter<TTarget, TValue, TIndex1, TIndex2>(PropertyData propertyData)
         {
             if (propertyData is IPropertyDataInvoker propertyDataInvoker && propertyDataInvoker.HasGetter)
             {
@@ -722,7 +926,7 @@
             }
 
             return Expression
-                .Lambda<IndexerPropertyGetter<TTarget, TIndex1, TIndex2, TValue>>(body, targetParam, indexParam1, indexParam2)
+                .Lambda<IndexerPropertyGetter<TTarget, TValue, TIndex1, TIndex2>>(body, targetParam, indexParam1, indexParam2)
                 .Compile();
         }
 
@@ -745,7 +949,7 @@
         /// <exception cref="InvalidOperationException">Thrown if a getter invoker has already been generated for the specified property.</exception>
         /// <exception cref="ArgumentException">Thrown if the type arguments are not compatible with the indexer property, if the property is not an
         /// indexer, if it does not have exactly three index parameters, or if the property is write-only.</exception>
-        public static IndexerPropertyGetter<TTarget, TIndex1, TIndex2, TIndex3, TValue> CreateIndexerGetter<TTarget, TIndex1, TIndex2, TIndex3, TValue>(PropertyData propertyData)
+        public static IndexerPropertyGetter<TTarget, TValue, TIndex1, TIndex2, TIndex3> CreateIndexerGetter<TTarget, TValue, TIndex1, TIndex2, TIndex3>(PropertyData propertyData)
         {
             if (propertyData is IPropertyDataInvoker propertyDataInvoker && propertyDataInvoker.HasGetter)
             {
@@ -922,7 +1126,7 @@
             }
 
             return Expression
-                .Lambda<IndexerPropertyGetter<TTarget, TIndex1, TIndex2, TIndex3, TValue>>(body, targetParam, indexParam1, indexParam2, indexParam3)
+                .Lambda<IndexerPropertyGetter<TTarget, TValue, TIndex1, TIndex2, TIndex3>>(body, targetParam, indexParam1, indexParam2, indexParam3)
                 .Compile();
         }
 
@@ -1164,7 +1368,7 @@
         /// non-read-only property of the specified returnType type.</param>
         /// <returns>A delegate that sets the returnType of the specified property on a given struct instance.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the specified property already has a set invoker generated.</exception>
-        public static ValueTypeMemberSetter<TTarget, TValue> CreateStructSetter<TTarget, TValue>(PropertyData propertyData)
+        public static ValueTypePropertySetter<TTarget, TValue> CreateStructSetter<TTarget, TValue>(PropertyData propertyData)
             where TTarget : struct
         {
             if (propertyData is IPropertyDataInvoker propertyDataInvoker && propertyDataInvoker.HasSetter)
@@ -1215,7 +1419,7 @@
             BlockExpression body = Expression.Block(assign, Expression.Empty());
 
             return Expression
-                .Lambda<ValueTypeMemberSetter<TTarget, TValue>>(body, targetByRef, valueParam)
+                .Lambda<ValueTypePropertySetter<TTarget, TValue>>(body, targetByRef, valueParam)
                 .Compile();
         }
 
