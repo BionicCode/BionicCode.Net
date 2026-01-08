@@ -337,7 +337,17 @@
                 nameof(cacheKey),
                  $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a property symbol.");
 
-            Type declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(
+                cacheKey.DeclaringTypeHandle,
+                nameof(cacheKey.DeclaringTypeHandle),
+                $"The value 'default' is not a valid value for the '{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}'. The property must reference a valid declaring type.");
+
+            Type? declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
+            if (declaringType is null)
+            {
+                throw new InvalidReflectionCacheKeyException($"The '{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}' handle does not map to a valid declaring type.");
+            }
+
             Type[] indexerParameters = Type.EmptyTypes;
             if (cacheKey.ParameterList.HasItems)
             {
@@ -349,7 +359,8 @@
             {
                 indexerParameters = cacheKey.MethodParameterInfos
                 .Select(methodParameterInfo => Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle))
-                .ToArray();
+                .Where(type => type is not null)
+                .ToArray()!;
             }
 
             // Find the property by name and parameter types (for indexers)
@@ -376,6 +387,11 @@
                 [SymbolKind.Constructor],
                 nameof(cacheKey),
                  $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a constructor symbol.");
+
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(
+                cacheKey.DeclaringTypeHandle,
+                nameof(cacheKey.DeclaringTypeHandle),
+                $"The value 'default' is not a valid value for the '{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}'. The property must reference a valid declaring type.");
 
             Type? declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
             ConstructorInfo? constructorInfo = null;
@@ -411,7 +427,13 @@
                 nameof(cacheKey),
                 $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a field symbol.");
 
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(
+                cacheKey.DeclaringTypeHandle,
+                nameof(cacheKey.DeclaringTypeHandle),
+                $"The value 'default' is not a valid value for the key's '{nameof(SymbolInfoDataCacheKey)}.{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}' property. The property must reference a valid declaring type.");
+
             Type? declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
+
             FieldInfo? fieldInfo = null;
             if (cacheKey.FieldHandle != default)
             {
@@ -424,7 +446,9 @@
 
             if (fieldInfo is null)
             {
-                throw new InvalidReflectionCacheKeyException();
+                throw declaringType is null
+                    ? new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolInfoDataCacheKey)}.{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type.")
+                    : new InvalidReflectionCacheKeyException();
             }
 
             return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
@@ -438,7 +462,13 @@
                 nameof(cacheKey),
                 $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a method symbol.");
 
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(
+                cacheKey.DeclaringTypeHandle,
+                nameof(cacheKey.DeclaringTypeHandle),
+                $"The value 'default' is not a valid value for the key's '{nameof(SymbolInfoDataCacheKey)}.{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}' property. The property must reference a valid declaring type.");
+
             Type? declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
+
             MethodInfo? methodInfo = null;
             if (cacheKey.MethodHandle != default)
             {
@@ -479,7 +509,9 @@
 
             if (methodInfo is null)
             {
-                throw new InvalidReflectionCacheKeyException();
+                throw declaringType is null
+                    ? new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolInfoDataCacheKey)}.{nameof(SymbolInfoDataCacheKey.MethodHandle)}' does not contain a valid handle for the method.")
+                    : new InvalidReflectionCacheKeyException();
             }
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
@@ -500,10 +532,15 @@
                 nameof(cacheKey),
                 $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating an event symbol.");
 
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(
+                cacheKey.DeclaringTypeHandle,
+                nameof(cacheKey.DeclaringTypeHandle),
+                $"The value 'default' is not a valid value for the key's '{nameof(SymbolInfoDataCacheKey)}.{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}' property. The property must reference a valid declaring type.");
+
             Type? declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
             if (declaringType is null)
             {
-                throw new InvalidReflectionCacheKeyException($"The key does not contain a valid declaring type. Found: 'NULL'.");
+                throw new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolInfoDataCacheKey)}.{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type.");
             }
 
             EventInfo? eventInfo = declaringType.GetEvent(cacheKey.SymbolName, HelperExtensionsCommon.AllMembersFullHierarchyFlags);
@@ -535,6 +572,11 @@
                 new SymbolKind[] { SymbolKind.MemberParameter },
                 nameof(cacheKey),
                 $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a parameter symbol.");
+
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(
+                cacheKey.DeclaringTypeHandle,
+                nameof(cacheKey.DeclaringTypeHandle),
+                $"The value 'default' is not a valid value for the '{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}'. The property must reference a valid declaring type.");
 
             Type? declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
             TypeData? declaringTypeData = null;
@@ -715,7 +757,9 @@
                 }
             }
 
-            throw new InvalidReflectionCacheKeyException();
+            throw declaringType is null
+                ? new InvalidReflectionCacheKeyException($"The key's property '{nameof(SymbolInfoDataCacheKey)}.{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type.")
+                : new InvalidReflectionCacheKeyException();
         }
 
         private static void ThrowIfParameterCandidateIsAmbiguous(bool isCandidateAmbiguous)
