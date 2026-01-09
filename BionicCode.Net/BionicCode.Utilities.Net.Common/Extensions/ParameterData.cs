@@ -29,7 +29,7 @@
         private int? position;
         private TypeData? parameterTypeData;
         private TypeData? declaringTypeData;
-        private MemberData? member;
+        private SymbolInfoData? member;
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
         private object? defaultValue;
@@ -37,7 +37,7 @@
         private bool? isGenericTypeParameter;
         private bool? isGenericMethodParameter;
 
-        public ParameterData(ParameterInfo parameterInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(parameterInfo.Name, symbolInfoDataCacheKey)
+        public ParameterData(ParameterInfo parameterInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(parameterInfo.Name, SymbolKind.Parameter, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(parameterInfo, nameof(parameterInfo));
             this.DeclaringTypeHandle = parameterInfo.Member.DeclaringType?.TypeHandle ?? default;
@@ -133,12 +133,15 @@
 
         public ParameterInfo ParameterInfo { get; }
 
-        public MemberData MemberData
+        public SymbolInfoData MemberData
             => this.member ??= GetParameterInfo().Member switch
             {
                 ConstructorInfo constructorInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo),
                 PropertyInfo propertyInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo),
                 MethodInfo methodInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo),
+                EventInfo eventInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo),
+                FieldInfo fieldInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo),
+                Type type => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type),
                 _ => throw new NotImplementedException(),
             };
 

@@ -1644,13 +1644,17 @@
                     ])!;
 
             TypeData helperExtensionsCommonTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(HelperExtensionsCommon));
-            helperExtensionsCommonTypeData.GetMethod(nameof(HelperExtensionsCommon.ToFullyQualifiedSignatureName), 0, new MethodParameterInfo(propertyData.DeclaringTypeHandle, 0, false, ParameterKind.Undefined, helperExtensionsCommonTypeData.Handle);
+            MethodData extensionMethodData = helperExtensionsCommonTypeData.GetMethod(
+                nameof(HelperExtensionsCommon.ToFullyQualifiedSignatureName),
+                0,
+                new MethodParameterInfo(propertyData.DeclaringTypeHandle, 0, false, ParameterKind.Undefined, helperExtensionsCommonTypeData.Handle));
+            MethodCallExpression extensionMethodCall = Expression.Call(extensionMethodData.GetMethodInfo(), target);
 
             Expression message = Expression.Call(
                 stringConcat5,
                 Expression.Constant($"The type of the provided target instance is not assignable to the declaring type of the property. Expected: '{propertyData.DeclaringTypeData.FullyQualifiedSignature}' "),
                 Expression.Constant(", Found: "),
-                Expression.Condition(isTargetNull, Expression.Constant(null, typeof(object)), Expression.Call(target, nameof(HelperExtensionsCommon.ToFullyQualifiedSignatureName), Type.EmptyTypes))
+                Expression.Condition(isTargetNull, Expression.Constant("null", typeof(string)), extensionMethodCall),
                 Expression.Constant("."));
 
             Expression throwLengthMismatch = Expression.Throw(

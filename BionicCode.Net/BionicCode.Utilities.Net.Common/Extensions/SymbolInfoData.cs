@@ -7,12 +7,13 @@
     [DebuggerDisplay("{RuntimeShortSignature}")]
     internal abstract class SymbolInfoData
     {
-        protected SymbolInfoData(string name, SymbolInfoDataCacheKey cacheKey)
+        protected SymbolInfoData(string name, SymbolKind symbolKind, SymbolInfoDataCacheKey cacheKey)
         {
             ArgumentNullException.ThrowIfNullOrWhiteSpace(name, nameof(name));
             ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey, nameof(cacheKey));
 
             this.Name = name;
+            this.SymbolKind = symbolKind;
             this.Indentation = 4;
             this.CacheKey = cacheKey;
         }
@@ -20,13 +21,14 @@
         public abstract IList<CustomAttributeData> AttributeData { get; }
         public abstract SymbolAttributes SymbolAttributes { get; }
         public string Name { get; }
+        public SymbolKind SymbolKind { get; }
         public abstract string AssemblyName { get; }
 
         /// <summary>
         /// Symbol name with namespace, the declaring type (in case of a member), and generic type parameters.
         /// </summary>
         /// <value>The fully qualified name of the symbol.
-        /// <br/>For example, amethod name: <c>"MyNamespace.MyClass.DoSomething&lt;T&gt;"</c>.</value>
+        /// <br/>For example, a method name: <c>"MyNamespace.MyClass.DoSomething&lt;T&gt;"</c>.</value>
         public abstract string FullyQualifiedDisplayName { get; }
 
         /// <summary>
@@ -133,4 +135,3 @@
 
         public SymbolInfoDataCacheKey CacheKey { get; }
     }
-}

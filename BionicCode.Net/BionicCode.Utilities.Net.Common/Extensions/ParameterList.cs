@@ -21,10 +21,15 @@
             ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Parameters, nameof(items));
 
             this.DeclaringMember = this.Parameters.FirstOrDefault()?.MemberData;
-            if (!this.Parameters.All(parameter => ReferenceEquals(parameter.MemberData, this.DeclaringMember)))
-            {
-                throw new ArgumentException("All parameters must belong to the same member.", nameof(items));
-            }
+            RuntimeTypeHandle declaringTypeHandle = this.DeclaringMember is MemberData memberData
+                ? memberData.DeclaringTypeHandle
+                : this.DeclaringMember is TypeData type
+                    ? type.Handle
+                    : this.DeclaringMember is ParameterData parameterData
+                        ? parameterData.DeclaringTypeHandle
+                        : throw new NotImplementedException($"The support for the declaring member '{this.DeclaringMember}' is currently not implemented.");
+
+            ArgumentExceptionAdvanced.ThrowIfAny(this.Parameters, parameterData => !parameterData.DeclaringTypeHandle.Equals(declaringTypeHandle), nameof(items), $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(ParameterData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type.");
 
             this._hashCode = ComputeHashCode(this.Parameters);
         }
@@ -43,7 +48,7 @@
         public bool IsEmpty => this.Parameters.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<ParameterData> Parameters { get; }
-        public MemberData? DeclaringMember { get; }
+        public SymbolInfoData? DeclaringMember { get; }
 
         public ParameterData this[int index]
         {

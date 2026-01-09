@@ -63,7 +63,7 @@
         private bool? _isFamilyOrAssembly;
         private bool? _isFamilyAndAssembly;
 
-        public MethodData(MethodInfo methodInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(methodInfo, symbolInfoDataCacheKey)
+        public MethodData(MethodInfo methodInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(methodInfo, SymbolKind.MemberMethod, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(methodInfo, nameof(methodInfo));
 

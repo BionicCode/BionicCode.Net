@@ -20,10 +20,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Parameters, nameof(items));
 
             this.DeclaringMemberTypeHandle = this.Parameters.FirstOrDefault().DeclaringTypeHandle;
-            if (!this.Parameters.All(parameter => parameter.DeclaringTypeHandle.Equals(this.DeclaringMemberTypeHandle)))
-            {
-                throw new ArgumentException("All parameters must belong to the same member.", nameof(items));
-            }
+
+            ArgumentExceptionAdvanced.ThrowIfAny(this.Parameters, parameterData => !parameterData.DeclaringTypeHandle.Equals(this.DeclaringMemberTypeHandle), nameof(items), $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodParameterInfo)}.{nameof(MethodParameterInfo.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type.");
 
             this._hashCode = ComputeHashCode(this.Parameters);
         }

@@ -78,7 +78,7 @@ namespace BionicCode.Utilities.Net
         private bool? _isStruct;
         private bool? _isReadOnlyStruct;
 
-        public TypeData(Type type) : base(type.Name)
+        public TypeData(Type type, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(type.Name, SymbolKind.Type, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(type, nameof(type));
 
@@ -321,7 +321,7 @@ namespace BionicCode.Utilities.Net
                 constructorName,
                 symbolParameters,
                 genericTypeParameterCount,
-                SymbolKind.Constructor);
+                SymbolKind.MemberConstructor);
             SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ref cacheKey, out ConstructorData constructorData);
             _ = this.memberTable.TryAdd(cacheKey, constructorData);
 

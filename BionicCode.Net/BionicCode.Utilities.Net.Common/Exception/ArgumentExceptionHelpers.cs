@@ -3,6 +3,7 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Numerics;
     using System.Reflection;
     using System.Runtime.CompilerServices;
@@ -330,26 +331,23 @@
         }
 
         /// <summary>
-        /// Validates that the specified value corresponds to a defined value of the specified enumeration type, and
-        /// throws an exception if it does not.
+        /// Throws an exception if the specified enum value does not match any of the provided allowed values.
         /// </summary>
-        /// <remarks>Use this method to ensure that a value is a valid member of a specific enum type
-        /// before using it in code that requires a defined enum value. This is especially useful when working with
-        /// values from untrusted sources or deserialization.</remarks>
-        /// <typeparam name="TEnum">The enumeration type against which to validate the value. Must be a struct that implements Enum.</typeparam>
-        /// <param name="value">The value to validate. Can be an enum value or a convertible value representing an enum member.</param>
-        /// <param name="others">A list of valid enum values that <paramref name="value"/> must match.</param>
-        /// <param name="paramName">The name of the parameter being validated. This value is used in any thrown exception to identify the
-        /// invalid argument. Optional.</param>
-        /// <param name="message">An optional exception message.</param>
-        /// <exception cref="ArgumentException">Thrown if the provided value is an enum of a different type than <typeparamref name="TEnum"/>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if the provided value does not correspond to a defined member of <typeparamref name="TEnum"/>.</exception>
-        public static void ThrowIfEnumIsNotEqual<TEnum>(IConvertible value, IEnumerable<TEnum> others, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null) where TEnum : struct, Enum
+        /// <remarks>Use this method to enforce that an enum argument matches one of a set of allowed
+        /// values. This is useful for validating method parameters or configuration values at runtime.</remarks>
+        /// <typeparam name="TEnum">The enum type to compare against. Must be a value type that implements <see cref="System.Enum"/>.</typeparam>
+        /// <param name="value">The enum value to validate. Cannot be null.</param>
+        /// <param name="allowedValues">A collection of allowed enum values to compare against. Cannot be null or empty.</param>
+        /// <param name="paramName">The name of the parameter to include in the exception message. This is typically provided automatically and
+        /// is optional.</param>
+        /// <param name="message">An optional custom message to include in the exception if the value is not allowed.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> does not equal any of the allowed values in <paramref name="allowedValues"/>.</exception>
+        public static void ThrowIfEnumNotEqualsAny<TEnum>(IConvertible value, IEnumerable<TEnum> allowedValues, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null) where TEnum : struct, Enum
         {
             ArgumentNullException.ThrowIfNull(value, paramName);
-            ArgumentNullException.ThrowIfNull(others, nameof(others));
+            ArgumentNullException.ThrowIfNull(allowedValues, nameof(allowedValues));
 
-            foreach (TEnum other in others)
+            foreach (TEnum other in allowedValues)
             {
                 if (value.Equals(other))
                 {
@@ -357,10 +355,37 @@
                 }
             }
 
-            string allowedValues = string.Join(", ", others);
+            string allowedValuesString = string.Join(", ", allowedValues);
             throw new ArgumentOutOfRangeException(
                 paramName,
-                message ?? $"The argument is not of the expected value. Allowed: {allowedValues}, Found: '{value}'.");
+                message ?? $"The argument {paramName} returns a disallowed '{typeof(TEnum).FullName}' enum value. Allowed: {allowedValuesString}, Found: '{value}'.");
+        }
+
+        /// <summary>
+        /// Throws an exception if the specified enum value is equal to any of the provided disallowed values.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type to check against the disallowed values.</typeparam>
+        /// <param name="value">The enum value to validate. Cannot be null.</param>
+        /// <param name="disallowedValues">A collection of enum values that are not allowed. Cannot be null.</param>
+        /// <param name="paramName">The name of the parameter representing the value being checked. This is used in the exception message.</param>
+        /// <param name="message">An optional custom message to include in the exception. If null, a default message is used.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if the value is equal to any of the disallowed values defined  in <paramref name="disallowedValues"/>.</exception>
+        public static void ThrowIfEnumEqualsAny<TEnum>(IConvertible value, IEnumerable<TEnum> disallowedValues, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null) where TEnum : struct, Enum
+        {
+            ArgumentNullException.ThrowIfNull(value, paramName);
+            ArgumentNullException.ThrowIfNull(disallowedValues, nameof(disallowedValues));
+
+            foreach (TEnum other in disallowedValues)
+            {
+                if (value.Equals(other))
+                {
+                    IEnumerable<TEnum> allowedValues = Enum.GetValues<TEnum>().Except(disallowedValues);
+                    string allowedValuesString = string.Join(", ", allowedValues);
+                    throw new ArgumentOutOfRangeException(
+                        paramName,
+                message ?? $"The argument {paramName} returns a disallowed '{typeof(TEnum).FullName}' enum value. Allowed: {allowedValuesString}, Found: '{value}'.");
+                }
+            }
         }
 
         /// <summary>
@@ -437,6 +462,26 @@
             {
                 throw new ArgumentException(
                     message ?? "The condition is 'TRUE'. Allowed: 'FALSE'.",
+                    paramName);
+            }
+        }
+
+        /// <summary>
+        /// Throws an <see cref="ArgumentException"/> if any element in the sequence satisfies the specified condition.
+        /// </summary>
+        /// <typeparam name="TItem">The type of the elements in the sequence to check.</typeparam>
+        /// <param name="items">The sequence of items to evaluate against the condition. Cannot be <see langword="null"/>.</param>
+        /// <param name="condition">A predicate function that defines the condition to test for each element. Cannot be <see langword="null"/>.</param>
+        /// <param name="paramName">The name of the parameter that caused the exception. If not specified, the expression for the condition is
+        /// used.</param>
+        /// <param name="message">The error message to include in the exception. If <see langword="null"/>, a default message is used.</param>
+        /// <exception cref="ArgumentException">Thrown if any element in the sequence satisfies the specified condition.</exception>
+        public static void ThrowIfAny<TItem>(IEnumerable<TItem> items, Func<TItem, bool> condition, [CallerArgumentExpression(nameof(condition))] string? paramName = null, string? message = null)
+        {
+            if (items.Any(condition))
+            {
+                throw new ArgumentException(
+                    message ?? "The sequence contains  invalid items.",
                     paramName);
             }
         }

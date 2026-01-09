@@ -8,7 +8,7 @@
         MemberProperty,
         MemberField,
         MemberEvent,
-        MemberParameter,
-        Constructor,
+        Parameter,
+        MemberConstructor,
     }
 }

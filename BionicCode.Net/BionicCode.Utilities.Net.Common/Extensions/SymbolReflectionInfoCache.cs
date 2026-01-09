@@ -19,7 +19,7 @@
         internal static TypeData GetOrCreateSymbolInfoDataCacheEntry(Type type)
         {
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForType(type);
-            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new TypeData(type));
+            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new TypeData(type, cacheKey));
 
             // REMOVE::after testing
             Debug.WriteLine($"Found SymbolInfoData entry for {type.GetType()}");
@@ -283,7 +283,7 @@
                     MethodData methodData = CreateMethodData(cacheKey);
                     normalizedCacheKey = methodData.CacheKey;
                     break;
-                case SymbolKind.Constructor:
+                case SymbolKind.MemberConstructor:
                     ConstructorData constructorData = CreateConstructorData(cacheKey);
                     normalizedCacheKey = constructorData.CacheKey;
                     break;
@@ -299,7 +299,7 @@
                     TypeData typeData = CreateTypeData(cacheKey);
                     normalizedCacheKey = typeData.CacheKey;
                     break;
-                case SymbolKind.MemberParameter:
+                case SymbolKind.Parameter:
                     ParameterData parameterData = CreateParameterData(cacheKey);
                     normalizedCacheKey = parameterData.CacheKey;
                     break;
@@ -314,7 +314,7 @@
 
         private static TypeData CreateTypeData(SymbolInfoDataCacheKey cacheKey)
         {
-            ArgumentExceptionAdvanced.ThrowIfEnumIsNotEqual(
+            ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
                 cacheKey.SymbolKind,
                 [SymbolKind.Type],
                 nameof(cacheKey),
@@ -336,7 +336,7 @@
 
         private static PropertyData CreatePropertyData(SymbolInfoDataCacheKey cacheKey)
         {
-            ArgumentExceptionAdvanced.ThrowIfEnumIsNotEqual(
+            ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
                 cacheKey.SymbolKind,
                 [SymbolKind.MemberProperty],
                 nameof(cacheKey),
@@ -387,9 +387,9 @@
 
         private static ConstructorData CreateConstructorData(SymbolInfoDataCacheKey cacheKey)
         {
-            ArgumentExceptionAdvanced.ThrowIfEnumIsNotEqual(
+            ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
                 cacheKey.SymbolKind,
-                [SymbolKind.Constructor],
+                [SymbolKind.MemberConstructor],
                 nameof(cacheKey),
                  $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a constructor symbol.");
 
@@ -429,7 +429,7 @@
 
         private static FieldData CreateFieldData(SymbolInfoDataCacheKey cacheKey)
         {
-            ArgumentExceptionAdvanced.ThrowIfEnumIsNotEqual(
+            ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
                 cacheKey.SymbolKind
                 , [SymbolKind.MemberField],
                 nameof(cacheKey),
@@ -464,7 +464,7 @@
 
         private static MethodData CreateMethodData(SymbolInfoDataCacheKey cacheKey)
         {
-            ArgumentExceptionAdvanced.ThrowIfEnumIsNotEqual(
+            ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
                 cacheKey.SymbolKind,
                 [SymbolKind.MemberMethod],
                 nameof(cacheKey),
@@ -495,15 +495,17 @@
                 if (cacheKey.ParameterList.HasItems)
                 {
                     parameterTypes = cacheKey.ParameterList
-                    .Select(parameterData => parameterData.ParameterTypeData.UnwrapType())
-                    .ToArray();
+                        .Where(parameterData => parameterData.DeclaringTypeHandle.Equals(cacheKey.DeclaringTypeHandle))
+                        .Select(parameterData => parameterData.ParameterTypeData.UnwrapType())
+                        .ToArray();
                 }
                 else if (cacheKey.MethodParameterInfos.HasItems)
                 {
                     parameterTypes = cacheKey.MethodParameterInfos
-                    .Select(methodParameterInfo => Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle))
-                    .Where(type => type is not null)
-                    .ToArray()!;
+                        .Where(methodParameterInfo => methodParameterInfo.DeclaringTypeHandle.Equals(cacheKey.DeclaringTypeHandle))
+                        .Select(methodParameterInfo => Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle))
+                        .Where(type => type is not null)
+                        .ToArray()!;
                 }
 
                 methodInfo = declaringType.GetMethod(
@@ -535,7 +537,7 @@
 
         private static EventData CreateEventData(SymbolInfoDataCacheKey cacheKey)
         {
-            ArgumentExceptionAdvanced.ThrowIfEnumIsNotEqual(cacheKey.SymbolKind,
+            ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(cacheKey.SymbolKind,
                 [SymbolKind.MemberEvent],
                 nameof(cacheKey),
                 $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating an event symbol.");
@@ -575,9 +577,9 @@
 
         private static ParameterData CreateParameterData(SymbolInfoDataCacheKey cacheKey)
         {
-            ArgumentExceptionAdvanced.ThrowIfEnumIsNotEqual<SymbolKind>(
+            ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny<SymbolKind>(
                 cacheKey.SymbolKind,
-                new SymbolKind[] { SymbolKind.MemberParameter },
+                new SymbolKind[] { SymbolKind.Parameter },
                 nameof(cacheKey),
                 $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a parameter symbol.");
 

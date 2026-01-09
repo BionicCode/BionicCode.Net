@@ -9,12 +9,12 @@
         private IList<CustomAttributeData> attributeData;
         private TypeData declaringTypeData;
 
-        protected MemberData(MemberInfo memberInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(memberInfo.Name, symbolInfoDataCacheKey)
+        protected MemberData(MemberInfo memberInfo, SymbolKind symbolKind, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(memberInfo.Name, symbolKind, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(memberInfo, nameof(memberInfo));
             if (memberInfo.DeclaringType is null)
             {
-                throw new NotSupportedException($"Member '{memberInfo.Name}' has no declaring type.");
+                throw new NotSupportedException($"The member '{memberInfo.Name}' has no declaring type.");
             }
 
             this.DeclaringTypeHandle = memberInfo.DeclaringType.TypeHandle;

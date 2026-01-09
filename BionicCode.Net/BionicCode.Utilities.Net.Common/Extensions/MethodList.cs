@@ -20,10 +20,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Methods, nameof(items));
 
             this.DeclaringTypeHandle = this.Methods.FirstOrDefault()!.DeclaringTypeHandle;
-            if (!this.Methods.All(method => method.DeclaringTypeData.Equals(this.DeclaringTypeHandle)))
-            {
-                throw new ArgumentException("All methods must belong to the same declaring type.", nameof(items));
-            }
+
+            ArgumentExceptionAdvanced.ThrowIfAny(this.Methods, methodData => !methodData.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle), nameof(items), $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All methods must belong to the same declaring type.");
 
             this._hashCode = ComputeHashCode(this.Methods);
         }

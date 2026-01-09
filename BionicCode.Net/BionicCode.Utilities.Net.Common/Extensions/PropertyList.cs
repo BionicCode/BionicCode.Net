@@ -5,6 +5,9 @@
     using System.Collections.Immutable;
     using System.Linq;
 
+    /// <summary>
+    /// Represents a read-only list of <see cref="PropertyData"/> items that belong to the same declaring type.
+    /// </summary>
     internal sealed class PropertyList : IReadOnlyList<PropertyData>, IEquatable<PropertyList>
     {
         public static readonly PropertyList Empty = new PropertyList(Array.Empty<PropertyData>());
@@ -17,13 +20,12 @@
         public PropertyList(IEnumerable<PropertyData> items)
         {
             this.Properties = items.ToImmutableList();
+
             ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Properties, nameof(items));
 
             this.DeclaringTypeHandle = this.Properties.FirstOrDefault()!.DeclaringTypeHandle;
-            if (!this.Properties.All(property => property.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle)))
-            {
-                throw new ArgumentException("All properties must belong to the same declaring type.", nameof(items));
-            }
+
+            ArgumentExceptionAdvanced.ThrowIfAny(this.Properties, property => !property.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle), nameof(items), $"At least one item in the argument '{nameof(items)}' has a different value for the '{nameof(PropertyData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All properties must belong to the same declaring type.");
 
             this._hashCode = ComputeHashCode(this.Properties);
         }

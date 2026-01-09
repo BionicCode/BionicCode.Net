@@ -20,10 +20,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Constructors, nameof(items));
 
             this.DeclaringTypeHandle = this.Constructors.FirstOrDefault()!.DeclaringTypeHandle;
-            if (!this.Constructors.All(method => method.DeclaringTypeData.Equals(this.DeclaringTypeHandle)))
-            {
-                throw new ArgumentException("All constructors must belong to the same declaring type.", nameof(items));
-            }
+
+            ArgumentExceptionAdvanced.ThrowIfAny(this.Constructors, constructorData => !constructorData.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle), nameof(items), $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(ConstructorData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All constructors must belong to the same declaring type.");
 
             this._hashCode = ComputeHashCode(this.Constructors);
         }
