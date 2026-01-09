@@ -9,65 +9,60 @@
     {
         internal static PropertyList Create(IEnumerable<PropertyInfo>? items)
         {
-            List<PropertyInfo>? parameterInfoList = items?.ToList();
-            if (parameterInfoList is null || parameterInfoList.IsEmpty())
+            List<PropertyInfo>? propertyInfoList = items?.ToList();
+            if (propertyInfoList is null || propertyInfoList.IsEmpty())
             {
                 return PropertyList.Empty;
             }
 
-            List<PropertyData> parameters = new List<PropertyData>(parameterInfoList.Count);
+            List<PropertyData> properties = new List<PropertyData>(propertyInfoList.Count);
             RuntimeTypeHandle declaringTypeHandle = default;
-            foreach (PropertyInfo parameterInfo in parameterInfoList)
+            foreach (PropertyInfo propertyInfo in propertyInfoList)
             {
-                PropertyData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
+                PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
 
                 if (declaringTypeHandle.Equals(default))
                 {
-                    declaringTypeHandle = parameterData.DeclaringTypeHandle;
+                    declaringTypeHandle = propertyData.DeclaringTypeHandle;
                 }
 
-                if (!parameterData.DeclaringTypeHandle.Equals(declaringTypeHandle))
+                if (!propertyData.DeclaringTypeHandle.Equals(declaringTypeHandle))
                 {
-                    throw new ArgumentException("All PropertyInfo items must belong to the same member.");
+                    throw new ArgumentException($"All '{nameof(PropertyInfo)}' items must belong to the same declaring type.");
                 }
 
-                parameters.Add(parameterData);
+                properties.Add(propertyData);
             }
 
-            return new PropertyList(parameters);
+            return properties.ToPropertyList();
         }
-    }
 
-    internal static class EventListBuilder
-    {
-        internal static EventList Create(IEnumerable<EventInfo>? items)
+        internal static PropertyList Create(TypeData declaringTypeData)
         {
-            List<EventInfo>? parameterInfoList = items?.ToList();
-            if (parameterInfoList is null || parameterInfoList.IsEmpty())
+            ArgumentNullException.ThrowIfNull(declaringTypeData);
+            return CreateInternal(declaringTypeData.UnwrapType());
+        }
+
+        internal static PropertyList Create(Type declaringType)
+        {
+            ArgumentNullException.ThrowIfNull(declaringType);
+            return CreateInternal(declaringType);
+        }
+
+        private static PropertyList CreateInternal(Type declaringType)
+        {
+            PropertyInfo[] propertyInfoList = declaringType.GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+            if (propertyInfoList.IsEmpty())
             {
                 return PropertyList.Empty;
             }
 
-            List<EventData> parameters = new List<EventData>(parameterInfoList.Count);
-            RuntimeTypeHandle declaringTypeHandle = default;
-            foreach (EventInfo eventInfo in parameterInfoList)
-            {
-                EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+            IEnumerable<PropertyData> properties = propertyInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
 
-                if (declaringTypeHandle.Equals(default))
-                {
-                    declaringTypeHandle = eventData.DeclaringTypeHandle;
-                }
-
-                if (!eventData.DeclaringTypeHandle.Equals(declaringTypeHandle))
-                {
-                    throw new ArgumentException("All PropertyInfo items must belong to the same member.");
-                }
-
-                parameters.Add(eventData);
-            }
-
-            return new EventList(parameters);
+            return properties.ToPropertyList();
         }
+
+        internal static PropertyList ToPropertyList(this IEnumerable<PropertyData> items)
+            => items is null || items.IsEmpty() ? PropertyList.Empty : new PropertyList(items);
     }
 }

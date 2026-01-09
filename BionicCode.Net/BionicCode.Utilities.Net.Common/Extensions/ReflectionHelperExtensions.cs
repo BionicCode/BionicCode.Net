@@ -2130,7 +2130,7 @@
 
         //    if (HelperExtensionsCommon.CastMethodData is null)
         //    {
-        //        TypeData reflectionExtensionsTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(HelperExtensionsCommon));
+        //        TypeData reflectionExtensionsTypeData = SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(typeof(HelperExtensionsCommon));
         //        foreach (MethodData methodData in reflectionExtensionsTypeData.EnumerateMethods())
         //        {
         //            if (methodData.Name.Equals(nameof(HelperExtensionsCommon.Cast), StringComparison.Ordinal)

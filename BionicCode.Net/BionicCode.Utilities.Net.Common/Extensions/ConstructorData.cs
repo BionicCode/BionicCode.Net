@@ -75,7 +75,7 @@
           : this.accessModifier;
 
         public ParameterList Parameters
-          => this.parameters ??= ParameterListBuilder.Create(GetConstructorInfo().GetParameters());
+          => this.parameters ??= ParameterListBuilder.Create(this);
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
           ? (this.symbolAttributes = ConstructorData.GetAttributesInternal(this))

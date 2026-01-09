@@ -9,17 +9,17 @@
     {
         internal static MethodList Create(IEnumerable<MethodInfo>? items)
         {
-            List<MethodInfo>? parameterInfoList = items?.ToList();
-            if (parameterInfoList is null || parameterInfoList.IsEmpty())
+            List<MethodInfo>? methodInfoList = items?.ToList();
+            if (methodInfoList is null || methodInfoList.IsEmpty())
             {
                 return MethodList.Empty;
             }
 
-            List<MethodData> parameters = new List<MethodData>(parameterInfoList.Count);
+            List<MethodData> methods = new List<MethodData>(methodInfoList.Count);
             RuntimeTypeHandle declaringTypeHandle = default;
-            foreach (MethodInfo parameterInfo in parameterInfoList)
+            foreach (MethodInfo methodInfo in methodInfoList)
             {
-                MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
+                MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
 
                 if (declaringTypeHandle.Equals(default))
                 {
@@ -28,13 +28,41 @@
 
                 if (!methodData.DeclaringTypeHandle.Equals(declaringTypeHandle))
                 {
-                    throw new ArgumentException("All MethodInfo items must belong to the same member.");
+                    throw new ArgumentException($"All '{nameof(MethodInfo)}' items must belong to the same declaring type.");
                 }
 
-                parameters.Add(methodData);
+                methods.Add(methodData);
             }
 
-            return new MethodList(parameters);
+            return methods.ToMethodList();
         }
+
+        internal static MethodList Create(TypeData declaringTypeData)
+        {
+            ArgumentNullException.ThrowIfNull(declaringTypeData);
+            return CreateInternal(declaringTypeData.UnwrapType());
+        }
+
+        internal static MethodList Create(Type declaringType)
+        {
+            ArgumentNullException.ThrowIfNull(declaringType);
+            return CreateInternal(declaringType);
+        }
+
+        private static MethodList CreateInternal(Type declaringType)
+        {
+            MethodInfo[] methodInfoList = declaringType.GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+            if (methodInfoList.IsEmpty())
+            {
+                return MethodList.Empty;
+            }
+
+            IEnumerable<MethodData> methods = methodInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
+
+            return methods.ToMethodList();
+        }
+
+        internal static MethodList ToMethodList(this IEnumerable<MethodData> items)
+            => items is null || items.IsEmpty() ? MethodList.Empty : new MethodList(items);
     }
 }

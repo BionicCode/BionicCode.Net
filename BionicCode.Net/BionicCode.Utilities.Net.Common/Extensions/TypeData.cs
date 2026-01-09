@@ -101,9 +101,14 @@ namespace BionicCode.Utilities.Net
             MethodParameterInfoList indexerParameters = indexerPropertyParameters is null || indexerPropertyParameters.Length == 0
                 ? MethodParameterInfoList.Empty
                 : new MethodParameterInfoList(indexerPropertyParameters);
+            ArgumentExceptionAdvanced.ThrowIfAny(
+                indexerParameters,
+                methodParameterInfo => !methodParameterInfo.DeclaringTypeHandle.Equals(this.Handle),
+                nameof(indexerPropertyParameters),
+                $"At least one item in the argument sequence '{nameof(indexerPropertyParameters)}' has a different value for the '{nameof(MethodParameterInfo)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type '{this.FullyQualifiedSignature}'.");
+
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousProperty(this.Handle, propertyName, indexerParameters);
-            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ref cacheKey, out PropertyData propertyData);
-            _ = this.memberTable.TryAdd(cacheKey, propertyData);
+            PropertyData propertyData = (PropertyData)this.memberTable.GetOrAdd(cacheKey, key => SymbolReflectionInfoCache.GetOrCreatePropertyDataCacheEntry(ref key));
 
             return propertyData;
         }
@@ -126,10 +131,10 @@ namespace BionicCode.Utilities.Net
 
             // Return already cached cachedProperties first
             IEnumerable<PropertyData> cachedProperties = this.memberTable.Values.OfType<PropertyData>();
-            foreach (PropertyData property in cachedProperties)
+            foreach (PropertyData cachedPropertyData in cachedProperties)
             {
                 cachedPropertyCount++;
-                yield return property;
+                yield return cachedPropertyData;
             }
 
             // If all cachedProperties are already generated, exit. Else generate the remaining cachedProperties.
@@ -140,11 +145,10 @@ namespace BionicCode.Utilities.Net
 
             IEnumerable<PropertyInfo> remainingProperties = UnwrapType().GetProperties(bindingFlags)
                 .Skip(cachedPropertyCount);
-            foreach (PropertyInfo property in remainingProperties)
+            foreach (PropertyInfo propertyInfo in remainingProperties)
             {
-                PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(property);
-                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForProperty(property);
-                _ = this.memberTable.TryAdd(cacheKey, propertyData);
+                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForProperty(propertyInfo);
+                PropertyData propertyData = (PropertyData)this.memberTable.GetOrAdd(cacheKey, _ => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo));
 
                 yield return propertyData;
             }
@@ -160,14 +164,19 @@ namespace BionicCode.Utilities.Net
             MethodParameterInfoList symbolParameters = parameterList is null || parameterList.Length == 0
                 ? MethodParameterInfoList.Empty
                 : new MethodParameterInfoList(parameterList);
+            ArgumentExceptionAdvanced.ThrowIfAny(
+                symbolParameters,
+                methodParameterInfo => !methodParameterInfo.DeclaringTypeHandle.Equals(this.Handle),
+                nameof(parameterList),
+                $"At least one item in the argument sequence '{nameof(parameterList)}' has a different value for the '{nameof(MethodParameterInfo)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type '{this.FullyQualifiedSignature}'.");
+
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrConstructor(
                 this.Handle,
                 methodName,
                 symbolParameters,
                 genericTypeParameterCount,
                 SymbolKind.MemberMethod);
-            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ref cacheKey, out MethodData methodData);
-            _ = this.memberTable.TryAdd(cacheKey, methodData);
+            MethodData methodData = (MethodData)this.memberTable.GetOrAdd(cacheKey, key => SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(ref key));
 
             return methodData;
         }
@@ -190,10 +199,10 @@ namespace BionicCode.Utilities.Net
 
             // Return already cached cachedMethods first
             IEnumerable<MethodData> cachedMethods = this.memberTable.Values.OfType<MethodData>();
-            foreach (MethodData method in cachedMethods)
+            foreach (MethodData cachedMethodData in cachedMethods)
             {
                 cachedMethodCount++;
-                yield return method;
+                yield return cachedMethodData;
             }
 
             // If all cachedMethods are already generated, exit. Else generate the remaining cachedMethods.
@@ -204,11 +213,10 @@ namespace BionicCode.Utilities.Net
 
             IEnumerable<MethodInfo> remainingMethods = UnwrapType().GetMethods(bindingFlags)
                 .Skip(cachedMethodCount);
-            foreach (MethodInfo method in remainingMethods)
+            foreach (MethodInfo methodInfo in remainingMethods)
             {
-                MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(method);
-                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForMethod(method);
-                _ = this.memberTable.TryAdd(cacheKey, methodData);
+                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForMethod(methodInfo);
+                MethodData methodData = (MethodData)this.memberTable.GetOrAdd(cacheKey, _ => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo));
 
                 yield return methodData;
             }
@@ -224,8 +232,7 @@ namespace BionicCode.Utilities.Net
                 this.Handle,
                 fieldName,
                 SymbolKind.MemberField);
-            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ref cacheKey, out FieldData fieldData);
-            _ = this.memberTable.TryAdd(cacheKey, fieldData);
+            FieldData fieldData = (FieldData)this.memberTable.GetOrAdd(cacheKey, key => SymbolReflectionInfoCache.GetOrCreateFieldDataCacheEntry(ref key));
 
             return fieldData;
         }
@@ -236,10 +243,10 @@ namespace BionicCode.Utilities.Net
 
             // Return already cached cachedFields first
             IEnumerable<FieldData> cachedFields = this.memberTable.Values.OfType<FieldData>();
-            foreach (FieldData field in cachedFields)
+            foreach (FieldData cachedFieldData in cachedFields)
             {
                 cachedFieldCount++;
-                yield return field;
+                yield return cachedFieldData;
             }
 
             // If all cachedFields are already generated, exit. Else generate the remaining cachedFields.
@@ -250,11 +257,10 @@ namespace BionicCode.Utilities.Net
 
             IEnumerable<FieldInfo> remainingFields = UnwrapType().GetFields(bindingFlags)
                 .Skip(cachedFieldCount);
-            foreach (FieldInfo field in remainingFields)
+            foreach (FieldInfo fieldInfo in remainingFields)
             {
-                FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(field);
-                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForField(field);
-                _ = this.memberTable.TryAdd(cacheKey, fieldData);
+                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForField(fieldInfo);
+                FieldData fieldData = (FieldData)this.memberTable.GetOrAdd(cacheKey, _ => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo));
 
                 yield return fieldData;
             }
@@ -270,8 +276,7 @@ namespace BionicCode.Utilities.Net
                 this.Handle,
                 eventName,
                 SymbolKind.MemberEvent);
-            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ref cacheKey, out EventData eventData);
-            _ = this.memberTable.TryAdd(cacheKey, eventData);
+            EventData eventData = (EventData)this.memberTable.GetOrAdd(cacheKey, key => SymbolReflectionInfoCache.GetOrCreateEventDataCacheEntry(ref key));
 
             return eventData;
         }
@@ -282,10 +287,10 @@ namespace BionicCode.Utilities.Net
 
             // Return already cached cachedFields first
             IEnumerable<EventData> cachedEvents = this.memberTable.Values.OfType<EventData>();
-            foreach (EventData eventData in cachedEvents)
+            foreach (EventData cachedEventData in cachedEvents)
             {
                 cachedEventCount++;
-                yield return eventData;
+                yield return cachedEventData;
             }
 
             // If all events are already generated, exit. Else generate the remaining events.
@@ -298,9 +303,8 @@ namespace BionicCode.Utilities.Net
                 .Skip(cachedEventCount);
             foreach (EventInfo eventInfo in remainingEvents)
             {
-                EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
                 SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForEvent(eventInfo);
-                _ = this.memberTable.TryAdd(cacheKey, eventData);
+                EventData eventData = (EventData)this.memberTable.GetOrAdd(cacheKey, _ => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo));
 
                 yield return eventData;
             }
@@ -316,14 +320,19 @@ namespace BionicCode.Utilities.Net
             MethodParameterInfoList symbolParameters = parameterList is null || parameterList.Length == 0
                 ? MethodParameterInfoList.Empty
                 : new MethodParameterInfoList(parameterList);
+            ArgumentExceptionAdvanced.ThrowIfAny(
+                symbolParameters,
+                methodParameterInfo => !methodParameterInfo.DeclaringTypeHandle.Equals(this.Handle),
+                nameof(parameterList),
+                $"At least one item in the argument sequence '{nameof(parameterList)}' has a different value for the '{nameof(MethodParameterInfo)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type '{this.FullyQualifiedSignature}'.");
+
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrConstructor(
                 this.Handle,
                 constructorName,
                 symbolParameters,
                 genericTypeParameterCount,
                 SymbolKind.MemberConstructor);
-            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(ref cacheKey, out ConstructorData constructorData);
-            _ = this.memberTable.TryAdd(cacheKey, constructorData);
+            ConstructorData constructorData = (ConstructorData)this.memberTable.GetOrAdd(cacheKey, key => SymbolReflectionInfoCache.GetOrCreateConstructorDataCacheEntry(ref key));
 
             return constructorData;
         }
@@ -334,10 +343,10 @@ namespace BionicCode.Utilities.Net
 
             // Return already cached cachedConstructors first
             IEnumerable<ConstructorData> cachedConstructors = this.memberTable.Values.OfType<ConstructorData>();
-            foreach (ConstructorData constructor in cachedConstructors)
+            foreach (ConstructorData cachedConstructorData in cachedConstructors)
             {
                 cachedConstructorCount++;
-                yield return constructor;
+                yield return cachedConstructorData;
             }
 
             // If all cachedConstructors are already generated, exit. Else generate the remaining cachedConstructors.
@@ -348,11 +357,10 @@ namespace BionicCode.Utilities.Net
 
             IEnumerable<ConstructorInfo> remainingConstructors = UnwrapType().GetConstructors(bindingFlags)
                 .Skip(cachedConstructorCount);
-            foreach (ConstructorInfo constructor in remainingConstructors)
+            foreach (ConstructorInfo constructorInfo in remainingConstructors)
             {
-                ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructor);
-                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForConstructor(constructor);
-                _ = this.memberTable.TryAdd(cacheKey, constructorData);
+                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForConstructor(constructorInfo);
+                ConstructorData constructorData = (ConstructorData)this.memberTable.GetOrAdd(cacheKey, _ => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo));
 
                 yield return constructorData;
             }
@@ -391,18 +399,7 @@ namespace BionicCode.Utilities.Net
         }
 
         public TypeList GenericTypeArguments
-        {
-            get
-            {
-                if (this.genericTypeArguments is null)
-                {
-                    Type[] typeArguments = UnwrapType().GetGenericArguments();
-                    this.genericTypeArguments = TypeListBuilder.Create(typeArguments);
-                }
-
-                return this.genericTypeArguments;
-            }
-        }
+            => this.genericTypeArguments ??= TypeListBuilder.CreateGenericTypeArgumentList(this);
 
         public bool CanDeclareExtensionMethod
           => (bool)(bool?)(this.canDeclareExtensionMethod ??= TypeData.CanDeclareExtensionMethods(this));
@@ -580,25 +577,25 @@ namespace BionicCode.Utilities.Net
           => this.genericParameterAttributes ??= UnwrapType().GenericParameterAttributes;
 
         public TypeList GenericParameterConstraintsData
-          => this.genericParameterConstraintsData ??= TypeListBuilder.Create(UnwrapType().GetGenericParameterConstraints().Where(constraint => constraint != typeof(object) && constraint != typeof(ValueType)));
+          => this.genericParameterConstraintsData ??= TypeListBuilder.CreateGenericTypeArgumentConstraintList(this);
 
         public TypeList InterfacesData
-          => this.interfacesData ??= TypeListBuilder.Create(UnwrapType().GetInterfaces());
+          => this.interfacesData ??= TypeListBuilder.CreateGenericTypeArgumentList(this);
 
         public PropertyList PropertiesData
-          => this.propertiesData ??= PropertyListBuilder.Create(UnwrapType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags));
+          => this.propertiesData ??= PropertyListBuilder.Create(this);
 
         public MethodList MethodsData
-          => this.methodsData ??= MethodListBuilder.Create(UnwrapType().GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags));
+          => this.methodsData ??= MethodListBuilder.Create(this);
 
         public FieldList FieldsData
-          => this.fieldsData ??= FieldListBuilder.Create(UnwrapType().GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags));
+          => this.fieldsData ??= FieldListBuilder.Create(this);
 
         public EventList EventsData
-          => this.eventsData ??= EventListBuilder.Create(UnwrapType().GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags));
+          => this.eventsData ??= EventListBuilder.Create(this);
 
         public ConstructorList ConstructorsData
-          => this.constructorsData ??= ConstructorListBuilder.Create(UnwrapType().GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags));
+          => this.constructorsData ??= ConstructorListBuilder.Create(this);
 
         private static bool IsTypeStatic(TypeData typeData)
           => typeData.IsAbstract && typeData.IsSealed;

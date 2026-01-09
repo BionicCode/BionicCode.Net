@@ -433,7 +433,7 @@
         }
 
         public ParameterList Parameters
-          => this.parameters ??= new ParameterList(GetMethodInfo().GetParameters().Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry).ToArray());
+          => this.parameters ??= ParameterListBuilder.Create(this);
 
         public bool HasParamsParameter
           => this._hasParamsParameter ??= this.Parameters.HasItems && this.Parameters[^1].IsParams;
@@ -442,18 +442,7 @@
           => this._isVoidMethod ??= this.ReturnTypeData.UnwrapType() == typeof(void);
 
         public TypeList GenericMethodArguments
-        {
-            get
-            {
-                if (this.genericMethodArguments is null)
-                {
-                    Type[] typeArguments = GetMethodInfo().GetGenericArguments();
-                    this.genericMethodArguments = TypeListBuilder.Create(typeArguments);
-                }
-
-                return this.genericMethodArguments;
-            }
-        }
+            => this.genericMethodArguments ??= TypeListBuilder.CreateGenericTypeArgumentList(this);
 
         public override AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
           ? (this.accessModifier = MethodData.GetAccessModifier(this))

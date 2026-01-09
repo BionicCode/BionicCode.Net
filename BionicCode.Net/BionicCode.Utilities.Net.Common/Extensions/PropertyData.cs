@@ -853,7 +853,7 @@ namespace BionicCode.Utilities.Net
           => this.IndexerParameters.HasItems;
 
         public ParameterList IndexerParameters
-          => this.indexerParameters ??= ParameterListBuilder.Create(this.PropertyInfo.GetIndexParameters());
+          => this.indexerParameters ??= ParameterListBuilder.Create(this);
 
         public override AccessModifier AccessModifier
         {
@@ -900,10 +900,10 @@ namespace BionicCode.Utilities.Net
         public PropertyInfo PropertyInfo { get; }
 
         //public static PropertyData TaskResultPropertyData
-        //  => PropertyData._TaskResultPropertyData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(Task<>).GetProperty(nameof(Task<object>.Result)));
+        //  => PropertyData._TaskResultPropertyData ??= SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(typeof(Task<>).GetProperty(nameof(Task<object>.Result)));
 
         //public static PropertyData ValueTaskResultPropertyData
-        //  => PropertyData._ValueTaskResultPropertyData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(ValueTask<>).GetProperty(nameof(ValueTask<object>.Result)));
+        //  => PropertyData._ValueTaskResultPropertyData ??= SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(typeof(ValueTask<>).GetProperty(nameof(ValueTask<object>.Result)));
 
         public bool IsSealed
           => this.isSealed ??= (this.CanRead && this.GetMethodData!.IsSealed)

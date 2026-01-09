@@ -99,19 +99,21 @@
         /// </summary>
         /// <param name="cacheKey">A reference to the key used to identify the symbol information data cache entry. The key may be updated to
         /// its normalized form.</param>
-        /// <param name="eventData">When this method returns, contains the event data associated with the cache entry identified by the
-        /// specified key.</param>
+        /// <returns>The event data associated with the cache entry identified by the specified key.</returns>
         /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-        internal static void GetOrCreateSymbolInfoDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey, out EventData eventData)
+        internal static EventData GetOrCreateEventDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
         {
+            EventData eventData;
             if (cacheKey.IsAnonymousSymbolKey)
             {
-                GetOrCreateNormalizedSymbolInfoDataCacheEntry<EventData>(ref cacheKey, out eventData);
+                eventData = GetOrCreateNormalizedSymbolInfoDataCacheEntry<EventData>(ref cacheKey);
             }
             else // Optimization: Avoid normalization for non-anonymous symbols
             {
                 eventData = (EventData)SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreateEventData);
             }
+
+            return eventData;
         }
 
         /// <summary>
@@ -120,19 +122,21 @@
         /// </summary>
         /// <param name="cacheKey">A reference to the key used to identify the symbol information data cache entry. The key may be updated to
         /// its normalized form.</param>
-        /// <param name="methodData">When this method returns, contains the event data associated with the cache entry identified by the
-        /// specified key.</param>
+        /// <returns>The method data associated with the cache entry identified by the specified key.</returns>
         /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-        internal static void GetOrCreateSymbolInfoDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey, out MethodData methodData)
+        internal static MethodData GetOrCreateMethodDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
         {
+            MethodData methodData;
             if (cacheKey.IsAnonymousSymbolKey)
             {
-                GetOrCreateNormalizedSymbolInfoDataCacheEntry<MethodData>(ref cacheKey, out methodData);
+                methodData = GetOrCreateNormalizedSymbolInfoDataCacheEntry<MethodData>(ref cacheKey);
             }
             else // Optimization: Avoid normalization for non-anonymous symbols
             {
                 methodData = (MethodData)SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreateMethodData);
             }
+
+            return methodData;
         }
 
         /// <summary>
@@ -141,19 +145,21 @@
         /// </summary>
         /// <param name="cacheKey">A reference to the key used to identify the symbol information data cache entry. The key may be updated to
         /// its normalized form.</param>
-        /// <param name="fieldData">When this method returns, contains the event data associated with the cache entry identified by the
-        /// specified key.</param>
+        /// <returns>The field data associated with the cache entry identified by the specified key.</returns>
         /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-        internal static void GetOrCreateSymbolInfoDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey, out FieldData fieldData)
+        internal static FieldData GetOrCreateFieldDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
         {
+            FieldData fieldData;
             if (cacheKey.IsAnonymousSymbolKey)
             {
-                GetOrCreateNormalizedSymbolInfoDataCacheEntry<FieldData>(ref cacheKey, out fieldData);
+                fieldData = GetOrCreateNormalizedSymbolInfoDataCacheEntry<FieldData>(ref cacheKey);
             }
             else // Optimization: Avoid normalization for non-anonymous symbols
             {
                 fieldData = (FieldData)SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreateFieldData);
             }
+
+            return fieldData;
         }
 
         /// <summary>
@@ -162,19 +168,21 @@
         /// </summary>
         /// <param name="cacheKey">A reference to the key used to identify the symbol information data cache entry. The key may be updated to
         /// its normalized form.</param>
-        /// <param name="propertyData">When this method returns, contains the event data associated with the cache entry identified by the
-        /// specified key.</param>
+        /// <returns>The property data associated with the cache entry identified by the specified key.</returns>
         /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-        internal static void GetOrCreateSymbolInfoDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey, out PropertyData propertyData)
+        internal static PropertyData GetOrCreatePropertyDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
         {
+            PropertyData propertyData;
             if (cacheKey.IsAnonymousSymbolKey)
             {
-                GetOrCreateNormalizedSymbolInfoDataCacheEntry<PropertyData>(ref cacheKey, out propertyData);
+                propertyData = GetOrCreateNormalizedSymbolInfoDataCacheEntry<PropertyData>(ref cacheKey);
             }
             else // Optimization: Avoid normalization for non-anonymous symbols
             {
                 propertyData = (PropertyData)SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreatePropertyData);
             }
+
+            return propertyData;
         }
 
         /// <summary>
@@ -183,19 +191,21 @@
         /// </summary>
         /// <param name="cacheKey">A reference to the key used to identify the symbol information data cache entry. The key may be updated to
         /// its normalized form.</param>
-        /// <param name="parameterData">When this method returns, contains the event data associated with the cache entry identified by the
-        /// specified key.</param>
+        /// <returns>The parameter data associated with the cache entry identified by the specified key.</returns>
         /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-        internal static void GetOrCreateSymbolInfoDataCacheEntry(SymbolInfoDataCacheKey cacheKey, out ParameterData parameterData)
+        internal static ParameterData GetOrCreateParameterDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
         {
+            ParameterData parameterData;
             if (cacheKey.IsAnonymousSymbolKey)
             {
-                GetOrCreateNormalizedSymbolInfoDataCacheEntry<ParameterData>(ref cacheKey, out parameterData);
+                parameterData = GetOrCreateNormalizedSymbolInfoDataCacheEntry<ParameterData>(ref cacheKey);
             }
             else // Optimization: Avoid normalization for non-anonymous symbols
             {
                 parameterData = (ParameterData)SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreateParameterData);
             }
+
+            return parameterData;
         }
 
         /// <summary>
@@ -204,19 +214,21 @@
         /// </summary>
         /// <param name="cacheKey">A reference to the key used to identify the symbol information data cache entry. The key may be updated to
         /// its normalized form.</param>
-        /// <param name="constructorData">When this method returns, contains the event data associated with the cache entry identified by the
-        /// specified key.</param>
+        /// <returns>The constructor data associated with the cache entry identified by the specified key.</returns>
         /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-        internal static void GetOrCreateSymbolInfoDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey, out ConstructorData constructorData)
+        internal static ConstructorData GetOrCreateConstructorDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
         {
+            ConstructorData constructorData;
             if (cacheKey.IsAnonymousSymbolKey)
             {
-                GetOrCreateNormalizedSymbolInfoDataCacheEntry<ConstructorData>(ref cacheKey, out constructorData);
+                constructorData = GetOrCreateNormalizedSymbolInfoDataCacheEntry<ConstructorData>(ref cacheKey);
             }
             else // Optimization: Avoid normalization for non-anonymous symbols
             {
                 constructorData = (ConstructorData)SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreateConstructorData);
             }
+
+            return constructorData;
         }
 
         /// <summary>
@@ -225,19 +237,21 @@
         /// </summary>
         /// <param name="cacheKey">A reference to the key used to identify the symbol information data cache entry. The key may be updated to
         /// its normalized form.</param>
-        /// <param name="typeData">When this method returns, contains the event data associated with the cache entry identified by the
-        /// specified key.</param>
+        /// <returns>The type data associated with the cache entry identified by the specified key.</returns>
         /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-        internal static void GetOrCreateSymbolInfoDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey, out TypeData typeData)
+        internal static TypeData GetOrCreateTypeDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
         {
+            TypeData typeData;
             if (cacheKey.IsAnonymousSymbolKey)
             {
-                GetOrCreateNormalizedSymbolInfoDataCacheEntry<TypeData>(ref cacheKey, out typeData);
+                typeData = GetOrCreateNormalizedSymbolInfoDataCacheEntry<TypeData>(ref cacheKey);
             }
             else // Optimization: Avoid normalization for non-anonymous symbols
             {
                 typeData = (TypeData)SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, CreateTypeData);
             }
+
+            return typeData;
         }
 
         internal static bool TryGetSymbolInfoDataCacheEntry<TEntry>(SymbolInfoDataCacheKey key, out TEntry? entry)
@@ -780,12 +794,15 @@
             }
         }
 
-        private static void GetOrCreateNormalizedSymbolInfoDataCacheEntry<TSymbolInfoData>(ref SymbolInfoDataCacheKey cacheKey, out TSymbolInfoData result) where TSymbolInfoData : SymbolInfoData
+        private static TSymbolInfoData GetOrCreateNormalizedSymbolInfoDataCacheEntry<TSymbolInfoData>(ref SymbolInfoDataCacheKey cacheKey) where TSymbolInfoData : SymbolInfoData
         {
+            TSymbolInfoData result;
             SymbolInfoDataCacheKey normalizedCacheKey = SymbolReflectionInfoCache.NormalizeKey(cacheKey);
             _ = SymbolReflectionInfoCache.SymbolInfoDataCache.TryGetValue(normalizedCacheKey, out SymbolInfoData? symbolInfoData);
             result = (TSymbolInfoData)symbolInfoData!;
             cacheKey = normalizedCacheKey;
+
+            return result;
         }
     }
 }
