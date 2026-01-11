@@ -64,5 +64,10 @@
                 return hash;
             }
         }
+
+        public static bool operator ==(TypeList? left, TypeList? right)
+            => left?.Equals(right) ?? (right is null);
+        public static bool operator !=(TypeList? left, TypeList? right)
+            => !(left == right);
     }
 }

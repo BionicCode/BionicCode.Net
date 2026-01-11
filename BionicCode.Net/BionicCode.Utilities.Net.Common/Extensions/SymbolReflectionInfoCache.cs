@@ -654,12 +654,12 @@
             {
                 bool isParameterMethodNameDefined = !string.IsNullOrWhiteSpace(cacheKey.ParameterMemberName);
                 bool isParameterKindDefined = cacheKey.ParameterKind is not ParameterKind.Undefined;
-                bool isParameterizedSymbolKindDefined = cacheKey.ParameterizedSymbolKind is not ParameterizedSymbolKind.Undefined;
+                bool isParameterizedSymbolKindDefined = cacheKey.ParameterizedMemberKind is not ParameterizedSymbolKind.Undefined;
                 bool isAmbiguityExpected = !(isParameterMethodNameDefined && isParameterKindDefined && isParameterizedSymbolKindDefined);
                 bool isCandidateAmbiguous = false;
                 int discoveredMethodCandidateCount = 0;
 
-                if (cacheKey.ParameterizedSymbolKind is ParameterizedSymbolKind.MemberMethod or ParameterizedSymbolKind.Undefined)
+                if (cacheKey.ParameterizedMemberKind is ParameterizedSymbolKind.MemberMethod or ParameterizedSymbolKind.Undefined)
                 {
                     foreach (MethodData methodData in declaringTypeData.EnumerateMethods())
                     {
@@ -699,7 +699,7 @@
                     }
                 }
 
-                if (cacheKey.ParameterizedSymbolKind is ParameterizedSymbolKind.MemberConstructor or ParameterizedSymbolKind.Undefined)
+                if (cacheKey.ParameterizedMemberKind is ParameterizedSymbolKind.MemberConstructor or ParameterizedSymbolKind.Undefined)
                 {
                     foreach (ConstructorData constructorData in declaringTypeData.EnumerateConstructors())
                     {
@@ -739,7 +739,7 @@
                     }
                 }
 
-                if (cacheKey.ParameterizedSymbolKind is ParameterizedSymbolKind.MemberIndexerProperty or ParameterizedSymbolKind.Undefined)
+                if (cacheKey.ParameterizedMemberKind is ParameterizedSymbolKind.MemberIndexerProperty or ParameterizedSymbolKind.Undefined)
                 {
                     foreach (PropertyData propertyData in declaringTypeData.EnumerateProperties())
                     {

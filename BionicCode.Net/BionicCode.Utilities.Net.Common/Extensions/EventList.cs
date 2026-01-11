@@ -72,5 +72,10 @@
                 return hash;
             }
         }
+
+        public static bool operator ==(EventList? left, EventList? right)
+            => left?.Equals(right) ?? (right is null);
+        public static bool operator !=(EventList? left, EventList? right)
+            => !(left == right);
     }
 }

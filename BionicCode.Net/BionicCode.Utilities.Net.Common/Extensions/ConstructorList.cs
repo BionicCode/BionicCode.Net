@@ -72,5 +72,10 @@
                 return hash;
             }
         }
+
+        public static bool operator ==(ConstructorList? left, ConstructorList? right)
+            => left?.Equals(right) ?? (right is null);
+        public static bool operator !=(ConstructorList? left, ConstructorList? right)
+            => !(left == right);
     }
 }

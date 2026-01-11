@@ -1,7 +1,9 @@
 ﻿namespace BionicCode.Utilities.Net
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
+    using System.Runtime.CompilerServices;
 
     /// <summary>
     /// Represents a unique cache key for symbol metadata, encapsulating identifying information for types, members, and
@@ -21,7 +23,6 @@
         /// </summary>
         /// <value>The name of the symbol, such as the method name, property name, event name, field name, or type name.</value>
         public readonly string SymbolName { get; }
-        public string ParameterMemberName { get; }
         /// <summary>
         /// Gets the runtime handle for the type that declares the current member.
         /// </summary>
@@ -29,7 +30,7 @@
         /// be used with reflection APIs that require a RuntimeTypeHandle. The value is typically used for advanced
         /// scenarios involving type metadata or dynamic type operations.</remarks>
         /// <value>The runtime type handle of the declaring type.</value>
-        public readonly RuntimeTypeHandle DeclaringTypeHandle { get; }
+        public readonly System.RuntimeTypeHandle DeclaringTypeHandle { get; }
         /// <summary>
         /// Gets the runtime type handle that represents the symbol's type.
         /// </summary>
@@ -84,44 +85,84 @@
         /// </summary>
         /// <value>The kind of symbol, such as type, method, property, event, field, constructor, or parameter.</value>
         public readonly SymbolKind SymbolKind { get; }
+
+        private readonly ParameterList _parameterList;
         /// <summary>
         /// Gets the list of parameters associated with the current member.
         /// </summary>
         /// <value>The list of parameters for methods, properties (indexers), and constructors. For non-parameterized members, this is an empty list.</value>
-        public ParameterList ParameterList { get; }
+        public ParameterList ParameterList => this.SymbolKind.EqualsAny([SymbolKind.MemberMethod, SymbolKind.MemberConstructor])
+            ? this._parameterList
+            : ThrowInvalidPropertyContextException<ParameterList>("parameter", [SymbolKind.MemberMethod, SymbolKind.MemberConstructor, SymbolKind.MemberProperty]);
 
-        public MethodParameterInfoList MethodParameterInfoList { get; }
+        private readonly MethodParameterInfoList _methodParameterInfoList;
+        public MethodParameterInfoList MethodParameterInfoList => this.SymbolKind.Equals(SymbolKind.Parameter)
+            ? this._methodParameterInfoList
+            : ThrowInvalidPropertyContextException<MethodParameterInfoList>("parameter", [SymbolKind.MemberMethod, SymbolKind.MemberConstructor, SymbolKind.MemberProperty]);
+
+        private readonly int _genericTypeParameterCount;
         /// <summary>
         /// Gets the number of generic type parameters defined for the current type or method.
         /// </summary>
-        /// <value>The count of generic type parameters. For non-generic types or methods, this value defaults to <c>-1</c>. The value will only be &gt; -1 if the key was created with the <see cref="CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle, string, MethodParameterInfoList?, int, SymbolKind)"/> and <see cref="CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle, string, ParameterList?, int, SymbolKind)"/> methods. In this case the value is the provided generic type parameter count but never &lt; 0.</value>
-        public int GenericTypeParameterCount { get; }
+        /// <value>The count of generic type parameters. For non-generic types or methods, this value defaults to <c>-1</c>. The value will only be &gt; -1 if the key was created with the <see cref="CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle, string, MethodParameterInfoList?, int, SymbolKind)"/> and <see cref="CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle, string, ParameterList?, int, SymbolKind)"/> methods.</value>
+        public int GenericTypeParameterCount => this.SymbolKind.Equals(SymbolKind.Parameter)
+            ? this._genericTypeParameterCount
+            : ThrowInvalidPropertyContextException<int>("parameter", [SymbolKind.Parameter, SymbolKind.Type, SymbolKind.MemberEvent, SymbolKind.MemberMethod]);
 
+        private readonly int _parameterMemberParameterCount;
         /// <summary>
         /// For members this returns the number of parameters defined for the member. For parameters, this returns the number of parameters defined for the member the parameter belongs to.
         /// </summary>
         /// <value>The count of parameters for methods, properties (indexers), and constructors. For non-parameterized members, this value defaults to <c>-1</c>. The value will only be &gt; -1 if the key was created with the <see cref="CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle, string, MethodParameterInfoList?, int, SymbolKind)"/> , <see cref="CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle, string, ParameterList?, int, SymbolKind)"/>, <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, string, int, ParameterKind, string?, ParameterizedSymbolKind)"/> or <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, string, int, RuntimeMethodHandle)"/> methods.</value>
-        public int MemberParameterCount { get; }
+        public int ParameterMemberParameterCount => this.SymbolKind.Equals(SymbolKind.Parameter)
+            ? this._parameterMemberParameterCount
+            : ThrowInvalidPropertyContextException<int>("parameter", [SymbolKind.Parameter]);
+
+        private readonly int _parameterMemberGenericTypeParameterCount;
+        /// <summary>
+        /// Gets the number of generic type parameters declared by the member that defines a parameter.
+        /// </summary>
+        public int ParameterMemberGenericTypeParameterCount => this.SymbolKind.Equals(SymbolKind.Parameter)
+            ? this._parameterMemberGenericTypeParameterCount
+            : ThrowInvalidPropertyContextException<int>("parameter", [SymbolKind.Parameter]);
+
+        private readonly string _parameterMemberName;
+        /// <summary>
+        /// Gets the name of the member that is associated with the parameter.
+        /// </summary>
+        public string ParameterMemberName => this.SymbolKind.Equals(SymbolKind.Parameter)
+            ? this._parameterMemberName
+            : ThrowInvalidPropertyContextException<string>("parameter", [SymbolKind.Parameter]);
+
+        private readonly int _parameterPosition;
         /// <summary>
         /// Gets the zero-based position of the parameter in the parameter list.
         /// </summary>
         /// <value>The position of the parameter. For non-parameter symbols, this value defaults to <c>-1</c>. The value will only be &gt; -1 if the key was created with the <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, string, int, ParameterKind, string?, ParameterizedSymbolKind)"/> or <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, string, int, RuntimeMethodHandle)"/> methods for a parameter symbol.</value>
-        public int ParameterPosition { get; }
+        public int ParameterPosition => this.SymbolKind.Equals(SymbolKind.Parameter)
+            ? this._parameterPosition
+            : ThrowInvalidPropertyContextException<int>("parameter", [SymbolKind.Parameter]);
 
+        private readonly ParameterKind _parameterKind;
         /// <summary>
         /// Gets the kind of parameter represented by this instance.
         /// </summary>
         /// <value>Returns <see cref="ParameterKind.Undefined"/> except when explicitly set via the <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, string, int, ParameterKind, string?, ParameterizedSymbolKind)"/> method to later help to resolve ambiguities.</value>
-        public ParameterKind ParameterKind { get; }
+        public ParameterKind ParameterKind => this.SymbolKind.Equals(SymbolKind.Parameter)
+            ? this._parameterKind
+            : ThrowInvalidPropertyContextException<ParameterKind>("parameter", [SymbolKind.Parameter]);
 
+        private readonly ParameterizedSymbolKind _parameterizedMemberKind;
         /// <summary>
         /// Gets the kind of parameterized symbol represented by this instance.
         /// </summary>
         /// <value>Returns <see cref="ParameterizedSymbolKind.Undefined"/> except when explicitly set via the <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, string, int, ParameterKind, string?, ParameterizedSymbolKind)"/> method to later help to resolve ambiguities.</value>
-        public ParameterizedSymbolKind ParameterizedSymbolKind { get; }
+        public ParameterizedSymbolKind ParameterizedMemberKind => this.SymbolKind.Equals(SymbolKind.Parameter)
+            ? this._parameterizedMemberKind
+            : ThrowInvalidPropertyContextException<ParameterizedSymbolKind>("parameter", [SymbolKind.Parameter]);
+        public bool IsAnonymousSymbolKey { get; }
 
         private readonly int _hashCode;
-        public bool IsAnonymousSymbolKey { get; }
 
         private SymbolInfoDataCacheKey(string name,
             string parameterMemberName,
@@ -156,11 +197,11 @@
             this.ParameterList = parameterList;
             this.MethodParameterInfoList = methodParameterInfoList;
             this.ParameterPosition = parameterPosition;
-            this.MemberParameterCount = memberParameterCount;
+            this.ParameterMemberParameterCount = memberParameterCount;
             this.GenericTypeParameterCount = genericTypeParameterCount;
             this.SymbolKind = symbolKind;
             this.ParameterKind = parameterKind;
-            this.ParameterizedSymbolKind = parameterizedSymbolKind;
+            this.ParameterizedMemberKind = parameterizedSymbolKind;
             this.IsAnonymousSymbolKey = isAnonymousSymbolKey;
 
             this._hashCode = ComputeHashCode();
@@ -416,6 +457,7 @@
                 MethodParameterInfoList.Empty,
                 -1,
                 genericTypeParameterCount,
+                symbolParameters?.Count ?? 0,
                 symbolKind,
                 ParameterKind.Undefined,
                 ParameterizedSymbolKind.MemberMethod,
@@ -465,6 +507,7 @@
                 symbolParameters ?? MethodParameterInfoList.Empty,
                 -1,
                 genericTypeParameterCount,
+                symbolParameters?.Count ?? 0,
                 symbolKind,
                 ParameterKind.Undefined,
                 symbolKind.Equals(SymbolKind.MemberMethod) ? ParameterizedSymbolKind.MemberMethod : ParameterizedSymbolKind.MemberConstructor,
@@ -501,6 +544,7 @@
                 MethodParameterInfoList.Empty,
                 -1,
                 -1,
+                parameterList.Count,
                 SymbolKind.MemberProperty,
                 ParameterKind.Undefined,
                 parameterList.HasItems ? ParameterizedSymbolKind.MemberIndexerProperty : ParameterizedSymbolKind.Undefined,
@@ -537,6 +581,7 @@
                 methodParameterInfoList,
                 -1,
                 -1,
+                methodParameterInfoList.Count,
                 SymbolKind.MemberProperty,
                 ParameterKind.Undefined,
                 methodParameterInfoList.HasItems ? ParameterizedSymbolKind.MemberIndexerProperty : ParameterizedSymbolKind.Undefined,
@@ -577,7 +622,7 @@
             ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(
                 parameterizedSymbolKind,
                 [ParameterizedSymbolKind.Undefined],
-                nameof(parameterizedSymbolKind), $"Invalid argument '{nameof(parameterizedSymbolKind)}'. The value '{nameof(ParameterizedSymbolKind)}.{ParameterizedSymbolKind.Undefined}' is not allowed.");
+                nameof(parameterizedSymbolKind), $"Invalid argument '{nameof(parameterizedSymbolKind)}'. The value '{nameof(ParameterizedMemberKind)}.{ParameterizedSymbolKind.Undefined}' is not allowed.");
             ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(
                 parameterKind,
                 [ParameterKind.Undefined],
@@ -596,6 +641,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 position,
+                memberGenericParameterCount,
                 memberParameterCount,
                 SymbolKind.Parameter,
                 parameterKind,
@@ -711,8 +757,8 @@
                 hashCode = (hashCode * -1521134295) + this.GenericTypeParameterCount.GetHashCode();
                 hashCode = (hashCode * -1521134295) + this.ParameterPosition.GetHashCode();
                 hashCode = (hashCode * -1521134295) + this.IsAnonymousSymbolKey.GetHashCode();
-                hashCode = (hashCode * -1521134295) + this.MemberParameterCount.GetHashCode();
-                hashCode = (hashCode * -1521134295) + this.ParameterizedSymbolKind.GetHashCode();
+                hashCode = (hashCode * -1521134295) + this.ParameterMemberParameterCount.GetHashCode();
+                hashCode = (hashCode * -1521134295) + this.ParameterizedMemberKind.GetHashCode();
                 hashCode = (hashCode * -1521134295) + this.ParameterKind.GetHashCode();
                 hashCode = ((hashCode * -1521134295) + this.ParameterMemberName?.GetHashCode(StringComparison.Ordinal)) ?? 1521134295;
 
@@ -737,26 +783,35 @@
         public override bool Equals(object obj) => obj is SymbolInfoDataCacheKey other && Equals(other);
 
         public bool Equals(SymbolInfoDataCacheKey other) => this.SymbolName == other.SymbolName
-            && this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle)
-            && this.SymbolTypeHandle.Equals(other.SymbolTypeHandle)
-            && this.MethodHandle.Equals(other.MethodHandle)
-            && this.FieldHandle.Equals(other.FieldHandle)
-            && this.GetMethodHandle.Equals(other.GetMethodHandle)
-            && this.SetMethodHandle.Equals(other.SetMethodHandle)
-            && this.AddMethodHandle.Equals(other.AddMethodHandle)
-            && this.RemoveMethodHandle.Equals(other.RemoveMethodHandle)
+            && this.DeclaringTypeHandle == other.DeclaringTypeHandle
+            && this.SymbolTypeHandle == other.SymbolTypeHandle
+            && this.MethodHandle == other.MethodHandle
+            && this.FieldHandle == other.FieldHandle
+            && this.GetMethodHandle == other.GetMethodHandle
+            && this.SetMethodHandle == other.SetMethodHandle
+            && this.AddMethodHandle == other.AddMethodHandle
+            && this.RemoveMethodHandle == other.RemoveMethodHandle
             && this.SymbolKind == other.SymbolKind
             && this.GenericTypeParameterCount == other.GenericTypeParameterCount
             && this.ParameterPosition == other.ParameterPosition
             && this.ParameterList.Equals(other.ParameterList)
             && this.MethodParameterInfoList.Equals(other.MethodParameterInfoList)
-            && this.MemberParameterCount.Equals(other.MemberParameterCount)
+            && this.ParameterMemberParameterCount == other.ParameterMemberParameterCount
             && this.ParameterMemberName.Equals(other.ParameterMemberName, StringComparison.OrdinalIgnoreCase)
-            && this.ParameterizedSymbolKind.Equals(other.ParameterizedSymbolKind)
-            && this.ParameterKind.Equals(other.ParameterKind)
+            && this.ParameterizedMemberKind == other.ParameterizedMemberKind
+            && this.ParameterKind == other.ParameterKind
             && this.IsAnonymousSymbolKey == other.IsAnonymousSymbolKey;
 
         public static bool operator ==(SymbolInfoDataCacheKey left, SymbolInfoDataCacheKey right) => left.Equals(right);
         public static bool operator !=(SymbolInfoDataCacheKey left, SymbolInfoDataCacheKey right) => !(left == right);
+
+        [DoesNotReturn]
+        private TResult ThrowInvalidPropertyContextException<TResult>(string validSymbolKindNAme, ReadOnlySpan<SymbolKind> allowedSymbolKinds, [CallerMemberName] string propertyName = null)
+        {
+            string allowedKinds = allowedSymbolKinds.JoinToString(kind => $"{typeof(SymbolKind).FullName}.{kind}");
+            return allowedSymbolKinds.Length > 1
+                ? throw new InvalidOperationException($"This property '{propertyName}' is only available for {validSymbolKindNAme} symbols, where the property '{nameof(this.SymbolKind)}' returns any of the following values: '{allowedKinds}'.")
+                : throw new InvalidOperationException($"This property '{propertyName}' is only available for {validSymbolKindNAme} symbols, where the property '{nameof(this.SymbolKind)}' returns the value '{allowedKinds}'.");
+        }
     }
 }

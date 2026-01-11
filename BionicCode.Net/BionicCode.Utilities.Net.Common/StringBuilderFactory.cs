@@ -86,10 +86,12 @@
         }
     }
 
-    internal class PooledStringBuilder
+    internal class PooledStringBuilder : IDisposable
     {
         private const string StringBuilderRecycledExceptionMessage = "Underlying StringBuilder has been recycled. Create a new PooledStringBuilder instance.";
         private StringBuilder stringBuilder;
+        public bool IsDisposed => this.IsRecycled;
+
         public bool IsRecycled => this.stringBuilder is null;
         public int Length => this.stringBuilder?.Length ?? throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
 
@@ -219,26 +221,28 @@
             return this;
         }
 
-        public PooledStringBuilder AppendFormat(string format, params object[] args)
+        public PooledStringBuilder AppendFormat(ReadOnlySpan<char> format, IFormatProvider? formatProvider, ReadOnlySpan<object?> values)
         {
             if (this.IsRecycled)
             {
                 throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
             }
 
-            _ = this.stringBuilder.AppendFormat(format, args);
+            IFormatProvider provider = formatProvider ?? System.Globalization.CultureInfo.CurrentCulture;
+            CompositeFormat compositeFormat = CompositeFormat.Parse(format.ToString());
+            _ = this.stringBuilder.AppendFormat(provider, compositeFormat, values);
 
             return this;
         }
 
-        public PooledStringBuilder AppendJoin(string separator, params string[] values)
+        public PooledStringBuilder AppendJoin(string separator, ReadOnlySpan<string> values)
         {
             if (this.IsRecycled)
             {
                 throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
             }
 
-            _ = this.stringBuilder.AppendJoin(separator, values);
+            _ = this.stringBuilder.Append(values.JoinToString(separator));
 
             return this;
         }
@@ -327,7 +331,7 @@
             return this;
         }
 
-        public string ToString()
+        public override string ToString()
         {
             if (this.IsRecycled)
             {
@@ -341,6 +345,31 @@
         {
             StringBuilderFactory.AddToPool(this.stringBuilder);
             this.stringBuilder = null;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposing)
+                {
+                    Recycle();
+                }
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~PooledStringBuilder()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

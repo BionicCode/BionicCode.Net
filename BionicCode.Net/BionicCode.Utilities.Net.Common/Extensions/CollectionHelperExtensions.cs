@@ -23,8 +23,6 @@
             ImmutableFrameworkCollections = immutableTypeInterfaces.ToFrozenSet();
         }
 
-        #region Collection
-
         /// <summary>
         /// Determines whether a sequence is empty.
         /// </summary>
@@ -71,26 +69,11 @@
             ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(startIndex, nameof(startIndex));
             ArgumentOutOfRangeExceptionAdvanced.ThrowIfNegative(count, nameof(count));
 
-#if NET6_0_OR_GREATER
             if (source.TryGetNonEnumeratedCount(out int sourceLength))
             {
                 ArgumentOutOfRangeExceptionAdvanced.ThrowIfGreaterThanOrEqual(startIndex, sourceLength, nameof(startIndex));
                 ArgumentOutOfRangeExceptionAdvanced.ThrowIfGreaterThan(count, sourceLength - startIndex, nameof(count));
             }
-#else
-      if (source is ICollection<TItem> collection)
-      {
-        int sourceLength = collection.Count;
-        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(startIndex, sourceLength, nameof(startIndex));
-        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(count, sourceLength - startIndex, nameof(count));
-      }
-      else if (source is TItem[] array)
-      {
-        int sourceLength = array.Length;
-        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(startIndex, sourceLength, nameof(startIndex));
-        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(count, sourceLength - startIndex, nameof(count));
-      }
-#endif
 
             using IEnumerator<TItem> enumerator = source.GetEnumerator();
             int skipCount = startIndex;
@@ -117,90 +100,6 @@
             }
         }
 
-#if !(NET6_0_OR_GREATER || NETFRAMEWORK || NETSTANDARD2_0)
-    /// <summary>
-    /// Returns a range of elements.
-    /// </summary>
-    /// <typeparam name="TItem"></typeparam>
-    /// <param name="source"></param>
-    /// <param name="range">A <see cref="Range"/> to define the range of elements to be taken.</param>
-    /// <returns>An <see cref="IEnumerable{T}"/> that contains the requested range of the original <paramref name="source"/>.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
-    public static IEnumerable<TItem> Take<TItem>(this IEnumerable<TItem> source, Range range)
-    {
-      ArgumentNullExceptionEx.ThrowIfNull(source, nameof(source));
-
-      if (source is ICollection<TItem> collection)
-      {
-        int sourceLength = collection.Count;
-        (int startIndex, int count) = range.GetOffsetAndLength(sourceLength);
-        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(startIndex, nameof(startIndex));
-        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(count, nameof(count));
-        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(startIndex, sourceLength, nameof(range.Start));
-        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(count, sourceLength - startIndex, nameof(range));
-
-        foreach (TItem item in source.Take(startIndex, count))
-        {
-          yield return item;
-        }
-      }
-      else if (source is TItem[] array)
-      {
-        int sourceLength = array.Length;
-        (int startIndex, int count) = range.GetOffsetAndLength(sourceLength);
-        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(startIndex, nameof(startIndex));
-        ArgumentOutOfRangeExceptionEx.ThrowIfNegative(count, nameof(count));
-        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThanOrEqual(startIndex, sourceLength, nameof(range.Start));
-        ArgumentOutOfRangeExceptionEx.ThrowIfGreaterThan(count, sourceLength - startIndex, nameof(range));
-
-        foreach (TItem item in source.Take(startIndex, count))
-        {
-          yield return item;
-        }
-      }
-      else
-      {
-        if (range.Start.IsFromEnd || range.End.IsFromEnd)
-        {
-          TItem[] sourceArray = source.ToArray();
-          (int Offset, int Length) = range.GetOffsetAndLength(sourceArray.Length);
-          int startIndex = Offset;
-          for (int index = startIndex; index < startIndex + Length; index++)
-          {
-            yield return sourceArray[index];
-          }
-        }
-        else
-        {
-          int skipCount = range.Start.Value;
-          int takeCount = range.End.Value - range.Start.Value + 1;
-          using IEnumerator<TItem> sourceEnumerator = source.GetEnumerator();
-          while (skipCount > 0 && sourceEnumerator.MoveNext())
-          {
-            skipCount--;
-          }
-
-          if (skipCount > 0)
-          {
-            throw new ArgumentOutOfRangeException(nameof(range));
-          }
-
-          while (takeCount > 0 && sourceEnumerator.MoveNext())
-          {
-            takeCount--;
-            yield return sourceEnumerator.Current;
-          }
-
-          if (takeCount > 0)
-          {
-            throw new ArgumentOutOfRangeException(nameof(range));
-          }
-        }
-      }
-    }
-#endif
-
-#if !(NETSTANDARD2_0 || NETFRAMEWORK)
         /// <summary>
         /// Returns a range of elements.
         /// </summary>
@@ -221,7 +120,6 @@
 
             return array.AsSpan(range);
         }
-#endif
 
         /// Returns a range of elements.
         /// </summary>
@@ -749,8 +647,6 @@
             return array;
         }
 
-#if !(NETSTANDARD2_0 || NETFRAMEWORK)
-
         public static TItem[] AddRange<TItem>(this TItem[] array, TItem[] source, Range sourceRange)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(array, nameof(array));
@@ -992,8 +888,6 @@
             return array;
         }
 
-#endif
-
         /// <summary>
         /// A non-cached version of <see cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/> for sorted collections.
         /// </summary>
@@ -1013,16 +907,11 @@
         ///   </list>
         /// </para>
         /// </remarks>
-        public static TItem LastOrDefaultInSorted<TItem>(this IEnumerable<TItem> source, Func<TItem, bool> predicate)
+        public static TItem? LastOrDefaultInSorted<TItem>(this IEnumerable<TItem> source, Func<TItem, bool> predicate)
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
+            ArgumentNullException.ThrowIfNull(predicate, nameof(predicate));
 
-            return predicate == null
-              ? throw new ArgumentNullException(nameof(predicate))
-              : TryFindLast(source, predicate, out TItem result)
+            return TryFindLast(source, predicate, out TItem result)
                 ? result
                 : default;
         }
@@ -1051,15 +940,7 @@
         /// </remarks>
         public static TItem LastInSorted<TItem>(this IEnumerable<TItem> source, Func<TItem, bool> predicate)
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            if (predicate == null)
-            {
-                throw new ArgumentNullException(nameof(predicate));
-            }
+            ArgumentNullException.ThrowIfNull(predicate, nameof(predicate));
 
             return source.IsEmpty()
               ? throw new InvalidOperationException(ExceptionMessages.GetInvalidOperationExceptionMessage_CollectionEmpty())
@@ -1070,6 +951,9 @@
 
         private static bool TryFindLast<TItem>(IEnumerable<TItem> source, Func<TItem, bool> predicate, out TItem result)
         {
+            ArgumentNullException.ThrowIfNull(source, nameof(source));
+            ArgumentNullException.ThrowIfNull(predicate, nameof(predicate));
+
             result = default;
 
             // Since IList supports index based access, the implementation will use 'for' instead of IEnumerator
@@ -1105,15 +989,97 @@
             return isFound;
         }
 
-#if !NET8_0_OR_GREATER
-    public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> source)
-      => source.ToDictionary(entry => entry.Key, entry => entry.Value);
+        /// <summary>
+        /// Concatenates the <see langword="string"/> representations of the elements in the sequence, using the specified separator
+        /// between each element.
+        /// </summary>
+        /// <typeparam name="TItem">The type of the elements in the source sequence.</typeparam>
+        /// <param name="source">The sequence of elements to concatenate. Cannot be null.</param>
+        /// <param name="separator">The <see langword="string"/> to use as a separator between elements. Cannot be null. The default is ", ".</param>
+        /// <returns>A <see langword="string"/> that consists of the elements in the sequence delimited by the separator string. Returns an empty
+        /// <see langword="string"/> if the sequence contains no elements.</returns>
+        /// <remarks>If <paramref name="source"/> contains elements that are <see langword="null"/>, they are represented by
+        /// the literal <see langword="null"/> in the resulting string.<para/>This method uses <see cref="string.Join(string, IEnumerable{string})"/> internally.</remarks>
+        public static string JoinToString<TItem>(this IEnumerable<TItem> source, string separator = ", ")
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNull(source, nameof(source));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(separator, nameof(separator));
+            return string.Join(separator, source);
+        }
 
-    public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<(TKey Key, TValue Value)> source)
-      => source.ToDictionary(entry => entry.Key, entry => entry.Value);
-#endif
+        /// <summary>
+        /// Concatenates the <see langword="string"/> representations of the elements in the sequence, using the specified separator
+        /// between each element.
+        /// </summary>
+        /// <typeparam name="TItem">The type of the elements in the source sequence.</typeparam>
+        /// <param name="source">The sequence of elements to concatenate. Cannot be <see langword="null"/>.</param>
+        /// <param name="stringTransform">A function to transform each element's string representation. Cannot be <see langword="null"/>.</param>
+        /// <param name="separator">The <see langword="string"/> to use as a separator between elements. Cannot be <see langword="null"/>. The default is <c>", "</c>.</param>
+        /// <returns>A <see langword="string"/> that consists of the elements in the sequence delimited by the separator string. Returns an empty
+        /// <see langword="string"/> if the sequence contains no elements.</returns>
+        /// <remarks>If <paramref name="source"/> contains elements that are <see langword="null"/>, they are represented by
+        /// the literal <c>"null"</c> in the resulting string.<para/>This method uses <see cref="string.Join(string, IEnumerable{string})"/> internally.</remarks>
+        public static string JoinToString<TItem>(this IEnumerable<TItem> source, Func<TItem, string> stringTransform, string separator = ", ")
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNull(source, nameof(source));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(stringTransform, nameof(stringTransform));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(separator, nameof(separator));
 
-        #endregion
+            return string.Join(separator, source.Select(item => stringTransform(item)));
+        }
+
+        public static string JoinToString<TItem>(this ReadOnlySpan<TItem> source, string separator = ", ")
+        {
+            if (source.IsEmpty)
+            {
+                return string.Empty;
+            }
+
+            ArgumentNullExceptionAdvanced.ThrowIfNull(separator, nameof(separator));
+
+            PooledStringBuilder stringBuilder = StringBuilderFactory.GetOrCreate();
+            for (int i = 0; i < source.Length; i++)
+            {
+                if (i > 0)
+                {
+                    _ = stringBuilder.Append(separator);
+                }
+
+                _ = stringBuilder.Append(source[i]?.ToString() ?? "null");
+            }
+
+            string result = stringBuilder.ToString();
+            stringBuilder.Recycle();
+
+            return result;
+        }
+
+        public static string JoinToString<TItem>(this ReadOnlySpan<TItem> source, Func<TItem, string> stringTransform, string separator = ", ")
+        {
+            if (source.IsEmpty)
+            {
+                return string.Empty;
+            }
+
+            ArgumentNullExceptionAdvanced.ThrowIfNull(stringTransform, nameof(stringTransform));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(separator, nameof(separator));
+
+            PooledStringBuilder stringBuilder = StringBuilderFactory.GetOrCreate();
+            for (int i = 0; i < source.Length; i++)
+            {
+                if (i > 0)
+                {
+                    _ = stringBuilder.Append(separator);
+                }
+
+                _ = stringBuilder.Append(stringTransform(source[i]));
+            }
+
+            string result = stringBuilder.ToString();
+            stringBuilder.Recycle();
+
+            return result;
+        }
     }
 
     public enum AddRangeMode

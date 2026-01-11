@@ -81,5 +81,10 @@
                 return hash;
             }
         }
+
+        public static bool operator ==(MethodParameterInfoList? left, MethodParameterInfoList? right)
+            => left?.Equals(right) ?? (right is null);
+        public static bool operator !=(MethodParameterInfoList? left, MethodParameterInfoList? right)
+            => !(left == right);
     }
 }

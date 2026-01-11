@@ -75,6 +75,24 @@
         }
 
         /// <summary>
+        /// Throws an exception if the specified span is empty, indicating that a required value was not provided.
+        /// </summary>
+        /// <typeparam name="TStruct">The value type of the elements in the span to check.</typeparam>
+        /// <param name="value">The span of value type elements to validate. The method throws if this span is empty.</param>
+        /// <param name="paramName">The name of the parameter being validated. Used in the exception message to identify the argument. Optional.</param>
+        /// <param name="message">An optional custom message to include in the exception if the span is empty.</param>
+        /// <exception cref="ArgumentNullExceptionAdvanced">Thrown if <paramref name="value"/> is empty.</exception>
+        public static void ThrowIfDefault<TStruct>(ReadOnlySpan<TStruct> value, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null) where TStruct : struct
+        {
+            if (value.IsEmpty)
+            {
+                throw new ArgumentNullExceptionAdvanced(
+                    paramName,
+                    message ?? "The argument must not be empty.");
+            }
+        }
+
+        /// <summary>
         /// Throws an exception if the specified enumerable is null or contains no elements.
         /// </summary>
         /// <remarks>This method is typically used to validate method arguments that are expected to be
@@ -342,10 +360,10 @@
         /// is optional.</param>
         /// <param name="message">An optional custom message to include in the exception if the value is not allowed.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> does not equal any of the allowed values in <paramref name="allowedValues"/>.</exception>
-        public static void ThrowIfEnumNotEqualsAny<TEnum>(IConvertible value, IEnumerable<TEnum> allowedValues, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null) where TEnum : struct, Enum
+        public static void ThrowIfEnumNotEqualsAny<TEnum>(IConvertible value, ReadOnlySpan<TEnum> allowedValues, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null) where TEnum : struct, Enum
         {
             ArgumentNullException.ThrowIfNull(value, paramName);
-            ArgumentNullException.ThrowIfNull(allowedValues, nameof(allowedValues));
+            ArgumentExceptionAdvanced.ThrowIfTrue(allowedValues.IsEmpty, nameof(allowedValues), "The collection of allowed values cannot be empty.");
 
             foreach (TEnum other in allowedValues)
             {
@@ -355,7 +373,7 @@
                 }
             }
 
-            string allowedValuesString = string.Join(", ", allowedValues);
+            string allowedValuesString = string.Join(", ", allowedValues.ToArray());
             throw new ArgumentOutOfRangeException(
                 paramName,
                 message ?? $"The argument {paramName} returns a disallowed '{typeof(TEnum).FullName}' enum value. Allowed: {allowedValuesString}, Found: '{value}'.");

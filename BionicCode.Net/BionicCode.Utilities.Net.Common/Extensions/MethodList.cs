@@ -153,5 +153,10 @@
                 return hash;
             }
         }
+
+        public static bool operator ==(MethodList? left, MethodList? right)
+            => left?.Equals(right) ?? (right is null);
+        public static bool operator !=(MethodList? left, MethodList? right)
+            => !(left == right);
     }
 }

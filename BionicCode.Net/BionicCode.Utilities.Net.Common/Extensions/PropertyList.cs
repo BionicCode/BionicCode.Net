@@ -76,5 +76,10 @@
                 return hash;
             }
         }
+
+        public static bool operator ==(PropertyList? left, PropertyList? right)
+            => left?.Equals(right) ?? (right is null);
+        public static bool operator !=(PropertyList? left, PropertyList? right)
+            => !(left == right);
     }
 }

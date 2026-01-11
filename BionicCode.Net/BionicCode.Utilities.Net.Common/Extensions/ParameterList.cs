@@ -96,5 +96,10 @@
                 return hash;
             }
         }
+
+        public static bool operator ==(ParameterList? left, ParameterList? right)
+            => left?.Equals(right) ?? (right is null);
+        public static bool operator !=(ParameterList? left, ParameterList? right)
+            => !(left == right);
     }
 }

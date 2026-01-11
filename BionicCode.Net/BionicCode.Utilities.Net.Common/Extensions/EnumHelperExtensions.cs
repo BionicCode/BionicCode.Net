@@ -1,9 +1,12 @@
 ﻿namespace BionicCode.Utilities.Net
 {
     using System;
+    using System.Collections.Generic;
 
     public static partial class HelperExtensionsCommon
     {
+
+        #region EnumToString
 
         /// <summary>
         /// Converts the value of <see cref="AccessModifier"/> to a string representation.
@@ -163,6 +166,53 @@
                 default:
                     throw new NotSupportedException(ExceptionMessages.GetValueNotSupportedExceptionMessage(symbolAttributes));
             }
+        }
+
+        #endregion EnumToString
+
+        /// <summary>
+        /// Determines whether the current enumeration value is equal to any of the specified values.
+        /// </summary>
+        /// <remarks>This method performs an equality check between the current enumeration value and each
+        /// value in the provided array. Use this method to simplify comparisons when checking if an enumeration value
+        /// matches any of several candidates.</remarks>
+        /// <typeparam name="TEnum">The enumeration type to compare. Must be a type derived from Enum.</typeparam>
+        /// <param name="enumValue">The enumeration value to compare against the specified values.</param>
+        /// <param name="values">An array of enumeration values to compare with <paramref name="enumValue"/>. Cannot be null.</param>
+        /// <returns><see langword="true"/> if <paramref name="enumValue"/> is equal to any value in <paramref name="values"/>; otherwise, <see langword="false"/>.</returns>
+        public static bool EqualsAny<TEnum>(this TEnum enumValue, ReadOnlySpan<TEnum> values)
+            where TEnum : struct, Enum
+        {
+            foreach (TEnum value in values)
+            {
+                if (EqualityComparer<TEnum>.Default.Equals(enumValue, value))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Determines whether the specified enumeration value does not equal any of the provided values.
+        /// </summary>
+        /// <typeparam name="TEnum">The enumeration type to compare.</typeparam>
+        /// <param name="enumValue">The enumeration value to compare against the provided values.</param>
+        /// <param name="values">An array of enumeration values to compare with. Cannot be null.</param>
+        /// <returns><see langword="true"/> if the enumeration value does not equal any of the provided values; otherwise, <see langword="false"/>.</returns>
+        public static bool EqualsNone<TEnum>(this TEnum enumValue, ReadOnlySpan<TEnum> values)
+            where TEnum : struct, Enum
+        {
+            foreach (TEnum value in values)
+            {
+                if (EqualityComparer<TEnum>.Default.Equals(enumValue, value))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
