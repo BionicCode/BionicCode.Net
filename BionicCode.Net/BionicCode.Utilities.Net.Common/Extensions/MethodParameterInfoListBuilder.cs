@@ -26,7 +26,7 @@
 
                 if (!ReferenceEquals(parameterData.MemberData, member))
                 {
-                    throw new ArgumentException($"All '{nameof(MethodParameterInfo)}' items must belong to the same member.");
+                    throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: All '{nameof(MethodParameterInfo)}' items must belong to the same member.");
                 }
 
                 parameters.Add(parameterData);

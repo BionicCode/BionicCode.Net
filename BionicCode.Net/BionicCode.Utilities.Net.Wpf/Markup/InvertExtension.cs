@@ -43,7 +43,7 @@ namespace BionicCode.Utilities.Net
         }
 
         /// <summary>
-        /// Constructor.
+        /// MemberConstructor.
         /// </summary>
         /// <param name="value">Any value that can be converted by the provided <see cref="ValueInverter"/>. Can be any <see cref="MarkupExtension"/> like <see cref="BindingBase"/> that can provide a valid value.</param>
         public InvertExtension(object value)

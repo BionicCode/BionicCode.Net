@@ -19,7 +19,7 @@
     public sealed class ProfilerMethodArgumentAttribute : Attribute
     {
         /// <summary>
-        /// Constructor to request the ordered argument list for the decorated member.
+        /// MemberConstructor to request the ordered argument list for the decorated member.
         /// </summary>
         /// <param name="arguments">The argument list ordered by their position.</param>
         public ProfilerMethodArgumentAttribute(params object[] arguments) => this.Arguments = arguments;

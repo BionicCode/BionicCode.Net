@@ -42,7 +42,7 @@
         public AutoResetStream() => this.BaseStream = new MemoryStream();
 
         /// <summary>
-        /// Constructor which accepts the <see cref="Stream"/> instance to decorate in order to extend its behavior.
+        /// MemberConstructor which accepts the <see cref="Stream"/> instance to decorate in order to extend its behavior.
         /// </summary>
         /// <param name="baseStream">The <see cref="Stream"/> instance to decorate in order to extend its behavior.</param>
         public AutoResetStream(Stream baseStream) : this(baseStream, SeekOrigin.Begin, true)
@@ -50,7 +50,7 @@
         }
 
         /// <summary>
-        /// Constructor which accepts the <see cref="Stream"/> instance to decorate in order to extend its behavior.
+        /// MemberConstructor which accepts the <see cref="Stream"/> instance to decorate in order to extend its behavior.
         /// </summary>
         /// <param name="baseStream">The <see cref="Stream"/> instance to decorate in order to extend its behavior.</param>
         /// <param name="leaveDecoratedStreamOpen">When set to <see langword="true"/> the decorated underlying <see cref="Stream"/> will be disposed or closed too, if the <see cref="AutoResetStream"/> is disposed or closed.</param>
@@ -61,7 +61,7 @@
         }
 
         /// <summary>
-        /// Constructor which accepts the <see cref="Stream"/> instance to decorate in order to extend its behavior.
+        /// MemberConstructor which accepts the <see cref="Stream"/> instance to decorate in order to extend its behavior.
         /// </summary>
         /// <param name="baseStream">The <see cref="Stream"/> instance to decorate in order to extend its behavior.</param>
         /// <param name="resetOrigin">The origin to which the stream should be reset to.</param>

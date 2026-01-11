@@ -374,9 +374,9 @@
                 .Select(parameterData => parameterData.ParameterTypeData.UnwrapType())
                 .ToArray();
             }
-            else if (cacheKey.MethodParameterInfos.HasItems)
+            else if (cacheKey.MethodParameterInfoList.HasItems)
             {
-                indexerParameters = cacheKey.MethodParameterInfos
+                indexerParameters = cacheKey.MethodParameterInfoList
                 .Select(methodParameterInfo => Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle))
                 .Where(type => type is not null)
                 .ToArray()!;
@@ -498,7 +498,7 @@
             }
             else if (declaringType is not null
                 && ReferenceEquals(cacheKey.ParameterList, ParameterList.Empty)
-                && ReferenceEquals(cacheKey.MethodParameterInfos, MethodParameterInfoList.Empty)
+                && ReferenceEquals(cacheKey.MethodParameterInfoList, MethodParameterInfoList.Empty)
                 && cacheKey.GenericTypeParameterCount == 0)
             {
                 methodInfo = declaringType.GetMethod(cacheKey.SymbolName, HelperExtensionsCommon.AllMembersFullHierarchyFlags);
@@ -513,9 +513,9 @@
                         .Select(parameterData => parameterData.ParameterTypeData.UnwrapType())
                         .ToArray();
                 }
-                else if (cacheKey.MethodParameterInfos.HasItems)
+                else if (cacheKey.MethodParameterInfoList.HasItems)
                 {
-                    parameterTypes = cacheKey.MethodParameterInfos
+                    parameterTypes = cacheKey.MethodParameterInfoList
                         .Where(methodParameterInfo => methodParameterInfo.DeclaringTypeHandle.Equals(cacheKey.DeclaringTypeHandle))
                         .Select(methodParameterInfo => Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle))
                         .Where(type => type is not null)
@@ -591,9 +591,9 @@
 
         private static ParameterData CreateParameterData(SymbolInfoDataCacheKey cacheKey)
         {
-            ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny<SymbolKind>(
+            ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(
                 cacheKey.SymbolKind,
-                new SymbolKind[] { SymbolKind.Parameter },
+                [SymbolKind.Parameter],
                 nameof(cacheKey),
                 $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a parameter symbol.");
 
@@ -699,7 +699,7 @@
                     }
                 }
 
-                if (cacheKey.ParameterizedSymbolKind is ParameterizedSymbolKind.Constructor or ParameterizedSymbolKind.Undefined)
+                if (cacheKey.ParameterizedSymbolKind is ParameterizedSymbolKind.MemberConstructor or ParameterizedSymbolKind.Undefined)
                 {
                     foreach (ConstructorData constructorData in declaringTypeData.EnumerateConstructors())
                     {

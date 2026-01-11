@@ -1095,7 +1095,7 @@
         //          .Append('.');
         //      }
 
-        //      if (memberInfo.MemberType.HasFlag(MemberTypes.Constructor))
+        //      if (memberInfo.MemberType.HasFlag(MemberTypes.MemberConstructor))
         //      {
         //        if (memberInfo.DeclaringType.IsGenericType)
         //        {
@@ -1282,7 +1282,7 @@
         //      bool isConstructor = constructorInfo != null;
         //      if (isConstructor)
         //      {
-        //        SymbolAttributes constructorKind = SymbolAttributes.Constructor;
+        //        SymbolAttributes constructorKind = SymbolAttributes.MemberConstructor;
 
         //        if (constructorInfo.IsStatic)
         //        {
@@ -1518,7 +1518,7 @@
         //        _ = signatureNameBuilder.AppendDisplayNameInternal(memberInfo, isFullyQualifiedName: isFullyQualifiedName && memberAttributes.HasFlag(SymbolAttributes.ParameterType), isDeclaringTypeIncluded: false);
         //      }
 
-        //      if (memberAttributes.HasFlag(SymbolAttributes.Constructor)
+        //      if (memberAttributes.HasFlag(SymbolAttributes.MemberConstructor)
         //        || memberAttributes.HasFlag(SymbolAttributes.Method)
         //        || memberAttributes.HasFlag(SymbolAttributes.Delegate))
         //      {
@@ -1585,7 +1585,7 @@
         //        _ = signatureNameBuilder.Remove(signatureNameBuilder.Length - HelperExtensionsCommon.ParameterSeparator.Length, HelperExtensionsCommon.ParameterSeparator.Length);
         //      }
 
-        //      if (memberAttributes.HasFlag(SymbolAttributes.Constructor)
+        //      if (memberAttributes.HasFlag(SymbolAttributes.MemberConstructor)
         //        || memberAttributes.HasFlag(SymbolAttributes.Method)
         //        || memberAttributes.HasFlag(SymbolAttributes.Delegate))
         //      {

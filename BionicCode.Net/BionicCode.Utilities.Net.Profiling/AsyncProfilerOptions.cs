@@ -16,7 +16,7 @@
         }
 
         /// <summary>
-        /// Constructor.
+        /// MemberConstructor.
         /// </summary>
         /// <param name="iterations">The number of iterations to execute the profiled code.</param>
         /// <param name="warmupIterations">The number of warmup iterations.</param>
@@ -27,7 +27,7 @@
         }
 
         /// <summary>
-        /// Constructor.
+        /// MemberConstructor.
         /// </summary>
         /// <param name="iterations">The number of iterations to execute the profiled code.</param>
         /// <param name="warmupIterations">The number of warmup iterations.</param>
@@ -36,7 +36,7 @@
         public AsyncProfilerOptions(int iterations, int warmupIterations, ProfilerLoggerAsyncDelegate asyncLogger, TimeUnit baseUnit) : base(iterations, warmupIterations, null, baseUnit) => this.AsyncLogger = asyncLogger;
 
         /// <summary>
-        /// Constructor.
+        /// MemberConstructor.
         /// </summary>
         /// <param name="iterations">The number of iterations to execute the profiled code.</param>
         /// <param name="warmupIterations">The number of warmup iterations.</param>

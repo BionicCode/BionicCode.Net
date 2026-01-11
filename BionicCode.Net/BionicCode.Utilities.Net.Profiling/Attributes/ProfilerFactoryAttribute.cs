@@ -22,12 +22,12 @@
     public sealed class ProfilerFactoryAttribute : Attribute
     {
         /// <summary>
-        /// Constructor without any required parameters.
+        /// MemberConstructor without any required parameters.
         /// </summary>
         public ProfilerFactoryAttribute() => this.ArgumentList = Array.Empty<object>();
 
         /// <summary>
-        /// Constructor without any required parameters.
+        /// MemberConstructor without any required parameters.
         /// </summary>
         public ProfilerFactoryAttribute(params object[] argumentList) => this.ArgumentList = argumentList;
 

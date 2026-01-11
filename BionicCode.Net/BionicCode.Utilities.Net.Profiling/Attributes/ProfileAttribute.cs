@@ -20,7 +20,7 @@
     public sealed class ProfileAttribute : Attribute
     {
         /// <summary>
-        /// Constructor. 
+        /// MemberConstructor. 
         /// This default constructor configures the profiler to use the latest released .NET runtime to execute the profiling. 
         /// SetValue the <seealso cref="ProfileAttribute.TargetFramework"/> property or use the overload to configure a different .NET runtme.
         /// </summary>
@@ -31,7 +31,7 @@
         }
 
         /// <summary>
-        /// Constructor. 
+        /// MemberConstructor. 
         /// </summary>
         /// <param name="targetFramework">The target .NET runtime that the profiler must use to execute the profiled code.</param>
         /// <param name="sourceFilePath"></param>
@@ -41,7 +41,7 @@
         }
 
         /// <summary>
-        /// Constructor. 
+        /// MemberConstructor. 
         /// </summary>
         /// <param name="targetFramework">The target .NET runtime that the profiler must use to execute the profiled code.</param>
         /// <param name="sourceFilePath"></param>

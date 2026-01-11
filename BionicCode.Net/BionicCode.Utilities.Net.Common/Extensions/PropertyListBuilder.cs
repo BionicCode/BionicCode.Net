@@ -28,7 +28,7 @@
 
                 if (!propertyData.DeclaringTypeHandle.Equals(declaringTypeHandle))
                 {
-                    throw new ArgumentException($"All '{nameof(PropertyInfo)}' items must belong to the same declaring type.");
+                    throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: All '{nameof(PropertyInfo)}' items must belong to the same declaring type.");
                 }
 
                 properties.Add(propertyData);

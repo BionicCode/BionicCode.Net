@@ -18,7 +18,7 @@
     public sealed class ProfilerPropertyArgumentAttribute : Attribute
     {
         /// <summary>
-        /// Constructor to request the ordered argument list for the decorated member.
+        /// MemberConstructor to request the ordered argument list for the decorated member.
         /// </summary>
         /// <param name="arguments">The argument list ordered by their position.</param>
         public ProfilerPropertyArgumentAttribute()
@@ -28,7 +28,7 @@
         }
 
         /// <summary>
-        /// Constructor to request the ordered argument list for the decorated member.
+        /// MemberConstructor to request the ordered argument list for the decorated member.
         /// </summary>
         /// <param name="arguments">The argument list ordered by their position.</param>
         public ProfilerPropertyArgumentAttribute(object? value = null)

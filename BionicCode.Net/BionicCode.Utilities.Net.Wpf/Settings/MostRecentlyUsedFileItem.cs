@@ -9,7 +9,7 @@
     public class MostRecentlyUsedFileItem : ViewModel, IEquatable<MostRecentlyUsedFileItem>
     {
         /// <summary>
-        /// Constructor
+        /// MemberConstructor
         /// </summary>
         /// <param name="fileInfo">The underlying <see cref="FileInfo"/> of the item.</param>
         public MostRecentlyUsedFileItem(FileInfo fileInfo) => this.FileInfo = fileInfo;

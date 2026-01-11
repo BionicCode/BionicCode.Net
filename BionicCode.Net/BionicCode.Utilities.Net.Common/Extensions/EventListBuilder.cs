@@ -28,7 +28,7 @@
 
                 if (!eventData.DeclaringTypeHandle.Equals(declaringTypeHandle))
                 {
-                    throw new ArgumentException($"All '{nameof(EventInfo)}' items must belong to the same declaring type.");
+                    throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: All '{nameof(EventInfo)}' items must belong to the same declaring type.");
                 }
 
                 events.Add(eventData);

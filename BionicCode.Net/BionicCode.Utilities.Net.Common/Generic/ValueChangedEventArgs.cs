@@ -17,7 +17,7 @@
     public class ValueChangedEventArgs<TValue> : EventArgs
     {
         /// <summary>
-        /// Constructor
+        /// MemberConstructor
         /// </summary>
         /// <param name="newValue">The new value that replaces the old value.</param>
         /// <param name="oldValue">The old value that was replaced by the new value.</param>

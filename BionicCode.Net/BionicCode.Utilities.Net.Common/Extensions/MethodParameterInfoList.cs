@@ -5,6 +5,12 @@
     using System.Collections.Immutable;
     using System.Linq;
 
+    /// <summary>
+    /// A read-only list of <see cref="MethodParameterInfo"/> items sorted by parameter position in ascending order.
+    /// </summary>
+    /// <remarks>The <see cref="MethodParameterInfo"/> items must belong to the same member of the same declaring type.
+    /// This collection is not intended for a loose collection of unrelated parameters.<br/>
+    /// Instead the collection is a strict representation of member parameters.</remarks>
     internal sealed class MethodParameterInfoList : IReadOnlyList<MethodParameterInfo>, IEquatable<MethodParameterInfoList>
     {
         public static readonly MethodParameterInfoList Empty = new MethodParameterInfoList(Array.Empty<MethodParameterInfo>());
@@ -16,11 +22,14 @@
 
         public MethodParameterInfoList(IEnumerable<MethodParameterInfo> items)
         {
-            this.Parameters = items.ToImmutableList();
+            this.Parameters = items.OrderBy(parameter => parameter.Position).ToImmutableList();
             ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Parameters, nameof(items));
 
-            this.DeclaringMemberTypeHandle = this.Parameters.FirstOrDefault().DeclaringTypeHandle;
-
+            MethodParameterInfo methodParameterInfo = this.Parameters.FirstOrDefault();
+            this.DeclaringMemberTypeHandle = methodParameterInfo.DeclaringTypeHandle;
+            Type declaringType = Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle)
+                ?? throw new ArgumentException($"The argument '{nameof(items)}' contains an invalid item at position '0'. Reason: Could not resolve type from handle 'ParameterTypeHandle'.");
+            declaringType.isp
             ArgumentExceptionAdvanced.ThrowIfAny(this.Parameters, parameterData => !parameterData.DeclaringTypeHandle.Equals(this.DeclaringMemberTypeHandle), nameof(items), $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodParameterInfo)}.{nameof(MethodParameterInfo.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type.");
 
             this._hashCode = ComputeHashCode(this.Parameters);

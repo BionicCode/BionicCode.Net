@@ -15,6 +15,7 @@
         /// Coverts any type to a <see cref="Dictionary{TKey,TValue}"/>, where the <c>TKey</c> is the member name and <c>TValue</c> the member's value.
         /// </summary>
         /// <param name="instanceToConvert"></param>
+        /// <param name="includeNonPublicMembers"></param>
         /// <returns>A <see cref="Dictionary{TKey,TValue}"/>, where 
         /// <br/> 
         /// <list type="table">
@@ -32,15 +33,15 @@
         /// </item>
         /// </list>.
         /// <br/>This rules apply to the complete object graph.</returns>
-        /// <remarks>This method recursively traverses the complete object graph and converts every object node i.e. property value (execpt primitive types and <see cref="string"/>) to a <see cref="Dictionary{TKey, TValue}"/>. 
+        /// <remarks>This method recursively traverses the complete object graph and converts every object node i.e. property value (except primitive types and <see cref="string"/>) to a <see cref="Dictionary{TKey, TValue}"/>. 
         /// <br/>It creates entries for all <see langword="public"/> instance and class properties of this object. Each entry represents a property as key-value-pair of property name and property value.
-        /// <para>To create a flat map of the object graph, use the <see cref="ToFlatDictionary(object)"/></para>
+        /// <para>To create a flat map of the object graph, use the <see cref="ToFlatDictionary(object, bool)"/></para>
         /// <para>Use the <see cref="IgnoreInObjectGraphAttribute"/> attribute to decorate properties that should be excluded.</para></remarks>
         public static Dictionary<string, object> ToDictionary(this object instanceToConvert, bool includeNonPublicMembers)
         {
-            Dictionary<string, object> resultDictionary = instanceToConvert.GetType()
+            Dictionary<string, object> resultDictionary = instanceToConvert!.GetType()
               .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
-              .Where(propertyInfo => !IsPropertyIndexer(propertyInfo) && propertyInfo.GetCustomAttribute(typeof(IgnoreInObjectGraphAttribute)) == null)
+              .Where(propertyInfo => !IsPropertyIndexer(propertyInfo) && propertyInfo!.GetCustomAttribute(typeof(IgnoreInObjectGraphAttribute)) == null)
               .ToDictionary(
                 propertyInfo => propertyInfo.Name,
                 propertyInfo => HelperExtensionsCommon.ConvertPropertyToDictionary(propertyInfo, instanceToConvert, includeNonPublicMembers, isRecursive: true));

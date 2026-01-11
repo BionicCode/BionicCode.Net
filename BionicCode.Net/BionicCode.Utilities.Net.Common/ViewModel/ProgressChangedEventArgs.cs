@@ -8,14 +8,14 @@
     public class ProgressChangedEventArgs : EventArgs
     {
         /// <summary>
-        /// Constructor.
+        /// MemberConstructor.
         /// </summary>
         public ProgressChangedEventArgs() : this(-1, -1, string.Empty)
         {
         }
 
         /// <summary>
-        /// Constructor.
+        /// MemberConstructor.
         /// </summary>
         /// <param name="oldValue">The old progress value before the change.</param>
         /// <param name="newValue">The new progress value after the change.</param>
@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        /// Constructor.
+        /// MemberConstructor.
         /// </summary>
         /// <param name="oldValue">The old progress value before the change.</param>
         /// <param name="newValue">The new progress value after the change.</param>

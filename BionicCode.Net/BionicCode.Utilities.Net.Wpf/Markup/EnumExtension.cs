@@ -27,7 +27,7 @@ namespace BionicCode.Utilities.Net
         }
 
         /// <summary>
-        /// Constructor to initialize the <see cref="EnumType"/> property.
+        /// MemberConstructor to initialize the <see cref="EnumType"/> property.
         /// </summary>
         /// <param name="enumType"></param>
         public EnumExtension(Type enumType) => this.EnumType = enumType;

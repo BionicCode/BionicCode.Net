@@ -16,7 +16,7 @@ namespace BionicCode.Utilities.Net
         private static readonly Type TaskType = typeof(Task);
         private static readonly Type ValueTaskType = typeof(ValueTask);
         private static readonly Type ValueTaskGenericType = typeof(ValueTask<>);
-        private static readonly Type DelegateType = typeof(Delegate);
+        private static readonly Type DelegateType = typeof(MulticastDelegate);
 
         private string? displayName;
         private string? shortDisplayName;
@@ -713,11 +713,19 @@ namespace BionicCode.Utilities.Net
             return SymbolAttributes.Undefined;
         }
 
+        /// <summary>
+        /// Determines whether the specified type represents a delegate type, excluding the base <see cref="MulticastDelegate"/> and <see cref="Delegate"/> type
+        /// itself.
+        /// </summary>
+        /// <param name="type">The type to evaluate. Cannot be null.</param>
+        /// <returns>true if the specified type is a delegate type other than <see cref="MulticastDelegate"/> and <see cref="Delegate"/>; otherwise, false.</returns>
         private static bool IsTypeDelegate(Type type)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
-            return TypeData.DelegateType.IsAssignableFrom(type);
+            return type != typeof(Delegate)
+                && type != typeof(MulticastDelegate)
+                && TypeData.DelegateType.IsAssignableFrom(type);
         }
 
         private static bool IsReadOnlyStructInternal(TypeData typeData)

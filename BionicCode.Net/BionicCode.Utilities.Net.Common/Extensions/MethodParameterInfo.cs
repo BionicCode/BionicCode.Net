@@ -35,16 +35,16 @@
         /// <param name="isGenericMethodParameter">Indicates whether the parameter is a generic method parameter.</param>
         /// <param name="kind">The kind of the parameter (e.g., input, output).</param>
         /// <param name="declaringTypeHandle">The runtime type handle of the type that declares the method that defines the parameter.</param>
-        public MethodParameterInfo(RuntimeTypeHandle parameterTypeHandle, int position, bool isGenericMethodParameter, ParameterKind kind, RuntimeTypeHandle declaringTypeHandle) : this()
+        public MethodParameterInfo(SymbolInfoDataCacheKey parameterInfoDataCacheKey) : this()
         {
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterTypeHandle, nameof(parameterTypeHandle));
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey, nameof(symbolInfoDataCacheKeye));
             ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
             ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(kind, [ParameterKind.Undefined], nameof(kind), $"The argument '{kind}' cannot be of value '{nameof(ParameterKind)}.{nameof(ParameterKind.Undefined)}'.");
-            this.Position = position;
-            this.IsGenericMethodParameter = isGenericMethodParameter;
-            this.ParameterTypeHandle = parameterTypeHandle;
-            this.Kind = kind;
-            this.DeclaringTypeHandle = declaringTypeHandle;
+            this.Position = parameterInfoDataCacheKey.ParameterPosition;
+            this.IsGenericMethodParameter = parameterInfoDataCacheKey;
+            this.ParameterTypeHandle = parameterInfoDataCacheKey.SymbolTypeHandle;
+            this.Kind = parameterInfoDataCacheKey.ParameterKind;
+            this.DeclaringTypeHandle = parameterInfoDataCacheKey.DeclaringTypeHandle;
         }
 
         public override bool Equals(object? obj) => obj is MethodParameterInfo info && Equals(info);

@@ -19,7 +19,7 @@
         }
 
         /// <summary>
-        /// Constructor.
+        /// MemberConstructor.
         /// </summary>
         /// <param name="iterations">The number of iterations to execute the profiled code.</param>
         /// <param name="warmupIterations">The number of warmup iterations.</param>

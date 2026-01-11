@@ -16,7 +16,7 @@
     public class ValueEventArgs<TValue> : EventArgs
     {
         /// <summary>
-        /// Constructor.
+        /// MemberConstructor.
         /// </summary>
         /// <param name="value">The value to send as event args.</param>
         public ValueEventArgs(TValue value) => this.Value = value;

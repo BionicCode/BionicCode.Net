@@ -9,15 +9,15 @@
     {
         internal static FieldList Create(IEnumerable<FieldInfo>? items)
         {
-            List<FieldInfo>? parameterInfoList = items?.ToList();
-            if (parameterInfoList is null || parameterInfoList.IsEmpty())
+            List<FieldInfo>? fieldInfoList = items?.ToList();
+            if (fieldInfoList is null || fieldInfoList.IsEmpty())
             {
                 return FieldList.Empty;
             }
 
-            List<FieldData> parameters = new List<FieldData>(parameterInfoList.Count);
+            List<FieldData> fields = new List<FieldData>(fieldInfoList.Count);
             RuntimeTypeHandle declaringTypeHandle = default;
-            foreach (FieldInfo fieldInfo in parameterInfoList)
+            foreach (FieldInfo fieldInfo in fieldInfoList)
             {
                 FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
 
@@ -28,13 +28,41 @@
 
                 if (!fieldData.DeclaringTypeHandle.Equals(declaringTypeHandle))
                 {
-                    throw new ArgumentException("All FieldInfo items must belong to the same member.");
+                    throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: All '{nameof(FieldInfo)}' items must belong to the same declaring type.");
                 }
 
-                parameters.Add(fieldData);
+                fields.Add(fieldData);
             }
 
-            return new FieldList(parameters);
+            return fields.ToFieldList();
         }
+
+        internal static FieldList Create(TypeData declaringTypeData)
+        {
+            ArgumentNullException.ThrowIfNull(declaringTypeData);
+            return CreateInternal(declaringTypeData.UnwrapType());
+        }
+
+        internal static FieldList Create(Type declaringType)
+        {
+            ArgumentNullException.ThrowIfNull(declaringType);
+            return CreateInternal(declaringType);
+        }
+
+        private static FieldList CreateInternal(Type declaringType)
+        {
+            FieldInfo[] fieldInfoList = declaringType.GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+            if (fieldInfoList.IsEmpty())
+            {
+                return FieldList.Empty;
+            }
+
+            IEnumerable<FieldData> fields = fieldInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
+
+            return fields.ToFieldList();
+        }
+
+        internal static FieldList ToFieldList(this IEnumerable<FieldData> items)
+            => items is null || items.IsEmpty() ? FieldList.Empty : new FieldList(items);
     }
 }

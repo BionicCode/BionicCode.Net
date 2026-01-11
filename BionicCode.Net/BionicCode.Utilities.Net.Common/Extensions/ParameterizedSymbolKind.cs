@@ -5,7 +5,7 @@
         Undefined = 0,
         MemberMethod,
         MemberIndexerProperty,
-        Delegat,
-        Constructor,
+        Delegate,
+        MemberConstructor,
     }
 }

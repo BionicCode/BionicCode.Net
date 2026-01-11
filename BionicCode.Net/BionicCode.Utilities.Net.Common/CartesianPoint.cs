@@ -8,7 +8,7 @@
     public struct CartesianPoint : IEquatable<CartesianPoint>, IComparable<CartesianPoint>, IFormattable
     {
         /// <summary>
-        /// Constructor which accepts the X and Y values
+        /// MemberConstructor which accepts the X and Y values
         /// </summary>
         /// <param name="x">The value for the X coordinate of the new Point</param>
         /// <param name="y">The value for the Y coordinate of the new Point</param>

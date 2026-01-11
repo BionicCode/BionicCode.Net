@@ -18,6 +18,7 @@
         {
             this.Methods = items.ToImmutableList();
             ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Methods, nameof(items));
+            this._methodNameIndex = this.Methods.ToLookup(method => method.Name); // allow duplicate method names (overloads)
 
             this.DeclaringTypeHandle = this.Methods.FirstOrDefault()!.DeclaringTypeHandle;
 
@@ -26,6 +27,7 @@
             this._hashCode = ComputeHashCode(this.Methods);
         }
 
+        private readonly ILookup<string, MethodData>? _methodNameIndex;
         public int Count => this.Methods.Count;
         public bool IsEmpty => this.Methods.IsEmpty;
         public bool HasItems => !this.IsEmpty;
@@ -40,6 +42,85 @@
                 ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, this.Methods.Count, nameof(index));
 
                 return this.Methods[index];
+            }
+        }
+
+        public IEnumerable<MethodData> this[string methodName]
+        {
+            get
+            {
+                if (this._methodNameIndex == null)
+                {
+                    throw new InvalidOperationException("Method index is not initialized.");
+                }
+
+                MethodList methods = this._methodNameIndex[methodName].ToMethodList();
+                if (methods.IsEmpty)
+                {
+                    throw new KeyNotFoundException($"Invalid key.No method named '{methodName}' could be found.");
+                }
+
+                return methods;
+            }
+        }
+
+        public MethodData this[string methodName, params MethodParameterInfo[] methodParameters]
+        {
+            get
+            {
+                if (this._methodNameIndex == null)
+                {
+                    throw new InvalidOperationException("Method index is not initialized.");
+                }
+
+                MethodList methods = this._methodNameIndex[methodName].ToMethodList();
+                if (methods.IsEmpty)
+                {
+                    throw new KeyNotFoundException($"Invalid key.No method named '{methodName}' could be found.");
+                }
+
+                foreach (MethodData method in methods)
+                {
+                    ParameterList parameters = method.Parameters;
+                    bool isMethodInvalidCandidate = false;
+                    int parameterIndex = 0;
+                    foreach (ParameterData parameter in parameters)
+                    {
+                        if (parameters.Count != methodParameters.Length)
+                        {
+                            isMethodInvalidCandidate = true;
+                            break;
+                        }
+
+                        foreach (MethodParameterInfo parameterInfo in methodParameters)
+                        {
+                            if (parameterIndex == parameterInfo.Position)
+                            {
+                                if (!parameter.ParameterTypeData.Handle.Equals(parameterInfo.ParameterTypeHandle)
+                                    || !parameter.ParameterKind.Equals(parameterInfo.Kind))
+                                {
+                                    isMethodInvalidCandidate = true;
+                                    break;
+                                }
+                            }
+
+                            // Parameter is valid if it matches position in method signature, parameter type and modifier.
+                            // Using the parameter type's type handle simplifies the equality check.
+                        }
+
+                        if (isMethodInvalidCandidate)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (!isMethodInvalidCandidate)
+                    {
+                        return method;
+                    }
+                }
+
+                throw new KeyNotFoundException($"Invalid arguments. A method named '{methodName}' could be found but its signature does not match the provided parameter list of the '{nameof(methodParameters)}' argument. Ensure '{nameof(MethodParameterInfo)}.{nameof(MethodParameterInfo.ParameterTypeHandle)}' is referencing the correct type and the parameter is in the correct position expressed by collection index and the '{nameof(MethodParameterInfo)}.{nameof(MethodParameterInfo.Kind)}' describes the correct parameter modifier.");
             }
         }
 

@@ -14,7 +14,7 @@ namespace BionicCode.Utilities.Net
     public class PropertyValueChangedArgs<TValue>
     {
         /// <summary>
-        /// Constructor.
+        /// MemberConstructor.
         /// </summary>
         /// <param name="propertyName">The name of the changed property.</param>
         /// <param name="oldValue">The value before the change.</param>

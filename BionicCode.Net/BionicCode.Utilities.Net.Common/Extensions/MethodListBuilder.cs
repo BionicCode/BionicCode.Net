@@ -28,7 +28,7 @@
 
                 if (!methodData.DeclaringTypeHandle.Equals(declaringTypeHandle))
                 {
-                    throw new ArgumentException($"All '{nameof(MethodInfo)}' items must belong to the same declaring type.");
+                    throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: All '{nameof(MethodInfo)}' items must belong to the same declaring type.");
                 }
 
                 methods.Add(methodData);
