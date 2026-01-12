@@ -43,6 +43,7 @@
 
 	<PropertyGroup>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net48|AnyCPU'">
@@ -218,6 +219,10 @@
 
 	<ItemGroup>
 	  <Folder Include="Profiling\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Using Include="System.Text" />
 	</ItemGroup>
 
 	<!--<ItemGroup>

@@ -1054,6 +1054,32 @@
             return result;
         }
 
+        public static string JoinToString<TItem>(this ReadOnlySpan<TItem> source, char separator = ',')
+        {
+            if (source.IsEmpty)
+            {
+                return string.Empty;
+            }
+
+            ArgumentNullExceptionAdvanced.ThrowIfNull(separator, nameof(separator));
+
+            using PooledStringBuilder stringBuilder = StringBuilderFactory.GetOrCreate();
+            for (int i = 0; i < source.Length; i++)
+            {
+                if (i > 0)
+                {
+                    _ = stringBuilder.Append(separator);
+                }
+
+                _ = stringBuilder.Append(source[i]?.ToString() ?? "null");
+            }
+
+            string result = stringBuilder.ToString();
+            stringBuilder.Recycle();
+
+            return result;
+        }
+
         public static string JoinToString<TItem>(this ReadOnlySpan<TItem> source, Func<TItem, string> stringTransform, string separator = ", ")
         {
             if (source.IsEmpty)

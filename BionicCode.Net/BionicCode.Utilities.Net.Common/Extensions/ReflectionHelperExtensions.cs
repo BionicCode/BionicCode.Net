@@ -2259,7 +2259,7 @@
         {
             bool isWrappingAtCasing = wrapStyle is WrapStyle.Casing;
             var delimiterSet = new HashSet<char>(delimiters);
-            PooledStringBuilder resultBuilder = StringBuilderFactory.GetOrCreateWith(text);
+            PooledStringBuilder resultBuilder = StringBuilderFactory.GetOrCreate(text);
             for (int characterIndex = text.Length - 1; characterIndex >= 0; characterIndex--)
             {
                 bool hasNextCharacter = resultBuilder.Length > characterIndex + 1;

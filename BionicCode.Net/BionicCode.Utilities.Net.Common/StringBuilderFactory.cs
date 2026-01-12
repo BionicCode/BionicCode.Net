@@ -1,349 +1,847 @@
-﻿namespace BionicCode.Utilities.Net
+﻿#nullable enable
+namespace BionicCode.Utilities.Net
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Linq;
+    using System.Diagnostics.CodeAnalysis;
     using System.Text;
-    using Microsoft.Extensions.Caching.Memory;
 
     internal static class StringBuilderFactory
     {
-        private static readonly MemoryCache StringBuilderPool;
-        private static readonly Queue<object> CacheEntryKeys;
-        private static readonly TimeSpan TimeToLive = TimeSpan.FromMinutes(10);
+        private const int MaxPoolSize = 10;
+        private static readonly ConcurrentBag<StringBuilder> StringBuilderPool;
+        private static readonly object SyncLock;
 
         static StringBuilderFactory()
         {
-            var cacheOptions = new MemoryCacheOptions()
-            {
-                // Item based
-                SizeLimit = 10,
-            };
-            StringBuilderFactory.StringBuilderPool = new MemoryCache(cacheOptions);
-            StringBuilderFactory.CacheEntryKeys = new Queue<object>();
+            StringBuilderFactory.StringBuilderPool = new ConcurrentBag<StringBuilder>();
+            StringBuilderFactory.SyncLock = new object();
         }
 
         public static PooledStringBuilder GetOrCreate()
-          => GetOrCreateInternal(-1);
+            => GetOrCreateInternal(0, ReadOnlySpan<char>.Empty);
 
-        private static PooledStringBuilder GetOrCreateInternal(int capacity)
+        public static PooledStringBuilder GetOrCreate(ReadOnlySpan<char> content)
+            => GetOrCreateInternal(0, content);
+
+        public static PooledStringBuilder GetOrCreate(int capacity, ReadOnlySpan<char> content)
+            => GetOrCreateInternal(capacity, content);
+
+        private static PooledStringBuilder GetOrCreateInternal(int capacity, ReadOnlySpan<char> content)
         {
-            while (StringBuilderFactory.CacheEntryKeys.Any())
+            if (!StringBuilderFactory.StringBuilderPool.TryTake(out StringBuilder? stringBuilder))
             {
-                object entryKey = StringBuilderFactory.CacheEntryKeys.Dequeue();
-                if (StringBuilderFactory.StringBuilderPool.TryGetValue(entryKey, out StringBuilder entry))
+                stringBuilder = new StringBuilder(capacity);
+                if (!content.IsEmpty)
                 {
-                    StringBuilderFactory.StringBuilderPool.Remove(entryKey);
-
-                    if (capacity > -1)
-                    {
-                        entry.Capacity = System.Math.Min(entry.MaxCapacity, capacity);
-                    }
-
-                    return PooledStringBuilder.Create(entry);
+                    _ = stringBuilder.Append(content);
                 }
             }
 
-            StringBuilder stringBuilder = capacity > -1
-              ? new StringBuilder(capacity)
-              : new StringBuilder();
-
-            return PooledStringBuilder.Create(stringBuilder);
+            return PooledStringBuilder.CreateInternal(stringBuilder);
         }
 
-        public static PooledStringBuilder GetOrCreateWith(string content)
-          => content is null ? throw new ArgumentNullException(nameof(content)) : GetOrCreateInternal(-1).Append(content);
-
-        public static PooledStringBuilder GetOrCreateWith(int capacity, string content)
-          => content is null ? throw new ArgumentNullException(nameof(content)) : GetOrCreateInternal(capacity).Append(content);
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP || NET
-        public static PooledStringBuilder GetOrCreateWith(StringBuilder content)
-          => content is null ? throw new ArgumentNullException(nameof(content)) : GetOrCreateInternal(-1).Append(content);
-#else
-    public static PooledStringBuilder GetOrCreateWith(StringBuilder content)
-      => content is null ? throw new ArgumentNullException(nameof(content)) : GetOrCreateInternal(-1).Append(content);
-#endif
-
-        public static void Recycle(PooledStringBuilder stringBuilder)
+        public static void Recycle(StringBuilder stringBuilder)
         {
-            if (stringBuilder is null)
+            lock (StringBuilderFactory.SyncLock)
             {
-                return;
-            }
+                if (stringBuilder is null)
+                {
+                    return;
+                }
 
-            stringBuilder.Recycle();
+                AddToPool(stringBuilder);
+            }
         }
 
-        public static void AddToPool(StringBuilder stringBuilder)
+        private static void AddToPool(StringBuilder stringBuilder)
         {
             _ = stringBuilder.Clear();
-            Guid cacheEntryKey = Guid.NewGuid();
-            ICacheEntry entry = StringBuilderFactory.StringBuilderPool.CreateEntry(cacheEntryKey)
-              .SetValue(stringBuilder)
-              .SetSize(1)
-              .SetSlidingExpiration(StringBuilderFactory.TimeToLive);
-            StringBuilderFactory.CacheEntryKeys.Enqueue(entry);
+            if (StringBuilderFactory.StringBuilderPool.Count < StringBuilderFactory.MaxPoolSize)
+            {
+                StringBuilderFactory.StringBuilderPool.Add(stringBuilder);
+            }
         }
     }
 
     internal class PooledStringBuilder : IDisposable
     {
         private const string StringBuilderRecycledExceptionMessage = "Underlying StringBuilder has been recycled. Create a new PooledStringBuilder instance.";
-        private StringBuilder stringBuilder;
+        private StringBuilder? stringBuilder;
+
         public bool IsDisposed => this.IsRecycled;
 
         public bool IsRecycled => this.stringBuilder is null;
-        public int Length => this.stringBuilder?.Length ?? throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
+
+        public int Capacity
+        {
+            get => GetStringBuilderOrThrowIfRecycled().Capacity;
+            set => GetStringBuilderOrThrowIfRecycled().Capacity = value;
+        }
+
+        public int MaxCapacity => GetStringBuilderOrThrowIfRecycled().MaxCapacity;
+
+        public int Length
+        {
+            get => GetStringBuilderOrThrowIfRecycled().Length;
+            set => GetStringBuilderOrThrowIfRecycled().Length = value;
+        }
 
         public char this[int index]
         {
-            get
-            {
-                if (this.IsRecycled)
-                {
-                    throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-                }
-
-                return this.stringBuilder[index];
-            }
-            set
-            {
-                if (this.IsRecycled)
-                {
-                    throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-                }
-
-                this.stringBuilder[index] = value;
-            }
+            get => GetStringBuilderOrThrowIfRecycled()[index];
+            set => GetStringBuilderOrThrowIfRecycled()[index] = value;
         }
 
         public static PooledStringBuilder Create()
-          => StringBuilderFactory.GetOrCreate();
+            => StringBuilderFactory.GetOrCreate();
 
         public static PooledStringBuilder Create(StringBuilder stringBuilder)
-          => new PooledStringBuilder(stringBuilder);
+            => new PooledStringBuilder(stringBuilder);
+
+        internal static PooledStringBuilder CreateInternal(StringBuilder stringBuilder)
+            => new PooledStringBuilder(stringBuilder);
 
         private PooledStringBuilder(StringBuilder stringBuilder) => this.stringBuilder = stringBuilder;
 
-        public PooledStringBuilder Append(string value)
+        private StringBuilder GetStringBuilderOrThrowIfRecycled()
+            => this.stringBuilder ?? throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
+
+        // ============================================================================
+        // CAPACITY & CONVERSION METHODS
+        // ============================================================================
+
+        public int EnsureCapacity(int capacity)
         {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            return builder.EnsureCapacity(capacity);
+        }
 
-            _ = this.stringBuilder.Append(value);
+        public override string ToString()
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            return builder.ToString();
+        }
 
+        public string ToString(int startIndex, int length)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            return builder.ToString(startIndex, length);
+        }
+
+        public PooledStringBuilder Clear()
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Clear();
+            return this;
+        }
+
+        // ============================================================================
+        // ENUMERATION
+        // ============================================================================
+
+        public StringBuilder.ChunkEnumerator GetChunks()
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            return builder.GetChunks();
+        }
+
+#if NET8_0_OR_GREATER
+        public StringBuilder.StringBuilderRuneEnumerator EnumerateRunes()
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            return builder.EnumerateRunes();
+        }
+#endif
+
+        // ============================================================================
+        // APPEND METHODS
+        // ============================================================================
+
+        public PooledStringBuilder Append(char value, int repeatCount)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value, repeatCount);
             return this;
         }
 
         public PooledStringBuilder Append(char value)
         {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
-
-            _ = this.stringBuilder.Append(value);
-
-            return this;
-        }
-
-        public PooledStringBuilder Append(int value)
-        {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
-
-            _ = this.stringBuilder.Append(value);
-
-            return this;
-        }
-
-        public PooledStringBuilder Append(double value)
-        {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
-
-            _ = this.stringBuilder.Append(value);
-
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
             return this;
         }
 
         public PooledStringBuilder Append(bool value)
         {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
+            return this;
+        }
 
-            _ = this.stringBuilder.Append(value);
+        public PooledStringBuilder Append(sbyte value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
+            return this;
+        }
 
+        public PooledStringBuilder Append(byte value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
+            return this;
+        }
+
+        public PooledStringBuilder Append(short value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
+            return this;
+        }
+
+        public PooledStringBuilder Append(int value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
+            return this;
+        }
+
+        public PooledStringBuilder Append(long value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
+            return this;
+        }
+
+        public PooledStringBuilder Append(float value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
+            return this;
+        }
+
+        public PooledStringBuilder Append(double value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
+            return this;
+        }
+
+        public PooledStringBuilder Append(decimal value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
+            return this;
+        }
+
+        public PooledStringBuilder Append(ushort value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
+            return this;
+        }
+
+        public PooledStringBuilder Append(uint value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
+            return this;
+        }
+
+        public PooledStringBuilder Append(ulong value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
+            return this;
+        }
+
+        public PooledStringBuilder Append(object? value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
+            return this;
+        }
+
+#if NET8_0_OR_GREATER
+        public PooledStringBuilder Append(Rune value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
+            return this;
+        }
+#endif
+
+        public PooledStringBuilder Append(string? value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
+            return this;
+        }
+
+        public PooledStringBuilder Append(string? value, int startIndex, int count)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value, startIndex, count);
+            return this;
+        }
+
+        public PooledStringBuilder Append(char[]? value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
+            return this;
+        }
+
+        public PooledStringBuilder Append(char[]? value, int startIndex, int charCount)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value, startIndex, charCount);
             return this;
         }
 
         public PooledStringBuilder Append(ReadOnlySpan<char> value)
         {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
-
-            _ = this.stringBuilder.Append(value);
-
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
             return this;
         }
 
-        public PooledStringBuilder Append(StringBuilder value)
+        public PooledStringBuilder Append(ReadOnlyMemory<char> value)
         {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
-
-            _ = this.stringBuilder.Append(value);
-
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
             return this;
         }
 
-        public PooledStringBuilder Append(PooledStringBuilder value)
+        public PooledStringBuilder Append(StringBuilder? value)
         {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
-
-            _ = this.stringBuilder.Append(value.stringBuilder);
-
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value);
             return this;
         }
 
-        public PooledStringBuilder AppendFormat(ReadOnlySpan<char> format, IFormatProvider? formatProvider, ReadOnlySpan<object?> values)
+        public PooledStringBuilder Append(StringBuilder? value, int startIndex, int count)
         {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
-
-            IFormatProvider provider = formatProvider ?? System.Globalization.CultureInfo.CurrentCulture;
-            CompositeFormat compositeFormat = CompositeFormat.Parse(format.ToString());
-            _ = this.stringBuilder.AppendFormat(provider, compositeFormat, values);
-
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value, startIndex, count);
             return this;
         }
 
-        public PooledStringBuilder AppendJoin(string separator, ReadOnlySpan<string> values)
+        public unsafe PooledStringBuilder Append(char* value, int valueCount)
         {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
-
-            _ = this.stringBuilder.Append(values.JoinToString(separator));
-
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value, valueCount);
             return this;
         }
 
-        public PooledStringBuilder AppendJoin(string separator, IEnumerable<string> values)
+        public PooledStringBuilder Append(ref StringBuilder.AppendInterpolatedStringHandler handler)
         {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
-
-            _ = this.stringBuilder.AppendJoin(separator, values);
-
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(ref handler);
             return this;
         }
 
-        public PooledStringBuilder AppendLine(string value)
+        public PooledStringBuilder Append(IFormatProvider? provider, ref StringBuilder.AppendInterpolatedStringHandler handler)
         {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
-
-            _ = this.stringBuilder.AppendLine(value);
-
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(provider, ref handler);
             return this;
         }
+
+        // ============================================================================
+        // APPENDLINE METHODS
+        // ============================================================================
 
         public PooledStringBuilder AppendLine()
         {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
-
-            _ = this.stringBuilder.AppendLine();
-
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendLine();
             return this;
         }
 
-        public PooledStringBuilder Append(char[] value)
+        public PooledStringBuilder AppendLine(string? value)
         {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
-
-            _ = this.stringBuilder.Append(value);
-
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendLine(value);
             return this;
         }
 
-        public PooledStringBuilder Insert(int index, string value)
+        public PooledStringBuilder AppendLine(ref StringBuilder.AppendInterpolatedStringHandler handler)
         {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
-
-            _ = this.stringBuilder.Insert(index, value);
-
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendLine(ref handler);
             return this;
         }
+
+        public PooledStringBuilder AppendLine(IFormatProvider? provider, ref StringBuilder.AppendInterpolatedStringHandler handler)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendLine(provider, ref handler);
+            return this;
+        }
+
+        // ============================================================================
+        // APPENDJOIN METHODS
+        // ============================================================================
+
+        public PooledStringBuilder AppendJoin(string? separator, params object?[] values)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendJoin(separator, values);
+            return this;
+        }
+
+        public PooledStringBuilder AppendJoin(string? separator, params ReadOnlySpan<object?> values)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendJoin(separator, values);
+            return this;
+        }
+
+        public PooledStringBuilder AppendJoin<T>(string? separator, IEnumerable<T> values)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendJoin(separator, values);
+            return this;
+        }
+
+        public PooledStringBuilder AppendJoin(string? separator, params string?[] values)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendJoin(separator, values);
+            return this;
+        }
+
+        public PooledStringBuilder AppendJoin(string? separator, params ReadOnlySpan<string?> values)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendJoin(separator, values);
+            return this;
+        }
+
+        public PooledStringBuilder AppendJoin(char separator, params object?[] values)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendJoin(separator, values);
+            return this;
+        }
+
+        public PooledStringBuilder AppendJoin(char separator, params ReadOnlySpan<object?> values)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendJoin(separator, values);
+            return this;
+        }
+
+        public PooledStringBuilder AppendJoin<T>(char separator, IEnumerable<T> values)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendJoin(separator, values);
+            return this;
+        }
+
+        public PooledStringBuilder AppendJoin(char separator, params string?[] values)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendJoin(separator, values);
+            return this;
+        }
+
+        public PooledStringBuilder AppendJoin(char separator, params ReadOnlySpan<string?> values)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendJoin(separator, values);
+            return this;
+        }
+
+        // ============================================================================
+        // APPENDFORMAT METHODS - String format and CompositeFormat
+        // ============================================================================
+
+        public PooledStringBuilder AppendFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendFormat(format, arg0);
+            return this;
+        }
+
+        public PooledStringBuilder AppendFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0, object? arg1)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendFormat(format, arg0, arg1);
+            return this;
+        }
+
+        public PooledStringBuilder AppendFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0, object? arg1, object? arg2)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendFormat(format, arg0, arg1, arg2);
+            return this;
+        }
+
+        public PooledStringBuilder AppendFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params object?[] args)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendFormat(format, args);
+            return this;
+        }
+
+        public PooledStringBuilder AppendFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params ReadOnlySpan<object?> args)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendFormat(format, args);
+            return this;
+        }
+
+        public PooledStringBuilder AppendFormat(IFormatProvider? provider, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendFormat(provider, format, arg0);
+            return this;
+        }
+
+        public PooledStringBuilder AppendFormat(IFormatProvider? provider, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0, object? arg1)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendFormat(provider, format, arg0, arg1);
+            return this;
+        }
+
+        public PooledStringBuilder AppendFormat(IFormatProvider? provider, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0, object? arg1, object? arg2)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendFormat(provider, format, arg0, arg1, arg2);
+            return this;
+        }
+
+        public PooledStringBuilder AppendFormat(IFormatProvider? provider, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params object?[] args)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendFormat(provider, format, args);
+            return this;
+        }
+
+        public PooledStringBuilder AppendFormat(IFormatProvider? provider, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params ReadOnlySpan<object?> args)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendFormat(provider, format, args);
+            return this;
+        }
+
+        public PooledStringBuilder AppendFormat<TArg0>(IFormatProvider? provider, CompositeFormat format, TArg0 arg0)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendFormat(provider, format, arg0);
+            return this;
+        }
+
+        public PooledStringBuilder AppendFormat<TArg0, TArg1>(IFormatProvider? provider, CompositeFormat format, TArg0 arg0, TArg1 arg1)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendFormat(provider, format, arg0, arg1);
+            return this;
+        }
+
+        public PooledStringBuilder AppendFormat<TArg0, TArg1, TArg2>(IFormatProvider? provider, CompositeFormat format, TArg0 arg0, TArg1 arg1, TArg2 arg2)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendFormat(provider, format, arg0, arg1, arg2);
+            return this;
+        }
+
+        public PooledStringBuilder AppendFormat(IFormatProvider? provider, CompositeFormat format, params object?[] args)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendFormat(provider, format, args);
+            return this;
+        }
+
+        public PooledStringBuilder AppendFormat(IFormatProvider? provider, CompositeFormat format, params ReadOnlySpan<object?> args)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendFormat(provider, format, args);
+            return this;
+        }
+
+        // ============================================================================
+        // INSERT METHODS
+        // ============================================================================
+
+        public PooledStringBuilder Insert(int index, string? value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, string? value, int count)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value, count);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, bool value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, sbyte value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, byte value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, short value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, char value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, char[]? value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, char[]? value, int startIndex, int charCount)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value, startIndex, charCount);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, int value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, long value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, float value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, double value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, decimal value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, ushort value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, uint value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, ulong value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, object? value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, ReadOnlySpan<char> value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+
+#if NET8_0_OR_GREATER
+        public PooledStringBuilder Insert(int index, Rune value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value);
+            return this;
+        }
+#endif
+
+        // ============================================================================
+        // REMOVE & REPLACE
+        // ============================================================================
 
         public PooledStringBuilder Remove(int startIndex, int length)
         {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
-
-            _ = this.stringBuilder.Remove(startIndex, length);
-
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Remove(startIndex, length);
             return this;
         }
 
-        public PooledStringBuilder Clear()
+        public PooledStringBuilder Replace(string oldValue, string? newValue)
         {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
-
-            _ = this.stringBuilder.Clear();
-
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Replace(oldValue, newValue);
             return this;
         }
 
-        public override string ToString()
+        public PooledStringBuilder Replace(string oldValue, string? newValue, int startIndex, int count)
         {
-            if (this.IsRecycled)
-            {
-                throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
-            }
-
-            return this.stringBuilder.ToString();
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Replace(oldValue, newValue, startIndex, count);
+            return this;
         }
+
+        public PooledStringBuilder Replace(ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Replace(oldValue, newValue);
+            return this;
+        }
+
+        public PooledStringBuilder Replace(ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue, int startIndex, int count)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Replace(oldValue, newValue, startIndex, count);
+            return this;
+        }
+
+        public PooledStringBuilder Replace(char oldChar, char newChar)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Replace(oldChar, newChar);
+            return this;
+        }
+
+        public PooledStringBuilder Replace(char oldChar, char newChar, int startIndex, int count)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Replace(oldChar, newChar, startIndex, count);
+            return this;
+        }
+
+#if NET8_0_OR_GREATER
+        public PooledStringBuilder Replace(Rune oldRune, Rune newRune)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Replace(oldRune, newRune);
+            return this;
+        }
+
+        public PooledStringBuilder Replace(Rune oldRune, Rune newRune, int startIndex, int count)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Replace(oldRune, newRune, startIndex, count);
+            return this;
+        }
+#endif
+
+        // ============================================================================
+        // COPY
+        // ============================================================================
+
+        public void CopyTo(int sourceIndex, char[] destination, int destinationIndex, int count)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            builder.CopyTo(sourceIndex, destination, destinationIndex, count);
+        }
+
+        public void CopyTo(int sourceIndex, Span<char> destination, int count)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            builder.CopyTo(sourceIndex, destination, count);
+        }
+
+        // ============================================================================
+        // EQUALS
+        // ============================================================================
+
+        public bool Equals([NotNullWhen(true)] StringBuilder? sb)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            return builder.Equals(sb);
+        }
+
+        public bool Equals(ReadOnlySpan<char> span)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            return builder.Equals(span);
+        }
+
+#if NET8_0_OR_GREATER
+        // ============================================================================
+        // RUNE OPERATIONS
+        // ============================================================================
+
+        public Rune GetRuneAt(int index)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            return builder.GetRuneAt(index);
+        }
+
+        public bool TryGetRuneAt(int index, out Rune value)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            return builder.TryGetRuneAt(index, out value);
+        }
+#endif
+
+        // ----------------------------
+        // Lifetime / pooling
+        // ----------------------------
 
         public void Recycle()
         {
-            StringBuilderFactory.AddToPool(this.stringBuilder);
+            if (this.stringBuilder is null)
+            {
+                return;
+            }
+
+            StringBuilderFactory.Recycle(this.stringBuilder);
             this.stringBuilder = null;
         }
 
@@ -358,16 +856,8 @@
             }
         }
 
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~PooledStringBuilder()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
-
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
