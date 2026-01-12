@@ -1470,24 +1470,24 @@
             PropertyInfo property = propertyData.GetPropertyInfo();
             MemberExpression propertyAccess = Expression.Property(targetParam, property);
 
-            UnaryExpression castedValue;
+            UnaryExpression castedValue = null;
             try
             {
                 castedValue = Expression.Convert(valueParam, propertyType);
             }
             catch (InvalidOperationException e)
             {
-                throw new ArgumentException(
-                    $"Type mismatch. The type of the provided value is not assignable to the property '{propertyData.FullyQualifiedSignature}'.",
-                    nameof(TValue),
-                    e);
+                //throw new ArgumentException(
+                //    $"Type mismatch. The type of the provided value is not assignable to the property '{propertyData.FullyQualifiedSignature}'.",
+                //    nameof(TValue),
+                //    e);
             }
 
             BinaryExpression assign = Expression.Assign(propertyAccess, castedValue);
             BlockExpression body = Expression.Block(assign, Expression.Empty());
 
             return Expression
-                .Lambda<ValueTypePropertySetter<TTarget, TValue>>(body, targetParam, valueParam)
+                .Lambda<ValueTypePropertySetter>(body, targetParam, valueParam)
                 .Compile();
         }
 
@@ -1644,10 +1644,28 @@
                     ])!;
 
             TypeData helperExtensionsCommonTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(HelperExtensionsCommon));
-            MethodData extensionMethodData = helperExtensionsCommonTypeData.GetMethod(
-                nameof(HelperExtensionsCommon.ToFullyQualifiedSignatureName),
+            const string extensionMethodName = nameof(HelperExtensionsCommon.ToFullyQualifiedSignatureName);
+            SymbolInfoDataCacheKey thisParameterKey = SymbolInfoDataCacheKey.CreateForAnonymousParameter(
+                typeof(object).TypeHandle,
+                helperExtensionsCommonTypeData.Handle,
+                "methodInfo",
                 0,
-                new MethodParameterInfo(propertyData.DeclaringTypeHandle, 0, false, ParameterKind.Undefined, helperExtensionsCommonTypeData.Handle));
+                ParameterKind.Normal,
+                ParameterizedSymbolKind.MemberMethod,
+                extensionMethodName,
+                0,
+                1);
+            SymbolInfoDataCacheKey extensionMethodKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrConstructor(
+                helperExtensionsCommonTypeData.Handle,
+                extensionMethodName,
+                MethodParameterInfoListBuilder.Create(
+                    [new MethodParameterInfo(thisParameterKey)]),
+                0,
+                SymbolKind.MemberMethod);
+            MethodData extensionMethodData = helperExtensionsCommonTypeData.GetMethod(
+                extensionMethodName,
+                0,
+                new MethodParameterInfo(extensionMethodKey));
             MethodCallExpression extensionMethodCall = Expression.Call(extensionMethodData.GetMethodInfo(), target);
 
             Expression message = Expression.Call(
@@ -1667,40 +1685,40 @@
             return validateTargetType;
         }
 
-        private static Expression CreateValueTypeMismatchExceptionExpression(PropertyData propertyData, ParameterExpression value)
-        {
-            Expression isTargetValid = propertyData.IsStatic
-                ? Expression.Constant(true)
-                : Expression.AndAlso(
-                    Expression.NotEqual(value, Expression.Constant(null, typeof(object))), Expression.TypeIs(value, propertyData.DeclaringTypeData.UnwrapType()));
+        //private static Expression CreateValueTypeMismatchExceptionExpression(PropertyData propertyData, ParameterExpression value)
+        //{
+        //    Expression isTargetValid = propertyData.IsStatic
+        //        ? Expression.Constant(true)
+        //        : Expression.AndAlso(
+        //            Expression.NotEqual(value, Expression.Constant(null, typeof(object))), Expression.TypeIs(value, propertyData.DeclaringTypeData.UnwrapType()));
 
-            MethodInfo stringConcat5 = typeof(string).GetMethod(
-                nameof(string.Concat),
-                [
-                        typeof(string),
-                        typeof(string),
-                        typeof(string),
-                        typeof(string),
-                        typeof(string)
-                    ])!;
+        //    MethodInfo stringConcat5 = typeof(string).GetMethod(
+        //        nameof(string.Concat),
+        //        [
+        //                typeof(string),
+        //                typeof(string),
+        //                typeof(string),
+        //                typeof(string),
+        //                typeof(string)
+        //            ])!;
 
-            Expression message = Expression.Call(
-                stringConcat5,
-                Expression.Constant($"The type of the provided {(forTarget ? "target instance" : "value")} is not assignable to the {(forTarget ? "declaring type" : "property type")}. Expected: '{(forTarget ? propertyData.DeclaringTypeData.FullyQualifiedSignature : propertyData.PropertyTypeData.FullyQualifiedSignature)}' "),
-                Expression.Constant(propertyData.IndexerParameters.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)),
-                Expression.Constant(", Found: "),
-                Expression.Call(value, nameof(int.ToString), Type.EmptyTypes),
-                Expression.Constant("."));
+        //    Expression message = Expression.Call(
+        //        stringConcat5,
+        //        Expression.Constant($"The type of the provided {(forTarget ? "target instance" : "value")} is not assignable to the {(forTarget ? "declaring type" : "property type")}. Expected: '{(forTarget ? propertyData.DeclaringTypeData.FullyQualifiedSignature : propertyData.PropertyTypeData.FullyQualifiedSignature)}' "),
+        //        Expression.Constant(propertyData.IndexerParameters.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)),
+        //        Expression.Constant(", Found: "),
+        //        Expression.Call(value, nameof(int.ToString), Type.EmptyTypes),
+        //        Expression.Constant("."));
 
-            Expression throwLengthMismatch = Expression.Throw(
-                Expression.New(
-                    typeof(ArgumentException).GetConstructor([typeof(string), typeof(string)])!,
-                    Expression.Constant(forTarget ? "target" : "value"),
-                    message),
-                typeof(void));
-            Expression validateLength = Expression.IfThen(lengthMismatch, throwLengthMismatch);
-            return validateLength;
-        }
+        //    Expression throwLengthMismatch = Expression.Throw(
+        //        Expression.New(
+        //            typeof(ArgumentException).GetConstructor([typeof(string), typeof(string)])!,
+        //            Expression.Constant(forTarget ? "target" : "value"),
+        //            message),
+        //        typeof(void));
+        //    Expression validateLength = Expression.IfThen(lengthMismatch, throwLengthMismatch);
+        //    return validateLength;
+        //}
 
         #region InvokerKeyMapKey
 

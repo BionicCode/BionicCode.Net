@@ -25,6 +25,25 @@
             return new TypeList(typeDataList);
         }
 
+        internal static TypeList CreateImplementedInterfacesList(Type type)
+        {
+            ArgumentNullException.ThrowIfNull(type, nameof(type));
+
+            return type.GetInterfaces()
+                .Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry)
+                .ToTypeList();
+        }
+
+        internal static TypeList CreateImplementedInterfacesList(TypeData typeData)
+        {
+            ArgumentNullException.ThrowIfNull(typeData, nameof(typeData));
+
+            Type type = typeData.UnwrapType();
+            return type.GetInterfaces()
+                .Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry)
+                .ToTypeList();
+        }
+
         internal static TypeList CreateGenericTypeArgumentList(Type genericType)
         {
             ArgumentNullException.ThrowIfNull(genericType, nameof(genericType));

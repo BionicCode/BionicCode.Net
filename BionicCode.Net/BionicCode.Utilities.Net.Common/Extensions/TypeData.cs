@@ -580,22 +580,22 @@ namespace BionicCode.Utilities.Net
           => this.genericParameterConstraintsData ??= TypeListBuilder.CreateGenericTypeArgumentConstraintList(this);
 
         public TypeList InterfacesData
-          => this.interfacesData ??= TypeListBuilder.CreateGenericTypeArgumentList(this);
+          => this.interfacesData ??= TypeListBuilder.CreateImplementedInterfacesList(this);
 
         public PropertyList PropertiesData
-          => this.propertiesData ??= PropertyListBuilder.Create(this);
+          => this.propertiesData ??= this.isAllPropertiesGenerated ? this.memberTable.Values.OfType<PropertyData>().ToPropertyList() : EnumerateProperties().ToPropertyList();
 
         public MethodList MethodsData
-          => this.methodsData ??= MethodListBuilder.Create(this);
+          => this.methodsData ??= this.isAllMethodsGenerated ? this.memberTable.Values.OfType<MethodData>().ToMethodList() : EnumerateMethods().ToMethodList();
 
         public FieldList FieldsData
-          => this.fieldsData ??= FieldListBuilder.Create(this);
+          => this.fieldsData ??= this.isAllFieldsGenerated ? this.memberTable.Values.OfType<FieldData>().ToFieldList() : EnumerateFields().ToFieldList();
 
         public EventList EventsData
-          => this.eventsData ??= EventListBuilder.Create(this);
+          => this.eventsData ??= this.isAllEventsGenerated ? this.memberTable.Values.OfType<EventData>().ToEventList() : EnumerateEvents().ToEventList();
 
         public ConstructorList ConstructorsData
-          => this.constructorsData ??= ConstructorListBuilder.Create(this);
+          => this.constructorsData ??= this.isAllConstructorsGenerated ? this.memberTable.Values.OfType<ConstructorData>().ToConstructorList() : EnumerateConstructors().ToConstructorList();
 
         private static bool IsTypeStatic(TypeData typeData)
           => typeData.IsAbstract && typeData.IsSealed;

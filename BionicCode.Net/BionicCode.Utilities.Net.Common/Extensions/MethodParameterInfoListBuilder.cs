@@ -34,21 +34,18 @@
 
             return parameters.AsMethodParameterInfoList();
         }
-
-        internal static MethodParameterInfoList Create(IEnumerable<ParameterInfo> items)
+        internal static MethodParameterInfoList Create(IEnumerable<ParameterData> items)
         {
-            List<ParameterInfo>? parameterInfoList = items?.ToList();
-            if (parameterInfoList is null || parameterInfoList.IsEmpty())
+            List<ParameterData>? parameterDataList = items?.ToList();
+            if (parameterDataList is null || parameterDataList.IsEmpty())
             {
                 return MethodParameterInfoList.Empty;
             }
 
-            List<ParameterData> parameters = new List<ParameterData>(parameterInfoList.Count);
+            List<ParameterData> parameters = new List<ParameterData>(parameterDataList.Count);
             SymbolInfoData? member = null;
-            foreach (ParameterInfo parameterInfo in parameterInfoList)
+            foreach (ParameterData parameterData in parameterDataList)
             {
-                ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
-
                 if (member == null)
                 {
                     member = parameterData.MemberData;
@@ -56,13 +53,21 @@
 
                 if (!ReferenceEquals(parameterData.MemberData, member))
                 {
-                    throw new ArgumentException($"All '{nameof(ParameterInfo)}' items must belong to the same member.");
+                    throw new ArgumentException($"The argument '{nameof(items)}' contains invalid items. Reason: All '{nameof(MethodParameterInfo)}' items must belong to the same member.");
                 }
 
                 parameters.Add(parameterData);
             }
 
             return parameters.AsMethodParameterInfoList();
+        }
+
+        internal static MethodParameterInfoList Create(IEnumerable<MethodParameterInfo> items)
+        {
+            List<MethodParameterInfo>? parameterInfoList = items?.ToList();
+            return parameterInfoList is null || parameterInfoList.IsEmpty()
+                ? MethodParameterInfoList.Empty
+                : new MethodParameterInfoList(parameterInfoList);
         }
 
         internal static MethodParameterInfoList Create(PropertyData propertyData)
