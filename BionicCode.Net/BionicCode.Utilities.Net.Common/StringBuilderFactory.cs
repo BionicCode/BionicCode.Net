@@ -56,13 +56,9 @@
 
         public static PooledStringBuilder GetOrCreateWith(int capacity, string content)
           => content is null ? throw new ArgumentNullException(nameof(content)) : GetOrCreateInternal(capacity).Append(content);
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP || NET
+
         public static PooledStringBuilder GetOrCreateWith(StringBuilder content)
           => content is null ? throw new ArgumentNullException(nameof(content)) : GetOrCreateInternal(-1).Append(content);
-#else
-    public static PooledStringBuilder GetOrCreateWith(StringBuilder content)
-      => content is null ? throw new ArgumentNullException(nameof(content)) : GetOrCreateInternal(-1).Append(content);
-#endif
 
         public static void Recycle(PooledStringBuilder stringBuilder)
         {
@@ -410,6 +406,16 @@
             if (this.IsRecycled)
             {
                 throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);
+            }
+
+            if (value is null)
+            {
+                return this;
+            }
+
+            if (value.IsRecycled)
+            {
+                throw new ArgumentException("Cannot append a recycled PooledStringBuilder", nameof(value));
             }
 
             _ = this.stringBuilder.Append(value.stringBuilder);
