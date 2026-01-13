@@ -17,7 +17,6 @@
         private string? runtimeShortSignature;
         private string? runtimeShortCompactSignature;
         private SymbolAttributes symbolAttributes;
-        private readonly EventInfo eventInfo;
         private bool? isOverride;
         private MethodData? addMethodData;
         private MethodData? removeMethodData;
@@ -37,16 +36,12 @@
         public EventData(EventInfo eventInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(eventInfo, SymbolKind.MemberEvent, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(eventInfo, nameof(eventInfo));
-            if (eventInfo.EventHandlerType is null)
-            {
-                throw new NotSupportedException($"Event '{eventInfo.Name}' of type '{eventInfo.DeclaringType?.FullName}' has no event handler type defined, which is not supported.");
-            }
 
-            this.eventInfo = eventInfo;
+            this.EventInfo = eventInfo;
         }
 
         public EventInfo GetEventInfo()
-          => this.eventInfo;
+          => this.EventInfo;
 
         protected override MemberInfo GetMemberInfo()
           => GetEventInfo();
@@ -129,21 +124,25 @@
         public void RemoveEventHandler(object eventSource, Delegate handler)
           => GetEventInfo().RemoveEventHandler(eventSource, handler);
 
-        public MethodData? AddMethodData
+        public MethodData AddMethodData
           => this.addMethodData ??= GetEventInfo().GetAddMethod(true) is MethodInfo addMethod
             ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(addMethod)
-            : null;
+            : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{GetEventInfo().Name}' does not have an add method.");
 
-        public MethodData? RemoveMethodData
+        public MethodData RemoveMethodData
           => this.removeMethodData ??= GetEventInfo().GetRemoveMethod(true) is MethodInfo removeMethod
             ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(removeMethod)
-            : null;
+            : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{GetEventInfo().Name}' does not have a remove method.");
 
         public MethodData EventInvokerMethodData
-          => this.invocatorMethodData ??= this.EventHandlerTypeData?.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, 0)!;
+          => this.invocatorMethodData ??= this.EventHandlerTypeData?.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, 0, ReadOnlySpan<MethodParameterInfo>.Empty)!;
 
         public TypeData EventHandlerTypeData
-          => this.eventHandlerTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetEventInfo().EventHandlerType);
+          => this.eventHandlerTypeData ??= GetEventInfo().EventHandlerType is Type eventHandlerType
+            ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventHandlerType)
+            : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{GetEventInfo().Name}' does not have an event handler type.");
+
+        public EventInfo EventInfo { get; }
 
         public override bool IsStatic
           => this.isStatic ??= this.AddMethodData?.IsStatic ?? false;

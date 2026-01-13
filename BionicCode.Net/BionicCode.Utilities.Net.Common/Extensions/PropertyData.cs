@@ -921,15 +921,19 @@ namespace BionicCode.Utilities.Net
         public bool IsInit
           => this.isInit ??= this.CanWrite && PropertyData.IsPropertyInit(this);
 
-        public MethodData? GetMethodData
+        public MethodData GetMethodData
           => this.getMethodData ??= GetPropertyInfo() is PropertyInfo propertyInfo && propertyInfo.CanRead
-                ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo.GetGetMethod(true)!)
-                : null;
+                ? propertyInfo.GetGetMethod(true) is MethodInfo propertyGetter
+                    ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyGetter)
+                    : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{GetPropertyInfo().Name}' does not have a get method.")
+                : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{GetPropertyInfo().Name}' does not have a get method. Check '{nameof(PropertyData)}.{nameof(PropertyData.CanRead)}' before access.");
 
-        public MethodData? SetMethodData
+        public MethodData SetMethodData
           => this.setMethodData ??= GetPropertyInfo() is PropertyInfo propertyInfo && propertyInfo.CanWrite
-            ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo.GetSetMethod(true)!)
-            : null;
+            ? propertyInfo.GetSetMethod(true) is MethodInfo propertySetter
+                ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertySetter)
+                : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{GetPropertyInfo().Name}' does not have a set method.")
+            : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{GetPropertyInfo().Name}' does not have a set method. Check '{nameof(PropertyData)}.{nameof(PropertyData.CanWrite)}' before access.");
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
           ? (this.symbolAttributes = PropertyData.GetAttributesInternal(this))

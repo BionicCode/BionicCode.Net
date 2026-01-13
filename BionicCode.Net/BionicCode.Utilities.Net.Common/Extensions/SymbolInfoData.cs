@@ -9,12 +9,18 @@
     {
         protected SymbolInfoData(string name, SymbolKind symbolKind, SymbolInfoDataCacheKey cacheKey)
         {
-            ArgumentNullException.ThrowIfNullOrWhiteSpace(name, nameof(name));
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(name, nameof(name));
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
+            ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(symbolKind, [SymbolKind.Undefined], nameof(symbolKind));
             ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKey, nameof(cacheKey));
+            ArgumentExceptionAdvanced.ThrowIfTrue(
+                symbolKind != SymbolKind.Type && cacheKey.DeclaringTypeHandle.Equals(default),
+                nameof(cacheKey),
+                $"The argument '{nameof(cacheKey)}' returns an invalid value from the property '{nameof(cacheKey)}.{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}'. Declaring type cannot be default for members (i.e. symbols other than of kind '{SymbolKind.Type}'.");
 
             this.Name = name;
             this.SymbolKind = symbolKind;
-            this.Indentation = 4;
+            this.FormattingIndentation = 4;
             this.CacheKey = cacheKey;
         }
 
@@ -115,7 +121,7 @@
         /// Gets or sets the number of spaces to use for each indentation level when formatting the symnbol signatures.
         /// </summary>
         /// <value>The number of spaces to indent a line. The default is <code>4</code>.</value>
-        public int Indentation
+        public int FormattingIndentation
         {
             get => this.indentation;
             set
@@ -130,8 +136,9 @@
         /// <summary>
         /// Gets the string used to represent a single level of indentation.
         /// </summary>
-        /// <value>The spaces to indent a line based on the <see cref="Indentation"/> property.</value>
+        /// <value>The spaces to indent a line based on the <see cref="FormattingIndentation"/> property.</value>
         public string IndentationString { get; private set; }
 
         public SymbolInfoDataCacheKey CacheKey { get; }
     }
+}

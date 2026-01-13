@@ -13,7 +13,7 @@
     /// passed by reference, is optional, or has a default value. It is intended for use in scenarios that require
     /// detailed inspection of parameter metadata, such as code analysis, documentation generation, or advanced
     /// reflection tasks.<br/>
-    /// The key is that the metadata is cached to aboid the reflection overhead for successive calls.<br/>
+    /// The key is that the metadata is cached to avoid the reflection overhead for successive calls.<br/>
     /// Instances of this class are typically created based on a ParameterInfo object from the <see cref="SymbolReflectionInfoCache"/> API.</remarks>
     internal sealed class ParameterData : SymbolInfoData
     {
@@ -26,7 +26,6 @@
         private bool? isOut;
         private bool? isOptional;
         private bool? isParams;
-        private int? position;
         private TypeData? parameterTypeData;
         private TypeData? declaringTypeData;
         private SymbolInfoData? member;
@@ -36,13 +35,14 @@
         private ParameterKind? parameterKind;
         private bool? isGenericTypeParameter;
         private bool? isGenericMethodParameter;
+        private RuntimeTypeHandle? _declaringTypeHandle;
+        private RuntimeTypeHandle? _propertyTypeHandle;
+        private int? _position;
 
         public ParameterData(ParameterInfo parameterInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(parameterInfo.Name, SymbolKind.Parameter, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(parameterInfo, nameof(parameterInfo));
-            this.DeclaringTypeHandle = parameterInfo.Member.DeclaringType?.TypeHandle ?? default;
-            this.ParameterTypeHandle = parameterInfo.ParameterType.TypeHandle;
-            this.Position = parameterInfo.Position;
+
             this.ParameterInfo = parameterInfo;
         }
 
@@ -52,8 +52,11 @@
         public Type GetDeclaringType()
           => Type.GetTypeFromHandle(this.DeclaringTypeHandle)!;
 
-        public RuntimeTypeHandle DeclaringTypeHandle { get; }
-        public RuntimeTypeHandle ParameterTypeHandle { get; }
+        public RuntimeTypeHandle DeclaringTypeHandle
+            => this._declaringTypeHandle ??= GetParameterInfo().Member.DeclaringType?.TypeHandle ?? throw new NotSupportedException($"The underlying '{typeof(ParameterInfo).FullName}' belongs to a member that does not return a declaring type.");
+
+        public RuntimeTypeHandle ParameterTypeHandle
+            => this._propertyTypeHandle ??= GetParameterInfo().ParameterType.TypeHandle;
 
         /// <summary>
         /// Gets a value indicating whether the current type is passed by reference using the <see langword="ref"/> keyword.
@@ -123,10 +126,7 @@
         /// </summary>
         /// <value>The position of the parameter.</value>
         public int Position
-        {
-            get => this.position ??= GetParameterInfo().Position;
-            init => this.position = value;
-        }
+            => this._position ??= GetParameterInfo().Position;
 
         public bool IsParams
           => this.isParams ??= GetParameterInfo().GetCustomAttribute<ParamArrayAttribute>() != null;

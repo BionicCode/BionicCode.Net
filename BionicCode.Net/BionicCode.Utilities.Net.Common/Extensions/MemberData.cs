@@ -8,24 +8,22 @@
     {
         private IList<CustomAttributeData> attributeData;
         private TypeData declaringTypeData;
+        private RuntimeTypeHandle? _declaringTypeHandle;
+        private string? _namespace;
 
         protected MemberData(MemberInfo memberInfo, SymbolKind symbolKind, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(memberInfo.Name, symbolKind, symbolInfoDataCacheKey)
-        {
-            ArgumentNullException.ThrowIfNull(memberInfo, nameof(memberInfo));
-            if (memberInfo.DeclaringType is null)
-            {
-                throw new NotSupportedException($"The member '{memberInfo.Name}' has no declaring type.");
-            }
-
-            this.DeclaringTypeHandle = memberInfo.DeclaringType.TypeHandle;
-            this.Namespace = memberInfo.DeclaringType.Namespace ?? string.Empty;
-        }
+            => ArgumentNullException.ThrowIfNull(memberInfo, nameof(memberInfo));
 
         private Type GetDeclaringType()
-          => Type.GetTypeFromHandle(this.DeclaringTypeHandle)!;
+          => GetMemberInfo().DeclaringType ?? throw new NotSupportedException($"The underlying '{nameof(MemberInfo)}' instance for the member '{GetMemberInfo().Name}' is not returning a declaring type.");
 
         protected abstract MemberInfo GetMemberInfo();
-        public RuntimeTypeHandle DeclaringTypeHandle { get; }
+        public RuntimeTypeHandle DeclaringTypeHandle
+            => this._declaringTypeHandle ??= GetDeclaringType().TypeHandle;
+
+        public string Namespace
+            => this._namespace ??= GetDeclaringType().Namespace ?? string.Empty;
+
         public abstract bool IsStatic { get; }
         public abstract bool IsPublic { get; }
         public abstract bool IsPrivate { get; }
@@ -34,7 +32,6 @@
         public abstract bool IsFamilyOrAssembly { get; }
         public abstract bool IsFamilyAndAssembly { get; }
         public abstract AccessModifier AccessModifier { get; }
-        public string Namespace { get; }
 
         public override IList<CustomAttributeData> AttributeData
           => this.attributeData ??= new List<CustomAttributeData>(GetMemberInfo().GetCustomAttributesData());

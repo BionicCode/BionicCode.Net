@@ -543,7 +543,7 @@ namespace BionicCode.Utilities.Net
                     throw new InvalidOperationException($"The current type is not a delegate. Call {nameof(this.IsDelegate)} before accessing this property to check whether the current type is a delegate.");
                 }
 
-                this.delegateInvokeMethodData ??= GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, 0);
+                this.delegateInvokeMethodData ??= GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, 0, ReadOnlySpan<MethodParameterInfo>.Empty);
 
                 return this.delegateInvokeMethodData;
             }

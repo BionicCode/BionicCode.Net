@@ -805,4 +805,9 @@
             return result;
         }
     }
+
+    internal enum ParameterCount
+    {
+        Unknown = -1,
+    }
 }
