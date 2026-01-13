@@ -460,7 +460,7 @@
                 symbolParameters?.Count ?? 0,
                 symbolKind,
                 ParameterKind.Undefined,
-                ParameterizedSymbolKind.MemberMethod,
+                ParameterizedSymbolKind.Undefined,
                 true);
         }
 
@@ -510,7 +510,7 @@
                 symbolParameters?.Count ?? 0,
                 symbolKind,
                 ParameterKind.Undefined,
-                symbolKind.Equals(SymbolKind.MemberMethod) ? ParameterizedSymbolKind.MemberMethod : ParameterizedSymbolKind.MemberConstructor,
+                ParameterizedSymbolKind.Undefined,
                 true);
         }
 
@@ -547,7 +547,7 @@
                 parameterList.Count,
                 SymbolKind.MemberProperty,
                 ParameterKind.Undefined,
-                parameterList.HasItems ? ParameterizedSymbolKind.MemberIndexerProperty : ParameterizedSymbolKind.Undefined,
+                ParameterizedSymbolKind.Undefined,
                 true);
         }
 
@@ -584,7 +584,7 @@
                 methodParameterInfoList.Count,
                 SymbolKind.MemberProperty,
                 ParameterKind.Undefined,
-                methodParameterInfoList.HasItems ? ParameterizedSymbolKind.MemberIndexerProperty : ParameterizedSymbolKind.Undefined,
+                ParameterizedSymbolKind.Undefined,
                 true);
         }
 

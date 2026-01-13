@@ -1665,7 +1665,7 @@
             MethodData extensionMethodData = helperExtensionsCommonTypeData.GetMethod(
                 extensionMethodName,
                 0,
-                new MethodParameterInfo(extensionMethodKey));
+                [new MethodParameterInfo(extensionMethodKey)]);
             MethodCallExpression extensionMethodCall = Expression.Call(extensionMethodData.GetMethodInfo(), target);
 
             Expression message = Expression.Call(

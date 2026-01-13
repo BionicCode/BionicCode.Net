@@ -20,6 +20,10 @@
         {
         }
 
+        public MethodParameterInfoList(ReadOnlySpan<MethodParameterInfo> items) : this(items.ToArray())
+        {
+        }
+
         public MethodParameterInfoList(IEnumerable<MethodParameterInfo> items)
         {
             this.Parameters = items.OrderBy(parameter => parameter.Position).ToImmutableList();
@@ -29,7 +33,6 @@
             this.DeclaringMemberTypeHandle = methodParameterInfo.DeclaringTypeHandle;
             Type declaringType = Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle)
                 ?? throw new ArgumentException($"The argument '{nameof(items)}' contains an invalid item at position '0'. Reason: Could not resolve type from handle 'ParameterTypeHandle'.");
-            declaringType.isp
             ArgumentExceptionAdvanced.ThrowIfAny(this.Parameters, parameterData => !parameterData.DeclaringTypeHandle.Equals(this.DeclaringMemberTypeHandle), nameof(items), $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodParameterInfo)}.{nameof(MethodParameterInfo.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type.");
 
             this._hashCode = ComputeHashCode(this.Parameters);

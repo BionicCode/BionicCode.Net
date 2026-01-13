@@ -37,9 +37,13 @@
         /// <param name="declaringTypeHandle">The runtime type handle of the type that declares the method that defines the parameter.</param>
         public MethodParameterInfo(SymbolInfoDataCacheKey parameterInfoDataCacheKey) : this()
         {
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey, nameof(symbolInfoDataCacheKeye));
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey, nameof(parameterInfoDataCacheKey));
             ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
-            ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(kind, [ParameterKind.Undefined], nameof(kind), $"The argument '{kind}' cannot be of value '{nameof(ParameterKind)}.{nameof(ParameterKind.Undefined)}'.");
+            ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(
+                parameterInfoDataCacheKey.ParameterKind,
+                [ParameterKind.Undefined],
+                nameof(parameterInfoDataCacheKey),
+                $"The property '{nameof(MethodParameterInfo.Kind)}' of the argument '{parameterInfoDataCacheKey}' cannot be of value '{nameof(ParameterKind)}.{nameof(ParameterKind.Undefined)}'.");
             this.Position = parameterInfoDataCacheKey.ParameterPosition;
             this.IsGenericMethodParameter = parameterInfoDataCacheKey;
             this.ParameterTypeHandle = parameterInfoDataCacheKey.SymbolTypeHandle;

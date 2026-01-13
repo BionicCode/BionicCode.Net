@@ -1037,32 +1037,6 @@
 
             ArgumentNullExceptionAdvanced.ThrowIfNull(separator, nameof(separator));
 
-            PooledStringBuilder stringBuilder = StringBuilderFactory.GetOrCreate();
-            for (int i = 0; i < source.Length; i++)
-            {
-                if (i > 0)
-                {
-                    _ = stringBuilder.Append(separator);
-                }
-
-                _ = stringBuilder.Append(source[i]?.ToString() ?? "null");
-            }
-
-            string result = stringBuilder.ToString();
-            stringBuilder.Recycle();
-
-            return result;
-        }
-
-        public static string JoinToString<TItem>(this ReadOnlySpan<TItem> source, char separator = ',')
-        {
-            if (source.IsEmpty)
-            {
-                return string.Empty;
-            }
-
-            ArgumentNullExceptionAdvanced.ThrowIfNull(separator, nameof(separator));
-
             using PooledStringBuilder stringBuilder = StringBuilderFactory.GetOrCreate();
             for (int i = 0; i < source.Length; i++)
             {
@@ -1075,8 +1049,6 @@
             }
 
             string result = stringBuilder.ToString();
-            stringBuilder.Recycle();
-
             return result;
         }
 
@@ -1090,7 +1062,7 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(stringTransform, nameof(stringTransform));
             ArgumentNullExceptionAdvanced.ThrowIfNull(separator, nameof(separator));
 
-            PooledStringBuilder stringBuilder = StringBuilderFactory.GetOrCreate();
+            using PooledStringBuilder stringBuilder = StringBuilderFactory.GetOrCreate();
             for (int i = 0; i < source.Length; i++)
             {
                 if (i > 0)
@@ -1098,12 +1070,58 @@
                     _ = stringBuilder.Append(separator);
                 }
 
-                _ = stringBuilder.Append(stringTransform(source[i]));
+                ReadOnlySpan<char> value = stringTransform(source[i]);
+                _ = stringBuilder.Append(value);
             }
 
             string result = stringBuilder.ToString();
-            stringBuilder.Recycle();
+            return result;
+        }
 
+        public static string JoinToString<TItem>(this ReadOnlySpan<TItem> source, char separator = ',')
+        {
+            if (source.IsEmpty)
+            {
+                return string.Empty;
+            }
+
+            using PooledStringBuilder stringBuilder = StringBuilderFactory.GetOrCreate();
+            for (int i = 0; i < source.Length; i++)
+            {
+                if (i > 0)
+                {
+                    _ = stringBuilder.Append(separator);
+                }
+
+                _ = stringBuilder.Append(source[i]?.ToString() ?? "null");
+            }
+
+            string result = stringBuilder.ToString();
+            return result;
+        }
+
+        public static string JoinToString<TItem>(this ReadOnlySpan<TItem> source, Func<TItem, string> stringTransform, char separator = ',')
+        {
+            if (source.IsEmpty)
+            {
+                return string.Empty;
+            }
+
+            ArgumentNullExceptionAdvanced.ThrowIfNull(stringTransform, nameof(stringTransform));
+
+            using PooledStringBuilder stringBuilder = StringBuilderFactory.GetOrCreate();
+            for (int i = 0; i < source.Length; i++)
+            {
+                if (i > 0)
+                {
+                    _ = stringBuilder.Append(separator);
+                }
+
+                ReadOnlySpan<char> value = stringTransform(source[i]);
+                _ = stringBuilder.Append(value);
+            }
+
+            string result = stringBuilder.ToString();
             return result;
         }
     }

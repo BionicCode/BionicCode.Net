@@ -156,12 +156,12 @@ namespace BionicCode.Utilities.Net
             this.isAllPropertiesGenerated = true;
         }
 
-        public MethodData GetMethod(string methodName, int genericTypeParameterCount, params MethodParameterInfo[] parameterList)
+        public MethodData GetMethod(string methodName, int genericTypeParameterCount, ReadOnlySpan<MethodParameterInfo> parameterList)
         {
             ArgumentOutOfRangeException.ThrowIfNegative(genericTypeParameterCount, nameof(genericTypeParameterCount));
             ArgumentException.ThrowIfNullOrWhiteSpace(methodName, nameof(methodName));
 
-            MethodParameterInfoList symbolParameters = parameterList is null || parameterList.Length == 0
+            MethodParameterInfoList symbolParameters = parameterList.IsEmpty
                 ? MethodParameterInfoList.Empty
                 : new MethodParameterInfoList(parameterList);
             ArgumentExceptionAdvanced.ThrowIfAny(
