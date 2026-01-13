@@ -380,7 +380,7 @@ namespace BionicCode.Utilities.Net
             propertySetInvoker(invocationTarget, value);
         }
 
-        public void SetValue<TTarget, TValue>(TTarget target, TValue value)
+        public void SetValue<TTarget, TValue>(TTarget target, TValue value) where TTarget : class
         {
             if (this.DeclaringTypeData.IsValueType)
             {
@@ -417,10 +417,10 @@ namespace BionicCode.Utilities.Net
                     $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {this.DeclaringTypeData.FullyQualifiedSignature}");
             }
 
-            object? invocationTarget = this.IsStatic
+            TTarget? invocationTarget = this.IsStatic
                 ? null
                 : target;
-            var propertySetInvoker = GetSetInvokerInternal<TTarget, TValue>();
+            PropertySetter<TTarget, TValue> propertySetInvoker = GetSetInvokerInternal<TTarget, TValue>();
             propertySetInvoker(invocationTarget, value);
         }
 
@@ -458,16 +458,8 @@ namespace BionicCode.Utilities.Net
                 nameof(target),
                 $"Type mismatch. Reason: The instance type {targetType.ToFullyQualifiedSignatureName()} is not assignable to {this.DeclaringTypeData.FullyQualifiedSignature}");
 
-            if (this.IsIndexer)
-            {
-                ValueTypeIndexerPropertySetter<TTarget, TValue> propertySetInvoker = GetStructIndexerSetInvokerInternal<TTarget, TValue>();
-                propertySetInvoker.Invoke(ref target, indexerPropertyIndex!, value);
-            }
-            else
-            {
-                ValueTypeMemberSetter<TTarget, TValue> propertySetInvoker = GetStructSetInvokerInternal<TTarget, TValue>();
-                propertySetInvoker.Invoke(ref target, value);
-            }
+            ValueTypeMemberSetter<TTarget, TValue> propertySetInvoker = GetStructSetInvokerInternal<TTarget, TValue>();
+            propertySetInvoker.Invoke(ref target, value);
         }
 
         /// <summary>
@@ -831,7 +823,7 @@ namespace BionicCode.Utilities.Net
         private Action<object?, object?> GetSetInvokerInternal()
             => this._propertySetInvoker ??= DelegateProvider.CreateSetter(this);
 
-        private PropertySetter<TTarget, TValue> GetSetInvokerInternal<TTarget, TValue>()
+        private PropertySetter<TTarget, TValue> GetSetInvokerInternal<TTarget, TValue>() where TTarget : class
         {
             RuntimeTypeHandle targetTypeHandle = typeof(TTarget).TypeHandle;
             Delegate invoker = this._invokerTable.GetOrAdd(

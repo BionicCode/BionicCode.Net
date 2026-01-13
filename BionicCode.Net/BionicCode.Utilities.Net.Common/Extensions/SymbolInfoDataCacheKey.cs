@@ -32,7 +32,7 @@
         /// <value>The name of the symbol, such as the method name, property name, event name, field name, or type name.</value>
         public readonly string SymbolName { get; }
 
-        private readonly RuntimeMethodHandle _declaringTypeHandle;
+        private readonly RuntimeTypeHandle _declaringTypeHandle;
         /// <summary>
         /// Gets the runtime handle for the type that declares the current member.
         /// </summary>
@@ -40,7 +40,12 @@
         /// be used with reflection APIs that require a RuntimeTypeHandle. The value is typically used for advanced
         /// scenarios involving type metadata or dynamic type operations.</remarks>
         /// <value>The runtime type handle of the declaring type.</value>
-        public readonly System.RuntimeTypeHandle DeclaringTypeHandle { get; }
+        public readonly RuntimeTypeHandle DeclaringTypeHandle
+            => (!this.IsAnonymousSymbolKey && this.SymbolKind.EqualsAny([SymbolKind.MemberProperty, SymbolKind.Parameter, SymbolKind.MemberEvent])) || (this.IsAnonymousSymbolKey && this.SymbolKind != SymbolKind.Type)
+                ? this._declaringTypeHandle
+                : this.IsAnonymousSymbolKey
+                    ? throw new InvalidOperationException($"For anonymous keys, which is when '{nameof(this.IsAnonymousSymbolKey)}' returns TRUE, the property '{nameof(this.SymbolKind)}' must not be {typeof(SymbolKind).FullName}.{nameof(SymbolKind.Type)}'")
+                    : throw new InvalidOperationException($"For non-anonymous keys, which is when '{nameof(this.IsAnonymousSymbolKey)}' returns FALSE, the property '{nameof(this.SymbolKind)}' must be: {typeof(SymbolKind).FullName}.{nameof(SymbolKind.MemberProperty)}', {typeof(SymbolKind).FullName}.{nameof(SymbolKind.Parameter)}', or {typeof(SymbolKind).FullName}.{nameof(SymbolKind.MemberEvent)}'.");
 
         private readonly RuntimeTypeHandle _symbolTypeHandle;
         /// <summary>
@@ -222,24 +227,28 @@
             ParameterizedSymbolKind parameterizedSymbolKind,
             bool isAnonymousSymbolKey)
         {
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
+            ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(symbolKind, [SymbolKind.Undefined], nameof(symbolKind));
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(name, nameof(name));
+
+            this.SymbolKind = symbolKind;
             this.SymbolName = name;
-            this.ParameterMemberName = parameterMemberName;
-            this.DeclaringTypeHandle = declaringTypeHandle;
-            this.SymbolTypeHandle = typeHandle;
-            this.MethodHandle = methodHandle;
-            this.FieldHandle = fieldHandle;
+            this._parameterMemberName = parameterMemberName;
+            this._declaringTypeHandle = declaringTypeHandle;
+            this._symbolTypeHandle = typeHandle;
+            this._methodHandle = methodHandle;
+            this._fieldHandle = fieldHandle;
             //this.GetMethodHandle = getMethodHandle;
             //this.SetMethodHandle = setMethodHandle;
             //this.AddMethodHandle = addMethodHandle;
             //this.RemoveMethodHandle = removeMethodHandle;
-            this.ParameterList = parameterList;
-            this.MethodParameterInfoList = methodParameterInfoList;
-            this.ParameterPosition = parameterPosition;
-            this.ParameterMemberParameterCount = memberParameterCount;
-            this.GenericTypeParameterCount = genericTypeParameterCount;
-            this.SymbolKind = symbolKind;
-            this.ParameterKind = parameterKind;
-            this.ParameterizedMemberKind = parameterizedSymbolKind;
+            this._parameterList = parameterList;
+            this._methodParameterInfoList = methodParameterInfoList;
+            this._parameterPosition = parameterPosition;
+            this._parameterMemberParameterCount = memberParameterCount;
+            this._genericTypeParameterCount = genericTypeParameterCount;
+            this._parameterKind = parameterKind;
+            this._parameterizedMemberKind = parameterizedSymbolKind;
             this.IsAnonymousSymbolKey = isAnonymousSymbolKey;
 
             this._hashCode = ComputeHashCode();

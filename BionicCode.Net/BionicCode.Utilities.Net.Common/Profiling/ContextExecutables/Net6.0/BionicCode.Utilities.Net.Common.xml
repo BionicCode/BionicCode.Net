@@ -1278,25 +1278,24 @@
             </remarks>
             <exception cref="T:System.ArgumentNullException">The parameter <paramref name="methodInfo"/> is <see langword="null"/>.</exception>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Type)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Type,System.Boolean)">
             <summary>
-            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the namespace.
+            Extension method to return a readable full signature including the namespace.
             </summary>
             <param name="type">The <see cref="T:System.Type"/> object to generate the symbol signature for.</param>
             <returns>
-            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
-            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c> and the class name <c>"Task"</c> becomes <c>"public class Task&lt;TResult&gt;"</c>.
+            A readable signature of the symbol, that includes the type, namespace, name and parameters and also resolves generic type parameters. 
+            <br/>For example, <c>"public void MyNamespace.MyClass.DoSomething&lt;T&gt;(T firstValue, [CallerMemberName] string value = null) where T : class"</c>.
             </returns>
             <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1).
-            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Type)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Type)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
-            to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
+            Use <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Type)"/> to replace the generic type names with the runtime type arguments.
+            <br/>Use <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Type)"/> to return the signature without the namespace.
             </remarks>
             <exception cref="T:System.ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Type)">
             <summary>
-            Extension method to convert generic and non-generic type names to a readable runtime signature display name without the namespace and where all generic type parameters are replaced with their resolved runtime type arguments.
+            Extension method to return a readable full signature without the namespace. All generic type parameters are replaced with their resolved runtime type arguments.
             </summary>
             <param name="type">The <see cref="T:System.Type"/> object to generate the symbol signature for.</param>
             <returns>
@@ -1304,9 +1303,8 @@
             <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the class name <c>"Task"</c> becomes <c>"public class Task&lt;int&gt;"</c>.
             </returns>
             <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
-            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Type)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Type)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
-            to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
+            <br/>Use <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureShortName(System.Type)"/> to return the the same runtime signature without the namespace.
+            Use <see cref="!:ToSignatureName(Type)"/> and  <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Type)"/> to return the signature with generic type parameter names.
             </remarks>
             <exception cref="T:System.ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
         </member>
@@ -1472,17 +1470,16 @@
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Type)">
             <summary>
-            Extension method to convert generic and non-generic member names to a readable full signature display genericTypeParameterIdentifier without the symbolNamespace.
+            Extension method to return a readable full signature without the namespace.
             </summary>
             <param name="type">The <see cref="T:System.Type"/> object to generate the symbol signature for.</param>
             <returns>
-            A readable signature of the symbol, that includes the type, name and parameters and also resolves generic type parameters. 
-            <br/>For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;int&gt;"</c> and the class name <c>"Task"</c> becomes <c>"public class Task&lt;int&gt;"</c>.
+            A readable signature of the symbol, that includes the type, name, parameters and generic type parameters. 
+            <br/>For example, <c>"public void MyClass.DoSomething&lt;T&gt;(T firstValue, [CallerMemberName] string value = null) where T : class"</c>.
             </returns>
             <remarks>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
-            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Type)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Type)"/> method shows the defined generic type parameters (and not the runtime generic arguments)
-            to construct the full runtime signature like <c>"public Task&lt;TResult&gt; Task.Run&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func);"</c>.
+            Use <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Type)"/> and <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureShortName(System.Type)"/> to replace the generic type names with the runtime type arguments.
+            <br/>Use <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureShortName(System.Type)"/> to return the signature without the namespace.
             </remarks>
             <exception cref="T:System.ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
         </member>
@@ -1497,7 +1494,7 @@
             </returns>
             <remarks>
             Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>Task.Run&lt;TResult&gt;</c> would return <c>"Task.Run`1"</c>, where the generic type parameters are replaced with a placeholder (e.g. `1). 
-            <br/>Opposed to the counterpart <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureName(System.Type)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Type)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
+            <br/>Opposed to the counterpart <see cref="!:ToSignatureName(Type)"/>, this <see cref="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToRuntimeSignatureName(System.Type)"/> method replaces the generic type parameter placeholder with their resolved runtime arguments 
             to construct the full runtime signature like <c>"public Task&lt;int&gt; Task.Run&lt;int&gt;(Func&lt;Task&lt;int&gt;&gt; func);"</c>.
             </remarks>
             <exception cref="T:System.ArgumentNullException">The parameter <paramref name="type"/> is <see langword="null"/>.</exception>
@@ -1630,6 +1627,212 @@
             </remarks>
             <exception cref="T:System.ArgumentNullException">The parameter <paramref name="eventInfo"/> is <see langword="null"/>.</exception>
         </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureNameInternal(BionicCode.Utilities.Net.PropertyData,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Generates a formatted signature string for the specified property, including modifiers, type, name,
+            accessors, and optional custom attributes.
+            </summary>
+            <remarks>The generated signature reflects the property's access level,
+            static/abstract/virtual/override modifiers, type (with generic arguments if applicable), indexer parameters
+            (if any), and accessor visibility. When isCompact is true or isRuntimeSymbol is true, custom attributes are
+            omitted for brevity or runtime compatibility. Use this method to display or analyze property signatures in
+            code generation, documentation, or tooling scenarios.</remarks>
+            <param name="propertyData">The property metadata to generate the signature for. Must not be null.</param>
+            <param name="isFullyQualifiedName">true to use fully qualified type names in the signature; otherwise, false.</param>
+            <param name="isDeclaringTypeIncluded">true to include the declaring type in the property name; otherwise, false.</param>
+            <param name="isCompact">true to produce a compact signature without custom attributes or extra formatting; otherwise, false.</param>
+            <param name="isRuntimeSymbol">true if the property represents a runtime symbol and should be formatted accordingly; otherwise, false.</param>
+            <returns>A string containing the complete signature of the property, including modifiers, type, name, accessors, and
+            any applicable custom attributes.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureNameInternal(BionicCode.Utilities.Net.EventData,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Generates the signature name string for the specified event, using the provided formatting and inclusion
+            options.
+            </summary>
+            <param name="eventData">The event metadata to use when constructing the signature name. Must not be null.</param>
+            <param name="isFullyQualifiedName">true to include the fully qualified type names in the signature; otherwise, false.</param>
+            <param name="isDeclaringTypeIncluded">true to include the declaring type in the event signature; otherwise, false.</param>
+            <param name="isCompact">true to generate a compact signature without custom attributes; otherwise, false.</param>
+            <param name="isRuntimeSymbol">true if the signature is being generated for a runtime symbol, which affects formatting and attribute
+            inclusion; otherwise, false.</param>
+            <returns>A string representing the formatted signature name of the event, including modifiers, type, and name as
+            specified by the input parameters.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureNameInternal(BionicCode.Utilities.Net.FieldData,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Generates the formatted signature name for a field, including modifiers, type, and name, based on the
+            specified formatting options.
+            </summary>
+            <remarks>This method is intended for internal use when constructing field signature
+            representations for display or analysis. The output format may vary depending on the combination of
+            formatting flags provided.</remarks>
+            <param name="fieldData">The metadata describing the field for which to generate the signature name.</param>
+            <param name="isFullyQualifiedName">true to include the fully qualified type name in the signature; otherwise, false.</param>
+            <param name="isDeclaringTypeIncluded">true to include the declaring type in the field's signature; otherwise, false.</param>
+            <param name="isCompact">true to use a compact format that omits custom attributes and some modifiers; otherwise, false.</param>
+            <param name="isRuntimeSymbol">true if the signature is being generated for a runtime symbol, which may affect formatting; otherwise,
+            false.</param>
+            <returns>A string containing the formatted signature name of the field, including modifiers, type, and name,
+            according to the specified options.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureNameInternal(BionicCode.Utilities.Net.TypeData,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Generates the signature name for a type, including modifiers, attributes, and type parameters, based on the
+            specified formatting options.
+            </summary>
+            <remarks>When generating signatures for delegates, the return type and parameter list are
+            included. For generic types, type parameters and constraints are appended unless compact formatting is
+            requested. Attribute and inheritance information is omitted in compact or runtime symbol mode.</remarks>
+            <param name="typeData">The type metadata used to construct the signature name.</param>
+            <param name="isFullyQualifiedName">true to use fully qualified type names in the signature; otherwise, false.</param>
+            <param name="isCompact">true to produce a compact signature without attributes or inheritance information; otherwise, false.</param>
+            <param name="isRuntimeSymbol">true if the signature is being generated for a runtime symbol; otherwise, false.</param>
+            <returns>A string representing the formatted signature name of the specified type, including modifiers, attributes,
+            and type parameters as determined by the input options.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureNameInternal(BionicCode.Utilities.Net.MethodData,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Generates a formatted method signature string based on the specified method metadata and formatting options.
+            </summary>
+            <remarks>The generated signature reflects the specified formatting options and may include
+            custom attributes, access modifiers, and generic type constraints depending on the provided parameters. This
+            method does not validate the input metadata; callers should ensure that the provided MethodData is
+            valid.</remarks>
+            <param name="methodData">The metadata describing the method for which to generate the signature. Must not be null.</param>
+            <param name="isFullyQualifiedName">true to include fully qualified type names in the signature; otherwise, false.</param>
+            <param name="isDeclaringTypeIncluded">true to include the declaring type in the method signature; otherwise, false.</param>
+            <param name="isCompact">true to generate a compact signature without custom attributes or generic constraints; otherwise, false.</param>
+            <param name="isRuntimeSymbol">true if the signature should be generated for a runtime symbol; otherwise, false.</param>
+            <returns>A string representing the formatted method signature, including modifiers, return type, method name,
+            parameters, and, if applicable, custom attributes and generic constraints.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureNameInternal(BionicCode.Utilities.Net.ConstructorData,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Generates the formatted signature name for a constructor based on the specified formatting options.
+            </summary>
+            <remarks>Custom attributes and certain modifiers are included or omitted in the signature
+            based on the values of isCompact and isRuntimeSymbol. This method is intended for internal use when
+            generating display names for constructors in various contexts.</remarks>
+            <param name="constructorData">The metadata describing the constructor, including its parameters, attributes, and access modifiers.</param>
+            <param name="isFullyQualifiedName">true to include the fully qualified type name in the signature; otherwise, false.</param>
+            <param name="isDeclaringTypeIncluded">true to include the declaring type in the signature; otherwise, false.</param>
+            <param name="isCompact">true to generate a compact signature without custom attributes; otherwise, false.</param>
+            <param name="isRuntimeSymbol">true to format the signature for runtime symbol representation, omitting custom attributes and certain
+            modifiers; otherwise, false.</param>
+            <returns>A string containing the formatted constructor signature according to the specified options.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureComponentsInternal(BionicCode.Utilities.Net.MethodData,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Builds a SymbolComponentInfo representation of a method's signature, including modifiers, return type, name,
+            parameters, and generic type information, based on the specified formatting options.
+            </summary>
+            <remarks>If isCompact is set to true, custom attributes and generic type constraints are
+            omitted from the signature. The method supports both generic and non-generic methods, and can include or
+            exclude the declaring type and fully qualified names as needed.</remarks>
+            <param name="methodData">The metadata describing the method to be represented. Must not be null.</param>
+            <param name="isFullyQualifiedName">true to include fully qualified type names in the signature; otherwise, false.</param>
+            <param name="isDeclaringTypeIncluded">true to include the declaring type in the method signature; otherwise, false.</param>
+            <param name="isCompact">true to produce a compact signature without custom attributes and generic type constraints; otherwise,
+            false.</param>
+            <returns>A SymbolComponentInfo object containing the components of the method's signature as specified by the input
+            parameters.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureComponentsInternal(BionicCode.Utilities.Net.TypeData,System.Boolean,System.Boolean)">
+            <summary>
+            Creates a SymbolComponentInfo instance representing the signature components of the specified type,
+            including modifiers, attributes, and generic parameters as appropriate.
+            </summary>
+            <remarks>When isCompact is false, the returned signature includes access modifiers, custom
+            attributes, and inheritance or generic constraints where applicable. For delegate types, the signature
+            includes parameter and return type information. The method does not validate the input typeData; callers
+            should ensure it represents a valid type.</remarks>
+            <param name="typeData">The type metadata to convert into signature components. Must not be null.</param>
+            <param name="isFullyQualifiedName">true to use fully qualified type names in the signature; otherwise, false to use simple names.</param>
+            <param name="isCompact">true to generate a compact signature with minimal modifiers and attributes; otherwise, false to include full
+            details.</param>
+            <returns>A SymbolComponentInfo object containing the signature components for the specified type, including
+            modifiers, attributes, name, generic parameters, and, for delegates, parameter and return type information.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureComponentsInternal(BionicCode.Utilities.Net.ParameterData,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Creates a SymbolComponentInfo instance representing the signature components of a parameter, including its
+            type, modifiers, and custom attributes, according to the specified formatting options.
+            </summary>
+            <remarks>Custom attributes are included in the signature unless isCompact is set to true. The
+            method applies parameter modifiers such as ref, in, or out as appropriate. If the parameter type is a
+            constructed generic type, its generic type definition is used for display purposes.</remarks>
+            <param name="parameterData">The parameter metadata to convert into signature components. Must not be null.</param>
+            <param name="isFullyQualifiedName">true to use fully qualified type names in the signature; otherwise, false.</param>
+            <param name="isDeclaringTypeIncluded">true to include the declaring type in the signature; otherwise, false.</param>
+            <param name="isCompact">true to produce a compact signature representation that omits custom attributes; otherwise, false.</param>
+            <returns>A SymbolComponentInfo object containing the signature components for the specified parameter, formatted
+            according to the provided options.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureComponentsInternal(BionicCode.Utilities.Net.FieldData,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Creates a SymbolComponentInfo instance representing the signature components of the specified field,
+            including modifiers, attributes, and type information.
+            </summary>
+            <remarks>This method is intended for internal use when constructing field signatures for
+            display or analysis. The output reflects the specified formatting options and may omit certain attributes or
+            components based on the provided parameters.</remarks>
+            <param name="fieldData">The field metadata to extract signature components from. Must not be null.</param>
+            <param name="isFullyQualifiedName">true to include the fully qualified name of the field; otherwise, false to use the simple name.</param>
+            <param name="isDeclaringTypeIncluded">true to include the declaring type in the field's signature; otherwise, false.</param>
+            <param name="isCompact">true to produce a compact signature that omits custom attributes; otherwise, false to include all relevant
+            attributes.</param>
+            <returns>A SymbolComponentInfo object containing the signature components of the field, such as modifiers, type, and
+            name.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureComponentsInternal(BionicCode.Utilities.Net.EventData,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Creates a SymbolComponentInfo instance representing the signature components of the specified event,
+            including modifiers, attributes, and event type information.
+            </summary>
+            <remarks>This method is intended for internal use when constructing event signatures for
+            display or analysis. The output reflects the specified formatting options and may exclude certain attributes
+            or modifiers based on the provided parameters.</remarks>
+            <param name="eventData">The event metadata to extract signature components from. Must not be null.</param>
+            <param name="isFullyQualifiedName">true to include the fully qualified name of the event in the signature; otherwise, false.</param>
+            <param name="isDeclaringTypeIncluded">true to include the declaring type in the event's signature; otherwise, false.</param>
+            <param name="isCompact">true to produce a compact signature that omits custom attributes; otherwise, false.</param>
+            <returns>A SymbolComponentInfo object containing the signature components of the event, including modifiers, event
+            type, and name.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureComponentsInternal(BionicCode.Utilities.Net.PropertyData,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Builds a SymbolComponentInfo representation of a property signature based on the specified property metadata
+            and formatting options.
+            </summary>
+            <remarks>This method is intended for internal use when constructing property signatures for
+            display or analysis purposes. The output reflects the specified formatting options and may differ depending
+            on the property type (e.g., indexer vs. regular property) and the presence of custom attributes or
+            modifiers.</remarks>
+            <param name="propertyData">The metadata describing the property, including its type, access modifiers, attributes, and accessor
+            information. Cannot be null.</param>
+            <param name="isFullyQualifiedName">true to include the property's fully qualified name in the signature; otherwise, false.</param>
+            <param name="isDeclaringTypeIncluded">true to include the declaring type in the property's signature; otherwise, false.</param>
+            <param name="isCompact">true to generate a compact signature that omits custom attributes; otherwise, false.</param>
+            <returns>A SymbolComponentInfo object containing the components of the property's signature, including modifiers,
+            return type, name, parameters (for indexers), and accessor information.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToSignatureComponentsInternal(BionicCode.Utilities.Net.ConstructorData,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Creates a SymbolComponentInfo instance representing the signature components of a constructor, based on the
+            specified formatting and inclusion options.
+            </summary>
+            <remarks>When isCompact is set to true, custom attributes are excluded from the signature. The
+            isFullyQualifiedName and isDeclaringTypeIncluded parameters control the level of detail included in the
+            constructor's name within the signature.</remarks>
+            <param name="constructorData">The metadata describing the constructor, including its attributes, access modifier, parameters, and other
+            relevant information.</param>
+            <param name="isFullyQualifiedName">true to include the fully qualified name of the constructor in the signature; otherwise, false.</param>
+            <param name="isDeclaringTypeIncluded">true to include the declaring type in the constructor's signature; otherwise, false.</param>
+            <param name="isCompact">true to generate a compact signature that omits custom attributes; otherwise, false to include custom
+            attributes in the signature.</param>
+            <returns>A SymbolComponentInfo object containing the formatted signature components of the specified constructor.</returns>
+        </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetAccessModifier(System.Type)">
             <summary>
             Gets the access modifier for <see cref="T:System.Reflection.MemberInfo"/> symbolAttributes like <see cref="T:System.Type"/>, <see cref="T:System.Reflection.MethodInfo"/>, <see cref="T:System.Reflection.ConstructorInfo"/>, <see cref="T:System.Reflection.PropertyInfo"/>, <see cref="T:System.Reflection.EventInfo"/> or <see cref="T:System.Reflection.FieldInfo"/>.
@@ -1708,7 +1911,7 @@
             </remarks>
             <exception cref="T:System.ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayName(System.Type,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToDisplayName(System.Type)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
             </summary>
@@ -1799,7 +2002,7 @@
             <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
             </remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Type,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Type)">
             <summary>
             Extension method to convert generic and non-generic type name to a readable fully qualified display name.
             </summary>
@@ -1812,7 +2015,7 @@
             <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
             </remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.MethodInfo,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.MethodInfo)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
             </summary>
@@ -1825,7 +2028,7 @@
             <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
             </remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.ConstructorInfo,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.ConstructorInfo)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
             </summary>
@@ -1838,7 +2041,20 @@
             <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
             </remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.PropertyInfo,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.PropertyInfo)">
+            <summary>
+            Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbol Namespace.
+            </summary>
+            <returns>
+            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
+            </returns>
+            <remarks>
+            <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
+            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
+            <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
+            </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.FieldInfo)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
             </summary>
@@ -1851,20 +2067,7 @@
             <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
             </remarks>
         </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.FieldInfo,System.Boolean)">
-            <summary>
-            Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
-            </summary>
-            <returns>
-            A readable genericTypeParameterIdentifier of valueType members, especially generic members. For example, <c>"Task.Run`1"</c> becomes <c>"Task.Run&lt;TResult&gt;"</c>.
-            </returns>
-            <remarks>
-            <para>Because <see cref="T:System.Type"/> derives from <see cref="T:System.Reflection.MemberInfo"/> this extension method also works on <see cref="T:System.Type"/>.</para>
-            Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
-            <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"Task.Run&lt;TResult&gt;"</c>.
-            </remarks>
-        </member>
-        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.EventInfo,System.Boolean)">
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToFullDisplayName(System.Reflection.EventInfo)">
             <summary>
             Extension method to convert generic and non-generic member names to a readable display genericTypeParameterIdentifier without the symbolNamespace.
             </summary>
@@ -1890,6 +2093,98 @@
             Usually <see cref="P:System.Reflection.MemberInfo.Name"/> for generic members like <c>"Task.Run&lt;TResult&gt;"</c> would return <c>"Task.Run`1"</c>. 
             <br/>This helper unwraps the generic valueType parameters to construct the full valueType genericTypeParameterIdentifier like <c>"System.Threading.Tasks.Task.Run&lt;TResult&gt;"</c>.
             </remarks>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.AppendDisplayName(System.Text.StringBuilder,System.Type,System.Boolean)">
+            <summary>
+            Appends a human-readable display name for the specified type to the provided StringBuilder instance.
+            </summary>
+            <remarks>The display name includes type information in a format suitable for display in user
+            interfaces or logs. If the type is a generic type and isGenericTypeParameterIncluded is true, the generic
+            type parameters are included in the display name.</remarks>
+            <param name="nameBuilder">The StringBuilder to which the display name of the type will be appended. Cannot be null.</param>
+            <param name="type">The type whose display name is to be appended. Cannot be null.</param>
+            <param name="isGenericTypeParameterIncluded">true to include generic type parameter names in the display name; otherwise, false. The default is true.</param>
+            <returns>The StringBuilder instance with the appended display name.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.AppendDisplayName(System.Text.StringBuilder,System.Reflection.MethodInfo,System.Boolean)">
+            <summary>
+            Appends a display-friendly name for the specified method to the provided StringBuilder instance.
+            </summary>
+            <remarks>This method is useful for generating human-readable representations of method
+            signatures, such as for logging or diagnostic purposes. The format of the display name may vary depending on
+            the method's characteristics and the value of isDeclaringTypeIncluded.</remarks>
+            <param name="nameBuilder">The StringBuilder to which the display name of the method will be appended. Cannot be null.</param>
+            <param name="methodInfo">The MethodInfo representing the method whose display name is to be appended. Cannot be null.</param>
+            <param name="isDeclaringTypeIncluded">true to include the declaring type in the display name; otherwise, false. The default is false.</param>
+            <returns>The StringBuilder instance with the method's display name appended.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.AppendDisplayName(System.Text.StringBuilder,System.Reflection.EventInfo,System.Boolean)">
+            <summary>
+            Appends a display-friendly name for the specified event to the provided StringBuilder instance.
+            </summary>
+            <remarks>This method does not clear or reset the contents of the StringBuilder. It appends the
+            event's display name to the existing content. The format of the display name may include the declaring type
+            if isDeclaringTypeIncluded is set to true.</remarks>
+            <param name="nameBuilder">The StringBuilder to which the event's display name will be appended. Cannot be null.</param>
+            <param name="eventInfo">The EventInfo representing the event whose display name is to be appended. Cannot be null.</param>
+            <param name="isDeclaringTypeIncluded">true to include the declaring type in the display name; otherwise, false. The default is false.</param>
+            <returns>The same StringBuilder instance provided in nameBuilder, with the event's display name appended.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.AppendDisplayName(System.Text.StringBuilder,System.Reflection.ConstructorInfo,System.Boolean)">
+            <summary>
+            Appends the display name of the specified constructor to the provided StringBuilder instance.
+            </summary>
+            <remarks>The display name includes the constructor's signature and, optionally, the declaring
+            type if specified. This method does not clear or reset the StringBuilder; it appends to its existing
+            content.</remarks>
+            <param name="nameBuilder">The StringBuilder to which the constructor's display name will be appended. Cannot be null.</param>
+            <param name="constructorInfo">The ConstructorInfo representing the constructor whose display name is to be appended. Cannot be null.</param>
+            <param name="isDeclaringTypeIncluded">true to include the declaring type in the display name; otherwise, false. The default is false.</param>
+            <returns>The StringBuilder instance with the constructor's display name appended.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.AppendDisplayName(System.Text.StringBuilder,System.Reflection.PropertyInfo,System.Boolean)">
+            <summary>
+            Appends a display-friendly name for the specified property to the provided StringBuilder instance.
+            </summary>
+            <remarks>This method is useful for generating human-readable representations of property
+            names, such as for logging or UI display. The format of the display name may vary depending on whether the
+            declaring type is included.</remarks>
+            <param name="nameBuilder">The StringBuilder to which the property's display name will be appended. Cannot be null.</param>
+            <param name="propertyInfo">The PropertyInfo representing the property whose display name is to be appended. Cannot be null.</param>
+            <param name="isDeclaringTypeIncluded">true to include the declaring type in the display name; otherwise, false. The default is false.</param>
+            <returns>The same StringBuilder instance provided in nameBuilder, with the property's display name appended.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.AppendDisplayName(System.Text.StringBuilder,System.Reflection.ParameterInfo)">
+            <summary>
+            Appends a display-friendly name for the specified parameter to the provided StringBuilder instance.
+            </summary>
+            <param name="nameBuilder">The StringBuilder to which the display name will be appended. Cannot be null.</param>
+            <param name="parameterInfo">The ParameterInfo representing the parameter whose display name is to be appended. Cannot be null.</param>
+            <returns>The same StringBuilder instance with the display name of the parameter appended.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.AppendDisplayName(System.Text.StringBuilder,System.Reflection.FieldInfo,System.Boolean)">
+            <summary>
+            Appends the display name of the specified field to the provided StringBuilder instance.
+            </summary>
+            <remarks>The display name includes the field's name and, optionally, its declaring type if
+            isDeclaringTypeIncluded is set to true. This method does not clear or reset the StringBuilder; it appends to
+            its existing content.</remarks>
+            <param name="nameBuilder">The StringBuilder to which the display name will be appended. Cannot be null.</param>
+            <param name="fieldInfo">The FieldInfo representing the field whose display name is to be appended. Cannot be null.</param>
+            <param name="isDeclaringTypeIncluded">true to include the declaring type in the display name; otherwise, false. The default is false.</param>
+            <returns>The same StringBuilder instance with the field's display name appended.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.AppendFullDisplayName(System.Text.StringBuilder,System.Type,System.Boolean)">
+            <summary>
+            Appends the fully qualified display name of the specified type to the provided StringBuilder instance.
+            </summary>
+            <remarks>This method appends the namespace and type name, including generic type parameters if
+            specified, to the end of the provided StringBuilder. The method does not clear or modify the existing
+            contents of the StringBuilder except to append the type's display name.</remarks>
+            <param name="nameBuilder">The StringBuilder to which the fully qualified display name will be appended. Cannot be null.</param>
+            <param name="type">The type whose fully qualified display name is to be appended. Cannot be null.</param>
+            <param name="isGenericTypeParameterIncluded">true to include generic type parameter names in the display name; otherwise, false. The default is true.</param>
+            <returns>The StringBuilder instance with the fully qualified display name of the specified type appended.</returns>
         </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.IsAwaitable(System.Reflection.MethodInfo)">
             <summary>
@@ -1964,6 +2259,128 @@
             <param genericTypeParameterIdentifier="typeToExtend">The <see cref="T:System.Type"/> the <paramref genericTypeParameterIdentifier="methodInfo"/> is expected to extend.</param>
             <returns><see langword="true"/> if the <paramref genericTypeParameterIdentifier="methodInfo"/> is an extension method for <paramref genericTypeParameterIdentifier="typeToExtend"/>. Otherwise <see langword="false"/>.</returns>
         </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.IsReadOnlyStruct(System.Type)">
+            <summary>
+            Determines whether the specified type is a read-only struct.
+            </summary>
+            <param name="type">The type to evaluate. Cannot be null.</param>
+            <returns>true if the specified type is a read-only struct; otherwise, false.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetAttributesInternal(BionicCode.Utilities.Net.TypeData)">
+            <summary>
+            Determines the symbol attributes for the specified type represented by the given TypeData instance.
+            </summary>
+            <remarks>The returned SymbolAttributes value may include multiple flags combined using a
+            bitwise OR to represent all applicable characteristics of the type. This method does not perform validation
+            on the input; callers should ensure that typeData is valid and represents a supported type.</remarks>
+            <param name="typeData">The TypeData instance representing the type for which to retrieve symbol attributes. Cannot be null.</param>
+            <returns>A SymbolAttributes value that describes the kind and characteristics of the specified type, such as whether
+            it is a class, struct, interface, enum, delegate, generic, static, abstract, or final. Returns
+            SymbolAttributes.Undefined if the type does not match any recognized category.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetAttributesInternal(BionicCode.Utilities.Net.PropertyData)">
+            <summary>
+            Determines the set of symbol attributes for the specified property based on its metadata and accessor
+            methods.
+            </summary>
+            <param name="propertyData">The metadata describing the property for which to retrieve symbol attributes. Cannot be null.</param>
+            <returns>A bitwise combination of SymbolAttributes values that represent the characteristics of the property, such as
+            whether it is static, abstract, virtual, an indexer, or has other modifiers.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetAttributesInternal(BionicCode.Utilities.Net.FieldData)">
+            <summary>
+            Determines the set of symbol attributes for the specified field based on its metadata and characteristics.
+            </summary>
+            <remarks>The returned attributes reflect the field's characteristics, including whether it is
+            static, constant, read-only, or by-reference. This method is intended for internal use when mapping field
+            metadata to symbol attributes.</remarks>
+            <param name="fieldData">The field metadata used to evaluate and construct the corresponding symbol attributes.</param>
+            <returns>A bitwise combination of <see cref="T:BionicCode.Utilities.Net.SymbolAttributes"/> values that represent the attributes of the field,
+            such as static, constant, or by-reference.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetAttributesInternal(BionicCode.Utilities.Net.ParameterData)">
+            <summary>
+            Determines the set of symbol attributes for a parameter based on its metadata.
+            </summary>
+            <param name="parameterData">The metadata describing the parameter, including its direction and optionality.</param>
+            <returns>A bitwise combination of SymbolAttributes flags that represent the parameter's characteristics, such as In,
+            Out, Ref, and Optional.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetAttributesInternal(BionicCode.Utilities.Net.MethodData)">
+            <summary>
+            Determines the set of symbol attributes for the specified method based on its metadata and characteristics.
+            </summary>
+            <param name="methodData">The method metadata used to evaluate and determine the applicable symbol attributes.</param>
+            <returns>A bitwise combination of SymbolAttributes values that describe the method's characteristics, such as whether
+            it is static, abstract, virtual, final, override, or generic.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetAttributesInternal(BionicCode.Utilities.Net.ConstructorData)">
+            <summary>
+            Determines the symbol attributes for a constructor based on the specified constructor data.
+            </summary>
+            <param name="constructorData">The data describing the constructor, including whether it is static.</param>
+            <returns>A combination of symbol attributes representing the constructor's characteristics. Includes the static
+            attribute if the constructor is static.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.GetAttributesInternal(BionicCode.Utilities.Net.EventData)">
+            <summary>
+            Determines the set of symbol attributes for the specified event based on its add method characteristics.
+            </summary>
+            <param name="eventData">The event metadata used to evaluate and derive the corresponding symbol attributes.</param>
+            <returns>A bitwise combination of SymbolAttributes values that represent the attributes of the event, such as Final,
+            Abstract, Static, Virtual, or Override.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToHtmlEncodedString(System.String)">
+            <summary>
+            Converts the specified string to an HTML-encoded representation suitable for display in web pages.
+            </summary>
+            <remarks>This method replaces special characters such as ampersands, angle brackets, quotes,
+            apostrophes, spaces, and newlines with their corresponding HTML entities. Use this method to prevent HTML
+            injection when rendering user-supplied text in HTML content.</remarks>
+            <param name="text">The input string to encode. Can be null or empty.</param>
+            <returns>A string containing the HTML-encoded representation of the input. If the input is null, returns null.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToHtmlEncodedReadOnlySpan(System.String)">
+            <summary>
+            Returns a read-only span containing the HTML-encoded representation of the specified string.
+            </summary>
+            <param name="text">The input string to encode as HTML. Can be null or empty.</param>
+            <returns>A read-only span of characters containing the HTML-encoded form of the input string. If the input is null or
+            empty, the returned span will be empty.</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToHtmlEncodedString(System.Char)" -->
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToHtmlEncodedReadOnlySpan(System.Char)">
+            <summary>
+            Returns a read-only span containing the HTML-encoded representation of the specified character.
+            </summary>
+            <param name="character">The character to encode as HTML.</param>
+            <returns>A read-only span of characters containing the HTML-encoded form of the input character. If the character
+            does not require encoding, the span contains the original character.</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:BionicCode.Utilities.Net.HelperExtensionsCommon.ToWrappingHtml(System.String,BionicCode.Utilities.Net.WrapStyle,System.Char[])" -->
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.AppendInlineHtml(BionicCode.Utilities.Net.PooledStringBuilder,BionicCode.Utilities.Net.SymbolComponentInfo)">
+            <summary>
+            Appends an HTML-formatted representation of the specified symbol component, including attributes, modifiers,
+            type, name, parameters, and constraints, to the provided string builder.
+            </summary>
+            <remarks>The generated HTML includes semantic CSS classes for syntax highlighting and is
+            intended for use in documentation or code display scenarios. The method does not encode user-provided
+            values; callers should ensure that all symbol component data is safe for HTML output.</remarks>
+            <param name="signatureBuilder">The string builder to which the HTML-formatted symbol signature will be appended.</param>
+            <param name="symbolComponentInfo">The symbol component information describing the structure and metadata to render as inline HTML.</param>
+            <returns>The same <see cref="T:BionicCode.Utilities.Net.PooledStringBuilder"/> instance with the appended HTML-formatted symbol signature.</returns>
+        </member>
+        <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.IsAssignable(System.Delegate,System.Reflection.EventInfo)">
+            <summary>
+            Determines whether the specified delegate is compatible with the signature of the given event.
+            </summary>
+            <remarks>This method checks whether the delegate can be used as an event handler for the
+            specified event by comparing the parameter types of the delegate's method and the event's handler type.
+            Parameter types must match in number and be assignable according to .NET type compatibility rules.</remarks>
+            <param name="clientHandler">The delegate to test for compatibility with the event's handler signature.</param>
+            <param name="eventInfo">The event whose handler signature is used for compatibility comparison. Cannot be null.</param>
+            <returns>true if the delegate's method parameters are assignable to the event handler's parameters; otherwise, false.</returns>
+        </member>
         <member name="M:BionicCode.Utilities.Net.HelperExtensionsCommon.HasReachedEnd(System.IO.Stream)">
             <summary>
             Return whether the end of a <see cref="T:System.IO.Stream"/> is reached.
@@ -2008,51 +2425,103 @@
             Zero-based index of the parameter in the formal parameter list.
             </summary>
         </member>
+        <member name="P:BionicCode.Utilities.Net.SymbolInfoData.FullyQualifiedDisplayName">
+            <summary>
+            Symbol name with namespace, the declaring type (in case of a member), and generic type parameters.
+            </summary>
+            <value>The fully qualified name of the symbol.
+            <br/>For example, amethod name: <c>"MyNamespace.MyClass.DoSomething&lt;T&gt;"</c>.</value>
+        </member>
         <member name="P:BionicCode.Utilities.Net.SymbolInfoData.DisplayName">
             <summary>
-            EventName without namespace, but with the declaring type (in case of a member), and generic type parameters.
+            Symbol name without namespace, but with the declaring type (in case of a member), and generic type parameters.
             </summary>
+            <value>The full name of the symbol.
+            <br/>For example, a method name: <c>"MyClass.DoSomething&lt;T&gt;"</c>.</value>
         </member>
         <member name="P:BionicCode.Utilities.Net.SymbolInfoData.ShortDisplayName">
             <summary>
-            EventName without namespace and the declaring type (in case of a member), but <see langword="with"/>generic type parameters.
+            Symbol name without namespace and the declaring type (in case of a member), but with generic type parameters.
             </summary>
-        </member>
-        <member name="P:BionicCode.Utilities.Net.SymbolInfoData.FullyQualifiedDisplayName">
-            <summary>
-            EventName with namespace, the declaring type (in case of a member), and generic type parameters.
-            </summary>
+            <value>The short name of the symbol.
+            <br/>For example, a method name: <c>"DoSomething;T&gt;"</c>.</value>
         </member>
         <member name="P:BionicCode.Utilities.Net.SymbolInfoData.FullyQualifiedSignature">
             <summary>
             Signature including the namespace, the declaring type (in case of a member), attributes, generic type parameters and generic type parameter constraints.
             </summary>
+            <value>The fully qualified signature of the symbol.
+            <br/>For example, a method signature: <c>"public void MyNamespace.MyClass.DoSomething&lt;T&gt;(T firstValue, [CallerMemberName] string value = null) where T : struct"</c>.</value>
         </member>
         <member name="P:BionicCode.Utilities.Net.SymbolInfoData.Signature">
             <summary>
             Signature without namespace, but with the declaring type (in case of a member), attributes, generic type parameters and generic type parameter constraints.
             </summary>
+            <value>The full signature of the symbol.
+            <br/>For example, a method signature: <c>"public void MyClass.DoSomething&lt;T&gt;(T firstValue, [CallerMemberName] string value = null) where T : struct"</c>.</value>
         </member>
         <member name="P:BionicCode.Utilities.Net.SymbolInfoData.ShortSignature">
             <summary>
             Signature without namespace and the declaring type (in case of a member), but with attributes, generic type parameters and generic type parameter constraints.
             </summary>
+            <value>The shortened signature of the symbol.
+            <br/>For example, a method signature: <c>"public void DoSomething&lt;T&gt;(T firstValue, [CallerMemberName] string value = null) where T : struct"</c>.</value>
         </member>
         <member name="P:BionicCode.Utilities.Net.SymbolInfoData.ShortCompactSignature">
             <summary>
-            Signature without namespace and the declaring type (in case of a member), attributes and generic type parameter constraints, but with generic type parameters.
+            Signature without namespace, the declaring type (in case of a member), attributes and generic type parameter constraints, but with generic type parameters.
             </summary>
+            <value>The compacted short signature of the symbol.
+            <br/>For example, a method signature: <c>"public void DoSomething&lt;T&gt;(T firstValue, string value = null)"</c>.</value>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.SymbolInfoData.FullyQualifiedRuntimeSignature">
+            <summary>
+            Signature with namespace, the declaring type (in case of a member), attributes and generic type parameter constraints and with the resolved runtime generic type argument names.
+            <br/>This returns the constructed runtime signature for generic symbols where generic type parameters are replaced by their actual constructed runtime type arguments. For example, <c>Action&lt;T&gt;</c> becomes <c>Action&lt;int&gt;</c>.
+            </summary>
+            <value>The fully qualified runtime signature of the symbol.
+            <br/>For example: <c>"public void MyNamespace.MyClass.DoSomething&lt;int&gt;(int firstValue, [CallerMemberName] string value = null) where T : struct"</c>.</value>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.SymbolInfoData.RuntimeSignature">
+            <summary>
+            Signature without namespace but with the declaring type (in case of a member), attributes and generic type parameter constraints and with the resolved runtime generic type argument names.
+            <br/>This returns the constructed runtime signature for generic symbols where generic type parameters are replaced by their actual constructed runtime type arguments. For example, <c>Action&lt;T&gt;</c> becomes <c>Action&lt;int&gt;</c>.
+            </summary>
+            <value>The full runtime signature of the symbol.
+            <br/>For example, a method signature: <c>"public void MyClass.DoSomething&lt;int&gt;(int firstValue, [CallerMemberName] string value = null) where T : struct"</c>.</value>
         </member>
         <member name="P:BionicCode.Utilities.Net.SymbolInfoData.RuntimeShortSignature">
             <summary>
-            Signature without namespace and the declaring type (in case of a member), attributes and generic type parameter constraints, but with generic type parameters.
+            Signature without namespace and the declaring type (in case of a member) but with attributes and generic type parameter constraints and with the resolved runtime generic type argument names.
             <br/>This returns the constructed runtime signature for generic symbols where generic type parameters are replaced by their actual constructed runtime types (<c>Action&lt;T&gt;</c> becomes <c>Action&lt;int&gt;</c>)
             </summary>
+            <value>The shortened runtime signature of the symbol.
+            <br/>For example, a method signature: <c>"public void DoSomething&lt;int&gt;(int firstValue, [CallerMemberName] string value = null) where T : struct"</c>.</value>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.SymbolInfoData.RuntimeShortCompactSignature">
+            <summary>
+            Signature without namespace, the declaring type (in case of a member), attributes and generic type parameter constraints, but with the resolved runtime generic type argument names.
+            <br/>This returns the constructed runtime signature for generic symbols where generic type parameters are replaced by their actual constructed runtime types (<c>Action&lt;T&gt;</c> becomes <c>Action&lt;int&gt;</c>)
+            </summary>
+            <value>The compacted short runtime signature of the symbol.
+            <br/>For example, a method signature: <c>"public void DoSomething&lt;int&gt;(int firstValue, string value = null)"</c>.</value>
         </member>
         <member name="P:BionicCode.Utilities.Net.SymbolInfoData.SymbolComponentInfo">
             <summary>
             The individual components that make the signature.
             </summary>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.SymbolInfoData.Indentation">
+            <summary>
+            Gets or sets the number of spaces to use for each indentation level when formatting the symnbol signatures.
+            </summary>
+            <value>The number of spaces to indent a line. The default is <code>4</code>.</value>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.SymbolInfoData.IndentationString">
+            <summary>
+            Gets the string used to represent a single level of indentation.
+            </summary>
+            <value>The spaces to indent a line based on the <see cref="P:BionicCode.Utilities.Net.SymbolInfoData.Indentation"/> property.</value>
         </member>
         <member name="M:BionicCode.Utilities.Net.SymbolReflectionInfoCache.CreateTypeSymbolCacheKey(System.RuntimeTypeHandle)">
             <summary>
@@ -4225,6 +4694,28 @@
             <summary>
             Raises the <see cref="E:BionicCode.Utilities.Net.IAsyncRelayCommandCore.Executed"/> event.
             </summary>
+        </member>
+        <member name="T:BionicCode.Utilities.Net.SymbolComponentInfo">
+            <summary>
+            Represents a component of a symbol, such as a type, member, parameter, or attribute, including its modifiers,
+            generic parameters, attributes, and related metadata.
+            </summary>
+            <remarks>This class is used to model the structure and metadata of code symbols for analysis or code
+            generation scenarios. It provides access to modifiers, generic type parameters and constraints, custom
+            attributes, parameters, and other symbol characteristics. Instances of this class are typically constructed and
+            populated as part of a larger symbol processing workflow.</remarks>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.SymbolComponentInfo.Indentation">
+            <summary>
+            Gets or sets the number of spaces to use for each indentation level when formatting the symnbol signatures.
+            </summary>
+            <value>The number of spaces to indent a line. The default is <code>4</code>.</value>
+        </member>
+        <member name="P:BionicCode.Utilities.Net.SymbolComponentInfo.IndentationString">
+            <summary>
+            Gets the string used to represent a single level of indentation.
+            </summary>
+            <value>The spaces to indent a line based on the <see cref="P:BionicCode.Utilities.Net.SymbolComponentInfo.Indentation"/> property.</value>
         </member>
         <member name="M:BionicCode.Utilities.Net.Inch.GetHashCode">
             <inheritdoc/>

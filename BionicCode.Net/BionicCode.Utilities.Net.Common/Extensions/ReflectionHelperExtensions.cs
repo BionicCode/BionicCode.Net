@@ -1505,8 +1505,8 @@
                 object defaultValue = parameterData.DefaultValue;
                 _ = defaultValue switch
                 {
-                    string stringValue => nameBuilder.Append($"""{stringValue}"""),
-                    char charValue => nameBuilder.Append($"'{charValue}'"),
+                    string stringValue => nameBuilder.Append(CultureInfo.InvariantCulture, $"""{stringValue}"""),
+                    char charValue => nameBuilder.Append(CultureInfo.InvariantCulture, $"'{charValue}'"),
                     null => nameBuilder.Append("null"),
                     bool boolValue => nameBuilder.Append(boolValue ? "true" : "false"),
                     _ => nameBuilder.Append(defaultValue.ToString()),

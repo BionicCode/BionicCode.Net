@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -43,7 +44,7 @@
 
         public async Task LogAsync(ProfiledTypeResultCollection typeResults, CancellationToken cancellationToken)
         {
-            PooledStringBuilder htmlTypeNavigationIndexBuilder = StringBuilderFactory.GetOrCreate();
+            using PooledStringBuilder htmlTypeNavigationIndexBuilder = StringBuilderFactory.GetOrCreate();
             var documentBuilderInfoMap = new Dictionary<ProfilerBatchResultGroupCollection, IEnumerable<HtmlDocumentBuilderInfo>>();
             foreach (ProfilerBatchResultGroupCollection batchResultGroups in typeResults)
             {
@@ -62,7 +63,7 @@
 
                 documentBuilderInfoMap.Add(batchResultGroups, htmlDocumentBuilderInfos);
                 string indexPageNameOfCurrentType = htmlDocumentBuilderInfos.First().FileName;
-                _ = htmlTypeNavigationIndexBuilder.AppendLine($@"<li><a class=""dropdown-item {{0}}"" {{1}} href=""{indexPageNameOfCurrentType}"">{batchResultGroups.ProfiledTypeData.ShortCompactSignature.ToHtmlEncodedString()}</a></li>");
+                _ = htmlTypeNavigationIndexBuilder.AppendLine(CultureInfo.InvariantCulture, $@"<li><a class=""dropdown-item {{0}}"" {{1}} href=""{indexPageNameOfCurrentType}"">{batchResultGroups.ProfiledTypeData.ShortCompactSignature.ToHtmlEncodedString()}</a></li>");
             }
 
             string htmlTypeNavigationIndexTemplate = htmlTypeNavigationIndexBuilder.ToString();
@@ -125,8 +126,6 @@
             string indexFilePath = htmlFilePaths.First();
             var startInfo = new ProcessStartInfo(indexFilePath) { UseShellExecute = true };
             _ = Process.Start(startInfo);
-
-            StringBuilderFactory.Recycle(htmlTypeNavigationIndexBuilder);
         }
 
         private async Task<IEnumerable<HtmlDocumentBuilderInfo>> CreateHtmlDocumentsAsync(ProfilerBatchResultGroupCollection batchResultGroups, CancellationToken cancellationToken)
@@ -134,7 +133,7 @@
             var filePaths = new List<string>();
             var runningTasks = new List<Task<ChartTableCollection>>();
             var htmlDocumentBuilderValues = new Dictionary<ProfilerBatchResultGroup, HtmlDocumentBuilderInfo>();
-            PooledStringBuilder htmlTypeMemberNavigationIndexBuilder = StringBuilderFactory.GetOrCreate();
+            using PooledStringBuilder htmlTypeMemberNavigationIndexBuilder = StringBuilderFactory.GetOrCreate();
             var chartDataConverter = new GoogleChartsDataConverter();
 
             string scriptCode = await GetEncodedJavaScriptCodeTextAsync();
@@ -149,7 +148,7 @@
 
                 DateTime timeStamp = DateTime.Now;
                 string htmlFileName = $"profiler_result_{timeStamp.ToString("MM-dd-yyyy_hhmmss.fffffff")}.html";
-                _ = htmlTypeMemberNavigationIndexBuilder.AppendLine($@"<li><a class=""dropdown-item {{0}}"" style=""white-space: pre-wrap; "" {{1}} href=""{htmlFileName}"">{batchResultGroup.TargetShortCompactSignature.ToHtmlEncodedString()}</a></li>");
+                _ = htmlTypeMemberNavigationIndexBuilder.AppendLine(CultureInfo.InvariantCulture, $@"<li><a class=""dropdown-item {{0}}"" style=""white-space: pre-wrap; "" {{1}} href=""{htmlFileName}"">{batchResultGroup.TargetShortCompactSignature.ToHtmlEncodedString()}</a></li>");
                 string htmlSourceCodeTemplate = await GetEncodedHtmlCodeTextAsync();
                 string pageTitle = $"{batchResultGroup.TargetName.ToHtmlEncodedString().ToWrappingHtml(WrapStyle.Casing, '.', '<', '>', '&', ':', '(', '[')} {batchResultGroup.TargetType.ToDisplayStringValue(toUpperCase: true, toBaseType: true)}";
                 string inPageNavigationHtmlElements = CreateHtmlInPageNavigationElements(batchResultGroup);
@@ -197,8 +196,6 @@
                 htmlDocumentBuilderInfo.ScriptCode = finalScriptCode;
             }
 
-            StringBuilderFactory.Recycle(htmlTypeMemberNavigationIndexBuilder);
-
             return htmlDocumentBuilderValues.Values.ToList();
         }
 
@@ -243,7 +240,7 @@
                 return string.Empty;
             }
 
-            PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
+            using PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
             foreach (ProfilerBatchResult result in profilerBatchResultGroup)
             {
                 _ = htmlDocumentBuilder
@@ -251,14 +248,13 @@
             }
 
             string htmlDocumentContent = htmlDocumentBuilder.ToString();
-            StringBuilderFactory.Recycle(htmlDocumentBuilder);
 
             return htmlDocumentContent;
         }
 
         private string CreateHtmlInPageFooterElements(ProfilerBatchResultGroup profilerBatchResultGroup)
         {
-            PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
+            using PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
             foreach (ProfilerBatchResult result in profilerBatchResultGroup)
             {
                 _ = htmlDocumentBuilder
@@ -266,7 +262,6 @@
             }
 
             string htmlDocumentContent = htmlDocumentBuilder.ToString();
-            StringBuilderFactory.Recycle(htmlDocumentBuilder);
 
             return htmlDocumentContent;
         }
@@ -283,14 +278,14 @@
 
         private async Task<string> CreateHtmlTableAsync(ProfilerBatchResultGroup batchResultGroup, CancellationToken cancellationToken)
         {
-            PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
+            using PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
             EnvironmentInfo environmentInfo = await Environment.GetEnvironmentInfoAsync();
 
             foreach (ProfilerBatchResult batchResult in batchResultGroup)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                _ = htmlDocumentBuilder.Append($@"
+                _ = htmlDocumentBuilder.Append(CultureInfo.InvariantCulture, $@"
     <article id=""{batchResult.Index}"" style=""padding-top: 48px;"">
       <div style=""margin: 12px 0px 24px 0px; width: 100%; display: grid; grid-template-columns: auto auto; overflow: auto;"">
         
@@ -330,7 +325,7 @@
                 int resultIndex = 0;
                 foreach (ProfilerResult result in batchResult.Results)
                 {
-                    _ = htmlDocumentBuilder.Append($@"
+                    _ = htmlDocumentBuilder.Append(CultureInfo.InvariantCulture, $@"
               <tr class=""data-row"">
                 <td class=""row-data"">{++resultIndex} (argument list {result.ArgumentListIndex})</td>
                 <td class=""row-data"">{result.ElapsedTimeConverted}</td>
@@ -341,7 +336,7 @@
               </tr>");
                 }
 
-                _ = htmlDocumentBuilder.Append($@"
+                _ = htmlDocumentBuilder.Append(CultureInfo.InvariantCulture, $@"
             </tbody>
             <tfoot>
               <tr>
@@ -375,7 +370,6 @@
             }
 
             string htmlDocumentContent = htmlDocumentBuilder.ToString();
-            StringBuilderFactory.Recycle(htmlDocumentBuilder);
 
             return htmlDocumentContent;
         }

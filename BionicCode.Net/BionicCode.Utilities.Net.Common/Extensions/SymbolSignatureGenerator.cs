@@ -164,10 +164,10 @@
 
             symbolComponents.IsExtensionMethodParameter = methodData.IsExtensionMethod;
 
-            ParameterData[] parameters = methodData.Parameters;
-            if (parameters.Length > 0)
+            ParameterList parameters = methodData.Parameters;
+            if (parameters.HasItems)
             {
-                for (int parameterIndex = 0; parameterIndex < parameters.Length; parameterIndex++)
+                for (int parameterIndex = 0; parameterIndex < parameters.Count; parameterIndex++)
                 {
                     ParameterData parameterData = parameters[parameterIndex];
                     SymbolComponentInfo parameterInfo = parameterData.SymbolComponentInfo;
@@ -294,8 +294,8 @@
 
             if (symbolAttributes.HasFlag(SymbolAttributes.Delegate))
             {
-                ParameterData[] parameters = delegateInvocatorData.Parameters;
-                if (parameters.Length > 0)
+                ParameterList parameters = delegateInvocatorData.Parameters;
+                if (parameters.HasItems)
                 {
                     foreach (ParameterData parameterData in parameters)
                     {
@@ -311,7 +311,7 @@
 
             if (typeData.IsGenericType)
             {
-                TypeData[] genericTypeArguments = typeData.GenericTypeArguments;
+                TypeList genericTypeArguments = typeData.GenericTypeArguments;
                 IEnumerable<SymbolComponentInfo> genericTypeParameterComponents = genericTypeArguments.Select(typeParameterData => typeParameterData.SymbolComponentInfo);
                 symbolComponents.AddGenericTypeParameterRange(genericTypeParameterComponents);
 
@@ -333,7 +333,7 @@
             }
 
             bool isSubclass = typeData.IsSubclass;
-            TypeData[] interfaces = typeData.InterfacesData;
+            TypeList interfaces = typeData.InterfacesData;
             if (isSubclass)
             {
                 var inheritedTypeComponent = new SymbolComponentInfo(isKeyword: typeData.BaseTypeData.IsBuiltInType);
@@ -349,15 +349,15 @@
             }
         }
 
-        private static void AddGenericTypeConstraints(SymbolComponentInfo symbolComponents, TypeData[] genericTypeDefinitionsData, bool isFullyQualified)
+        private static void AddGenericTypeConstraints(SymbolComponentInfo symbolComponents, TypeList genericTypeDefinitionsData, bool isFullyQualified)
         {
-            for (int genericTypeArgumentIndex = 0; genericTypeArgumentIndex < genericTypeDefinitionsData.Length; genericTypeArgumentIndex++)
+            for (int genericTypeArgumentIndex = 0; genericTypeArgumentIndex < genericTypeDefinitionsData.Count; genericTypeArgumentIndex++)
             {
                 TypeData genericTypeDefinitionData = genericTypeDefinitionsData[genericTypeArgumentIndex];
                 var constraintComponents = new SymbolComponentInfo(genericTypeDefinitionData.Name);
-                TypeData[] constraints = genericTypeDefinitionData.GenericParameterConstraintsData;
+                TypeList constraints = genericTypeDefinitionData.GenericParameterConstraintsData;
                 if ((genericTypeDefinitionData.GenericParameterAttributes & GenericParameterAttributes.SpecialConstraintMask) == GenericParameterAttributes.None
-                  && constraints.Length == 0)
+                  && constraints.IsEmpty)
                 {
                     continue;
                 }
@@ -661,8 +661,8 @@
             {
                 _ = symbolComponents.IsIndexer = true;
 
-                ParameterData[] parameters = propertyData.IndexerParameters;
-                if (parameters.Any())
+                ParameterList parameters = propertyData.IndexerParameters;
+                if (parameters.HasItems)
                 {
                     foreach (ParameterData parameter in parameters)
                     {
@@ -757,8 +757,8 @@
             // MemberData name
             _ = symbolComponents.NameBuilder.AppendDisplayNameInternal(constructorData, isFullyQualifiedName, isGenericTypeParameterIncluded: false, isDeclaringTypeIncluded);
 
-            ParameterData[] parameters = constructorData.Parameters;
-            if (parameters.Length > 0)
+            ParameterList parameters = constructorData.Parameters;
+            if (parameters.HasItems)
             {
                 foreach (ParameterData parameterData in parameters)
                 {
@@ -1775,7 +1775,7 @@
         internal static string ToSignatureNameInternal(PropertyData propertyData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact, bool isRuntimeSymbol)
         {
             SymbolAttributes symbolAttributes = propertyData.SymbolAttributes;
-            PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+            using PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
             if (!(isRuntimeSymbol || isCompact))
             {
@@ -1838,8 +1838,8 @@
                 _ = signatureNameBuilder.Append("this")
                   .Append('[');
 
-                ParameterData[] parameters = propertyData.IndexerParameters;
-                if (parameters.Any())
+                ParameterList parameters = propertyData.IndexerParameters;
+                if (parameters.HasItems)
                 {
                     foreach (ParameterData parameter in parameters)
                     {
@@ -1916,7 +1916,6 @@
             _ = signatureNameBuilder.Append('}');
 
             string fullMemberName = signatureNameBuilder.ToString();
-            StringBuilderFactory.Recycle(signatureNameBuilder);
 
             return fullMemberName;
         }

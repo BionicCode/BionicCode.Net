@@ -34,17 +34,16 @@
 
             return parameters.AsMethodParameterInfoList();
         }
-        internal static MethodParameterInfoList Create(IEnumerable<ParameterData> items)
+        internal static MethodParameterInfoList Create(ReadOnlySpan<ParameterData> items)
         {
-            List<ParameterData>? parameterDataList = items?.ToList();
-            if (parameterDataList is null || parameterDataList.IsEmpty())
+            if (items.IsEmpty)
             {
                 return MethodParameterInfoList.Empty;
             }
 
-            List<ParameterData> parameters = new List<ParameterData>(parameterDataList.Count);
+            List<ParameterData> parameters = new List<ParameterData>(items.Length);
             SymbolInfoData? member = null;
-            foreach (ParameterData parameterData in parameterDataList)
+            foreach (ParameterData parameterData in items)
             {
                 if (member == null)
                 {
@@ -131,11 +130,6 @@
         }
 
         internal static MethodParameterInfoList AsMethodParameterInfoList(this IEnumerable<ParameterData>? items)
-            => items is null || items.IsEmpty() ? MethodParameterInfoList.Empty : new MethodParameterInfoList(items.Select(parameterData => new MethodParameterInfo(
-                parameterData.ParameterTypeHandle,
-                parameterData.Position,
-                parameterData.IsGenericMethodParameter,
-                parameterData.ParameterKind,
-                parameterData.DeclaringTypeHandle)));
+            => items is null || items.IsEmpty() ? MethodParameterInfoList.Empty : new MethodParameterInfoList(items.Select(parameterData => new MethodParameterInfo(parameterData)));
     }
 }

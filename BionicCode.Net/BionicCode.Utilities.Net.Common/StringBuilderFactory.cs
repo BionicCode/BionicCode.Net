@@ -5,6 +5,7 @@ namespace BionicCode.Utilities.Net
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Runtime.CompilerServices;
     using System.Text;
 
     internal static class StringBuilderFactory
@@ -147,14 +148,6 @@ namespace BionicCode.Utilities.Net
             return builder.GetChunks();
         }
 
-#if NET8_0_OR_GREATER
-        public StringBuilder.StringBuilderRuneEnumerator EnumerateRunes()
-        {
-            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
-            return builder.EnumerateRunes();
-        }
-#endif
-
         // ============================================================================
         // APPEND METHODS
         // ============================================================================
@@ -264,15 +257,6 @@ namespace BionicCode.Utilities.Net
             return this;
         }
 
-#if NET8_0_OR_GREATER
-        public PooledStringBuilder Append(Rune value)
-        {
-            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
-            _ = builder.Append(value);
-            return this;
-        }
-#endif
-
         public PooledStringBuilder Append(string? value)
         {
             StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
@@ -315,6 +299,13 @@ namespace BionicCode.Utilities.Net
             return this;
         }
 
+        public PooledStringBuilder Append(ReadOnlySpan<char> value, int startIndex, int count)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Append(value.Slice(startIndex, count));
+            return this;
+        }
+
         public PooledStringBuilder Append(StringBuilder? value)
         {
             StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
@@ -336,14 +327,14 @@ namespace BionicCode.Utilities.Net
             return this;
         }
 
-        public PooledStringBuilder Append(ref StringBuilder.AppendInterpolatedStringHandler handler)
+        public PooledStringBuilder Append([InterpolatedStringHandlerArgument("")] ref StringBuilder.AppendInterpolatedStringHandler handler)
         {
             StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
             _ = builder.Append(ref handler);
             return this;
         }
 
-        public PooledStringBuilder Append(IFormatProvider? provider, ref StringBuilder.AppendInterpolatedStringHandler handler)
+        public PooledStringBuilder Append(IFormatProvider? provider, [InterpolatedStringHandlerArgument("", nameof(provider))] ref StringBuilder.AppendInterpolatedStringHandler handler)
         {
             StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
             _ = builder.Append(provider, ref handler);
@@ -368,14 +359,14 @@ namespace BionicCode.Utilities.Net
             return this;
         }
 
-        public PooledStringBuilder AppendLine(ref StringBuilder.AppendInterpolatedStringHandler handler)
+        public PooledStringBuilder AppendLine([InterpolatedStringHandlerArgument("")] ref StringBuilder.AppendInterpolatedStringHandler handler)
         {
             StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
             _ = builder.AppendLine(ref handler);
             return this;
         }
 
-        public PooledStringBuilder AppendLine(IFormatProvider? provider, ref StringBuilder.AppendInterpolatedStringHandler handler)
+        public PooledStringBuilder AppendLine(IFormatProvider? provider, [InterpolatedStringHandlerArgument("", nameof(provider))] ref StringBuilder.AppendInterpolatedStringHandler handler)
         {
             StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
             _ = builder.AppendLine(provider, ref handler);
@@ -387,13 +378,6 @@ namespace BionicCode.Utilities.Net
         // ============================================================================
 
         public PooledStringBuilder AppendJoin(string? separator, params object?[] values)
-        {
-            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
-            _ = builder.AppendJoin(separator, values);
-            return this;
-        }
-
-        public PooledStringBuilder AppendJoin(string? separator, params ReadOnlySpan<object?> values)
         {
             StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
             _ = builder.AppendJoin(separator, values);
@@ -414,21 +398,7 @@ namespace BionicCode.Utilities.Net
             return this;
         }
 
-        public PooledStringBuilder AppendJoin(string? separator, params ReadOnlySpan<string?> values)
-        {
-            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
-            _ = builder.AppendJoin(separator, values);
-            return this;
-        }
-
         public PooledStringBuilder AppendJoin(char separator, params object?[] values)
-        {
-            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
-            _ = builder.AppendJoin(separator, values);
-            return this;
-        }
-
-        public PooledStringBuilder AppendJoin(char separator, params ReadOnlySpan<object?> values)
         {
             StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
             _ = builder.AppendJoin(separator, values);
@@ -449,12 +419,37 @@ namespace BionicCode.Utilities.Net
             return this;
         }
 
+#if NET9_0_OR_GREATER
+
+        public PooledStringBuilder AppendJoin(string? separator, params ReadOnlySpan<object?> values)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendJoin(separator, values);
+            return this;
+        }
+
+        public PooledStringBuilder AppendJoin(string? separator, params ReadOnlySpan<string?> values)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendJoin(separator, values);
+            return this;
+        }
+
+        public PooledStringBuilder AppendJoin(char separator, params ReadOnlySpan<object?> values)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendJoin(separator, values);
+            return this;
+        }
+
         public PooledStringBuilder AppendJoin(char separator, params ReadOnlySpan<string?> values)
         {
             StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
             _ = builder.AppendJoin(separator, values);
             return this;
         }
+
+#endif
 
         // ============================================================================
         // APPENDFORMAT METHODS - String format and CompositeFormat
@@ -482,13 +477,6 @@ namespace BionicCode.Utilities.Net
         }
 
         public PooledStringBuilder AppendFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params object?[] args)
-        {
-            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
-            _ = builder.AppendFormat(format, args);
-            return this;
-        }
-
-        public PooledStringBuilder AppendFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params ReadOnlySpan<object?> args)
         {
             StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
             _ = builder.AppendFormat(format, args);
@@ -523,12 +511,23 @@ namespace BionicCode.Utilities.Net
             return this;
         }
 
+#if NET9_0_OR_GREATER
+
+        public PooledStringBuilder AppendFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params ReadOnlySpan<object?> args)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.AppendFormat(format, args);
+            return this;
+        }
+
         public PooledStringBuilder AppendFormat(IFormatProvider? provider, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params ReadOnlySpan<object?> args)
         {
             StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
             _ = builder.AppendFormat(provider, format, args);
             return this;
         }
+
+#endif
 
         public PooledStringBuilder AppendFormat<TArg0>(IFormatProvider? provider, CompositeFormat format, TArg0 arg0)
         {
@@ -558,12 +557,16 @@ namespace BionicCode.Utilities.Net
             return this;
         }
 
+#if NET9_0_OR_GREATER
+
         public PooledStringBuilder AppendFormat(IFormatProvider? provider, CompositeFormat format, params ReadOnlySpan<object?> args)
         {
             StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
             _ = builder.AppendFormat(provider, format, args);
             return this;
         }
+
+#endif
 
         // ============================================================================
         // INSERT METHODS
@@ -622,6 +625,13 @@ namespace BionicCode.Utilities.Net
         {
             StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
             _ = builder.Insert(index, value);
+            return this;
+        }
+
+        public PooledStringBuilder Insert(int index, string? value, int startIndex, int count)
+        {
+            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
+            _ = builder.Insert(index, value?[startIndex..(startIndex + count)]);
             return this;
         }
 
@@ -702,15 +712,6 @@ namespace BionicCode.Utilities.Net
             return this;
         }
 
-#if NET8_0_OR_GREATER
-        public PooledStringBuilder Insert(int index, Rune value)
-        {
-            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
-            _ = builder.Insert(index, value);
-            return this;
-        }
-#endif
-
         // ============================================================================
         // REMOVE & REPLACE
         // ============================================================================
@@ -736,20 +737,6 @@ namespace BionicCode.Utilities.Net
             return this;
         }
 
-        public PooledStringBuilder Replace(ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue)
-        {
-            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
-            _ = builder.Replace(oldValue, newValue);
-            return this;
-        }
-
-        public PooledStringBuilder Replace(ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue, int startIndex, int count)
-        {
-            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
-            _ = builder.Replace(oldValue, newValue, startIndex, count);
-            return this;
-        }
-
         public PooledStringBuilder Replace(char oldChar, char newChar)
         {
             StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
@@ -764,20 +751,22 @@ namespace BionicCode.Utilities.Net
             return this;
         }
 
-#if NET8_0_OR_GREATER
-        public PooledStringBuilder Replace(Rune oldRune, Rune newRune)
+#if NET9_0_OR_GREATER
+
+        public PooledStringBuilder Replace(ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue)
         {
             StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
-            _ = builder.Replace(oldRune, newRune);
+            _ = builder.Replace(oldValue, newValue);
             return this;
         }
 
-        public PooledStringBuilder Replace(Rune oldRune, Rune newRune, int startIndex, int count)
+        public PooledStringBuilder Replace(ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue, int startIndex, int count)
         {
             StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
-            _ = builder.Replace(oldRune, newRune, startIndex, count);
+            _ = builder.Replace(oldValue, newValue, startIndex, count);
             return this;
         }
+
 #endif
 
         // ============================================================================
@@ -811,24 +800,6 @@ namespace BionicCode.Utilities.Net
             StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
             return builder.Equals(span);
         }
-
-#if NET8_0_OR_GREATER
-        // ============================================================================
-        // RUNE OPERATIONS
-        // ============================================================================
-
-        public Rune GetRuneAt(int index)
-        {
-            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
-            return builder.GetRuneAt(index);
-        }
-
-        public bool TryGetRuneAt(int index, out Rune value)
-        {
-            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
-            return builder.TryGetRuneAt(index, out value);
-        }
-#endif
 
         // ----------------------------
         // Lifetime / pooling

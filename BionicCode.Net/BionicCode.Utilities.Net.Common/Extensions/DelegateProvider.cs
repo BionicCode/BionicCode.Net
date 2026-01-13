@@ -38,14 +38,14 @@
     /// <param name="value">The value to assign to the indexer property. Can be null for reference types or nullable value types.</param>
     public delegate void ValueTypeIndexerPropertySetter<TTarget, TValue>(ref TTarget target, TValue value, params object[] indices) where TTarget : struct;
 
-    public delegate void PropertySetter<TTarget, TValue>(TTarget target, TValue value);
+    public delegate void PropertySetter<TTarget, TValue>(TTarget? target, TValue value) where TTarget : class;
     public delegate void ValueTypePropertySetter<TTarget, TValue>(ref TTarget target, TValue value) where TTarget : struct;
-    public delegate object ValueTypePropertySetter(object target, object? value);
-    public delegate void IndexerPropertySetter<TTarget, TValue, TIndex>(TTarget target, TValue value, params TIndex[] index);
+    public delegate object ValueTypePropertySetter(ref object target, object? value);
+    public delegate void IndexerPropertySetter<TTarget, TValue, TIndex>(TTarget? target, TValue value, params TIndex[] index) where TTarget : class;
     public delegate void ValueTypeIndexerPropertySetter<TTarget, TValue, TIndex>(ref TTarget target, TValue value, TIndex index) where TTarget : struct;
-    public delegate void IndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2>(TTarget target, TValue value, TIndex1 index1, TIndex2 index2);
+    public delegate void IndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2>(TTarget? target, TValue value, TIndex1 index1, TIndex2 index2) where TTarget : class;
     public delegate void ValueTypeIndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2>(ref TTarget target, TValue value, TIndex1 index1, TIndex2 index2) where TTarget : struct;
-    public delegate void IndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2, TIndex3>(TTarget target, TValue value, TIndex1 index1, TIndex2 index2, TIndex3 index3);
+    public delegate void IndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2, TIndex3>(TTarget? target, TValue value, TIndex1 index1, TIndex2 index2, TIndex3 index3) where TTarget : class;
     public delegate void ValueTypeIndexerPropertySetter<TTarget, TValue, TIndex1, TIndex2, TIndex3>(ref TTarget target, TValue value, TIndex1 index1, TIndex2 index2, TIndex3 index3) where TTarget : struct;
 
 
@@ -1170,7 +1170,7 @@
         /// setter instead.</exception>
         /// <exception cref="ArgumentException">Thrown if the property is read-only or if the provided generic method arguments are incompatible or if the property is an indexer.</exception>
         /// <exception cref="ArgumentNullException">Thrown if the <paramref name="propertyData"/> is <see langword="null"/> or <see cref="MemberData.DeclaringTypeData"/> property of the <paramref name="propertyData"/> is <see langword="null"/>.</exception>
-        public static PropertySetter<TTarget, TValue> CreateSetter<TTarget, TValue>(PropertyData propertyData)
+        public static PropertySetter<TTarget, TValue> CreateSetter<TTarget, TValue>(PropertyData propertyData) where TTarget : class
         {
             if (propertyData is IPropertyDataInvoker propertyDataInvoker && propertyDataInvoker.HasSetter)
             {
