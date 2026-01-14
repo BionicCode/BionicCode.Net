@@ -78,6 +78,15 @@ namespace BionicCode.Utilities.Net
         private bool? _isStruct;
         private bool? _isReadOnlyStruct;
 
+        private bool? _isPublic;
+        private bool? _isNestedPrivate;
+        private bool? _isNestedAssembly;
+        private bool? _isNestedFamily;
+        private bool? _isNestedPublic;
+        private bool? _isNestedFamORAssem;
+        private bool? _isNestedFamANDAssem;
+        private bool? _isVisible;
+
         public TypeData(Type type, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(type.Name, SymbolKind.Type, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(type, nameof(type));
@@ -495,6 +504,30 @@ namespace BionicCode.Utilities.Net
 
         public bool IsReadOnlyStruct
             => this._isReadOnlyStruct ??= IsReadOnlyStructInternal(this);
+
+        public bool IsPublic
+            => this._isPublic ??= UnwrapType().IsPublic;
+
+        public bool IsNestedPrivate
+            => this._isNestedPrivate ??= UnwrapType().IsNestedPrivate;
+
+        public bool IsNestedAssembly
+            => this._isNestedAssembly ??= UnwrapType().IsNestedAssembly;
+
+        public bool IsNestedFamily
+            => this._isNestedFamily ??= UnwrapType().IsNestedFamily;
+
+        public bool IsNestedPublic
+            => this._isNestedPublic ??= UnwrapType().IsNestedPublic;
+
+        public bool IsNestedFamORAssem
+            => this._isNestedFamORAssem ??= UnwrapType().IsNestedFamORAssem;
+
+        public bool IsNestedFamANDAssem
+            => this._isNestedFamANDAssem ??= UnwrapType().IsNestedFamANDAssem;
+
+        public bool IsVisible
+            => this._isVisible ??= UnwrapType().IsVisible;
 
         public bool IsSubclass
         {

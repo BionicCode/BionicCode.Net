@@ -1939,7 +1939,7 @@
             Debug.WriteLine($"Generating method signature");
 
             SymbolComponentInfo symbolComponents = null;
-            PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+            using PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
             SymbolAttributes symbolAttributes = methodData.SymbolAttributes;
 
             if (!isRuntimeSymbol)
@@ -2089,8 +2089,8 @@
 
             if (!isCompact && !isRuntimeSymbol)
             {
-                TypeData[] genericTypeParameterDefinitions = methodData.GenericMethodArguments;
-                if (genericTypeParameterDefinitions.Length > 0)
+                TypeList genericTypeParameterDefinitions = methodData.GenericMethodArguments;
+                if (genericTypeParameterDefinitions.HasItems)
                 {
                     _ = signatureNameBuilder
                       .AppendGenericTypeConstraints(genericTypeParameterDefinitions, isFullyQualifiedName, isSingleLine: false, methodData.IndentationString);
@@ -2100,7 +2100,6 @@
             _ = signatureNameBuilder.Append(SymbolSignatureGenerator.ExpressionTerminator);
 
             string fullMemberName = signatureNameBuilder.ToString();
-            StringBuilderFactory.Recycle(signatureNameBuilder);
 
             return fullMemberName;
         }
@@ -2120,7 +2119,7 @@
         internal static string ToSignatureNameInternal(EventData eventData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact, bool isRuntimeSymbol)
         {
             SymbolAttributes symbolAttributes = eventData.SymbolAttributes;
-            PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+            using PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
             if (!(isRuntimeSymbol || isCompact))
             {
                 IEnumerable<CustomAttributeData> customAttributesData = eventData.AttributeData;
@@ -2180,7 +2179,6 @@
               .Append(SymbolSignatureGenerator.ExpressionTerminator);
 
             string fullMemberName = signatureNameBuilder.ToString();
-            StringBuilderFactory.Recycle(signatureNameBuilder);
 
             return fullMemberName;
         }
@@ -2203,7 +2201,7 @@
         internal static string ToSignatureNameInternal(FieldData fieldData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact, bool isRuntimeSymbol)
         {
             SymbolAttributes symbolAttributes = fieldData.SymbolAttributes;
-            PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+            using PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
             if (!(isRuntimeSymbol || isCompact))
             {
@@ -2265,7 +2263,6 @@
               .Append(SymbolSignatureGenerator.ExpressionTerminator);
 
             string fullMemberName = signatureNameBuilder.ToString();
-            StringBuilderFactory.Recycle(signatureNameBuilder);
 
             return fullMemberName;
         }
@@ -2286,7 +2283,7 @@
         internal static string ToSignatureNameInternal(TypeData typeData, bool isFullyQualifiedName, bool isCompact, bool isRuntimeSymbol)
         {
             SymbolAttributes symbolAttributes = typeData.SymbolAttributes;
-            PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+            using PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
             if (!isRuntimeSymbol)
             {
                 if (typeData.IsGenericType && !typeData.IsGenericTypeDefinition)
@@ -2398,8 +2395,8 @@
             {
                 _ = signatureNameBuilder.Append('(');
 
-                ParameterData[] parameters = delegateInvocatorData.Parameters;
-                if (parameters.Length > 0)
+                ParameterList parameters = delegateInvocatorData.Parameters;
+                if (parameters.HasItems)
                 {
                     foreach (ParameterData parameterData in parameters)
                     {
@@ -2440,13 +2437,13 @@
             }
             else if (!isCompact && symbolAttributes.HasFlag(SymbolAttributes.Class))
             {
-                signatureNameBuilder = signatureNameBuilder.AppendInheritanceSignature(typeData, isFullyQualifiedName);
+                _ = signatureNameBuilder.AppendInheritanceSignature(typeData, isFullyQualifiedName);
             }
 
             if (!isCompact && !isRuntimeSymbol)
             {
-                TypeData[] genericTypeParameterDefinitions = typeData.GenericTypeArguments;
-                if (genericTypeParameterDefinitions.Length > 0)
+                TypeList genericTypeParameterDefinitions = typeData.GenericTypeArguments;
+                if (genericTypeParameterDefinitions.HasItems)
                 {
                     _ = signatureNameBuilder
                       .Append(' ')
@@ -2460,7 +2457,6 @@
             }
 
             string fullMemberName = signatureNameBuilder.ToString();
-            StringBuilderFactory.Recycle(signatureNameBuilder);
 
             return fullMemberName;
         }
@@ -2481,7 +2477,7 @@
         internal static string ToSignatureNameInternal(ConstructorData constructorData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact, bool isRuntimeSymbol)
         {
             SymbolAttributes symbolAttributes = constructorData.SymbolAttributes;
-            PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+            using PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
             if (!(isRuntimeSymbol || isCompact))
             {
@@ -2514,8 +2510,8 @@
             _ = signatureNameBuilder.AppendDisplayNameInternal(constructorData, isFullyQualifiedName, isGenericTypeParameterIncluded: false, isDeclaringTypeIncluded)
               .Append('(');
 
-            ParameterData[] parameters = constructorData.Parameters;
-            if (parameters.Length > 0)
+            ParameterList parameters = constructorData.Parameters;
+            if (parameters.HasItems)
             {
                 foreach (ParameterData parameterData in parameters)
                 {
@@ -2558,7 +2554,6 @@
                   .Append(SymbolSignatureGenerator.ExpressionTerminator);
 
             string fullMemberName = signatureNameBuilder.ToString();
-            StringBuilderFactory.Recycle(signatureNameBuilder);
 
             return fullMemberName;
         }

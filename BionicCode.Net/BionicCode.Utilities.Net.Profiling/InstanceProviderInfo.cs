@@ -44,7 +44,7 @@
             {
                 if (this.factoryMethodData != null)
                 {
-                    this.instance = this.factoryMethodData.Invoke(target);
+                    this.instance = this.factoryMethodData.Invoke(target, ReadOnlySpan<object>.Empty);
                 }
                 else if (this.constructorData != null)
                 {
@@ -56,11 +56,13 @@
                 }
                 else if (this.propertyData != null)
                 {
-                    this.instance = this.propertyData.GetValue(target, this.ArgumentList);
+                    this.instance = this.propertyData.IsIndexer
+                        ? this.propertyData.GetIndexerValue(target, this.ArgumentList)
+                        : this.propertyData.GetValue(target);
                 }
             }
 
-            return this.instance;
+            return this.instance ?? throw new InvalidOperationException(InstanceProviderInfo.UnableToCreateInstanceMessage);
         }
 
         public async ValueTask<object> CreateTargetInstanceAsync(object target)
@@ -76,16 +78,16 @@
                 {
                     if (this.factoryMethodData.IsAwaitableTask)
                     {
-                        this.instance = await this.factoryMethodData.InvokeAwaitableTaskWithResultAsync(target);
+                        this.instance = await this.factoryMethodData.InvokeTaskWithResultAsync(target, this.ArgumentList);
                     }
                     else if (this.factoryMethodData.IsAwaitableGenericValueTask)
                     {
-                        this.instance = await this.factoryMethodData.InvokeAwaitableValueTaskWithResultAsync(target);
+                        this.instance = await this.factoryMethodData.InvokeValueTaskWithResultAsync(target, this.ArgumentList);
                     }
                 }
             }
 
-            return this.instance;
+            return this.instance ?? throw new InvalidOperationException(InstanceProviderInfo.UnableToCreateInstanceMessage);
         }
 
         public object[] ArgumentList { get; }
@@ -95,6 +97,7 @@
         private readonly ConstructorData constructorData;
         private readonly PropertyData propertyData;
         private readonly FieldData fieldData;
-        private object instance;
+        private object? instance;
+        private const string UnableToCreateInstanceMessage = "Unable to create an instance of the profiled type";
     }
 }

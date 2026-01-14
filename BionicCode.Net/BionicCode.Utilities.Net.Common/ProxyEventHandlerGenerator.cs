@@ -18,11 +18,11 @@
             ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(targetDelegateMethodName, nameof(targetDelegateMethodName));
 
             Type targetType = target.GetType();
-            SymbolInfoDataCacheKey symbolCacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrProperty(targetType.TypeHandle, targetDelegateMethodName, targetDelegateMethodParameterList, targetDelegateMethodParameterList, SymbolKind.MemberMethod);
-            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(symbolCacheKey, out MethodData proxyDelegateMethodData);
+            SymbolInfoDataCacheKey symbolCacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrConstructor(targetType.TypeHandle, targetDelegateMethodName, targetDelegateMethodParameterList, 0, SymbolKind.MemberMethod);
+            MethodData proxyDelegateMethodData = SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(ref symbolCacheKey);
 
             symbolCacheKey = SymbolInfoDataCacheKey.CreateForAnonymousFieldOrEvent(typeof(TEventSource).TypeHandle, eventName, SymbolKind.MemberEvent);
-            SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(symbolCacheKey, out EventData eventData);
+            EventData eventData = SymbolReflectionInfoCache.GetOrCreateEventDataCacheEntry(ref symbolCacheKey);
 
             TypeData eventHandlerTypeData = eventData.EventHandlerTypeData;
             MethodData invocatorData = eventData.EventInvokerMethodData;

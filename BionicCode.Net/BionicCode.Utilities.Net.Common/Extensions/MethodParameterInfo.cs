@@ -73,8 +73,8 @@
         }
 
         public override bool Equals(object? obj) => obj is MethodParameterInfo info && Equals(info);
-        public bool Equals(MethodParameterInfo other) => other.ParameterTypeHandle == this.ParameterTypeHandle
-            && other.DeclaringTypeHandle == this.DeclaringTypeHandle
+        public bool Equals(MethodParameterInfo other) => other.ParameterTypeHandle.Equals(this.ParameterTypeHandle)
+            && other.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle)
             && other.Position == this.Position
             && other.Kind == this.Kind;
         //&& other.IsGenericMethodParameter.Equals(this.IsGenericMethodParameter);

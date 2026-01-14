@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
@@ -542,8 +541,8 @@
 
             if (methodData.ContainsGenericParameters || methodData.IsGenericMethodDefinition)
             {
-                IEnumerable<TypeData> genericTypeParameters = methodData.GenericMethodArguments;
-                methodData = methodData.MakeGenericMethodData(genericTypeParameters.ToArray());
+                TypeList genericTypeParameters = methodData.GenericMethodArguments;
+                methodData = methodData.MakeGenericMethodData(genericTypeParameters);
             }
 
             return methodData;

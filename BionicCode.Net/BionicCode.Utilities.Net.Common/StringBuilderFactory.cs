@@ -327,19 +327,11 @@ namespace BionicCode.Utilities.Net
             return this;
         }
 
-        public PooledStringBuilder Append([InterpolatedStringHandlerArgument("")] ref StringBuilder.AppendInterpolatedStringHandler handler)
-        {
-            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
-            _ = builder.Append(ref handler);
-            return this;
-        }
+        public PooledStringBuilder Append([InterpolatedStringHandlerArgument("")] ref PooledStringBuilder.AppendInterpolatedStringHandler handler)
+            => this;
 
-        public PooledStringBuilder Append(IFormatProvider? provider, [InterpolatedStringHandlerArgument("", nameof(provider))] ref StringBuilder.AppendInterpolatedStringHandler handler)
-        {
-            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
-            _ = builder.Append(provider, ref handler);
-            return this;
-        }
+        public PooledStringBuilder Append(IFormatProvider? provider, [InterpolatedStringHandlerArgument("", nameof(provider))] ref PooledStringBuilder.AppendInterpolatedStringHandler handler)
+            => this;
 
         // ============================================================================
         // APPENDLINE METHODS
@@ -359,19 +351,11 @@ namespace BionicCode.Utilities.Net
             return this;
         }
 
-        public PooledStringBuilder AppendLine([InterpolatedStringHandlerArgument("")] ref StringBuilder.AppendInterpolatedStringHandler handler)
-        {
-            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
-            _ = builder.AppendLine(ref handler);
-            return this;
-        }
+        public PooledStringBuilder AppendLine([InterpolatedStringHandlerArgument("")] ref PooledStringBuilder.AppendInterpolatedStringHandler handler)
+            => AppendLine();
 
-        public PooledStringBuilder AppendLine(IFormatProvider? provider, [InterpolatedStringHandlerArgument("", nameof(provider))] ref StringBuilder.AppendInterpolatedStringHandler handler)
-        {
-            StringBuilder builder = GetStringBuilderOrThrowIfRecycled();
-            _ = builder.AppendLine(provider, ref handler);
-            return this;
-        }
+        public PooledStringBuilder AppendLine(IFormatProvider? provider, [InterpolatedStringHandlerArgument("", nameof(provider))] ref PooledStringBuilder.AppendInterpolatedStringHandler handler)
+            => AppendLine();
 
         // ============================================================================
         // APPENDJOIN METHODS
@@ -831,6 +815,75 @@ namespace BionicCode.Utilities.Net
         {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        // Nested handler that wraps StringBuilder's handler
+        [InterpolatedStringHandler]
+        public ref struct AppendInterpolatedStringHandler
+        {
+            private StringBuilder.AppendInterpolatedStringHandler _inner;
+
+            // Constructor for Append($"...")
+            public AppendInterpolatedStringHandler(
+                int literalLength,
+                int formattedCount,
+                PooledStringBuilder pooledBuilder)
+            {
+                StringBuilder wrappedStringBuilder = pooledBuilder.GetStringBuilderOrThrowIfRecycled();
+
+                // Extract the inner StringBuilder and pass it to the real handler
+                this._inner = new StringBuilder.AppendInterpolatedStringHandler(
+                    literalLength,
+                    formattedCount,
+                    wrappedStringBuilder);
+            }
+
+            // Constructor for Append(provider, $"...")
+            public AppendInterpolatedStringHandler(
+                int literalLength,
+                int formattedCount,
+                PooledStringBuilder pooledBuilder,
+                IFormatProvider? provider)
+            {
+                StringBuilder wrappedStringBuilder = pooledBuilder.GetStringBuilderOrThrowIfRecycled();
+
+                this._inner = new StringBuilder.AppendInterpolatedStringHandler(
+                    literalLength,
+                    formattedCount,
+                    wrappedStringBuilder,
+                    provider);
+            }
+
+            // Forward all calls to the inner handler
+            public void AppendLiteral(string value)
+                => this._inner.AppendLiteral(value);
+
+            public void AppendFormatted<T>(T value)
+                => this._inner.AppendFormatted(value);
+
+            public void AppendFormatted<T>(T value, string? format)
+                => this._inner.AppendFormatted(value, format);
+
+            public void AppendFormatted<T>(T value, int alignment)
+                => this._inner.AppendFormatted(value, alignment);
+
+            public void AppendFormatted<T>(T value, int alignment, string? format)
+                => this._inner.AppendFormatted(value, alignment, format);
+
+            public void AppendFormatted(ReadOnlySpan<char> value)
+                => this._inner.AppendFormatted(value);
+
+            public void AppendFormatted(ReadOnlySpan<char> value, int alignment = 0, string? format = null)
+                => this._inner.AppendFormatted(value, alignment, format);
+
+            public void AppendFormatted(string? value)
+                => this._inner.AppendFormatted(value);
+
+            public void AppendFormatted(string? value, int alignment = 0, string? format = null)
+                => this._inner.AppendFormatted(value, alignment, format);
+
+            public void AppendFormatted(object? value, int alignment = 0, string? format = null)
+                => this._inner.AppendFormatted(value, alignment, format);
         }
     }
 }

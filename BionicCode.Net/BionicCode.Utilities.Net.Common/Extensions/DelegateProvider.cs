@@ -73,7 +73,7 @@
         /// method definition or open generic method. This parameter is ignored for non-generic methods.</param>
         /// <returns>A MethodData instance that is guaranteed to have an invoker delegate attached, suitable for fast invocation.
         /// If the method is generic, the returned MethodData corresponds to the constructed closed generic method.</returns>
-        public static MethodData GetOrCreateFastMethodInvoker(MethodData targetMethodData, TypeData[] genericMethodParameters)
+        public static MethodData GetOrCreateFastMethodInvoker(MethodData targetMethodData, TypeList genericMethodParameters)
         {
             // If the method is not a generic method definition or an open generic method and already has an invocator, return it directly.
             if (!targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition && ((IMethodDataInvoker)targetMethodData).IsInvocable)
@@ -162,7 +162,7 @@
             return methodData;
         }
 
-        private static MethodData GetOrConstructGenericMethod(MethodData targetMethodData, TypeData[] genericMethodParameters)
+        private static MethodData GetOrConstructGenericMethod(MethodData targetMethodData, TypeList genericMethodParameters)
         {
             MethodData methodData;
 
@@ -193,7 +193,7 @@
         {
             MethodData targetMethodData = eventData.EventInvokerMethodData;
 
-            return GetOrCreateFastMethodInvoker(targetMethodData!, Array.Empty<TypeData>());
+            return GetOrCreateFastMethodInvoker(targetMethodData!, TypeList.Empty);
         }
 
         /// <summary>

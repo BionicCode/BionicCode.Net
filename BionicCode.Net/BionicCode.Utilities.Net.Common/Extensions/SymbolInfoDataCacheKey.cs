@@ -801,8 +801,8 @@
         public override bool Equals(object obj) => obj is SymbolInfoDataCacheKey other && Equals(other);
 
         public bool Equals(SymbolInfoDataCacheKey other) => this.SymbolName == other.SymbolName
-            && this.DeclaringTypeHandle == other.DeclaringTypeHandle
-            && this.SymbolTypeHandle == other.SymbolTypeHandle
+            && this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle)
+            && this.SymbolTypeHandle.Equals(other.SymbolTypeHandle)
             && this.MethodHandle == other.MethodHandle
             && this.FieldHandle == other.FieldHandle
             //&& this.GetMethodHandle == other.GetMethodHandle

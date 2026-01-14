@@ -617,7 +617,7 @@
                     hasProfiledInstanceMethods |= !isMethodStatic;
 
                     var argumentLists = new List<MethodArgumentInfo>();
-                    int methodParameterCount = methodData.Parameters.Length;
+                    int methodParameterCount = methodData.Parameters.Count;
                     bool isMethodParameterless = methodParameterCount == 0;
                     if (!isMethodParameterless)
                     {
@@ -662,7 +662,7 @@
                       ? profilerFactoryAttribute.ArgumentList
                       : Array.Empty<object>();
 
-                    if (hasHighPriorityInstanceProvider || (instanceProviderInfo is null && constructorData.Parameters.Length == 0))
+                    if (hasHighPriorityInstanceProvider || (instanceProviderInfo is null && constructorData.Parameters.IsEmpty))
                     {
                         instanceProviderInfo = new InstanceProviderInfo(constructorData, argumentList);
                     }
@@ -682,7 +682,7 @@
                     hasProfiledInstanceConstructors |= !constructorData.IsStatic;
 
                     var argumentLists = new List<MethodArgumentInfo>();
-                    int constructorParameterCount = constructorData.Parameters.Length;
+                    int constructorParameterCount = constructorData.Parameters.Count;
                     bool isConstructorParameterless = constructorParameterCount == 0;
                     if (!isConstructorParameterless)
                     {
