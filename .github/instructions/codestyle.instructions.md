@@ -15,6 +15,18 @@ When proposing code changes, prefer applying Clean Code principles while adherin
 - Minimize side effects and hidden behavior.
 - Avoid unnecessary complexity and premature abstraction.
 
+## General code style
+
+- Use consistent indentation (4 spaces).
+- Place `using` directives at the top of the file.
+- Keep related code together and organize files logically.
+- Use regions to group related code blocks.
+- Follow naming conventions (e.g., PascalCase for public members, camelCase for private members).
+- Write XML documentation comments for public APIs.
+- Prefer expression-bodied members for simple properties and methods.
+- Use string interpolation over concatenation.
+- Use region name also for the closing endregion directive
+
 ## Refactoring scope
 
 - Do not perform broad renames or large structural refactors unless explicitly requested.

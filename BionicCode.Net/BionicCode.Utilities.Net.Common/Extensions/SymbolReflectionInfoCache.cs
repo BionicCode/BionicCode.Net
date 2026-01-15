@@ -15,7 +15,81 @@
         private const string InvalidDeclaringTypeHandleFoundInKeyExceptionMessage = $"The key's property '{nameof(SymbolInfoDataCacheKey)}.{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type.";
         private const string DeclaringTypeHandleInKeyIsDefaultExceptionMessage = $"The value 'default' is not a valid value for the key's '{nameof(SymbolInfoDataCacheKey)}.{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}' property. The property must reference a valid declaring type handle.";
 
-        internal static TypeData GetOrCreateSymbolInfoDataCacheEntry(Type type)
+        #region Extension Methods
+
+        /// <summary>
+        /// Converts the specified <see cref="Type"/> to a <see cref="TypeData"/> instance representing its metadata and
+        /// characteristics.
+        /// </summary>
+        /// <param name="type">The type to convert to a <see cref="TypeData"/> instance. Cannot be <see langword="null"/>.</param>
+        /// <returns>A <see cref="TypeData"/> instance that describes the specified type. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
+        /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="TypeData"/> instances for the same type.</remarks>
+        public static TypeData ToTypeData(this Type type)
+            => GetOrCreateSymbolInfoDataCacheEntry(type);
+
+        /// <summary>
+        /// Converts the specified <see cref="MethodInfo"/> to a <see cref="MethodData"/> instance representing its metadata and
+        /// characteristics.
+        /// </summary>
+        /// <param name="methodInfo">The method to convert to a <see cref="MethodData"/> instance. Cannot be <see langword="null"/>.</param>
+        /// <returns>A <see cref="MethodData"/> instance that describes the specified method. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
+        /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="MethodData"/> instances for the same method.</remarks>
+        public static MethodData ToMethodData(this MethodInfo methodInfo)
+            => GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+
+        /// <summary>
+        /// Converts the specified <see cref="ConstructorInfo"/> to a <see cref="ConstructorData"/> instance representing its metadata and
+        /// characteristics.
+        /// </summary>
+        /// <param name="constructorInfo">The constructor to convert to a <see cref="ConstructorData"/> instance. Cannot be <see langword="null"/>.</param>
+        /// <returns>A <see cref="ConstructorData"/> instance that describes the specified constructor. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
+        /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="ConstructorData"/> instances for the same constructor.</remarks>
+        public static ConstructorData ToConstructorData(this ConstructorInfo constructorInfo)
+            => GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+
+        /// <summary>
+        /// Converts the specified <see cref="FieldInfo"/> to a <see cref="FieldData"/> instance representing its metadata and
+        /// characteristics.
+        /// </summary>
+        /// <param name="fieldInfo">The field to convert to a <see cref="FieldData"/> instance. Cannot be <see langword="null"/>.</param>
+        /// <returns>A <see cref="FieldData"/> instance that describes the specified field. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
+        /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="FieldData"/> instances for the same field.</remarks>
+        public static FieldData ToFieldData(this FieldInfo fieldInfo)
+            => GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+
+        /// <summary>
+        /// Converts the specified <see cref="PropertyInfo"/> to a <see cref="PropertyData"/> instance representing its metadata and
+        /// characteristics.
+        /// </summary>
+        /// <param name="propertyInfo">The property to convert to a <see cref="PropertyData"/> instance. Cannot be <see langword="null"/>.</param>
+        /// <returns>A <see cref="PropertyData"/> instance that describes the specified property. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
+        /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="PropertyData"/> instances for the same property.</remarks>
+        public static PropertyData ToPropertyData(this PropertyInfo propertyInfo)
+            => GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+
+        /// <summary>
+        /// Converts the specified <see cref="EventInfo"/> to a <see cref="EventData"/> instance representing its metadata and
+        /// characteristics.
+        /// </summary>
+        /// <param name="eventInfo">The event to convert to a <see cref="EventData"/> instance. Cannot be <see langword="null"/>.</param>
+        /// <returns>A <see cref="EventData"/> instance that describes the specified event. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
+        /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="EventData"/> instances for the same event.</remarks>
+        public static EventData ToEventData(this EventInfo eventInfo)
+            => GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+
+        /// <summary>
+        /// Converts the specified <see cref="ParameterInfo"/> to a <see cref="ParameterData"/> instance representing its metadata and
+        /// characteristics.
+        /// </summary>
+        /// <param name="parameterInfo">The parameter to convert to a <see cref="ParameterData"/> instance. Cannot be <see langword="null"/>.</param>
+        /// <returns>A <see cref="ParameterData"/> instance that describes the specified parameter. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
+        /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="ParameterData"/> instances for the same parameter.</remarks>
+        public static ParameterData ToParameterData(this ParameterInfo parameterInfo)
+            => GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
+
+        #endregion Extension Methods
+
+        public static TypeData GetOrCreateSymbolInfoDataCacheEntry(Type type)
         {
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForType(type);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new TypeData(type, cacheKey));
@@ -26,7 +100,7 @@
             return (TypeData)symbolInfoData;
         }
 
-        internal static MethodData GetOrCreateSymbolInfoDataCacheEntry(MethodInfo methodInfo)
+        public static MethodData GetOrCreateSymbolInfoDataCacheEntry(MethodInfo methodInfo)
         {
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForMethod(methodInfo);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(methodInfo, key));
@@ -37,7 +111,7 @@
             return (MethodData)symbolInfoData;
         }
 
-        internal static ConstructorData GetOrCreateSymbolInfoDataCacheEntry(ConstructorInfo constructorInfo)
+        public static ConstructorData GetOrCreateSymbolInfoDataCacheEntry(ConstructorInfo constructorInfo)
         {
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForConstructor(constructorInfo);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new ConstructorData(constructorInfo, key));
@@ -48,7 +122,7 @@
             return (ConstructorData)symbolInfoData;
         }
 
-        internal static FieldData GetOrCreateSymbolInfoDataCacheEntry(FieldInfo fieldInfo)
+        public static FieldData GetOrCreateSymbolInfoDataCacheEntry(FieldInfo fieldInfo)
         {
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForField(fieldInfo);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new FieldData(fieldInfo, key));
@@ -59,7 +133,7 @@
             return (FieldData)symbolInfoData;
         }
 
-        internal static PropertyData GetOrCreateSymbolInfoDataCacheEntry(PropertyInfo propertyInfo)
+        public static PropertyData GetOrCreateSymbolInfoDataCacheEntry(PropertyInfo propertyInfo)
         {
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForProperty(propertyInfo);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new PropertyData(propertyInfo, key));
@@ -70,7 +144,7 @@
             return (PropertyData)symbolInfoData;
         }
 
-        internal static EventData GetOrCreateSymbolInfoDataCacheEntry(EventInfo eventInfo)
+        public static EventData GetOrCreateSymbolInfoDataCacheEntry(EventInfo eventInfo)
         {
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForEvent(eventInfo);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new EventData(eventInfo, key));
@@ -81,7 +155,7 @@
             return (EventData)symbolInfoData;
         }
 
-        internal static ParameterData GetOrCreateSymbolInfoDataCacheEntry(ParameterInfo parameterInfo)
+        public static ParameterData GetOrCreateSymbolInfoDataCacheEntry(ParameterInfo parameterInfo)
         {
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForParameter(parameterInfo);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new ParameterData(parameterInfo, key));
@@ -100,7 +174,7 @@
         /// its normalized form.</param>
         /// <returns>The event data associated with the cache entry identified by the specified key.</returns>
         /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-        internal static EventData GetOrCreateEventDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
+        public static EventData GetOrCreateEventDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
         {
             EventData eventData;
             if (cacheKey.IsAnonymousSymbolKey)
@@ -123,7 +197,7 @@
         /// its normalized form.</param>
         /// <returns>The method data associated with the cache entry identified by the specified key.</returns>
         /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-        internal static MethodData GetOrCreateMethodDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
+        public static MethodData GetOrCreateMethodDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
         {
             MethodData methodData;
             if (cacheKey.IsAnonymousSymbolKey)
@@ -146,7 +220,7 @@
         /// its normalized form.</param>
         /// <returns>The field data associated with the cache entry identified by the specified key.</returns>
         /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-        internal static FieldData GetOrCreateFieldDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
+        public static FieldData GetOrCreateFieldDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
         {
             FieldData fieldData;
             if (cacheKey.IsAnonymousSymbolKey)
@@ -169,7 +243,7 @@
         /// its normalized form.</param>
         /// <returns>The property data associated with the cache entry identified by the specified key.</returns>
         /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-        internal static PropertyData GetOrCreatePropertyDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
+        public static PropertyData GetOrCreatePropertyDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
         {
             PropertyData propertyData;
             if (cacheKey.IsAnonymousSymbolKey)
@@ -192,7 +266,7 @@
         /// its normalized form.</param>
         /// <returns>The parameter data associated with the cache entry identified by the specified key.</returns>
         /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-        internal static ParameterData GetOrCreateParameterDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
+        public static ParameterData GetOrCreateParameterDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
         {
             ParameterData parameterData;
             if (cacheKey.IsAnonymousSymbolKey)
@@ -215,7 +289,7 @@
         /// its normalized form.</param>
         /// <returns>The constructor data associated with the cache entry identified by the specified key.</returns>
         /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-        internal static ConstructorData GetOrCreateConstructorDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
+        public static ConstructorData GetOrCreateConstructorDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
         {
             ConstructorData constructorData;
             if (cacheKey.IsAnonymousSymbolKey)
@@ -238,7 +312,7 @@
         /// its normalized form.</param>
         /// <returns>The type data associated with the cache entry identified by the specified key.</returns>
         /// <remarks>If the provided <paramref name="cacheKey"/> refers to an anonymous symbol, it will be normalized to a canonical key.</remarks>
-        internal static TypeData GetOrCreateTypeDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
+        public static TypeData GetOrCreateTypeDataCacheEntry(ref SymbolInfoDataCacheKey cacheKey)
         {
             TypeData typeData;
             if (cacheKey.IsAnonymousSymbolKey)
@@ -253,7 +327,7 @@
             return typeData;
         }
 
-        internal static bool TryGetSymbolInfoDataCacheEntry<TEntry>(SymbolInfoDataCacheKey key, out TEntry? entry)
+        public static bool TryGetSymbolInfoDataCacheEntry<TEntry>(SymbolInfoDataCacheKey key, out TEntry? entry)
           where TEntry : SymbolInfoData
         {
             entry = null;
@@ -281,6 +355,11 @@
         /// <exception cref="InvalidReflectionCacheKeyException">Thrown if key's integrity is invalid as it contains information that makes symbol lookup impossible.</exception>
         public static SymbolInfoDataCacheKey NormalizeKey(SymbolInfoDataCacheKey cacheKey)
         {
+            if (!cacheKey.IsAnonymousSymbolKey)
+            {
+                return cacheKey;
+            }
+
             if (SymbolReflectionInfoCache.AnonymousSymbolDataCacheKeyMap.TryGetValue(cacheKey, out SymbolInfoDataCacheKey normalizedCacheKey))
             {
                 return normalizedCacheKey;
@@ -803,10 +882,5 @@
 
             return result;
         }
-    }
-
-    internal enum ParameterCount
-    {
-        Unknown = -1,
     }
 }

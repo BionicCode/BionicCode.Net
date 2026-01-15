@@ -11,6 +11,13 @@
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
 
+    public delegate void MethodVoidInvoker<TTarget>(TTarget? target, params object?[] args);
+    public delegate TResult MethodInvoker<TTarget, TResult>(TTarget? target, params object?[] args);
+    public delegate Task<TResult> MethodAwaitableGenericTaskInvoker<TTarget, TResult>(TTarget? target, params object?[] args);
+    public delegate Task MethodAwaitableTaskInvoker<TTarget, TResult>(TTarget? target, params object?[] args);
+    public delegate ValueTask<TResult> MethodAwaitableGenericValueTaskInvoker<TTarget, TResult>(TTarget? target, params object?[] args);
+    public delegate ValueTask MethodAwaitableValueTaskInvoker<TTarget, TResult>(TTarget? target, params object?[] args);
+
     /// <summary>
     /// Represents a method that sets the field on a value prpertyType instance.
     /// </summary>
@@ -92,7 +99,7 @@
                 return methodData;
             }
 
-            ParameterExpression targetParam = Expression.Parameter(typeof(object), "propertyType");
+            ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
             ParameterExpression argsParam = Expression.Parameter(typeof(object[]), "args");
 
             Expression? instance = null;
@@ -149,9 +156,8 @@
                 invocator = Expression.Lambda<Func<object?, object?[]?, object?>>(body, targetParam, argsParam).Compile();
             }
 
-            IMethodDataInvoker methodInvoker = targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition
-                ? (IMethodDataInvoker)methodData // only the closed generic method data holds the constructed invocator
-                : (IMethodDataInvoker)targetMethodData; // Since targetMethodData is already a closed generic method, we can set the generated invocator directly on it.
+            // only the closed generic method data holds the constructed invocator
+            IMethodDataInvoker methodInvoker = methodData;
 
             methodInvoker.SetInvoker(invocator);
             methodInvoker.SetInvoker(awaitableTaskInvocator);
@@ -160,6 +166,199 @@
             methodInvoker.SetInvoker(awaitableValueTaskInvocator);
 
             return methodData;
+        }
+
+        /// <summary>
+        /// Gets an invocable MethodData instance for the specified method, generating a fast delegate-based invoker if
+        /// necessary. Supports both generic and non-generic methods.
+        /// </summary>
+        /// <remarks>If the specified method already has an invoker, it is returned as-is. For generic
+        /// method definitions or open generic methods, the method is first constructed with the provided generic prpertyType
+        /// arguments before generating the invoker. The returned MethodData can be used for efficient runtime
+        /// invocation without reflection overhead.</remarks>
+        /// <param name="targetMethodData">The MethodData representing the propertyType method. This can be a generic method definition, an open generic
+        /// method, or a closed method.</param>
+        /// <param name="genericMethodParameters">An array of TypeData objects specifying the generic prpertyType arguments to use if the propertyType method is a generic
+        /// method definition or open generic method. This parameter is ignored for non-generic methods.</param>
+        /// <returns>A MethodData instance that is guaranteed to have an invoker delegate attached, suitable for fast invocation.
+        /// If the method is generic, the returned MethodData corresponds to the constructed closed generic method.</returns>
+        public static MethodData GetOrCreateFastMethodInvoker<TTarget, TResult>(MethodData targetMethodData, TypeList genericMethodParameters)
+        {
+            Type targetType = typeof(TTarget);
+            Type declaringType = targetMethodData.DeclaringTypeData.UnwrapType();
+            ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                targetType,
+                targetMethodData.DeclaringTypeData.UnwrapType()!,
+                ExceptionMessages.GetTypeMismatchExceptionMessage(
+                        targetType,
+                        nameof(TTarget),
+                        declaringType!,
+                        "declaring type"));
+
+            Type resultType = typeof(TResult);
+            Type methodReturnType = targetMethodData.ReturnTypeData.UnwrapType();
+            // Validate method return type compatibility for awaitable methods.
+            ThrowIfReturnTypeIsInvalid<TResult>(targetMethodData, resultType, methodReturnType);
+
+            // If the method is not a generic method definition or an open generic method and already has an invocator, return it directly.
+            if (!targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition
+                && ((IStrictMethodDataInvoker)targetMethodData).IsInvocable(resultType, targetType))
+            {
+                return targetMethodData;
+            }
+
+            // Get or construct the (closed) generic method data if required.
+            MethodData methodData = targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition
+                ? DelegateProvider.GetOrConstructGenericMethod(targetMethodData, genericMethodParameters)
+                : targetMethodData;
+
+            // If the closed method has already a generated invoker, it will be returned directly.
+            if (((IStrictMethodDataInvoker)methodData).IsInvocable(resultType, targetType))
+            {
+                return methodData;
+            }
+
+            ParameterExpression targetParam = Expression.Parameter(targetType, "target");
+            ParameterExpression argsParam = Expression.Parameter(typeof(object[]), "args");
+
+            Expression? instanceExpression = methodData.IsStatic
+                ? null
+                : targetType != declaringType
+                    ? Expression.Convert(targetParam, declaringType)
+                    : targetParam;
+
+            UnaryExpression[] callArgs = methodData.Parameters.Select((parameter, index) =>
+                Expression.Convert(
+                    Expression.ArrayIndex(argsParam, Expression.Constant(index)),
+                    parameter.ParameterTypeData.UnwrapType())).ToArray();
+
+            MethodInfo methodInfo = methodData.GetMethodInfo();
+            Expression call = methodData.IsStatic
+                ? Expression.Call(methodInfo, callArgs)
+                : Expression.Call(instanceExpression, methodInfo, callArgs); // instance required for non-static :contentReference[oaicite:7]{index=7}
+
+            Delegate invocator = null;
+            Expression body;
+            try
+            {
+                if (methodData.IsAwaitableGenericTask)
+                {
+                    body = Expression.Convert(call, typeof(Task<>).MakeGenericType(methodReturnType));
+                    invocator = Expression.Lambda<MethodAwaitableGenericTaskInvoker<TTarget, TResult>>(body, targetParam, argsParam).Compile();
+                }
+                else if (methodData.IsAwaitableGenericValueTask)
+                {
+                    body = Expression.Convert(call, typeof(ValueTask<>).MakeGenericType(methodReturnType));
+                    invocator = Expression.Lambda<MethodAwaitableGenericValueTaskInvoker<TTarget, TResult>>(body, targetParam, argsParam).Compile();
+                }
+                else if (methodData.IsAwaitableValueTask)
+                {
+                    body = Expression.Convert(call, typeof(ValueTask));
+                    invocator = Expression.Lambda<MethodAwaitableValueTaskInvoker<TTarget, TResult>>(body, targetParam, argsParam).Compile();
+                }
+                else if (methodData.IsAwaitableTask)
+                {
+                    body = Expression.Convert(call, typeof(Task));
+                    invocator = Expression.Lambda<MethodAwaitableTaskInvoker<TTarget, TResult>>(body, targetParam, argsParam).Compile();
+                }
+                else if (methodData.IsVoidMethod)
+                {
+                    body = Expression.Block(call, Expression.Empty());
+                    invocator = Expression.Lambda<MethodVoidInvoker<TTarget>>(body, targetParam, argsParam).Compile();
+                }
+                else
+                {
+                    // Use provided argument type  and cast to indexer parameter type if needed.
+                    body = Expression.Convert(call, resultType);
+
+                    invocator = Expression.Lambda<MethodInvoker<TTarget, TResult>>(body, targetParam, argsParam).Compile();
+                }
+            }
+            catch (InvalidOperationException e)
+            {
+                throw new ArgumentException(
+                    $"The provided argument '{nameof(TResult)}' is incompatible with the method's return type. Reason: A conversion from the provided '{methodReturnType.ToFullyQualifiedSignatureName()}' to '{resultType.ToFullyQualifiedSignatureName()}' is not natively supported.",
+                    nameof(TResult),
+                    e);
+            }
+
+            // Only the closed generic method data holds the constructed invocator
+            IStrictMethodDataInvoker methodInvoker = methodData;
+            methodInvoker.SetInvoker(resultType, targetType, invocator);
+
+            return methodData;
+        }
+
+        private static void ThrowIfReturnTypeIsInvalid<TResult>(MethodData targetMethodData, Type resultType, Type methodReturnType)
+        {
+            // void-returning methods: TResult must be void (for strict void invoker) or you need a different API.
+            if (targetMethodData.IsVoidMethod)
+            {
+                ArgumentExceptionAdvanced.ThrowIfFalse(resultType == typeof(void),
+                    nameof(TResult),
+                    ExceptionMessages.GetTypeMismatchExceptionMessage(
+                        resultType,
+                        nameof(TResult),
+                        typeof(void),
+                        "method return type"));
+
+                return;
+            }
+
+            // Non-awaitable synchronous methods
+            if (!targetMethodData.IsAwaitable)
+            {
+                // Let compiler decide whether a conversion is possible and catch exception if not.
+                return;
+            }
+            else if (targetMethodData.IsAwaitableTask)
+            {
+                ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                    typeof(Task),
+                    resultType,
+                    ExceptionMessages.GetTypeMismatchExceptionMessage(
+                            resultType,
+                            nameof(TResult),
+                            typeof(Task),
+                            "method return type"));
+            }
+            else if (targetMethodData.IsAwaitableGenericTask)
+            {
+                ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                    typeof(Task<>).MakeGenericType(methodReturnType),
+                    resultType,
+                    ExceptionMessages.GetTypeMismatchExceptionMessage(
+                            resultType,
+                            nameof(TResult),
+                            typeof(Task<>).MakeGenericType(methodReturnType),
+                            "method return type"));
+            }
+            else if (targetMethodData.IsAwaitableGenericValueTask)
+            {
+                ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                    typeof(ValueTask<>).MakeGenericType(methodReturnType),
+                    resultType,
+                    ExceptionMessages.GetTypeMismatchExceptionMessage(
+                            resultType,
+                            nameof(TResult),
+                            typeof(ValueTask<>).MakeGenericType(methodReturnType),
+                            "method return type"));
+            }
+            else if (targetMethodData.IsAwaitableValueTask)
+            {
+                ArgumentExceptionAdvanced.ThrowIfNotOfType(
+                    resultType,
+                    typeof(ValueTask),
+                    ExceptionMessages.GetTypeMismatchExceptionMessage(
+                            resultType,
+                            nameof(TResult),
+                            typeof(ValueTask),
+                            "method return type"));
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         private static MethodData GetOrConstructGenericMethod(MethodData targetMethodData, TypeList genericMethodParameters)

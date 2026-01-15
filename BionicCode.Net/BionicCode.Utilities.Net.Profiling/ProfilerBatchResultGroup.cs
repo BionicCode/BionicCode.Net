@@ -51,7 +51,7 @@
 
         internal ProfilerBatchResultGroup()
         {
-            this.TargetType = ProfiledTargetType.None;
+            this.TargetType = ProfiledTargetType.Undefined;
             this.TargetSignature = string.Empty;
         }
 

@@ -1,7 +1,7 @@
 ﻿namespace BionicCode.Utilities.Net
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections.Concurrent;
     using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
@@ -9,7 +9,7 @@
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
 
-    internal sealed class MethodData : MemberData, IMethodDataInvoker
+    internal sealed class MethodData : MemberData, IMethodDataInvoker, IStrictMethodDataInvoker
     {
         private static readonly Type AsyncStateMachineAttributeType = typeof(AsyncStateMachineAttribute);
 
@@ -43,6 +43,7 @@
         private bool? isGenericTypeMethod;
         private MethodData? genericMethodDefinitionData;
         private bool? isReturnValueByRef;
+        private readonly ConcurrentDictionary<(RuntimeTypeHandle returnTypeHandle, RuntimeTypeHandle targetTypehandle), Delegate> _invokerTable;
         private volatile Func<object?, object?[]?, object?>? _invoker;
         private volatile Func<object?, object?[]?, Task>? _asyncTaskInvoker;
         private volatile Func<object?, object?[]?, Task<object?>>? _asyncGenericTaskInvoker;
@@ -67,6 +68,7 @@
         {
             ArgumentNullException.ThrowIfNull(methodInfo, nameof(methodInfo));
 
+            this._invokerTable = new ConcurrentDictionary<(RuntimeTypeHandle returnTypeHandle, RuntimeTypeHandle targetTypehandle), Delegate>();
             this.Handle = methodInfo.MethodHandle;
         }
 
@@ -83,6 +85,18 @@
             return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(genericMethodInfo);
         }
 
+        public MethodData MakeGenericMethodData(params Type[] typeArguments)
+        {
+            MethodInfo genericMethodInfo = GetMethodInfo().MakeGenericMethod(typeArguments);
+            return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(genericMethodInfo);
+        }
+
+        public MethodInfo MakeGenericMethodInfo(TypeList typeArguments)
+          => GetMethodInfo().MakeGenericMethod(typeArguments.Select(t => t.UnwrapType()).ToArray());
+
+        public MethodInfo MakeGenericMethodInfo(params TypeData[] typeArguments)
+          => GetMethodInfo().MakeGenericMethod(typeArguments.Select(t => t.UnwrapType()).ToArray());
+
         public MethodInfo MakeGenericMethodInfo(params Type[] typeArguments)
           => GetMethodInfo().MakeGenericMethod(typeArguments);
 
@@ -97,7 +111,22 @@
         /// parameters, or if the method itself is a generic method definition or contains unassigned generic
         /// parameters.</exception>
         /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="ture"/>)
-        /// you must call the <see cref="InvokeOpenGeneric(object, IEnumerable{TypeData}, object[])"/> overload and provide the generic type parameter arguments.</remarks>
+        /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, object?[]?)"/> overload and provide the generic type parameter arguments.</remarks>
+        public object? Invoke(object? target, params object?[]? args)
+            => Invoke(target, args.AsSpan());
+
+        /// <summary>
+        /// Invokes the represented method on the specified target object using the provided arguments.
+        /// </summary>
+        /// <param name="target">The object on which to invoke the method. For static methods, this parameter is ignored.</param>
+        /// <param name="args">An array of arguments to pass to the method. The number, order, and type of the arguments must match the
+        /// method's parameters.</param>
+        /// <returns>The return value of the invoked method, or null if the method has no return value.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the method is declared on a generic type definition or a type containing unassigned generic
+        /// parameters, or if the method itself is a generic method definition or contains unassigned generic
+        /// parameters.</exception>
+        /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="ture"/>)
+        /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, ReadOnlySpan{object?})"/> overload and provide the generic type parameter arguments.</remarks>
         public object? Invoke(object? target, ReadOnlySpan<object?> args)
         {
             ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously(target, args);
@@ -111,6 +140,83 @@
 
             return invocatorMethod._invoker!.Invoke(target, args.ToArray());
         }
+
+        /// <summary>
+        /// Invokes the represented method on the specified target object using the provided arguments.
+        /// </summary>
+        /// <param name="target">The object on which to invoke the method. For static methods, this parameter is ignored.</param>
+        /// <param name="args">An array of arguments to pass to the method. The number, order, and type of the arguments must match the
+        /// method's parameters.</param>
+        /// <returns>The return value of the invoked method, or null if the method has no return value.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the method is declared on a generic type definition or a type containing unassigned generic
+        /// parameters, or if the method itself is a generic method definition or contains unassigned generic
+        /// parameters.</exception>
+        /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="ture"/>)
+        /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, object?[]?)"/> overload and provide the generic type parameter arguments.</remarks>
+        public object? Invoke<TTarget>(TTarget target, params object?[]? args)
+            => Invoke(target, args.AsSpan());
+
+        /// <summary>
+        /// Invokes the represented method on the specified target object using the provided arguments and returns the
+        /// result.
+        /// </summary>
+        /// <remarks>This method performs validation to ensure that the invocation is valid for the
+        /// method's signature and type constraints. Attempting to invoke an asynchronous or open generic method, or
+        /// providing invalid arguments, will result in an exception. For methods with no return value, use a compatible
+        /// <typeparamref name="TResult"/> type such as void or object.</remarks>
+        /// <typeparam name="TTarget">The type of the object on which the method is invoked.</typeparam>
+        /// <typeparam name="TResult">The type of the value returned by the invoked method.</typeparam>
+        /// <param name="target">The instance of the target object on which to invoke the method. For static methods, this parameter is
+        /// ignored.</param>
+        /// <param name="args">A read-only span containing the arguments to pass to the method. The number, order, and types of arguments
+        /// must match the method's parameters.</param>
+        /// <returns>The result returned by the invoked method.</returns>
+        public TResult Invoke<TTarget, TResult>(TTarget target, ReadOnlySpan<object?> args)
+        {
+            ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously(target, args);
+            ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(Invoke), nameof(InvokeOpenGeneric));
+            ThrowIfTargetIsNullOrTargetTypeIsNotMatchingDeclaringTypeForInstanceMember(target);
+            ThrowIfDeclaringTypeIsAnOpenGenericType();
+            ThrowIfInvalidMethodArguments(args, nameof(args));
+
+            MethodInvoker<TTarget, TResult> invokerMethod = (MethodInvoker<TTarget, TResult>)GetInvokerInternal<TTarget, TResult>(TypeList.Empty, args);
+            Debug.Assert(invokerMethod is not null);
+
+            return invokerMethod.Invoke(target, args.ToArray());
+        }
+
+        public void Invoke<TTarget>(TTarget target, ReadOnlySpan<object?> args)
+        {
+            ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously(target, args);
+            ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(Invoke), nameof(InvokeOpenGeneric));
+            ThrowIfTargetIsNullOrTargetTypeIsNotMatchingDeclaringTypeForInstanceMember(target);
+            ThrowIfDeclaringTypeIsAnOpenGenericType();
+            ThrowIfInvalidMethodArguments(args, nameof(args));
+
+            MethodVoidInvoker<TTarget> invokerMethod = (MethodVoidInvoker<TTarget>)GetInvokerInternal<TTarget, void>(TypeList.Empty, args);
+            Debug.Assert(invokerMethod is not null);
+
+            return invokerMethod.Invoke(target, args.ToArray());
+        }
+
+        /// <summary>
+        /// Invokes an open generic method on the specified target, using the provided generic type arguments and method
+        /// parameters.
+        /// </summary>
+        /// <remarks>The method validates that the provided generic type arguments and method parameters
+        /// match the requirements of the method being invoked. For methods with a 'params' parameter, it is valid to
+        /// omit arguments for the parameter, in which case an empty array is passed.</remarks>
+        /// <param name="target">The object instance on which to invoke the method. Must be non-null for instance methods; ignored for static
+        /// methods.</param>
+        /// <param name="genericMethodParameters">A sequence of generic type arguments to use when constructing the closed generic method. The number of
+        /// elements must match the method's generic parameter count.</param>
+        /// <param name="args">An array of arguments to pass to the method. The number and types of arguments must match the method's
+        /// parameters.</param>
+        /// <returns>The return value of the invoked method, or null if the method has no return value.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the declaring type is a generic type definition or contains unassigned generic parameters, or if
+        /// the method itself is not a closed generic method.</exception>
+        public object? InvokeOpenGeneric(object? target, TypeList genericMethodParameters, params object?[]? args)
+            => InvokeOpenGeneric(target, genericMethodParameters, args.AsSpan());
 
         /// <summary>
         /// Invokes an open generic method on the specified target, using the provided generic type arguments and method
@@ -561,6 +667,26 @@
             return invocatorSource;
         }
 
+        private Delegate GetInvokerInternal<TTarget, TResult>(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+        {
+            Type returnType = typeof(TResult);
+            Type targetType = typeof(TTarget);
+            MethodData invocatorSource = ((IStrictMethodDataInvoker)this).IsInvocable(returnType, targetType)
+                // 'this' is already a closed generic method with constructed invocator.
+                // Reason: only closed generic methods can have invocator/are invocable...
+                ? this
+
+                // ...otherwise generate or get cached invocator
+                : DelegateProvider.GetOrCreateFastMethodInvoker<TTarget, TResult>(this, genericMethodParameters);
+
+            if (invocatorSource._invokerTable.TryGetValue((returnType.TypeHandle, targetType.TypeHandle), out Delegate? invoker))
+            {
+                return invoker;
+            }
+
+            throw new InvalidOperationException("Unable to create  the strictly typed method invoker.");
+        }
+
         public RuntimeMethodHandle Handle { get; }
 
         public MethodData GenericMethodDefinitionData
@@ -895,11 +1021,11 @@
 
         bool IMethodDataInvoker.IsInvocable
             => !this.IsOpenGenericMethodOrGenericMethodDefinition
-                && this._invoker is not null
-                && this._asyncTaskInvoker is not null
-                && this._asyncGenericTaskInvoker is not null
-                && this._asyncValueTaskInvoker is not null
-                && this._asyncGenericValueTaskInvoker is not null;
+                && (this._invoker is not null
+                || this._asyncTaskInvoker is not null
+                || this._asyncGenericTaskInvoker is not null
+                || this._asyncValueTaskInvoker is not null
+                || this._asyncGenericValueTaskInvoker is not null);
 
         void IMethodDataInvoker.SetInvoker(Func<object?, object?[]?, object?>? invocator) => this._invoker = invocator;
         void IMethodDataInvoker.SetInvoker(Func<object?, object?[]?, Task>? asyncTaskInvocator) => this._asyncTaskInvoker = asyncTaskInvocator;
@@ -907,6 +1033,22 @@
         void IMethodDataInvoker.SetInvoker(Func<object?, object?[]?, ValueTask>? asyncValueTaskInvocator) => this._asyncValueTaskInvoker = asyncValueTaskInvocator;
         void IMethodDataInvoker.SetInvoker(Func<object?, object?[]?, ValueTask<object?>>? asyncGenericValueTaskInvocator) => this._asyncGenericValueTaskInvoker = asyncGenericValueTaskInvocator;
 
-        # endregion IMethodDataInvoker
+        #endregion IMethodDataInvoker
+
+        #region IStrictMethodDataInvoker
+
+        bool IStrictMethodDataInvoker.IsInvocable(Type returnType, Type targetType)
+            => this._invokerTable.ContainsKey((returnType.TypeHandle, targetType.TypeHandle));
+        void IStrictMethodDataInvoker.SetInvoker(Type returnType, Type targetType, Delegate strictlyTypedInvoker)
+        {
+            ArgumentNullException.ThrowIfNull(returnType);
+            ArgumentNullException.ThrowIfNull(targetType);
+            ArgumentNullException.ThrowIfNull(strictlyTypedInvoker);
+
+            // Store the invoker in a concurrent dictionary for later use
+            this._invokerTable.TryAdd((returnType.TypeHandle, targetType.TypeHandle), strictlyTypedInvoker);
+        }
+
+        #endregion IStrictMethodDataInvoker
     }
 }

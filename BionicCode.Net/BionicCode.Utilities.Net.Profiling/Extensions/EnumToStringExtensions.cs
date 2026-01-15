@@ -15,7 +15,7 @@
         {
             switch (profiledTargetType)
             {
-                case ProfiledTargetType.None:
+                case ProfiledTargetType.Undefined:
                     return toUpperCase ? "None" : "none";
                 case ProfiledTargetType.PropertyGet:
                     {
@@ -27,8 +27,8 @@
                         string result = toUpperCase ? "Property" : "property";
                         return toBaseType ? result : $"{result} set()";
                     }
-                case ProfiledTargetType.Property:
-                    return toUpperCase ? "Property" : "property";
+                //case ProfiledTargetType.Property:
+                //    return toUpperCase ? "Property" : "property";
                 case ProfiledTargetType.Constructor:
                     return toUpperCase ? "Constructor" : "constructor";
                 case ProfiledTargetType.Event:
@@ -37,8 +37,8 @@
                     return toUpperCase ? "Delegate" : "delegate";
                 case ProfiledTargetType.Method:
                     return toUpperCase ? "Method" : "method";
-                case ProfiledTargetType.Indexer:
-                    return toUpperCase ? "Indexer" : "indexer";
+                //case ProfiledTargetType.Indexer:
+                //    return toUpperCase ? "Indexer" : "indexer";
                 case ProfiledTargetType.IndexerGet:
                     {
                         string result = toUpperCase ? "Indexer" : "indexer";

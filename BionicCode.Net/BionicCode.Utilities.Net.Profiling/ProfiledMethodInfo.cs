@@ -1,14 +1,15 @@
 ﻿namespace BionicCode.Utilities.Net.Profiling
 {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
 
     internal class ProfiledMethodInfo : ProfiledMemberInfo
     {
-        public ProfiledMethodInfo(IList<MethodArgumentInfo> argumentInfo, MethodData methodData, string sourceFilePath, int lineNumber, string assemblyName, Runtime targetFramework, bool isStatic)
+        public ProfiledMethodInfo(IEnumerable<MethodArgumentInfo> argumentInfo, MethodData methodData, string sourceFilePath, int lineNumber, string assemblyName, Runtime targetFramework, bool isStatic)
           : base(isStatic, assemblyName, lineNumber, sourceFilePath, targetFramework)
         {
             this.MethodData = methodData;
-            this.ArgumentInfo = argumentInfo;
+            this.ArgumentInfo = argumentInfo.ToImmutableList();
         }
 
         public MethodData MethodData { get; }
@@ -19,10 +20,11 @@
 
         public bool IsAwaitableValueTask => this.MethodData.IsAwaitableValueTask;
         public bool IsAwaitableGenericValueTask => this.MethodData.IsAwaitableGenericValueTask;
+        public bool IsAwaitableGenericTask => this.MethodData.IsAwaitableGenericTask;
 
         public bool IsGeneric => this.MethodData.IsGenericMethod;
 
         public override MemberData MemberInfoData => this.MethodData;
-        public IList<MethodArgumentInfo> ArgumentInfo { get; }
+        public ImmutableList<MethodArgumentInfo> ArgumentInfo { get; }
     }
 }

@@ -419,14 +419,64 @@
         //internal static async Task<ProfilerBatchResult> LogTimeAsyncInternal<TResult>(Func<ValueTask<TResult>> asyncValueTaskAction, Action action, int warmupCount, int runCount, int argumentListIndex, ProfilerLoggerDelegate logger, ProfilerLoggerAsyncDelegate asyncLogger, TimeUnit baseUnit, string sourceFileName, int lineNumber)
         //  => LogTimeAsyncInternal(new ProfilerTargetInvokeInfo())
 
-        internal static async Task<ProfilerBatchResult> LogTimeInternalAsync(ProfilerContext context)
+        //internal static async Task<ProfilerBatchResult> LogTimeInternalAsync(ProfilerContext context)
+        //{
+        //    if (context.IterationCount < 1)
+        //    {
+        //        return ProfilerBatchResult.Empty;
+        //    }
+
+        //    ProfilerBatchResult result = await LogAverageTimeInternalAsync(context);
+        //    context.Logger?.Invoke(result, result.Summary);
+        //    if (context.AsyncLogger != null)
+        //    {
+        //        await context.AsyncLogger.Invoke(result, result.Summary);
+        //    }
+
+        //    return result;
+        //}
+
+        //private static async Task<ProfilerBatchResult> LogAverageTimeInternalAsync(ProfilerContext context)
+        //{
+        //    ProfilerBatchResult? result = null;
+        //    ProfiledTargetType profiledTargetType = context.MethodInvokeInfo.ProfiledTargetType;
+        //    if (profiledTargetType is ProfiledTargetType.Method)
+        //    {
+        //        result = await LogMethodAsync(context);
+        //    }
+        //    else if (profiledTargetType is ProfiledTargetType.Constructor)
+        //    {
+        //        result = LogConstructor(context);
+        //    }
+        //    else if (profiledTargetType.HasFlag(ProfiledTargetType.PropertyGet))
+        //    {
+        //        result = LogPropertyGet(context);
+        //    }
+        //    else if (profiledTargetType.HasFlag(ProfiledTargetType.PropertySet))
+        //    {
+        //        result = LogPropertySet(context);
+        //    }
+
+        //    return result;
+        //}
+
+        internal static async Task<ProfilerBatchResult> LogMethodTimeInternalAsync<TTarget>(MethodProfilerContext<TTarget> context)
         {
             if (context.IterationCount < 1)
             {
                 return ProfilerBatchResult.Empty;
             }
 
-            ProfilerBatchResult result = await LogAverageTimeInternalAsync(context);
+            ProfilerBatchResult result = context.MethodData switch
+            {
+                { IsAwaitable: false } => await LogSynchronousMethodAsync(context),
+                { IsAwaitableTask: true } => await LogAwaitableTaskMethodAsync(context),
+                { IsAwaitableGenericTask: true } => await LogAwaitableGenericTaskMethodAsync(context),
+                { IsAwaitableValueTask: true } => await LogAwaitableValueTaskMethodAsync(context),
+                { IsAwaitableGenericValueTask: true } => await LogAwaitableGenericValueTaskMethodAsync(context),
+                _ => throw new NotSupportedException("The specified method type is not supported for profiling."),
+            };
+
             context.Logger?.Invoke(result, result.Summary);
             if (context.AsyncLogger != null)
             {
@@ -436,45 +486,92 @@
             return result;
         }
 
-        private static async Task<ProfilerBatchResult> LogAverageTimeInternalAsync(ProfilerContext context)
+        private static async Task<ProfilerBatchResult> LogSynchronousMethodAsync<TTarget>(MethodProfilerContext<TTarget> context)
         {
-            ProfilerBatchResult? result = null;
-            ProfiledTargetType profiledTargetType = context.MethodInvokeInfo.ProfiledTargetType;
-            if (profiledTargetType is ProfiledTargetType.Method)
+            ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
+            var stopwatch = new Stopwatch();
+            TTarget invocationTarget = context.TargetInstance;
+            object?[]? arguments = context.ArgumentInfo.Arguments?.ToArray();
+            bool isTaskCancelled = false;
+            return await Task.Run(() =>
             {
-                result = await LogMethodAsync(context);
-            }
-            else if (profiledTargetType is ProfiledTargetType.Constructor)
+                for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
+                {
+                    try
+                    {
+                        stopwatch.Restart();
+                        _ = context.MethodData.Invoke(invocationTarget, arguments);
+                        stopwatch.Stop();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        stopwatch.Stop();
+                        isTaskCancelled = true;
+                    }
+
+                    if (iterationCounter < 1)
+                    {
+                        // Still warming up
+                        continue;
+                    }
+
+                    var iterationResult = new ProfilerResult(iterationCounter, isTaskCancelled, stopwatch.Elapsed, result, context.ArgumentInfo.ArgumentListIndex);
+                    result.AddResult(iterationResult);
+                }
+
+                return result;
+            });
+        }
+
+        private static async Task<ProfilerBatchResult> LogAwaitableTaskMethodAsync<TTarget>(MethodProfilerContext<TTarget> context)
+        {
+            ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
+            var stopwatch = new Stopwatch();
+            TTarget invocationTarget = context.TargetInstance;
+            object?[]? arguments = context.ArgumentInfo.Arguments?.ToArray();
+            bool isTaskCancelled = false;
+            for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
             {
-                result = LogConstructor(context);
-            }
-            else if (profiledTargetType.HasFlag(ProfiledTargetType.PropertyGet))
-            {
-                result = LogPropertyGet(context);
-            }
-            else if (profiledTargetType.HasFlag(ProfiledTargetType.PropertySet))
-            {
-                result = LogPropertySet(context);
+                try
+                {
+                    stopwatch.Restart();
+                    await context.MethodData.InvokeAwaitableTaskAsync(invocationTarget, arguments);
+                    stopwatch.Stop();
+                }
+                catch (OperationCanceledException)
+                {
+                    stopwatch.Stop();
+                    isTaskCancelled = true;
+                }
+
+                if (iterationCounter < 1)
+                {
+                    // Still warming up
+                    continue;
+                }
+
+                var iterationResult = new ProfilerResult(iterationCounter, isTaskCancelled, stopwatch.Elapsed, result, context.MethodInvokeInfo.MethodArgument.ArgumentListIndex);
+                result.AddResult(iterationResult);
             }
 
             return result;
         }
 
-        private static async Task<ProfilerBatchResult> LogMethodAsync(ProfilerContext context)
+        private static async Task<ProfilerBatchResult> LogAwaitableGenericTaskMethodAsync<TTarget>(MethodProfilerContext<TTarget> context)
         {
             ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
             var stopwatch = new Stopwatch();
-            object invocationTarget = context.MethodInvokeInfo.Target;
+            TTarget invocationTarget = context.TargetInstance;
             object[] arguments = context.MethodInvokeInfo.MethodArgument.Arguments.ToArray();
             bool isTaskCancelled = false;
             for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
             {
-                if (context.MethodInvokeInfo.AsynchronousTaskMethodInvocator != null)
+                if (context.MethodInvokeInfo.AsynchronousTaskMethodInvoker != null)
                 {
                     try
                     {
                         stopwatch.Restart();
-                        await context.MethodInvokeInfo.AsynchronousTaskMethodInvocator.Invoke(invocationTarget, arguments);
+                        await context.MethodInvokeInfo.AsynchronousTaskMethodInvoker.Invoke(invocationTarget, arguments);
                         stopwatch.Stop();
                     }
                     catch (OperationCanceledException)
@@ -483,12 +580,12 @@
                         isTaskCancelled = true;
                     }
                 }
-                else if (context.MethodInvokeInfo.AsynchronousValueTaskMethodInvocator != null)
+                else if (context.MethodInvokeInfo.AsynchronousValueTaskMethodInvoker != null)
                 {
                     try
                     {
                         stopwatch.Restart();
-                        await context.MethodInvokeInfo.AsynchronousValueTaskMethodInvocator.Invoke(invocationTarget, arguments);
+                        await context.MethodInvokeInfo.AsynchronousValueTaskMethodInvoker.Invoke(invocationTarget, arguments);
                         stopwatch.Stop();
                     }
                     catch (OperationCanceledException)
@@ -497,12 +594,144 @@
                         isTaskCancelled = true;
                     }
                 }
-                else if (context.MethodInvokeInfo.AsynchronousGenericValueTaskMethodInvocator != null)
+                else if (context.MethodInvokeInfo.AsynchronousGenericValueTaskMethodInvoker != null)
                 {
                     try
                     {
                         stopwatch.Restart();
-                        dynamic profiledValueTask = context.MethodInvokeInfo.AsynchronousGenericValueTaskMethodInvocator.Invoke(invocationTarget, arguments);
+                        dynamic profiledValueTask = context.MethodInvokeInfo.AsynchronousGenericValueTaskMethodInvoker.Invoke(invocationTarget, arguments);
+                        await profiledValueTask;
+                        stopwatch.Stop();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        stopwatch.Stop();
+                        isTaskCancelled = true;
+                    }
+                }
+
+                if (iterationCounter < 1)
+                {
+                    // Still warming up
+                    continue;
+                }
+
+                var iterationResult = new ProfilerResult(iterationCounter, isTaskCancelled, stopwatch.Elapsed, result, context.MethodInvokeInfo.MethodArgument.ArgumentListIndex);
+                result.AddResult(iterationResult);
+            }
+
+            return result;
+        }
+
+        private static async Task<ProfilerBatchResult> LogAwaitableValueTaskMethodAsync<TTarget>(MethodProfilerContext<TTarget> context)
+        {
+            ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
+            var stopwatch = new Stopwatch();
+            TTarget invocationTarget = context.TargetInstance;
+            object[] arguments = context.MethodInvokeInfo.MethodArgument.Arguments.ToArray();
+            bool isTaskCancelled = false;
+            for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
+            {
+                if (context.MethodInvokeInfo.AsynchronousTaskMethodInvoker != null)
+                {
+                    try
+                    {
+                        stopwatch.Restart();
+                        await context.MethodInvokeInfo.AsynchronousTaskMethodInvoker.Invoke(invocationTarget, arguments);
+                        stopwatch.Stop();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        stopwatch.Stop();
+                        isTaskCancelled = true;
+                    }
+                }
+                else if (context.MethodInvokeInfo.AsynchronousValueTaskMethodInvoker != null)
+                {
+                    try
+                    {
+                        stopwatch.Restart();
+                        await context.MethodInvokeInfo.AsynchronousValueTaskMethodInvoker.Invoke(invocationTarget, arguments);
+                        stopwatch.Stop();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        stopwatch.Stop();
+                        isTaskCancelled = true;
+                    }
+                }
+                else if (context.MethodInvokeInfo.AsynchronousGenericValueTaskMethodInvoker != null)
+                {
+                    try
+                    {
+                        stopwatch.Restart();
+                        dynamic profiledValueTask = context.MethodInvokeInfo.AsynchronousGenericValueTaskMethodInvoker.Invoke(invocationTarget, arguments);
+                        await profiledValueTask;
+                        stopwatch.Stop();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        stopwatch.Stop();
+                        isTaskCancelled = true;
+                    }
+                }
+
+                if (iterationCounter < 1)
+                {
+                    // Still warming up
+                    continue;
+                }
+
+                var iterationResult = new ProfilerResult(iterationCounter, isTaskCancelled, stopwatch.Elapsed, result, context.MethodInvokeInfo.MethodArgument.ArgumentListIndex);
+                result.AddResult(iterationResult);
+            }
+
+            return result;
+        }
+
+        private static async Task<ProfilerBatchResult> LogAwaitableGenericValueTaskMethodAsync<TTarget>(MethodProfilerContext<TTarget> context)
+        {
+            ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
+            var stopwatch = new Stopwatch();
+            TTarget invocationTarget = context.TargetInstance;
+            object[] arguments = context.MethodInvokeInfo.MethodArgument.Arguments.ToArray();
+            bool isTaskCancelled = false;
+            for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
+            {
+                if (context.MethodInvokeInfo.AsynchronousTaskMethodInvoker != null)
+                {
+                    try
+                    {
+                        stopwatch.Restart();
+                        await context.MethodInvokeInfo.AsynchronousTaskMethodInvoker.Invoke(invocationTarget, arguments);
+                        stopwatch.Stop();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        stopwatch.Stop();
+                        isTaskCancelled = true;
+                    }
+                }
+                else if (context.MethodInvokeInfo.AsynchronousValueTaskMethodInvoker != null)
+                {
+                    try
+                    {
+                        stopwatch.Restart();
+                        await context.MethodInvokeInfo.AsynchronousValueTaskMethodInvoker.Invoke(invocationTarget, arguments);
+                        stopwatch.Stop();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        stopwatch.Stop();
+                        isTaskCancelled = true;
+                    }
+                }
+                else if (context.MethodInvokeInfo.AsynchronousGenericValueTaskMethodInvoker != null)
+                {
+                    try
+                    {
+                        stopwatch.Restart();
+                        dynamic profiledValueTask = context.MethodInvokeInfo.AsynchronousGenericValueTaskMethodInvoker.Invoke(invocationTarget, arguments);
                         await profiledValueTask;
                         stopwatch.Stop();
                     }
@@ -534,7 +763,7 @@
             for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
             {
                 stopwatch.Restart();
-                _ = context.MethodInvokeInfo.ConstructorInvocator.Invoke(arguments);
+                _ = context.MethodInvokeInfo.ConstructorInvoker.Invoke(arguments);
                 stopwatch.Stop();
 
                 if (iterationCounter < 1)
@@ -562,7 +791,7 @@
             for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
             {
                 stopwatch.Restart();
-                context.MethodInvokeInfo.PropertySetInvocator.Invoke(invocationTarget, value, indexArguments);
+                context.MethodInvokeInfo.PropertySetInvoker.Invoke(invocationTarget, value, indexArguments);
                 stopwatch.Stop();
 
                 if (iterationCounter < 1)
@@ -589,7 +818,7 @@
             for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
             {
                 stopwatch.Restart();
-                _ = context.MethodInvokeInfo.PropertyGetInvocator.Invoke(invocationTarget, indexArguments);
+                _ = context.MethodInvokeInfo.PropertyGetInvoker.Invoke(invocationTarget, indexArguments);
                 stopwatch.Stop();
 
                 if (iterationCounter < 1)
@@ -644,7 +873,7 @@
         {
             var assemblyOfTargetType = Assembly.GetCallingAssembly();
             string assemblyName = assemblyOfTargetType.GetName().Name;
-            var profilerTargetInfo = new ProfilerTargetInvokeInfo(scopeName, scopeName, scopeName, scopeName, string.Empty, assemblyName);
+            var profilerTargetInfo = new ProfilerPropertyInvokeInfo(scopeName, scopeName, scopeName, scopeName, string.Empty, assemblyName);
             var context = new ProfilerContext(profilerTargetInfo, sourceFileName, lineNumber, -1, -1, Runtime.Current, baseUnit, logger, null);
             var profilerScopeProvider = new ProfilerScopeProvider(logger, context);
             IDisposable profilerScope = profilerScopeProvider.StartProfiling(out result);
@@ -691,7 +920,7 @@
         {
             var assemblyOfTargetType = Assembly.GetCallingAssembly();
             string assemblyName = assemblyOfTargetType.GetName().Name;
-            var profilerTargetInfo = new ProfilerTargetInvokeInfo(scopeName, scopeName, scopeName, scopeName, string.Empty, assemblyName);
+            var profilerTargetInfo = new ProfilerPropertyInvokeInfo(scopeName, scopeName, scopeName, scopeName, string.Empty, assemblyName);
             var context = new ProfilerContext(profilerTargetInfo, sourceFileName, lineNumber, -1, -1, Runtime.Current, baseUnit, null, asyncLogger);
             var profilerScopeProvider = new ProfilerScopeProvider(asyncLogger, context);
             IAsyncDisposable profilerScope = profilerScopeProvider.StartProfilingAsync(out result);
