@@ -6,6 +6,7 @@
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.InteropServices;
     using System.Threading;
     using System.Threading.Tasks;
     using BionicCode.Utilities.Net.Profiling.Ipc;
@@ -344,15 +345,15 @@
                         {
                             if (method.IsAwaitableTask)
                             {
-                                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, arguments, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.MethodData.SymbolComponentInfo, method.Namespace, method.AssemblyName, asynchronousTaskMethodInvocator: method.MethodData.GetAwaitableTaskInvocator(), ProfiledTargetType.Method);
+                                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, arguments, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.MethodData.SymbolComponentInfo, method.Namespace, method.AssemblyName, asynchronousTaskMethodInvocator: method.MethodData.GetAwaitableTaskInvoker(CollectionsMarshal.AsSpan(arguments.Arguments)), ProfiledTargetType.Method);
                             }
                             else if (method.IsAwaitableValueTask)
                             {
-                                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, arguments, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.MethodData.SymbolComponentInfo, method.Namespace, method.AssemblyName, asynchronousValueTaskMethodInvocator: method.MethodData.GetAwaitableValueTaskInvocator(), ProfiledTargetType.Method);
+                                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, arguments, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.MethodData.SymbolComponentInfo, method.Namespace, method.AssemblyName, asynchronousValueTaskMethodInvocator: method.MethodData.GetAwaitableValueTaskInvoker(CollectionsMarshal.AsSpan(arguments.Arguments)), ProfiledTargetType.Method);
                             }
                             else
                             {
-                                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.MethodData.SymbolComponentInfo, method.Namespace, method.AssemblyName, arguments, asynchronousGenericValueTaskMethodInvocator: method.MethodData.GetAwaitableGenericValueTaskInvocator(), ProfiledTargetType.Method);
+                                invocationInfo = new ProfilerTargetInvokeInfo(profiledInstance, method.Signature, method.DisplayName, method.ShortSignature, method.ShortDisplayName, method.MethodData.SymbolComponentInfo, method.Namespace, method.AssemblyName, arguments, asynchronousGenericValueTaskMethodInvocator: method.MethodData.GetAwaitableValueTaskWithResultInvoker(CollectionsMarshal.AsSpan(arguments.Arguments)), ProfiledTargetType.Method);
                             }
                         }
                         else

@@ -78,11 +78,11 @@
                 {
                     if (this.factoryMethodData.IsAwaitableTask)
                     {
-                        this.instance = await this.factoryMethodData.InvokeTaskWithResultAsync(target, this.ArgumentList);
+                        this.instance = await this.factoryMethodData.InvokeAwaitableTaskWithResultAsync(target, this.ArgumentList);
                     }
                     else if (this.factoryMethodData.IsAwaitableGenericValueTask)
                     {
-                        this.instance = await this.factoryMethodData.InvokeValueTaskWithResultAsync(target, this.ArgumentList);
+                        this.instance = await this.factoryMethodData.InvokeAwaitableValueTaskWithResultAsync(target, this.ArgumentList);
                     }
                 }
             }
