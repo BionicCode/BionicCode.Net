@@ -584,14 +584,14 @@
                         args.Length,
                         this.Parameters.Count,
                         paramName,
-                        $"Parameter count mismatch. The number of method arguments provided by the argument list {paramName} does not match the method's signature. Expected: '{this.Parameters.Count - 1}' arguments. Found: '{args.Length}' arguments.");
+                        $"Parameter count mismatch. The number of method arguments provided by the argument list {paramName} does not match the method's signature. Expected: '{this.Parameters.Count}' arguments. Found: '{args.Length}' arguments.");
                 }
             }
             else if (!args.IsEmpty) // Method has no parameters but arguments were provided.
             {
                 throw new ArgumentOutOfRangeExceptionAdvanced(
                     paramName,
-                    $"Parameter count mismatch. The number of method arguments provided by the argument list {paramName} does not match the method's signature. Expected: '{this.Parameters.Count - 1}' arguments. Found: '{args.Length}' arguments.");
+                    $"Parameter count mismatch. The number of method arguments provided by the argument list {paramName} does not match the method's signature. Expected: '{this.Parameters.Count}' arguments. Found: '{args.Length}' arguments.");
             }
         }
 
@@ -649,7 +649,7 @@
 
         private void ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(string nameOfWrongMethod, string nameOfCorrectMethod)
         {
-            if (!this.IsOpenGenericMethodOrGenericMethodDefinition)
+            if (this.IsOpenGenericMethodOrGenericMethodDefinition)
             {
                 throw new InvalidOperationException($"Cannot invoke generic methods that are not closed using {nameOfWrongMethod}. Call {nameOfCorrectMethod} instead to ensure the generic method is properly closed by specifying the required generic type arguments.");
             }

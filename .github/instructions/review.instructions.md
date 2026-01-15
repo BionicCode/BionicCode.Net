@@ -17,4 +17,4 @@ Include the following items:
 ## Definition of "Complete"
 
 “Complete” means complete **with respect to the code that is available to the assistant in the current prompt/context**.  
-If additional files are required to increase coverage, the review must explicitly request them.
+If additional files are required to increase coverage, the review must explicitly request them. But always give feedback which files and types are needed to complete coverage in form of a list.

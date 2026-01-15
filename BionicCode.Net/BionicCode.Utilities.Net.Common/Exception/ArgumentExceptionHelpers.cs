@@ -502,7 +502,7 @@
         /// and should not be set explicitly.</param>
         /// <param name="message">An optional exception message.</param>
         /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not equal to <paramref name="other"/>.</exception>
-        public static void ThrowIfNotOfType(Type value, Type other, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
+        public static void ThrowIfNotEqualsType(Type value, Type other, [CallerArgumentExpression(nameof(value))] string? paramName = null, string? message = null)
         {
             ArgumentNullException.ThrowIfNull(value, paramName);
             ArgumentNullException.ThrowIfNull(other);

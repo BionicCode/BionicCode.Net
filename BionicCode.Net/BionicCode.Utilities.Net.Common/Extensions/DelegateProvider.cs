@@ -118,41 +118,40 @@
                 ? Expression.Call(methodInfo, callArgs)
                 : Expression.Call(instance!, methodInfo, callArgs); // instance required for non-static :contentReference[oaicite:7]{index=7}
 
-            Expression body = methodData.IsVoidMethod
-                ? Expression.Block(call, Expression.Constant(null, typeof(object)))
-                : methodData.IsAwaitableGenericTask
-                    ? Expression.Convert(call, typeof(Task<object>))
-                    : methodData.IsAwaitableGenericValueTask
-                        ? Expression.Convert(call, typeof(ValueTask<object>))
-                        : methodData.IsAwaitableValueTask
-                            ? Expression.Convert(call, typeof(ValueTask))
-                            : methodData.IsAwaitableTask
-                                ? Expression.Convert(call, typeof(Task))
-                                : Expression.Convert(call, typeof(object));
-
             Func<object?, object?[]?, object?>? invocator = null;
             Func<object?, object?[]?, Task<object?>>? awaitableGenericTaskInvocator = null;
             Func<object?, object?[]?, ValueTask<object?>>? awaitableGenericValueTaskInvocator = null;
             Func<object?, object?[]?, ValueTask>? awaitableValueTaskInvocator = null;
             Func<object?, object?[]?, Task>? awaitableTaskInvocator = null;
-            if (methodData.IsAwaitableGenericTask)
+            Expression body;
+            if (methodData.IsVoidMethod)
             {
+                body = Expression.Block(call, Expression.Constant(null, typeof(object)));
+                invocator = Expression.Lambda<Func<object?, object?[]?, object?>>(body, targetParam, argsParam).Compile();
+            }
+            else if (methodData.IsAwaitableGenericTask)
+            {
+                body = Expression.Convert(call, typeof(Task<object>));
                 awaitableGenericTaskInvocator = Expression.Lambda<Func<object?, object?[]?, Task<object?>>>(body, targetParam, argsParam).Compile();
             }
             else if (methodData.IsAwaitableGenericValueTask)
             {
+                body = Expression.Convert(call, typeof(ValueTask<object>));
                 awaitableGenericValueTaskInvocator = Expression.Lambda<Func<object?, object?[]?, ValueTask<object?>>>(body, targetParam, argsParam).Compile();
             }
             else if (methodData.IsAwaitableValueTask)
             {
+                body = Expression.Convert(call, typeof(ValueTask));
                 awaitableValueTaskInvocator = Expression.Lambda<Func<object?, object?[]?, ValueTask>>(body, targetParam, argsParam).Compile();
             }
             else if (methodData.IsAwaitableTask)
             {
+                body = Expression.Convert(call, typeof(Task));
                 awaitableTaskInvocator = Expression.Lambda<Func<object?, object?[]?, Task>>(body, targetParam, argsParam).Compile();
             }
             else
             {
+                body = Expression.Convert(call, typeof(object));
                 invocator = Expression.Lambda<Func<object?, object?[]?, object?>>(body, targetParam, argsParam).Compile();
             }
 
@@ -209,7 +208,7 @@
 
             // Get or construct the (closed) generic method data if required.
             MethodData methodData = targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition
-                ? DelegateProvider.GetOrConstructGenericMethod(targetMethodData, genericMethodParameters)
+                ? DelegateProvider.GetOrConstructStrictGenericMethod(targetType.ToTypeData(), resultType.ToTypeData(), targetMethodData, genericMethodParameters)
                 : targetMethodData;
 
             // If the closed method has already a generated invoker, it will be returned directly.
@@ -346,7 +345,7 @@
             }
             else if (targetMethodData.IsAwaitableValueTask)
             {
-                ArgumentExceptionAdvanced.ThrowIfNotOfType(
+                ArgumentExceptionAdvanced.ThrowIfNotEqualsType(
                     resultType,
                     typeof(ValueTask),
                     ExceptionMessages.GetTypeMismatchExceptionMessage(
@@ -374,11 +373,38 @@
             }
             else // Create closed generic method data for the specified generic method parameters.
             {
-                MethodData closedGenericMethodData = targetMethodData.MakeGenericMethodData(genericMethodParameters);
-                _ = DelegateProvider.InvocatorKeyMap.TryAdd(invocatorKeyMapKey, closedGenericMethodData.CacheKey);
-                methodData = closedGenericMethodData;
+                methodData = CloseOpenGenericMethodAndAddToCache(targetMethodData, genericMethodParameters, invocatorKeyMapKey);
             }
 
+            return methodData;
+        }
+
+        private static MethodData GetOrConstructStrictGenericMethod(TypeData targetTypeData, TypeData methodTypeData, MethodData targetMethodData, TypeList genericMethodParameters)
+        {
+            MethodData methodData;
+
+            IEnumerable<TypeData> typeList = (new[] { targetTypeData, methodTypeData }).Concat(genericMethodParameters.AsEnumerable());
+            // Try get cached constructed invocator for the specified generic method parameters.
+            var invocatorKeyMapKey = InvokerKeyMapKey.Create(typeList);
+            if (DelegateProvider.InvocatorKeyMap.TryGetValue(invocatorKeyMapKey, out SymbolInfoDataCacheKey symbolInfoCacheKey)
+                && SymbolReflectionInfoCache.TryGetSymbolInfoDataCacheEntry(symbolInfoCacheKey, out MethodData? cachedMethodData))
+            {
+                methodData = cachedMethodData!;
+            }
+            else // Create closed generic method data for the specified generic method parameters.
+            {
+                methodData = CloseOpenGenericMethodAndAddToCache(targetMethodData, genericMethodParameters, invocatorKeyMapKey);
+            }
+
+            return methodData;
+        }
+
+        private static MethodData CloseOpenGenericMethodAndAddToCache(MethodData targetMethodData, TypeList genericMethodParameters, InvokerKeyMapKey invocatorKeyMapKey)
+        {
+            MethodData methodData;
+            MethodData closedGenericMethodData = targetMethodData.MakeGenericMethodData(genericMethodParameters);
+            _ = DelegateProvider.InvocatorKeyMap.TryAdd(invocatorKeyMapKey, closedGenericMethodData.CacheKey);
+            methodData = closedGenericMethodData;
             return methodData;
         }
 
