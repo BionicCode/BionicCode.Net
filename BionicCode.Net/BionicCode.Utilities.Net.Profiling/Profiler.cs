@@ -470,11 +470,9 @@
             ProfilerBatchResult result = context.MethodData switch
             {
                 { IsAwaitable: false } => await LogSynchronousMethodAsync(context),
-                { IsAwaitableTask: true } => await LogAwaitableTaskMethodAsync(context),
-                { IsAwaitableGenericTask: true } => await LogAwaitableGenericTaskMethodAsync(context),
-                { IsAwaitableValueTask: true } => await LogAwaitableValueTaskMethodAsync(context),
-                { IsAwaitableGenericValueTask: true } => await LogAwaitableGenericValueTaskMethodAsync(context),
-                _ => throw new NotSupportedException("The specified method type is not supported for profiling."),
+                var methodData when methodData.IsAwaitableTask || methodData.IsAwaitableGenericTask => await LogAwaitableTaskMethodAsync(context),
+                var methodData when methodData.IsAwaitableValueTask || methodData.IsAwaitableGenericValueTask => await LogAwaitableValueTaskMethodAsync(context),
+                _ => throw new NotSupportedException("The specified method state is not supported for profiling."),
             };
 
             context.Logger?.Invoke(result, result.Summary);
@@ -491,7 +489,7 @@
             ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
             var stopwatch = new Stopwatch();
             TTarget invocationTarget = context.TargetInstance;
-            object?[]? arguments = context.ArgumentInfo.Arguments?.ToArray();
+            object?[] arguments = context.ArgumentInfo.Arguments.ToArray();
             bool isTaskCancelled = false;
             return await Task.Run(() =>
             {
@@ -500,7 +498,7 @@
                     try
                     {
                         stopwatch.Restart();
-                        _ = context.MethodData.Invoke(invocationTarget, arguments);
+                        context.MethodData.Invoke(invocationTarget, arguments);
                         stopwatch.Stop();
                     }
                     catch (OperationCanceledException)
@@ -528,14 +526,14 @@
             ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
             var stopwatch = new Stopwatch();
             TTarget invocationTarget = context.TargetInstance;
-            object?[]? arguments = context.ArgumentInfo.Arguments?.ToArray();
+            object?[] arguments = context.ArgumentInfo.Arguments.ToArray();
             bool isTaskCancelled = false;
             for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
             {
                 try
                 {
                     stopwatch.Restart();
-                    await context.MethodData.InvokeAwaitableTaskAsync(invocationTarget, arguments);
+                    await context.MethodData.InvokeAwaitableTaskAndDiscardResultAsync(invocationTarget, arguments);
                     stopwatch.Stop();
                 }
                 catch (OperationCanceledException)
@@ -550,73 +548,7 @@
                     continue;
                 }
 
-                var iterationResult = new ProfilerResult(iterationCounter, isTaskCancelled, stopwatch.Elapsed, result, context.MethodInvokeInfo.MethodArgument.ArgumentListIndex);
-                result.AddResult(iterationResult);
-            }
-
-            return result;
-        }
-
-        private static async Task<ProfilerBatchResult> LogAwaitableGenericTaskMethodAsync<TTarget>(MethodProfilerContext<TTarget> context)
-        {
-            ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
-            var stopwatch = new Stopwatch();
-            TTarget invocationTarget = context.TargetInstance;
-            object[] arguments = context.MethodInvokeInfo.MethodArgument.Arguments.ToArray();
-            bool isTaskCancelled = false;
-            for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
-            {
-                if (context.MethodInvokeInfo.AsynchronousTaskMethodInvoker != null)
-                {
-                    try
-                    {
-                        stopwatch.Restart();
-                        await context.MethodInvokeInfo.AsynchronousTaskMethodInvoker.Invoke(invocationTarget, arguments);
-                        stopwatch.Stop();
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        stopwatch.Stop();
-                        isTaskCancelled = true;
-                    }
-                }
-                else if (context.MethodInvokeInfo.AsynchronousValueTaskMethodInvoker != null)
-                {
-                    try
-                    {
-                        stopwatch.Restart();
-                        await context.MethodInvokeInfo.AsynchronousValueTaskMethodInvoker.Invoke(invocationTarget, arguments);
-                        stopwatch.Stop();
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        stopwatch.Stop();
-                        isTaskCancelled = true;
-                    }
-                }
-                else if (context.MethodInvokeInfo.AsynchronousGenericValueTaskMethodInvoker != null)
-                {
-                    try
-                    {
-                        stopwatch.Restart();
-                        dynamic profiledValueTask = context.MethodInvokeInfo.AsynchronousGenericValueTaskMethodInvoker.Invoke(invocationTarget, arguments);
-                        await profiledValueTask;
-                        stopwatch.Stop();
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        stopwatch.Stop();
-                        isTaskCancelled = true;
-                    }
-                }
-
-                if (iterationCounter < 1)
-                {
-                    // Still warming up
-                    continue;
-                }
-
-                var iterationResult = new ProfilerResult(iterationCounter, isTaskCancelled, stopwatch.Elapsed, result, context.MethodInvokeInfo.MethodArgument.ArgumentListIndex);
+                var iterationResult = new ProfilerResult(iterationCounter, isTaskCancelled, stopwatch.Elapsed, result, context.ArgumentInfo.ArgumentListIndex);
                 result.AddResult(iterationResult);
             }
 
@@ -628,52 +560,20 @@
             ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
             var stopwatch = new Stopwatch();
             TTarget invocationTarget = context.TargetInstance;
-            object[] arguments = context.MethodInvokeInfo.MethodArgument.Arguments.ToArray();
+            object?[] arguments = context.ArgumentInfo.Arguments.ToArray();
             bool isTaskCancelled = false;
             for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
             {
-                if (context.MethodInvokeInfo.AsynchronousTaskMethodInvoker != null)
+                try
                 {
-                    try
-                    {
-                        stopwatch.Restart();
-                        await context.MethodInvokeInfo.AsynchronousTaskMethodInvoker.Invoke(invocationTarget, arguments);
-                        stopwatch.Stop();
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        stopwatch.Stop();
-                        isTaskCancelled = true;
-                    }
+                    stopwatch.Restart();
+                    await context.MethodData.InvokeAwaitableValueTaskAndDiscardResultAsync(invocationTarget, arguments);
+                    stopwatch.Stop();
                 }
-                else if (context.MethodInvokeInfo.AsynchronousValueTaskMethodInvoker != null)
+                catch (OperationCanceledException)
                 {
-                    try
-                    {
-                        stopwatch.Restart();
-                        await context.MethodInvokeInfo.AsynchronousValueTaskMethodInvoker.Invoke(invocationTarget, arguments);
-                        stopwatch.Stop();
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        stopwatch.Stop();
-                        isTaskCancelled = true;
-                    }
-                }
-                else if (context.MethodInvokeInfo.AsynchronousGenericValueTaskMethodInvoker != null)
-                {
-                    try
-                    {
-                        stopwatch.Restart();
-                        dynamic profiledValueTask = context.MethodInvokeInfo.AsynchronousGenericValueTaskMethodInvoker.Invoke(invocationTarget, arguments);
-                        await profiledValueTask;
-                        stopwatch.Stop();
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        stopwatch.Stop();
-                        isTaskCancelled = true;
-                    }
+                    stopwatch.Stop();
+                    isTaskCancelled = true;
                 }
 
                 if (iterationCounter < 1)
@@ -682,7 +582,7 @@
                     continue;
                 }
 
-                var iterationResult = new ProfilerResult(iterationCounter, isTaskCancelled, stopwatch.Elapsed, result, context.MethodInvokeInfo.MethodArgument.ArgumentListIndex);
+                var iterationResult = new ProfilerResult(iterationCounter, isTaskCancelled, stopwatch.Elapsed, result, context.ArgumentInfo.ArgumentListIndex);
                 result.AddResult(iterationResult);
             }
 

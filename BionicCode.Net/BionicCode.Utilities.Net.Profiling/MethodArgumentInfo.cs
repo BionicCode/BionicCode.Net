@@ -6,11 +6,11 @@
     {
         public MethodArgumentInfo(ImmutableList<object?>? arguments, int argumentListIndex)
         {
-            this.Arguments = arguments;
+            this.Arguments = arguments ?? ImmutableList<object?>.Empty;
             this.ArgumentListIndex = argumentListIndex;
         }
 
-        public ImmutableList<object?>? Arguments { get; }
+        public ImmutableList<object?> Arguments { get; }
         public int ArgumentListIndex { get; }
     }
 }

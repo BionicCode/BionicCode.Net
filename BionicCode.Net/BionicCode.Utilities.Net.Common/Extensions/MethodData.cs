@@ -129,7 +129,7 @@
         /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, ReadOnlySpan{object?})"/> overload and provide the generic type parameter arguments.</remarks>
         public object? Invoke(object? target, ReadOnlySpan<object?> args)
         {
-            ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously(target, args);
+            ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
             ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(Invoke), nameof(InvokeOpenGeneric));
             ThrowIfTargetIsNullOrTargetTypeIsNotMatchingDeclaringTypeForInstanceMember(target);
             ThrowIfDeclaringTypeIsAnOpenGenericType();
@@ -139,6 +139,51 @@
             Debug.Assert(invocatorMethod is not null);
 
             return invocatorMethod._invoker!.Invoke(target, args.ToArray());
+        }
+
+        /// <summary>
+        /// Invokes the represented void method on the specified target object using the provided arguments.
+        /// </summary>
+        /// <param name="target">The object on which to invoke the method. For static methods, this parameter is ignored.</param>
+        /// <param name="args">An array of arguments to pass to the method. The number, order, and type of the arguments must match the
+        /// method's parameters.</param>
+        /// <returns>The return value of the invoked method, or null if the method has no return value.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the method is declared on a generic type definition or a type containing unassigned generic
+        /// parameters, or if the method itself is a generic method definition or contains unassigned generic
+        /// parameters.</exception>
+        /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="ture"/>)
+        /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, object?[]?)"/> overload and provide the generic type parameter arguments.</remarks>
+        public void Invoke<TTarget>(TTarget target, params object?[]? args)
+            => Invoke<TTarget>(target, args.AsSpan());
+
+        /// <summary>
+        /// Invokes the represented void method on the specified target object using the provided arguments and returns the
+        /// result.
+        /// </summary>
+        /// <remarks>This method performs validation to ensure that the invocation is valid for the
+        /// method's signature and type constraints. Attempting to invoke an asynchronous or open generic method, or
+        /// providing invalid arguments, will result in an exception. For methods with no return value, use a compatible
+        /// <typeparamref name="TResult"/> type such as void or object.</remarks>
+        /// <typeparam name="TTarget">The type of the object on which the method is invoked.</typeparam>
+        /// <typeparam name="TResult">The type of the value returned by the invoked method.</typeparam>
+        /// <param name="target">The instance of the target object on which to invoke the method. For static methods, this parameter is
+        /// ignored.</param>
+        /// <param name="args">A read-only span containing the arguments to pass to the method. The number, order, and types of arguments
+        /// must match the method's parameters.</param>
+        /// <returns>The result returned by the invoked method.</returns>
+        public void Invoke<TTarget>(TTarget target, ReadOnlySpan<object?> args)
+        {
+            ThrowIfNonVoidMethodIsInvokedAsVoid();
+            ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
+            ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(Invoke), nameof(InvokeOpenGeneric));
+            ThrowIfTargetIsNullOrTargetTypeIsNotMatchingDeclaringTypeForInstanceMember(target);
+            ThrowIfDeclaringTypeIsAnOpenGenericType();
+            ThrowIfInvalidMethodArguments(args, nameof(args));
+
+            MethodVoidInvoker<TTarget> invokerMethod = (MethodVoidInvoker<TTarget>)GetInvokerInternal<TTarget>(TypeList.Empty, args);
+            Debug.Assert(invokerMethod is not null);
+
+            invokerMethod.Invoke(target, args.ToArray());
         }
 
         /// <summary>
@@ -153,8 +198,8 @@
         /// parameters.</exception>
         /// <remarks>Note: For a generic method that is not closed (<see cref="IsGenericMethodDefinition"/> or <see cref="ContainsGenericParameters"/> returns <see langword="ture"/>)
         /// you must call the <see cref="InvokeOpenGeneric(object?, TypeList, object?[]?)"/> overload and provide the generic type parameter arguments.</remarks>
-        public object? Invoke<TTarget>(TTarget target, params object?[]? args)
-            => Invoke(target, args.AsSpan());
+        public TResult Invoke<TTarget, TResult>(TTarget target, params object?[]? args)
+            => Invoke<TTarget, TResult>(target, args.AsSpan());
 
         /// <summary>
         /// Invokes the represented method on the specified target object using the provided arguments and returns the
@@ -173,30 +218,51 @@
         /// <returns>The result returned by the invoked method.</returns>
         public TResult Invoke<TTarget, TResult>(TTarget target, ReadOnlySpan<object?> args)
         {
-            ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously(target, args);
+            ThrowIfVoidMethodIsInvokedAsNonVoid();
+            ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
             ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(Invoke), nameof(InvokeOpenGeneric));
             ThrowIfTargetIsNullOrTargetTypeIsNotMatchingDeclaringTypeForInstanceMember(target);
             ThrowIfDeclaringTypeIsAnOpenGenericType();
             ThrowIfInvalidMethodArguments(args, nameof(args));
 
-            MethodInvoker<TTarget, TResult> invokerMethod = (MethodInvoker<TTarget, TResult>)GetInvokerInternal<TTarget, TResult>(TypeList.Empty, args);
+            var invokerMethod = (MethodInvoker<TTarget, TResult>)GetInvokerInternal<TTarget, TResult>(TypeList.Empty, args);
             Debug.Assert(invokerMethod is not null);
 
             return invokerMethod.Invoke(target, args.ToArray());
         }
 
-        public void Invoke<TTarget>(TTarget target, ReadOnlySpan<object?> args)
+        public async Task InvokeAwaitableTaskAndDiscardResultAsync<TTarget>(TTarget target, params object?[] args)
         {
-            ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously(target, args);
+            ThrowIfVoidMethodIsInvokedAsNonVoid();
+            ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
             ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(Invoke), nameof(InvokeOpenGeneric));
             ThrowIfTargetIsNullOrTargetTypeIsNotMatchingDeclaringTypeForInstanceMember(target);
             ThrowIfDeclaringTypeIsAnOpenGenericType();
             ThrowIfInvalidMethodArguments(args, nameof(args));
 
-            MethodVoidInvoker<TTarget> invokerMethod = (MethodVoidInvoker<TTarget>)GetInvokerInternal<TTarget, void>(TypeList.Empty, args);
+            // TResult will be ignored by the 'DelegateProvider' since isDiscard is TRUE.
+            // Hence, 'Task' is acting as a dummy generic type parameter in this special case.
+            var invokerMethod = (MethodAwaitableTaskDiscardInvoker<TTarget>)GetInvokerInternal<TTarget, Task>(TypeList.Empty, args, isDiscard: true);
             Debug.Assert(invokerMethod is not null);
 
-            return invokerMethod.Invoke(target, args.ToArray());
+            await invokerMethod.Invoke(target, args.ToArray()).ConfigureAwait(false);
+        }
+
+        public async ValueTask InvokeAwaitableValueTaskAndDiscardResultAsync<TTarget>(TTarget target, params object?[] args)
+        {
+            ThrowIfVoidMethodIsInvokedAsNonVoid();
+            ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
+            ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(Invoke), nameof(InvokeOpenGeneric));
+            ThrowIfTargetIsNullOrTargetTypeIsNotMatchingDeclaringTypeForInstanceMember(target);
+            ThrowIfDeclaringTypeIsAnOpenGenericType();
+            ThrowIfInvalidMethodArguments(args, nameof(args));
+
+            // TResult will be ignored by the 'DelegateProvider' since isDiscard is TRUE.
+            // Hence, 'ValueTask' is acting as a dummy generic type parameter in this special case.
+            MethodAwaitableValueTaskDiscardInvoker<TTarget>? invokerMethod = (MethodAwaitableValueTaskDiscardInvoker<TTarget>)GetInvokerInternal<TTarget, ValueTask>(TypeList.Empty, args, isDiscard: true);
+            Debug.Assert(invokerMethod is not null);
+
+            await invokerMethod.Invoke(target, args.ToArray());
         }
 
         /// <summary>
@@ -236,7 +302,7 @@
         /// the method itself is not a closed generic method.</exception>
         public object? InvokeOpenGeneric(object? target, TypeList genericMethodParameters, ReadOnlySpan<object?> args)
         {
-            ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously(target, args);
+            ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
             ThrowIfAttemptingToInvokeNonGenericMethodLikeGenericMethod(nameof(InvokeOpenGeneric), nameof(Invoke));
             ThrowIfTargetIsNullOrTargetTypeIsNotMatchingDeclaringTypeForInstanceMember(target);
             ThrowIfDeclaringTypeIsAnOpenGenericType();
@@ -253,7 +319,7 @@
 
         public async Task InvokeAwaitableTaskAsync(object? target, params object?[] args)
         {
-            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously(target, args);
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
             if (!this.IsAwaitableTask)
             {
                 throw new InvalidOperationException($"Method does not return an awaitable 'Task' object. Call '{nameof(this.IsAwaitableTask)}' to ensure the current '{nameof(MethodData)}' is awaitable and returns a 'Task'.");
@@ -272,7 +338,7 @@
 
         public async Task InvokeOpenGenericAwaitableTaskAsync(object? target, TypeList genericMethodParameters, params object?[]? args)
         {
-            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously(target, args);
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
             if (!this.IsAwaitableTask)
             {
                 throw new InvalidOperationException($"Method does not return an awaitable 'Task' object. Call '{nameof(this.IsAwaitableTask)}' to ensure the current '{nameof(MethodData)}' is awaitable and returns a 'Task'.");
@@ -294,7 +360,7 @@
 
         public async Task<object?> InvokeAwaitableTaskWithResultAsync(object? target, params object?[]? args)
         {
-            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously(target, args);
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
             if (!this.IsAwaitableGenericTask)
             {
                 throw new InvalidOperationException($"Method does not return an awaitable 'Task<T>' object. Call '{nameof(this.IsAwaitableGenericTask)}' to ensure the current '{nameof(MethodData)}' is awaitable and returns a 'Task<T>'.");
@@ -313,7 +379,7 @@
 
         public async Task<object?> InvokeOpenGenericAwaitableTaskWithResultAsync(object? target, TypeList genericMethodParameters, params object?[]? args)
         {
-            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously(target, args);
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
             if (!this.IsAwaitableGenericTask)
             {
                 throw new InvalidOperationException($"Method does not return an awaitable 'Task<T>' object. Call '{nameof(this.IsAwaitableGenericTask)}' to ensure the current '{nameof(MethodData)}' is awaitable and returns a 'Task<T>'.");
@@ -336,7 +402,7 @@
 
         public async ValueTask InvokeAwaitableValueTaskAsync(object? target, params object?[]? args)
         {
-            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously(target, args);
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
             if (!this.IsAwaitableValueTask)
             {
                 throw new InvalidOperationException($"Method does not return an awaitable 'ValueTask' object. Call '{nameof(this.IsAwaitableValueTask)}' to ensure the current '{nameof(MethodData)}' is awaitable and returns a 'ValueTask'.");
@@ -355,7 +421,7 @@
 
         public async ValueTask InvokeOpenGenericAwaitableValueTaskAsync(object? target, TypeList genericMethodParameters, params object?[]? args)
         {
-            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously(target, args);
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
             if (!this.IsAwaitableValueTask)
             {
                 throw new InvalidOperationException($"Method does not return an awaitable 'ValueTask' object. Call {nameof(this.IsAwaitableValueTask)} to ensure the current '{nameof(MethodData)}' is awaitable and returns a 'ValueTask'.");
@@ -378,7 +444,7 @@
 
         public async ValueTask<object?> InvokeAwaitableValueTaskWithResultAsync(object? target, params object?[] args)
         {
-            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously(target, args);
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
             if (!this.IsAwaitableGenericValueTask)
             {
                 throw new InvalidOperationException($"Method does not return an awaitable 'ValueTask<T>' object. Call {nameof(this.IsAwaitableValueTask)} to ensure the current '{nameof(MethodData)}' is awaitable and returns a 'ValueTask<T>'.");
@@ -397,7 +463,7 @@
 
         public async ValueTask<object?> InvokeOpenGenericValueAwaitableTaskWithResultAsync(object? target, TypeList genericMethodParameters, params object?[] args)
         {
-            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously(target, args);
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
             if (!this.IsAwaitableValueTask)
             {
                 throw new InvalidOperationException($"Method does not return an awaitable 'ValueTask<T>' object. Call {nameof(this.IsAwaitableValueTask)} to ensure the current '{nameof(MethodData)}' is awaitable and returns a 'ValueTask<T>'.");
@@ -419,7 +485,7 @@
 
         public Func<object?, object?[]?, object?> GetInvoker(ReadOnlySpan<object?> args)
         {
-            ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously(null, args);
+            ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
             ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetInvoker), nameof(GetOpenGenericInvoker));
             ThrowIfDeclaringTypeIsAnOpenGenericType();
             ThrowIfInvalidMethodArguments(args, nameof(args));
@@ -432,7 +498,7 @@
 
         public Func<object?, object?[]?, object?> GetOpenGenericInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
         {
-            ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously(null, args);
+            ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously();
             ThrowIfAttemptingToInvokeNonGenericMethodLikeGenericMethod(nameof(GetOpenGenericInvoker), nameof(GetInvoker));
             ThrowIfDeclaringTypeIsAnOpenGenericType();
             ThrowIfInvalidMethodArguments(args, nameof(args));
@@ -447,7 +513,7 @@
 
         public Func<object?, object?[]?, Task> GetAwaitableTaskInvoker(ReadOnlySpan<object?> args)
         {
-            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously(null, args);
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
             ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetAwaitableTaskInvoker), nameof(GetOpenGenericAwaitableTaskInvoker));
             ThrowIfDeclaringTypeIsAnOpenGenericType();
             ThrowIfInvalidMethodArguments(args, nameof(args));
@@ -460,7 +526,7 @@
 
         public Func<object?, object?[]?, Task> GetOpenGenericAwaitableTaskInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
         {
-            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously(null, args);
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
             ThrowIfAttemptingToInvokeNonGenericMethodLikeGenericMethod(nameof(GetOpenGenericAwaitableTaskInvoker), nameof(GetAwaitableTaskInvoker));
             ThrowIfDeclaringTypeIsAnOpenGenericType();
             ThrowIfInvalidMethodArguments(args, nameof(args));
@@ -475,7 +541,7 @@
 
         public Func<object?, object?[]?, Task<object?>> GetAwaitableTaskWithResultInvoker(ReadOnlySpan<object?> args)
         {
-            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously(null, args);
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
             ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetAwaitableTaskWithResultInvoker), nameof(GetOpenGenericAwaitableTaskWithResultInvoker));
             ThrowIfDeclaringTypeIsAnOpenGenericType();
             ThrowIfInvalidMethodArguments(args, nameof(args));
@@ -488,7 +554,7 @@
 
         public Func<object?, object?[]?, Task<object?>> GetOpenGenericAwaitableTaskWithResultInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
         {
-            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously(null, args);
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
             ThrowIfAttemptingToInvokeNonGenericMethodLikeGenericMethod(nameof(GetOpenGenericAwaitableTaskWithResultInvoker), nameof(GetAwaitableTaskWithResultInvoker));
             ThrowIfDeclaringTypeIsAnOpenGenericType();
             ThrowIfInvalidMethodArguments(args, nameof(args));
@@ -503,7 +569,7 @@
 
         public Func<object?, object?[]?, ValueTask> GetAwaitableValueTaskInvoker(ReadOnlySpan<object?> args)
         {
-            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously(null, args);
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
             ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetAwaitableValueTaskInvoker), nameof(GetOpenGenericAwaitableValueTaskInvoker));
             ThrowIfDeclaringTypeIsAnOpenGenericType();
             ThrowIfInvalidMethodArguments(args, nameof(args));
@@ -516,7 +582,7 @@
 
         public Func<object?, object?[]?, ValueTask> GetOpenGenericAwaitableValueTaskInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
         {
-            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously(null, args);
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
             ThrowIfAttemptingToInvokeNonGenericMethodLikeGenericMethod(nameof(GetOpenGenericAwaitableValueTaskInvoker), nameof(GetAwaitableValueTaskInvoker));
             ThrowIfDeclaringTypeIsAnOpenGenericType();
             ThrowIfInvalidMethodArguments(args, nameof(args));
@@ -531,7 +597,7 @@
 
         public Func<object?, object?[]?, ValueTask<object?>> GetAwaitableValueTaskWithResultInvoker(ReadOnlySpan<object?> args)
         {
-            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously(null, args);
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
             ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetAwaitableValueTaskWithResultInvoker), nameof(GetOpenGenericAwaitableValueTaskWithResultInvoker));
             ThrowIfDeclaringTypeIsAnOpenGenericType();
             ThrowIfInvalidMethodArguments(args, nameof(args));
@@ -544,7 +610,7 @@
 
         public Func<object?, object?[]?, ValueTask<object?>> GetOpenGenericAwaitableValueTaskWithResultInvoker(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
         {
-            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously(null, args);
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
             ThrowIfAttemptingToInvokeNonGenericMethodLikeGenericMethod(nameof(GetOpenGenericAwaitableValueTaskWithResultInvoker), nameof(GetAwaitableValueTaskWithResultInvoker));
             ThrowIfDeclaringTypeIsAnOpenGenericType();
             ThrowIfInvalidMethodArguments(args, nameof(args));
@@ -555,6 +621,62 @@
             Debug.Assert(invocatorMethod is not null);
 
             return invocatorMethod._asyncGenericValueTaskInvoker!;
+        }
+
+        public MethodAwaitableTaskDiscardInvoker<TTarget> GetAwaitableTaskDiscardInvoker<TTarget>(ReadOnlySpan<object?> args)
+        {
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
+            ThrowIfAttemptingToInvokeNonGenericMethodLikeGenericMethod(nameof(GetOpenGenericAwaitableTaskWithResultInvoker), nameof(GetAwaitableTaskWithResultInvoker));
+            ThrowIfDeclaringTypeIsAnOpenGenericType();
+            ThrowIfInvalidMethodArguments(args, nameof(args));
+
+            var invocatorMethod = (MethodAwaitableTaskDiscardInvoker<TTarget>)GetInvokerInternal<TTarget, Task>(TypeList.Empty, args, isDiscard: true);
+            Debug.Assert(invocatorMethod is not null);
+
+            return invocatorMethod;
+        }
+
+        public MethodAwaitableTaskDiscardInvoker<TTarget> GetOpenGenericAwaitableTaskDiscardInvoker<TTarget>(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+        {
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
+            ThrowIfAttemptingToInvokeNonGenericMethodLikeGenericMethod(nameof(GetOpenGenericAwaitableTaskWithResultInvoker), nameof(GetAwaitableTaskWithResultInvoker));
+            ThrowIfDeclaringTypeIsAnOpenGenericType();
+            ThrowIfInvalidMethodArguments(args, nameof(args));
+
+            ArgumentOutOfRangeException.ThrowIfNotEqual(genericMethodParameters.Count, this.GenericMethodArguments.Count, nameof(genericMethodParameters));
+
+            var invocatorMethod = (MethodAwaitableTaskDiscardInvoker<TTarget>)GetInvokerInternal<TTarget, Task>(genericMethodParameters, args, isDiscard: true);
+            Debug.Assert(invocatorMethod is not null);
+
+            return invocatorMethod;
+        }
+
+        public MethodAwaitableValueTaskDiscardInvoker<TTarget> GetAwaitableValueTaskDiscardInvoker<TTarget>(ReadOnlySpan<object?> args)
+        {
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
+            ThrowIfAttemptingToInvokeGenericMethodLikeNonGenericMethod(nameof(GetAwaitableValueTaskInvoker), nameof(GetOpenGenericAwaitableValueTaskInvoker));
+            ThrowIfDeclaringTypeIsAnOpenGenericType();
+            ThrowIfInvalidMethodArguments(args, nameof(args));
+
+            var invocatorMethod = (MethodAwaitableValueTaskDiscardInvoker<TTarget>)GetInvokerInternal<TTarget, ValueTask>(TypeList.Empty, args, isDiscard: true);
+            Debug.Assert(invocatorMethod is not null);
+
+            return invocatorMethod!;
+        }
+
+        public MethodAwaitableValueTaskDiscardInvoker<TTarget> GetOpenGenericAwaitableValueTaskDiscardInvoker<TTarget>(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+        {
+            ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously();
+            ThrowIfAttemptingToInvokeNonGenericMethodLikeGenericMethod(nameof(GetOpenGenericAwaitableTaskWithResultInvoker), nameof(GetAwaitableTaskWithResultInvoker));
+            ThrowIfDeclaringTypeIsAnOpenGenericType();
+            ThrowIfInvalidMethodArguments(args, nameof(args));
+
+            ArgumentOutOfRangeException.ThrowIfNotEqual(genericMethodParameters.Count, this.GenericMethodArguments.Count, nameof(genericMethodParameters));
+
+            var invocatorMethod = (MethodAwaitableValueTaskDiscardInvoker<TTarget>)GetInvokerInternal<TTarget, ValueTask<object>>(genericMethodParameters, args, isDiscard: true);
+            Debug.Assert(invocatorMethod is not null);
+
+            return invocatorMethod;
         }
 
         private void ThrowIfInvalidMethodArguments(ReadOnlySpan<object?> args, string paramName)
@@ -595,7 +717,7 @@
             }
         }
 
-        private void ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously(object? target, ReadOnlySpan<object?> args)
+        private void ThrowIfAttemptingToInvokeSynchronousMethodAsynchronously()
         {
             if (!this.IsAsync)
             {
@@ -603,7 +725,7 @@
             }
         }
 
-        private void ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously(object? target, ReadOnlySpan<object?> args)
+        private void ThrowIfAttemptingToInvokeAsynchronousMethodSynchronously()
         {
             if (this.IsAsync)
             {
@@ -628,6 +750,22 @@
                             nameof(target),
                             declaringType,
                             "declaring type"));
+            }
+        }
+
+        private void ThrowIfNonVoidMethodIsInvokedAsVoid()
+        {
+            if (!this.IsVoidMethod)
+            {
+                throw new InvalidOperationException($"The method '{this.Name}' does not have a void return type. Use the '{nameof(Invoke)}<TTarget, TResult>()' overload to invoke methods with a return value.");
+            }
+        }
+
+        private void ThrowIfVoidMethodIsInvokedAsNonVoid()
+        {
+            if (this.IsVoidMethod)
+            {
+                throw new InvalidOperationException($"The method '{this.Name}' has a void return type. Use the '{nameof(Invoke)}<TTarge>()' overload to invoke the void method.");
             }
         }
 
@@ -667,19 +805,39 @@
             return invocatorSource;
         }
 
-        private Delegate GetInvokerInternal<TTarget, TResult>(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
+        private Delegate GetInvokerInternal<TTarget>(TypeList genericMethodParameters, ReadOnlySpan<object?> args)
         {
-            Type returnType = typeof(TResult);
+            Type resultType = typeof(void);
             Type targetType = typeof(TTarget);
-            MethodData invocatorSource = ((IStrictMethodDataInvoker)this).IsInvocable(returnType, targetType)
+            MethodData invocatorSource = ((IStrictMethodDataInvoker)this).IsInvocable(resultType, targetType)
                 // 'this' is already a closed generic method with constructed invocator.
                 // Reason: only closed generic methods can have invocator/are invocable...
                 ? this
 
                 // ...otherwise generate or get cached invocator
-                : DelegateProvider.GetOrCreateFastMethodInvoker<TTarget, TResult>(this, genericMethodParameters);
+                : DelegateProvider.GetOrCreateFastVoidMethodInvoker<TTarget>(this, genericMethodParameters);
 
-            if (invocatorSource._invokerTable.TryGetValue((returnType.TypeHandle, targetType.TypeHandle), out Delegate? invoker))
+            if (invocatorSource._invokerTable.TryGetValue((resultType.TypeHandle, targetType.TypeHandle), out Delegate? invoker))
+            {
+                return invoker;
+            }
+
+            throw new InvalidOperationException("Unable to create  the strictly typed method invoker.");
+        }
+
+        private Delegate GetInvokerInternal<TTarget, TResult>(TypeList genericMethodParameters, ReadOnlySpan<object?> args, bool isDiscard = false)
+        {
+            Type targetType = typeof(TTarget);
+            Type resultType = typeof(TResult);
+            MethodData invocatorSource = ((IStrictMethodDataInvoker)this).IsInvocable(resultType, targetType)
+                // 'this' is already a closed generic method with constructed invocator.
+                // Reason: only closed generic methods can have invocator/are invocable...
+                ? this
+
+                // ...otherwise generate or get cached invocator
+                : DelegateProvider.GetOrCreateFastMethodInvoker<TTarget, TResult>(this, genericMethodParameters, isDiscardDelegate: isDiscard);
+
+            if (invocatorSource._invokerTable.TryGetValue((resultType.TypeHandle, targetType.TypeHandle), out Delegate? invoker))
             {
                 return invoker;
             }

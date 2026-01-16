@@ -335,7 +335,18 @@
 
                 if (memberInfo is ProfiledMethodInfo method)
                 {
-                    var context = new MethodProfilerContext<TInstance>(profiledInstance, method.MethodData, method.SourceFilePath, method.LineNumber, this.Configuration.WarmupIterations, this.Configuration.Iterations, method.TargetFramework, this.Configuration.BaseUnit, this.Configuration.ProfilerLogger, this.Configuration.AsyncProfilerLogger);
+                    var context = new MethodProfilerContext<TInstance>(
+                        profiledInstance,
+                        method.MethodData,
+                        method.SourceFilePath,
+                        method.LineNumber,
+                        this.Configuration.WarmupIterations,
+                        this.Configuration.Iterations,
+                        method.TargetFramework,
+                        this.Configuration.BaseUnit,
+                        this.Configuration.ProfilerLogger,
+                        this.Configuration.AsyncProfilerLogger);
+
                     for (int argumentListIndex = 0; argumentListIndex < method.ArgumentInfo.Count; argumentListIndex++)
                     {
                         cancellationToken.ThrowIfCancellationRequested();

@@ -68,6 +68,10 @@
             Action<ProfilerBatchResult, string> logger,
             Func<ProfilerBatchResult, string, Task> asyncLogger) : base(targetInstance, sourceFileName, lineNumber, warmupCount, iterationCount, runtime, baseUnit, logger, asyncLogger)
         {
+            ArgumentExceptionAdvanced.ThrowIfTrue(
+                methodData.IsOpenGenericMethodOrGenericMethodDefinition,
+                nameof(methodData),
+                "Open generic methods or generic method definitions are not supported for profiling.");
             this.MethodData = methodData;
         }
 
