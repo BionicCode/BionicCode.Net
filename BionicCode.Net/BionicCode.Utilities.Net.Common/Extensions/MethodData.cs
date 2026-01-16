@@ -43,7 +43,7 @@
         private bool? isGenericTypeMethod;
         private MethodData? genericMethodDefinitionData;
         private bool? isReturnValueByRef;
-        private readonly ConcurrentDictionary<(RuntimeTypeHandle returnTypeHandle, RuntimeTypeHandle targetTypehandle), Delegate> _invokerTable;
+        private readonly ConcurrentDictionary<SymbolInfoDataCacheKey, Delegate> _invokerTable;
         private volatile Func<object?, object?[]?, object?>? _invoker;
         private volatile Func<object?, object?[]?, Task>? _asyncTaskInvoker;
         private volatile Func<object?, object?[]?, Task<object?>>? _asyncGenericTaskInvoker;
@@ -68,7 +68,7 @@
         {
             ArgumentNullException.ThrowIfNull(methodInfo, nameof(methodInfo));
 
-            this._invokerTable = new ConcurrentDictionary<(RuntimeTypeHandle returnTypeHandle, RuntimeTypeHandle targetTypehandle), Delegate>();
+            this._invokerTable = new ConcurrentDictionary<SymbolInfoDataCacheKey, Delegate>();
             this.Handle = methodInfo.MethodHandle;
         }
 
@@ -1195,16 +1195,16 @@
 
         #region IStrictMethodDataInvoker
 
-        bool IStrictMethodDataInvoker.IsInvocable(Type returnType, Type targetType)
-            => this._invokerTable.ContainsKey((returnType.TypeHandle, targetType.TypeHandle));
-        void IStrictMethodDataInvoker.SetInvoker(Type returnType, Type targetType, Delegate strictlyTypedInvoker)
+        bool IStrictMethodDataInvoker.IsInvocable(SymbolInfoDataCacheKey symbolKey)
+            => this._invokerTable.ContainsKey(symbolKey);
+
+        void IStrictMethodDataInvoker.SetInvoker(SymbolInfoDataCacheKey symbolKey, Delegate strictlyTypedInvoker)
         {
-            ArgumentNullException.ThrowIfNull(returnType);
-            ArgumentNullException.ThrowIfNull(targetType);
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(symbolKey);
             ArgumentNullException.ThrowIfNull(strictlyTypedInvoker);
 
             // Store the invoker in a concurrent dictionary for later use
-            this._invokerTable.TryAdd((returnType.TypeHandle, targetType.TypeHandle), strictlyTypedInvoker);
+            _ = this._invokerTable.TryAdd(symbolKey, strictlyTypedInvoker);
         }
 
         #endregion IStrictMethodDataInvoker

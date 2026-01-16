@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
@@ -79,11 +78,11 @@
         /// invocation without reflection overhead.</remarks>
         /// <param name="targetMethodData">The MethodData representing the propertyType method. This can be a generic method definition, an open generic
         /// method, or a closed method.</param>
-        /// <param name="genericMethodParameters">An array of TypeData objects specifying the generic prpertyType arguments to use if the propertyType method is a generic
+        /// <param name="genericMethodArguments">An array of TypeData objects specifying the generic prpertyType arguments to use if the propertyType method is a generic
         /// method definition or open generic method. This parameter is ignored for non-generic methods.</param>
         /// <returns>A MethodData instance that is guaranteed to have an invoker delegate attached, suitable for fast invocation.
         /// If the method is generic, the returned MethodData corresponds to the constructed closed generic method.</returns>
-        public static MethodData GetOrCreateFastMethodInvoker(MethodData targetMethodData, TypeList genericMethodParameters)
+        public static MethodData GetOrCreateFastMethodInvoker(MethodData targetMethodData, TypeList genericMethodArguments)
         {
             // If the method is not a generic method definition or an open generic method and already has an invocator, return it directly.
             if (!targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition && ((IMethodDataInvoker)targetMethodData).IsInvocable)
@@ -91,9 +90,21 @@
                 return targetMethodData;
             }
 
+            Type desiredReturnType = !targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition
+                ? targetMethodData.ReturnTypeData.UnwrapType()
+                : targetMethodData.IsAwaitableGenericTask
+                    ? typeof(Task<object>)
+                    : targetMethodData.IsAwaitableTask
+                        ? typeof(Task)
+                        : targetMethodData.IsAwaitableGenericValueTask
+                            ? typeof(ValueTask<object>)
+                            : targetMethodData.IsAwaitableValueTask
+                                ? typeof(ValueTask)
+                                : typeof(object);
+
             // Get or construct the (closed) generic method data if required.
             MethodData methodData = targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition
-                ? DelegateProvider.GetOrConstructGenericMethod(targetMethodData, genericMethodParameters)
+                ? DelegateProvider.GetOrConstructGenericMethod(typeof(object).TypeHandle, desiredReturnType.TypeHandle, genericMethodArguments, targetMethodData)
                 : targetMethodData;
 
             // If the closed method has already a generated invoker, it will be returned directly.
@@ -180,11 +191,11 @@
         /// invocation without reflection overhead.</remarks>
         /// <param name="targetMethodData">The MethodData representing the propertyType method. This can be a generic method definition, an open generic
         /// method, or a closed method.</param>
-        /// <param name="genericMethodParameters">An array of TypeData objects specifying the generic prpertyType arguments to use if the propertyType method is a generic
+        /// <param name="genericMethodArguments">An array of TypeData objects specifying the generic prpertyType arguments to use if the propertyType method is a generic
         /// method definition or open generic method. This parameter is ignored for non-generic methods.</param>
         /// <returns>A MethodData instance that is guaranteed to have an invoker delegate attached, suitable for fast invocation.
         /// If the method is generic, the returned MethodData corresponds to the constructed closed generic method.</returns>
-        public static MethodData GetOrCreateFastMethodInvoker<TTarget, TResult>(MethodData targetMethodData, TypeList genericMethodParameters, bool isDiscardDelegate)
+        public static MethodData GetOrCreateFastMethodInvoker<TTarget, TResult>(MethodData targetMethodData, TypeList genericMethodArguments, bool isDiscardDelegate)
         {
             Type targetType = typeof(TTarget);
             Type declaringType = targetMethodData.DeclaringTypeData.UnwrapType();
@@ -203,18 +214,18 @@
 
             // If the method is not a generic method definition or an open generic method and already has an invocator, return it directly.
             if (!targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition
-                && ((IStrictMethodDataInvoker)targetMethodData).IsInvocable(desiredReturnType, targetType))
+                && ((IStrictMethodDataInvoker)targetMethodData).IsInvocable(targetMethodData.CacheKey))
             {
                 return targetMethodData;
             }
 
             // Get or construct the (closed) generic method data if required.
             MethodData methodData = targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition
-                ? DelegateProvider.GetOrConstructStrictGenericMethod(targetType.ToTypeData(), desiredReturnType.ToTypeData(), targetMethodData, genericMethodParameters)
+                ? DelegateProvider.GetOrConstructGenericMethod(targetType.TypeHandle, desiredReturnType.TypeHandle, genericMethodArguments, targetMethodData)
                 : targetMethodData;
 
             // If the closed method has already a generated invoker, it will be returned directly.
-            if (((IStrictMethodDataInvoker)methodData).IsInvocable(desiredReturnType, targetType))
+            if (((IStrictMethodDataInvoker)methodData).IsInvocable(methodData.CacheKey))
             {
                 return methodData;
             }
@@ -313,12 +324,12 @@
 
             // Only the closed generic method data holds the constructed invocator
             IStrictMethodDataInvoker methodInvoker = methodData;
-            methodInvoker.SetInvoker(desiredReturnType, targetType, invocator);
+            methodInvoker.SetInvoker(methodData.CacheKey, invocator);
 
             return methodData;
         }
 
-        public static MethodData GetOrCreateFastVoidMethodInvoker<TTarget>(MethodData targetMethodData, TypeList genericMethodParameters)
+        public static MethodData GetOrCreateFastVoidMethodInvoker<TTarget>(MethodData targetMethodData, TypeList genericMethodArguments)
         {
             Type targetType = typeof(TTarget);
             Type declaringType = targetMethodData.DeclaringTypeData.UnwrapType();
@@ -335,18 +346,18 @@
 
             // If the method is not a generic method definition or an open generic method and already has an invocator, return it directly.
             if (!targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition
-                && ((IStrictMethodDataInvoker)targetMethodData).IsInvocable(resultType, targetType))
+                && ((IStrictMethodDataInvoker)targetMethodData).IsInvocable(targetMethodData.CacheKey))
             {
                 return targetMethodData;
             }
 
             // Get or construct the (closed) generic method data if required.
             MethodData methodData = targetMethodData.IsOpenGenericMethodOrGenericMethodDefinition
-                ? DelegateProvider.GetOrConstructStrictGenericMethod(targetType.ToTypeData(), resultType.ToTypeData(), targetMethodData, genericMethodParameters)
+                ? DelegateProvider.GetOrConstructGenericMethod(targetType.TypeHandle, resultType.TypeHandle, genericMethodArguments, targetMethodData)
                 : targetMethodData;
 
             // If the closed method has already a generated invoker, it will be returned directly.
-            if (((IStrictMethodDataInvoker)methodData).IsInvocable(resultType, targetType))
+            if (((IStrictMethodDataInvoker)methodData).IsInvocable(methodData.CacheKey))
             {
                 return methodData;
             }
@@ -376,7 +387,7 @@
 
             // Only the closed generic method data holds the constructed invocator
             IStrictMethodDataInvoker methodInvoker = methodData;
-            methodInvoker.SetInvoker(resultType, targetType, invocator);
+            methodInvoker.SetInvoker(methodData.CacheKey, invocator);
 
             return methodData;
         }
@@ -481,32 +492,12 @@
             }
         }
 
-        private static MethodData GetOrConstructGenericMethod(MethodData targetMethodData, TypeList genericMethodParameters)
+        private static MethodData GetOrConstructGenericMethod(RuntimeTypeHandle targetTypeHandle, RuntimeTypeHandle desiredReturnTypeHandle, TypeList genericMethodArguments, MethodData targetMethodData)
         {
             MethodData methodData;
 
             // Try get cached constructed invocator for the specified generic method parameters.
-            var invocatorKeyMapKey = InvokerKeyMapKey.Create(genericMethodParameters);
-            if (DelegateProvider.InvocatorKeyMap.TryGetValue(invocatorKeyMapKey, out SymbolInfoDataCacheKey symbolInfoCachekey)
-                && SymbolReflectionInfoCache.TryGetSymbolInfoDataCacheEntry(symbolInfoCachekey, out MethodData? cachedMethodData))
-            {
-                methodData = cachedMethodData!;
-            }
-            else // Create closed generic method data for the specified generic method parameters.
-            {
-                methodData = CloseOpenGenericMethodAndAddToCache(targetMethodData, genericMethodParameters, invocatorKeyMapKey);
-            }
-
-            return methodData;
-        }
-
-        private static MethodData GetOrConstructStrictGenericMethod(TypeData targetTypeData, TypeData methodTypeData, MethodData targetMethodData, TypeList genericMethodParameters)
-        {
-            MethodData methodData;
-
-            IEnumerable<TypeData> typeList = (new[] { targetTypeData, methodTypeData }).Concat(genericMethodParameters.AsEnumerable());
-            // Try get cached constructed invocator for the specified generic method parameters.
-            var invocatorKeyMapKey = InvokerKeyMapKey.Create(typeList);
+            var invocatorKeyMapKey = new InvokerKeyMapKey(genericMethodArguments, targetTypeHandle, desiredReturnTypeHandle, targetMethodData.CacheKey);
             if (DelegateProvider.InvocatorKeyMap.TryGetValue(invocatorKeyMapKey, out SymbolInfoDataCacheKey symbolInfoCacheKey)
                 && SymbolReflectionInfoCache.TryGetSymbolInfoDataCacheEntry(symbolInfoCacheKey, out MethodData? cachedMethodData))
             {
@@ -514,7 +505,7 @@
             }
             else // Create closed generic method data for the specified generic method parameters.
             {
-                methodData = CloseOpenGenericMethodAndAddToCache(targetMethodData, genericMethodParameters, invocatorKeyMapKey);
+                methodData = CloseOpenGenericMethodAndAddToCache(targetMethodData, genericMethodArguments, invocatorKeyMapKey);
             }
 
             return methodData;
@@ -2070,25 +2061,30 @@
 
         private readonly struct InvokerKeyMapKey : IEquatable<InvokerKeyMapKey>
         {
-            public ImmutableList<RuntimeTypeHandle> MethodParameterTypeHandles { get; }
+            public TypeList GenericMethodArguments { get; }
+            public RuntimeTypeHandle TargetTypeHandle { get; }
+            public RuntimeTypeHandle DesiredReturnType { get; }
+            public SymbolInfoDataCacheKey SymbolInfoDataCacheKey { get; }
             private readonly int? _hashCode;
 
-            public InvokerKeyMapKey(ImmutableList<RuntimeTypeHandle> methodParameterTypeHandles) : this()
+            public InvokerKeyMapKey(TypeList genericMethodArguments, RuntimeTypeHandle targetTypeHandle, RuntimeTypeHandle desiredReturnType, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
             {
-                ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(methodParameterTypeHandles, nameof(methodParameterTypeHandles), "Method parameter declaringType handles must be provided to create an invocator map key.");
+                ArgumentNullException.ThrowIfNull(genericMethodArguments, nameof(genericMethodArguments));
+                ArgumentNullExceptionAdvanced.ThrowIfDefault(targetTypeHandle, nameof(targetTypeHandle));
+                ArgumentNullExceptionAdvanced.ThrowIfDefault(desiredReturnType, nameof(desiredReturnType));
 
-                this.MethodParameterTypeHandles = methodParameterTypeHandles;
+                this.GenericMethodArguments = genericMethodArguments;
+                this.TargetTypeHandle = targetTypeHandle;
+                this.DesiredReturnType = desiredReturnType;
                 this._hashCode = ComputeHashCode();
+                this.SymbolInfoDataCacheKey = symbolInfoDataCacheKey;
             }
 
-            public static InvokerKeyMapKey Create(IEnumerable<RuntimeTypeHandle> methodParameterTypeHandles)
-                => new InvokerKeyMapKey(methodParameterTypeHandles.ToImmutableList());
-
-            public static InvokerKeyMapKey Create(IEnumerable<TypeData> methodParameterTypeDatas)
-                => new InvokerKeyMapKey(methodParameterTypeDatas.Select(typeData => typeData.Handle).ToImmutableList());
-
             public bool Equals(InvokerKeyMapKey other)
-                => this.MethodParameterTypeHandles.SequenceEqual(other.MethodParameterTypeHandles);
+                => this.GenericMethodArguments.SequenceEqual(other.GenericMethodArguments)
+                   && this.TargetTypeHandle.Equals(other.TargetTypeHandle)
+                   && this.DesiredReturnType.Equals(other.DesiredReturnType)
+                   && this.SymbolInfoDataCacheKey == other.SymbolInfoDataCacheKey;
 
             public override bool Equals([NotNullWhen(true)] object obj)
                 => obj is InvokerKeyMapKey invocatorKey && base.Equals(invocatorKey);
@@ -2099,16 +2095,22 @@
             private int ComputeHashCode()
             {
                 int hashCode = 1248511333;
-                foreach (RuntimeTypeHandle typeHandle in this.MethodParameterTypeHandles)
+                unchecked
                 {
-                    unchecked
+                    hashCode = (hashCode * 397) ^ this.TargetTypeHandle.GetHashCode();
+                    hashCode = (hashCode * 397) ^ this.DesiredReturnType.GetHashCode();
+                    hashCode = (hashCode * 397) ^ this.SymbolInfoDataCacheKey.GetHashCode();
+                    foreach (TypeData typeData in this.GenericMethodArguments)
                     {
-                        int currentHash = typeHandle.GetHashCode();
-                        hashCode = (hashCode * 397) ^ currentHash;
+                        unchecked
+                        {
+                            int currentHash = typeData.Handle.GetHashCode();
+                            hashCode = (hashCode * 397) ^ currentHash;
+                        }
                     }
-                }
 
-                return hashCode;
+                    return hashCode;
+                }
             }
 
             public static bool operator ==(InvokerKeyMapKey left, InvokerKeyMapKey right) => left.Equals(right);

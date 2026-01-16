@@ -4,7 +4,7 @@
 
     internal interface IStrictMethodDataInvoker
     {
-        bool IsInvocable(Type returnType, Type targetType);
-        void SetInvoker(Type returnType, Type targetType, Delegate strictlyTypedInvoker);
+        bool IsInvocable(SymbolInfoDataCacheKey symbolKey);
+        void SetInvoker(SymbolInfoDataCacheKey symbolKey, Delegate strictlyTypedInvoker);
     }
 }

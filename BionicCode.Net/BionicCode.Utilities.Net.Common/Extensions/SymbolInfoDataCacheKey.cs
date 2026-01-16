@@ -147,6 +147,17 @@
             ? this._methodParameterInfoList
             : ThrowInvalidPropertyContextException<MethodParameterInfoList>([SymbolKind.MemberMethod, SymbolKind.MemberConstructor, SymbolKind.MemberProperty]);
 
+        private readonly TypeList _genericParameterList;
+        /// <summary>
+        /// If the current cache key is anonymous, then this property get the list of parameters associated with a method, constructor or indexer property.
+        /// </summary>
+        /// <value>The list of parameters for methods, properties (indexers), and constructors. 
+        public TypeList GenericParameterList => !this.IsAnonymousSymbolKey
+            ? ThrowCurrentInstanceIsNotAnonymousException<TypeList>()
+            : this.SymbolKind.EqualsAny([SymbolKind.MemberMethod, SymbolKind.Type, SymbolKind.Parameter])
+                ? this._genericParameterList
+                : ThrowInvalidPropertyContextException<TypeList>([SymbolKind.MemberMethod, SymbolKind.MemberConstructor, SymbolKind.MemberProperty]);
+
         private readonly int _genericTypeParameterCount;
         /// <summary>
         /// If the current cache key is anonymous, then this property gets the number of generic type parameters defined for a type, the member tha defines the parameter or a method.
@@ -220,6 +231,7 @@
             ParameterList parameterList,
             MethodParameterInfoList methodParameterInfoList,
             int parameterPosition,
+            TypeList genericParameterList,
             int genericTypeParameterCount,
             int memberParameterCount,
             SymbolKind symbolKind,
@@ -245,6 +257,7 @@
             this._parameterList = parameterList;
             this._methodParameterInfoList = methodParameterInfoList;
             this._parameterPosition = parameterPosition;
+            this._genericParameterList = genericParameterList;
             this._parameterMemberParameterCount = memberParameterCount;
             this._genericTypeParameterCount = genericTypeParameterCount;
             this._parameterKind = parameterKind;
@@ -282,6 +295,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                TypeList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.MemberEvent,
@@ -313,6 +327,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                TypeList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 indexerParameterCount,
                 SymbolKind.MemberProperty,
@@ -336,6 +351,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                TypeList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.MemberMethod,
@@ -359,6 +375,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                TypeList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.Type,
@@ -382,6 +399,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                TypeList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.MemberField,
@@ -405,6 +423,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                TypeList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.MemberConstructor,
@@ -449,6 +468,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 parameterInfo.Position,
+                TypeList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.Parameter,
@@ -465,21 +485,24 @@
         /// <param name="declaringTypeHandle">The runtime type handle representing the declaring type of the anonymous method, constructor.</param>
         /// <param name="memberName">The name of the anonymous method, constructor . Cannot be null, empty, or consist only of white-space characters.</param>
         /// <param name="symbolParameters">The list of parameters for the anonymous method, constructor or indexer property. Can be <see cref="MethodParameterInfoList.Empty"/> or <see langword="null"/> to indicate no parameters.</param>
-        /// <param name="genericTypeParameterCount">The number of generic type parameters for the anonymous method or constructor. Must be zero or greater. For properties the value is ignored.</param>
+        /// <param name="genericMethodParameters">The list of generic method parameters for the anonymous method.<para/>
+        /// Can be <see cref="MethodParameterInfoList.Empty"/> for constructors or to indicate a non-generic method.</param>
         /// <param name="symbolKind">The kind of symbol to associate with the cache key. Must be <see cref="SymbolKind.MemberMethod"/> or <see cref="SymbolKind.MemberConstructor"/>.</param>
         /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous method, constructor.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="declaringTypeHandle"/> is <see langword="default"/>.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="declaringTypeHandle"/> is <see langword="default"/> or when <paramref name="genericMethodParameters"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="memberName"/> is null, empty, or consists only of white-space characters</exception>
         /// <exception cref="ArgumentException">Thrown when the provided <paramref name="symbolKind"/> value is not defined in <see cref="SymbolKind"/>.</exception>
         /// <exception cref="ArgumentException">Thrown when the provided <paramref name="symbolKind"/> value is not equal to <see cref="SymbolKind.MemberMethod"/> or <see cref="SymbolKind.MemberConstructor"/>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="genericTypeParameterCount"/> is negative.</exception>"
-        public static SymbolInfoDataCacheKey CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle declaringTypeHandle, string memberName, ParameterList? symbolParameters, int genericTypeParameterCount, SymbolKind symbolKind)
+        public static SymbolInfoDataCacheKey CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle declaringTypeHandle, string memberName, ParameterList? symbolParameters, TypeList genericMethodParameters, SymbolKind symbolKind)
         {
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
-            ArgumentException.ThrowIfNullOrWhiteSpace(memberName, nameof(memberName));
-            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle);
+            ArgumentException.ThrowIfNullOrWhiteSpace(memberName);
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind);
+            ArgumentNullExceptionAdvanced.ThrowIfNull(
+                genericMethodParameters,
+                nameof(genericMethodParameters),
+                $"Pass '{typeof(TypeList).ToFullyQualifiedSignatureName()}.{nameof(TypeList.Empty)}' for non-generic methods.");
             ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(symbolKind, [SymbolKind.MemberMethod, SymbolKind.MemberConstructor], nameof(symbolKind), "The symbol kind must be 'MemberMethod' or 'Constructor' for anonymous method symbols.");
-            ArgumentOutOfRangeException.ThrowIfNegative(genericTypeParameterCount, paramName: nameof(genericTypeParameterCount));
 
             return new SymbolInfoDataCacheKey(memberName,
                 string.Empty,
@@ -490,7 +513,8 @@
                 symbolParameters ?? ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
-                genericTypeParameterCount,
+                genericMethodParameters,
+                genericMethodParameters.Count,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 symbolKind,
                 ParameterKind.Undefined,
@@ -506,21 +530,24 @@
         /// <param name="declaringTypeHandle">The runtime type handle representing the declaring type of the anonymous method, constructor.</param>
         /// <param name="memberName">The name of the anonymous method, constructor . Cannot be null, empty, or consist only of white-space characters.</param>
         /// <param name="symbolParameters">The list of parameters for the anonymous method, constructor or indexer property. Can be <see cref="MethodParameterInfoList.Empty"/> or <see langword="null"/> to indicate no parameters.</param>
-        /// <param name="genericTypeParameterCount">The number of generic type parameters for the anonymous method or constructor. Must be zero or greater. For properties the value is ignored.</param>
+        /// <param name="genericMethodParameters">The list of generic method parameters for the anonymous method.<para/>
+        /// Can be <see cref="MethodParameterInfoList.Empty"/> for constructors or to indicate a non-generic method.</param>
         /// <param name="symbolKind">The kind of symbol to associate with the cache key. Must be <see cref="SymbolKind.MemberMethod"/> or <see cref="SymbolKind.MemberConstructor"/>.</param>
         /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous method, constructor.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="declaringTypeHandle"/> is <see langword="default"/>.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="declaringTypeHandle"/> is <see langword="default"/> or when <paramref name="genericMethodParameters"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="memberName"/> is null, empty, or consists only of white-space characters</exception>
         /// <exception cref="ArgumentException">Thrown when the provided <paramref name="symbolKind"/> value is not defined in <see cref="SymbolKind"/>.</exception>
         /// <exception cref="ArgumentException">Thrown when the provided <paramref name="symbolKind"/> value is not equal to <see cref="SymbolKind.MemberMethod"/> or <see cref="SymbolKind.MemberConstructor"/>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="genericTypeParameterCount"/> is negative.</exception>"
-        public static SymbolInfoDataCacheKey CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle declaringTypeHandle, string memberName, MethodParameterInfoList? symbolParameters, int genericTypeParameterCount, SymbolKind symbolKind)
+        public static SymbolInfoDataCacheKey CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle declaringTypeHandle, string memberName, MethodParameterInfoList? symbolParameters, TypeList genericMethodParameters, SymbolKind symbolKind)
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
             ArgumentException.ThrowIfNullOrWhiteSpace(memberName, nameof(memberName));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(
+                genericMethodParameters,
+                nameof(genericMethodParameters),
+                $"Pass '{typeof(TypeList).ToFullyQualifiedSignatureName()}.{nameof(TypeList.Empty)}' for non-generic methods.");
             ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
             ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(symbolKind, [SymbolKind.MemberMethod, SymbolKind.MemberConstructor], nameof(symbolKind), "The symbol kind must be 'MemberMethod' or 'Constructor' for anonymous method symbols.");
-            ArgumentOutOfRangeException.ThrowIfNegative(genericTypeParameterCount, nameof(genericTypeParameterCount));
             ArgumentExceptionAdvanced.ThrowIfAny(
                 symbolParameters ?? MethodParameterInfoList.Empty,
                 methodParameterInfo => !methodParameterInfo.DeclaringTypeHandle.Equals(declaringTypeHandle),
@@ -536,7 +563,8 @@
                 ParameterList.Empty,
                 symbolParameters ?? MethodParameterInfoList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
-                genericTypeParameterCount,
+                genericMethodParameters,
+                genericMethodParameters.Count,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 symbolKind,
                 ParameterKind.Undefined,
@@ -569,6 +597,7 @@
                 parameterList,
                 MethodParameterInfoList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                TypeList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 parameterList.Count,
                 SymbolKind.MemberProperty,
@@ -602,6 +631,7 @@
                 ParameterList.Empty,
                 methodParameterInfoList,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                TypeList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 methodParameterInfoList.Count,
                 SymbolKind.MemberProperty,
@@ -623,17 +653,18 @@
         /// <param name="parameterName">The name of the anonymous parameter. </param>
         /// <param name="position">The index of the parameter.</param>
         /// <param name="parameterKind">Optional.Must be provided to avoid ambiguity which can throw exceptions during lookup when using this key.</param>
+        /// <param name="memberGenericMethodParameters">The list of generic method parameters for the anonymous parameter type.<para/>
+        /// Can be <see cref="MethodParameterInfoList.Empty"/> to indicate a non-generic parameter.</param>
         /// <param name="memberName">Optional. The name of the member that declares the parameter. You should provide the member name to improve performance. For best efficiency, use the <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, string, int, RuntimeMethodHandle, ParameterizedSymbolKind)"/> overload instead.
         /// <br/>If the parameter belongs to an indexer property, the <paramref name="memberName"/> can be null, empty, or consist only of white-space characters (in this case <paramref name="parameterizedSymbolKind"/> must be <see cref="ParameterizedSymbolKind.MemberIndexerProperty"/>. For indexer properties this value will be ignored.).
         /// For indexer properties, the value must be <see cref="HelperExtensionsCommon.IndexerName"/>.</param>
-        /// <param name="memberGenericParameterCount"></param>
         /// <param name="memberParameterCount"></param>
         /// <param name="parameterizedSymbolKind">Optional. Provides a hint about the kind of member that the parameter belongs to. Should be provided too improve efficiency of the key.</param>
         /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous parameter.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="declaringTypeHandle"/> is <see langword="default"/>.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="declaringTypeHandle"/> is <see langword="default"/> or when <paramref name="memberGenericMethodParameters"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="parameterName"/> is null, empty, or consists only of white-space characters or <paramref name="parameterKind"/> is <see cref="ParameterKind.Undefined"/> or <paramref name="parameterizedSymbolKind"/> is <see cref="ParameterizedSymbolKind.Undefined"/> or the provided enum values for <paramref name="parameterKind"/> or <paramref name="parameterizedSymbolKind"/> are not defined.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="position"/> is negative.</exception>
-        public static SymbolInfoDataCacheKey CreateForAnonymousParameter(RuntimeTypeHandle parameterTypeHandle, RuntimeTypeHandle declaringTypeHandle, string parameterName, int position, ParameterKind parameterKind, ParameterizedSymbolKind parameterizedSymbolKind, string? memberName = null, int memberGenericParameterCount = SymbolInfoDataCacheKey.UnknownParameterCountOrPosition, int memberParameterCount = SymbolInfoDataCacheKey.UnknownParameterCountOrPosition)
+        public static SymbolInfoDataCacheKey CreateForAnonymousParameter(RuntimeTypeHandle parameterTypeHandle, RuntimeTypeHandle declaringTypeHandle, string parameterName, int position, ParameterKind parameterKind, ParameterizedSymbolKind parameterizedSymbolKind, TypeList memberGenericMethodParameters, string? memberName = null, int memberParameterCount = SymbolInfoDataCacheKey.UnknownParameterCountOrPosition)
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterTypeHandle, nameof(parameterTypeHandle));
             ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
@@ -645,6 +676,10 @@
                 parameterizedSymbolKind,
                 [ParameterizedSymbolKind.Undefined],
                 nameof(parameterizedSymbolKind), $"Invalid argument '{nameof(parameterizedSymbolKind)}'. The value '{nameof(ParameterizedMemberKind)}.{ParameterizedSymbolKind.Undefined}' is not allowed.");
+            ArgumentNullExceptionAdvanced.ThrowIfNull(
+                memberGenericMethodParameters,
+                nameof(memberGenericMethodParameters),
+                $"Pass '{typeof(TypeList).ToFullyQualifiedSignatureName()}.{nameof(TypeList.Empty)}' for non-generic parameters.");
             ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(
                 parameterKind,
                 [ParameterKind.Undefined],
@@ -659,7 +694,8 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 position,
-                memberGenericParameterCount,
+                memberGenericMethodParameters,
+                memberGenericMethodParameters.Count,
                 memberParameterCount,
                 SymbolKind.Parameter,
                 parameterKind,
@@ -678,13 +714,15 @@
         /// <param name="position">The index of the parameter. This value can't be negative or <see cref="SymbolInfoDataCacheKey.UnknownParameterCountOrPosition"/>.</param>
         /// <param name="memberHandle">For best performance provide a <see cref="RuntimeMethodHandle"/> to the method or constructor that defines the parameter should be provided. Alternatively, call <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, RuntimeTypeHandle, string, int, ParameterKind, ParameterizedSymbolKind, string?, int, int)"/> which accepts the defining member name but will perform worse, but still better than the case where a member handle or member name are not provided.</param>
         /// <param name="parameterizedSymbolKind">The kind of the parameterized symbol.</param>
+        /// /// <param name="memberGenericMethodParameters">The list of generic method parameters for the anonymous method.<para/>
+        /// Can be <see cref="MethodParameterInfoList.Empty"/> to indicate a non-generic parameter.</param>
         /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous parameter.</returns>
         /// <remarks></remarks>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="declaringTypeHandle"/> is <see langword="default"/>.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="declaringTypeHandle"/> is <see langword="default"/> or when <paramref name="memberGenericMethodParameters"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="parameterName"/> is null, empty, or consists only of white-space characters</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="position"/> is negative.</exception>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="memberHandle"/> is <see langword="default"/>.</exception>
-        public static SymbolInfoDataCacheKey CreateForAnonymousParameter(RuntimeTypeHandle declaringTypeHandle, string parameterName, int position, RuntimeMethodHandle memberHandle, ParameterizedSymbolKind parameterizedSymbolKind)
+        public static SymbolInfoDataCacheKey CreateForAnonymousParameter(RuntimeTypeHandle declaringTypeHandle, string parameterName, int position, RuntimeMethodHandle memberHandle, ParameterizedSymbolKind parameterizedSymbolKind, TypeList memberGenericMethodParameters)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(parameterName, nameof(parameterName));
             ArgumentOutOfRangeException.ThrowIfNegative(position, paramName: nameof(position));
@@ -696,6 +734,10 @@
                 [ParameterizedSymbolKind.Undefined],
                 nameof(parameterizedSymbolKind), $"Invalid argument '{nameof(parameterizedSymbolKind)}'. The value '{nameof(ParameterizedMemberKind)}.{ParameterizedSymbolKind.Undefined}' is not allowed.");
 
+            ArgumentNullExceptionAdvanced.ThrowIfNull(
+                memberGenericMethodParameters,
+                nameof(memberGenericMethodParameters),
+                $"Pass '{typeof(TypeList).ToFullyQualifiedSignatureName()}.{nameof(TypeList.Empty)}' for non-generic parameters.");
             return new SymbolInfoDataCacheKey(parameterName,
                 string.Empty,
                 declaringTypeHandle,
@@ -705,7 +747,8 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 position,
-                SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                memberGenericMethodParameters,
+                memberGenericMethodParameters.Count,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.Parameter,
                 ParameterKind.Undefined,
@@ -741,6 +784,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                TypeList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 symbolKind,
