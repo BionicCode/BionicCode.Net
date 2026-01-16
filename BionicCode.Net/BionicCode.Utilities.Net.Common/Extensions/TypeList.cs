@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Linq;
 
     internal sealed class TypeList : IReadOnlyList<TypeData>, IEquatable<TypeList>
     {
@@ -18,7 +17,7 @@
         {
             this.Types = items.ToImmutableList();
             ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Types, nameof(items));
-            this._hashCode = ComputeHashCode(this.Types);
+            this._hashCode = ComputeHashCode();
         }
 
         public int Count => this.Types.Count;
@@ -44,24 +43,46 @@
             => this.Types.GetEnumerator();
 
         public bool Equals(TypeList? other)
-            => other != null && this.Types.SequenceEqual(other.Types);
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (this.Count != other.Count)
+            {
+                return false;
+            }
+
+            bool isEqual = false;
+            for (int index = 0; index < this.Count && !isEqual; index++)
+            {
+                if (!this.Types[index].Equals(other.Types[index]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         public override bool Equals(object? obj)
             => obj is TypeList other && Equals(other);
 
         public override int GetHashCode() => this._hashCode;
 
-        private static int ComputeHashCode(IEnumerable<TypeData> items)
+        private int ComputeHashCode()
         {
             unchecked
             {
-                int hash = 17;
-                foreach (TypeData item in items)
+                var hashCode = new HashCode();
+                hashCode.Add(this.Count);
+                for (int index = 0; index < this.Types.Count; index++)
                 {
-                    hash = (hash * 31) + item.GetHashCode();
+                    hashCode.Add(this.Types[index]);
                 }
 
-                return hash;
+                return hashCode.ToHashCode();
             }
         }
 

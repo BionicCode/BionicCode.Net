@@ -25,9 +25,13 @@
 
             this.DeclaringTypeHandle = this.Properties.FirstOrDefault()!.DeclaringTypeHandle;
 
-            ArgumentExceptionAdvanced.ThrowIfAny(this.Properties, property => !property.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle), nameof(items), $"At least one item in the argument '{nameof(items)}' has a different value for the '{nameof(PropertyData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All properties must belong to the same declaring type.");
+            ArgumentExceptionAdvanced.ThrowIfAny(
+                this.Properties,
+                property => !property.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle),
+                nameof(items),
+                $"At least one item in the argument '{nameof(items)}' has a different value for the '{nameof(PropertyData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All properties must belong to the same declaring type.");
 
-            this._hashCode = ComputeHashCode(this.Properties);
+            this._hashCode = ComputeHashCode();
         }
 
         public int Count => this.Properties.Count;
@@ -54,26 +58,52 @@
             => this.Properties.GetEnumerator();
 
         public bool Equals(PropertyList? other)
-            => other != null && this.Properties.SequenceEqual(other.Properties)
-                && this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle);
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (this.Count != other.Count)
+            {
+                return false;
+            }
+
+            if (!this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle))
+            {
+                return false;
+            }
+
+            bool isEqual = false;
+            for (int index = 0; index < this.Count && !isEqual; index++)
+            {
+                if (!this.Properties[index].Equals(other.Properties[index]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         public override bool Equals(object? obj)
             => obj is PropertyList other && Equals(other);
 
         public override int GetHashCode() => this._hashCode;
 
-        private int ComputeHashCode(IEnumerable<PropertyData> items)
+        private int ComputeHashCode()
         {
             unchecked
             {
-                int hash = 17;
-                hash = (hash * 31) + this.DeclaringTypeHandle.GetHashCode();
-                foreach (PropertyData item in items)
+                var hashCode = new HashCode();
+                hashCode.Add(this.Count);
+                hashCode.Add(this.DeclaringTypeHandle);
+                for (int index = 0; index < this.Properties.Count; index++)
                 {
-                    hash = (hash * 31) + item.GetHashCode();
+                    hashCode.Add(this.Properties[index]);
                 }
 
-                return hash;
+                return hashCode.ToHashCode();
             }
         }
 

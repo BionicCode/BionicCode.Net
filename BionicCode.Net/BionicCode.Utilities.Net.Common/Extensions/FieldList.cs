@@ -19,12 +19,13 @@
             this.Fields = items.ToImmutableList();
             ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Fields, nameof(items));
             this.DeclaringTypeHandle = this.Fields.FirstOrDefault()!.DeclaringTypeHandle;
-            if (!this.Fields.All(field => field.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle)))
-            {
-                throw new ArgumentException("All fields must belong to the same declaring type.", nameof(items));
-            }
+            ArgumentExceptionAdvanced.ThrowIfAny(
+                this.Fields,
+                fieldData => !fieldData.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle),
+                nameof(items),
+                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(FieldData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All fields must belong to the same declaring type.");
 
-            this._hashCode = ComputeHashCode(this.Fields);
+            this._hashCode = ComputeHashCode();
         }
 
         public int Count => this.Fields.Count;
@@ -51,26 +52,52 @@
             => this.Fields.GetEnumerator();
 
         public bool Equals(FieldList? other)
-            => other != null && this.Fields.SequenceEqual(other.Fields)
-                && this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle);
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (this.Count != other.Count)
+            {
+                return false;
+            }
+
+            if (!this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle))
+            {
+                return false;
+            }
+
+            bool isEqual = false;
+            for (int index = 0; index < this.Count && !isEqual; index++)
+            {
+                if (!this.Fields[index].Equals(other.Fields[index]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         public override bool Equals(object? obj)
             => obj is FieldList other && Equals(other);
 
         public override int GetHashCode() => this._hashCode;
 
-        private int ComputeHashCode(IEnumerable<FieldData> items)
+        private int ComputeHashCode()
         {
             unchecked
             {
-                int hash = 17;
-                hash = (hash * 31) + this.DeclaringTypeHandle.GetHashCode();
-                foreach (FieldData item in items)
+                var hashCode = new HashCode();
+                hashCode.Add(this.Count);
+                hashCode.Add(this.DeclaringTypeHandle);
+                for (int index = 0; index < this.Fields.Count; index++)
                 {
-                    hash = (hash * 31) + item.GetHashCode();
+                    hashCode.Add(this.Fields[index]);
                 }
 
-                return hash;
+                return hashCode.ToHashCode();
             }
         }
     }

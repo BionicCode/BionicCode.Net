@@ -22,9 +22,13 @@
 
             this.DeclaringTypeHandle = this.Methods.FirstOrDefault()!.DeclaringTypeHandle;
 
-            ArgumentExceptionAdvanced.ThrowIfAny(this.Methods, methodData => !methodData.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle), nameof(items), $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All methods must belong to the same declaring type.");
+            ArgumentExceptionAdvanced.ThrowIfAny(
+                this.Methods,
+                methodData => !methodData.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle),
+                nameof(items),
+                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All methods must belong to the same declaring type.");
 
-            this._hashCode = ComputeHashCode(this.Methods);
+            this._hashCode = ComputeHashCode();
         }
 
         private readonly ILookup<string, MethodData>? _methodNameIndex;
@@ -131,26 +135,52 @@
             => this.Methods.GetEnumerator();
 
         public bool Equals(MethodList? other)
-            => other != null && this.Methods.SequenceEqual(other.Methods)
-                && this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle);
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (this.Count != other.Count)
+            {
+                return false;
+            }
+
+            if (!this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle))
+            {
+                return false;
+            }
+
+            bool isEqual = false;
+            for (int index = 0; index < this.Count && !isEqual; index++)
+            {
+                if (!this.Methods[index].Equals(other.Methods[index]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         public override bool Equals(object? obj)
             => obj is MethodList other && Equals(other);
 
         public override int GetHashCode() => this._hashCode;
 
-        private int ComputeHashCode(IEnumerable<MethodData> items)
+        private int ComputeHashCode()
         {
             unchecked
             {
-                int hash = 17;
-                hash = (hash * 31) + HashCode.Combine(this.Count, this.DeclaringTypeHandle);
-                foreach (MethodData item in items)
+                var hashCode = new HashCode();
+                hashCode.Add(this.Count);
+                hashCode.Add(this.DeclaringTypeHandle);
+                for (int index = 0; index < this.Methods.Count; index++)
                 {
-                    hash = (hash * 31) + item.GetHashCode();
+                    hashCode.Add(this.Methods[index]);
                 }
 
-                return hash;
+                return hashCode.ToHashCode();
             }
         }
 

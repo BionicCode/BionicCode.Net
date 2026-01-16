@@ -620,7 +620,7 @@
 
             if (methodData.ContainsGenericParameters || methodData.IsGenericMethodDefinition)
             {
-                TypeList genericTypeParameters = methodData.GenericMethodArguments;
+                TypeList genericTypeParameters = methodData.GenericMethodParameters;
                 methodData = methodData.MakeGenericMethodData(genericTypeParameters);
             }
 

@@ -1,10 +1,11 @@
 ﻿namespace BionicCode.Utilities.Net
 {
     using System;
+    using static BionicCode.Utilities.Net.MethodData;
 
     internal interface IStrictMethodDataInvoker
     {
-        bool IsInvocable(SymbolInfoDataCacheKey symbolKey);
-        void SetInvoker(SymbolInfoDataCacheKey symbolKey, Delegate strictlyTypedInvoker);
+        bool IsInvocable(MethodDataGenericTypeVariantKey methodDataGenericTypeVariantKey);
+        void SetInvoker(MethodDataGenericTypeVariantKey methodDataGenericTypeVariantKey, Delegate strictlyTypedInvoker);
     }
 }

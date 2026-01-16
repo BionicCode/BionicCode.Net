@@ -26,6 +26,8 @@ When proposing code changes, prefer applying Clean Code principles while adherin
 - Prefer expression-bodied members for simple properties and methods.
 - Use string interpolation over concatenation.
 - Use region name also for the closing endregion directive
+- Prefer string.Equals for string equality test with specified StringComparison
+- When generating a `object.GetHashCode()` override, define a `private readonly int _hashCode` field to store the hash code value and create a related `int ComputeHashCode()` method to compute the hash code value from the constructor of the current type. Goal: make hash code computation a one-time operation. 
 
 ## Refactoring scope
 

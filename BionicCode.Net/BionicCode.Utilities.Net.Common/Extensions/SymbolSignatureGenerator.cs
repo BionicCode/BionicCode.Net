@@ -177,7 +177,7 @@
 
             if (methodData.IsGenericMethod)
             {
-                IEnumerable<SymbolComponentInfo> genericTypeParameterComponents = methodData.GenericMethodArguments.Select(typeParameterData =>
+                IEnumerable<SymbolComponentInfo> genericTypeParameterComponents = methodData.GenericMethodParameters.Select(typeParameterData =>
                 {
                     SymbolComponentInfo info = typeParameterData.SymbolComponentInfo;
                     info.IsParameter = true;
@@ -187,7 +187,7 @@
 
                 if (!isCompact)
                 {
-                    SymbolSignatureGenerator.AddGenericTypeConstraints(symbolComponents, methodData.GenericMethodArguments, isFullyQualifiedName);
+                    SymbolSignatureGenerator.AddGenericTypeConstraints(symbolComponents, methodData.GenericMethodParameters, isFullyQualifiedName);
                 }
             }
 
@@ -2089,7 +2089,7 @@
 
             if (!isCompact && !isRuntimeSymbol)
             {
-                TypeList genericTypeParameterDefinitions = methodData.GenericMethodArguments;
+                TypeList genericTypeParameterDefinitions = methodData.GenericMethodParameters;
                 if (genericTypeParameterDefinitions.HasItems)
                 {
                     _ = signatureNameBuilder

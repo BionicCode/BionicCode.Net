@@ -33,9 +33,13 @@
             this.DeclaringMemberTypeHandle = methodParameterInfo.DeclaringTypeHandle;
             Type declaringType = Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle)
                 ?? throw new ArgumentException($"The argument '{nameof(items)}' contains an invalid item at position '0'. Reason: Could not resolve type from handle 'ParameterTypeHandle'.");
-            ArgumentExceptionAdvanced.ThrowIfAny(this.Parameters, parameterData => !parameterData.DeclaringTypeHandle.Equals(this.DeclaringMemberTypeHandle), nameof(items), $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodParameterInfo)}.{nameof(MethodParameterInfo.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type.");
+            ArgumentExceptionAdvanced.ThrowIfAny(
+                this.Parameters,
+                parameterData => !parameterData.DeclaringTypeHandle.Equals(this.DeclaringMemberTypeHandle),
+                nameof(items),
+                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodParameterInfo)}.{nameof(MethodParameterInfo.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type.");
 
-            this._hashCode = ComputeHashCode(this.Parameters);
+            this._hashCode = ComputeHashCode();
         }
 
         public int Count => this.Parameters.Count;
@@ -62,26 +66,52 @@
             => this.Parameters.GetEnumerator();
 
         public bool Equals(MethodParameterInfoList? other)
-            => other != null && this.Parameters.SequenceEqual(other.Parameters)
-                && this.DeclaringMemberTypeHandle.Equals(other.DeclaringMemberTypeHandle);
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (this.Count != other.Count)
+            {
+                return false;
+            }
+
+            if (!this.DeclaringMemberTypeHandle.Equals(other.DeclaringMemberTypeHandle))
+            {
+                return false;
+            }
+
+            bool isEqual = false;
+            for (int index = 0; index < this.Count && !isEqual; index++)
+            {
+                if (!this.Parameters[index].Equals(other.Parameters[index]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         public override bool Equals(object? obj)
             => obj is MethodParameterInfoList other && Equals(other);
 
         public override int GetHashCode() => this._hashCode;
 
-        private int ComputeHashCode(IEnumerable<MethodParameterInfo> items)
+        private int ComputeHashCode()
         {
             unchecked
             {
-                int hash = 17;
-                hash = (hash * 31) + this.DeclaringMemberTypeHandle.GetHashCode();
-                foreach (MethodParameterInfo item in items)
+                var hashCode = new HashCode();
+                hashCode.Add(this.Count);
+                hashCode.Add(this.DeclaringMemberTypeHandle);
+                for (int index = 0; index < this.Parameters.Count; index++)
                 {
-                    hash = (hash * 31) + item.GetHashCode();
+                    hashCode.Add(this.Parameters[index]);
                 }
 
-                return hash;
+                return hashCode.ToHashCode();
             }
         }
 

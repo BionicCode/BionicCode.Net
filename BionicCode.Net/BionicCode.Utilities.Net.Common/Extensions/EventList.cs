@@ -21,9 +21,13 @@
 
             this.DeclaringTypeHandle = this.Events.FirstOrDefault()!.DeclaringTypeHandle;
 
-            ArgumentExceptionAdvanced.ThrowIfAny(this.Events, eventData => !eventData.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle), nameof(items), $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(EventData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All events must belong to the same declaring type.");
+            ArgumentExceptionAdvanced.ThrowIfAny(
+                this.Events,
+                eventData => !eventData.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle),
+                nameof(items),
+                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(EventData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All events must belong to the same declaring type.");
 
-            this._hashCode = ComputeHashCode(this.Events);
+            this._hashCode = ComputeHashCode();
         }
 
         public int Count => this.Events.Count;
@@ -50,26 +54,52 @@
             => this.Events.GetEnumerator();
 
         public bool Equals(EventList? other)
-            => other != null && this.Events.SequenceEqual(other.Events)
-                && this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle);
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (this.Count != other.Count)
+            {
+                return false;
+            }
+
+            if (!this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle))
+            {
+                return false;
+            }
+
+            bool isEqual = false;
+            for (int index = 0; index < this.Count && !isEqual; index++)
+            {
+                if (!this.Events[index].Equals(other.Events[index]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         public override bool Equals(object? obj)
             => obj is EventList other && Equals(other);
 
         public override int GetHashCode() => this._hashCode;
 
-        private int ComputeHashCode(IEnumerable<EventData> items)
+        private int ComputeHashCode()
         {
             unchecked
             {
-                int hash = 17;
-                hash = (hash * 31) + this.DeclaringTypeHandle.GetHashCode();
-                foreach (EventData item in items)
+                var hashCode = new HashCode();
+                hashCode.Add(this.Count);
+                hashCode.Add(this.DeclaringTypeHandle);
+                for (int index = 0; index < this.Events.Count; index++)
                 {
-                    hash = (hash * 31) + item.GetHashCode();
+                    hashCode.Add(this.Events[index]);
                 }
 
-                return hash;
+                return hashCode.ToHashCode();
             }
         }
 

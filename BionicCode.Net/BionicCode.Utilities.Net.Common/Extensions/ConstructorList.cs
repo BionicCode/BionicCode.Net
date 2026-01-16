@@ -21,9 +21,13 @@
 
             this.DeclaringTypeHandle = this.Constructors.FirstOrDefault()!.DeclaringTypeHandle;
 
-            ArgumentExceptionAdvanced.ThrowIfAny(this.Constructors, constructorData => !constructorData.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle), nameof(items), $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(ConstructorData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All constructors must belong to the same declaring type.");
+            ArgumentExceptionAdvanced.ThrowIfAny(
+                this.Constructors,
+                constructorData => !constructorData.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle),
+                nameof(items),
+                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(ConstructorData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All constructors must belong to the same declaring type.");
 
-            this._hashCode = ComputeHashCode(this.Constructors);
+            this._hashCode = ComputeHashCode();
         }
 
         public int Count => this.Constructors.Count;
@@ -50,26 +54,52 @@
             => this.Constructors.GetEnumerator();
 
         public bool Equals(ConstructorList? other)
-            => other != null && this.Constructors.SequenceEqual(other.Constructors)
-                && this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle);
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (this.Count != other.Count)
+            {
+                return false;
+            }
+
+            if (!this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle))
+            {
+                return false;
+            }
+
+            bool isEqual = false;
+            for (int index = 0; index < this.Count && !isEqual; index++)
+            {
+                if (!this.Constructors[index].Equals(other.Constructors[index]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         public override bool Equals(object? obj)
             => obj is ConstructorList other && Equals(other);
 
         public override int GetHashCode() => this._hashCode;
 
-        private int ComputeHashCode(IEnumerable<ConstructorData> items)
+        private int ComputeHashCode()
         {
             unchecked
             {
-                int hash = 17;
-                hash = (hash * 31) + HashCode.Combine(this.Count, this.DeclaringTypeHandle);
-                foreach (ConstructorData item in items)
+                var hashCode = new HashCode();
+                hashCode.Add(this.Count);
+                hashCode.Add(this.DeclaringTypeHandle);
+                for (int index = 0; index < this.Constructors.Count; index++)
                 {
-                    hash = (hash * 31) + item.GetHashCode();
+                    hashCode.Add(this.Constructors[index]);
                 }
 
-                return hash;
+                return hashCode.ToHashCode();
             }
         }
 

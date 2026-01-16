@@ -35,9 +35,13 @@
                         ? parameterData.DeclaringTypeHandle
                         : throw new NotImplementedException($"The support for the declaring member '{this.DeclaringMember}' is currently not implemented.");
 
-            ArgumentExceptionAdvanced.ThrowIfAny(this.Parameters, parameterData => !parameterData.DeclaringTypeHandle.Equals(declaringTypeHandle), nameof(items), $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(ParameterData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type.");
+            ArgumentExceptionAdvanced.ThrowIfAny(
+                this.Parameters,
+                parameterData => !parameterData.DeclaringTypeHandle.Equals(declaringTypeHandle),
+                nameof(items),
+                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(ParameterData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type.");
 
-            this._hashCode = ComputeHashCode(this.Parameters);
+            this._hashCode = ComputeHashCode();
         }
 
         public ImmutableList<ParameterInfo> AsParameterInfoList()
@@ -74,26 +78,96 @@
             => this.Parameters.GetEnumerator();
 
         public bool Equals(ParameterList? other)
-            => other != null && this.Parameters.SequenceEqual(other.Parameters)
-                && this.DeclaringMember == other.DeclaringMember;
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (this.Count != other.Count)
+            {
+                return false;
+            }
+
+            if (this.DeclaringMember is MethodData methodData)
+            {
+                if (other.DeclaringMember is not MethodData otherMethodData)
+                {
+                    return false;
+                }
+
+                if (methodData.Handle != otherMethodData.Handle)
+                {
+                    return false;
+                }
+            }
+            else if (this.DeclaringMember is ConstructorData constructorData)
+            {
+                if (other.DeclaringMember is not ConstructorData otherConstructorData)
+                {
+                    return false;
+                }
+
+                if (constructorData.Handle != otherConstructorData.Handle)
+                {
+                    return false;
+                }
+            }
+            else if (this.DeclaringMember is PropertyData propertyData)
+            {
+                if (other.DeclaringMember is not PropertyData otherPropertyData)
+                {
+                    return false;
+                }
+
+                if (!propertyData.PropertyTypeData.Handle.Equals(otherPropertyData.PropertyTypeData.Handle))
+                {
+                    return false;
+                }
+            }
+            else if (this.DeclaringMember is TypeData typeData)
+            {
+                if (other.DeclaringMember is not TypeData otherTypeData)
+                {
+                    return false;
+                }
+
+                if (!typeData.Handle.Equals(otherTypeData.Handle))
+                {
+                    return false;
+                }
+            }
+
+            bool isEqual = false;
+            for (int index = 0; index < this.Count && !isEqual; index++)
+            {
+                if (!this.Parameters[index].Equals(other.Parameters[index]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         public override bool Equals(object? obj)
             => obj is ParameterList other && Equals(other);
 
         public override int GetHashCode() => this._hashCode;
 
-        private int ComputeHashCode(IEnumerable<ParameterData> items)
+        private int ComputeHashCode()
         {
             unchecked
             {
-                int hash = 17;
-                hash = (hash * 31) + HashCode.Combine(this.Count, this.DeclaringMember);
-                foreach (ParameterData item in items)
+                var hashCode = new HashCode();
+                hashCode.Add(this.Count);
+                hashCode.Add(this.DeclaringMember);
+                for (int index = 0; index < this.Parameters.Count; index++)
                 {
-                    hash = (hash * 31) + item.GetHashCode();
+                    hashCode.Add(this.Parameters[index]);
                 }
 
-                return hash;
+                return hashCode.ToHashCode();
             }
         }
 
