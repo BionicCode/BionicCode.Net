@@ -7,7 +7,7 @@
 
     internal sealed class MethodList : IReadOnlyList<MethodData>, IEquatable<MethodList>
     {
-        public static readonly MethodList Empty = new MethodList(Array.Empty<MethodData>());
+        public static readonly MethodList Empty = new MethodList();
         private readonly int _hashCode; // precomputed
 
         public MethodList(MethodData[] items) : this((IEnumerable<MethodData>)items)
@@ -20,23 +20,36 @@
             ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Methods, nameof(items));
             this._methodNameIndex = this.Methods.ToLookup(method => method.Name); // allow duplicate method names (overloads)
 
-            this.DeclaringTypeHandle = this.Methods.FirstOrDefault()!.DeclaringTypeHandle;
+            if (this.HasItems)
+            {
+                this._declaringTypeHandle = this.Methods.FirstOrDefault()!.DeclaringTypeHandle;
 
-            ArgumentExceptionAdvanced.ThrowIfAny(
-                this.Methods,
-                methodData => !methodData.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle),
-                nameof(items),
-                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All methods must belong to the same declaring type.");
+                ArgumentExceptionAdvanced.ThrowIfAny(
+                    this.Methods,
+                    methodData => !methodData.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle),
+                    nameof(items),
+                    $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All methods must belong to the same declaring type.");
+
+            }
 
             this._hashCode = ComputeHashCode();
         }
 
+        private MethodList()
+            => this.Methods = ImmutableList<MethodData>.Empty;
+
         private readonly ILookup<string, MethodData>? _methodNameIndex;
+
         public int Count => this.Methods.Count;
         public bool IsEmpty => this.Methods.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<MethodData> Methods { get; }
-        public RuntimeTypeHandle DeclaringTypeHandle { get; }
+
+        private readonly RuntimeTypeHandle _declaringTypeHandle;
+        public RuntimeTypeHandle DeclaringTypeHandle
+            => this.IsEmpty
+                ? throw new InvalidOperationException($"The '{nameof(MethodList)}' is empty. Therefore the '{nameof(this.DeclaringTypeHandle)}' property is not available.")
+                : this._declaringTypeHandle;
 
         public MethodData this[int index]
         {
@@ -151,8 +164,7 @@
                 return false;
             }
 
-            bool isEqual = false;
-            for (int index = 0; index < this.Count && !isEqual; index++)
+            for (int index = 0; index < this.Count; index++)
             {
                 if (!this.Methods[index].Equals(other.Methods[index]))
                 {

@@ -28,7 +28,7 @@
         private bool? isParams;
         private TypeData? parameterTypeData;
         private TypeData? declaringTypeData;
-        private SymbolInfoData? member;
+        private ParameterizedMemberData? member;
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
         private object? defaultValue;
@@ -133,15 +133,19 @@
 
         public ParameterInfo ParameterInfo { get; }
 
-        public SymbolInfoData MemberData
+        public ParameterizedMemberData MemberData
             => this.member ??= GetParameterInfo().Member switch
             {
                 ConstructorInfo constructorInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo),
-                PropertyInfo propertyInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo),
+
+                // If ParameterInfo.Member is a PropertyInfo, it  is ALWAYS an indexer property
+                // and we only need to determine whether it's the get or set method.
+                PropertyInfo propertyInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo) is PropertyData propertyData
+                    ? propertyData.CanRead
+                        ? propertyData.GetMethodData
+                        : propertyData.SetMethodData
+                    : throw new NotImplementedException(),
                 MethodInfo methodInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo),
-                EventInfo eventInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo),
-                FieldInfo fieldInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo),
-                Type type => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type),
                 _ => throw new NotImplementedException(),
             };
 

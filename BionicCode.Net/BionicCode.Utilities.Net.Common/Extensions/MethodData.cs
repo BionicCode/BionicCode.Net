@@ -9,7 +9,7 @@
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
 
-    internal sealed partial class MethodData : MemberData, IMethodDataInvoker, IStrictMethodDataInvoker
+    internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataInvoker, IStrictMethodDataInvoker
     {
         private static readonly Type AsyncStateMachineAttributeType = typeof(AsyncStateMachineAttribute);
 
@@ -229,7 +229,7 @@
             var invokerMethod = (MethodInvoker<TTarget, TResult>)GetInvokerInternal<TTarget, TResult>(TypeList.Empty);
             Debug.Assert(invokerMethod is not null);
 
-            return invokerMethod.Invoke(target, args.ToArray());
+            return invokerMethod.Invoke(target, args);
         }
 
         public async Task InvokeAwaitableTaskAndDiscardResultAsync<TTarget>(TTarget target, params object?[] args)
@@ -246,7 +246,7 @@
             var invokerMethod = (MethodAwaitableTaskDiscardInvoker<TTarget>)GetInvokerInternal<TTarget, Task>(TypeList.Empty, isDiscard: true);
             Debug.Assert(invokerMethod is not null);
 
-            await invokerMethod.Invoke(target, args.ToArray()).ConfigureAwait(false);
+            await invokerMethod.Invoke(target, args).ConfigureAwait(false);
         }
 
         public async ValueTask InvokeAwaitableValueTaskAndDiscardResultAsync<TTarget>(TTarget target, params object?[] args)
@@ -843,7 +843,7 @@
             Type targetType = typeof(TTarget);
             Type resultType = typeof(TResult);
             var genericTypedMethodVariantKey = new MethodDataGenericTypeVariantKey(
-                this.genericMethodArguments,
+                genericMethodArguments,
                 resultType.TypeHandle,
                 targetType.TypeHandle,
                 this.BasicMethodFingerprint);
@@ -866,7 +866,7 @@
                 : throw new InvalidOperationException("Unable to create  the strictly typed method invoker.");
         }
 
-        public RuntimeMethodHandle Handle { get; }
+        public override RuntimeMethodHandle Handle { get; }
 
         /// <summary>
         /// Provides a basic fingerprint for this method based on its name, declaring type, return type, parameters and generic method parameters (if the method is a generic method).
@@ -920,10 +920,10 @@
             }
         }
 
-        public ParameterList Parameters
+        public override ParameterList Parameters
           => this.parameters ??= ParameterListBuilder.Create(this);
 
-        public bool HasParamsParameter
+        public override bool HasParamsParameter
           => this._hasParamsParameter ??= this.Parameters.HasItems && this.Parameters[^1].IsParams;
 
         public bool IsVoidMethod

@@ -6,7 +6,7 @@
 
     internal sealed class TypeList : IReadOnlyList<TypeData>, IEquatable<TypeList>
     {
-        public static readonly TypeList Empty = new TypeList(Array.Empty<TypeData>());
+        public static readonly TypeList Empty = new TypeList();
         private readonly int _hashCode; // precomputed
 
         public TypeList(TypeData[] items) : this((IEnumerable<TypeData>)items)
@@ -16,9 +16,12 @@
         public TypeList(IEnumerable<TypeData> items)
         {
             this.Types = items.ToImmutableList();
-            ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Types, nameof(items));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(this.Types, nameof(items));
             this._hashCode = ComputeHashCode();
         }
+
+        private TypeList()
+            => this.Types = ImmutableList<TypeData>.Empty;
 
         public int Count => this.Types.Count;
         public bool IsEmpty => this.Types.IsEmpty;
@@ -54,8 +57,7 @@
                 return false;
             }
 
-            bool isEqual = false;
-            for (int index = 0; index < this.Count && !isEqual; index++)
+            for (int index = 0; index < this.Count; index++)
             {
                 if (!this.Types[index].Equals(other.Types[index]))
                 {

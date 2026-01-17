@@ -11,13 +11,14 @@
     using static BionicCode.Utilities.Net.MethodData;
 
     public delegate void MethodVoidInvoker<TTarget>(TTarget? target, params object?[] args);
-    public delegate TResult MethodInvoker<TTarget, TResult>(TTarget? target, params object?[] args);
+    //public delegate TResult MethodInvoker<TTarget, TResult>(TTarget? target, params object?[] args);
+    public delegate TResult MethodInvoker<TTarget, TResult>(TTarget? target, ReadOnlySpan<object?> args);
     public delegate Task<TResult> MethodAwaitableGenericTaskInvoker<TTarget, TResult>(TTarget? target, params object?[] args);
     public delegate Task MethodAwaitableTaskInvoker<TTarget, TResult>(TTarget? target, params object?[] args);
     public delegate ValueTask<TResult> MethodAwaitableGenericValueTaskInvoker<TTarget, TResult>(TTarget? target, params object?[] args);
     public delegate ValueTask MethodAwaitableValueTaskInvoker<TTarget, TResult>(TTarget? target, params object?[] args);
-    public delegate Task MethodAwaitableTaskDiscardInvoker<TTarget>(TTarget target, ReadOnlySpan<object?> args);
-    public delegate dynamic MethodAwaitableValueTaskDiscardInvoker<TTarget>(TTarget target, ReadOnlySpan<object?> args);
+    public delegate Task MethodAwaitableTaskDiscardInvoker<TTarget>(TTarget target, params object?[] args);
+    public delegate dynamic MethodAwaitableValueTaskDiscardInvoker<TTarget>(TTarget target, params object?[] args);
 
 
     /// <summary>
@@ -2064,67 +2065,5 @@
         //    Expression validateLength = Expression.IfThen(lengthMismatch, throwLengthMismatch);
         //    return validateLength;
         //}
-
-        #region InvokerKeyMapKey
-
-        //private readonly struct InvokerKeyMapKey : IEquatable<InvokerKeyMapKey>
-        //{
-        //    public TypeList GenericMethodArguments { get; }
-        //    public RuntimeTypeHandle TargetTypeHandle { get; }
-        //    public RuntimeTypeHandle DesiredReturnType { get; }
-        //    public SymbolInfoDataCacheKey SymbolInfoDataCacheKey { get; }
-        //    private readonly int? _hashCode;
-
-        //    public InvokerKeyMapKey(TypeList genericMethodArguments, RuntimeTypeHandle targetTypeHandle, RuntimeTypeHandle desiredReturnType, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
-        //    {
-        //        ArgumentNullException.ThrowIfNull(genericMethodArguments, nameof(genericMethodArguments));
-        //        ArgumentNullExceptionAdvanced.ThrowIfDefault(targetTypeHandle, nameof(targetTypeHandle));
-        //        ArgumentNullExceptionAdvanced.ThrowIfDefault(desiredReturnType, nameof(desiredReturnType));
-
-        //        this.GenericMethodArguments = genericMethodArguments;
-        //        this.TargetTypeHandle = targetTypeHandle;
-        //        this.DesiredReturnType = desiredReturnType;
-        //        this._hashCode = ComputeHashCode();
-        //        this.SymbolInfoDataCacheKey = symbolInfoDataCacheKey;
-        //    }
-
-        //    public bool Equals(InvokerKeyMapKey other)
-        //        => this.GenericMethodArguments.SequenceEqual(other.GenericMethodArguments)
-        //           && this.TargetTypeHandle.Equals(other.TargetTypeHandle)
-        //           && this.DesiredReturnType.Equals(other.DesiredReturnType)
-        //           && this.SymbolInfoDataCacheKey == other.SymbolInfoDataCacheKey;
-
-        //    public override bool Equals([NotNullWhen(true)] object obj)
-        //        => obj is InvokerKeyMapKey invocatorKey && base.Equals(invocatorKey);
-
-        //    public override int GetHashCode()
-        //        => this._hashCode ?? ComputeHashCode();
-
-        //    private int ComputeHashCode()
-        //    {
-        //        int hashCode = 1248511333;
-        //        unchecked
-        //        {
-        //            hashCode = (hashCode * 397) ^ this.TargetTypeHandle.GetHashCode();
-        //            hashCode = (hashCode * 397) ^ this.DesiredReturnType.GetHashCode();
-        //            hashCode = (hashCode * 397) ^ this.SymbolInfoDataCacheKey.GetHashCode();
-        //            foreach (TypeData typeData in this.GenericMethodArguments)
-        //            {
-        //                unchecked
-        //                {
-        //                    int currentHash = typeData.Handle.GetHashCode();
-        //                    hashCode = (hashCode * 397) ^ currentHash;
-        //                }
-        //            }
-
-        //            return hashCode;
-        //        }
-        //    }
-
-        //    public static bool operator ==(InvokerKeyMapKey left, InvokerKeyMapKey right) => left.Equals(right);
-        //    public static bool operator !=(InvokerKeyMapKey left, InvokerKeyMapKey right) => !(left == right);
-        //}
-
-        #endregion InvokerKeyMapKey
     }
 }

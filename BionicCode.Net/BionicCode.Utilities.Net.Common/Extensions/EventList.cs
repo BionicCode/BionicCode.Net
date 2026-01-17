@@ -7,7 +7,7 @@
 
     internal sealed class EventList : IReadOnlyList<EventData>, IEquatable<EventList>
     {
-        public static readonly EventList Empty = new EventList(Array.Empty<EventData>());
+        public static readonly EventList Empty = new EventList();
         private readonly int _hashCode; // precomputed
 
         public EventList(EventData[] items) : this((IEnumerable<EventData>)items)
@@ -17,24 +17,36 @@
         public EventList(IEnumerable<EventData> items)
         {
             this.Events = items.ToImmutableList();
-            ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Events, nameof(items));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(this.Events, nameof(items));
 
-            this.DeclaringTypeHandle = this.Events.FirstOrDefault()!.DeclaringTypeHandle;
+            if (this.HasItems)
+            {
+                this._declaringTypeHandle = this.Events.FirstOrDefault()!.DeclaringTypeHandle;
 
-            ArgumentExceptionAdvanced.ThrowIfAny(
-                this.Events,
-                eventData => !eventData.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle),
-                nameof(items),
-                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(EventData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All events must belong to the same declaring type.");
+                ArgumentExceptionAdvanced.ThrowIfAny(
+                    this.Events,
+                    eventData => !eventData.DeclaringTypeHandle.Equals(this._declaringTypeHandle),
+                    nameof(items),
+                    $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(EventData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All events must belong to the same declaring type.");
+
+            }
 
             this._hashCode = ComputeHashCode();
         }
+
+        private EventList()
+            => this.Events = ImmutableList<EventData>.Empty;
 
         public int Count => this.Events.Count;
         public bool IsEmpty => this.Events.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<EventData> Events { get; }
-        public RuntimeTypeHandle DeclaringTypeHandle { get; }
+
+        private readonly RuntimeTypeHandle _declaringTypeHandle;
+        public RuntimeTypeHandle DeclaringTypeHandle
+            => this.IsEmpty
+                ? throw new InvalidOperationException($"The '{nameof(EventList)}' is empty. Therefore the '{nameof(this.DeclaringTypeHandle)}' property is not accessible.")
+                : this._declaringTypeHandle;
 
         public EventData this[int index]
         {
@@ -70,8 +82,7 @@
                 return false;
             }
 
-            bool isEqual = false;
-            for (int index = 0; index < this.Count && !isEqual; index++)
+            for (int index = 0; index < this.Count; index++)
             {
                 if (!this.Events[index].Equals(other.Events[index]))
                 {

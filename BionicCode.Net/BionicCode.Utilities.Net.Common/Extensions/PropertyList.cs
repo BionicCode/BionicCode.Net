@@ -10,7 +10,7 @@
     /// </summary>
     internal sealed class PropertyList : IReadOnlyList<PropertyData>, IEquatable<PropertyList>
     {
-        public static readonly PropertyList Empty = new PropertyList(Array.Empty<PropertyData>());
+        public static readonly PropertyList Empty = new PropertyList();
         private readonly int _hashCode; // precomputed
 
         public PropertyList(PropertyData[] items) : this((IEnumerable<PropertyData>)items)
@@ -23,22 +23,33 @@
 
             ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Properties, nameof(items));
 
-            this.DeclaringTypeHandle = this.Properties.FirstOrDefault()!.DeclaringTypeHandle;
+            if (this.HasItems)
+            {
+                this._declaringTypeHandle = this.Properties.FirstOrDefault()!.DeclaringTypeHandle;
 
-            ArgumentExceptionAdvanced.ThrowIfAny(
-                this.Properties,
-                property => !property.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle),
-                nameof(items),
-                $"At least one item in the argument '{nameof(items)}' has a different value for the '{nameof(PropertyData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All properties must belong to the same declaring type.");
+                ArgumentExceptionAdvanced.ThrowIfAny(
+                    this.Properties,
+                    property => !property.DeclaringTypeHandle.Equals(this._declaringTypeHandle),
+                    nameof(items),
+                    $"At least one item in the argument '{nameof(items)}' has a different value for the '{nameof(PropertyData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All properties must belong to the same declaring type.");
+            }
 
             this._hashCode = ComputeHashCode();
         }
+
+        private PropertyList()
+            => this.Properties = ImmutableList<PropertyData>.Empty;
 
         public int Count => this.Properties.Count;
         public bool IsEmpty => this.Properties.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<PropertyData> Properties { get; }
-        public RuntimeTypeHandle DeclaringTypeHandle { get; }
+
+        private readonly RuntimeTypeHandle _declaringTypeHandle;
+        public RuntimeTypeHandle DeclaringTypeHandle
+            => this.IsEmpty
+                ? throw new InvalidOperationException($"The '{nameof(PropertyList)}' is empty and has no '{nameof(this.DeclaringTypeHandle)}'.")
+                : this._declaringTypeHandle;
 
         public PropertyData this[int index]
         {
@@ -74,8 +85,7 @@
                 return false;
             }
 
-            bool isEqual = false;
-            for (int index = 0; index < this.Count && !isEqual; index++)
+            for (int index = 0; index < this.Count; index++)
             {
                 if (!this.Properties[index].Equals(other.Properties[index]))
                 {

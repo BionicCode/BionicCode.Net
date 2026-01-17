@@ -7,7 +7,7 @@
 
     internal sealed class ConstructorList : IReadOnlyList<ConstructorData>, IEquatable<ConstructorList>
     {
-        public static readonly ConstructorList Empty = new ConstructorList(Array.Empty<ConstructorData>());
+        public static readonly ConstructorList Empty = new ConstructorList();
         private readonly int _hashCode; // precomputed
 
         public ConstructorList(ConstructorData[] items) : this((IEnumerable<ConstructorData>)items)
@@ -19,22 +19,33 @@
             this.Constructors = items.ToImmutableList();
             ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Constructors, nameof(items));
 
-            this.DeclaringTypeHandle = this.Constructors.FirstOrDefault()!.DeclaringTypeHandle;
+            if (this.HasItems)
+            {
+                this._declaringTypeHandle = this.Constructors.FirstOrDefault()!.DeclaringTypeHandle;
 
-            ArgumentExceptionAdvanced.ThrowIfAny(
-                this.Constructors,
-                constructorData => !constructorData.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle),
-                nameof(items),
-                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(ConstructorData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All constructors must belong to the same declaring type.");
+                ArgumentExceptionAdvanced.ThrowIfAny(
+                    this.Constructors,
+                    constructorData => !constructorData.DeclaringTypeHandle.Equals(this._declaringTypeHandle),
+                    nameof(items),
+                    $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(ConstructorData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All constructors must belong to the same declaring type.");
+            }
 
             this._hashCode = ComputeHashCode();
         }
+
+        private ConstructorList()
+            => this.Constructors = ImmutableList<ConstructorData>.Empty;
 
         public int Count => this.Constructors.Count;
         public bool IsEmpty => this.Constructors.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<ConstructorData> Constructors { get; }
-        public RuntimeTypeHandle DeclaringTypeHandle { get; }
+
+        private readonly RuntimeTypeHandle _declaringTypeHandle;
+        public RuntimeTypeHandle DeclaringTypeHandle
+            => this.IsEmpty
+                ? throw new InvalidOperationException($"The '{nameof(ConstructorList)}' is empty. Therefore the '{nameof(this.DeclaringTypeHandle)}' property is not accessible.")
+                : this._declaringTypeHandle;
 
         public ConstructorData this[int index]
         {
@@ -70,8 +81,7 @@
                 return false;
             }
 
-            bool isEqual = false;
-            for (int index = 0; index < this.Count && !isEqual; index++)
+            for (int index = 0; index < this.Count; index++)
             {
                 if (!this.Constructors[index].Equals(other.Constructors[index]))
                 {

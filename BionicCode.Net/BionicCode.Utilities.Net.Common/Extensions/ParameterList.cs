@@ -14,8 +14,11 @@
     /// Instead the collection is a strict representation of member parameters.</remarks>
     internal sealed class ParameterList : IReadOnlyList<ParameterData>, IEquatable<ParameterList>
     {
-        public static readonly ParameterList Empty = new ParameterList(Array.Empty<ParameterData>());
+        public static readonly ParameterList Empty = new ParameterList();
         private readonly int _hashCode; // precomputed
+
+        private ParameterList()
+            => this.Parameters = ImmutableList<ParameterData>.Empty;
 
         public ParameterList(ParameterData[] items) : this((IEnumerable<ParameterData>)items)
         {
@@ -24,22 +27,25 @@
         public ParameterList(IEnumerable<ParameterData> items)
         {
             this.Parameters = items.OrderBy(parameter => parameter.Position).ToImmutableList();
-            ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Parameters, nameof(items));
+            ArgumentNullExceptionAdvanced.ThrowIfNull(this.Parameters);
 
-            this.DeclaringMember = this.Parameters.FirstOrDefault()?.MemberData;
-            RuntimeTypeHandle declaringTypeHandle = this.DeclaringMember is MemberData memberData
-                ? memberData.DeclaringTypeHandle
-                : this.DeclaringMember is TypeData type
-                    ? type.Handle
-                    : this.DeclaringMember is ParameterData parameterData
-                        ? parameterData.DeclaringTypeHandle
-                        : throw new NotImplementedException($"The support for the declaring member '{this.DeclaringMember}' is currently not implemented.");
+            if (this.HasItems)
+            {
+                this._declaringMember = this.Parameters.First().MemberData;
+                ArgumentNullExceptionAdvanced.ThrowIfNull(
+                    this._declaringMember,
+                    nameof(items),
+                    $"At least one item in the argument sequence '{nameof(items)}' has no value for the '{nameof(ParameterData)}.{nameof(ParameterData.MemberData)}' declaring method handle. All parameters must belong to the same member of the same declaring type.");
 
-            ArgumentExceptionAdvanced.ThrowIfAny(
-                this.Parameters,
-                parameterData => !parameterData.DeclaringTypeHandle.Equals(declaringTypeHandle),
-                nameof(items),
-                $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(ParameterData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type.");
+                RuntimeMethodHandle declaringMemberHandle = this._declaringMember.Handle;
+                RuntimeTypeHandle declaringTypeHandle = this._declaringMember.DeclaringTypeHandle;
+
+                ArgumentExceptionAdvanced.ThrowIfAny(
+                    this.Parameters,
+                    parameterData => parameterData.MemberData.Handle != declaringMemberHandle || !parameterData.MemberData.DeclaringTypeHandle.Equals(declaringTypeHandle),
+                    nameof(items),
+                    $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(ParameterData)}.{nameof(ParameterData.MemberData)}' declaring method handle. All parameters must belong to the same member of the same declaring type.");
+            }
 
             this._hashCode = ComputeHashCode();
         }
@@ -58,7 +64,12 @@
         public bool IsEmpty => this.Parameters.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<ParameterData> Parameters { get; }
-        public SymbolInfoData? DeclaringMember { get; }
+
+        private readonly ParameterizedMemberData? _declaringMember;
+        public ParameterizedMemberData DeclaringMember
+            => this.IsEmpty
+                ? throw new InvalidOperationException($"The '{nameof(ParameterList)}' is empty and has no declaring member.")
+                : this._declaringMember!;
 
         public ParameterData this[int index]
         {
@@ -89,57 +100,7 @@
                 return false;
             }
 
-            if (this.DeclaringMember is MethodData methodData)
-            {
-                if (other.DeclaringMember is not MethodData otherMethodData)
-                {
-                    return false;
-                }
-
-                if (methodData.Handle != otherMethodData.Handle)
-                {
-                    return false;
-                }
-            }
-            else if (this.DeclaringMember is ConstructorData constructorData)
-            {
-                if (other.DeclaringMember is not ConstructorData otherConstructorData)
-                {
-                    return false;
-                }
-
-                if (constructorData.Handle != otherConstructorData.Handle)
-                {
-                    return false;
-                }
-            }
-            else if (this.DeclaringMember is PropertyData propertyData)
-            {
-                if (other.DeclaringMember is not PropertyData otherPropertyData)
-                {
-                    return false;
-                }
-
-                if (!propertyData.PropertyTypeData.Handle.Equals(otherPropertyData.PropertyTypeData.Handle))
-                {
-                    return false;
-                }
-            }
-            else if (this.DeclaringMember is TypeData typeData)
-            {
-                if (other.DeclaringMember is not TypeData otherTypeData)
-                {
-                    return false;
-                }
-
-                if (!typeData.Handle.Equals(otherTypeData.Handle))
-                {
-                    return false;
-                }
-            }
-
-            bool isEqual = false;
-            for (int index = 0; index < this.Count && !isEqual; index++)
+            for (int index = 0; index < this.Count; index++)
             {
                 if (!this.Parameters[index].Equals(other.Parameters[index]))
                 {
@@ -161,7 +122,6 @@
             {
                 var hashCode = new HashCode();
                 hashCode.Add(this.Count);
-                hashCode.Add(this.DeclaringMember);
                 for (int index = 0; index < this.Parameters.Count; index++)
                 {
                     hashCode.Add(this.Parameters[index]);

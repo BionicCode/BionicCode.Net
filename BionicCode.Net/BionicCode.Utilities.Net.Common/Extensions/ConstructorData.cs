@@ -3,7 +3,7 @@
     using System;
     using System.Reflection;
 
-    internal sealed class ConstructorData : MemberData
+    internal sealed class ConstructorData : ParameterizedMemberData
     {
         private string? displayName;
         private string? shortDisplayName;
@@ -19,6 +19,7 @@
         private SymbolAttributes symbolAttributes;
         private AccessModifier accessModifier;
         private ParameterList? parameters;
+        private bool? _hasParamsParameter;
         private bool? isStatic;
         private bool? _isPublic;
         private bool? _isPrivate;
@@ -67,15 +68,18 @@
         private void InitializeInvocator()
           => this.invocator = invocationArguments => GetConstructorInfo().Invoke(invocationArguments);
 
-        public RuntimeMethodHandle Handle { get; set; }
-        public new RuntimeTypeHandle DeclaringTypeHandle { get; set; }
+        public override RuntimeMethodHandle Handle { get; }
+        public new RuntimeTypeHandle DeclaringTypeHandle { get; }
 
         public override AccessModifier AccessModifier => this.accessModifier is AccessModifier.Undefined
           ? (this.accessModifier = ConstructorData.GetAccessModifierInternal(this))
           : this.accessModifier;
 
-        public ParameterList Parameters
+        public override ParameterList Parameters
           => this.parameters ??= ParameterListBuilder.Create(this);
+
+        public override bool HasParamsParameter
+          => this._hasParamsParameter ??= this.Parameters.HasItems && this.Parameters[^1].IsParams;
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
           ? (this.symbolAttributes = ConstructorData.GetAttributesInternal(this))
