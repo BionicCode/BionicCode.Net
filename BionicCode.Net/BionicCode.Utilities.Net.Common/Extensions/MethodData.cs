@@ -20,12 +20,10 @@
         private bool? isAwaitableValueTask;
         private bool? isAwaitableGenericValueTask;
         private bool? isAsync;
-        private bool? isSealed;
         private bool? isExtensionMethod;
         private ParameterList? parameters;
         private TypeList? genericMethodArguments;
         private bool? isOverride;
-        private bool? isStatic;
         private SymbolComponentInfo? symbolComponentInfo;
         private string? displayName;
         private string? shortDisplayName;
@@ -55,14 +53,6 @@
         private bool? _hasParamsParameter;
         private bool? _isVoidMethod;
         private bool? _isAwaitableGenericTask;
-        private bool? _isAbstract;
-        private bool? _isVirtual;
-        private bool? _isPublic;
-        private bool? _isPrivate;
-        private bool? _isAssembly;
-        private bool? _isFamily;
-        private bool? _isFamilyOrAssembly;
-        private bool? _isFamilyAndAssembly;
         private BasicMethodFingerprint? _basicMethodFingerprint;
 
         public MethodData(MethodInfo methodInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(methodInfo, SymbolKind.MemberMethod, symbolInfoDataCacheKey)
@@ -78,6 +68,9 @@
 
         protected override MemberInfo GetMemberInfo()
           => GetMethodInfo();
+
+        public override MethodBase GetMethodBase()
+            => GetMethodInfo();
 
         public MethodData MakeGenericMethodData(TypeList typeDataArguments)
         {
@@ -945,12 +938,6 @@
         public bool IsAwaitable
           => this.isAwaitable ??= this.ReturnTypeData.IsAwaitable;
 
-        public bool IsAbstract
-          => this._isAbstract ??= GetMethodInfo().IsAbstract;
-
-        public bool IsVirtual
-            => this._isVirtual ??= GetMethodInfo().IsVirtual;
-
         public bool IsAwaitableTask
         {
             get
@@ -1046,12 +1033,6 @@
         public bool IsOverride
           => this.isOverride ??= MethodData.IsMethodOverride(this);
 
-        public override bool IsStatic
-          => this.isStatic ??= GetMethodInfo().IsStatic;
-
-        public bool IsSealed
-          => this.isSealed ??= GetMethodInfo().IsFinal;
-
         public bool IsReturnValueReadOnly
           => this.isReturnValueReadOnly ??= GetMethodInfo().ReturnParameter.GetCustomAttribute<IsReadOnlyAttribute>() != null;
 
@@ -1115,24 +1096,6 @@
 
         public bool IsOpenGenericMethodOrGenericMethodDefinition
           => (this.IsGenericMethod && this.ContainsGenericParameters) || this.IsGenericMethodDefinition;
-
-        public override bool IsPublic
-            => this._isPublic ??= GetMethodInfo().IsPublic;
-
-        public override bool IsPrivate
-            => this._isPrivate ??= GetMethodInfo().IsPrivate;
-
-        public override bool IsAssembly
-            => this._isAssembly ??= GetMethodInfo().IsAssembly;
-
-        public override bool IsFamily
-            => this._isFamily ??= GetMethodInfo().IsFamily;
-
-        public override bool IsFamilyOrAssembly
-            => this._isFamilyOrAssembly ??= GetMethodInfo().IsFamilyOrAssembly;
-
-        public override bool IsFamilyAndAssembly
-            => this._isFamilyAndAssembly ??= GetMethodInfo().IsFamilyAndAssembly;
 
         private static bool IsMethodExtensionMethod(MethodData methodData)
         {

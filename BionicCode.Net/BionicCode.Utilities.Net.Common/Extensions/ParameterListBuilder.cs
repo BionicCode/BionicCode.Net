@@ -37,35 +37,93 @@
             return parameters.ToParameterList();
         }
 
-        internal static ParameterList Create(PropertyData propertyData)
+        internal static ParameterList CreateForIndexer(PropertyData propertyData)
         {
             ArgumentNullException.ThrowIfNull(propertyData);
-            return CreateInternal(propertyData.GetPropertyInfo());
+            return CreateInternal(propertyData, PropertyParameterSource.Indexer);
         }
 
-        internal static ParameterList Create(PropertyInfo propertyInfo)
+        internal static ParameterList CreateForIndexer(PropertyInfo propertyInfo)
         {
             ArgumentNullException.ThrowIfNull(propertyInfo);
-            return CreateInternal(propertyInfo);
+            return CreateInternal(propertyInfo.ToPropertyData(), PropertyParameterSource.Indexer);
         }
 
-        private static ParameterList CreateInternal(PropertyInfo propertyInfo)
+        internal static ParameterList CreateForPropertyGet(PropertyData propertyData)
         {
-            ParameterInfo[] indexParameters = propertyInfo.GetIndexParameters();
-            if (indexParameters.IsEmpty())
+            ArgumentNullException.ThrowIfNull(propertyData);
+            return CreateInternal(propertyData, PropertyParameterSource.PropertyGetMethod);
+        }
+
+        internal static ParameterList CreateForPropertyGet(PropertyInfo propertyInfo)
+        {
+            ArgumentNullException.ThrowIfNull(propertyInfo);
+            return CreateInternal(propertyInfo.ToPropertyData(), PropertyParameterSource.PropertyGetMethod);
+        }
+
+        internal static ParameterList CreateForPropertySet(PropertyData propertyData)
+        {
+            ArgumentNullException.ThrowIfNull(propertyData);
+            return CreateInternal(propertyData, PropertyParameterSource.PropertySetMethod);
+        }
+
+        internal static ParameterList CreateForPropertySet(PropertyInfo propertyInfo)
+        {
+            ArgumentNullException.ThrowIfNull(propertyInfo);
+            return CreateInternal(propertyInfo.ToPropertyData(), PropertyParameterSource.PropertySetMethod);
+        }
+
+        private static ParameterList CreateInternal(PropertyData propertyData, PropertyParameterSource propertyParameterSource)
+        {
+            // Use PropertyInfo for parameter related operations to avoid circular references in PropertyData
+            PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
+
+            ParameterList parameters = ParameterList.Empty;
+            switch (propertyParameterSource)
             {
-                return ParameterList.Empty;
+                case PropertyParameterSource.Indexer:
+                    {
+                        ParameterInfo[] indexParameters = propertyInfo.GetIndexParameters();
+                        if (indexParameters.Length == 0)
+                        {
+                            return parameters;
+                        }
+
+                        parameters = propertyInfo.GetIndexParameters()
+                            .Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry)
+                            .ToParameterList();
+
+                        break;
+                    }
+                case PropertyParameterSource.PropertySetMethod:
+                    {
+                        if (!propertyData.CanWrite)
+                        {
+                            return parameters;
+                        }
+
+                        parameters = propertyData.PropertySetMethodData.Parameters;
+
+                        break;
+                    }
+                case PropertyParameterSource.PropertyGetMethod:
+                    {
+                        if (!propertyData.CanRead)
+                        {
+                            return parameters;
+                        }
+
+                        parameters = propertyData.PropertyGetMethodData.Parameters;
+
+                        break;
+                    }
             }
 
-            IEnumerable<ParameterData> parameters = indexParameters.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
-            return parameters.ToParameterList();
+            return parameters;
         }
 
-        internal static ParameterList Create(MethodData methodData)
-            => Create(methodData.GetMethodInfo());
-
-        internal static ParameterList Create(ConstructorData constructorData)
-            => Create(constructorData.GetConstructorInfo());
+        internal static ParameterList Create(ParameterizedMemberData parameterizedMember)
+            => Create(parameterizedMember.GetMethodBase());
 
         internal static ParameterList Create(MethodBase methodBase)
         {
@@ -84,5 +142,13 @@
 
         internal static ParameterList ToParameterList(this IEnumerable<ParameterData>? items)
             => items is null || items.IsEmpty() ? ParameterList.Empty : new ParameterList(items);
+
+        private enum PropertyParameterSource
+        {
+            Undefined,
+            Indexer,
+            PropertySetMethod,
+            PropertyGetMethod,
+        }
     }
 }

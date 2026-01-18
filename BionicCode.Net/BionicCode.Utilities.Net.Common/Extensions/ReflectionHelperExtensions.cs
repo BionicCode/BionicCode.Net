@@ -1779,6 +1779,159 @@
             return propertyData.SymbolAttributes.HasFlag(SymbolAttributes.InitProperty);
         }
 
+        public static bool IsPropertyIndexer(this PropertyInfo propertyInfo)
+            => propertyInfo.GetIndexParameters().Length != 0;
+
+        /// <summary>
+        /// Checks whether the provided <see cref="MethodBase"/> represents the setter accessor of an indexer property.
+        /// </summary>
+        /// <remarks>If <paramref name="isValidationEnabled"/> is <see langword="true"/>, additional validation will be performed.
+        /// This requires full enumeration of all properties of the declaring type to explicitly match the potential accessor method <paramref name="methodInfo"/> against properties of the declaring type.
+        /// This is usually not required and can be skipped in performance sensitive contexts.<para/>
+        /// If <paramref name="isValidationEnabled"/> is <see langword="false"/> then the indexer is
+        /// identified by default runtime name prefixes "get_" and "set_" and parameter count
+        /// to exclude normal properties. Avoiding matching against "set_Item" and "get_Item" allows to include indexers
+        /// which have been renamed using the <see cref="IndexerNameAttribute"/>.</remarks>
+        /// <param name="methodInfo">The method to check.</param>
+        /// <param name="isValidationEnabled">If <see langword="true"/>, additional reflection heavy validation will be performed which is not required in common C# code. See remarks..<para/>
+        /// If <see langword="false"/> then the indexer is identified by default runtime name prefixes "get_" and "set_" and parameter count to exclude non-indexer properties.<para/>
+        /// The default is <see langword="false"/>.</param>
+        /// <returns><see langword="true"/> if the method associates with an indexer property's setter. Otherwise, <see langword="false"/>.</returns>
+        public static bool IsIndexerPropertySetter(this MethodInfo methodInfo, bool isValidationEnabled = false)
+            => IsIndexerPropertyAccessorInternal(methodInfo, isSetter: true, isValidationEnabled: isValidationEnabled);
+
+        /// <summary>
+        /// Checks whether the provided <see cref="MethodBase"/> represents the getter accessor of an indexer property.
+        /// </summary>
+        /// <remarks>If <paramref name="isValidationEnabled"/> is <see langword="true"/>, additional validation will be performed.
+        /// This requires full enumeration of all properties of the declaring type to explicitly match the potential accessor method <paramref name="methodInfo"/> against properties of the declaring type.
+        /// This is usually not required and can be skipped in performance sensitive contexts.<para/>
+        /// If <paramref name="isValidationEnabled"/> is <see langword="false"/> then the indexer is
+        /// identified by default runtime name prefixes "get_" and "set_" and parameter count
+        /// to exclude normal properties. Avoiding matching against "set_Item" and "get_Item" allows to include indexers
+        /// which have been renamed using the <see cref="IndexerNameAttribute"/>.</remarks>
+        /// <param name="methodInfo">The method to check.</param>
+        /// <param name="isValidationEnabled">If <see langword="true"/>, additional reflection heavy validation will be performed which is not required in common C# code. See remarks..<para/>
+        /// If <see langword="false"/> then the indexer is identified by default runtime name prefixes "get_" and "set_" and parameter count to exclude non-indexer properties.<para/>
+        /// The default is <see langword="false"/>.</param>
+        /// <returns><see langword="true"/> if the method associates with an indexer property's setter. Otherwise, <see langword="false"/>.</returns>
+        public static bool IsIndexerPropertyGetter(this MethodInfo methodInfo, bool isValidationEnabled = false)
+            => IsIndexerPropertyAccessorInternal(methodInfo, isSetter: false, isValidationEnabled: isValidationEnabled);
+
+        private static bool IsIndexerPropertyAccessorInternal(MethodInfo methodInfo, bool isSetter, bool isValidationEnabled)
+        {
+            if (!methodInfo.IsSpecialName)
+            {
+                return false;
+            }
+
+            ParameterInfo[] parameterInfos = methodInfo.GetParameters();
+            bool isLookingLikeIndexer = isSetter
+                ? methodInfo.Name.StartsWith("set_", StringComparison.Ordinal) && parameterInfos.Length >= 2 // at least one index parameter + "value" parameter 
+                : methodInfo.Name.StartsWith("get_", StringComparison.Ordinal) && parameterInfos.Length >= 1; // at least one index parameter
+
+            if (!isValidationEnabled)
+            {
+                return isLookingLikeIndexer;
+            }
+
+            if (!isLookingLikeIndexer)
+            {
+                return false;
+            }
+
+            Type? declaringType = methodInfo.DeclaringType;
+            ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType, nameof(methodInfo), $"The '{nameof(methodInfo)}.{nameof(methodInfo.DeclaringType)}' cannot be null when validating whether the method is an indexer property accessor.");
+
+            PropertyInfo[] properties = declaringType!.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+            foreach (PropertyInfo propertyInfo in properties)
+            {
+                if (!propertyInfo.IsPropertyIndexer())
+                {
+                    continue;
+                }
+
+                MethodInfo? accessorMethod = isSetter
+                    ? propertyInfo.GetSetMethod(true)
+                    : propertyInfo.GetGetMethod(true);
+
+                if (accessorMethod == methodInfo)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Determines whether the specified method represents a non-indexer property setter.
+        /// </summary>
+        /// <remarks>This method checks for the special naming convention and signature used by property
+        /// setters in .NET. Indexer setters are excluded.</remarks>
+        /// <param name="methodInfo">The method to evaluate. Typically obtained from reflection on a type's members.</param>
+        /// <returns>true if the method is a property setter for a non-indexer property; otherwise, false.</returns>
+        public static bool IsPropertySetter(this MethodInfo methodInfo)
+            => methodInfo.IsSpecialName
+                && methodInfo.Name.StartsWith("set_", StringComparison.Ordinal)
+                && methodInfo.GetParameters().Length == 1; // exclude indexers
+
+        /// <summary>
+        /// Determines whether the specified method represents a property getter.
+        /// </summary>
+        /// <remarks>This method returns true only for non-indexed property getters. It does not consider
+        /// indexer getters or methods that are not special name property accessors.</remarks>
+        /// <param name="methodInfo">The method to evaluate. Typically obtained from reflection on a type.</param>
+        /// <returns>true if the method is a property getter; otherwise, false.</returns>
+        public static bool IsPropertyGetter(this MethodInfo methodInfo)
+            => methodInfo.IsSpecialName
+                && methodInfo.Name.StartsWith("get_", StringComparison.Ordinal)
+                && methodInfo.GetParameters().Length == 0; // Exclude indexers
+
+        public static bool IsEventAccessor(this MethodInfo methodInfo)
+            => methodInfo.IsSpecialName &&
+                (methodInfo.Name.StartsWith("add_") ||
+                methodInfo.Name.StartsWith("remove_") ||
+                methodInfo.Name.StartsWith("raise_"));
+
+        public static bool IsEventAddAccessor(this MethodInfo methodInfo)
+            => methodInfo.IsSpecialName &&
+                methodInfo.Name.StartsWith("add_", StringComparison.Ordinal);
+
+        public static bool IsEventRemoveAccessor(this MethodInfo methodInfo)
+            => methodInfo.IsSpecialName &&
+                methodInfo.Name.StartsWith("remove_", StringComparison.Ordinal);
+
+        public static bool IsOperatorOverload(this MethodInfo methodInfo)
+            => methodInfo.IsSpecialName && methodInfo.Name.StartsWith("op_", StringComparison.Ordinal);
+
+        public static bool IsConstructor(this MethodInfo methodInfo)
+            => methodInfo.IsSpecialName &&
+                (methodInfo.Name.Equals(",.ctor", StringComparison.Ordinal) || methodInfo.Name.Equals(".cctor", StringComparison.Ordinal));
+
+        public static bool IsDelegateMethod(this MethodInfo methodInfo)
+            => methodInfo.IsSpecialName
+                && (methodInfo.DeclaringType?.IsDelegate() ?? false)
+                && (methodInfo.Name.Equals("Invoke", StringComparison.Ordinal)
+                || methodInfo.Name.Equals("BeginInvoke", StringComparison.Ordinal)
+                || methodInfo.Name.Equals("EndInvoke", StringComparison.Ordinal));
+
+        public static bool IsDelegateInvokeMethod(this MethodInfo methodInfo)
+            => methodInfo.IsSpecialName
+                && (methodInfo.DeclaringType?.IsDelegate() ?? false)
+                && methodInfo.Name.Equals("Invoke", StringComparison.Ordinal);
+
+        public static bool IsDelegateBeginInvokeMethod(this MethodInfo methodInfo)
+            => methodInfo.IsSpecialName
+                && (methodInfo.DeclaringType?.IsDelegate() ?? false)
+                && methodInfo.Name.Equals("BeginInvoke", StringComparison.Ordinal);
+
+        public static bool IsDelegateEndInvokeMethod(this MethodInfo methodInfo)
+            => methodInfo.IsSpecialName
+                && (methodInfo.DeclaringType?.IsDelegate() ?? false)
+                && methodInfo.Name.Equals("EndInvoke", StringComparison.Ordinal);
+
+
         /// <summary>
         /// Checks if the provided <see cref="MethodInfo"/> belongs to an asynchronous/awaitable method.
         /// </summary>

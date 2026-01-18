@@ -35,9 +35,13 @@
         private ParameterKind? parameterKind;
         private bool? isGenericTypeParameter;
         private bool? isGenericMethodParameter;
+        private bool? _isIndexerPropertyParameter;
         private RuntimeTypeHandle? _declaringTypeHandle;
         private RuntimeTypeHandle? _propertyTypeHandle;
         private int? _position;
+        private bool? _isIndexerPropertySetterParameter;
+        private bool? _isIndexerPropertyGetterParameter;
+        private bool? _isPropertySetterParameter;
 
         public ParameterData(ParameterInfo parameterInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(parameterInfo.Name, SymbolKind.Parameter, symbolInfoDataCacheKey)
         {
@@ -138,16 +142,32 @@
             {
                 ConstructorInfo constructorInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo),
 
-                // If ParameterInfo.Member is a PropertyInfo, it  is ALWAYS an indexer property
-                // and we only need to determine whether it's the get or set method.
-                PropertyInfo propertyInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo) is PropertyData propertyData
-                    ? propertyData.CanRead
-                        ? propertyData.GetMethodData
-                        : propertyData.SetMethodData
-                    : throw new NotImplementedException(),
+                // If ParameterInfo.Member is a PropertyInfo, it is ALWAYS an indexer property
+                // and the current parameter was obtained via PropertyInfo.GetIndexerParameters. Since the returned parameter list excludes the "value" parameter for the setter,
+                // we can't resolve ambiguity whether the parameter belongs to the getter or setter.
+                PropertyInfo propertyInfo => FindDeclaringPropertyAccessor(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo)),
+
+                // The parameter belongs to a method and was obtained via:
+                //      * MethodInfo.GetParameters() or
+                //      * ConstructorInfo.GetParameters() or
+                //      * PropertyInfo.GetGetMethod().GetParameters() or
+                //      * PropertyInfo.GetSetMethod().GetParameters() (which, opposed to PropertyInfo.GetIndexerParameters(), includes the "value" parameter of the property setter).
                 MethodInfo methodInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo),
                 _ => throw new NotImplementedException(),
             };
+
+        /// <summary>
+        /// Assumes that the parameter belongs to an indexer property accessor and was obtained via
+        /// PropertyInfo.GetIndexerParameters().
+        /// </summary>
+        /// <param name="propertyData"></param>
+        /// <returns></returns>
+        internal static MethodData FindDeclaringPropertyAccessor(PropertyData propertyData)
+        {
+            return propertyData.CanRead
+                ? propertyData.PropertyGetMethodData
+                : propertyData.PropertySetMethodData;
+        }
 
         public TypeData ParameterTypeData
           => this.parameterTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetParameterInfo().ParameterType);
@@ -163,6 +183,22 @@
         /// </summary>
         internal bool IsByRef
           => this.isByRef ??= this.ParameterTypeData.UnwrapType().IsByRef;
+
+        public bool IsIndexerPropertyParameter
+          => this._isIndexerPropertyParameter ??= this.MemberData.IsIndexerPropertyGetMethod || this.MemberData.IsIndexerPropertySetMethod;
+
+        public bool IsIndexerPropertySetterParameter
+          => this._isIndexerPropertySetterParameter ??= this.MemberData.IsIndexerPropertySetMethod;
+
+        public bool IsIndexerPropertyGetterParameter
+          => this._isIndexerPropertyGetterParameter ??= this.MemberData.IsIndexerPropertyGetMethod;
+
+        /// <summary>
+        /// Gets a value indicating whether this parameter belongs to a property setter method.<br/>
+        /// Note: This property also returns <see langword="false"/> for indexer property setter
+        /// </summary>
+        public bool IsPropertySetterParameter
+          => this._isPropertySetterParameter ??= this.MemberData.IsPropertySetMethod;
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
           ? (this.symbolAttributes = ParameterData.GetAttributesInternal(this))

@@ -446,11 +446,12 @@
             RuntimeTypeHandle declaringTypeHandle = declaringType.TypeHandle;
             Type parameterType = parameterInfo.ParameterType;
             RuntimeTypeHandle parameterTypeHandle = parameterType.TypeHandle;
-            RuntimeMethodHandle methodHandle = member is MethodBase methodBaseInfo // Method or constructor parameter
+            RuntimeMethodHandle methodHandle = member is MethodBase methodBaseInfo // Method or constructor parameter or property setter or getter parameter where the parameter is obtained via MethodInfo.GetParameters method call.
                 ? methodBaseInfo.MethodHandle
-                : parameterInfo.Member is PropertyInfo propertyInfo // Indexer parameter
-                    ? propertyInfo.GetMethod?.MethodHandle ?? propertyInfo.SetMethod?.MethodHandle ?? default
-                    : default;
+                : parameterInfo.Member is PropertyInfo propertyInfo // Indexer parameter (obtained via PropertyInfo.GetIndexerParameters method)
+                    ? ExtractParameterMemberHandleFromProperty(propertyInfo.ToPropertyData())
+                    : throw new NotSupportedException($"The member '{member.Name}' is not supported. '{typeof(ParameterInfo).ToFullyQualifiedSignatureName}.{nameof(ParameterInfo.Member)} must return a '{typeof(MethodBase).ToFullyQualifiedSignatureName())}' or '{typeof(PropertyInfo).ToFullyQualifiedSignatureName()}'.");
+
             ParameterizedSymbolKind parameterizedSymbolKind = member is MethodInfo
                 ? ParameterizedSymbolKind.MemberMethod
                 : member is ConstructorInfo
@@ -476,6 +477,9 @@
                 parameterizedSymbolKind,
                 false);
         }
+
+        private static RuntimeMethodHandle ExtractParameterMemberHandleFromProperty(PropertyData propertyData)
+            => ParameterData.FindDeclaringPropertyAccessor(propertyData).Handle;
 
         /// <summary>
         /// Creates a new cache key for an anonymous method, constructor using the specified declaring type, symbol name, parameters,

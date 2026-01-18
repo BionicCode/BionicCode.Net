@@ -234,7 +234,5 @@
             items.Add("Count", index);
             return items;
         }
-
-        private static bool IsPropertyIndexer(PropertyInfo propertyInfo) => propertyInfo.GetIndexParameters().Any();
     }
 }
