@@ -42,6 +42,7 @@
         private bool? _isIndexerPropertySetterParameter;
         private bool? _isIndexerPropertyGetterParameter;
         private bool? _isPropertySetterParameter;
+        private bool? _isIndexerAccessorAmbiguous;
 
         public ParameterData(ParameterInfo parameterInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(parameterInfo.Name, SymbolKind.Parameter, symbolInfoDataCacheKey)
         {
@@ -137,13 +138,25 @@
 
         public ParameterInfo ParameterInfo { get; }
 
+        /// <summary>
+        /// Gets the member (method, constructor, or property accessor) that declares this parameter.
+        /// </summary>
+        /// <remarks>Since only methods can have parameters in .NET IL, this property will always return a method or constructor.
+        /// This means tha the original behaviour of the underlying <see cref="ParameterInfo.Member"/> is normalized in that <see cref="ParameterData.MemberData"/> will not return a property if the parameter was obtained using <see cref="PropertyData.IndexerParameters"/> (or <see cref="PropertyInfo.GetIndexParameters"/>).<br/>
+        /// Instead, the <see cref="ParameterData.MemberData"/> property will always return the property accessor (getter or setter) that actually declares this parameter.<para/>
+        /// That being said, for a parameter that was obtained using <see cref="PropertyData.IndexerParameters"/> (or <see cref="PropertyInfo.GetIndexParameters"/>) the association getter vs setter is ambiguous since the "value" parameter is removed from the resulting parameter list.
+        /// In this case, <see cref="ParameterData.MemberData"/> will give the getter (if available) precedence over the setter. For a parameter that was obtained via <see cref="MethodData.Parameters"/> (or <see cref="MethodBase.GetParameters"/>) the association is clear and the correct declaring setter or getter is returned.<para/>
+        /// Use <see cref="ParameterData.IsIndexerPropertyParameter"/> and <see cref="ParameterData.IsIndexerPropertyGetterParameter"/> and <see cref="ParameterData.IsIndexerPropertySetterParameter"/> and <see cref="ParameterData.IsPropertySetterParameter"/> (or alternatively query the returned <see cref="MethodData"/> e.g. <see cref="MethodData.IsIndexerPropertyGetMethod"/>) to know whether the current <see cref="ParameterData"/>
+        /// belongs to an indexer property (getter or setter) or the setter of a non-indexer property.<para/>
+        /// If parameter association for indexer properties matters, then always obtain parameters directly from the getter or setter method (e.g. <see cref="MethodData.Parameters"/> like <c>PropertyData.PropertySetMethodData.Parameters</c>) and completely avoid <see cref="PropertyData.IndexerParameters"/> (or <see cref="PropertyInfo.GetIndexParameters"/>).</remarks>
+        /// <value>The <see cref="ParameterizedMemberData"/> (which is either a <see cref="MethodData"/> or <see cref="ConstructorData"/>) that declares this parameter.</value>
         public ParameterizedMemberData MemberData
             => this.member ??= GetParameterInfo().Member switch
             {
                 ConstructorInfo constructorInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo),
 
                 // If ParameterInfo.Member is a PropertyInfo, it is ALWAYS an indexer property
-                // and the current parameter was obtained via PropertyInfo.GetIndexerParameters. Since the returned parameter list excludes the "value" parameter for the setter,
+                // and the current parameter was obtained via PropertyInfo.GetIndexerParameters(). Since the returned parameter list excludes the "value" parameter for the setter,
                 // we can't resolve ambiguity whether the parameter belongs to the getter or setter.
                 PropertyInfo propertyInfo => FindDeclaringPropertyAccessor(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo)),
 
@@ -162,8 +175,10 @@
         /// </summary>
         /// <param name="propertyData"></param>
         /// <returns></returns>
-        internal static MethodData FindDeclaringPropertyAccessor(PropertyData propertyData)
+        internal MethodData FindDeclaringPropertyAccessor(PropertyData propertyData)
         {
+            this._isIndexerAccessorAmbiguous = true;
+
             return propertyData.CanRead
                 ? propertyData.PropertyGetMethodData
                 : propertyData.PropertySetMethodData;
@@ -185,20 +200,23 @@
           => this.isByRef ??= this.ParameterTypeData.UnwrapType().IsByRef;
 
         public bool IsIndexerPropertyParameter
-          => this._isIndexerPropertyParameter ??= this.MemberData.IsIndexerPropertyGetMethod || this.MemberData.IsIndexerPropertySetMethod;
+          => this._isIndexerPropertyParameter ??= this.MemberData is MethodData methodData && (methodData.IsIndexerPropertyGetMethod || methodData.IsIndexerPropertySetMethod);
 
         public bool IsIndexerPropertySetterParameter
-          => this._isIndexerPropertySetterParameter ??= this.MemberData.IsIndexerPropertySetMethod;
+          => this._isIndexerPropertySetterParameter ??= this.MemberData is MethodData methodData && methodData.IsIndexerPropertySetMethod;
 
         public bool IsIndexerPropertyGetterParameter
-          => this._isIndexerPropertyGetterParameter ??= this.MemberData.IsIndexerPropertyGetMethod;
+          => this._isIndexerPropertyGetterParameter ??= this.MemberData is MethodData methodData && methodData.IsIndexerPropertyGetMethod;
+
+        public bool IsIndexerAccessorAmbiguous
+            => !this.IsIndexerPropertyParameter && (bool)this._isIndexerAccessorAmbiguous!; // Accessing 'IsIndexerPropertyParameter' will set the ambiguity flag
 
         /// <summary>
         /// Gets a value indicating whether this parameter belongs to a property setter method.<br/>
         /// Note: This property also returns <see langword="false"/> for indexer property setter
         /// </summary>
         public bool IsPropertySetterParameter
-          => this._isPropertySetterParameter ??= this.MemberData.IsPropertySetMethod;
+          => this._isPropertySetterParameter ??= this.MemberData is MethodData methodData && methodData.IsPropertySetMethod;
 
         public override SymbolAttributes SymbolAttributes => this.symbolAttributes is SymbolAttributes.Undefined
           ? (this.symbolAttributes = ParameterData.GetAttributesInternal(this))

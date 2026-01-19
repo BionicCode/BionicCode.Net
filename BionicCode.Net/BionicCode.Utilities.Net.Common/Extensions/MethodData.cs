@@ -9,7 +9,7 @@
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
 
-    internal sealed partial class MethodData : ParameterizedMemberData, IMethodDataInvoker, IStrictMethodDataInvoker
+    internal sealed class MethodData : ParameterizedMemberData, IMethodDataInvoker, IStrictMethodDataInvoker
     {
         private static readonly Type AsyncStateMachineAttributeType = typeof(AsyncStateMachineAttribute);
 
@@ -53,6 +53,17 @@
         private bool? _hasParamsParameter;
         private bool? _isVoidMethod;
         private bool? _isAwaitableGenericTask;
+        private bool? _isPropertySetMethod;
+        private bool? _isPropertyGetMethod;
+        private bool? _isDelegateInvokeMethod;
+        private bool? _isDelegateBeginInvokeMethod;
+        private bool? _isDelegateEndInvokeMethod;
+        private bool? _isIndexerPropertyGetMethod;
+        private bool? _isIndexerPropertySetMethod;
+        private bool? _isEventAccessorMethod;
+        private bool? _isEventAddMethod;
+        private bool? _isEventRemoveMethod;
+        private bool? _isOperatorOverload;
         private BasicMethodFingerprint? _basicMethodFingerprint;
 
         public MethodData(MethodInfo methodInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(methodInfo, SymbolKind.MemberMethod, symbolInfoDataCacheKey)
@@ -919,6 +930,56 @@
         public override bool HasParamsParameter
           => this._hasParamsParameter ??= this.Parameters.HasItems && this.Parameters[^1].IsParams;
 
+        /// <summary>
+        /// Checks whether the method is a property set method. Will not include indexer set methods.<br/>
+        /// Use <see cref="IsIndexerPropertySetMethod"/> to specifically check for indexer set methods and exclude normal properties.
+        /// </summary>
+        public bool IsPropertySetMethod
+            => this._isPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: false, isSetter: true, isValidationEnabled: false);
+
+        /// <summary>
+        /// Checks whether the method is a property set method. Will not include indexer set methods.<br/>
+        /// Use <see cref="IsIndexerPropertyGetMethod"/> to specifically check for indexer get methods and exclude normal properties.
+        /// </summary>
+        public bool IsPropertyGetMethod
+            => this._isPropertyGetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: false, isSetter: false, isValidationEnabled: false);
+
+        /// <summary>
+        /// Checks whether the method is an indexer property set method.
+        /// </summary>
+        public bool IsIndexerPropertySetMethod
+            => this._isIndexerPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: true, isSetter: true, isValidationEnabled: false);
+
+        /// <summary>
+        /// Checks whether the method is an indexer property get method.
+        /// </summary>
+        public bool IsIndexerPropertyGetMethod
+            => this._isIndexerPropertyGetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: true, isSetter: false, isValidationEnabled: false);
+
+        public bool IsDelegateInvokeMethod
+            => this._isDelegateInvokeMethod ??= MethodData.IsDelegateInvoke(this);
+
+        public bool IsDelegateBeginInvokeMethod
+            => this._isDelegateBeginInvokeMethod ??= MethodData.IsDelegateBeginInvoke(this);
+
+        public bool IsDelegateEndInvokeMethod
+            => this._isDelegateEndInvokeMethod ??= MethodData.IsDelegateEndInvoke(this);
+
+        public bool IsDelegateMethod
+            => this.IsDelegateInvokeMethod || this.IsDelegateBeginInvokeMethod || this.IsDelegateEndInvokeMethod;
+
+        public bool IsEventAddMethod
+            => this._isEventAddMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: true, isValidationEnabled: false);
+
+        public bool IsEventRemoveMethod
+            => this._isEventRemoveMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: false, isValidationEnabled: false);
+
+        public bool IsEventAccessorMethod
+            => this._isEventAccessorMethod ??= this.IsEventAddMethod || this.IsEventRemoveMethod;
+
+        public bool IsOperatorOverload
+            => this._isOperatorOverload ??= MethodData.IsOperator(this);
+
         public bool IsVoidMethod
           => this._isVoidMethod ??= this.ReturnTypeData.UnwrapType() == typeof(void);
 
@@ -1132,6 +1193,128 @@
 
         private static bool IsMarkedAsync(MethodData methodData)
           => methodData.GetMethodInfo().GetCustomAttribute(MethodData.AsyncStateMachineAttributeType) != null;
+
+        private static bool IsPropertyAccessor(MethodData methodData, bool isIndexer, bool isSetter, bool isValidationEnabled)
+        {
+            if (!methodData.IsSpecialName)
+            {
+                return false;
+            }
+
+            ParameterList parameters = methodData.Parameters;
+            bool isLookingLikeIndexer;
+            if (isIndexer)
+            {
+                isLookingLikeIndexer = isSetter
+                ? methodData.Name.StartsWith("set_", StringComparison.Ordinal) && parameters.Count >= 2 // at least one index parameter + "value" parameter
+                : methodData.Name.StartsWith("get_", StringComparison.Ordinal) && parameters.Count >= 1; // at least one index parameter
+            }
+            else
+            {
+                isLookingLikeIndexer = isSetter
+                ? methodData.Name.StartsWith("set_", StringComparison.Ordinal) && parameters.Count == 1 // only "value" parameter
+                : methodData.Name.StartsWith("get_", StringComparison.Ordinal) && parameters.Count == 0; // no parameters
+            }
+
+            if (!isValidationEnabled)
+            {
+                return isLookingLikeIndexer;
+            }
+
+            if (!isLookingLikeIndexer)
+            {
+                return false;
+            }
+
+            TypeData declaringTypeData = methodData.DeclaringTypeData;
+            foreach (PropertyData propertyData in declaringTypeData.EnumerateProperties())
+            {
+                if (!propertyData.IsIndexer)
+                {
+                    continue;
+                }
+
+                MethodData? accessorMethod = isSetter
+                    ? propertyData.CanWrite
+                        ? propertyData.PropertySetMethodData
+                        : null
+                    : propertyData.CanRead
+                        ? propertyData.PropertyGetMethodData
+                        : null;
+
+                if (ReferenceEquals(accessorMethod, methodData))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool IsEventAccessor(MethodData methodData, bool isAddAccessor, bool isValidationEnabled = false)
+        {
+            return methodData.IsSpecialName &&
+                methodData.Name.StartsWith("add_", StringComparison.Ordinal);
+
+            if (!methodData.IsSpecialName)
+            {
+                return false;
+            }
+
+            ParameterList parameters = methodData.Parameters;
+            bool isLookingLikeEventAccessor = isAddAccessor
+                ? methodData.Name.StartsWith("add_", StringComparison.Ordinal) && parameters.Count == 1 // at least one index parameter + "value" parameter
+                : methodData.Name.StartsWith("remove_", StringComparison.Ordinal) && parameters.Count == 1; // at least one index parameter
+
+
+            if (!isValidationEnabled)
+            {
+                return isLookingLikeEventAccessor;
+            }
+
+            if (!isLookingLikeEventAccessor)
+            {
+                return false;
+            }
+
+            TypeData declaringTypeData = methodData.DeclaringTypeData;
+            foreach (EventData eventData in declaringTypeData.EnumerateEvents())
+            {
+                MethodData? accessorMethod = isAddAccessor
+                    ? eventData.CanAdd
+                        ? eventData.AddMethodData
+                        : null
+                    : eventData.CanRemove
+                        ? eventData.RemoveMethodData
+                        : null;
+
+                if (ReferenceEquals(accessorMethod, methodData))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool IsOperator(MethodData methodData)
+            => methodData.IsSpecialName && methodData.Name.StartsWith("op_", StringComparison.Ordinal);
+
+        private static bool IsDelegateInvoke(MethodData methodData)
+            => methodData.IsSpecialName
+                && methodData.DeclaringTypeData.IsDelegate
+                && methodData.Name.Equals("Invoke", StringComparison.Ordinal);
+
+        private static bool IsDelegateBeginInvoke(MethodData methodData)
+            => methodData.IsSpecialName
+                && methodData.DeclaringTypeData.IsDelegate
+                && methodData.Name.Equals("BeginInvoke", StringComparison.Ordinal);
+
+        private static bool IsDelegateEndInvoke(MethodData methodData)
+            => methodData.IsSpecialName
+                && methodData.DeclaringTypeData.IsDelegate
+                && methodData.Name.Equals("EndInvoke", StringComparison.Ordinal);
+
 
         /// <summary>
         /// Determines the set of symbol attributes for the specified closedGenericMethoMethodInfo based on its metadata and characteristics.

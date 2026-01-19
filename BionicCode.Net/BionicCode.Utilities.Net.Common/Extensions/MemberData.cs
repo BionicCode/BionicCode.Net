@@ -21,6 +21,9 @@
         public RuntimeTypeHandle DeclaringTypeHandle
             => this._declaringTypeHandle ??= GetDeclaringType().TypeHandle;
 
+        public TypeData DeclaringTypeData
+          => this.declaringTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetDeclaringType());
+
         public string Namespace
             => this._namespace ??= GetDeclaringType().Namespace ?? string.Empty;
 
@@ -35,8 +38,5 @@
 
         public override IList<CustomAttributeData> AttributeData
           => this.attributeData ??= new List<CustomAttributeData>(GetMemberInfo().GetCustomAttributesData());
-
-        public TypeData DeclaringTypeData
-          => this.declaringTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetDeclaringType());
     }
 }

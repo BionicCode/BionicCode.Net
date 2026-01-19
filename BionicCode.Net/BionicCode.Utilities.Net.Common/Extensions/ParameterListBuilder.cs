@@ -143,6 +143,9 @@
         internal static ParameterList ToParameterList(this IEnumerable<ParameterData>? items)
             => items is null || items.IsEmpty() ? ParameterList.Empty : new ParameterList(items);
 
+        internal static ParameterList OrEmpty(this ParameterList items)
+            => items ?? ParameterList.Empty;
+
         private enum PropertyParameterSource
         {
             Undefined,

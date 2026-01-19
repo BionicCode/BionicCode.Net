@@ -64,5 +64,8 @@
 
         internal static PropertyList ToPropertyList(this IEnumerable<PropertyData> items)
             => items is null || items.IsEmpty() ? PropertyList.Empty : new PropertyList(items);
+
+        internal static PropertyList OrEmpty(this PropertyList items)
+            => items ?? PropertyList.Empty;
     }
 }

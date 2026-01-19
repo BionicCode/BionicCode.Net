@@ -29,6 +29,8 @@
         private bool? _isFamily;
         private bool? _isFamilyOrAssembly;
         private bool? _isFamilyAndAssembly;
+        private bool? _canAdd;
+        private bool? _canRemove;
         private TypeData? eventHandlerTypeData;
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
@@ -189,6 +191,12 @@
 
         public override string AssemblyName
           => this.assemblyName ??= this.DeclaringTypeData.AssemblyName;
+
+        public bool CanAdd
+          => this._canAdd ??= GetEventInfo().GetAddMethod(true) is not null;
+
+        public bool CanRemove
+            => this._canRemove ??= GetEventInfo().GetRemoveMethod(true) is not null;
 
         public bool IsOverride
           => this.isOverride ??= this.AddMethodData!.IsOverride;

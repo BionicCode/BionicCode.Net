@@ -17,13 +17,7 @@
         private bool? _isFamilyAndAssembly;
         private bool? _isConstructor;
         private bool? _isMethod;
-        private bool? _isPropertySetMethod;
-        private bool? _isPropertyGetMethod;
-        private bool? _isDelegateInvokeMethod;
-        private bool? _isDelegateBeginInvokeMethod;
-        private bool? _isDelegateEndInvokeMethod;
-        private bool? _isIndexerPropertyGetMethod;
-        private bool? _isIndexerPropertySetMethod;
+        private bool? _isSpecialName;
 
         protected ParameterizedMemberData(MemberInfo memberInfo, SymbolKind symbolKind, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
             : base(memberInfo, symbolKind, symbolInfoDataCacheKey)
@@ -99,39 +93,7 @@
         public bool IsMethod
             => this._isMethod ??= GetMethodBase() is MethodInfo;
 
-        /// <summary>
-        /// Checks whether the method is a property set method. Will not include indexer set methods.<br/>
-        /// Use <see cref="IsIndexerPropertySetMethod"/> to specifically check for indexer set methods and exclude normal properties.
-        /// </summary>
-        public bool IsPropertySetMethod
-            => this._isPropertySetMethod ??= GetMethodBase() is MethodInfo methodInfo && methodInfo.IsPropertySetter();
-
-        /// <summary>
-        /// Checks whether the method is a property set method. Will not include indexer set methods.<br/>
-        /// Use <see cref="IsIndexerPropertyGetMethod"/> to specifically check for indexer get methods and exclude normal properties.
-        /// </summary>
-        public bool IsPropertyGetMethod
-            => this._isPropertyGetMethod ??= GetMethodBase() is MethodInfo methodInfo && methodInfo.IsPropertyGetter();
-
-        /// <summary>
-        /// Checks whether the method is an indexer property set method.
-        /// </summary>
-        public bool IsIndexerPropertySetMethod
-            => this._isIndexerPropertySetMethod ??= GetMethodBase() is MethodInfo methodInfo && methodInfo.IsIndexerPropertySetter();
-
-        /// <summary>
-        /// Checks whether the method is an indexer property get method.
-        /// </summary>
-        public bool IsIndexerPropertyGetMethod
-            => this._isIndexerPropertyGetMethod ??= GetMethodBase() is MethodInfo methodInfo && methodInfo.IsIndexerPropertyGetter();
-
-        public bool IsDelegateInvokeMethod
-            => this._isDelegateInvokeMethod ??= GetMethodBase() is MethodInfo methodInfo && methodInfo.IsDelegateInvokeMethod();
-
-        public bool IsDelegateBeginInvokeMethod
-            => this._isDelegateBeginInvokeMethod ??= GetMethodBase() is MethodInfo methodInfo && methodInfo.IsDelegateBeginInvokeMethod();
-
-        public bool IsDelegateEndInvokeMethod
-            => this._isDelegateEndInvokeMethod ??= GetMethodBase() is MethodInfo methodInfo && methodInfo.IsDelegateEndInvokeMethod();
+        public bool IsSpecialName
+            => this._isSpecialName ??= GetMethodBase().IsSpecialName;
     }
 }
