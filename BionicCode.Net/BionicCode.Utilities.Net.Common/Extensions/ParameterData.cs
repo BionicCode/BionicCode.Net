@@ -96,7 +96,8 @@
         /// Gets a value indicating whether the parameter is optional.
         /// </summary>
         /// <value><see langword="true"/> if the parameter is optional i.e. has a default value; otherwise, <see langword="false"/>.</value>
-        /// <remarks>This property does not return whether the parameter is decorated with  the <c>System.Runtime.InteropServices.OptionalAttribuute</c>. It only checks whether the parameter is considered optional by the existance of a default value.</remarks>
+        /// <remarks>This property does not return whether the parameter is decorated with the <see cref="System.Runtime.InteropServices.OptionalAttribute"/>.
+        /// It only checks whether the parameter is considered optional by the existence of a default value by reading <see cref="System.Reflection.ParameterInfo.HasDefaultValue"/>.</remarks>
         public bool IsOptional
           => this.isOptional ??= GetParameterInfo().HasDefaultValue;
 
