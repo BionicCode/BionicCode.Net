@@ -934,6 +934,8 @@
         /// Checks whether the method is a property set method. Will not include indexer set methods.<br/>
         /// Use <see cref="IsIndexerPropertySetMethod"/> to specifically check for indexer set methods and exclude normal properties.
         /// </summary>
+        /// <value>Returns <see langword="true"/> if the method is a property set method; otherwise, <see langword="false"/>.<para/>
+        /// This value exclusively describes non-indexer properties and therefore also returns <see langword="false"/> for indexer property setters.</value>
         public bool IsPropertySetMethod
             => this._isPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: false, isSetter: true, isValidationEnabled: false);
 
@@ -947,6 +949,8 @@
         /// <summary>
         /// Checks whether the method is an indexer property set method.
         /// </summary>
+        /// <value>Returns <see langword="true"/> if the method is an indexer property set method; otherwise, <see langword="false"/>.<para/></value>
+        /// This value exclusively describes indexer properties and therefore also returns <see langword="false"/> for non-indexer property setters.</value>
         public bool IsIndexerPropertySetMethod
             => this._isIndexerPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: true, isSetter: true, isValidationEnabled: false);
 
@@ -1253,9 +1257,6 @@
 
         private static bool IsEventAccessor(MethodData methodData, bool isAddAccessor, bool isValidationEnabled = false)
         {
-            return methodData.IsSpecialName &&
-                methodData.Name.StartsWith("add_", StringComparison.Ordinal);
-
             if (!methodData.IsSpecialName)
             {
                 return false;
