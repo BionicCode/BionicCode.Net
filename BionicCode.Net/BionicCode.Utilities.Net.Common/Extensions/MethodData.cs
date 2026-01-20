@@ -1206,26 +1206,26 @@
             }
 
             ParameterList parameters = methodData.Parameters;
-            bool isLookingLikeIndexer;
+            bool isLookingPropertyAccessor;
             if (isIndexer)
             {
-                isLookingLikeIndexer = isSetter
-                ? methodData.Name.StartsWith("set_", StringComparison.Ordinal) && parameters.Count >= 2 // at least one index parameter + "value" parameter
-                : methodData.Name.StartsWith("get_", StringComparison.Ordinal) && parameters.Count >= 1; // at least one index parameter
+                isLookingPropertyAccessor = isSetter
+                    ? methodData.Name.Contains("set_", StringComparison.Ordinal) && parameters.Count >= 2 // at least one index parameter + "value" parameter
+                    : methodData.Name.Contains("get_", StringComparison.Ordinal) && parameters.Count >= 1; // at least one index parameter
             }
             else
             {
-                isLookingLikeIndexer = isSetter
-                ? methodData.Name.StartsWith("set_", StringComparison.Ordinal) && parameters.Count == 1 // only "value" parameter
-                : methodData.Name.StartsWith("get_", StringComparison.Ordinal) && parameters.Count == 0; // no parameters
+                isLookingPropertyAccessor = isSetter
+                    ? methodData.Name.Contains("set_", StringComparison.Ordinal) && parameters.Count == 1 // only "value" parameter
+                    : methodData.Name.Contains("get_", StringComparison.Ordinal) && parameters.Count == 0; // no parameters
             }
 
             if (!isValidationEnabled)
             {
-                return isLookingLikeIndexer;
+                return isLookingPropertyAccessor;
             }
 
-            if (!isLookingLikeIndexer)
+            if (!isLookingPropertyAccessor)
             {
                 return false;
             }
@@ -1233,14 +1233,15 @@
             TypeData declaringTypeData = methodData.DeclaringTypeData;
             foreach (PropertyData propertyData in declaringTypeData.EnumerateProperties())
             {
-                if (!propertyData.IsIndexer)
+                // Skip properties that do not match the 'isIndexer' parameter criteria
+                if (isIndexer != propertyData.IsIndexer)
                 {
                     continue;
                 }
 
                 MethodData? accessorMethod = isSetter
                     ? propertyData.CanWrite
-                        ? propertyData.PropertySetMethodData
+                        ? propertyData.SetValueMethodData
                         : null
                     : propertyData.CanRead
                         ? propertyData.PropertyGetMethodData
@@ -1264,8 +1265,8 @@
 
             ParameterList parameters = methodData.Parameters;
             bool isLookingLikeEventAccessor = isAddAccessor
-                ? methodData.Name.StartsWith("add_", StringComparison.Ordinal) && parameters.Count == 1 // at least one index parameter + "value" parameter
-                : methodData.Name.StartsWith("remove_", StringComparison.Ordinal) && parameters.Count == 1; // at least one index parameter
+                ? methodData.Name.Contains("add_", StringComparison.Ordinal) && parameters.Count == 1 // at least one index parameter + "value" parameter
+                : methodData.Name.Contains("remove_", StringComparison.Ordinal) && parameters.Count == 1; // at least one index parameter
 
 
             if (!isValidationEnabled)

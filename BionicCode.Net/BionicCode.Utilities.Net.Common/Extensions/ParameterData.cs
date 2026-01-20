@@ -194,7 +194,7 @@
             // ... In this case, give the getter precedence over the setter.
             return propertyData.CanRead
                 ? propertyData.PropertyGetMethodData
-                : propertyData.PropertySetMethodData;
+                : propertyData.SetValueMethodData;
         }
 
         public TypeData ParameterTypeData

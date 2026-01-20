@@ -102,7 +102,7 @@
                             return parameters;
                         }
 
-                        parameters = propertyData.PropertySetMethodData.Parameters;
+                        parameters = propertyData.SetValueMethodData.Parameters;
 
                         break;
                     }

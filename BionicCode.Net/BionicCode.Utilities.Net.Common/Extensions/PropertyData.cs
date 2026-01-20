@@ -837,7 +837,7 @@ namespace BionicCode.Utilities.Net
 
         private void GetAccessors()
         {
-            (AccessModifier propertyModifier, AccessModifier getMethodModifier, AccessModifier setMethodModifier) = PropertyData.GetPropertyAccessModifier(this.PropertyGetMethodData, this.PropertySetMethodData);
+            (AccessModifier propertyModifier, AccessModifier getMethodModifier, AccessModifier setMethodModifier) = PropertyData.GetPropertyAccessModifier(this.PropertyGetMethodData, this.SetValueMethodData);
             this.propertyAccessModifier = propertyModifier;
             this.setAccessorAccessModifier = setMethodModifier;
             this.getAccessorAccessModifier = getMethodModifier;
@@ -907,7 +907,7 @@ namespace BionicCode.Utilities.Net
 
         public bool IsSealed
           => this.isSealed ??= (this.CanRead && this.PropertyGetMethodData!.IsSealed)
-            || (this.CanWrite && this.PropertySetMethodData!.IsSealed);
+            || (this.CanWrite && this.SetValueMethodData!.IsSealed);
 
         public bool CanWrite
           => this.canWrite ??= GetPropertyInfo().CanWrite;
@@ -928,7 +928,7 @@ namespace BionicCode.Utilities.Net
                     : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{GetPropertyInfo().Name}' does not have a get method.")
                 : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{GetPropertyInfo().Name}' does not have a get method. Check '{nameof(PropertyData)}.{nameof(PropertyData.CanRead)}' before access.");
 
-        public MethodData PropertySetMethodData
+        public MethodData SetValueMethodData
           => this.setMethodData ??= GetPropertyInfo() is PropertyInfo propertyInfo && propertyInfo.CanWrite
             ? propertyInfo.GetSetMethod(true) is MethodInfo propertySetter
                 ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertySetter)
@@ -980,14 +980,14 @@ namespace BionicCode.Utilities.Net
 
         public override bool IsStatic
           => this.isStatic ??= (this.CanRead && this.PropertyGetMethodData!.IsStatic)
-            || (this.CanWrite && this.PropertySetMethodData!.IsStatic);
+            || (this.CanWrite && this.SetValueMethodData!.IsStatic);
 
         public bool IsSetMethodReadOnly
-          => this.isSetMethodReadOnly ??= this.CanWrite && this.PropertySetMethodData!.AttributeData.Any(data => data.AttributeType == typeof(IsReadOnlyAttribute));
+          => this.isSetMethodReadOnly ??= this.CanWrite && this.SetValueMethodData!.AttributeData.Any(data => data.AttributeType == typeof(IsReadOnlyAttribute));
 
         public bool IsOverride
           => this.isOverride ??= (this.CanRead && this.PropertyGetMethodData!.IsOverride)
-            || (this.CanWrite && this.PropertySetMethodData!.IsOverride);
+            || (this.CanWrite && this.SetValueMethodData!.IsOverride);
 
         public override bool IsPublic
             => this._isPublic ??= this.AccessModifier == AccessModifier.Public;
@@ -1047,7 +1047,7 @@ namespace BionicCode.Utilities.Net
               ? SymbolAttributes.IndexerProperty
               : SymbolAttributes.Property;
 
-            MethodData? accessorData = propertyData.PropertyGetMethodData ?? propertyData.PropertySetMethodData;
+            MethodData? accessorData = propertyData.PropertyGetMethodData ?? propertyData.SetValueMethodData;
             if (accessorData is null)
             {
                 return SymbolAttributes.Undefined;
@@ -1090,7 +1090,7 @@ namespace BionicCode.Utilities.Net
         {
             if (propertyData.CanWrite)
             {
-                Type[] requiredModifiers = propertyData.PropertySetMethodData!.GetMethodInfo().ReturnParameter.GetRequiredCustomModifiers();
+                Type[] requiredModifiers = propertyData.SetValueMethodData!.GetMethodInfo().ReturnParameter.GetRequiredCustomModifiers();
                 if (requiredModifiers.Length > 0)
                 {
                     return requiredModifiers.FirstOrDefault(type => type == typeof(IsExternalInit)) != default;

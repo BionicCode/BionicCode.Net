@@ -826,7 +826,7 @@
                             continue;
                         }
 
-                        MethodData? propertyAccessorData = propertyData.PropertyGetMethodData ?? propertyData.PropertySetMethodData;
+                        MethodData? propertyAccessorData = propertyData.PropertyGetMethodData ?? propertyData.SetValueMethodData;
                         if (propertyAccessorData is null
                             || propertyAccessorData.Parameters.FirstOrDefault(parameterData => parameterData.Name.Equals(cacheKey.SymbolName, StringComparison.Ordinal)) is not ParameterData parameterCandidate
                             || parameterCandidate.Position != cacheKey.ParameterPosition)
