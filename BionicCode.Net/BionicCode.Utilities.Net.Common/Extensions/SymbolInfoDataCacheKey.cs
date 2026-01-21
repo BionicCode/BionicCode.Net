@@ -860,7 +860,7 @@
             && this.ParameterList.Equals(other.ParameterList)
             && this.MethodParameterInfoList.Equals(other.MethodParameterInfoList)
             && this.ParameterMemberParameterCount == other.ParameterMemberParameterCount
-            && this.ParameterMemberName.Equals(other.ParameterMemberName, StringComparison.OrdinalIgnoreCase)
+            && this.ParameterMemberName.Equals(other.ParameterMemberName, StringComparison.Ordinal)
             && this.ParameterizedMemberKind == other.ParameterizedMemberKind
             && this.ParameterKind == other.ParameterKind
             && this.IsAnonymousSymbolKey == other.IsAnonymousSymbolKey;
