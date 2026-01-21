@@ -70,9 +70,9 @@
         /// interoperating with unmanaged code or performing operations that require direct access to method
         /// metadata.</remarks>
         /// <value>The runtime method handle of the method.
-        public readonly RuntimeMethodHandle MethodHandle => this.SymbolKind.EqualsAny([SymbolKind.MemberMethod, SymbolKind.MemberConstructor])
+        public readonly RuntimeMethodHandle MethodHandle => this.SymbolKind.EqualsAny([SymbolKind.MemberMethod, SymbolKind.MemberConstructor, SymbolKind.Parameter])
             ? this._methodHandle
-            : ThrowInvalidPropertyContextException<RuntimeMethodHandle>([SymbolKind.MemberMethod, SymbolKind.MemberConstructor]);
+            : ThrowInvalidPropertyContextException<RuntimeMethodHandle>([SymbolKind.MemberMethod, SymbolKind.MemberConstructor, SymbolKind.Parameter]);
 
         private readonly RuntimeFieldHandle _fieldHandle;
         /// <summary>
@@ -449,8 +449,8 @@
             RuntimeMethodHandle methodHandle = member is MethodBase methodBaseInfo // Method or constructor parameter or property setter or getter parameter where the parameter is obtained via MethodInfo.GetParameters method call.
                 ? methodBaseInfo.MethodHandle
                 : parameterInfo.Member is PropertyInfo propertyInfo // Indexer parameter (obtained via PropertyInfo.GetIndexerParameters method)
-                    ? ExtractParameterMemberHandleFromProperty(propertyInfo.ToPropertyData())
-                    : throw new NotSupportedException($"The member '{member.Name}' is not supported. '{typeof(ParameterInfo).ToFullyQualifiedSignatureName}.{nameof(ParameterInfo.Member)} must return a '{typeof(MethodBase).ToFullyQualifiedSignatureName())}' or '{typeof(PropertyInfo).ToFullyQualifiedSignatureName()}'.");
+                    ? ParameterData.ChoseAccessorForIndexerParameter(propertyInfo.ToPropertyData()).Handle // Fetch cached PropertyData from cache to improve performance
+                    : throw new NotSupportedException($"The member '{member.Name}' is not supported. '{typeof(ParameterInfo).ToFullyQualifiedSignatureName}.{nameof(ParameterInfo.Member)} must return a '{typeof(MethodBase).ToFullyQualifiedSignatureName()}' or '{typeof(PropertyInfo).ToFullyQualifiedSignatureName()}'.");
 
             ParameterizedSymbolKind parameterizedSymbolKind = member is MethodInfo
                 ? ParameterizedSymbolKind.MemberMethod
@@ -477,9 +477,6 @@
                 parameterizedSymbolKind,
                 false);
         }
-
-        private static RuntimeMethodHandle ExtractParameterMemberHandleFromProperty(PropertyData propertyData)
-            => ParameterData.FindDeclaringPropertyAccessor(propertyData).Handle;
 
         /// <summary>
         /// Creates a new cache key for an anonymous method, constructor using the specified declaring type, symbol name, parameters,

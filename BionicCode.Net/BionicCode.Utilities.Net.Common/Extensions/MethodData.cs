@@ -931,34 +931,124 @@
           => this._hasParamsParameter ??= this.Parameters.HasItems && this.Parameters[^1].IsParams;
 
         /// <summary>
+        /// Checks whether the method is a property set method by inspecting the method's name and parameter count.<br/>
+        /// Will not include indexer set methods.<br/>
+        /// Use <see cref="IsLikeIndexerPropertySetMethod"/> to specifically check for indexer set methods and exclude normal properties.
+        /// </summary>
+        /// <remarks>This property trades maximal reflection accuracy for performance and only checks the method name whether it follows compiler generated naming conventions.
+        /// It basically checks <see cref="MethodBase.IsSpecialName"/> + name prefix like "get_" or "set_" + parameter count.
+        /// It also supports explicit interface implementation where the generated name will differ (e.g. and also "myInterface.get_").<para/>
+        /// While this testing can be considered safe, it is not foolproof and may produce false positives in some rare cases where the method name does not conform to these conventions e.g. when used custom IL generated code that does not comply with language compiler rules.<br/>
+        /// For maximum safety call <see cref="IsPropertySetMethod"/> which enumerates all properties of the declaring type to compare instance equality of the <see cref="MethodData"/> (or underlying (<see cref="MethodInfo"/>).<br/>
+        /// This is significantly slower and usually not required.</remarks>
+        /// <value>Returns <see langword="true"/> if the method is a property set method; otherwise, <see langword="false"/>.<para/>
+        /// This value exclusively describes non-indexer properties and therefore also returns <see langword="false"/> for indexer property setters.</value>
+        public bool IsLikePropertySetMethod
+            => this._isPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: false, isSetter: true, isValidationEnabled: false);
+
+        /// <summary>
         /// Checks whether the method is a property set method. Will not include indexer set methods.<br/>
         /// Use <see cref="IsIndexerPropertySetMethod"/> to specifically check for indexer set methods and exclude normal properties.
         /// </summary>
+        /// <remarks>This property is the safest way to determine whether a method is a property set method since it enumerates all properties of the declaring type to compare instance equality of the <see cref="MethodData"/> (or underlying (<see cref="MethodInfo"/>).<br/>
+        /// It also supports explicit interface implementation where the generated name will differ (e.g. and also "myInterface.get_").<para/>
+        /// While this testing can be considered safe, it performs significantly slower than the non-reflective checks.<br/>
+        /// For a faster but less safe check use <see cref="IsLikePropertySetMethod"/> which only inspects the method name and parameter count to determine whether the method is a property set method.
+        /// It's usually safe enough for non corner cases which basically involve custom IL generated code that does not comply with C# language compiler rules</remarks>
         /// <value>Returns <see langword="true"/> if the method is a property set method; otherwise, <see langword="false"/>.<para/>
         /// This value exclusively describes non-indexer properties and therefore also returns <see langword="false"/> for indexer property setters.</value>
         public bool IsPropertySetMethod
-            => this._isPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: false, isSetter: true, isValidationEnabled: false);
+            => this._isPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: false, isSetter: true, isValidationEnabled: true);
+
+        /// <summary>
+        /// Checks whether the method is a property set method by inspecting the method's name and parameter count.<br/>
+        /// Will not include indexer set methods.<br/>
+        /// Use <see cref="IsLikeIndexerPropertyGetMethod"/> to specifically check for indexer get methods and exclude normal properties.
+        /// </summary>
+        /// <remarks>This property trades maximal reflection accuracy for performance and only checks the method name whether it follows compiler generated naming conventions.
+        /// It basically checks <see cref="MethodBase.IsSpecialName"/> + name prefix like "get_" or "set_" + parameter count.
+        /// It also supports explicit interface implementation where the generated name will differ (e.g. and also "myInterface.get_").<para/>
+        /// While this testing can be considered safe, it is not foolproof and may produce false positives in some rare cases where the method name does not conform to these conventions e.g. when used custom IL generated code that does not comply with language compiler rules.<br/>
+        /// For maximum safety call <see cref="IsPropertySetMethod"/> which enumerates all properties of the declaring type to compare instance equality of the <see cref="MethodData"/> (or underlying (<see cref="MethodInfo"/>).<br/>
+        /// This is significantly slower and usually not required.</remarks>
+        /// <value>Returns <see langword="true"/> if the method is a property get method; otherwise, <see langword="false"/>.<para/>
+        /// This value exclusively describes non-indexer properties and therefore also returns <see langword="false"/> for indexer property getters.</value>
+        public bool IsLikePropertyGetMethod
+            => this._isPropertyGetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: false, isSetter: false, isValidationEnabled: false);
 
         /// <summary>
         /// Checks whether the method is a property set method. Will not include indexer set methods.<br/>
         /// Use <see cref="IsIndexerPropertyGetMethod"/> to specifically check for indexer get methods and exclude normal properties.
         /// </summary>
+        /// <remarks>This property is the safest way to determine whether a method is a property get method since it enumerates all properties of the declaring type to compare instance equality of the <see cref="MethodData"/> (or underlying (<see cref="MethodInfo"/>).<br/>
+        /// It also supports explicit interface implementation where the generated name will differ (e.g. and also "myInterface.get_").<para/>
+        /// While this testing can be considered safe, it performs significantly slower than the non-reflective checks.<br/>
+        /// For a faster but less safe check use <see cref="IsLikePropertyGetMethod"/> which only inspects the method name and parameter count to determine whether the method is a property get method.
+        /// It's usually safe enough for non corner cases which basically involve custom IL generated code that does not comply with C# language compiler rules</remarks>
+        /// <value>Returns <see langword="true"/> if the method is a property get method; otherwise, <see langword="false"/>.<para/>
+        /// This value exclusively describes non-indexer properties and therefore also returns <see langword="false"/> for indexer property getters.</value>
         public bool IsPropertyGetMethod
-            => this._isPropertyGetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: false, isSetter: false, isValidationEnabled: false);
+            => this._isPropertyGetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: false, isSetter: false, isValidationEnabled: true);
+
+        /// <summary>
+        /// Checks whether the method is an indexer property set method by name and parameter count.<br/>
+        /// Will not include non-indexer property set methods.<br/>
+        /// Use <see cref="IsLikePropertySetMethod"/> to specifically check for non-indexer property set methods and exclude indexer properties.
+        /// </summary>
+        /// <remarks>This property trades maximal reflection accuracy for performance and only checks the method name whether it follows compiler generated naming conventions.<br/>
+        /// It basically checks <see cref="MethodBase.IsSpecialName"/> + name prefix like "get_" or "set_" + parameter count.
+        /// It also supports explicit interface implementation where the generated name will differ (e.g. and also "myInterface.get_").<para/>
+        /// While this testing can be considered safe, it is not foolproof and may produce false positives in some rare cases where the method name does not conform to these conventions e.g. when used custom IL generated code that does not comply with C# language compiler rules.<br/>
+        /// For maximum safety call <see cref="IsIndexerPropertySetMethod"/> which enumerates all properties of the declaring type to compare instance equality of the <see cref="MethodData"/> (or underlying (<see cref="MethodInfo"/>).<br/>
+        /// This is significantly slower and usually not required.</remarks>
+        /// <value>Returns <see langword="true"/> if the method is an indexer property set method; otherwise, <see langword="false"/>.<para/>
+        /// This value exclusively describes indexer properties and therefore also returns <see langword="false"/> for non-indexer property setters.</value>
+        public bool IsLikeIndexerPropertySetMethod
+            => this._isIndexerPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: true, isSetter: true, isValidationEnabled: false);
 
         /// <summary>
         /// Checks whether the method is an indexer property set method.
+        /// Will not include non-indexer property set methods.<br/>
+        /// Use <see cref="IsPropertySetMethod"/> to specifically check for non-indexer property set methods and exclude indexer properties.
         /// </summary>
-        /// <value>Returns <see langword="true"/> if the method is an indexer property set method; otherwise, <see langword="false"/>.<para/></value>
+        /// <remarks>This property is the safest way to determine whether a method is an indexer property set method since it enumerates all properties of the declaring type to compare instance equality of the <see cref="MethodData"/> (or underlying (<see cref="MethodInfo"/>).<br/>
+        /// It also supports explicit interface implementation where the generated name will differ (e.g. and also "myInterface.get_").<para/>
+        /// While this testing can be considered safe, it performs significantly slower than the non-reflective checks.<br/>
+        /// For a faster but less safe check use <see cref="IsLikeIndexerPropertySetMethod"/> which only inspects the method name and parameter count to determine whether the method is an indexer property set method.
+        /// it's usually safe enough for non corner cases which basically involve custom IL generated code that does not comply with C# language compiler rules</remarks>
+        /// <value>Returns <see langword="true"/> if the method is an indexer property set method; otherwise, <see langword="false"/>.<para/>
         /// This value exclusively describes indexer properties and therefore also returns <see langword="false"/> for non-indexer property setters.</value>
         public bool IsIndexerPropertySetMethod
-            => this._isIndexerPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: true, isSetter: true, isValidationEnabled: false);
+            => this._isIndexerPropertySetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: true, isSetter: true, isValidationEnabled: true);
+
+        /// <summary>
+        /// Checks whether the method is an indexer property get method.
+        /// Will not include non-indexer property set methods.<br/>
+        /// Use <see cref="IsLikePropertyGetMethod"/> to specifically check for non-indexer property get methods and exclude indexer properties.
+        /// </summary>
+        /// <remarks>This property trades maximal reflection accuracy for performance and only checks the method name whether it follows compiler generated naming conventions.<br/>
+        /// It basically checks <see cref="MethodBase.IsSpecialName"/> + name prefix like "get_" or "set_" + parameter count.
+        /// It also supports explicit interface implementation where the generated name will differ (e.g. and also "myInterface.get_").<para/>
+        /// While this testing can be considered safe, it is not foolproof and may produce false positives in some rare cases where the method name does not conform to these conventions e.g. when used custom IL generated code that does not comply with C# language compiler rules.<br/>
+        /// For maximum safety call <see cref="IsIndexerPropertyGetMethod"/> which enumerates all properties of the declaring type to compare instance equality of the <see cref="MethodData"/> (or underlying (<see cref="MethodInfo"/>).<br/>
+        /// This is significantly slower and usually not required.</remarks>
+        /// <value>Returns <see langword="true"/> if the method is an indexer property get method; otherwise, <see langword="false"/>.<para/>
+        /// This value exclusively describes indexer properties and therefore also returns <see langword="false"/> for non-indexer property getters.</value>
+        public bool IsLikeIndexerPropertyGetMethod
+            => this._isIndexerPropertyGetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: true, isSetter: false, isValidationEnabled: false);
 
         /// <summary>
         /// Checks whether the method is an indexer property get method.
         /// </summary>
+        /// <remarks>This property is the safest way to determine whether a method is an indexer property set method since it enumerates all properties of the declaring type to compare instance equality of the <see cref="MethodData"/> (or underlying (<see cref="MethodInfo"/>).<br/>
+        /// It also supports explicit interface implementation where the generated name will differ (e.g. and also "myInterface.get_").<para/>
+        /// While this testing can be considered safe, it performs significantly slower than the non-reflective checks.<br/>
+        /// For a faster but less safe check use <see cref="IsLikeIndexerPropertyGetMethod"/> which only inspects the method name and parameter count to determine whether the method is an indexer property set method.
+        /// it's usually safe enough for non corner cases which basically involve custom IL generated code that does not comply with C# language compiler rules</remarks>
+        /// <value>Returns <see langword="true"/> if the method is an indexer property get method; otherwise, <see langword="false"/>.<para/>
+        /// This value exclusively describes indexer properties and therefore also returns <see langword="false"/> for non-indexer property getters.</value>
         public bool IsIndexerPropertyGetMethod
-            => this._isIndexerPropertyGetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: true, isSetter: false, isValidationEnabled: false);
+            => this._isIndexerPropertyGetMethod ??= MethodData.IsPropertyAccessor(this, isIndexer: true, isSetter: false, isValidationEnabled: true);
 
         public bool IsDelegateInvokeMethod
             => this._isDelegateInvokeMethod ??= MethodData.IsDelegateInvoke(this);
@@ -972,11 +1062,17 @@
         public bool IsDelegateMethod
             => this.IsDelegateInvokeMethod || this.IsDelegateBeginInvokeMethod || this.IsDelegateEndInvokeMethod;
 
-        public bool IsEventAddMethod
+        public bool IsLikeEventAddMethod
             => this._isEventAddMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: true, isValidationEnabled: false);
 
-        public bool IsEventRemoveMethod
+        public bool IsEventAddMethod
+            => this._isEventAddMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: true, isValidationEnabled: true);
+
+        public bool IsLikeEventRemoveMethod
             => this._isEventRemoveMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: false, isValidationEnabled: false);
+
+        public bool IsEventRemoveMethod
+            => this._isEventRemoveMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: false, isValidationEnabled: true);
 
         public bool IsEventAccessorMethod
             => this._isEventAccessorMethod ??= this.IsEventAddMethod || this.IsEventRemoveMethod;

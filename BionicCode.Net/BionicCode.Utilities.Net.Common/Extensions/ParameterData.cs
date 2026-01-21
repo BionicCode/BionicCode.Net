@@ -31,7 +31,7 @@
         private ParameterizedMemberData? member;
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
-        private object? defaultValue;
+        private object? _defaultValue;
         private ParameterKind? parameterKind;
         private bool? isGenericTypeParameter;
         private bool? isGenericMethodParameter;
@@ -121,12 +121,15 @@
         /// <summary>
         /// Gets the default value for the parameter, if one is defined.
         /// </summary>
-        /// <value>The default value of the parameter, or null if no default value is defined.</value>
+        /// <value>The default value of the parameter, or <see langword="null"/> if no default value is defined.</value>
         /// <remarks>If the parameter is optional and a default value is specified, this property returns
-        /// that value; otherwise, it returns null. The value may be of any type, depending on the parameter's
-        /// type.</remarks>
+        /// that value; otherwise, it returns <see langword="null"/>. The value may be of any type, depending on the parameter's
+        /// type. Use <see cref="IsOptional"/> to check if a default value is defined before accessing this property.</remarks>
+        /// <exception cref="InvalidOperationException">Thrown when no default value is defined for the parameter.</exception>
         public object? DefaultValue
-            => this.IsOptional && this.defaultValue is null ? (this.defaultValue = GetParameterInfo().RawDefaultValue) : default;
+            => this._defaultValue ??= this.IsOptional
+                ? GetParameterInfo().RawDefaultValue
+                : throw new InvalidOperationException("No default value defined.");
 
         /// <summary>
         /// Zero-based index of the parameter in the formal parameter list.
@@ -187,12 +190,18 @@
         /// <remarks>If both accessors are available, the association is ambiguous since the "value" parameter is removed from the resulting parameter list.
         /// In this case, give the getter precedence over the setter.
         /// </remarks>
-        internal MethodData FindDeclaringPropertyAccessor(PropertyData propertyData)
+        private MethodData FindDeclaringPropertyAccessor(PropertyData propertyData)
         {
             // If both accessor are available, the association is ambiguous since the "value" parameter is removed from the resulting parameter list...
             this._isIndexerAccessorAmbiguous = propertyData.CanRead && propertyData.CanWrite;
 
             // ... In this case, give the getter precedence over the setter.
+            return ChoseAccessorForIndexerParameter(propertyData);
+        }
+
+        internal static MethodData ChoseAccessorForIndexerParameter(PropertyData propertyData)
+        {
+            // Give the getter precedence over the setter.
             return propertyData.CanRead
                 ? propertyData.PropertyGetMethodData
                 : propertyData.SetValueMethodData;
