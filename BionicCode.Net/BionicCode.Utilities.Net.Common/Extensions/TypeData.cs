@@ -142,6 +142,31 @@ namespace BionicCode.Utilities.Net
             IEnumerable<PropertyData> cachedProperties = this.memberTable.Values.OfType<PropertyData>();
             foreach (PropertyData cachedPropertyData in cachedProperties)
             {
+                if (bindingFlags.HasFlag(BindingFlags.Static) ^ cachedPropertyData.IsStatic)
+                {
+                    continue;
+                }
+                else if (bindingFlags.HasFlag(BindingFlags.Instance) && cachedPropertyData.IsStatic)
+                {
+                    continue;
+                }
+                else if (bindingFlags.HasFlag(BindingFlags.Public) ^ cachedPropertyData.IsPublic)
+                {
+                    continue;
+                }
+                else if (bindingFlags.HasFlag(BindingFlags.NonPublic) && cachedPropertyData.IsPublic)
+                {
+                    continue;
+                }
+                else if (bindingFlags.HasFlag(BindingFlags.DeclaredOnly) && !cachedPropertyData.DeclaringTypeHandle.Equals(this.Handle))
+                {
+                    continue;
+                }
+                else if (bindingFlags.HasFlag(BindingFlags.FlattenHierarchy) && cachedPropertyData.IsPrivate && cachedPropertyData.IsStatic)
+                {
+                    continue;
+                }
+
                 cachedPropertyCount++;
                 yield return cachedPropertyData;
             }
@@ -165,9 +190,11 @@ namespace BionicCode.Utilities.Net
             this.isAllPropertiesGenerated = true;
         }
 
-        public MethodData GetMethod(string methodName, int genericTypeParameterCount, ReadOnlySpan<MethodParameterInfo> parameterList)
+        public MethodData GetMethod(string methodName, ReadOnlySpan<TypeData> genericTypeParameters, ReadOnlySpan<MethodParameterInfo> parameterList)
+            => GetMethod(methodName, new TypeList(genericTypeParameters.ToArray()), parameterList);
+
+        public MethodData GetMethod(string methodName, TypeList genericTypeParameters, ReadOnlySpan<MethodParameterInfo> parameterList)
         {
-            ArgumentOutOfRangeException.ThrowIfNegative(genericTypeParameterCount, nameof(genericTypeParameterCount));
             ArgumentException.ThrowIfNullOrWhiteSpace(methodName, nameof(methodName));
 
             MethodParameterInfoList symbolParameters = parameterList.IsEmpty
@@ -179,11 +206,14 @@ namespace BionicCode.Utilities.Net
                 nameof(parameterList),
                 $"At least one item in the argument sequence '{nameof(parameterList)}' has a different value for the '{nameof(MethodParameterInfo)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type '{this.FullyQualifiedSignature}'.");
 
+            TypeList genericTypeParameterList = genericTypeParameters.IsEmpty
+                ? TypeList.Empty
+                : new TypeList(genericTypeParameters.ToArray());
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrConstructor(
                 this.Handle,
                 methodName,
                 symbolParameters,
-                genericTypeParameterCount,
+                genericTypeParameterList,
                 SymbolKind.MemberMethod);
             MethodData methodData = (MethodData)this.memberTable.GetOrAdd(cacheKey, key => SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(ref key));
 
@@ -321,9 +351,8 @@ namespace BionicCode.Utilities.Net
             this.isAllEventsGenerated = true;
         }
 
-        public ConstructorData GetConstructor(string constructorName, int genericTypeParameterCount, params MethodParameterInfo[] parameterList)
+        public ConstructorData GetConstructor(string constructorName, params MethodParameterInfo[] parameterList)
         {
-            ArgumentOutOfRangeException.ThrowIfNegative(genericTypeParameterCount, nameof(genericTypeParameterCount));
             ArgumentException.ThrowIfNullOrWhiteSpace(constructorName, nameof(constructorName));
 
             MethodParameterInfoList symbolParameters = parameterList is null || parameterList.Length == 0
@@ -339,7 +368,7 @@ namespace BionicCode.Utilities.Net
                 this.Handle,
                 constructorName,
                 symbolParameters,
-                genericTypeParameterCount,
+                TypeList.Empty,
                 SymbolKind.MemberConstructor);
             ConstructorData constructorData = (ConstructorData)this.memberTable.GetOrAdd(cacheKey, key => SymbolReflectionInfoCache.GetOrCreateConstructorDataCacheEntry(ref key));
 
@@ -576,7 +605,7 @@ namespace BionicCode.Utilities.Net
                     throw new InvalidOperationException($"The current type is not a delegate. Call {nameof(this.IsDelegate)} before accessing this property to check whether the current type is a delegate.");
                 }
 
-                this.delegateInvokeMethodData ??= GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, 0, ReadOnlySpan<MethodParameterInfo>.Empty);
+                this.delegateInvokeMethodData ??= GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, TypeList.Empty, ReadOnlySpan<MethodParameterInfo>.Empty);
 
                 return this.delegateInvokeMethodData;
             }
