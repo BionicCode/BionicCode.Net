@@ -3,7 +3,6 @@ namespace BionicCode.Utilities.Net
 {
     using System;
     using System.CodeDom;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -62,8 +61,8 @@ namespace BionicCode.Utilities.Net
         private SymbolComponentInfo? symbolComponentInfo;
         private SymbolComponentInfo? compactSymbolComponentInfo;
         private bool? containsGenericParameters;
-        private readonly ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoData> memberTable;
-        private bool isAllPropertiesGenerated;
+        private readonly ConcurrentHashSet<SymbolInfoDataCacheKey> memberTable;
+        private bool _isAllPropertiesCached;
         private bool isAllMethodsGenerated;
         private bool isAllFieldsGenerated;
         private bool isAllEventsGenerated;
@@ -93,7 +92,7 @@ namespace BionicCode.Utilities.Net
 
             this.Handle = type.TypeHandle;
             this.Namespace = type.Namespace ?? string.Empty;
-            this.memberTable = new ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoData>();
+            this.memberTable = new ConcurrentHashSet<SymbolInfoDataCacheKey>();
         }
 
         /// <summary>
@@ -117,7 +116,8 @@ namespace BionicCode.Utilities.Net
                 $"At least one item in the argument sequence '{nameof(indexerPropertyParameters)}' has a different value for the '{nameof(MethodParameterInfo)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type '{this.FullyQualifiedSignature}'.");
 
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousProperty(this.Handle, propertyName, indexerParameters);
-            PropertyData propertyData = (PropertyData)this.memberTable.GetOrAdd(cacheKey, key => SymbolReflectionInfoCache.GetOrCreatePropertyDataCacheEntry(ref key));
+            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreatePropertyDataCacheEntry(ref cacheKey);
+            _ = this.memberTable.TryAdd(cacheKey);
 
             return propertyData;
         }
@@ -136,58 +136,94 @@ namespace BionicCode.Utilities.Net
         /// the specified binding flags.</returns>
         public IEnumerable<PropertyData> EnumerateProperties(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
         {
-            int cachedPropertyCount = 0;
-
             // Return already cached cachedProperties first
-            IEnumerable<PropertyData> cachedProperties = this.memberTable.Values.OfType<PropertyData>();
-            foreach (PropertyData cachedPropertyData in cachedProperties)
+            IEnumerable<SymbolInfoDataCacheKey> cachedPropertyReflectionCacheKeys = this.memberTable
+                .Where(key => key.SymbolKind is SymbolKind.MemberProperty);
+            var cachedPropertiesFastLookupList = new HashSet<SymbolInfoDataCacheKey>(cachedPropertyReflectionCacheKeys);
+            List<PropertyData> cachedProperties = cachedPropertiesFastLookupList
+                .Select(key => SymbolReflectionInfoCache.GetOrCreatePropertyDataCacheEntry(ref key))
+                .ToList();
+
+            bool hasCachedProperties = cachedPropertiesFastLookupList.Any();
+            if (hasCachedProperties)
             {
-                if (bindingFlags.HasFlag(BindingFlags.Static) ^ cachedPropertyData.IsStatic)
+                foreach (PropertyData cachedPropertyData in cachedProperties)
                 {
-                    continue;
-                }
-                else if (bindingFlags.HasFlag(BindingFlags.Instance) && cachedPropertyData.IsStatic)
-                {
-                    continue;
-                }
-                else if (bindingFlags.HasFlag(BindingFlags.Public) ^ cachedPropertyData.IsPublic)
-                {
-                    continue;
-                }
-                else if (bindingFlags.HasFlag(BindingFlags.NonPublic) && cachedPropertyData.IsPublic)
-                {
-                    continue;
-                }
-                else if (bindingFlags.HasFlag(BindingFlags.DeclaredOnly) && !cachedPropertyData.DeclaringTypeHandle.Equals(this.Handle))
-                {
-                    continue;
-                }
-                else if (bindingFlags.HasFlag(BindingFlags.FlattenHierarchy) && cachedPropertyData.IsPrivate && cachedPropertyData.IsStatic)
-                {
-                    continue;
+                    bool isValidProperty = IsValidMember(bindingFlags, cachedPropertyData);
+                    if (!isValidProperty)
+                    {
+                        continue;
+                    }
+
+                    yield return cachedPropertyData;
                 }
 
-                cachedPropertyCount++;
-                yield return cachedPropertyData;
+                // If all cachedProperties are already generated, exit. Else continue and cache the remaining uncached properties.
+                if (this._isAllPropertiesCached)
+                {
+                    yield break;
+                }
             }
 
-            // If all cachedProperties are already generated, exit. Else generate the remaining cachedProperties.
-            if (this.isAllPropertiesGenerated)
+            // Get all properties and cache them. Then filter and return them based on the caller's binding flags.
+            PropertyInfo[] remainingProperties = UnwrapType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+            int visitedPropertyCount = 0;
+            try
             {
-                yield break;
+                foreach (PropertyInfo propertyInfo in remainingProperties)
+                {
+                    visitedPropertyCount++;
+
+                    PropertyData propertyDataFromReflectionCache = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+                    SymbolInfoDataCacheKey cacheKey = propertyDataFromReflectionCache.CacheKey;
+                    if (!this.memberTable.TryAdd(cacheKey))
+                    {
+                        continue;
+                    }
+
+                    bool isValidProperty = IsValidMember(bindingFlags, propertyDataFromReflectionCache);
+                    if (!isValidProperty)
+                    {
+                        continue;
+                    }
+
+                    yield return propertyDataFromReflectionCache;
+                }
+            }
+            finally
+            {
+                this._isAllPropertiesCached = visitedPropertyCount == remainingProperties.Length;
+            }
+        }
+
+        private bool IsValidMember(BindingFlags bindingFlags, PropertyData cachedPropertyData)
+        {
+            if (bindingFlags.HasFlag(BindingFlags.Static) ^ cachedPropertyData.IsStatic)
+            {
+                return false;
+            }
+            else if (bindingFlags.HasFlag(BindingFlags.Instance) && cachedPropertyData.IsStatic)
+            {
+                return false;
+            }
+            else if (bindingFlags.HasFlag(BindingFlags.Public) ^ cachedPropertyData.IsPublic)
+            {
+                return false;
+            }
+            else if (bindingFlags.HasFlag(BindingFlags.NonPublic) && cachedPropertyData.IsPublic)
+            {
+                return false;
+            }
+            else if (bindingFlags.HasFlag(BindingFlags.DeclaredOnly) && !cachedPropertyData.DeclaringTypeHandle.Equals(this.Handle))
+            {
+                return false;
+            }
+            else if (bindingFlags.HasFlag(BindingFlags.FlattenHierarchy) && cachedPropertyData.IsPrivate && cachedPropertyData.IsStatic)
+            {
+                return false;
             }
 
-            IEnumerable<PropertyInfo> remainingProperties = UnwrapType().GetProperties(bindingFlags)
-                .Skip(cachedPropertyCount);
-            foreach (PropertyInfo propertyInfo in remainingProperties)
-            {
-                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForProperty(propertyInfo);
-                PropertyData propertyData = (PropertyData)this.memberTable.GetOrAdd(cacheKey, _ => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo));
-
-                yield return propertyData;
-            }
-
-            this.isAllPropertiesGenerated = true;
+            return true;
         }
 
         public MethodData GetMethod(string methodName, ReadOnlySpan<TypeData> genericTypeParameters, ReadOnlySpan<MethodParameterInfo> parameterList)
@@ -215,7 +251,8 @@ namespace BionicCode.Utilities.Net
                 symbolParameters,
                 genericTypeParameterList,
                 SymbolKind.MemberMethod);
-            MethodData methodData = (MethodData)this.memberTable.GetOrAdd(cacheKey, key => SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(ref key));
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(ref cacheKey);
+            _ = this.memberTable.TryAdd(cacheKey);
 
             return methodData;
         }
@@ -645,7 +682,7 @@ namespace BionicCode.Utilities.Net
           => this.interfacesData ??= TypeListBuilder.CreateImplementedInterfacesList(this);
 
         public PropertyList PropertiesData
-          => this.propertiesData ??= this.isAllPropertiesGenerated ? this.memberTable.Values.OfType<PropertyData>().ToPropertyList() : EnumerateProperties().ToPropertyList();
+          => this.propertiesData ??= this._isAllPropertiesCached ? this.memberTable.Values.OfType<PropertyData>().ToPropertyList() : EnumerateProperties().ToPropertyList();
 
         public MethodList MethodsData
           => this.methodsData ??= this.isAllMethodsGenerated ? this.memberTable.Values.OfType<MethodData>().ToMethodList() : EnumerateMethods().ToMethodList();
