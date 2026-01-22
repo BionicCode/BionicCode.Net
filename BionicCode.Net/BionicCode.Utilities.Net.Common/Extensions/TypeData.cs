@@ -140,15 +140,16 @@ namespace BionicCode.Utilities.Net
             IEnumerable<SymbolInfoDataCacheKey> cachedPropertyReflectionCacheKeys = this.memberTable
                 .Where(key => key.SymbolKind is SymbolKind.MemberProperty);
             var cachedPropertiesFastLookupList = new HashSet<SymbolInfoDataCacheKey>(cachedPropertyReflectionCacheKeys);
-            List<PropertyData> cachedProperties = cachedPropertiesFastLookupList
-                .Select(key => SymbolReflectionInfoCache.GetOrCreatePropertyDataCacheEntry(ref key))
-                .ToList();
+            IEnumerable<PropertyData> cachedProperties = cachedPropertiesFastLookupList
+                .Select(key => SymbolReflectionInfoCache.GetOrCreatePropertyDataCacheEntry(ref key));
 
             bool hasCachedProperties = cachedPropertiesFastLookupList.Any();
             if (hasCachedProperties)
             {
-                foreach (PropertyData cachedPropertyData in cachedProperties)
+                foreach (SymbolInfoDataCacheKey cacheKey in cachedPropertiesFastLookupList)
                 {
+                    SymbolInfoDataCacheKey keyCopy = cacheKey;
+                    PropertyData cachedPropertyData = SymbolReflectionInfoCache.GetOrCreatePropertyDataCacheEntry(ref keyCopy);
                     bool isValidProperty = IsValidMember(bindingFlags, cachedPropertyData);
                     if (!isValidProperty)
                     {
