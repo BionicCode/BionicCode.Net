@@ -719,7 +719,7 @@ namespace BionicCode.Utilities.Net
                 1,
                 this.IndexerParameters.Count,
                 nameof(TIndex),
-                $"Indexer property parameter count mismatch. Provided 1 indexer parameter for an indexer that requries {this.IndexerParameters.Count} parameters. Please use the appropriate overload that matches the number of indexer parameters.");
+                $"Indexer property parameter count mismatch. Provided 1 indexer parameter for an indexer that requires {this.IndexerParameters.Count} parameters. Please use the appropriate overload that matches the number of indexer parameters.");
 
             return GetIndexerGetterInternal<TTarget, TIndex, TValue>();
         }

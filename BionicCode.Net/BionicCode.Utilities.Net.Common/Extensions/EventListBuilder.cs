@@ -15,13 +15,13 @@
     {
         private PropertyList? _builderResult;
 
-        private PropertyListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
+        private EventListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
         {
         }
 
-        public static IPropertyListBuilder New(RuntimeTypeHandle declaringTypeHandle)
+        public static IEventListBuilder New(RuntimeTypeHandle declaringTypeHandle)
         {
-            var builder = new PropertyListBuilder(declaringTypeHandle);
+            var builder = new EventListBuilder(declaringTypeHandle);
             return builder;
         }
 

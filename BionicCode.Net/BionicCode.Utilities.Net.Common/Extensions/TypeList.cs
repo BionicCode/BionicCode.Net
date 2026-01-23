@@ -8,6 +8,7 @@
     {
         public static readonly TypeList Empty = new TypeList();
         private readonly int _hashCode; // precomputed
+        private readonly ILookup<string, TypeData> _typeNameIndex;
 
         public TypeList(TypeData[] items) : this((IEnumerable<TypeData>)items)
         {
@@ -15,13 +16,24 @@
 
         public TypeList(IEnumerable<TypeData> items)
         {
-            this.Types = items.ToImmutableList();
-            ArgumentNullExceptionAdvanced.ThrowIfNull(this.Types, nameof(items));
+            this.Types = items?.ToImmutableList() ?? ImmutableList<TypeData>.Empty;
+            this._typeNameIndex = this.Types.ToLookup(type => type.Name);
             this._hashCode = ComputeHashCode();
         }
 
         private TypeList()
-            => this.Types = ImmutableList<TypeData>.Empty;
+        {
+            this.Types = ImmutableList<TypeData>.Empty;
+            this._typeNameIndex = this.Types.ToLookup(type => type.Name);
+        }
+
+        public bool TryGetTypesByName(string methodName, out TypeList typeList)
+        {
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(methodName);
+            typeList = this._typeNameIndex[methodName]
+                .ToTypeList();
+            return typeList.HasItems;
+        }
 
         public int Count => this.Types.Count;
         public bool IsEmpty => this.Types.IsEmpty;
@@ -71,7 +83,8 @@
         public override bool Equals(object? obj)
             => obj is TypeList other && Equals(other);
 
-        public override int GetHashCode() => this._hashCode;
+        public override int GetHashCode()
+            => this._hashCode;
 
         private int ComputeHashCode()
         {

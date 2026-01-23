@@ -48,14 +48,14 @@ namespace BionicCode.Utilities.Net
         private TypeList? genericTypeArguments;
         private TypeList? genericParameterConstraintsData;
         private GenericParameterAttributes? genericParameterAttributes;
-        private TypeData? genericTypeDefinitionData;
-        private TypeData? baseTypeData;
-        private TypeList? interfacesData;
-        private PropertyList? propertiesData;
-        private MethodList? methodsData;
-        private FieldList? fieldsData;
-        private EventList? eventsData;
-        private ConstructorList? constructorsData;
+        private TypeData? _genericTypeDefinition;
+        private TypeData? _baseTypes;
+        private TypeList? _interfaces;
+        private PropertyList? _properties;
+        private MethodList? _methods;
+        private FieldList? _fields;
+        private EventList? _events;
+        private ConstructorList? _constructors;
         private IList<CustomAttributeData>? attributeData;
         private string? assemblyName;
         private MethodData? delegateInvokeMethodData;
@@ -100,23 +100,18 @@ namespace BionicCode.Utilities.Net
         public Type UnwrapType()
           => Type.GetTypeFromHandle(this.Handle)!;
 
-        public PropertyData GetProperty(string propertyName, params MethodParameterInfo[] indexerPropertyParameters)
+        /// <summary>
+        /// Attempts to retrieve the property data associated with the specified property name.
+        /// </summary>
+        /// <remarks>This method performs a case-sensitive O(1) search for the property name. The search is a O(n) operation if the cache has not been built yet (in this case, successive calls are guaranteed to be O(1) operation).
+        /// <param name="propertyName">The name of the property to locate. Cannot be null, empty, or consist only of white-space characters.</param>
+        /// <param name="propertyData">When this method returns, contains the property data associated with the specified name, if found;
+        /// otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
+        /// <returns><see langword="true"/> if a property with the specified name was found; otherwise, <see langword="false"/>.</returns>
+        public bool TryGetPropertyByName(string propertyName, out PropertyData? propertyData)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(propertyName, nameof(propertyName));
-
-            MethodParameterInfoList indexerParameters = indexerPropertyParameters is null || indexerPropertyParameters.Length == 0
-                ? MethodParameterInfoList.Empty
-                : new MethodParameterInfoList(indexerPropertyParameters);
-            ArgumentExceptionAdvanced.ThrowIfAny(
-                indexerParameters,
-                methodParameterInfo => !methodParameterInfo.DeclaringTypeHandle.Equals(this.Handle),
-                nameof(indexerPropertyParameters),
-                $"At least one item in the argument sequence '{nameof(indexerPropertyParameters)}' has a different value for the '{nameof(MethodParameterInfo)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type '{this.FullyQualifiedSignature}'.");
-
-            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousProperty(this.Handle, propertyName, indexerParameters);
-            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreatePropertyDataCacheEntry(ref cacheKey);
-
-            return propertyData;
+            ArgumentException.ThrowIfNullOrWhiteSpace(propertyName);
+            return this.Properties.TryGetPropertyByName(propertyName, out propertyData);
         }
 
         /// <summary>
@@ -150,6 +145,20 @@ namespace BionicCode.Utilities.Net
                     yield return propertyData;
                 }
             }
+        }
+
+        /// <summary>
+        /// Attempts to retrieve all methods with the specified name.
+        /// </summary>
+        /// <remarks>This method performs a case-sensitive O(1) search for the method name. The search is a O(n) operation if the cache has not been built yet (in this case, successive calls are guaranteed to be O(1) operation).
+        /// <param name="methodName">The name of the method to search for. Cannot be null, empty, or consist only of white-space characters.</param>
+        /// <param name="methods">When this method returns, contains a collection of methods with the specified name, if found; otherwise,
+        /// null.</param>
+        /// <returns>true if one or more methods with the specified name are found; otherwise, false.</returns>
+        public bool TryGetMethodByName(string methodName, out MethodList? methods)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(methodName);
+            return this.Methods.TryGetMethodsByName(methodName, out methods);
         }
 
         public MethodData GetMethod(string methodName, ReadOnlySpan<TypeData> genericTypeParameters, ReadOnlySpan<MethodParameterInfo> parameterList)
@@ -215,17 +224,19 @@ namespace BionicCode.Utilities.Net
             }
         }
 
-        public FieldData GetField(string fieldName)
+        /// <summary>
+        /// Attempts to retrieve the field data associated with the specified field name.
+        /// </summary>
+        /// <remarks>This method performs a case-sensitive O(1) search for the field name. The search is a O(n) operation if the cache has not been built yet (in this case, successive calls are guaranteed to be O(1) operation).
+        /// <param name="fieldName">The name of the field to locate. Cannot be null, empty, or consist only of white-space characters.</param>
+        /// <param name="fieldData">When this method returns, contains the field data associated with the specified field name, if found;
+        /// otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
+        /// <returns><see langword="true"/> if the field was found and <paramref name="fieldData"/> contains the associated data;
+        /// otherwise, <see langword="false"/>.</returns>
+        public bool TryGetFieldByName(string fieldName, out FieldData? fieldData)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(fieldName, nameof(fieldName));
-
-            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousFieldOrEvent(
-                this.Handle,
-                fieldName,
-                SymbolKind.MemberField);
-            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateFieldDataCacheEntry(ref cacheKey);
-
-            return fieldData;
+            ArgumentException.ThrowIfNullOrWhiteSpace(fieldName);
+            return this.Fields.TryGetFieldByName(fieldName, out fieldData);
         }
 
         public IEnumerable<FieldData> EnumerateFields(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
@@ -249,17 +260,18 @@ namespace BionicCode.Utilities.Net
             }
         }
 
-        public EventData GetEvent(string eventName)
+        /// <summary>
+        /// Attempts to retrieve event data for the specified event name.
+        /// </summary>
+        /// <remarks>This method performs a case-sensitive O(1) search for the event name. The search is a O(n) operation if the cache has not been built yet (in this case, successive calls are guaranteed to be O(1) operation).
+        /// <param name="eventName">The name of the event to locate. Cannot be null, empty, or consist only of white-space characters.</param>
+        /// <param name="eventData">When this method returns, contains the event data associated with the specified event name, if found;
+        /// otherwise, null. This parameter is passed uninitialized.</param>
+        /// <returns>true if the event data was found and returned in eventData; otherwise, false.</returns>
+        public bool TryGetEventByName(string eventName, out EventData? eventData)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(eventName, nameof(eventName));
-
-            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousFieldOrEvent(
-                this.Handle,
-                eventName,
-                SymbolKind.MemberEvent);
-            EventData eventData = SymbolReflectionInfoCache.GetOrCreateEventDataCacheEntry(ref cacheKey);
-
-            return eventData;
+            ArgumentException.ThrowIfNullOrWhiteSpace(eventName);
+            return this.Events.TryGetEventByName(eventName, out eventData);
         }
 
         public IEnumerable<EventData> EnumerateEvents(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
@@ -283,10 +295,8 @@ namespace BionicCode.Utilities.Net
             }
         }
 
-        public ConstructorData GetConstructor(string constructorName, params MethodParameterInfo[] parameterList)
+        public ConstructorData GetConstructor(params MethodParameterInfo[] parameterList)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(constructorName, nameof(constructorName));
-
             MethodParameterInfoList symbolParameters = parameterList is null || parameterList.Length == 0
                 ? MethodParameterInfoList.Empty
                 : new MethodParameterInfoList(parameterList);
@@ -298,7 +308,7 @@ namespace BionicCode.Utilities.Net
 
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrConstructor(
                 this.Handle,
-                constructorName,
+                string.Empty,
                 symbolParameters,
                 TypeList.Empty,
                 SymbolKind.MemberConstructor);
@@ -345,7 +355,7 @@ namespace BionicCode.Utilities.Net
             foreach (SymbolInfoDataCacheKey cacheKey in cachedMemberReflectionCacheKeys)
             {
                 SymbolInfoDataCacheKey keyCopy = cacheKey;
-                _ = SymbolReflectionInfoCache.TryGetSymbolInfoDataCacheEntry(keyCopy, out TMemberData cacheMemberData);
+                _ = SymbolReflectionInfoCache.TryGetSymbolInfoDataCacheEntry(keyCopy, out TMemberData? cacheMemberData);
                 if (IsValidMember(cacheMemberData!, bindingFlags))
                 {
                     yield return cacheMemberData!;
@@ -365,23 +375,35 @@ namespace BionicCode.Utilities.Net
                     readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry((PropertyInfo)memberInfo);
                     IPropertyListBuilder propertyListBuilder = PropertyListBuilder.New(this.Handle);
                     addMemberToTypeDataMemberListProperty = propertyData => propertyListBuilder.Add((PropertyData)propertyData);
-                    buildMemberListProperty = () => this.propertiesData = propertyListBuilder.Build();
+                    buildMemberListProperty = () => this._properties = propertyListBuilder.Build();
                     memberKind = SymbolKind.MemberProperty;
                     break;
                 case Type memberType when memberType == typeof(MethodData):
                     readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry((MethodInfo)memberInfo);
+                    IMethodListBuilder methodListBuilder = MethodListBuilder.New(this.Handle);
+                    addMemberToTypeDataMemberListProperty = methodData => methodListBuilder.Add((MethodData)methodData);
+                    buildMemberListProperty = () => this._methods = methodListBuilder.Build();
                     memberKind = SymbolKind.MemberMethod;
                     break;
                 case Type memberType when memberType == typeof(FieldData):
                     readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry((FieldInfo)memberInfo);
+                    IFieldListBuilder fieldListBuilder = FieldListBuilder.New(this.Handle);
+                    addMemberToTypeDataMemberListProperty = fieldData => fieldListBuilder.Add((FieldData)fieldData);
+                    buildMemberListProperty = () => this._fields = fieldListBuilder.Build();
                     memberKind = SymbolKind.MemberField;
                     break;
                 case Type memberType when memberType == typeof(EventData):
                     readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry((EventInfo)memberInfo);
+                    IEventListBuilder eventListBuilder = EventListBuilder.New(this.Handle);
+                    addMemberToTypeDataMemberListProperty = eventData => eventListBuilder.Add((EventData)eventData);
+                    buildMemberListProperty = () => this._events = eventListBuilder.Build();
                     memberKind = SymbolKind.MemberEvent;
                     break;
                 case Type memberType when memberType == typeof(ConstructorData):
                     readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry((ConstructorInfo)memberInfo);
+                    IConstructorListBuilder constructorListBuilder = ConstructorListBuilder.New(this.Handle);
+                    addMemberToTypeDataMemberListProperty = constructorData => constructorListBuilder.Add((ConstructorData)constructorData);
+                    buildMemberListProperty = () => this._constructors = constructorListBuilder.Build();
                     memberKind = SymbolKind.MemberConstructor;
                     break;
                 default:
@@ -486,10 +508,10 @@ namespace BionicCode.Utilities.Net
                 else
                 {
                     Type genericTypeDefinitionType = UnwrapType().GetGenericTypeDefinition();
-                    this.genericTypeDefinitionData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(genericTypeDefinitionType);
+                    this._genericTypeDefinition = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(genericTypeDefinitionType);
                 }
 
-                return this.genericTypeDefinitionData;
+                return this._genericTypeDefinition;
             }
         }
 
@@ -635,15 +657,15 @@ namespace BionicCode.Utilities.Net
         {
             get
             {
-                if (this.baseTypeData is null && this.IsSubclass)
+                if (this._baseTypes is null && this.IsSubclass)
                 {
                     Type? baseType = UnwrapType().BaseType;
-                    this.baseTypeData = baseType is null
+                    this._baseTypes = baseType is null
                         ? null
                         : SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(baseType);
                 }
 
-                return this.baseTypeData;
+                return this._baseTypes;
             }
         }
 
@@ -699,33 +721,77 @@ namespace BionicCode.Utilities.Net
           => this.genericParameterConstraintsData ??= TypeListBuilder.CreateGenericTypeArgumentConstraintList(this);
 
         public TypeList InterfacesData
-          => this.interfacesData ??= TypeListBuilder.CreateImplementedInterfacesList(this);
+          => this._interfaces ??= TypeListBuilder.CreateImplementedInterfacesList(this);
 
-        public PropertyList PropertiesData
+        public PropertyList Properties
         {
             get
             {
-                if (this.propertiesData is null)
+                if (this._properties is null)
                 {
                     _ = BuildAndEnumerateMemberKindCache<PropertyData>(UnwrapType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags), HelperExtensionsCommon.AllMembersFullHierarchyFlags)
                         .ToPropertyList();
                 }
 
-                return this.propertiesData!;
+                return this._properties!;
             }
         }
 
-        public MethodList MethodsData
-          => this.methodsData ??= this.isAllMethodsGenerated ? this._memberTable.Values.OfType<MethodData>().ToMethodList() : EnumerateMethods().ToMethodList();
+        public MethodList Methods
+        {
+            get
+            {
+                if (this._methods is null)
+                {
+                    _ = BuildAndEnumerateMemberKindCache<MethodData>(UnwrapType().GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags), HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+                        .ToMethodList();
+                }
 
-        public FieldList FieldsData
-          => this.fieldsData ??= this.isAllFieldsGenerated ? this._memberTable.Values.OfType<FieldData>().ToFieldList() : EnumerateFields().ToFieldList();
+                return this._methods!;
+            }
+        }
 
-        public EventList EventsData
-          => this.eventsData ??= this.isAllEventsGenerated ? this._memberTable.Values.OfType<EventData>().ToEventList() : EnumerateEvents().ToEventList();
+        public FieldList Fields
+        {
+            get
+            {
+                if (this._fields is null)
+                {
+                    _ = BuildAndEnumerateMemberKindCache<FieldData>(UnwrapType().GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags), HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+                        .ToFieldList();
+                }
 
-        public ConstructorList ConstructorsData
-          => this.constructorsData ??= this.isAllConstructorsGenerated ? this._memberTable.Values.OfType<ConstructorData>().ToConstructorList() : EnumerateConstructors().ToConstructorList();
+                return this._fields!;
+            }
+        }
+
+        public EventList Events
+        {
+            get
+            {
+                if (this._events is null)
+                {
+                    _ = BuildAndEnumerateMemberKindCache<EventData>(UnwrapType().GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags), HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+                        .ToEventList();
+                }
+
+                return this._events!;
+            }
+        }
+
+        public ConstructorList Constructors
+        {
+            get
+            {
+                if (this._constructors is null)
+                {
+                    _ = BuildAndEnumerateMemberKindCache<ConstructorData>(UnwrapType().GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags), HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+                        .ToConstructorList();
+                }
+
+                return this._constructors!;
+            }
+        }
 
         private static bool IsTypeStatic(TypeData typeData)
           => typeData.IsAbstract && typeData.IsSealed;

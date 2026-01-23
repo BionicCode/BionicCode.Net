@@ -12,6 +12,8 @@
     {
         public static readonly PropertyList Empty = new PropertyList();
         private readonly int _hashCode; // precomputed
+        private readonly SymbolInfoDataCacheKey _declaringTypeCacheKey;
+        private readonly Dictionary<string, PropertyData> _propertyNameIndex;
 
         public PropertyList(PropertyData[] items) : this((IEnumerable<PropertyData>)items)
         {
@@ -19,17 +21,16 @@
 
         public PropertyList(IEnumerable<PropertyData> items)
         {
-            this.Properties = items.ToImmutableList();
-
-            ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Properties, nameof(items));
+            this.Properties = items?.ToImmutableList() ?? ImmutableList<PropertyData>.Empty;
+            this._propertyNameIndex = this.Properties.ToDictionary(property => property.Name);
 
             if (this.HasItems)
             {
-                this._declaringTypeHandle = this.Properties.FirstOrDefault()!.DeclaringTypeHandle;
+                this._declaringTypeCacheKey = this.Properties.First().DeclaringTypeData.CacheKey;
 
                 ArgumentExceptionAdvanced.ThrowIfAny(
                     this.Properties,
-                    property => !property.DeclaringTypeHandle.Equals(this._declaringTypeHandle),
+                    property => property.DeclaringTypeData.CacheKey != this.DeclaringTypeCacheKey,
                     nameof(items),
                     $"At least one item in the argument '{nameof(items)}' has a different value for the '{nameof(PropertyData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All properties must belong to the same declaring type.");
             }
@@ -40,13 +41,16 @@
         internal PropertyList(IEnumerable<PropertyData> items, bool isIntegrityValidationEnabled)
         {
             this.Properties = items?.ToImmutableList() ?? ImmutableList<PropertyData>.Empty;
-            this._declaringTypeHandle = this.Properties.FirstOrDefault()?.DeclaringTypeHandle ?? default;
+            this._propertyNameIndex = this.Properties.ToDictionary(property => property.Name);
+            this._declaringTypeCacheKey = this.HasItems
+                ? this.Properties.First().DeclaringTypeData.CacheKey
+                : default;
 
             if (isIntegrityValidationEnabled && this.HasItems)
             {
                 ArgumentExceptionAdvanced.ThrowIfAny(
                     this.Properties,
-                    property => !property.DeclaringTypeHandle.Equals(this._declaringTypeHandle),
+                    property => !property.DeclaringTypeHandle.Equals(this.DeclaringTypeCacheKey),
                     nameof(items),
                     $"At least one item in the argument '{nameof(items)}' has a different value for the '{nameof(PropertyData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All properties must belong to the same declaring type.");
             }
@@ -55,18 +59,36 @@
         }
 
         private PropertyList()
-            => this.Properties = ImmutableList<PropertyData>.Empty;
+        {
+            this.Properties = ImmutableList<PropertyData>.Empty;
+            this._propertyNameIndex = new Dictionary<string, PropertyData>();
+        }
+
+        public bool TryGetPropertyByName(string propertyName, out PropertyData? propertyData)
+        {
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(propertyName);
+            return this._propertyNameIndex.TryGetValue(propertyName, out propertyData);
+        }
 
         public int Count => this.Properties.Count;
         public bool IsEmpty => this.Properties.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<PropertyData> Properties { get; }
+        public SymbolInfoDataCacheKey DeclaringTypeCacheKey
+            => this.HasItems
+                ? this._declaringTypeCacheKey
+                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(this.DeclaringTypeCacheKey)));
 
-        private readonly RuntimeTypeHandle _declaringTypeHandle;
-        public RuntimeTypeHandle DeclaringTypeHandle
-            => this.IsEmpty
-                ? throw new InvalidOperationException($"The '{nameof(PropertyList)}' is empty and has no '{nameof(this.DeclaringTypeHandle)}'.")
-                : this._declaringTypeHandle;
+        public TypeData DeclaringTypeData
+        {
+            get
+            {
+                SymbolInfoDataCacheKey cacheKey = this.DeclaringTypeCacheKey;
+                return this.HasItems
+                    ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
+                    : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(this.DeclaringTypeData)));
+            }
+        }
 
         public PropertyData this[int index]
         {
@@ -97,7 +119,7 @@
                 return false;
             }
 
-            if (!this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle))
+            if (this.DeclaringTypeCacheKey != other.DeclaringTypeCacheKey)
             {
                 return false;
             }
@@ -116,7 +138,8 @@
         public override bool Equals(object? obj)
             => obj is PropertyList other && Equals(other);
 
-        public override int GetHashCode() => this._hashCode;
+        public override int GetHashCode()
+            => this._hashCode;
 
         private int ComputeHashCode()
         {
@@ -124,7 +147,7 @@
             {
                 var hashCode = new HashCode();
                 hashCode.Add(this.Count);
-                hashCode.Add(this.DeclaringTypeHandle);
+                hashCode.Add(this.DeclaringTypeCacheKey);
                 for (int index = 0; index < this.Properties.Count; index++)
                 {
                     hashCode.Add(this.Properties[index]);

@@ -9,6 +9,7 @@
     {
         public static readonly EventList Empty = new EventList();
         private readonly int _hashCode; // precomputed
+        private readonly Dictionary<string, EventData> _eventNameIndex;
 
         public EventList(EventData[] items) : this((IEnumerable<EventData>)items)
         {
@@ -36,6 +37,12 @@
 
         private EventList()
             => this.Events = ImmutableList<EventData>.Empty;
+
+        public bool TryGetEventByName(string eventName, out EventData? eventData)
+        {
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(eventName);
+            return this._eventNameIndex.TryGetValue(eventName, out eventData);
+        }
 
         public int Count => this.Events.Count;
         public bool IsEmpty => this.Events.IsEmpty;

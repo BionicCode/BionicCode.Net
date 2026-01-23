@@ -5,23 +5,23 @@
     using System.Linq;
     using System.Reflection;
 
-    internal interface IPropertyListBuilder
+    internal interface IMethodListBuilder
     {
-        IPropertyListBuilder Add(PropertyData propertyData);
-        PropertyList Build();
+        IMethodListBuilder Add(MethodData propertyData);
+        MethodList Build();
     }
 
-    internal static class MethodListBuilder : SymbolDataListBuilder<PropertyData>, IPropertyListBuilder
+    internal class MethodListBuilder : SymbolDataListBuilder<MethodData>, IMethodListBuilder
     {
-        private PropertyList? _builderResult;
+        private MethodList? _builderResult;
 
-        private PropertyListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
+        private MethodListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
         {
         }
 
-        public static IPropertyListBuilder New(RuntimeTypeHandle declaringTypeHandle)
+        public static IMethodListBuilder New(RuntimeTypeHandle declaringTypeHandle)
         {
-            var builder = new PropertyListBuilder(declaringTypeHandle);
+            var builder = new MethodListBuilder(declaringTypeHandle);
             return builder;
         }
         internal static MethodList Create(IEnumerable<MethodInfo>? items)
@@ -79,25 +79,22 @@
             return methods.ToMethodList();
         }
 
-        IPropertyListBuilder IPropertyListBuilder.Add(PropertyData propertyData)
+        IMethodListBuilder IMethodListBuilder.Add(MethodData methodData)
         {
-            Add(propertyData);
+            Add(methodData);
             return this;
         }
 
-        PropertyList IPropertyListBuilder.Build()
-            => this._builderResult ??= new PropertyList(Build(), isIntegrityValidationEnabled: false);
-
-        internal static MethodList ToMethodList(this IEnumerable<MethodData> items)
-            => items is null || items.IsEmpty() ? MethodList.Empty : new MethodList(items);
+        MethodList IMethodListBuilder.Build()
+            => this._builderResult ??= new MethodList(Build(), isIntegrityValidationEnabled: false);
     }
 
-    internal static class PropertyListBuilderExtensions
+    internal static class MethodListBuilderExtensions
     {
-        public static PropertyList ToPropertyList(this IEnumerable<PropertyData> items)
-            => items is null || items.IsEmpty() ? PropertyList.Empty : new PropertyList(items);
+        public static MethodList ToMethodList(this IEnumerable<MethodData> items)
+            => items is null || items.IsEmpty() ? MethodList.Empty : new MethodList(items);
 
-        public static PropertyList OrEmpty(this PropertyList items)
-            => items ?? PropertyList.Empty;
+        public static MethodList OrEmpty(this MethodList items)
+            => items ?? MethodList.Empty;
     }
 }

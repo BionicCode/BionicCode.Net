@@ -468,24 +468,18 @@
                 {
                     TypeData iConvertibleTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(IConvertible));
                     const string iConvertibleToStringMethodName = nameof(IConvertible.ToString);
+                    MethodData iConvertibleToStringMethodData = iConvertibleTypeData.Methods[iConvertibleToStringMethodName].First();
                     var parameterKey = SymbolInfoDataCacheKey.CreateForAnonymousParameter(
                         typeof(IFormatProvider).TypeHandle,
-                        iConvertibleTypeData.Handle,
+                        iConvertibleToStringMethodData.Handle,
                         "provider",
                         0,
                         ParameterKind.Normal,
                         ParameterizedSymbolKind.MemberMethod,
-                        iConvertibleToStringMethodName,
-                        0,
-                        1);
-                    var methodParameterInfo = new MethodParameterInfo(parameterKey);
-                    MethodData toStringMethod = iConvertibleTypeData.GetMethod(
-                        iConvertibleToStringMethodName,
-                        0,
-                        [methodParameterInfo]);
+                        TypeList.Empty);
 
                     throw new ArgumentException(
-                        $"Invalid value. The '{toStringMethod.FullyQualifiedSignature}' conversion of the argument '{paramName}' returned 'null'.",
+                        $"Invalid value. The '{iConvertibleToStringMethodData.FullyQualifiedSignature}' conversion of the argument '{paramName}' returned 'null'.",
                         paramName);
                 }
             }

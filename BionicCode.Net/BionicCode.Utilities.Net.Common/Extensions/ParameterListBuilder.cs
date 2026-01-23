@@ -5,23 +5,23 @@
     using System.Linq;
     using System.Reflection;
 
-    internal interface IPropertyListBuilder
+    internal interface IParameterListBuilder
     {
-        IPropertyListBuilder Add(PropertyData propertyData);
-        PropertyList Build();
+        IParameterListBuilder Add(ParameterData parameterData);
+        ParameterList Build();
     }
 
-    internal static class ParameterListBuilder : SymbolDataListBuilder<PropertyData>, IPropertyListBuilder
+    internal class ParameterListBuilder : SymbolDataListBuilder<ParameterData>, IParameterListBuilder
     {
-        private PropertyList? _builderResult;
+        private ParameterList? _builderResult;
 
-        private PropertyListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
+        private ParameterListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
         {
         }
 
-        public static IPropertyListBuilder New(RuntimeTypeHandle declaringTypeHandle)
+        public static IParameterListBuilder New(RuntimeTypeHandle declaringTypeHandle)
         {
-            var builder = new PropertyListBuilder(declaringTypeHandle);
+            var builder = new ParameterListBuilder(declaringTypeHandle);
             return builder;
         }
         internal static ParameterList Create(IEnumerable<ParameterInfo>? items)
@@ -157,20 +157,14 @@
             return parameters.ToParameterList();
         }
 
-        internal static ParameterList ToParameterList(this IEnumerable<ParameterData>? items)
-            => items is null || items.IsEmpty() ? ParameterList.Empty : new ParameterList(items);
-
-        internal static ParameterList OrEmpty(this ParameterList items)
-            => items ?? ParameterList.Empty;
-
-        IPropertyListBuilder IPropertyListBuilder.Add(PropertyData propertyData)
+        IParameterListBuilder IParameterListBuilder.Add(ParameterData propertyData)
         {
             Add(propertyData);
             return this;
         }
 
-        PropertyList IPropertyListBuilder.Build()
-            => this._builderResult ??= new PropertyList(Build(), isIntegrityValidationEnabled: false);
+        ParameterList IParameterListBuilder.Build()
+            => this._builderResult ??= new ParameterList(Build(), isIntegrityValidationEnabled: false);
 
         private enum PropertyParameterSource
         {
@@ -181,12 +175,12 @@
         }
     }
 
-    internal static class PropertyListBuilderExtensions
+    internal static class ParameterListBuilderExtensions
     {
-        public static PropertyList ToPropertyList(this IEnumerable<PropertyData> items)
-            => items is null || items.IsEmpty() ? PropertyList.Empty : new PropertyList(items);
+        internal static ParameterList ToParameterList(this IEnumerable<ParameterData>? items)
+            => items is null || items.IsEmpty() ? ParameterList.Empty : new ParameterList(items);
 
-        public static PropertyList OrEmpty(this PropertyList items)
-            => items ?? PropertyList.Empty;
+        internal static ParameterList OrEmpty(this ParameterList items)
+            => items ?? ParameterList.Empty;
     }
 }

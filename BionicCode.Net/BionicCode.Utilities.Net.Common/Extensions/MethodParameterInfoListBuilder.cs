@@ -5,23 +5,23 @@
     using System.Linq;
     using System.Reflection;
 
-    internal interface IPropertyListBuilder
+    internal interface IMethodParameterInfoListBuilder
     {
-        IPropertyListBuilder Add(PropertyData propertyData);
-        PropertyList Build();
+        IMethodParameterInfoListBuilder Add(MethodParameterInfo methodParameterInfo);
+        MethodParameterInfoList Build();
     }
 
-    internal static class MethodParameterInfoListBuilder : SymbolDataListBuilder<PropertyData>, IPropertyListBuilder
+    internal class MethodParameterInfoListBuilder : SymbolDataListBuilder<MethodParameterInfo>, IMethodParameterInfoListBuilder
     {
-        private PropertyList? _builderResult;
+        private MethodParameterInfoList? _builderResult;
 
-        private PropertyListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
+        private MethodParameterInfoListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
         {
         }
 
-        public static IPropertyListBuilder New(RuntimeTypeHandle declaringTypeHandle)
+        public static IMethodParameterInfoListBuilder New(RuntimeTypeHandle declaringTypeHandle)
         {
-            var builder = new PropertyListBuilder(declaringTypeHandle);
+            var builder = new MethodParameterInfoListBuilder(declaringTypeHandle);
             return builder;
         }
         internal static MethodParameterInfoList Create(IEnumerable<ParameterData> items)
@@ -146,25 +146,22 @@
             return parameters.AsMethodParameterInfoList();
         }
 
-        IPropertyListBuilder IPropertyListBuilder.Add(PropertyData propertyData)
+        IMethodParameterInfoListBuilder IMethodParameterInfoListBuilder.Add(MethodParameterInfo methodParameterInfo)
         {
-            Add(propertyData);
+            Add(methodParameterInfo);
             return this;
         }
 
-        PropertyList IPropertyListBuilder.Build()
-            => this._builderResult ??= new PropertyList(Build(), isIntegrityValidationEnabled: false);
-
-        internal static MethodParameterInfoList AsMethodParameterInfoList(this IEnumerable<ParameterData>? items)
-            => items is null || items.IsEmpty() ? MethodParameterInfoList.Empty : new MethodParameterInfoList(items.Select(parameterData => new MethodParameterInfo(parameterData)));
+        MethodParameterInfoList IMethodParameterInfoListBuilder.Build()
+            => this._builderResult ??= new MethodParameterInfoList(Build(), isIntegrityValidationEnabled: false);
     }
 
-    internal static class PropertyListBuilderExtensions
+    internal static class MethodParameterInfoListBuilderExtensions
     {
-        public static PropertyList ToPropertyList(this IEnumerable<PropertyData> items)
-            => items is null || items.IsEmpty() ? PropertyList.Empty : new PropertyList(items);
+        public static MethodParameterInfoList AsMethodParameterInfoList(this IEnumerable<ParameterData> items)
+            => items is null || items.IsEmpty() ? MethodParameterInfoList.Empty : new MethodParameterInfoList(items.Select(parameterData => new MethodParameterInfo(parameterData)));
 
-        public static PropertyList OrEmpty(this PropertyList items)
-            => items ?? PropertyList.Empty;
+        public static MethodParameterInfoList OrEmpty(this MethodParameterInfoList items)
+            => items ?? MethodParameterInfoList.Empty;
     }
 }

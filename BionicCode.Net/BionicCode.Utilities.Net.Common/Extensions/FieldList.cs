@@ -9,6 +9,7 @@
     {
         public static readonly FieldList Empty = new FieldList();
         private readonly int _hashCode; // precomputed
+        private readonly Dictionary<string, FieldData> _fieldNameIndex;
 
         public FieldList(FieldData[] items) : this((IEnumerable<FieldData>)items)
         {
@@ -35,6 +36,12 @@
 
         private FieldList()
             => this.Fields = ImmutableList<FieldData>.Empty;
+
+        public bool TryGetFieldByName(string fieldName, out FieldData? fieldData)
+        {
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(fieldName);
+            return this._fieldNameIndex.TryGetValue(fieldName, out fieldData!);
+        }
 
         public int Count => this.Fields.Count;
         public bool IsEmpty => this.Fields.IsEmpty;

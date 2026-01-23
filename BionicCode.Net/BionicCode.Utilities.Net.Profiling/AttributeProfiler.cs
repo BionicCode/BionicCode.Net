@@ -572,7 +572,7 @@
         {
             hasProfiledInstanceMethods = false;
 
-            foreach (MethodData methodData in typeDataToProfile.MethodsData)
+            foreach (MethodData methodData in typeDataToProfile.Methods)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -638,7 +638,7 @@
         {
             hasProfiledInstanceConstructors = false;
 
-            foreach (ConstructorData constructorData in typeDataToProfile.ConstructorsData)
+            foreach (ConstructorData constructorData in typeDataToProfile.Constructors)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -702,7 +702,7 @@
         private void GetTargetProperties(TypeData typeDataToProfile, bool isFindInstanceProviderEnabled, IList<ProfiledMemberInfo> targetMembers, CancellationToken cancellationToken, out bool hasProfiledInstanceProperties, ref bool hasHighPriorityInstanceProvider, ref InstanceProviderInfo instanceProviderInfo)
         {
             hasProfiledInstanceProperties = false;
-            foreach (PropertyData propertyData in typeDataToProfile.PropertiesData)
+            foreach (PropertyData propertyData in typeDataToProfile.Properties)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
@@ -769,7 +769,7 @@
 
         private void GetInstanceProviderField(TypeData typeDataToProfile, CancellationToken cancellationToken, ref bool hasHighPriorityInstanceProvider, ref InstanceProviderInfo instanceProviderInfo)
         {
-            foreach (FieldData fieldData in typeDataToProfile.FieldsData)
+            foreach (FieldData fieldData in typeDataToProfile.Fields)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 

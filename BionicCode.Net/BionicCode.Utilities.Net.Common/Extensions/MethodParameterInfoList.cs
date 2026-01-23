@@ -15,6 +15,8 @@
     {
         public static readonly MethodParameterInfoList Empty = new MethodParameterInfoList();
         private readonly int _hashCode; // precomputed
+        private readonly SymbolInfoDataCacheKey _declaringTypeCacheKey;
+        private readonly Dictionary<string, MethodParameterInfo> _parameterNameIndex;
 
         public MethodParameterInfoList(MethodParameterInfo[] items) : this((IEnumerable<MethodParameterInfo>)items)
         {
@@ -27,17 +29,43 @@
         public MethodParameterInfoList(IEnumerable<MethodParameterInfo> items)
         {
             this.Parameters = items.OrderBy(parameter => parameter.Position).ToImmutableList();
+            this._parameterNameIndex = this.Parameters.ToDictionary(parameter => parameter.MethodName);
             ArgumentNullExceptionAdvanced.ThrowIfNull(this.Parameters, nameof(items));
 
             if (this.HasItems)
             {
                 MethodParameterInfo methodParameterInfo = this.Parameters.FirstOrDefault();
-                this._declaringMemberTypeHandle = methodParameterInfo.DeclaringTypeHandle;
+                RuntimeTypeHandle declaringMemberTypeHandle = methodParameterInfo.DeclaringTypeHandle;
                 Type declaringType = Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle)
                     ?? throw new ArgumentException($"The argument '{nameof(items)}' contains an invalid item at position '0'. Reason: Could not resolve type from handle 'ParameterTypeHandle'.");
+                this._declaringTypeCacheKey = declaringType.ToTypeData().CacheKey;
                 ArgumentExceptionAdvanced.ThrowIfAny(
                     this.Parameters,
-                    parameterData => !parameterData.DeclaringTypeHandle.Equals(this._declaringMemberTypeHandle),
+                    parameterData => !parameterData.DeclaringTypeHandle.Equals(declaringMemberTypeHandle),
+                    nameof(items),
+                    $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodParameterInfo)}.{nameof(MethodParameterInfo.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type.");
+
+            }
+
+            this._hashCode = ComputeHashCode();
+        }
+
+        internal MethodParameterInfoList(IEnumerable<MethodParameterInfo> items, bool isIntegrityValidationEnabled)
+        {
+            this.Parameters = items.OrderBy(parameter => parameter.Position).ToImmutableList();
+            this._parameterNameIndex = this.Parameters.ToDictionary(parameter => parameter.MethodName);
+            ArgumentNullExceptionAdvanced.ThrowIfNull(this.Parameters, nameof(items));
+
+            if (this.HasItems)
+            {
+                MethodParameterInfo methodParameterInfo = this.Parameters.FirstOrDefault();
+                RuntimeTypeHandle declaringMemberTypeHandle = methodParameterInfo.DeclaringTypeHandle;
+                Type declaringType = Type.GetTypeFromHandle(methodParameterInfo.ParameterTypeHandle)
+                    ?? throw new ArgumentException($"The argument '{nameof(items)}' contains an invalid item at position '0'. Reason: Could not resolve type from handle 'ParameterTypeHandle'.");
+                this._declaringTypeCacheKey = declaringType.ToTypeData().CacheKey;
+                ArgumentExceptionAdvanced.ThrowIfAny(
+                    this.Parameters,
+                    parameterData => !parameterData.DeclaringTypeHandle.Equals(declaringMemberTypeHandle),
                     nameof(items),
                     $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(MethodParameterInfo)}.{nameof(MethodParameterInfo.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type.");
 
@@ -47,18 +75,39 @@
         }
 
         private MethodParameterInfoList()
-            => this.Parameters = ImmutableList<MethodParameterInfo>.Empty;
+        {
+            this.Parameters = ImmutableList<MethodParameterInfo>.Empty;
+            this._parameterNameIndex = this.Parameters.ToDictionary(parameter => parameter.MethodName);
+        }
+
+        public bool TryGetParameterByName(string parameterName, out MethodParameterInfo parameterData)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(parameterName);
+            return this._parameterNameIndex.TryGetValue(parameterName, out parameterData);
+        }
 
         public int Count => this.Parameters.Count;
         public bool IsEmpty => this.Parameters.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<MethodParameterInfo> Parameters { get; }
+        public SymbolInfoDataCacheKey DeclaringTypeCacheKey
+            => this.HasItems
+                ? this._declaringTypeCacheKey
+                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringTypeCacheKey)));
 
-        private readonly RuntimeTypeHandle _declaringMemberTypeHandle;
-        public RuntimeTypeHandle DeclaringMemberTypeHandle
-            => this.IsEmpty
-                ? throw new InvalidOperationException($"The collection is empty and has no '{nameof(this.DeclaringMemberTypeHandle)}'.")
-                : this._declaringMemberTypeHandle;
+        public TypeData DeclaringTypeData
+        {
+            get
+            {
+                if (this.IsEmpty)
+                {
+                    throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringTypeData)));
+                }
+
+                SymbolInfoDataCacheKey cacheKey = this.DeclaringTypeCacheKey;
+                return SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey);
+            }
+        }
 
         public MethodParameterInfo this[int index]
         {
@@ -89,7 +138,7 @@
                 return false;
             }
 
-            if (!this.DeclaringMemberTypeHandle.Equals(other.DeclaringMemberTypeHandle))
+            if (!this.DeclaringTypeCacheKey.Equals(other.DeclaringTypeCacheKey))
             {
                 return false;
             }
@@ -116,7 +165,7 @@
             {
                 var hashCode = new HashCode();
                 hashCode.Add(this.Count);
-                hashCode.Add(this.DeclaringMemberTypeHandle);
+                hashCode.Add(this.DeclaringTypeCacheKey);
                 for (int index = 0; index < this.Parameters.Count; index++)
                 {
                     hashCode.Add(this.Parameters[index]);

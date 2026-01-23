@@ -22,6 +22,8 @@
         /// </summary>
         public ParameterKind Kind { get; }
 
+        public string MethodName { get; }
+
         ///// <summary>
         ///// Gets a value indicating whether the type parameter is declared by a generic method definition.
         ///// </summary>
@@ -39,9 +41,9 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(parameterData);
 
             this.Position = parameterData.Position;
-            //this.IsGenericMethodParameter = parameterInfoDataCacheKey;
             this.ParameterTypeHandle = parameterData.ParameterTypeHandle;
             this.Kind = parameterData.ParameterKind;
+            this.MethodName = parameterData.MemberData.Name;
             this.DeclaringTypeHandle = parameterData.DeclaringTypeHandle;
         }
 
@@ -66,7 +68,7 @@
                 nameof(parameterInfoDataCacheKey),
                 $"The property '{nameof(MethodParameterInfo.Kind)}' of the argument '{parameterInfoDataCacheKey}' cannot be of value '{nameof(ParameterKind)}.{nameof(ParameterKind.Undefined)}'.");
             this.Position = parameterInfoDataCacheKey.ParameterPosition;
-            //this.IsGenericMethodParameter = parameterInfoDataCacheKey;
+            this.MethodName = parameterInfoDataCacheKey.ParameterMemberName;
             this.ParameterTypeHandle = parameterInfoDataCacheKey.SymbolTypeHandle;
             this.Kind = parameterInfoDataCacheKey.ParameterKind;
             this.DeclaringTypeHandle = parameterInfoDataCacheKey.DeclaringTypeHandle;
@@ -76,11 +78,11 @@
         public bool Equals(MethodParameterInfo other) => other.ParameterTypeHandle.Equals(this.ParameterTypeHandle)
             && other.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle)
             && other.Position == this.Position
-            && other.Kind == this.Kind;
-        //&& other.IsGenericMethodParameter.Equals(this.IsGenericMethodParameter);
+            && other.Kind == this.Kind
+            && other.MethodName.Equals(this.MethodName, StringComparison.Ordinal);
 
         public override int GetHashCode()
-            => HashCode.Combine(this.ParameterTypeHandle, this.DeclaringTypeHandle, this.Position, this.Kind);
+            => HashCode.Combine(this.ParameterTypeHandle, this.DeclaringTypeHandle, this.Position, this.Kind, this.MethodName);
 
         public static bool operator ==(MethodParameterInfo left, MethodParameterInfo right) => left.Equals(right);
         public static bool operator !=(MethodParameterInfo left, MethodParameterInfo right) => !(left == right);

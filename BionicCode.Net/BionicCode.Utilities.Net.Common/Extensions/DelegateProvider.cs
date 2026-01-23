@@ -8,7 +8,6 @@
     using System.Reflection;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
-    using static BionicCode.Utilities.Net.MethodData;
 
     public delegate void MethodVoidInvoker<TTarget>(TTarget? target, params object?[] args);
     //public delegate TResult MethodInvoker<TTarget, TResult>(TTarget? target, params object?[] args);
@@ -1991,28 +1990,11 @@
 
             TypeData helperExtensionsCommonTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(HelperExtensionsCommon));
             const string extensionMethodName = nameof(HelperExtensionsCommon.ToFullyQualifiedSignatureName);
-            SymbolInfoDataCacheKey thisParameterKey = SymbolInfoDataCacheKey.CreateForAnonymousParameter(
-                typeof(object).TypeHandle,
-                helperExtensionsCommonTypeData.Handle,
-                "methodInfo",
-                0,
-                ParameterKind.Normal,
-                ParameterizedSymbolKind.MemberMethod,
-                TypeList.Empty,
-                extensionMethodName,
-                1);
-            SymbolInfoDataCacheKey extensionMethodKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrConstructor(
-                helperExtensionsCommonTypeData.Handle,
-                extensionMethodName,
-                MethodParameterInfoListBuilder.Create(
-                    [new MethodParameterInfo(thisParameterKey)]),
-                TypeList.Empty,
-                SymbolKind.MemberMethod);
-            MethodData extensionMethodData = helperExtensionsCommonTypeData.GetMethod(
-                extensionMethodName,
-                0,
-                [new MethodParameterInfo(extensionMethodKey)]);
-            MethodCallExpression extensionMethodCall = Expression.Call(extensionMethodData.GetMethodInfo(), target);
+            MethodData toFullyQualifiedSignatureNameExtensionMethodData = helperExtensionsCommonTypeData.Methods[extensionMethodName]
+                .First(methodData => methodData.Parameters[0].ParameterTypeData.UnwrapType() == typeof(Type));
+
+            // BUG::Call GetType on target and pass to extension method
+            MethodCallExpression extensionMethodCall = Expression.Call(toFullyQualifiedSignatureNameExtensionMethodData.GetMethodInfo(), target);
 
             Expression message = Expression.Call(
                 stringConcat5,

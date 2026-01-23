@@ -9,6 +9,7 @@
     {
         public static readonly ConstructorList Empty = new ConstructorList();
         private readonly int _hashCode; // precomputed
+        private readonly SymbolInfoDataCacheKey _declaringTypeCacheKey;
 
         public ConstructorList(ConstructorData[] items) : this((IEnumerable<ConstructorData>)items)
         {
@@ -16,16 +17,34 @@
 
         public ConstructorList(IEnumerable<ConstructorData> items)
         {
-            this.Constructors = items.ToImmutableList();
-            ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(this.Constructors, nameof(items));
+            this.Constructors = items?.ToImmutableList() ?? ImmutableList<ConstructorData>.Empty;
 
             if (this.HasItems)
             {
-                this._declaringTypeHandle = this.Constructors.FirstOrDefault()!.DeclaringTypeHandle;
+                this._declaringTypeCacheKey = this.Constructors.First().DeclaringTypeData.CacheKey;
 
                 ArgumentExceptionAdvanced.ThrowIfAny(
                     this.Constructors,
-                    constructorData => !constructorData.DeclaringTypeHandle.Equals(this._declaringTypeHandle),
+                    constructorData => constructorData.DeclaringTypeData.CacheKey != this.DeclaringTypeCacheKey,
+                    nameof(items),
+                    $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(ConstructorData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All constructors must belong to the same declaring type.");
+            }
+
+            this._hashCode = ComputeHashCode();
+        }
+
+        internal ConstructorList(IEnumerable<ConstructorData> items, bool isIntegrityValidationEnabled)
+        {
+            this.Constructors = items?.ToImmutableList() ?? ImmutableList<ConstructorData>.Empty;
+            this._declaringTypeCacheKey = this.HasItems
+                ? this.Constructors.First().DeclaringTypeData.CacheKey
+                : default;
+
+            if (isIntegrityValidationEnabled && this.HasItems)
+            {
+                ArgumentExceptionAdvanced.ThrowIfAny(
+                    this.Constructors,
+                    constructorData => constructorData.DeclaringTypeData.CacheKey != this.DeclaringTypeCacheKey,
                     nameof(items),
                     $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(ConstructorData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All constructors must belong to the same declaring type.");
             }
@@ -40,12 +59,21 @@
         public bool IsEmpty => this.Constructors.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<ConstructorData> Constructors { get; }
+        public SymbolInfoDataCacheKey DeclaringTypeCacheKey
+            => this.HasItems
+                ? this._declaringTypeCacheKey
+                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringTypeCacheKey)));
 
-        private readonly RuntimeTypeHandle _declaringTypeHandle;
-        public RuntimeTypeHandle DeclaringTypeHandle
-            => this.IsEmpty
-                ? throw new InvalidOperationException($"The '{nameof(ConstructorList)}' is empty. Therefore the '{nameof(this.DeclaringTypeHandle)}' property is not accessible.")
-                : this._declaringTypeHandle;
+        public TypeData DeclaringTypeData
+        {
+            get
+            {
+                SymbolInfoDataCacheKey cacheKey = this.DeclaringTypeCacheKey;
+                return this.HasItems
+                    ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
+                    : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringTypeData)));
+            }
+        }
 
         public ConstructorData this[int index]
         {
@@ -76,7 +104,7 @@
                 return false;
             }
 
-            if (!this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle))
+            if (this.DeclaringTypeCacheKey != other.DeclaringTypeCacheKey)
             {
                 return false;
             }
@@ -95,7 +123,8 @@
         public override bool Equals(object? obj)
             => obj is ConstructorList other && Equals(other);
 
-        public override int GetHashCode() => this._hashCode;
+        public override int GetHashCode()
+            => this._hashCode;
 
         private int ComputeHashCode()
         {
@@ -103,7 +132,7 @@
             {
                 var hashCode = new HashCode();
                 hashCode.Add(this.Count);
-                hashCode.Add(this.DeclaringTypeHandle);
+                hashCode.Add(this.DeclaringTypeCacheKey);
                 for (int index = 0; index < this.Constructors.Count; index++)
                 {
                     hashCode.Add(this.Constructors[index]);
