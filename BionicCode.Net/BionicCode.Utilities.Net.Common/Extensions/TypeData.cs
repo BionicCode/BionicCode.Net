@@ -436,6 +436,7 @@ namespace BionicCode.Utilities.Net
                 {
                     MemberInfo memberInfo = members[memberIndex];
                     TMemberData memberDataFromReflectionCache = (TMemberData)readReflectionCache.Invoke(memberInfo);
+                    addMemberToTypeDataMemberListProperty.Invoke(memberDataFromReflectionCache);
                     SymbolInfoDataCacheKey cacheKey = memberDataFromReflectionCache.CacheKey;
                     _ = this._memberTable.TryAdd(cacheKey);
                 }
