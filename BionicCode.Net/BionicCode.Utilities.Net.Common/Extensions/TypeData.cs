@@ -139,7 +139,7 @@ namespace BionicCode.Utilities.Net
             if (this._isAllPropertiesCached)
             {
                 IEnumerable<SymbolInfoDataCacheKey> cachedPropertyReflectionCacheKeys = this.memberTable
-                .Where(key => key.SymbolKind is SymbolKind.MemberProperty);
+                    .Where(key => key.SymbolKind is SymbolKind.MemberProperty);
                 foreach (SymbolInfoDataCacheKey cacheKey in cachedPropertyReflectionCacheKeys)
                 {
                     SymbolInfoDataCacheKey keyCopy = cacheKey;
@@ -177,7 +177,7 @@ namespace BionicCode.Utilities.Net
                 }
                 finally
                 {
-                    // Caller may has broke out of enumeration early. So we need to finish cache building.
+                    // Caller may has broke out of enumeration prematurely. So we need to finish cache building.
                     for (; propertyIndex < allProperties.Length; propertyIndex++)
                     {
                         PropertyInfo propertyInfo = allProperties[propertyIndex];
