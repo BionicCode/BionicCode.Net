@@ -129,21 +129,9 @@ namespace BionicCode.Utilities.Net
         public IEnumerable<PropertyData> EnumerateProperties(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
         {
             // Return already cached properties if available
-            if (IsCacheBuildForMemberKind(SymbolKind.MemberProperty))
+            foreach (PropertyData propertyData in EnumerateMemberKindCache<PropertyData>(bindingFlags))
             {
-                foreach (PropertyData propertyData in EnumerateMemberKindCache<PropertyData>(bindingFlags))
-                {
-                    yield return propertyData;
-                }
-            }
-            else // Build the cache
-            {
-                // Get all properties and cache them. Then filter and return them based on the caller's binding flags.
-                PropertyInfo[] allProperties = UnwrapType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
-                foreach (PropertyData propertyData in BuildAndEnumerateMemberKindCache<PropertyData>(allProperties, bindingFlags))
-                {
-                    yield return propertyData;
-                }
+                yield return propertyData;
             }
         }
 
@@ -206,21 +194,9 @@ namespace BionicCode.Utilities.Net
         public IEnumerable<MethodData> EnumerateMethods(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
         {
             // Return already cached methods if available
-            if (IsCacheBuildForMemberKind(SymbolKind.MemberMethod))
+            foreach (MethodData methodData in EnumerateMemberKindCache<MethodData>(bindingFlags))
             {
-                foreach (MethodData methodData in EnumerateMemberKindCache<MethodData>(bindingFlags))
-                {
-                    yield return methodData;
-                }
-            }
-            else // Build the cache
-            {
-                // Get all methods and cache them. Then filter and return them based on the caller's binding flags.
-                MethodInfo[] allMethods = UnwrapType().GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
-                foreach (MethodData propertyData in BuildAndEnumerateMemberKindCache<MethodData>(allMethods, bindingFlags))
-                {
-                    yield return propertyData;
-                }
+                yield return methodData;
             }
         }
 
@@ -242,21 +218,9 @@ namespace BionicCode.Utilities.Net
         public IEnumerable<FieldData> EnumerateFields(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
         {
             // Return already cached fields if available
-            if (IsCacheBuildForMemberKind(SymbolKind.MemberField))
+            foreach (FieldData fieldData in EnumerateMemberKindCache<FieldData>(bindingFlags))
             {
-                foreach (FieldData fieldData in EnumerateMemberKindCache<FieldData>(bindingFlags))
-                {
-                    yield return fieldData;
-                }
-            }
-            else // Build the cache
-            {
-                // Get all fields and cache them. Then filter and return them based on the caller's binding flags.
-                FieldInfo[] allFields = UnwrapType().GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
-                foreach (FieldData fieldData in BuildAndEnumerateMemberKindCache<FieldData>(allFields, bindingFlags))
-                {
-                    yield return fieldData;
-                }
+                yield return fieldData;
             }
         }
 
@@ -276,22 +240,9 @@ namespace BionicCode.Utilities.Net
 
         public IEnumerable<EventData> EnumerateEvents(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
         {
-            // Return already cached events if available
-            if (IsCacheBuildForMemberKind(SymbolKind.MemberEvent))
+            foreach (EventData eventData in EnumerateMemberKindCache<EventData>(bindingFlags))
             {
-                foreach (EventData eventData in EnumerateMemberKindCache<EventData>(bindingFlags))
-                {
-                    yield return eventData;
-                }
-            }
-            else // Build the cache
-            {
-                // Get all events and cache them. Then filter and return them based on the caller's binding flags.
-                EventInfo[] allEvents = UnwrapType().GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
-                foreach (EventData eventData in BuildAndEnumerateMemberKindCache<EventData>(allEvents, bindingFlags))
-                {
-                    yield return eventData;
-                }
+                yield return eventData;
             }
         }
 
@@ -320,21 +271,9 @@ namespace BionicCode.Utilities.Net
         public IEnumerable<ConstructorData> EnumerateConstructors(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
         {
             // Return already cached constructors if available
-            if (IsCacheBuildForMemberKind(SymbolKind.MemberConstructor))
+            foreach (ConstructorData constructorData in EnumerateMemberKindCache<ConstructorData>(bindingFlags))
             {
-                foreach (ConstructorData constructorData in EnumerateMemberKindCache<ConstructorData>(bindingFlags))
-                {
-                    yield return constructorData;
-                }
-            }
-            else // Build the cache
-            {
-                // Get all constructors and cache them. Then filter and return them based on the caller's binding flags.
-                ConstructorInfo[] allConstructors = UnwrapType().GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
-                foreach (ConstructorData constructorData in BuildAndEnumerateMemberKindCache<ConstructorData>(allConstructors, bindingFlags))
-                {
-                    yield return constructorData;
-                }
+                yield return constructorData;
             }
         }
 
@@ -350,15 +289,23 @@ namespace BionicCode.Utilities.Net
                 _ => throw new NotSupportedException($"The member type '{typeof(TMemberData).FullName}' is not supported."),
             };
 
-            IEnumerable<SymbolInfoDataCacheKey> cachedMemberReflectionCacheKeys = this._memberTable
-                .Where(key => key.SymbolKind == memberKind);
-            foreach (SymbolInfoDataCacheKey cacheKey in cachedMemberReflectionCacheKeys)
+            IEnumerable<MemberData> cachedMemberReflectionCacheKeys = memberKind switch
             {
-                SymbolInfoDataCacheKey keyCopy = cacheKey;
-                _ = SymbolReflectionInfoCache.TryGetSymbolInfoDataCacheEntry(keyCopy, out TMemberData? cacheMemberData);
-                if (IsValidMember(cacheMemberData!, bindingFlags))
+                // Accessing member list properties ensure cache is built up
+
+                SymbolKind.MemberMethod => this.Methods,
+                SymbolKind.MemberProperty => this.Properties,
+                SymbolKind.MemberField => this.Fields,
+                SymbolKind.MemberEvent => this.Events,
+                SymbolKind.MemberConstructor => this.Constructors,
+                _ => throw new NotSupportedException($"The member kind '{typeof(SymbolKind).FullName}.{memberKind}' is not supported."),
+            };
+
+            foreach (MemberData memberData in cachedMemberReflectionCacheKeys)
+            {
+                if (IsValidMember(memberData!, bindingFlags))
                 {
-                    yield return cacheMemberData!;
+                    yield return (TMemberData)memberData;
                 }
             }
         }
