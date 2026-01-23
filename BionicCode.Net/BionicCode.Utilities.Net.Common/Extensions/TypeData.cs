@@ -199,6 +199,10 @@ namespace BionicCode.Utilities.Net
 
         private bool IsValidMember(BindingFlags bindingFlags, PropertyData cachedPropertyData)
         {
+            if (!bindingFlags.HasFlag(BindingFlags.Instance) && !bindingFlags.HasFlag(BindingFlags.Static))
+            {
+                return false;
+            }
             if (bindingFlags.HasFlag(BindingFlags.Static) ^ cachedPropertyData.IsStatic)
             {
                 return false;
