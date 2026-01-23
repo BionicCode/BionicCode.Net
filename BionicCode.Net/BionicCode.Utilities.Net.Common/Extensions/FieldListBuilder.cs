@@ -5,8 +5,26 @@
     using System.Linq;
     using System.Reflection;
 
-    internal static class FieldListBuilder
+    internal interface IFieldListBuilder
     {
+        IFieldListBuilder Add(FieldData fieldData);
+        FieldList Build();
+    }
+
+    internal class FieldListBuilder : SymbolDataListBuilder<FieldData>, IFieldListBuilder
+    {
+        private FieldList? _builderResult;
+
+        private FieldListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
+        {
+        }
+
+        public static IFieldListBuilder New(RuntimeTypeHandle declaringTypeHandle)
+        {
+            var builder = new FieldListBuilder(declaringTypeHandle);
+            return builder;
+        }
+
         internal static FieldList Create(IEnumerable<FieldInfo>? items)
         {
             List<FieldInfo>? fieldInfoList = items?.ToList();
@@ -62,7 +80,22 @@
             return fields.ToFieldList();
         }
 
+        IFieldListBuilder IFieldListBuilder.Add(FieldData fieldData)
+        {
+            Add(fieldData);
+            return this;
+        }
+
+        FieldList IFieldListBuilder.Build()
+            => this._builderResult ??= new FieldList(Build(), isIntegrityValidationEnabled: false);
+    }
+
+    internal static class FieldListBuilderExtensions
+    {
         internal static FieldList ToFieldList(this IEnumerable<FieldData> items)
             => items is null || items.IsEmpty() ? FieldList.Empty : new FieldList(items);
+
+        public static FieldList OrEmpty(this FieldList items)
+            => items ?? FieldList.Empty;
     }
 }

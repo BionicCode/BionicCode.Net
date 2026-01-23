@@ -5,8 +5,21 @@
     using System.Linq;
     using System.Reflection;
 
-    internal static class TypeListBuilder
+    internal interface ITypeListBuilder
     {
+        ITypeListBuilder Add(TypeData typeData);
+        TypeList Build();
+    }
+
+    internal class TypeListBuilder : SymbolDataListBuilder<TypeData>, ITypeListBuilder
+    {
+        private TypeList? _builderResult;
+
+        public static ITypeListBuilder New()
+        {
+            var builder = new TypeListBuilder();
+            return builder;
+        }
         internal static TypeList Create(IEnumerable<Type> items)
         {
             List<Type>? types = items?.ToList();
@@ -143,7 +156,22 @@
             return typeDataList.ToTypeList();
         }
 
+        ITypeListBuilder ITypeListBuilder.Add(TypeData typeData)
+        {
+            Add(typeData);
+            return this;
+        }
+
+        TypeList ITypeListBuilder.Build()
+            => this._builderResult ??= new TypeList(Build(), isIntegrityValidationEnabled: false);
+    }
+
+    internal static class TypeListBuilderExtensions
+    {
         internal static TypeList ToTypeList(this IEnumerable<TypeData> items)
             => items is null || items.IsEmpty() ? TypeList.Empty : new TypeList(items);
+
+        public static TypeList OrEmpty(this TypeList items)
+            => items ?? TypeList.Empty;
     }
 }

@@ -37,6 +37,23 @@
             this._hashCode = ComputeHashCode();
         }
 
+        internal PropertyList(IEnumerable<PropertyData> items, bool isIntegrityValidationEnabled)
+        {
+            this.Properties = items?.ToImmutableList() ?? ImmutableList<PropertyData>.Empty;
+            this._declaringTypeHandle = this.Properties.FirstOrDefault()?.DeclaringTypeHandle ?? default;
+
+            if (isIntegrityValidationEnabled && this.HasItems)
+            {
+                ArgumentExceptionAdvanced.ThrowIfAny(
+                    this.Properties,
+                    property => !property.DeclaringTypeHandle.Equals(this._declaringTypeHandle),
+                    nameof(items),
+                    $"At least one item in the argument '{nameof(items)}' has a different value for the '{nameof(PropertyData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All properties must belong to the same declaring type.");
+            }
+
+            this._hashCode = ComputeHashCode();
+        }
+
         private PropertyList()
             => this.Properties = ImmutableList<PropertyData>.Empty;
 

@@ -5,8 +5,26 @@
     using System.Linq;
     using System.Reflection;
 
-    internal static class ConstructorListBuilder
+    internal interface IConstructorListBuilder
     {
+        IConstructorListBuilder Add(ConstructorData constructorData);
+        ConstructorList Build();
+    }
+
+    internal class ConstructorListBuilder : SymbolDataListBuilder<ConstructorData>, IConstructorListBuilder
+    {
+        private ConstructorList? _builderResult;
+
+        private ConstructorListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
+        {
+        }
+
+        public static IConstructorListBuilder New(RuntimeTypeHandle declaringTypeHandle)
+        {
+            var builder = new ConstructorListBuilder(declaringTypeHandle);
+            return builder;
+        }
+
         internal static ConstructorList Create(IEnumerable<ConstructorInfo>? items)
         {
             List<ConstructorInfo>? constructorInfoList = items?.ToList();
@@ -62,7 +80,23 @@
             return constructors.ToConstructorList();
         }
 
+        IConstructorListBuilder IConstructorListBuilder.Add(ConstructorData constructorData)
+        {
+            Add(constructorData);
+            return this;
+        }
+
+        ConstructorList IConstructorListBuilder.Build()
+            => this._builderResult ??= new ConstructorList(Build(), isIntegrityValidationEnabled: false);
+    }
+
+    internal static class ConstructorListBuilderExtensions
+    {
+
         internal static ConstructorList ToConstructorList(this IEnumerable<ConstructorData> items)
             => items is null || items.IsEmpty() ? ConstructorList.Empty : new ConstructorList(items);
+
+        public static ConstructorList OrEmpty(this ConstructorList items)
+            => items ?? ConstructorList.Empty;
     }
 }

@@ -5,8 +5,25 @@
     using System.Linq;
     using System.Reflection;
 
-    internal static class ParameterListBuilder
+    internal interface IPropertyListBuilder
     {
+        IPropertyListBuilder Add(PropertyData propertyData);
+        PropertyList Build();
+    }
+
+    internal static class ParameterListBuilder : SymbolDataListBuilder<PropertyData>, IPropertyListBuilder
+    {
+        private PropertyList? _builderResult;
+
+        private PropertyListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
+        {
+        }
+
+        public static IPropertyListBuilder New(RuntimeTypeHandle declaringTypeHandle)
+        {
+            var builder = new PropertyListBuilder(declaringTypeHandle);
+            return builder;
+        }
         internal static ParameterList Create(IEnumerable<ParameterInfo>? items)
         {
             List<ParameterInfo>? parameterInfoList = items?.ToList();
@@ -146,6 +163,15 @@
         internal static ParameterList OrEmpty(this ParameterList items)
             => items ?? ParameterList.Empty;
 
+        IPropertyListBuilder IPropertyListBuilder.Add(PropertyData propertyData)
+        {
+            Add(propertyData);
+            return this;
+        }
+
+        PropertyList IPropertyListBuilder.Build()
+            => this._builderResult ??= new PropertyList(Build(), isIntegrityValidationEnabled: false);
+
         private enum PropertyParameterSource
         {
             Undefined,
@@ -153,5 +179,14 @@
             PropertySetMethod,
             PropertyGetMethod,
         }
+    }
+
+    internal static class PropertyListBuilderExtensions
+    {
+        public static PropertyList ToPropertyList(this IEnumerable<PropertyData> items)
+            => items is null || items.IsEmpty() ? PropertyList.Empty : new PropertyList(items);
+
+        public static PropertyList OrEmpty(this PropertyList items)
+            => items ?? PropertyList.Empty;
     }
 }

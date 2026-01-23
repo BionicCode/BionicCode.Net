@@ -5,9 +5,27 @@
     using System.Linq;
     using System.Reflection;
 
-    internal static class EventListBuilder
+    internal interface IEventListBuilder
     {
-        internal static EventList Create(IEnumerable<EventInfo>? items)
+        IEventListBuilder Add(EventData propertyData);
+        EventList Build();
+    }
+
+    internal class EventListBuilder : SymbolDataListBuilder<EventData>, IEventListBuilder
+    {
+        private PropertyList? _builderResult;
+
+        private PropertyListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
+        {
+        }
+
+        public static IPropertyListBuilder New(RuntimeTypeHandle declaringTypeHandle)
+        {
+            var builder = new PropertyListBuilder(declaringTypeHandle);
+            return builder;
+        }
+
+        public static EventList Create(IEnumerable<EventInfo>? items)
         {
             List<EventInfo>? eventInfoList = items?.ToList();
             if (eventInfoList is null || eventInfoList.IsEmpty())
@@ -37,13 +55,13 @@
             return events.ToEventList();
         }
 
-        internal static EventList Create(TypeData declaringTypeData)
+        public static EventList Create(TypeData declaringTypeData)
         {
             ArgumentNullException.ThrowIfNull(declaringTypeData);
             return CreateInternal(declaringTypeData.UnwrapType());
         }
 
-        internal static EventList Create(Type declaringType)
+        public static EventList Create(Type declaringType)
         {
             ArgumentNullException.ThrowIfNull(declaringType);
             return CreateInternal(declaringType);
@@ -62,7 +80,19 @@
             return events.ToEventList();
         }
 
-        internal static EventList ToEventList(this IEnumerable<EventData> items)
+        IEventListBuilder IEventListBuilder.Add(EventData eventData)
+        {
+            Add(eventData);
+            return this;
+        }
+
+        EventList IEventListBuilder.Build()
+            => this._builderResult ??= new EventList(Build(), isIntegrityValidationEnabled: false);
+    }
+
+    internal static class EventListBuilderExtensions
+    {
+        public static EventList ToEventList(this IEnumerable<EventData> items)
             => items is null || items.IsEmpty() ? EventList.Empty : new EventList(items);
     }
 }

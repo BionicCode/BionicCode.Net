@@ -3,6 +3,7 @@ namespace BionicCode.Utilities.Net
 {
     using System;
     using System.CodeDom;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -61,12 +62,8 @@ namespace BionicCode.Utilities.Net
         private SymbolComponentInfo? symbolComponentInfo;
         private SymbolComponentInfo? compactSymbolComponentInfo;
         private bool? containsGenericParameters;
-        private readonly ConcurrentHashSet<SymbolInfoDataCacheKey> memberTable;
-        private bool _isAllPropertiesCached;
-        private bool isAllMethodsGenerated;
-        private bool isAllFieldsGenerated;
-        private bool isAllEventsGenerated;
-        private bool isAllConstructorsGenerated;
+        private readonly ConcurrentHashSet<SymbolInfoDataCacheKey> _memberTable;
+        private readonly ConcurrentDictionary<SymbolKind, bool> _memberTableStateFlagTable;
         private bool? isByRefLike;
         private bool? isGenericTypeParameter;
         private bool? isGenericMethodParameter;
@@ -92,7 +89,8 @@ namespace BionicCode.Utilities.Net
 
             this.Handle = type.TypeHandle;
             this.Namespace = type.Namespace ?? string.Empty;
-            this.memberTable = new ConcurrentHashSet<SymbolInfoDataCacheKey>();
+            this._memberTable = new ConcurrentHashSet<SymbolInfoDataCacheKey>();
+            this._memberTableStateFlagTable = new ConcurrentDictionary<SymbolKind, bool>();
         }
 
         /// <summary>
@@ -135,94 +133,23 @@ namespace BionicCode.Utilities.Net
         /// the specified binding flags.</returns>
         public IEnumerable<PropertyData> EnumerateProperties(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
         {
-            // Return already cached properties
-            if (this._isAllPropertiesCached)
+            // Return already cached properties if available
+            if (IsCacheBuildForMemberKind(SymbolKind.MemberProperty))
             {
-                IEnumerable<SymbolInfoDataCacheKey> cachedPropertyReflectionCacheKeys = this.memberTable
-                    .Where(key => key.SymbolKind is SymbolKind.MemberProperty);
-                foreach (SymbolInfoDataCacheKey cacheKey in cachedPropertyReflectionCacheKeys)
+                foreach (PropertyData propertyData in EnumerateMemberKindCache<PropertyData>(bindingFlags))
                 {
-                    SymbolInfoDataCacheKey keyCopy = cacheKey;
-                    PropertyData cachedPropertyData = SymbolReflectionInfoCache.GetOrCreatePropertyDataCacheEntry(ref keyCopy);
-                    bool isValidProperty = IsValidMember(cachedPropertyData, bindingFlags);
-                    if (!isValidProperty)
-                    {
-                        continue;
-                    }
-
-                    yield return cachedPropertyData;
+                    yield return propertyData;
                 }
             }
             else // Build the cache
             {
                 // Get all properties and cache them. Then filter and return them based on the caller's binding flags.
                 PropertyInfo[] allProperties = UnwrapType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
-                int propertyIndex = 0;
-                try
+                foreach (PropertyData propertyData in BuildAndEnumerateMemberKindCache<PropertyData>(allProperties, bindingFlags))
                 {
-                    for (; propertyIndex < allProperties.Length; propertyIndex++)
-                    {
-                        PropertyInfo propertyInfo = allProperties[propertyIndex];
-                        PropertyData propertyDataFromReflectionCache = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
-                        SymbolInfoDataCacheKey cacheKey = propertyDataFromReflectionCache.CacheKey;
-                        if (this.memberTable.TryAdd(cacheKey))
-                        {
-                            bool isValidProperty = IsValidMember(propertyDataFromReflectionCache, bindingFlags);
-                            if (isValidProperty)
-                            {
-                                yield return propertyDataFromReflectionCache;
-                            }
-                        }
-                    }
-                }
-                finally
-                {
-                    // Caller may has broke out of enumeration prematurely. So we need to finish cache building.
-                    for (; propertyIndex < allProperties.Length; propertyIndex++)
-                    {
-                        PropertyInfo propertyInfo = allProperties[propertyIndex];
-                        PropertyData propertyDataFromReflectionCache = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
-                        SymbolInfoDataCacheKey cacheKey = propertyDataFromReflectionCache.CacheKey;
-                        _ = this.memberTable.TryAdd(cacheKey);
-                    }
-
-                    this._isAllPropertiesCached = true;
+                    yield return propertyData;
                 }
             }
-        }
-
-        private bool IsValidMember(MemberData cachedPropertyData, BindingFlags bindingFlags)
-        {
-            if (!bindingFlags.HasFlag(BindingFlags.Instance) && !bindingFlags.HasFlag(BindingFlags.Static))
-            {
-                return false;
-            }
-            else if (bindingFlags.HasFlag(BindingFlags.Static) ^ cachedPropertyData.IsStatic)
-            {
-                return false;
-            }
-            else if (bindingFlags.HasFlag(BindingFlags.Instance) && cachedPropertyData.IsStatic)
-            {
-                return false;
-            }
-            else if (bindingFlags.HasFlag(BindingFlags.Public) ^ cachedPropertyData.IsPublic)
-            {
-                return false;
-            }
-            else if (bindingFlags.HasFlag(BindingFlags.NonPublic) && cachedPropertyData.IsPublic)
-            {
-                return false;
-            }
-            else if (bindingFlags.HasFlag(BindingFlags.DeclaredOnly) && !cachedPropertyData.DeclaringTypeHandle.Equals(this.Handle))
-            {
-                return false;
-            }
-            else if (bindingFlags.HasFlag(BindingFlags.FlattenHierarchy) && cachedPropertyData.IsPrivate && cachedPropertyData.IsStatic)
-            {
-                return false;
-            }
-
-            return true;
         }
 
         public MethodData GetMethod(string methodName, ReadOnlySpan<TypeData> genericTypeParameters, ReadOnlySpan<MethodParameterInfo> parameterList)
@@ -251,7 +178,6 @@ namespace BionicCode.Utilities.Net
                 genericTypeParameterList,
                 SymbolKind.MemberMethod);
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(ref cacheKey);
-            _ = this.memberTable.TryAdd(cacheKey);
 
             return methodData;
         }
@@ -270,33 +196,23 @@ namespace BionicCode.Utilities.Net
         /// base types, as specified by the binding flags.</returns>
         public IEnumerable<MethodData> EnumerateMethods(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
         {
-            int cachedMethodCount = 0;
-
-            // Return already cached cachedMethods first
-            IEnumerable<MethodData> cachedMethods = this.memberTable.Values.OfType<MethodData>();
-            foreach (MethodData cachedMethodData in cachedMethods)
+            // Return already cached methods if available
+            if (IsCacheBuildForMemberKind(SymbolKind.MemberMethod))
             {
-                cachedMethodCount++;
-                yield return cachedMethodData;
+                foreach (MethodData methodData in EnumerateMemberKindCache<MethodData>(bindingFlags))
+                {
+                    yield return methodData;
+                }
             }
-
-            // If all cachedMethods are already generated, exit. Else generate the remaining cachedMethods.
-            if (this.isAllMethodsGenerated)
+            else // Build the cache
             {
-                yield break;
+                // Get all methods and cache them. Then filter and return them based on the caller's binding flags.
+                MethodInfo[] allMethods = UnwrapType().GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+                foreach (MethodData propertyData in BuildAndEnumerateMemberKindCache<MethodData>(allMethods, bindingFlags))
+                {
+                    yield return propertyData;
+                }
             }
-
-            IEnumerable<MethodInfo> remainingMethods = UnwrapType().GetMethods(bindingFlags)
-                .Skip(cachedMethodCount);
-            foreach (MethodInfo methodInfo in remainingMethods)
-            {
-                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForMethod(methodInfo);
-                MethodData methodData = (MethodData)this.memberTable.GetOrAdd(cacheKey, _ => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo));
-
-                yield return methodData;
-            }
-
-            this.isAllMethodsGenerated = true;
         }
 
         public FieldData GetField(string fieldName)
@@ -307,40 +223,30 @@ namespace BionicCode.Utilities.Net
                 this.Handle,
                 fieldName,
                 SymbolKind.MemberField);
-            FieldData fieldData = (FieldData)this.memberTable.GetOrAdd(cacheKey, key => SymbolReflectionInfoCache.GetOrCreateFieldDataCacheEntry(ref key));
+            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateFieldDataCacheEntry(ref cacheKey);
 
             return fieldData;
         }
 
         public IEnumerable<FieldData> EnumerateFields(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
         {
-            int cachedFieldCount = 0;
-
-            // Return already cached cachedFields first
-            IEnumerable<FieldData> cachedFields = this.memberTable.Values.OfType<FieldData>();
-            foreach (FieldData cachedFieldData in cachedFields)
+            // Return already cached fields if available
+            if (IsCacheBuildForMemberKind(SymbolKind.MemberField))
             {
-                cachedFieldCount++;
-                yield return cachedFieldData;
+                foreach (FieldData fieldData in EnumerateMemberKindCache<FieldData>(bindingFlags))
+                {
+                    yield return fieldData;
+                }
             }
-
-            // If all cachedFields are already generated, exit. Else generate the remaining cachedFields.
-            if (this.isAllFieldsGenerated)
+            else // Build the cache
             {
-                yield break;
+                // Get all fields and cache them. Then filter and return them based on the caller's binding flags.
+                FieldInfo[] allFields = UnwrapType().GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+                foreach (FieldData fieldData in BuildAndEnumerateMemberKindCache<FieldData>(allFields, bindingFlags))
+                {
+                    yield return fieldData;
+                }
             }
-
-            IEnumerable<FieldInfo> remainingFields = UnwrapType().GetFields(bindingFlags)
-                .Skip(cachedFieldCount);
-            foreach (FieldInfo fieldInfo in remainingFields)
-            {
-                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForField(fieldInfo);
-                FieldData fieldData = (FieldData)this.memberTable.GetOrAdd(cacheKey, _ => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo));
-
-                yield return fieldData;
-            }
-
-            this.isAllFieldsGenerated = true;
         }
 
         public EventData GetEvent(string eventName)
@@ -351,40 +257,30 @@ namespace BionicCode.Utilities.Net
                 this.Handle,
                 eventName,
                 SymbolKind.MemberEvent);
-            EventData eventData = (EventData)this.memberTable.GetOrAdd(cacheKey, key => SymbolReflectionInfoCache.GetOrCreateEventDataCacheEntry(ref key));
+            EventData eventData = SymbolReflectionInfoCache.GetOrCreateEventDataCacheEntry(ref cacheKey);
 
             return eventData;
         }
 
         public IEnumerable<EventData> EnumerateEvents(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
         {
-            int cachedEventCount = 0;
-
-            // Return already cached cachedFields first
-            IEnumerable<EventData> cachedEvents = this.memberTable.Values.OfType<EventData>();
-            foreach (EventData cachedEventData in cachedEvents)
+            // Return already cached events if available
+            if (IsCacheBuildForMemberKind(SymbolKind.MemberEvent))
             {
-                cachedEventCount++;
-                yield return cachedEventData;
+                foreach (EventData eventData in EnumerateMemberKindCache<EventData>(bindingFlags))
+                {
+                    yield return eventData;
+                }
             }
-
-            // If all events are already generated, exit. Else generate the remaining events.
-            if (this.isAllEventsGenerated)
+            else // Build the cache
             {
-                yield break;
+                // Get all events and cache them. Then filter and return them based on the caller's binding flags.
+                EventInfo[] allEvents = UnwrapType().GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+                foreach (EventData eventData in BuildAndEnumerateMemberKindCache<EventData>(allEvents, bindingFlags))
+                {
+                    yield return eventData;
+                }
             }
-
-            IEnumerable<EventInfo> remainingEvents = UnwrapType().GetEvents(bindingFlags)
-                .Skip(cachedEventCount);
-            foreach (EventInfo eventInfo in remainingEvents)
-            {
-                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForEvent(eventInfo);
-                EventData eventData = (EventData)this.memberTable.GetOrAdd(cacheKey, _ => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo));
-
-                yield return eventData;
-            }
-
-            this.isAllEventsGenerated = true;
         }
 
         public ConstructorData GetConstructor(string constructorName, params MethodParameterInfo[] parameterList)
@@ -406,40 +302,165 @@ namespace BionicCode.Utilities.Net
                 symbolParameters,
                 TypeList.Empty,
                 SymbolKind.MemberConstructor);
-            ConstructorData constructorData = (ConstructorData)this.memberTable.GetOrAdd(cacheKey, key => SymbolReflectionInfoCache.GetOrCreateConstructorDataCacheEntry(ref key));
+            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateConstructorDataCacheEntry(ref cacheKey);
 
             return constructorData;
         }
 
         public IEnumerable<ConstructorData> EnumerateConstructors(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
         {
-            int cachedConstructorCount = 0;
-
-            // Return already cached cachedConstructors first
-            IEnumerable<ConstructorData> cachedConstructors = this.memberTable.Values.OfType<ConstructorData>();
-            foreach (ConstructorData cachedConstructorData in cachedConstructors)
+            // Return already cached constructors if available
+            if (IsCacheBuildForMemberKind(SymbolKind.MemberConstructor))
             {
-                cachedConstructorCount++;
-                yield return cachedConstructorData;
+                foreach (ConstructorData constructorData in EnumerateMemberKindCache<ConstructorData>(bindingFlags))
+                {
+                    yield return constructorData;
+                }
+            }
+            else // Build the cache
+            {
+                // Get all constructors and cache them. Then filter and return them based on the caller's binding flags.
+                ConstructorInfo[] allConstructors = UnwrapType().GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+                foreach (ConstructorData constructorData in BuildAndEnumerateMemberKindCache<ConstructorData>(allConstructors, bindingFlags))
+                {
+                    yield return constructorData;
+                }
+            }
+        }
+
+        private IEnumerable<TMemberData> EnumerateMemberKindCache<TMemberData>(BindingFlags bindingFlags) where TMemberData : MemberData
+        {
+            SymbolKind memberKind = typeof(TMemberData) switch
+            {
+                Type memberType when memberType == typeof(PropertyData) => SymbolKind.MemberProperty,
+                Type memberType when memberType == typeof(MethodData) => SymbolKind.MemberMethod,
+                Type memberType when memberType == typeof(FieldData) => SymbolKind.MemberField,
+                Type memberType when memberType == typeof(EventData) => SymbolKind.MemberEvent,
+                Type memberType when memberType == typeof(ConstructorData) => SymbolKind.MemberConstructor,
+                _ => throw new NotSupportedException($"The member type '{typeof(TMemberData).FullName}' is not supported."),
+            };
+
+            IEnumerable<SymbolInfoDataCacheKey> cachedMemberReflectionCacheKeys = this._memberTable
+                .Where(key => key.SymbolKind == memberKind);
+            foreach (SymbolInfoDataCacheKey cacheKey in cachedMemberReflectionCacheKeys)
+            {
+                SymbolInfoDataCacheKey keyCopy = cacheKey;
+                _ = SymbolReflectionInfoCache.TryGetSymbolInfoDataCacheEntry(keyCopy, out TMemberData cacheMemberData);
+                if (IsValidMember(cacheMemberData!, bindingFlags))
+                {
+                    yield return cacheMemberData!;
+                }
+            }
+        }
+
+        private IEnumerable<TMemberData> BuildAndEnumerateMemberKindCache<TMemberData>(MemberInfo[] members, BindingFlags bindingFlags) where TMemberData : MemberData
+        {
+            Func<MemberInfo, MemberData> readReflectionCache;
+            Action<MemberData> addMemberToTypeDataMemberListProperty;
+            Action buildMemberListProperty;
+            SymbolKind memberKind;
+            switch (typeof(TMemberData))
+            {
+                case Type memberType when memberType == typeof(PropertyData):
+                    readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry((PropertyInfo)memberInfo);
+                    IPropertyListBuilder propertyListBuilder = PropertyListBuilder.New(this.Handle);
+                    addMemberToTypeDataMemberListProperty = propertyData => propertyListBuilder.Add((PropertyData)propertyData);
+                    buildMemberListProperty = () => this.propertiesData = propertyListBuilder.Build();
+                    memberKind = SymbolKind.MemberProperty;
+                    break;
+                case Type memberType when memberType == typeof(MethodData):
+                    readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry((MethodInfo)memberInfo);
+                    memberKind = SymbolKind.MemberMethod;
+                    break;
+                case Type memberType when memberType == typeof(FieldData):
+                    readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry((FieldInfo)memberInfo);
+                    memberKind = SymbolKind.MemberField;
+                    break;
+                case Type memberType when memberType == typeof(EventData):
+                    readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry((EventInfo)memberInfo);
+                    memberKind = SymbolKind.MemberEvent;
+                    break;
+                case Type memberType when memberType == typeof(ConstructorData):
+                    readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry((ConstructorInfo)memberInfo);
+                    memberKind = SymbolKind.MemberConstructor;
+                    break;
+                default:
+                    throw new NotSupportedException($"The member type '{typeof(TMemberData).FullName}' is not supported.");
             }
 
-            // If all cachedConstructors are already generated, exit. Else generate the remaining cachedConstructors.
-            if (this.isAllConstructorsGenerated)
+            int memberIndex = 0;
+            try
             {
-                yield break;
+                for (; memberIndex < members.Length; memberIndex++)
+                {
+                    MemberInfo memberInfo = members[memberIndex];
+                    TMemberData memberDataFromReflectionCache = (TMemberData)readReflectionCache.Invoke(memberInfo);
+                    addMemberToTypeDataMemberListProperty.Invoke(memberDataFromReflectionCache);
+                    SymbolInfoDataCacheKey cacheKey = memberDataFromReflectionCache.CacheKey;
+                    if (this._memberTable.TryAdd(cacheKey))
+                    {
+                        bool isValidMember = IsValidMember(memberDataFromReflectionCache, bindingFlags);
+                        if (isValidMember)
+                        {
+                            yield return memberDataFromReflectionCache;
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                // Caller may has broke out of enumeration prematurely. So we need to finish cache building.
+                for (; memberIndex < members.Length; memberIndex++)
+                {
+                    MemberInfo memberInfo = members[memberIndex];
+                    TMemberData memberDataFromReflectionCache = (TMemberData)readReflectionCache.Invoke(memberInfo);
+                    SymbolInfoDataCacheKey cacheKey = memberDataFromReflectionCache.CacheKey;
+                    _ = this._memberTable.TryAdd(cacheKey);
+                }
+
+                _ = this._memberTableStateFlagTable.TryAdd(memberKind, true);
+                buildMemberListProperty.Invoke();
+            }
+        }
+
+        private bool IsCacheBuildForMemberKind(SymbolKind memberKind)
+        {
+            return this._memberTableStateFlagTable.TryGetValue(memberKind, out bool isCacheReady)
+                && isCacheReady;
+        }
+
+        private bool IsValidMember(MemberData cachedPropertyData, BindingFlags bindingFlags)
+        {
+            if (!bindingFlags.HasFlag(BindingFlags.Instance) && !bindingFlags.HasFlag(BindingFlags.Static))
+            {
+                return false;
+            }
+            else if (bindingFlags.HasFlag(BindingFlags.Static) && !cachedPropertyData.IsStatic)
+            {
+                return false;
+            }
+            else if (bindingFlags.HasFlag(BindingFlags.Instance) && cachedPropertyData.IsStatic)
+            {
+                return false;
+            }
+            else if (bindingFlags.HasFlag(BindingFlags.Public) && !cachedPropertyData.IsPublic)
+            {
+                return false;
+            }
+            else if (bindingFlags.HasFlag(BindingFlags.NonPublic) && cachedPropertyData.IsPublic)
+            {
+                return false;
+            }
+            else if (bindingFlags.HasFlag(BindingFlags.DeclaredOnly) && !cachedPropertyData.DeclaringTypeHandle.Equals(this.Handle))
+            {
+                return false;
+            }
+            else if (bindingFlags.HasFlag(BindingFlags.FlattenHierarchy) && cachedPropertyData.IsPrivate && cachedPropertyData.IsStatic)
+            {
+                return false;
             }
 
-            IEnumerable<ConstructorInfo> remainingConstructors = UnwrapType().GetConstructors(bindingFlags)
-                .Skip(cachedConstructorCount);
-            foreach (ConstructorInfo constructorInfo in remainingConstructors)
-            {
-                SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForConstructor(constructorInfo);
-                ConstructorData constructorData = (ConstructorData)this.memberTable.GetOrAdd(cacheKey, _ => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo));
-
-                yield return constructorData;
-            }
-
-            this.isAllConstructorsGenerated = true;
+            return true;
         }
 
         public RuntimeTypeHandle Handle { get; }
@@ -681,19 +702,30 @@ namespace BionicCode.Utilities.Net
           => this.interfacesData ??= TypeListBuilder.CreateImplementedInterfacesList(this);
 
         public PropertyList PropertiesData
-          => this.propertiesData ??= this._isAllPropertiesCached ? this.memberTable.Values.OfType<PropertyData>().ToPropertyList() : EnumerateProperties().ToPropertyList();
+        {
+            get
+            {
+                if (this.propertiesData is null)
+                {
+                    _ = BuildAndEnumerateMemberKindCache<PropertyData>(UnwrapType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags), HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+                        .ToPropertyList();
+                }
+
+                return this.propertiesData!;
+            }
+        }
 
         public MethodList MethodsData
-          => this.methodsData ??= this.isAllMethodsGenerated ? this.memberTable.Values.OfType<MethodData>().ToMethodList() : EnumerateMethods().ToMethodList();
+          => this.methodsData ??= this.isAllMethodsGenerated ? this._memberTable.Values.OfType<MethodData>().ToMethodList() : EnumerateMethods().ToMethodList();
 
         public FieldList FieldsData
-          => this.fieldsData ??= this.isAllFieldsGenerated ? this.memberTable.Values.OfType<FieldData>().ToFieldList() : EnumerateFields().ToFieldList();
+          => this.fieldsData ??= this.isAllFieldsGenerated ? this._memberTable.Values.OfType<FieldData>().ToFieldList() : EnumerateFields().ToFieldList();
 
         public EventList EventsData
-          => this.eventsData ??= this.isAllEventsGenerated ? this.memberTable.Values.OfType<EventData>().ToEventList() : EnumerateEvents().ToEventList();
+          => this.eventsData ??= this.isAllEventsGenerated ? this._memberTable.Values.OfType<EventData>().ToEventList() : EnumerateEvents().ToEventList();
 
         public ConstructorList ConstructorsData
-          => this.constructorsData ??= this.isAllConstructorsGenerated ? this.memberTable.Values.OfType<ConstructorData>().ToConstructorList() : EnumerateConstructors().ToConstructorList();
+          => this.constructorsData ??= this.isAllConstructorsGenerated ? this._memberTable.Values.OfType<ConstructorData>().ToConstructorList() : EnumerateConstructors().ToConstructorList();
 
         private static bool IsTypeStatic(TypeData typeData)
           => typeData.IsAbstract && typeData.IsSealed;
