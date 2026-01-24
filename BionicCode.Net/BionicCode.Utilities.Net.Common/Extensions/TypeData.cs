@@ -405,7 +405,7 @@ namespace BionicCode.Utilities.Net
             {
                 return false;
             }
-            else if (bindingFlags.HasFlag(BindingFlags.Static) && !cachedPropertyData.IsStatic)
+            else if (bindingFlags.HasFlag(BindingFlags.Static) ^ cachedPropertyData.IsStatic)
             {
                 return false;
             }
@@ -413,7 +413,7 @@ namespace BionicCode.Utilities.Net
             {
                 return false;
             }
-            else if (bindingFlags.HasFlag(BindingFlags.Public) && !cachedPropertyData.IsPublic)
+            else if (bindingFlags.HasFlag(BindingFlags.Public) ^ cachedPropertyData.IsPublic)
             {
                 return false;
             }
