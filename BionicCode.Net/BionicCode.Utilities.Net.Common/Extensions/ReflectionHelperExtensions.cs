@@ -44,25 +44,6 @@
         internal const BindingFlags AllMembersFullHierarchyFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
 
         /// <summary>
-        /// The property genericTypeParameterIdentifier of an indexer property. This genericTypeParameterIdentifier is compiler generated and equals the typeName of the <see langword="static"/>field <see cref="System.Windows.Data.Binding.IndexerName" />.
-        /// </summary>
-        /// <typeName>The generated property genericTypeParameterIdentifier of an indexer is <c>Item</c>.</typeName>
-        /// <remarks>This field exists to enable writing of cross-platform compatible reflection code without the requirement to import the PresentationFramework.dll.</remarks>
-        /// <value>"Item"</value>
-        public static readonly string IndexerName = "Item";
-
-        /// <summary>
-        /// Represents the name of the method used to invoke a delegate dynamically.
-        /// </summary>
-        /// <remarks>This constant can be used when generating or reflecting over code that requires the
-        /// standard delegate invocation method name. The value is case-sensitive and should match the method name
-        /// expected by the runtime or code generation tools.</remarks>
-        /// <value>"Invoke</value>
-        public static readonly string DelegateInvocatorMethodName = "Invoke";
-
-
-
-        /// <summary>
         /// Extension method to convert generic and non-generic symbols to a readable signature.
         /// <br/>The Signature will be generated without namespace and the declaring targetType (in case of a member), but with attributes and the resolved runtime generic targetType argument names.
         /// </summary>
@@ -2659,26 +2640,28 @@
         /// specified event by comparing the parameter types of the delegate's method and the event's handler targetType.
         /// MemberParameter types must match in number and be assignable according to .NET targetType compatibility rules.</remarks>
         /// <param name="clientHandler">The delegate to test for compatibility with the event's handler signature.</param>
-        /// <param name="eventInfo">The event whose handler signature is used for compatibility comparison. Cannot be null.</param>
+        /// <param name="eventData">The event whose handler signature is used for compatibility comparison. Cannot be null.</param>
         /// <returns>true if the delegate's method parameters are assignable to the event handler's parameters; otherwise, false.</returns>
-        public static bool IsAssignable(this Delegate clientHandler, EventInfo eventInfo)
+        internal static bool IsAssignable(this Delegate clientHandler, EventData eventData)
         {
-            MethodInfo eventDelegateInvokeMethod = eventInfo.EventHandlerType.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName);
-            ParameterInfo[] eventDelegateParameters = eventDelegateInvokeMethod.GetParameters();
+            ArgumentNullException.ThrowIfNull(clientHandler, nameof(clientHandler));
+            ArgumentNullException.ThrowIfNull(eventData, nameof(eventData));
 
+            MethodData eventDelegateInvokeMethod = eventData.EventHandlerTypeData.DelegateInvokeMethodData;
+            ParameterList eventDelegateParameters = eventDelegateInvokeMethod.Parameters;
             MethodInfo eventHandlerMethod = clientHandler.Method;
             ParameterInfo[] clientHandlerParameters = eventHandlerMethod.GetParameters();
 
             /* Validate the event EventHandler */
 
-            if (eventDelegateParameters.Length != clientHandlerParameters.Length)
+            if (eventDelegateParameters.Count != clientHandlerParameters.Length)
             {
                 return false;
             }
 
-            for (int parameterIndex = 0; parameterIndex < eventDelegateParameters.Length; parameterIndex++)
+            for (int parameterIndex = 0; parameterIndex < eventDelegateParameters.Count; parameterIndex++)
             {
-                Type eventDelegateParameterType = eventDelegateParameters[parameterIndex].ParameterType;
+                Type eventDelegateParameterType = eventDelegateParameters[parameterIndex].ParameterTypeData.UnwrapType();
                 Type eventHandlerParameterType = clientHandlerParameters[parameterIndex].ParameterType;
                 if (!eventHandlerParameterType.IsAssignableFrom(eventDelegateParameterType))
                 {

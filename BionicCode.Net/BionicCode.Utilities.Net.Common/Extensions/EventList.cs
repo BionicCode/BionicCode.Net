@@ -9,6 +9,7 @@
     {
         public static readonly EventList Empty = new EventList();
         private readonly int _hashCode; // precomputed
+        private readonly SymbolInfoDataCacheKey _declaringTypeCacheKey;
         private readonly Dictionary<string, EventData> _eventNameIndex;
 
         public EventList(EventData[] items) : this((IEnumerable<EventData>)items)
@@ -17,16 +18,36 @@
 
         public EventList(IEnumerable<EventData> items)
         {
-            this.Events = items.ToImmutableList();
-            ArgumentNullExceptionAdvanced.ThrowIfNull(this.Events, nameof(items));
+            this.Events = items?.ToImmutableList() ?? ImmutableList<EventData>.Empty;
+            this._eventNameIndex = this.Events.ToDictionary(eventData => eventData.Name, StringComparer.Ordinal);
 
             if (this.HasItems)
             {
-                this._declaringTypeHandle = this.Events.FirstOrDefault()!.DeclaringTypeHandle;
+                this._declaringTypeCacheKey = this.Events.First().DeclaringTypeData.CacheKey;
 
                 ArgumentExceptionAdvanced.ThrowIfAny(
                     this.Events,
-                    eventData => !eventData.DeclaringTypeHandle.Equals(this._declaringTypeHandle),
+                    eventData => eventData.DeclaringTypeData.CacheKey != this._declaringTypeCacheKey,
+                    nameof(items),
+                    $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(EventData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All events must belong to the same declaring type.");
+
+            }
+
+            this._hashCode = ComputeHashCode();
+        }
+
+        internal EventList(IEnumerable<EventData> items, bool isIntegrityValidationEnabled)
+        {
+            this.Events = items?.ToImmutableList() ?? ImmutableList<EventData>.Empty;
+            this._eventNameIndex = this.Events.ToDictionary(eventData => eventData.Name, StringComparer.Ordinal);
+
+            if (isIntegrityValidationEnabled && this.HasItems)
+            {
+                this._declaringTypeCacheKey = this.Events.First().DeclaringTypeData.CacheKey;
+
+                ArgumentExceptionAdvanced.ThrowIfAny(
+                    this.Events,
+                    eventData => eventData.DeclaringTypeData.CacheKey != this._declaringTypeCacheKey,
                     nameof(items),
                     $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(EventData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All events must belong to the same declaring type.");
 
@@ -36,7 +57,10 @@
         }
 
         private EventList()
-            => this.Events = ImmutableList<EventData>.Empty;
+        {
+            this.Events = ImmutableList<EventData>.Empty;
+            this._eventNameIndex = new Dictionary<string, EventData>(0, StringComparer.Ordinal);
+        }
 
         public bool TryGetEventByName(string eventName, out EventData? eventData)
         {
@@ -48,12 +72,21 @@
         public bool IsEmpty => this.Events.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<EventData> Events { get; }
+        public SymbolInfoDataCacheKey DeclaringTypeCacheKey
+            => this.HasItems
+                ? this._declaringTypeCacheKey
+                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(this.DeclaringTypeCacheKey)));
 
-        private readonly RuntimeTypeHandle _declaringTypeHandle;
-        public RuntimeTypeHandle DeclaringTypeHandle
-            => this.IsEmpty
-                ? throw new InvalidOperationException($"The '{nameof(EventList)}' is empty. Therefore the '{nameof(this.DeclaringTypeHandle)}' property is not accessible.")
-                : this._declaringTypeHandle;
+        public TypeData DeclaringTypeData
+        {
+            get
+            {
+                SymbolInfoDataCacheKey cacheKey = this.DeclaringTypeCacheKey;
+                return this.HasItems
+                    ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
+                    : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(this.DeclaringTypeData)));
+            }
+        }
 
         public EventData this[int index]
         {
@@ -62,7 +95,9 @@
                 ArgumentOutOfRangeException.ThrowIfLessThan(index, 0, nameof(index));
                 ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, this.Events.Count, nameof(index));
 
-                return this.Events[index];
+                return this.HasItems
+                    ? this.Events[index]
+                    : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(EventList), ReflectionConstants.IndexerGetMethodName));
             }
         }
 

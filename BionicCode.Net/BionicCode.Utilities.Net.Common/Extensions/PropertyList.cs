@@ -22,7 +22,7 @@
         public PropertyList(IEnumerable<PropertyData> items)
         {
             this.Properties = items?.ToImmutableList() ?? ImmutableList<PropertyData>.Empty;
-            this._propertyNameIndex = this.Properties.ToDictionary(property => property.Name);
+            this._propertyNameIndex = this.Properties.ToDictionary(property => property.Name, StringComparer.Ordinal);
 
             if (this.HasItems)
             {
@@ -61,7 +61,7 @@
         private PropertyList()
         {
             this.Properties = ImmutableList<PropertyData>.Empty;
-            this._propertyNameIndex = new Dictionary<string, PropertyData>();
+            this._propertyNameIndex = new Dictionary<string, PropertyData>(0);
         }
 
         public bool TryGetPropertyByName(string propertyName, out PropertyData? propertyData)
@@ -97,7 +97,9 @@
                 ArgumentOutOfRangeException.ThrowIfLessThan(index, 0, nameof(index));
                 ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, this.Properties.Count, nameof(index));
 
-                return this.Properties[index];
+                return this.HasItems
+                    ? this.Properties[index]
+                    : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(PropertyList), ReflectionConstants.IndexerGetMethodName));
             }
         }
 

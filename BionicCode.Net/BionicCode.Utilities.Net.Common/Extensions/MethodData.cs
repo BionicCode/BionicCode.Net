@@ -67,7 +67,8 @@
         private BasicMethodFingerprint? _basicMethodFingerprint;
         private MemberData? _accessedMember;
 
-        public MethodData(MethodInfo methodInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(methodInfo, SymbolKind.MemberMethod, symbolInfoDataCacheKey)
+        public MethodData(MethodInfo methodInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
+            : base(methodInfo, SymbolKind.MemberMethod, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(methodInfo, nameof(methodInfo));
 
@@ -986,17 +987,11 @@
         public bool IsDelegateMethod
             => this.IsDelegateInvokeMethod || this.IsDelegateBeginInvokeMethod || this.IsDelegateEndInvokeMethod;
 
-        public bool IsLikeEventAddMethod
-            => this._isEventAddMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: true, isValidationEnabled: false);
-
         public bool IsEventAddMethod
-            => this._isEventAddMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: true, isValidationEnabled: true);
-
-        public bool IsLikeEventRemoveMethod
-            => this._isEventRemoveMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: false, isValidationEnabled: false);
+            => this._isEventAddMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: true);
 
         public bool IsEventRemoveMethod
-            => this._isEventRemoveMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: false, isValidationEnabled: true);
+            => this._isEventRemoveMethod ??= MethodData.IsEventAccessor(this, isAddAccessor: false);
 
         public bool IsEventAccessorMethod
             => this._isEventAccessorMethod ??= this.IsEventAddMethod || this.IsEventRemoveMethod;
@@ -1308,7 +1303,7 @@
             return false;
         }
 
-        private static bool IsEventAccessor(MethodData methodData, bool isAddAccessor, bool isValidationEnabled = false)
+        private static bool IsEventAccessor(MethodData methodData, bool isAddAccessor)
         {
             /* Attempt to branch early out */
 
@@ -1373,12 +1368,12 @@
         }
 
         private static bool IsOperator(MethodData methodData)
-            => methodData.IsSpecialName && methodData.Name.StartsWith("op_", StringComparison.Ordinal);
+            => methodData.IsSpecialName && methodData.Name.StartsWith(ReflectionConstants.OperatorMethodNamePrefix, StringComparison.Ordinal);
 
         private static bool IsDelegateInvoke(MethodData methodData)
             => methodData.IsSpecialName
                 && methodData.DeclaringTypeData.IsDelegate
-                && methodData.Name.Equals("Invoke", StringComparison.Ordinal);
+                && methodData.Name.Equals(ReflectionConstants.DelegateInvocatorMethodName, StringComparison.Ordinal);
 
         private static bool IsDelegateBeginInvoke(MethodData methodData)
             => methodData.IsSpecialName

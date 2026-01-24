@@ -29,7 +29,7 @@
         public MethodParameterInfoList(IEnumerable<MethodParameterInfo> items)
         {
             this.Parameters = items.OrderBy(parameter => parameter.Position).ToImmutableList();
-            this._parameterNameIndex = this.Parameters.ToDictionary(parameter => parameter.MethodName);
+            this._parameterNameIndex = this.Parameters.ToDictionary(parameter => parameter.MethodName, StringComparer.Ordinal);
             ArgumentNullExceptionAdvanced.ThrowIfNull(this.Parameters, nameof(items));
 
             if (this.HasItems)
@@ -53,7 +53,7 @@
         internal MethodParameterInfoList(IEnumerable<MethodParameterInfo> items, bool isIntegrityValidationEnabled)
         {
             this.Parameters = items.OrderBy(parameter => parameter.Position).ToImmutableList();
-            this._parameterNameIndex = this.Parameters.ToDictionary(parameter => parameter.MethodName);
+            this._parameterNameIndex = this.Parameters.ToDictionary(parameter => parameter.MethodName, StringComparer.Ordinal);
             ArgumentNullExceptionAdvanced.ThrowIfNull(this.Parameters, nameof(items));
 
             if (this.HasItems)
@@ -77,7 +77,7 @@
         private MethodParameterInfoList()
         {
             this.Parameters = ImmutableList<MethodParameterInfo>.Empty;
-            this._parameterNameIndex = this.Parameters.ToDictionary(parameter => parameter.MethodName);
+            this._parameterNameIndex = new Dictionary<string, MethodParameterInfo>(0, StringComparer.Ordinal);
         }
 
         public bool TryGetParameterByName(string parameterName, out MethodParameterInfo parameterData)
@@ -116,7 +116,9 @@
                 ArgumentOutOfRangeException.ThrowIfLessThan(index, 0, nameof(index));
                 ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, this.Parameters.Count, nameof(index));
 
-                return this.Parameters[index];
+                return this.HasItems
+                    ? this.Parameters[index]
+                    : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodParameterInfoList), ReflectionConstants.IndexerGetMethodName));
             }
         }
 

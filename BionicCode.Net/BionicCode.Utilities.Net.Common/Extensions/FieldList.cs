@@ -10,6 +10,7 @@
         public static readonly FieldList Empty = new FieldList();
         private readonly int _hashCode; // precomputed
         private readonly Dictionary<string, FieldData> _fieldNameIndex;
+        private readonly SymbolInfoDataCacheKey _declaringTypeCacheKey;
 
         public FieldList(FieldData[] items) : this((IEnumerable<FieldData>)items)
         {
@@ -17,15 +18,34 @@
 
         public FieldList(IEnumerable<FieldData> items)
         {
-            this.Fields = items.ToImmutableList();
-            ArgumentNullExceptionAdvanced.ThrowIfNull(this.Fields, nameof(items));
+            this.Fields = items?.ToImmutableList() ?? ImmutableList<FieldData>.Empty;
+            this._fieldNameIndex = this.Fields.ToDictionary(fieldData => fieldData.Name, StringComparer.Ordinal);
 
             if (this.HasItems)
             {
-                this._declaringTypeHandle = this.Fields.FirstOrDefault()!.DeclaringTypeHandle;
+                this._declaringTypeCacheKey = this.Fields.First()!.DeclaringTypeData.CacheKey;
                 ArgumentExceptionAdvanced.ThrowIfAny(
                     this.Fields,
-                    fieldData => !fieldData.DeclaringTypeHandle.Equals(this._declaringTypeHandle),
+                    fieldData => fieldData.DeclaringTypeData.CacheKey != this._declaringTypeCacheKey,
+                    nameof(items),
+                    $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(FieldData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All fields must belong to the same declaring type.");
+
+            }
+
+            this._hashCode = ComputeHashCode();
+        }
+
+        internal FieldList(IEnumerable<FieldData> items, bool isIntegrityValidationEnabled)
+        {
+            this.Fields = items?.ToImmutableList() ?? ImmutableList<FieldData>.Empty;
+            this._fieldNameIndex = this.Fields.ToDictionary(fieldData => fieldData.Name, StringComparer.Ordinal);
+            this._declaringTypeCacheKey = this.Fields.FirstOrDefault()?.DeclaringTypeData.CacheKey ?? default;
+
+            if (isIntegrityValidationEnabled && this.HasItems)
+            {
+                ArgumentExceptionAdvanced.ThrowIfAny(
+                    this.Fields,
+                    fieldData => fieldData.DeclaringTypeData.CacheKey != this._declaringTypeCacheKey,
                     nameof(items),
                     $"At least one item in the argument sequence '{nameof(items)}' has a different value for the '{nameof(FieldData)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All fields must belong to the same declaring type.");
 
@@ -35,7 +55,10 @@
         }
 
         private FieldList()
-            => this.Fields = ImmutableList<FieldData>.Empty;
+        {
+            this.Fields = ImmutableList<FieldData>.Empty;
+            this._fieldNameIndex = new Dictionary<string, FieldData>(0, StringComparer.Ordinal);
+        }
 
         public bool TryGetFieldByName(string fieldName, out FieldData? fieldData)
         {
@@ -47,12 +70,21 @@
         public bool IsEmpty => this.Fields.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<FieldData> Fields { get; }
+        public SymbolInfoDataCacheKey DeclaringTypeCacheKey
+            => this.HasItems
+                ? this._declaringTypeCacheKey
+                : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(this.DeclaringTypeCacheKey)));
 
-        private readonly RuntimeTypeHandle _declaringTypeHandle;
-        public RuntimeTypeHandle DeclaringTypeHandle
-            => this.IsEmpty
-                ? throw new InvalidOperationException($"The '{nameof(FieldList)}' is empty. Therefore the '{nameof(this.DeclaringTypeHandle)}' property is not accessible.")
-                : this._declaringTypeHandle;
+        public TypeData DeclaringTypeData
+        {
+            get
+            {
+                SymbolInfoDataCacheKey cacheKey = this.DeclaringTypeCacheKey;
+                return this.HasItems
+                    ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
+                    : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(this.DeclaringTypeData)));
+            }
+        }
 
         public FieldData this[int index]
         {
@@ -61,7 +93,9 @@
                 ArgumentOutOfRangeException.ThrowIfLessThan(index, 0, nameof(index));
                 ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, this.Fields.Count, nameof(index));
 
-                return this.Fields[index];
+                return this.HasItems
+                    ? this.Fields[index]
+                    : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(FieldList), ReflectionConstants.IndexerGetMethodName));
             }
         }
 
@@ -83,7 +117,7 @@
                 return false;
             }
 
-            if (!this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle))
+            if (this.DeclaringTypeCacheKey != other.DeclaringTypeCacheKey)
             {
                 return false;
             }
@@ -111,7 +145,7 @@
             {
                 var hashCode = new HashCode();
                 hashCode.Add(this.Count);
-                hashCode.Add(this.DeclaringTypeHandle);
+                hashCode.Add(this.DeclaringTypeCacheKey);
                 for (int index = 0; index < this.Fields.Count; index++)
                 {
                     hashCode.Add(this.Fields[index]);

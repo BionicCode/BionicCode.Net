@@ -10,14 +10,40 @@
         private TypeData declaringTypeData;
         private RuntimeTypeHandle? _declaringTypeHandle;
         private string? _namespace;
+        private BindingFlags? _bindingFlagsVisibilityMask;
 
-        protected MemberData(MemberInfo memberInfo, SymbolKind symbolKind, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(memberInfo.Name, symbolKind, symbolInfoDataCacheKey)
+        protected MemberData(MemberInfo memberInfo, SymbolKind symbolKind, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
+            : base(memberInfo.Name, symbolKind, symbolInfoDataCacheKey)
             => ArgumentNullException.ThrowIfNull(memberInfo, nameof(memberInfo));
+
+        protected abstract MemberInfo GetMemberInfo();
 
         private Type GetDeclaringType()
           => GetMemberInfo().DeclaringType ?? throw new NotSupportedException($"The underlying '{nameof(MemberInfo)}' instance for the member '{GetMemberInfo().Name}' is not returning a declaring type.");
 
-        protected abstract MemberInfo GetMemberInfo();
+        private BindingFlags ComputeVisibilityBindingFlagsMask()
+        {
+            BindingFlags visibilityMask = BindingFlags.Default;
+            if (this.IsPublic)
+            {
+                visibilityMask = BindingFlags.Public;
+            }
+            else if (this.IsPrivate)
+            {
+                visibilityMask = BindingFlags.NonPublic;
+            }
+
+            if (this.IsStatic)
+            {
+                visibilityMask |= BindingFlags.Static;
+            }
+            else
+            {
+                visibilityMask |= BindingFlags.Instance;
+            }
+
+            return visibilityMask;
+        }
         public RuntimeTypeHandle DeclaringTypeHandle
             => this._declaringTypeHandle ??= GetDeclaringType().TypeHandle;
 
@@ -35,6 +61,7 @@
         public abstract bool IsFamilyOrAssembly { get; }
         public abstract bool IsFamilyAndAssembly { get; }
         public abstract AccessModifier AccessModifier { get; }
+        public BindingFlags BindingFlagsVisibilityMask => this._bindingFlagsVisibilityMask ??= ComputeVisibilityBindingFlagsMask();
 
         public override IList<CustomAttributeData> AttributeData
           => this.attributeData ??= new List<CustomAttributeData>(GetMemberInfo().GetCustomAttributesData());

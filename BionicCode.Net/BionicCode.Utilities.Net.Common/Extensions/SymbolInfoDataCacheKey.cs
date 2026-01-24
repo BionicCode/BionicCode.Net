@@ -663,7 +663,7 @@
         /// <remarks>This method is used to create a unique cache key for symbols of which the caller does not have a direct representation (e.g. a <see cref="ParameterInfo"/> and instead only signature information is available.<para/>
         /// The parameter <paramref name="memberName"/> is optional. However, if not provided, the created key will be less efficient when used for lookups in caches. If parameter name and position matches multiple parameters, providing <paramref name="memberName"/> or even better the member's runtime handle via the <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, string, int, RuntimeMethodHandle, ParameterizedSymbolKind)"/> overload will allow to resolve ambiguities that otherwise may throw an exception.
         /// <para/>For better performance, the <paramref name="memberName"/> must be provided.
-        /// <br/>For best performance the overload <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, string, int, RuntimeMethodHandle, ParameterizedSymbolKind)"/> should be used.</remarks>
+        /// <br/>For best performance the overload <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, RuntimeMethodHandle, string, int, ParameterKind, ParameterizedSymbolKind, TypeList)"/> should be used.</remarks>
         /// <param name="parameterTypeHandle">The runtime type handle representing the type of the anonymous parameter.</param>
         /// <param name="declaringTypeHandle">The runtime type handle representing the declaring type of the member that defines the anonymous parameter.</param>
         /// <param name="parameterName">The name of the anonymous parameter. </param>
@@ -671,9 +671,9 @@
         /// <param name="parameterKind">Optional.Must be provided to avoid ambiguity which can throw exceptions during lookup when using this key.</param>
         /// <param name="memberGenericMethodParameters">The list of generic method parameters for the anonymous parameter type.<para/>
         /// Can be <see cref="MethodParameterInfoList.Empty"/> to indicate a non-generic parameter.</param>
-        /// <param name="memberName">Optional. The name of the member that declares the parameter. You should provide the member name to improve performance. For best efficiency, use the <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, string, int, RuntimeMethodHandle, ParameterizedSymbolKind)"/> overload instead.
+        /// <param name="memberName">The name of the member that declares the parameter. You should provide the member name to improve performance. For best efficiency, use the <see cref="CreateForAnonymousParameter(RuntimeTypeHandle, RuntimeMethodHandle, string, int, ParameterKind, ParameterizedSymbolKind, TypeList)"/> overload instead.
         /// <br/>If the parameter belongs to an indexer property, the <paramref name="memberName"/> can be null, empty, or consist only of white-space characters (in this case <paramref name="parameterizedSymbolKind"/> must be <see cref="ParameterizedSymbolKind.MemberIndexerProperty"/>. For indexer properties this value will be ignored.).
-        /// For indexer properties, the value must be <see cref="HelperExtensionsCommon.IndexerName"/>.</param>
+        /// For indexer properties, the value must be <see cref="ReflectionConstants.IndexerName"/>, null, empty, or consist only of white-space characters.</param>
         /// <param name="memberParameterCount"></param>
         /// <param name="parameterizedSymbolKind">Optional. Provides a hint about the kind of member that the parameter belongs to. Should be provided too improve efficiency of the key.</param>
         /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous parameter.</returns>
@@ -685,7 +685,16 @@
             ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterTypeHandle);
             ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle);
             ArgumentException.ThrowIfNullOrWhiteSpace(parameterName);
-            ArgumentException.ThrowIfNullOrWhiteSpace(memberName);
+            if (parameterizedSymbolKind == ParameterizedSymbolKind.MemberIndexerProperty)
+            {
+                // For indexer properties we allow empty or whitespace names.
+                memberName = ReflectionConstants.IndexerName;
+            }
+            else
+            {
+                ArgumentException.ThrowIfNullOrWhiteSpace(memberName);
+            }
+
             ArgumentOutOfRangeException.ThrowIfNegative(position);
             ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<ParameterKind>(parameterKind);
             ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<ParameterizedSymbolKind>(parameterizedSymbolKind);

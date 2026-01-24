@@ -22,7 +22,7 @@
         private ParameterList()
         {
             this.Parameters = ImmutableList<ParameterData>.Empty;
-            this._parameterNameIndex = this.Parameters.ToDictionary(parameter => parameter.Name);
+            this._parameterNameIndex = new Dictionary<string, ParameterData>(0, StringComparer.Ordinal);
         }
 
         public ParameterList(ParameterData[] items) : this((IEnumerable<ParameterData>)items)
@@ -33,7 +33,7 @@
         {
             this.Parameters = items?.OrderBy(parameter => parameter.Position).ToImmutableList()
                 ?? ImmutableList<ParameterData>.Empty;
-            this._parameterNameIndex = this.Parameters.ToDictionary(parameter => parameter.Name);
+            this._parameterNameIndex = this.Parameters.ToDictionary(parameter => parameter.Name, StringComparer.Ordinal);
 
             if (this.HasItems)
             {
@@ -62,7 +62,7 @@
             this.Parameters = items?.OrderBy(parameter => parameter.Position)
                 .ToImmutableList()
                 ?? ImmutableList<ParameterData>.Empty;
-            this._parameterNameIndex = this.Parameters.ToDictionary(parameter => parameter.Name);
+            this._parameterNameIndex = this.Parameters.ToDictionary(parameter => parameter.Name, StringComparer.Ordinal);
 
             ParameterizedMemberData? declaringMember = null;
             if (this.HasItems)
@@ -139,7 +139,9 @@
                 ArgumentOutOfRangeException.ThrowIfLessThan(index, 0, nameof(index));
                 ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, this.Parameters.Count, nameof(index));
 
-                return this.Parameters[index];
+                return this.HasItems
+                    ? this.Parameters[index]
+                    : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(ParameterList), ReflectionConstants.IndexerGetMethodName));
             }
         }
 

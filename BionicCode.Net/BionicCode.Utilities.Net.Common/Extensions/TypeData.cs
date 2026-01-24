@@ -17,6 +17,8 @@ namespace BionicCode.Utilities.Net
         private static readonly Type ValueTaskType = typeof(ValueTask);
         private static readonly Type ValueTaskGenericType = typeof(ValueTask<>);
         private static readonly Type DelegateType = typeof(MulticastDelegate);
+        private static readonly BindingFlags BindingFlagsPublicMask = BindingFlags.Public | BindingFlags.NonPublic;
+        private static readonly BindingFlags BindingFlagsStaticMask = BindingFlags.Static | BindingFlags.Instance;
 
         private string? displayName;
         private string? shortDisplayName;
@@ -399,33 +401,39 @@ namespace BionicCode.Utilities.Net
                 && isCacheReady;
         }
 
-        private bool IsValidMember(MemberData cachedPropertyData, BindingFlags bindingFlags)
+        private bool IsValidMember(MemberData cachedMemberData, BindingFlags bindingFlags)
         {
-            if (!bindingFlags.HasFlag(BindingFlags.Instance) && !bindingFlags.HasFlag(BindingFlags.Static))
+            // FlattenHierarchy: inherited private static members are not returned when FlattenHierarchy is specified.
+            if (bindingFlags.HasFlag(BindingFlags.FlattenHierarchy)
+                && !cachedMemberData.DeclaringTypeHandle.Equals(this.Handle)
+                && cachedMemberData.IsPrivate
+                && cachedMemberData.IsStatic)
             {
                 return false;
             }
-            else if (bindingFlags.HasFlag(BindingFlags.Static) ^ cachedPropertyData.IsStatic)
+
+            // DeclaredOnly: only members declared on this type
+            if (bindingFlags.HasFlag(BindingFlags.DeclaredOnly)
+                && !cachedMemberData.DeclaringTypeHandle.Equals(this.Handle))
             {
                 return false;
             }
-            else if (bindingFlags.HasFlag(BindingFlags.Instance) && cachedPropertyData.IsStatic)
+
+            // must specify at least one of Instance/Static and one of Public/NonPublic
+            if ((bindingFlags & BindingFlagsStaticMask) == 0
+                || (bindingFlags & BindingFlagsPublicMask) == 0)
             {
                 return false;
             }
-            else if (bindingFlags.HasFlag(BindingFlags.Public) ^ cachedPropertyData.IsPublic)
+
+            // Check static/instance: caller's requested (Instance|Static) must intersect member's instance/static bit
+            if ((bindingFlags & BindingFlagsStaticMask & cachedMemberData.BindingFlagsVisibilityMask & BindingFlagsStaticMask) == 0)
             {
                 return false;
             }
-            else if (bindingFlags.HasFlag(BindingFlags.NonPublic) && cachedPropertyData.IsPublic)
-            {
-                return false;
-            }
-            else if (bindingFlags.HasFlag(BindingFlags.DeclaredOnly) && !cachedPropertyData.DeclaringTypeHandle.Equals(this.Handle))
-            {
-                return false;
-            }
-            else if (bindingFlags.HasFlag(BindingFlags.FlattenHierarchy) && cachedPropertyData.IsPrivate && cachedPropertyData.IsStatic)
+
+            // Check public/non-public: caller's requested (Public|NonPublic) must intersect member's public/non-public bit
+            if ((bindingFlags & BindingFlagsPublicMask & cachedMemberData.BindingFlagsVisibilityMask & BindingFlagsPublicMask) == 0)
             {
                 return false;
             }
@@ -632,9 +640,11 @@ namespace BionicCode.Utilities.Net
                     throw new InvalidOperationException($"The current type is not a delegate. Call {nameof(this.IsDelegate)} before accessing this property to check whether the current type is a delegate.");
                 }
 
-                this.delegateInvokeMethodData ??= GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, TypeList.Empty, ReadOnlySpan<MethodParameterInfo>.Empty);
+                this.delegateInvokeMethodData ??= this.Methods.TryGetMethodsByName(ReflectionConstants.DelegateInvocatorMethodName, out MethodList methods)
+                    ? methods[0]
+                    : null;
 
-                return this.delegateInvokeMethodData;
+                return this.delegateInvokeMethodData!;
             }
         }
 

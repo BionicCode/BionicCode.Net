@@ -103,12 +103,40 @@
         public static MethodData GetOrCreateSymbolInfoDataCacheEntry(MethodInfo methodInfo)
         {
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForMethod(methodInfo);
+            BindingFlags visibility = CreateVisibilityFlags(methodInfo);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(methodInfo, key));
 
             // REMOVE::after testing
             Debug.WriteLine($"Found SymbolInfoData entry for {methodInfo.GetType()}");
 
             return (MethodData)symbolInfoData;
+        }
+
+        private static BindingFlags CreateMethodVisibilityFlags(MethodBase methodOrConstructor)
+        {
+            BindingFlags visibility = BindingFlags.Default;
+            if (methodOrConstructor.IsPublic)
+            {
+                visibility |= BindingFlags.Public;
+            }
+            else if (methodOrConstructor.IsPrivate)
+            {
+                visibility |= BindingFlags.NonPublic;
+            }
+            else if (methodOrConstructor.IsFamily)
+            {
+                visibility |= BindingFlags.NonPublic;
+            }
+            else if (methodOrConstructor.IsFamilyOrAssembly)
+            {
+                visibility |= BindingFlags.NonPublic;
+            }
+            else if (methodOrConstructor.IsFamilyAndAssembly)
+            {
+                visibility |= BindingFlags.NonPublic;
+            }
+
+            return visibility;
         }
 
         public static ConstructorData GetOrCreateSymbolInfoDataCacheEntry(ConstructorInfo constructorInfo)

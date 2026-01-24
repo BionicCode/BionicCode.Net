@@ -234,7 +234,15 @@
             ArgumentNullException.ThrowIfNull(clientHandler, paramName);
 
             Type eventType = targetEvent.EventHandlerType!;
+
+<<<<<<< TODO: Unmerged change from project 'BionicCode.Utilities.Net.Common (net10.0)', Before:
             MethodInfo eventDelegateInvokeMethod = eventType.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName)!;
+            ParameterInfo[] eventDelegateParameters = eventDelegateInvokeMethod.GetParameters();
+=======
+            MethodInfo eventDelegateInvokeMethod = eventType.GetMethod(ReflectionConstants.DelegateInvocatorMethodName)!;
+            ParameterInfo[] eventDelegateParameters = eventDelegateInvokeMethod.GetParameters();
+>>>>>>> After
+            MethodInfo eventDelegateInvokeMethod = eventType.GetMethod(Net.ReflectionConstants.DelegateInvocatorMethodName)!;
             ParameterInfo[] eventDelegateParameters = eventDelegateInvokeMethod.GetParameters();
 
             MethodInfo clientHandlerMethod = clientHandler.Method;

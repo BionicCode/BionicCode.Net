@@ -17,20 +17,20 @@
         public TypeList(IEnumerable<TypeData> items)
         {
             this.Types = items?.ToImmutableList() ?? ImmutableList<TypeData>.Empty;
-            this._typeNameIndex = this.Types.ToLookup(type => type.Name);
+            this._typeNameIndex = this.Types.ToLookup(type => type.Name, StringComparer.Ordinal);
             this._hashCode = ComputeHashCode();
         }
 
         private TypeList()
         {
             this.Types = ImmutableList<TypeData>.Empty;
-            this._typeNameIndex = this.Types.ToLookup(type => type.Name);
+            this._typeNameIndex = this.Types.ToLookup(type => type.Name, StringComparer.Ordinal);
         }
 
-        public bool TryGetTypesByName(string methodName, out TypeList typeList)
+        public bool TryGetTypesByName(string typeName, out TypeList typeList)
         {
-            ArgumentNullException.ThrowIfNullOrWhiteSpace(methodName);
-            typeList = this._typeNameIndex[methodName]
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(typeName);
+            typeList = this._typeNameIndex[typeName]
                 .ToTypeList();
             return typeList.HasItems;
         }
@@ -47,7 +47,9 @@
                 ArgumentOutOfRangeException.ThrowIfLessThan(index, 0, nameof(index));
                 ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, this.Types.Count, nameof(index));
 
-                return this.Types[index];
+                return this.HasItems
+                    ? this.Types[index]
+                    : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(TypeList), ReflectionConstants.IndexerGetMethodName));
             }
         }
 

@@ -19,7 +19,7 @@
         public MethodList(IEnumerable<MethodData> items)
         {
             this.Methods = items?.ToImmutableList() ?? ImmutableList<MethodData>.Empty;
-            this._methodNameIndex = this.Methods.ToLookup(method => method.Name); // allow duplicate method names (overloads)
+            this._methodNameIndex = this.Methods.ToLookup(method => method.Name, StringComparer.Ordinal); // allow duplicate method names (overloads)
 
             if (this.HasItems)
             {
@@ -41,7 +41,7 @@
             this.Methods = items?.ToImmutableList() ?? ImmutableList<MethodData>.Empty;
 
             // allow duplicate method names (overloads)
-            this._methodNameIndex = this.Methods.ToLookup(method => method.Name);
+            this._methodNameIndex = this.Methods.ToLookup(method => method.Name, StringComparer.Ordinal);
 
             this._declaringTypeCacheKey = this.HasItems
                 ? this.Methods.First().DeclaringTypeData.CacheKey
@@ -63,7 +63,7 @@
         private MethodList()
         {
             this.Methods = ImmutableList<MethodData>.Empty;
-            this._methodNameIndex = this.Methods.ToLookup(method => method.Name);
+            this._methodNameIndex = new Dictionary<string, MethodData[]>(0, StringComparer.Ordinal);
         }
 
         public bool TryGetMethodsByName(string methodName, out MethodList methodList)
@@ -102,7 +102,9 @@
                 ArgumentOutOfRangeException.ThrowIfLessThan(index, 0, nameof(index));
                 ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, this.Methods.Count, nameof(index));
 
-                return this.Methods[index];
+                return this.HasItems
+                    ? this.Methods[index]
+                    : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), ReflectionConstants.IndexerGetMethodName));
             }
         }
 
