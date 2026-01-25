@@ -235,14 +235,7 @@
 
             Type eventType = targetEvent.EventHandlerType!;
 
-<<<<<<< TODO: Unmerged change from project 'BionicCode.Utilities.Net.Common (net10.0)', Before:
-            MethodInfo eventDelegateInvokeMethod = eventType.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName)!;
-            ParameterInfo[] eventDelegateParameters = eventDelegateInvokeMethod.GetParameters();
-=======
             MethodInfo eventDelegateInvokeMethod = eventType.GetMethod(ReflectionConstants.DelegateInvocatorMethodName)!;
-            ParameterInfo[] eventDelegateParameters = eventDelegateInvokeMethod.GetParameters();
->>>>>>> After
-            MethodInfo eventDelegateInvokeMethod = eventType.GetMethod(Net.ReflectionConstants.DelegateInvocatorMethodName)!;
             ParameterInfo[] eventDelegateParameters = eventDelegateInvokeMethod.GetParameters();
 
             MethodInfo clientHandlerMethod = clientHandler.Method;
@@ -476,18 +469,12 @@
                 {
                     TypeData iConvertibleTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(IConvertible));
                     const string iConvertibleToStringMethodName = nameof(IConvertible.ToString);
-                    MethodData iConvertibleToStringMethodData = iConvertibleTypeData.Methods[iConvertibleToStringMethodName].First();
-                    var parameterKey = SymbolInfoDataCacheKey.CreateForAnonymousParameter(
-                        typeof(IFormatProvider).TypeHandle,
-                        iConvertibleToStringMethodData.Handle,
-                        "provider",
-                        0,
-                        ParameterKind.Normal,
-                        ParameterizedSymbolKind.MemberMethod,
-                        TypeList.Empty);
+                    MethodData? iConvertibleToStringMethodData = iConvertibleTypeData.Methods.TryGetMethodsByName(iConvertibleToStringMethodName, out MethodList methods) && methods.HasItems
+                        ? methods[0]
+                        : null;
 
                     throw new ArgumentException(
-                        $"Invalid value. The '{iConvertibleToStringMethodData.FullyQualifiedSignature}' conversion of the argument '{paramName}' returned 'null'.",
+                        $"Invalid value. The '{iConvertibleToStringMethodData?.FullyQualifiedSignature ?? $"{nameof(IConvertible.ToString)}.{iConvertibleToStringMethodName}"}' conversion of the argument '{paramName}' returned 'null'.",
                         paramName);
                 }
             }

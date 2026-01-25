@@ -52,13 +52,12 @@
 
                 Type eventSourceType = eventSource.GetType();
                 TypeData eventSourceTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventSourceType);
-                EventData eventData = eventSourceTypeData.GetEvent(eventName);
-                if (eventData is null)
+                if (!eventSourceTypeData.TryGetEventByName(eventName, out EventData? eventData))
                 {
-                    throw new ArgumentException($"The event {eventData.Name} was not found on the event source {eventSourceTypeData.FullyQualifiedDisplayName} or on its declaring base eventHandlerGenericTypeDefinition.");
+                    throw new ArgumentException($"The event '{eventName}' was not found on the event source {eventSourceTypeData.FullyQualifiedDisplayName} or on its declaring base eventHandlerGenericTypeDefinition.");
                 }
 
-                Debug.Assert(eventData.GetEventInfo().ReflectedType == eventSourceType);
+                Debug.Assert(eventData!.GetEventInfo().ReflectedType == eventSourceType);
 
                 AddSourceInstanceInternal(eventSource, eventSourceType, eventData.Name);
             }

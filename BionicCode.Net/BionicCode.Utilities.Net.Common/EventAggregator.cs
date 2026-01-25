@@ -493,14 +493,7 @@
                 catch (ArgumentException e)
                 {
 
-<<<<<<< TODO: Unmerged change from project 'BionicCode.Utilities.Net.Common (net10.0)', Before:
-                    MethodInfo delegateInvokeMethodInfo = handler.GetType().GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName);
-                    string handlerSignatureParameterList = delegateInvokeMethodInfo?
-=======
                     MethodInfo delegateInvokeMethodInfo = handler.GetType().GetMethod(ReflectionConstants.DelegateInvocatorMethodName);
-                    string handlerSignatureParameterList = delegateInvokeMethodInfo?
->>>>>>> After
-                    MethodInfo delegateInvokeMethodInfo = handler.GetType().GetMethod(Net.ReflectionConstants.DelegateInvocatorMethodName);
                     string handlerSignatureParameterList = delegateInvokeMethodInfo?
                       .GetParameters()
                       .Select(parameterInfo => parameterInfo.ParameterType.FullName)

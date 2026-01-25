@@ -231,7 +231,7 @@
             bool hasIncompatibleEvents = false;
             foreach (EventData eventData in allEventsOfEventSource)
             {
-                if (eventHandler.IsAssignable(eventData.GetEventInfo()))
+                if (eventHandler.IsAssignable(eventData))
                 {
                     StartListeningInternal<TEventSource>(eventData.Name, eventHandler, synchronizationContext);
 
