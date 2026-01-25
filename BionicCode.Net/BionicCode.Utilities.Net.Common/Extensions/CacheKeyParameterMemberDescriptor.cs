@@ -31,6 +31,13 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle);
             ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<ParameterizedSymbolKind>(parameterizedSymbolKind);
+            if (parameterizedSymbolKind == ParameterizedSymbolKind.MemberIndexerPropertyGet
+                || parameterizedSymbolKind == ParameterizedSymbolKind.MemberIndexerPropertySet
+                || parameterizedSymbolKind == ParameterizedSymbolKind.MemberConstructor)
+            {
+                // For indexer properties and constructors we allow empty or whitespace names i.e. ignore provided value.
+                memberName = string.Empty;
+            }
 
             this.DeclaringMemberName = memberName ?? string.Empty;
             this.MemberParameterCount = memberParameterCount;
