@@ -716,12 +716,10 @@
                 nameof(cacheKey),
                 $"The symbol kind '{cacheKey.SymbolKind}' is not valid for creating a parameter symbol.");
 
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(
-                cacheKey.DeclaringTypeHandle,
-                nameof(cacheKey.DeclaringTypeHandle),
-                SymbolReflectionInfoCache.DeclaringTypeHandleInKeyIsDefaultExceptionMessage);
+            CacheKeyParameterDescriptor parameterDescriptor = cacheKey.CacheKeyParameterDescriptor;
+            CacheKeyParameterMemberDescriptor declaringMemberDescriptor = cacheKey.CacheKeyParameterMemberDescriptor;
 
-            Type? declaringType = Type.GetTypeFromHandle(cacheKey.DeclaringTypeHandle);
+            Type? declaringType = Type.GetTypeFromHandle(declaringMemberDescriptor.DeclaringTypeHandle);
             TypeData? declaringTypeData = null;
             if (declaringType is not null)
             {
@@ -731,9 +729,10 @@
             ParameterData? parameterDataCandidate = null;
 
             // REVIEW::If-statement order matters here. Order from most specific to least specific i.e. best lookup performance to worst performance.
-            if (cacheKey.MethodHandle != default)
+            // Fastest path: member is explicitly identified by method handle...
+            if (declaringMemberDescriptor.MemberHandle != default)
             {
-                MethodBase? methodBase = MethodBase.GetMethodFromHandle(cacheKey.MethodHandle);
+                MethodBase? methodBase = MethodBase.GetMethodFromHandle(declaringMemberDescriptor.MemberHandle);
                 if (methodBase is null)
                 {
                     throw new InvalidReflectionCacheKeyException();
@@ -742,237 +741,178 @@
                 if (methodBase is ConstructorInfo constructorInfo)
                 {
                     ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
-                    if (cacheKey.ParameterPosition >= constructorData.Parameters.Count)
+                    if (TryFindParameterCandidate(parameterDescriptor, constructorData.Parameters, out parameterDataCandidate, out InvalidReflectionCacheKeyException? exception))
                     {
-                        throw new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided parameter position is out of range for the constructor.");
+                        return parameterDataCandidate!;
                     }
-
-                    parameterDataCandidate = constructorData.Parameters[cacheKey.ParameterPosition];
+                    else
+                    {
+                        throw exception ?? new InvalidReflectionCacheKeyException();
+                    }
                 }
                 else
                 {
                     var methodInfo = (MethodInfo)methodBase;
                     MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-                    if (cacheKey.ParameterPosition >= methodData.Parameters.Count)
+                    if (TryFindParameterCandidate(parameterDescriptor, methodData.Parameters, out parameterDataCandidate, out InvalidReflectionCacheKeyException? exception))
                     {
-                        throw new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided parameter position is out of range for the method.");
-                    }
-
-                    parameterDataCandidate = methodData.Parameters[cacheKey.ParameterPosition];
-                }
-
-                if (!parameterDataCandidate.Name.Equals(cacheKey.SymbolName, StringComparison.Ordinal))
-                {
-                    throw new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided parameter position does not map to the provided parameter name.");
-                }
-
-                return parameterDataCandidate ?? throw new InvalidReflectionCacheKeyException();
-            }
-            else if (declaringTypeData is not null && declaringTypeData.IsDelegate)
-            {
-                MethodData methodData = declaringTypeData.DelegateInvokeMethodData;
-                if (cacheKey.ParameterPosition >= methodData.Parameters.Count)
-                {
-                    throw new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided parameter position is out of range for the delegate invoke method.");
-                }
-
-                parameterDataCandidate = methodData.Parameters[cacheKey.ParameterPosition];
-
-                if (!parameterDataCandidate.Name.Equals(cacheKey.SymbolName, StringComparison.Ordinal))
-                {
-                    throw new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided parameter position does not map to the provided parameter name.");
-                }
-
-                if (parameterDataCandidate is not null)
-                {
-                    return parameterDataCandidate;
-                }
-            }
-            else if (declaringTypeData is not null) // No fast lookup possible, need to search amongst all parameterizable members.
-            {
-                bool isParameterizedSymbolNameDefined = !string.IsNullOrWhiteSpace(cacheKey.ParameterMemberName);
-                bool isParameterizedSymbolKindDefined = cacheKey.ParameterizedMemberKind is not ParameterizedSymbolKind.Undefined;
-                bool isDeclaringMemberAmbiguityExpected = !(isParameterizedSymbolNameDefined && isParameterizedSymbolKindDefined);
-                bool isParameterNameDefined = !string.IsNullOrWhiteSpace(cacheKey.SymbolName);
-                bool isParameterTypeDefined = !cacheKey.SymbolTypeHandle.Equals(default);
-                bool isCandidateAmbiguous = false;
-
-                if (cacheKey.ParameterizedMemberKind is ParameterizedSymbolKind.MemberMethod or ParameterizedSymbolKind.Undefined)
-                {
-                    IEnumerable<MethodData> methodCandidates;
-
-                    if (isParameterizedSymbolNameDefined)
-                    {
-                        methodCandidates = declaringTypeData.TryGetMethodByName(cacheKey.ParameterMemberName, out MethodList? methods) && methods is not null
-                            ? methods
-                            : throw new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided parameter member name does not map to any method.");
+                        return parameterDataCandidate!;
                     }
                     else
                     {
-                        methodCandidates = declaringTypeData.EnumerateMethods();
-                    }
-
-                    // We always enumerate the full list of candidates to be able to detect and flag ambiguities.     
-                    int methodCandidateCount = 0;
-                    foreach (MethodData methodData in methodCandidates)
-                    {
-                        if (!methodData.GenericMethodParameters.SequenceEqual(cacheKey.GenericParameterList))
-                        {
-                            continue;
-                        }
-
-                        if (methodData.Parameters.Count != cacheKey.ParameterMemberParameterCount)
-                        {
-                            continue;
-                        }
-
-                        if (TryFindParameterCandidate(cacheKey, methodData.Parameters, out parameterDataCandidate))
-                        {
-                            /* Method match found */
-
-                            methodCandidateCount++;
-                            isCandidateAmbiguous = methodCandidateCount > 1;
-
-                            ThrowIfParameterCandidateIsAmbiguous(isCandidateAmbiguous);
-
-                            // Try to early out if we have a definitive candidate and no ambiguity is expected.
-                            if (!isDeclaringMemberAmbiguityExpected && methodCandidateCount == 1)
-                            {
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                // Early out if we have a definitive candidate and no ambiguity is expected.
-                // Otherwise we need to continue searching to detect ambiguities.
-                if (isParameterizedSymbolKindDefined && parameterDataCandidate is not null)
-                {
-                    return parameterDataCandidate;
-                }
-
-                if (cacheKey.ParameterizedMemberKind is ParameterizedSymbolKind.MemberConstructor or ParameterizedSymbolKind.Undefined)
-                {
-                    IEnumerable<ConstructorData> constructorCandidates = declaringTypeData.EnumerateConstructors();
-
-                    // We always enumerate the full list of candidates to be able to detect and flag ambiguities.   
-                    int constructorCandidateCount = 0;
-                    foreach (ConstructorData constructorData in constructorCandidates)
-                    {
-                        IEnumerable<ParameterData> parameterCandidates;
-                        int parameterCandidateCount = 0;
-
-                        // Filter ordered from fastest to slowest path to optimize lookup performance.
-                        if (isParameterNameDefined)
-                        {
-                            if (constructorData.Parameters.TryGetParameterByName(cacheKey.SymbolName, out ParameterData? parameterCandidate) && parameterCandidate is not null)
-                            {
-                                parameterCandidates = new[] { parameterCandidate };
-                            }
-                            else
-                            {
-                                // No parameter with matching name found in this method
-                                continue;
-                            }
-                        }
-                        else if (isParameterTypeDefined)
-                        {
-                            parameterCandidates = constructorData.Parameters
-                                .Where(parameterData => parameterData.ParameterTypeData.Handle.Equals(cacheKey.SymbolTypeHandle));
-                        }
-                        else
-                        {
-                            parameterCandidates = constructorData.Parameters;
-                        }
-
-                        foreach (ParameterData parameterCandidate in parameterCandidates)
-                        {
-                            // Parameter type does not match
-                            if (isParameterTypeDefined && !parameterCandidate.ParameterTypeData.Handle.Equals(cacheKey.SymbolTypeHandle))
-                            {
-                                continue;
-                            }
-
-                            // Parameter position does not match
-                            if (parameterCandidate.Position != cacheKey.ParameterPosition)
-                            {
-                                continue;
-                            }
-
-                            // Parameter modifier does not match
-                            if (isParameterKindDefined && cacheKey.ParameterKind != parameterCandidate.ParameterKind)
-                            {
-                                continue;
-                            }
-
-                            /* Parameter match found */
-
-                            parameterDataCandidate = parameterCandidate;
-                            parameterCandidateCount++;
-                            isCandidateAmbiguous = parameterCandidateCount > 1;
-
-                            ThrowIfParameterCandidateIsAmbiguous(isCandidateAmbiguous);
-
-                            // No early out required.
-                            // The parameter name is the only unambiguous identifier for a parameter within a method.
-                            // Therefore, in an unambiguous scenario the 'parameterCandidates' list will only contain one item
-                            // and the loop will "early out" naturally.
-                        }
-
-                        /* Constructor match found */
-
-                        constructorCandidateCount++;
-                        isCandidateAmbiguous = constructorCandidateCount > 1;
-
-                        ThrowIfParameterCandidateIsAmbiguous(isCandidateAmbiguous);
-
-                        // Try to early out if we have a definitive candidate and no ambiguity is expected.
-                        if (!isAmbiguityExpected && constructorCandidateCount == 1)
-                        {
-                            break;
-                        }
+                        throw exception ?? new InvalidReflectionCacheKeyException();
                     }
                 }
             }
 
-            if (cacheKey.ParameterizedMemberKind is ParameterizedSymbolKind.MemberIndexerProperty or ParameterizedSymbolKind.Undefined)
+            // Before enumerating the members of the declaring type, check for special types that have known parameter members
+            // like delegates and their invoker methods.
+            if (declaringTypeData is not null && declaringTypeData.IsDelegate)
             {
-                foreach (PropertyData propertyData in declaringTypeData.EnumerateProperties())
+                MethodData methodData = declaringTypeData.DelegateInvokeMethodData;
+                if (TryFindParameterCandidate(parameterDescriptor, methodData.Parameters, out parameterDataCandidate, out InvalidReflectionCacheKeyException? exception))
                 {
-                    if (!propertyData.IsIndexer)
+                    return parameterDataCandidate!;
+                }
+                else
+                {
+                    throw exception ?? new InvalidReflectionCacheKeyException();
+                }
+            }
+
+            /* No fast lookup possible: need to search amongst all parameterizable members of the provided declaring type.
+             * However, if caller has provided enough information about the member that declares the parameter, we still can optimize the search.
+             * To ensure correctness, we always need to enumerate all candidates to be able to detect ambiguities.
+             * Since ambiguities are not allowed we usually throw to signal that the provided key is too weak.
+             * 
+             * The worst case is when ParameterizedMemberKind is Undefined.
+             * In this case we need to enumerate all parameterizable members - even when a match was found: Multiple matches need to be detected.
+             */
+
+            if (declaringTypeData is null)
+            {
+                throw new InvalidReflectionCacheKeyException(SymbolReflectionInfoCache.InvalidDeclaringTypeHandleFoundInKeyExceptionMessage);
+            }
+
+            bool isDeclaringMemberAmbiguityExpected = !declaringMemberDescriptor.HasParameterizedMemberKind;
+            bool isCandidateAmbiguous = false;
+
+            if (declaringMemberDescriptor.ParameterizedMemberKind is ParameterizedSymbolKind.MemberMethod or ParameterizedSymbolKind.Undefined)
+            {
+                IEnumerable<MethodData> methodCandidates;
+
+                // Try to limit the candidate set if possible. Method name is the best filter we have.
+                // Still it probably yields multiple candidates due to potential method overloads.
+                if (declaringMemberDescriptor.HasDeclaringMemberName)
+                {
+                    methodCandidates = declaringTypeData.TryGetMethodByName(declaringMemberDescriptor.DeclaringMemberName, out MethodList? methods) && methods is not null
+                        ? methods
+                        : throw new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided parameter member name '{declaringMemberDescriptor.DeclaringMemberName}' does not map to any method on the provided declaring type '{declaringTypeData.FullyQualifiedSignature}'.");
+                }
+                else
+                {
+                    methodCandidates = declaringTypeData.EnumerateMethods();
+                }
+
+                if (TryFindParameterCandidateInMethods(parameterDescriptor, declaringMemberDescriptor, methodCandidates, out parameterDataCandidate))
+                {
+                    // Early out if we have a definitive candidate and no declaring member ambiguity is expected.
+                    // Otherwise we need to continue searching other member kinds to be able to detect ambiguities.
+                    if (!isDeclaringMemberAmbiguityExpected)
+                    {
+                        return parameterDataCandidate ?? throw new InvalidReflectionCacheKeyException("No valid parameter candidate found.");
+                    }
+                }
+            }
+
+            if (declaringMemberDescriptor.ParameterizedMemberKind is ParameterizedSymbolKind.MemberConstructor or ParameterizedSymbolKind.Undefined)
+            {
+                IEnumerable<ConstructorData> constructorCandidates = declaringTypeData.EnumerateConstructors();
+
+                // We always enumerate the full list of candidates to be able to detect and flag ambiguities.     
+                int constructorCandidateCount = 0;
+                foreach (ConstructorData constructorData in constructorCandidates)
+                {
+                    if (declaringMemberDescriptor.MemberParameterCount != constructorData.Parameters.Count)
                     {
                         continue;
                     }
 
-                    MethodData? propertyAccessorData = propertyData.PropertyGetMethodData ?? propertyData.PropertySetMethodData;
-                    if (propertyAccessorData is null
-                        || propertyAccessorData.Parameters.FirstOrDefault(parameterData => parameterData.Name.Equals(cacheKey.SymbolName, StringComparison.Ordinal)) is not ParameterData parameterCandidate
-                        || parameterCandidate.Position != cacheKey.ParameterPosition)
+                    // Ok, current method is a candidate. Now try to find the parameter amongst its parameters.
+                    if (TryFindParameterCandidate(parameterDescriptor, constructorData.Parameters, out parameterDataCandidate, out _))
                     {
-                        continue;
-                    }
+                        /* Method match found */
 
-                    if (isParameterKindDefined && cacheKey.ParameterKind != parameterCandidate.ParameterKind)
-                    {
-                        continue;
-                    }
+                        constructorCandidateCount++;
 
-                    parameterDataCandidate = parameterCandidate;
-                    methodCandidateCount++;
-                    isCandidateAmbiguous = isAmbiguityExpected && methodCandidateCount > 1;
+                        // Only a single method match is allowed. Otherwise the key and parameter association is ambiguous.
+                        isCandidateAmbiguous = constructorCandidateCount > 1;
 
-                    ThrowIfParameterCandidateIsAmbiguous(isCandidateAmbiguous);
-                    if (!isAmbiguityExpected && methodCandidateCount == 1)
-                    {
-                        break;
+                        ThrowIfParameterCandidateIsAmbiguous(isCandidateAmbiguous);
                     }
                 }
 
-                // Early out if we have a definitive candidate and no ambiguity is expected.
-                // Otherwise we need to continue searching to detect ambiguities.
-                if (!isAmbiguityExpected && parameterDataCandidate is not null)
+                // Early out if we have a definitive candidate and no declaring member ambiguity is expected.
+                if (!isDeclaringMemberAmbiguityExpected)
                 {
-                    return parameterDataCandidate;
+                    return parameterDataCandidate ?? throw new InvalidReflectionCacheKeyException("No valid parameter candidate found.");
+                }
+            }
+
+            if (declaringMemberDescriptor.ParameterizedMemberKind is ParameterizedSymbolKind.MemberNormalPropertySet
+                or ParameterizedSymbolKind.MemberIndexerPropertyGet
+                or ParameterizedSymbolKind.MemberIndexerPropertySet
+                or ParameterizedSymbolKind.Undefined)
+            {
+
+                // Try to limit the candidate set if possible. Property name is the best filter for properties we have
+                // Otherwise property type will potentially yield multiple property candidates.
+                if (declaringMemberDescriptor.HasDeclaringMemberName)
+                {
+                    if (!declaringTypeData.TryGetPropertyByName(declaringMemberDescriptor.DeclaringMemberName, out PropertyData? propertyCandidate) || propertyCandidate is null)
+                    {
+                        throw new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided parameter member name '{declaringMemberDescriptor.DeclaringMemberName}' does not map to any property on the provided declaring type '{declaringTypeData.FullyQualifiedSignature}'.");
+                    }
+
+                    if (TryFindParameterInProperty(parameterDescriptor, declaringMemberDescriptor, propertyCandidate, out parameterDataCandidate, out InvalidReflectionCacheKeyException exception))
+                    {
+                        return parameterDataCandidate!;
+                    }
+                    else
+                    {
+                        throw exception ?? throw new InvalidReflectionCacheKeyException();
+                    }
+                }
+                else if (declaringMemberDescriptor.HasPropertyTypeHandle)
+                {
+                    IEnumerable<PropertyData> propertyCandidates = declaringTypeData.EnumerateProperties()
+                        .Where(propertyData => propertyData.PropertyTypeData.Handle.Equals(declaringMemberDescriptor.PropertyTypeHandle));
+
+                    // We always enumerate the full list of candidates to be able to detect and flag ambiguities.    
+                    foreach (PropertyData propertyCandidate in propertyCandidates)
+                    {
+                        if (TryFindParameterInProperty(parameterDescriptor, declaringMemberDescriptor, propertyCandidate, out parameterDataCandidate, out _))
+                        {
+                            return parameterDataCandidate!;
+                        }
+                    }
+
+                    throw new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided property types don't map to a valid property declared on the provided declaring type '{declaringTypeData.FullyQualifiedSignature}'.");
+                }
+                else
+                {
+                    IEnumerable<PropertyData> propertyCandidates = declaringTypeData.EnumerateProperties();
+
+                    // We always enumerate the full list of candidates to be able to detect and flag ambiguities.    
+                    foreach (PropertyData propertyCandidate in propertyCandidates)
+                    {
+                        if (TryFindParameterInProperty(parameterDescriptor, declaringMemberDescriptor, propertyCandidate, out parameterDataCandidate, out _))
+                        {
+                            return parameterDataCandidate!;
+                        }
+                    }
+
+                    throw new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided property types don't map to a valid property declared on the provided declaring type '{declaringTypeData.FullyQualifiedSignature}'.");
                 }
             }
 
@@ -981,32 +921,223 @@
                 : new InvalidReflectionCacheKeyException();
         }
 
-        private static bool TryFindParameterCandidate(SymbolInfoDataCacheKey cacheKey, ParameterList parameters, out ParameterData? parameterDataCandidate)
+        private static bool TryFindParameterInProperty(CacheKeyParameterDescriptor parameterDescriptor, CacheKeyParameterMemberDescriptor declaringMemberDescriptor, PropertyData propertyCandidate, out ParameterData? parameterDataCandidate, out InvalidReflectionCacheKeyException? exception)
+        {
+            parameterDataCandidate = null;
+            exception = null;
+
+            bool isPropertyAccessorSetterRequested = declaringMemberDescriptor.ParameterizedMemberKind is ParameterizedSymbolKind.MemberNormalPropertySet
+                or ParameterizedSymbolKind.MemberIndexerPropertySet;
+            bool isIndexerPropertyGetterRequested = declaringMemberDescriptor.ParameterizedMemberKind is ParameterizedSymbolKind.MemberIndexerPropertyGet;
+
+            if (isPropertyAccessorSetterRequested)
+            {
+                if (declaringMemberDescriptor.ParameterizedMemberKind is ParameterizedSymbolKind.MemberIndexerPropertySet
+                    && !propertyCandidate.IsIndexer)
+                {
+                    exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' specifies '{declaringMemberDescriptor.ParameterizedMemberKind}' for an indexer setter but the property is not an indexer.");
+
+                    return false;
+                }
+
+                if (propertyCandidate.CanWrite)
+                {
+                    MethodData propertyAccessorCandidate = propertyCandidate.PropertySetMethodData;
+                    if (TryFindParameterCandidateInMethods(parameterDescriptor, declaringMemberDescriptor, [propertyAccessorCandidate], out parameterDataCandidate))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' does not specify an accessor that matches the provided parameter information.");
+
+                        return false;
+                    }
+                }
+                else
+                {
+                    exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' specifies '{declaringMemberDescriptor.ParameterizedMemberKind}' for a setter but the property is read-only.");
+
+                    return false;
+                }
+            }
+            else if (isIndexerPropertyGetterRequested)
+            {
+                if (!propertyCandidate.IsIndexer)
+                {
+                    exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property specifies '{declaringMemberDescriptor.ParameterizedMemberKind}' for an indexer getter but the property is not an indexer.");
+
+                    return false;
+                }
+
+                if (propertyCandidate.CanRead)
+                {
+                    MethodData propertyAccessorCandidate = propertyCandidate.PropertyGetMethodData;
+                    if (TryFindParameterCandidateInMethods(parameterDescriptor, declaringMemberDescriptor, [propertyAccessorCandidate], out parameterDataCandidate))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' does not specify an accessor that matches the provided parameter information.");
+
+                        return false;
+                    }
+                }
+                else
+                {
+                    exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property specifies '{declaringMemberDescriptor.ParameterizedMemberKind}' for a getter but the property is write-only.");
+
+                    return false;
+                }
+            }
+            else // Accessor is undefined - need to search all accessor methods
+            {
+                MethodData propertyAccessorCandidate;
+
+                // Simplest case: property is not an indexer. In this case only the set accessor is parameterized.
+                if (!propertyCandidate.IsIndexer)
+                {
+                    if (propertyCandidate.CanWrite)
+                    {
+                        propertyAccessorCandidate = propertyCandidate.PropertySetMethodData;
+                        if (TryFindParameterCandidateInMethods(parameterDescriptor, declaringMemberDescriptor, [propertyAccessorCandidate], out parameterDataCandidate))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' does not specify an accessor that matches the provided parameter information.");
+
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' does not specify the accessor kind but the property is read-only and has no parameterized accessor.");
+
+                        return false;
+                    }
+                }
+                else
+                {   // Property is an indexer - both accessors are parameterized.
+                    // However, getter and setter share the same parameter list - except the "value" parameter for the setter.
+                    // If the searched parameter is not the setter's "value" parameter the parameter association is ambiguous.
+                    // In this case the getter takes precedence over the setter.
+                    // Hence, we start with the getter to allow it to produce a match first.
+                    if (propertyCandidate.CanRead)
+                    {
+                        propertyAccessorCandidate = propertyCandidate.PropertyGetMethodData;
+                        if (TryFindParameterCandidateInMethods(parameterDescriptor, declaringMemberDescriptor, [propertyAccessorCandidate], out parameterDataCandidate))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' does not specify an accessor that matches the provided parameter information.");
+
+                            return false;
+                        }
+                    }
+                    else if (propertyCandidate.CanWrite)
+                    {
+                        propertyAccessorCandidate = propertyCandidate.PropertyGetMethodData;
+                        if (TryFindParameterCandidateInMethods(parameterDescriptor, declaringMemberDescriptor, [propertyAccessorCandidate], out parameterDataCandidate))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' does not specify an accessor that matches the provided parameter information.");
+
+                            return false;
+                        }
+                    }
+
+                    return false;
+                }
+            }
+        }
+
+        private static bool TryFindParameterCandidateInMethods(CacheKeyParameterDescriptor parameterDescriptor, CacheKeyParameterMemberDescriptor declaringMemberDescriptor, IEnumerable<MethodData> methodCandidates, out ParameterData? parameterDataCandidate)
         {
             parameterDataCandidate = null;
 
-            bool isParameterNameDefined = !string.IsNullOrWhiteSpace(cacheKey.SymbolName);
-            bool isParameterTypeDefined = !cacheKey.SymbolTypeHandle.Equals(default);
-            bool isParameterKindDefined = cacheKey.ParameterKind is not ParameterKind.Undefined;
-            bool isParameterPositionDefined = cacheKey.ParameterPosition != SymbolInfoDataCacheKey.UnknownParameterCountOrPosition;
-            bool isParameterAmbiguityExpected = !(isParameterKindDefined && (isParameterTypeDefined || isParameterNameDefined));
+            // We always enumerate the full list of candidates to be able to detect and flag ambiguities.
+            bool isCandidateAmbiguous;
+            int methodCandidateCount = 0;
+            foreach (MethodData methodData in methodCandidates)
+            {
+                if (declaringMemberDescriptor.HasMemberGenericMethodParameters
+                    && !declaringMemberDescriptor.MemberGenericMethodParameters.SequenceEqual(methodData.GenericMethodParameters))
+                {
+                    continue;
+                }
+
+                if (declaringMemberDescriptor.HasMemberParameterCount
+                    && declaringMemberDescriptor.MemberParameterCount != methodData.Parameters.Count)
+                {
+                    continue;
+                }
+
+                // Ok, current method is a candidate. Now try to find the parameter amongst its parameters.
+                if (TryFindParameterCandidate(parameterDescriptor, methodData.Parameters, out parameterDataCandidate, out _))
+                {
+                    /* Method match found */
+
+                    methodCandidateCount++;
+
+                    // Only a single method match is allowed. Otherwise the key and parameter association is ambiguous.
+                    isCandidateAmbiguous = methodCandidateCount > 1;
+
+                    ThrowIfParameterCandidateIsAmbiguous(isCandidateAmbiguous);
+                }
+            }
+
+            return parameterDataCandidate is not null;
+        }
+
+        private static bool TryFindParameterCandidate(CacheKeyParameterDescriptor parameterDescriptor, ParameterList parameters, out ParameterData? parameterDataCandidate, out InvalidReflectionCacheKeyException? exception)
+        {
+            parameterDataCandidate = null;
+            exception = null;
+
+            bool isParameterAmbiguityExpected = !(parameterDescriptor.HasParameterKind && (parameterDescriptor.HasParameterTypeHandle || parameterDescriptor.HasParameterName));
             bool isCandidateAmbiguous;
 
             // Filter ordered from fastest to slowest path to optimize lookup performance.
             IEnumerable<ParameterData> parameterCandidates = null;
-            if (isParameterNameDefined)
+            if (parameterDescriptor.HasParameterName)
             {
-                if (parameters.TryGetParameterByName(cacheKey.SymbolName, out ParameterData? parameterCandidate) && parameterCandidate is not null)
+                if (parameters.TryGetParameterByName(parameterDescriptor.ParameterName, out ParameterData? parameterCandidate) && parameterCandidate is not null)
                 {
                     parameterCandidates = new[] { parameterCandidate };
+
+                    return true;
+                }
+                else
+                {
+                    // No parameter with matching name found in this parameter set
+                    exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided parameter name '{parameterDescriptor.ParameterName}' does not match any parameter.");
+                    return false;
                 }
             }
+            else if (parameterDescriptor.HasParameterPosition)
+            {
+                if (parameterDescriptor.ParameterPosition >= parameters.Count)
+                {
+                    exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided parameter position is out of range for the delegate invoke method. Expected position: '0-{parameters.Count - 1}'; Found: '{parameterDescriptor.ParameterPosition}'");
+                    return false;
+                }
 
-            // No parameter name provided or no parameter with matching name found in this parameter set
-            if (parameterCandidates is null && isParameterTypeDefined)
+                parameterDataCandidate = parameters[parameterDescriptor.ParameterPosition];
+
+                return true;
+            }
+            else if (parameterDescriptor.HasParameterTypeHandle)
             {
                 parameterCandidates = parameters
-                    .Where(parameterData => parameterData.ParameterTypeData.Handle.Equals(cacheKey.SymbolTypeHandle));
+                    .Where(parameterData => parameterData.ParameterTypeData.Handle.Equals(parameterDescriptor.ParameterTypeHandle));
             }
             else
             {
@@ -1016,16 +1147,9 @@
             int parameterCandidateCount = 0;
             foreach (ParameterData parameterCandidate in parameterCandidates)
             {
-                // Parameter position does not match
-                if (isParameterPositionDefined
-                    && parameterCandidate.Position != cacheKey.ParameterPosition)
-                {
-                    continue;
-                }
-
                 // Parameter modifier does not match
-                if (isParameterKindDefined
-                    && cacheKey.ParameterKind != parameterCandidate.ParameterKind)
+                if (parameterDescriptor.HasParameterKind
+                    && parameterCandidate.ParameterKind != parameterDescriptor.ParameterKind)
                 {
                     continue;
                 }

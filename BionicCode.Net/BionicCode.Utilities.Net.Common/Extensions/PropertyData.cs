@@ -192,9 +192,9 @@ namespace BionicCode.Utilities.Net
             ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyParameters, nameof(indexerPropertyParameters), "Indexer property index cannot be null for indexer properties.");
             ArgumentOutOfRangeExceptionAdvanced.ThrowIfLessThan(
                 indexerPropertyParameters.Length,
-                this.IndexerParameters.Count,
+                this.PropertyGetMethodParameters.Count,
                 nameof(indexerPropertyParameters),
-                $"Provided number of indexer parameters does not match the indexer parameter count of property '{this.FullyQualifiedSignature}'. Expected: {this.IndexerParameters.Count}; Found: {indexerPropertyParameters.Length}.");
+                $"Provided number of indexer parameters does not match the indexer parameter count of property '{this.FullyQualifiedSignature}'. Expected: {this.PropertyGetMethodParameters.Count}; Found: {indexerPropertyParameters.Length}.");
 
             if (!this.IsStatic)
             {
@@ -248,9 +248,9 @@ namespace BionicCode.Utilities.Net
             ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyParameters, nameof(indexerPropertyParameters), $"Indexer index parameter {nameof(indexerPropertyParameters)} cannot be null for indexer properties.");
             ArgumentOutOfRangeExceptionAdvanced.ThrowIfLessThan(
                 indexerPropertyParameters.Length,
-                this.IndexerParameters.Count,
+                this.PropertyGetMethodParameters.Count,
                 nameof(indexerPropertyParameters),
-                $"Provided number of indexer parameters does not match the indexer parameter count of this property '{this.FullyQualifiedSignature}'. Expected: {this.IndexerParameters.Count} index parameters; Found: {indexerPropertyParameters.Length}.");
+                $"Provided number of indexer parameters does not match the indexer parameter count of this property '{this.FullyQualifiedSignature}'. Expected: {this.PropertyGetMethodParameters.Count} index parameters; Found: {indexerPropertyParameters.Length}.");
 
             if (!this.IsStatic)
             {
@@ -302,9 +302,9 @@ namespace BionicCode.Utilities.Net
 
             ArgumentOutOfRangeExceptionAdvanced.ThrowIfLessThan(
                 indexerPropertyParameters.Length,
-                this.IndexerParameters.Count,
+                this.PropertyGetMethodParameters.Count,
                 nameof(indexerPropertyParameters),
-                $"Provided number of indexer parameters does not match the indexer parameter count of this property '{this.FullyQualifiedSignature}'. Expected: {this.IndexerParameters.Count} index parameters; Found: {indexerPropertyParameters.Length}.");
+                $"Provided number of indexer parameters does not match the indexer parameter count of this property '{this.FullyQualifiedSignature}'. Expected: {this.PropertyGetMethodParameters.Count} index parameters; Found: {indexerPropertyParameters.Length}.");
 
             ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyParameters, nameof(indexerPropertyParameters), $"Indexer index parameter {nameof(indexerPropertyParameters)} cannot be null for indexer properties.");
 
@@ -448,7 +448,7 @@ namespace BionicCode.Utilities.Net
                 ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyIndex, nameof(indexerPropertyIndex), "Indexer property index cannot be null for indexer properties.");
                 ArgumentOutOfRangeExceptionAdvanced.ThrowIfLessThan(
                     indexerPropertyIndex!.Length,
-                    this.IndexerParameters.Count,
+                    this.PropertySetMethodParameters.Count,
                     nameof(indexerPropertyIndex),
                     $"Indexer property index count does not match the indexer parameter count of property '{this.FullyQualifiedSignature}'.");
             }
@@ -493,7 +493,7 @@ namespace BionicCode.Utilities.Net
                 ArgumentNullExceptionAdvanced.ThrowIfNull(indexerPropertyIndex, nameof(indexerPropertyIndex), "Indexer property index cannot be null for indexer properties.");
                 ArgumentOutOfRangeExceptionAdvanced.ThrowIfLessThan(
                     indexerPropertyIndex!.Length,
-                    this.IndexerParameters.Count,
+                    this.PropertySetMethodParameters.Count,
                     nameof(indexerPropertyIndex),
                     $"Indexer property index count does not match the indexer parameter count of property '{this.FullyQualifiedSignature}'.");
             }
@@ -717,9 +717,9 @@ namespace BionicCode.Utilities.Net
 
             ArgumentOutOfRangeExceptionAdvanced.ThrowIfNotEqual(
                 1,
-                this.IndexerParameters.Count,
+                this.PropertyGetMethodParameters.Count,
                 nameof(TIndex),
-                $"Indexer property parameter count mismatch. Provided 1 indexer parameter for an indexer that requires {this.IndexerParameters.Count} parameters. Please use the appropriate overload that matches the number of indexer parameters.");
+                $"Indexer property parameter count mismatch. Provided 1 indexer parameter for an indexer that requires {this.PropertyGetMethodParameters.Count} parameters. Please use the appropriate overload that matches the number of indexer parameters.");
 
             return GetIndexerGetterInternal<TTarget, TIndex, TValue>();
         }
@@ -738,9 +738,9 @@ namespace BionicCode.Utilities.Net
 
             ArgumentOutOfRangeExceptionAdvanced.ThrowIfNotEqual(
                 2,
-                this.IndexerParameters.Count,
+                this.PropertyGetMethodParameters.Count,
                 nameof(TIndex2),
-                $"Indexer property parameter count mismatch. Provided 2 indexer parameters for an indexer that requires {this.IndexerParameters.Count} parameters. Please use the appropriate overload that matches the number of indexer parameters.");
+                $"Indexer property parameter count mismatch. Provided 2 indexer parameters for an indexer that requires {this.PropertyGetMethodParameters.Count} parameters. Please use the appropriate overload that matches the number of indexer parameters.");
 
             return GetIndexerGetterInternal<TTarget, TIndex1, TIndex2, TValue>();
         }
@@ -759,9 +759,9 @@ namespace BionicCode.Utilities.Net
 
             ArgumentOutOfRangeExceptionAdvanced.ThrowIfNotEqual(
                 3,
-                this.IndexerParameters.Count,
+                this.PropertyGetMethodParameters.Count,
                 nameof(TIndex2),
-                $"Indexer property parameter count mismatch. Provided 3 indexer parameters for an indexer that requires {this.IndexerParameters.Count} parameters. Please use the appropriate overload that matches the number of indexer parameters.");
+                $"Indexer property parameter count mismatch. Provided 3 indexer parameters for an indexer that requires {this.PropertyGetMethodParameters.Count} parameters. Please use the appropriate overload that matches the number of indexer parameters.");
 
             return GetIndexerGetterInternal<TTarget, TIndex1, TIndex2, TIndex3, TValue>();
         }
@@ -844,7 +844,9 @@ namespace BionicCode.Utilities.Net
         }
 
         public bool IsIndexer
-          => this.IndexerParameters.HasItems;
+          => this.CanRead
+            ? this.PropertyGetMethodParameters.HasItems
+            : this.CanWrite && this.PropertySetMethodParameters.Count > 1;
 
         ///// <summary>
         ///// Gets the indexer parameters for this property as returned by <see cref="PropertyInfo.GetIndexParameters"/>.

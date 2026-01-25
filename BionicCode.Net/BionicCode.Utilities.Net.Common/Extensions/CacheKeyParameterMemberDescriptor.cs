@@ -26,37 +26,61 @@
             string? memberName = null,
             int memberParameterCount = SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
             ParameterizedSymbolKind parameterizedSymbolKind = ParameterizedSymbolKind.Undefined,
-            TypeList? memberGenericMethodParameters = null)
+            TypeList? memberGenericMethodParameters = null,
+            RuntimeTypeHandle? propertyTypeHandle = null)
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle);
             ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<ParameterizedSymbolKind>(parameterizedSymbolKind);
 
-            this.MemberName = memberName ?? string.Empty;
+            this.DeclaringMemberName = memberName ?? string.Empty;
             this.MemberParameterCount = memberParameterCount;
-            this.ParameterizedSymbolKind = parameterizedSymbolKind;
+            this.ParameterizedMemberKind = parameterizedSymbolKind;
             this.MemberGenericMethodParameters = memberGenericMethodParameters ?? TypeList.Empty;
-            this.DeclaringTypeHandle = Type.GetTypeFromHandle(declaringTypeHandle).ToTypeData().CacheKey;
+            this.DeclaringTypeHandle = declaringTypeHandle;
             this.MemberHandle = memberHandle ?? default;
+            this.PropertyTypeHandle = propertyTypeHandle ?? default;
         }
 
-        public string MemberName { get; init; }
+        public bool HasDeclaringMemberName
+            => !string.IsNullOrWhiteSpace(this.DeclaringMemberName);
+
+        public bool HasMemberGenericMethodParameters
+            => !this.MemberGenericMethodParameters.IsEmpty;
+
+        public bool HasMemberHandle
+            => !this.MemberHandle.Equals(default);
+
+        public bool HasMemberParameterCount
+            => this.MemberParameterCount > SymbolInfoDataCacheKey.UnknownParameterCountOrPosition;
+
+        public bool HasDeclaringTypeHandle
+            => !this.DeclaringTypeHandle.Equals(default);
+
+        public bool HasParameterizedMemberKind
+            => this.ParameterizedMemberKind != ParameterizedSymbolKind.Undefined;
+
+        public bool HasPropertyTypeHandle
+            => !this.PropertyTypeHandle.Equals(default);
+
+        public string DeclaringMemberName { get; init; }
         public int MemberParameterCount { get; init; }
-        public ParameterizedSymbolKind ParameterizedSymbolKind { get; init; }
+        public ParameterizedSymbolKind ParameterizedMemberKind { get; init; }
         public TypeList MemberGenericMethodParameters { get; init; }
-        public SymbolInfoDataCacheKey DeclaringTypeHandle { get; init; }
+        public RuntimeTypeHandle DeclaringTypeHandle { get; init; }
+        public RuntimeTypeHandle PropertyTypeHandle { get; init; }
         public RuntimeMethodHandle MemberHandle { get; }
 
-        public bool Equals(CacheKeyParameterMemberDescriptor other) => this.MemberName.Equals(other.MemberName, StringComparison.Ordinal)
+        public bool Equals(CacheKeyParameterMemberDescriptor other) => this.DeclaringMemberName.Equals(other.DeclaringMemberName, StringComparison.Ordinal)
             && this.MemberParameterCount == other.MemberParameterCount
-            && this.ParameterizedSymbolKind == other.ParameterizedSymbolKind
+            && this.ParameterizedMemberKind == other.ParameterizedMemberKind
             && this.MemberGenericMethodParameters.Equals(other.MemberGenericMethodParameters)
             && this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle)
             && this.MemberHandle.Equals(other.MemberHandle);
 
         public override int GetHashCode() => HashCode.Combine(
-            this.MemberName,
+            this.DeclaringMemberName,
             this.MemberParameterCount,
-            this.ParameterizedSymbolKind,
+            this.ParameterizedMemberKind,
             this.MemberGenericMethodParameters,
             this.DeclaringTypeHandle,
             this.MemberHandle);

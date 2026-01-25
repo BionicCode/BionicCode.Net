@@ -38,6 +38,18 @@
             this.ParameterTypeHandle = parameterTypeHandle ?? default;
         }
 
+        public bool HasParameterName
+            => !string.IsNullOrWhiteSpace(this.ParameterName);
+
+        public bool HasParameterPosition
+            => this.ParameterPosition > SymbolInfoDataCacheKey.UnknownParameterCountOrPosition;
+
+        public bool HasParameterKind
+            => this.ParameterKind != ParameterKind.Undefined;
+
+        public bool HasParameterTypeHandle
+            => !this.ParameterTypeHandle.Equals(default);
+
         public string ParameterName { get; init; }
         public int ParameterPosition { get; init; }
         public ParameterKind ParameterKind { get; init; }

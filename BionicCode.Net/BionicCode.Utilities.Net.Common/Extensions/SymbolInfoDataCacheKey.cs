@@ -633,10 +633,10 @@
             ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKeyParameterDescriptor);
             ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKeyParameterMemberDescriptor);
 
-            string memberName = cacheKeyParameterMemberDescriptor.MemberName;
-            if (cacheKeyParameterMemberDescriptor.ParameterizedSymbolKind == ParameterizedSymbolKind.MemberIndexerPropertyGet
-                || cacheKeyParameterMemberDescriptor.ParameterizedSymbolKind == ParameterizedSymbolKind.MemberIndexerPropertySet
-                || cacheKeyParameterMemberDescriptor.ParameterizedSymbolKind == ParameterizedSymbolKind.MemberConstructor)
+            string memberName = cacheKeyParameterMemberDescriptor.DeclaringMemberName;
+            if (cacheKeyParameterMemberDescriptor.ParameterizedMemberKind == ParameterizedSymbolKind.MemberIndexerPropertyGet
+                || cacheKeyParameterMemberDescriptor.ParameterizedMemberKind == ParameterizedSymbolKind.MemberIndexerPropertySet
+                || cacheKeyParameterMemberDescriptor.ParameterizedMemberKind == ParameterizedSymbolKind.MemberConstructor)
             {
                 // For indexer properties we allow empty or whitespace names i.e. ignore provided value.
                 memberName = string.Empty;
@@ -681,19 +681,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterDescriptor);
             ArgumentNullExceptionAdvanced.ThrowIfDefault(memberDescriptor);
-            ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(
-                parameterizedSymbolKind,
-                [ParameterKind.Undefined],
-                nameof(parameterizedSymbolKind), $"Invalid argument '{nameof(parameterKind)}'. The value '{nameof(ParameterKind)}.{ParameterKind.Undefined}' is not allowed.");
-            ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(
-                parameterizedSymbolKind,
-                [ParameterizedSymbolKind.Undefined],
-                nameof(parameterizedSymbolKind), $"Invalid argument '{nameof(parameterizedSymbolKind)}'. The value '{nameof(ParameterizedMemberKind)}.{ParameterizedSymbolKind.Undefined}' is not allowed.");
 
-            ArgumentNullExceptionAdvanced.ThrowIfNull(
-                memberGenericMethodParameters,
-                nameof(memberGenericMethodParameters),
-                $"Pass '{typeof(TypeList).ToFullyQualifiedSignatureName()}.{nameof(TypeList.Empty)}' for non-generic parameters.");
             MethodBase? methodBase = MethodInfo.GetMethodFromHandle(memberHandle);
             ParameterizedMemberData parameterizedMemberData;
             if (methodBase is MethodInfo methodInfo)

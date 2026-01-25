@@ -138,13 +138,7 @@
             : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{GetEventInfo().Name}' does not have a remove method.");
 
         public MethodData EventInvokerMethodData
-
-<<<<<<< TODO: Unmerged change from project 'BionicCode.Utilities.Net.Common (net10.0)', Before:
-          => this.invocatorMethodData ??= this.EventHandlerTypeData?.GetMethod(HelperExtensionsCommon.DelegateInvocatorMethodName, 0, ReadOnlySpan<MethodParameterInfo>.Empty)!;
-=======
-          => this.invocatorMethodData ??= this.EventHandlerTypeData?.GetMethod(ReflectionConstants.DelegateInvocatorMethodName, 0, ReadOnlySpan<MethodParameterInfo>.Empty)!;
->>>>>>> After
-          => this.invocatorMethodData ??= this.EventHandlerTypeData?.private GetMethod(Net.ReflectionConstants.DelegateInvocatorMethodName, 0, ReadOnlySpan<MethodParameterInfo>.Empty)!;
+          => this.invocatorMethodData ??= this.EventHandlerTypeData?.GetMethod(ReflectionConstants.DelegateInvocatorMethodName, ReadOnlySpan<TypeData>.Empty, ReadOnlySpan<MethodParameterInfo>.Empty)!;
 
         public TypeData EventHandlerTypeData
           => this.eventHandlerTypeData ??= GetEventInfo().EventHandlerType is Type eventHandlerType
