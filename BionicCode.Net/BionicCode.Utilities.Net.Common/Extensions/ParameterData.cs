@@ -113,11 +113,15 @@
           => this.isGenericMethodParameter ??= this.ParameterTypeData.IsGenericMethodParameter;
 
         public ParameterKind ParameterKind
-          => this.parameterKind ??= this.IsIn ? ParameterKind.In
-            : this.IsOut ? ParameterKind.Out
-            : this.IsRefReadOnly ? ParameterKind.RefReadOnly
-            : this.IsRef ? ParameterKind.Ref
-            : ParameterKind.Undefined;
+          => this.parameterKind ??= this.IsIn
+            ? ParameterKind.In
+            : this.IsOut
+                ? ParameterKind.Out
+                : this.IsRefReadOnly
+                    ? ParameterKind.RefReadOnly
+                    : this.IsRef
+                        ? ParameterKind.Ref
+                        : ParameterKind.Undefined;
 
         /// <summary>
         /// Gets the default value for the parameter, if one is defined.
