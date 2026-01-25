@@ -17,8 +17,8 @@ namespace BionicCode.Utilities.Net
         private static readonly Type ValueTaskType = typeof(ValueTask);
         private static readonly Type ValueTaskGenericType = typeof(ValueTask<>);
         private static readonly Type DelegateType = typeof(MulticastDelegate);
-        private static readonly BindingFlags BindingFlagsPublicMask = BindingFlags.Public | BindingFlags.NonPublic;
-        private static readonly BindingFlags BindingFlagsStaticMask = BindingFlags.Static | BindingFlags.Instance;
+        private const BindingFlags BindingFlagsPublicMask = BindingFlags.Public | BindingFlags.NonPublic;
+        private const BindingFlags BindingFlagsStaticMask = BindingFlags.Static | BindingFlags.Instance;
 
         private string? displayName;
         private string? shortDisplayName;
