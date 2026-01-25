@@ -76,5 +76,7 @@
         /// corresponds to the standard prefix applied to operator methods by the compiler.</remarks>
         /// <value>"op_" which is the prefix for operator methods in .NET.</value>
         internal const string OperatorMethodNamePrefix = "op_";
+
+        internal const string PropertySetterValueParameterName = "value";
     }
 }

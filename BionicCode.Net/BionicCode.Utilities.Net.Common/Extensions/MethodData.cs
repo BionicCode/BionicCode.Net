@@ -67,7 +67,7 @@
         private BasicMethodFingerprint? _basicMethodFingerprint;
         private MemberData? _accessedMember;
 
-        public MethodData(MethodInfo methodInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
+        internal MethodData(MethodInfo methodInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
             : base(methodInfo, SymbolKind.MemberMethod, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(methodInfo, nameof(methodInfo));
@@ -1287,7 +1287,7 @@
 
                 MethodData? accessorMethod = isSetter
                     ? propertyData.CanWrite
-                        ? propertyData.SetValueMethodData
+                        ? propertyData.PropertySetMethodData
                         : null
                     : propertyData.CanRead
                         ? propertyData.PropertyGetMethodData

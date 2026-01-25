@@ -11,6 +11,7 @@
     {
         private static readonly ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoData> SymbolInfoDataCache = new ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoData>();
         private static readonly ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoDataCacheKey> AnonymousSymbolDataCacheKeyMap = new ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoDataCacheKey>();
+        private static readonly ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoDataCacheKey> IndexerParameterSymbolDataCacheKeyMap = new ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoDataCacheKey>();
         private const string MemberNotFoundArgumentExceptionMessage = "Unable to find the {0} named '{1}'{2}on the type '{3}'.";
         private const string InvalidDeclaringTypeHandleFoundInKeyExceptionMessage = $"The key's property '{nameof(SymbolInfoDataCacheKey)}.{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type.";
         private const string DeclaringTypeHandleInKeyIsDefaultExceptionMessage = $"The value 'default' is not a valid value for the key's '{nameof(SymbolInfoDataCacheKey)}.{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}' property. The property must reference a valid declaring type handle.";
@@ -103,40 +104,12 @@
         public static MethodData GetOrCreateSymbolInfoDataCacheEntry(MethodInfo methodInfo)
         {
             SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForMethod(methodInfo);
-            BindingFlags visibility = CreateVisibilityFlags(methodInfo);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(methodInfo, key));
 
             // REMOVE::after testing
             Debug.WriteLine($"Found SymbolInfoData entry for {methodInfo.GetType()}");
 
             return (MethodData)symbolInfoData;
-        }
-
-        private static BindingFlags CreateMethodVisibilityFlags(MethodBase methodOrConstructor)
-        {
-            BindingFlags visibility = BindingFlags.Default;
-            if (methodOrConstructor.IsPublic)
-            {
-                visibility |= BindingFlags.Public;
-            }
-            else if (methodOrConstructor.IsPrivate)
-            {
-                visibility |= BindingFlags.NonPublic;
-            }
-            else if (methodOrConstructor.IsFamily)
-            {
-                visibility |= BindingFlags.NonPublic;
-            }
-            else if (methodOrConstructor.IsFamilyOrAssembly)
-            {
-                visibility |= BindingFlags.NonPublic;
-            }
-            else if (methodOrConstructor.IsFamilyAndAssembly)
-            {
-                visibility |= BindingFlags.NonPublic;
-            }
-
-            return visibility;
         }
 
         public static ConstructorData GetOrCreateSymbolInfoDataCacheEntry(ConstructorInfo constructorInfo)
@@ -185,13 +158,46 @@
 
         public static ParameterData GetOrCreateSymbolInfoDataCacheEntry(ParameterInfo parameterInfo)
         {
-            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForParameter(parameterInfo);
+            MemberInfo member = parameterInfo.Member;
+            SymbolInfoDataCacheKey cacheKey;
+            // If the 'ParameterInfo.Member' property returns a 'PropertyInfo' then the current parameter 'parameterInfo'
+            // was obtained via PropertyInfo.GetIndexParameters method call. As a result, the parameter's association to the property's accessors is ambiguous.
+            // We need to normalize it to remove association ambiguity by explicitly associating it with a property's accessor method.
+            // We basically replace the current 'GetIndexerParameters()' based 'propertyInfo' argument with a PropertyInfo from an accessor method.
+            if (member is PropertyInfo propertyInfo)
+            {
+                PropertyData propertyData = propertyInfo.ToPropertyData();
+                SymbolInfoDataCacheKey normalizedParameterDataCacheKey = ConvertIndexerPropertyToAccessorAssociatedParameterCacheKey(propertyData, parameterInfo.Position);
+
+                cacheKey = normalizedParameterDataCacheKey;
+            }
+            else
+            {
+                cacheKey = SymbolInfoDataCacheKey.CreateForParameter(parameterInfo);
+            }
+
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new ParameterData(parameterInfo, key));
 
             // REMOVE::after testing
             Debug.WriteLine($"Found SymbolInfoData entry for {parameterInfo.GetType()}");
 
             return (ParameterData)symbolInfoData;
+        }
+
+        internal static SymbolInfoDataCacheKey ConvertIndexerPropertyToAccessorAssociatedParameterCacheKey(PropertyData propertyData, int parameterIndex)
+        {
+            SymbolInfoDataCacheKey normalizedParameterDataCacheKey = SymbolReflectionInfoCache.IndexerParameterSymbolDataCacheKeyMap.GetOrAdd(propertyData.CacheKey,
+                key =>
+                {
+                    // By convention, the getter takes precedence over the setter
+                    MethodData accessorMethod = propertyData.CanRead
+                            ? propertyData.PropertyGetMethodData
+                            : propertyData.PropertySetMethodData;
+                    ParameterData parameterData = accessorMethod.Parameters[parameterIndex];
+                    return parameterData.CacheKey;
+                });
+
+            return normalizedParameterDataCacheKey;
         }
 
         /// <summary>
@@ -736,17 +742,28 @@
                 if (methodBase is ConstructorInfo constructorInfo)
                 {
                     ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
-                    parameterDataCandidate = constructorData.Parameters.FirstOrDefault(
-                        parameterData => parameterData.Name.Equals(cacheKey.SymbolName, StringComparison.Ordinal)
-                        && parameterData.Position == cacheKey.ParameterPosition);
+                    if (cacheKey.ParameterPosition >= constructorData.Parameters.Count)
+                    {
+                        throw new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided parameter position is out of range for the constructor.");
+                    }
+
+                    parameterDataCandidate = constructorData.Parameters[cacheKey.ParameterPosition];
                 }
                 else
                 {
                     var methodInfo = (MethodInfo)methodBase;
                     MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-                    parameterDataCandidate = methodData.Parameters.FirstOrDefault(
-                        parameterData => parameterData.Name.Equals(cacheKey.SymbolName, StringComparison.Ordinal)
-                        && parameterData.Position == cacheKey.ParameterPosition);
+                    if (cacheKey.ParameterPosition >= methodData.Parameters.Count)
+                    {
+                        throw new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided parameter position is out of range for the method.");
+                    }
+
+                    parameterDataCandidate = methodData.Parameters[cacheKey.ParameterPosition];
+                }
+
+                if (!parameterDataCandidate.Name.Equals(cacheKey.SymbolName, StringComparison.Ordinal))
+                {
+                    throw new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided parameter position does not map to the provided parameter name.");
                 }
 
                 return parameterDataCandidate ?? throw new InvalidReflectionCacheKeyException();
@@ -754,9 +771,17 @@
             else if (declaringTypeData is not null && declaringTypeData.IsDelegate)
             {
                 MethodData methodData = declaringTypeData.DelegateInvokeMethodData;
-                parameterDataCandidate = methodData.Parameters.FirstOrDefault(
-                    parameterData => parameterData.Name.Equals(cacheKey.SymbolName, StringComparison.Ordinal)
-                    && parameterData.Position == cacheKey.ParameterPosition);
+                if (cacheKey.ParameterPosition >= methodData.Parameters.Count)
+                {
+                    throw new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided parameter position is out of range for the delegate invoke method.");
+                }
+
+                parameterDataCandidate = methodData.Parameters[cacheKey.ParameterPosition];
+
+                if (!parameterDataCandidate.Name.Equals(cacheKey.SymbolName, StringComparison.Ordinal))
+                {
+                    throw new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided parameter position does not map to the provided parameter name.");
+                }
 
                 if (parameterDataCandidate is not null)
                 {
@@ -774,33 +799,36 @@
 
                 if (cacheKey.ParameterizedMemberKind is ParameterizedSymbolKind.MemberMethod or ParameterizedSymbolKind.Undefined)
                 {
-                    foreach (MethodData methodData in declaringTypeData.EnumerateMethods())
+                    if (declaringTypeData.TryGetMethodByName(cacheKey.ParameterMemberName, out MethodList? methods))
                     {
-                        if (isParameterMethodNameDefined
-                            && !methodData.Name.Equals(cacheKey.ParameterMemberName, StringComparison.Ordinal))
+                        foreach (MethodData methodData in methods)
                         {
-                            continue;
-                        }
+                            if (isParameterMethodNameDefined
+                                && !methodData.Name.Equals(cacheKey.ParameterMemberName, StringComparison.Ordinal))
+                            {
+                                continue;
+                            }
 
-                        if (methodData.Parameters.FirstOrDefault(parameterData => parameterData.Name == cacheKey.SymbolName) is not ParameterData parameterCandidate
-                            || parameterCandidate.Position != cacheKey.ParameterPosition)
-                        {
-                            continue;
-                        }
+                            if (methodData.Parameters.FirstOrDefault(parameterData => parameterData.Name == cacheKey.SymbolName) is not ParameterData parameterCandidate
+                                || parameterCandidate.Position != cacheKey.ParameterPosition)
+                            {
+                                continue;
+                            }
 
-                        if (isParameterKindDefined && cacheKey.ParameterKind != parameterCandidate.ParameterKind)
-                        {
-                            continue;
-                        }
+                            if (isParameterKindDefined && cacheKey.ParameterKind != parameterCandidate.ParameterKind)
+                            {
+                                continue;
+                            }
 
-                        parameterDataCandidate = parameterCandidate;
-                        discoveredMethodCandidateCount++;
-                        isCandidateAmbiguous = isAmbiguityExpected && discoveredMethodCandidateCount > 1;
+                            parameterDataCandidate = parameterCandidate;
+                            discoveredMethodCandidateCount++;
+                            isCandidateAmbiguous = isAmbiguityExpected && discoveredMethodCandidateCount > 1;
 
-                        ThrowIfParameterCandidateIsAmbiguous(isCandidateAmbiguous);
-                        if (!isAmbiguityExpected && discoveredMethodCandidateCount == 1)
-                        {
-                            break;
+                            ThrowIfParameterCandidateIsAmbiguous(isCandidateAmbiguous);
+                            if (!isAmbiguityExpected && discoveredMethodCandidateCount == 1)
+                            {
+                                break;
+                            }
                         }
                     }
 
@@ -861,7 +889,7 @@
                             continue;
                         }
 
-                        MethodData? propertyAccessorData = propertyData.PropertyGetMethodData ?? propertyData.SetValueMethodData;
+                        MethodData? propertyAccessorData = propertyData.PropertyGetMethodData ?? propertyData.PropertySetMethodData;
                         if (propertyAccessorData is null
                             || propertyAccessorData.Parameters.FirstOrDefault(parameterData => parameterData.Name.Equals(cacheKey.SymbolName, StringComparison.Ordinal)) is not ParameterData parameterCandidate
                             || parameterCandidate.Position != cacheKey.ParameterPosition)

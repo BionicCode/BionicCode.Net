@@ -35,7 +35,7 @@
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
 
-        public EventData(EventInfo eventInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
+        internal EventData(EventInfo eventInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
             : base(eventInfo, SymbolKind.MemberEvent, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(eventInfo, nameof(eventInfo));

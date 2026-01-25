@@ -44,7 +44,7 @@
         private bool? _isPropertySetterParameter;
         private bool _isIndexerAccessorAmbiguous;
 
-        public ParameterData(ParameterInfo parameterInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
+        internal ParameterData(ParameterInfo parameterInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
             : base(parameterInfo.Name, SymbolKind.Parameter, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(parameterInfo, nameof(parameterInfo));
@@ -205,7 +205,7 @@
             // Give the getter precedence over the setter.
             return propertyData.CanRead
                 ? propertyData.PropertyGetMethodData
-                : propertyData.SetValueMethodData;
+                : propertyData.PropertySetMethodData;
         }
 
         public TypeData ParameterTypeData

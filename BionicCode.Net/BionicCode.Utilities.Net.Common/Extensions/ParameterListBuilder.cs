@@ -54,18 +54,6 @@
             return parameters.ToParameterList();
         }
 
-        internal static ParameterList CreateForIndexer(PropertyData propertyData)
-        {
-            ArgumentNullException.ThrowIfNull(propertyData);
-            return CreateInternal(propertyData, PropertyParameterSource.Indexer);
-        }
-
-        internal static ParameterList CreateForIndexer(PropertyInfo propertyInfo)
-        {
-            ArgumentNullException.ThrowIfNull(propertyInfo);
-            return CreateInternal(propertyInfo.ToPropertyData(), PropertyParameterSource.Indexer);
-        }
-
         internal static ParameterList CreateForPropertyGet(PropertyData propertyData)
         {
             ArgumentNullException.ThrowIfNull(propertyData);
@@ -92,26 +80,9 @@
 
         private static ParameterList CreateInternal(PropertyData propertyData, PropertyParameterSource propertyParameterSource)
         {
-            // Use PropertyInfo for parameter related operations to avoid circular references in PropertyData
-            PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
-
             ParameterList parameters = ParameterList.Empty;
             switch (propertyParameterSource)
             {
-                case PropertyParameterSource.Indexer:
-                    {
-                        ParameterInfo[] indexParameters = propertyInfo.GetIndexParameters();
-                        if (indexParameters.Length == 0)
-                        {
-                            return parameters;
-                        }
-
-                        parameters = propertyInfo.GetIndexParameters()
-                            .Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry)
-                            .ToParameterList();
-
-                        break;
-                    }
                 case PropertyParameterSource.PropertySetMethod:
                     {
                         if (!propertyData.CanWrite)
@@ -119,7 +90,7 @@
                             return parameters;
                         }
 
-                        parameters = propertyData.SetValueMethodData.Parameters;
+                        parameters = propertyData.PropertySetMethodParameters;
 
                         break;
                     }
@@ -130,7 +101,7 @@
                             return parameters;
                         }
 
-                        parameters = propertyData.PropertyGetMethodData.Parameters;
+                        parameters = propertyData.PropertyGetMethodParameters;
 
                         break;
                     }
@@ -169,7 +140,6 @@
         private enum PropertyParameterSource
         {
             Undefined,
-            Indexer,
             PropertySetMethod,
             PropertyGetMethod,
         }

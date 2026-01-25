@@ -85,7 +85,7 @@ namespace BionicCode.Utilities.Net
         private bool? _isNestedFamANDAssem;
         private bool? _isVisible;
 
-        public TypeData(Type type, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(type.Name, SymbolKind.Type, symbolInfoDataCacheKey)
+        internal TypeData(Type type, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(type.Name, SymbolKind.Type, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(type, nameof(type));
 

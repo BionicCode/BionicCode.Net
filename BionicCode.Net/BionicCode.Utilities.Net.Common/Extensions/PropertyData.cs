@@ -25,7 +25,6 @@ namespace BionicCode.Utilities.Net
         private AccessModifier propertyAccessModifier;
         private AccessModifier setAccessorAccessModifier;
         private AccessModifier getAccessorAccessModifier;
-        private ParameterList? indexerParameters;
         private ParameterList? _getMethodParameters;
         private ParameterList? _setMethodParameters;
         private TypeData? propertyTypeData;
@@ -52,7 +51,7 @@ namespace BionicCode.Utilities.Net
         private SymbolComponentInfo? symbolComponentInfo;
         private bool? isSetMethodReadOnly;
 
-        public PropertyData(PropertyInfo propertyInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
+        internal PropertyData(PropertyInfo propertyInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
             : base(propertyInfo, SymbolKind.MemberProperty, symbolInfoDataCacheKey)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
@@ -838,7 +837,7 @@ namespace BionicCode.Utilities.Net
 
         private void GetAccessors()
         {
-            (AccessModifier propertyModifier, AccessModifier getMethodModifier, AccessModifier setMethodModifier) = PropertyData.GetPropertyAccessModifier(this.PropertyGetMethodData, this.SetValueMethodData);
+            (AccessModifier propertyModifier, AccessModifier getMethodModifier, AccessModifier setMethodModifier) = PropertyData.GetPropertyAccessModifier(this.PropertyGetMethodData, this.PropertySetMethodData);
             this.propertyAccessModifier = propertyModifier;
             this.setAccessorAccessModifier = setMethodModifier;
             this.getAccessorAccessModifier = getMethodModifier;
@@ -847,18 +846,18 @@ namespace BionicCode.Utilities.Net
         public bool IsIndexer
           => this.IndexerParameters.HasItems;
 
-        /// <summary>
-        /// Gets the indexer parameters for this property as returned by <see cref="PropertyInfo.GetIndexParameters"/>.
-        /// </summary>
-        /// <remarks>
-        /// This list intentionally mirrors the .NET API behavior: it represents the shared indexer parameters for both the getter
-        /// and setter and therefore does not include the compiler-generated <c>value</c> parameter of the setter.
-        /// As a result, association with a specific accessor method can be ambiguous when both accessors exist.
-        /// If accessor association matters (e.g., to distinguish getter vs. setter parameters), prefer
-        /// <see cref="PropertyGetMethodParameters"/> and <see cref="PropertySetMethodParameters"/> instead.
-        /// </remarks>
-        public ParameterList IndexerParameters
-          => this.indexerParameters ??= ParameterListBuilder.CreateForIndexer(this);
+        ///// <summary>
+        ///// Gets the indexer parameters for this property as returned by <see cref="PropertyInfo.GetIndexParameters"/>.
+        ///// </summary>
+        ///// <remarks>
+        ///// This list intentionally mirrors the .NET API behavior: it represents the shared indexer parameters for both the getter
+        ///// and setter and therefore does not include the compiler-generated <c>value</c> parameter of the setter.
+        ///// As a result, association with a specific accessor method can be ambiguous when both accessors exist.
+        ///// If accessor association matters (e.g., to distinguish getter vs. setter parameters), prefer
+        ///// <see cref="PropertyGetMethodParameters"/> and <see cref="PropertySetMethodParameters"/> instead.
+        ///// </remarks>
+        //public ParameterList IndexerParameters
+        //  => this.indexerParameters ??= ParameterListBuilder.CreateForIndexer(this);
 
         /// <summary>
         /// Gets the parameters of the property getter method (including indexer parameters only).
@@ -924,7 +923,7 @@ namespace BionicCode.Utilities.Net
 
         public bool IsSealed
           => this.isSealed ??= (this.CanRead && this.PropertyGetMethodData!.IsSealed)
-            || (this.CanWrite && this.SetValueMethodData!.IsSealed);
+            || (this.CanWrite && this.PropertySetMethodData!.IsSealed);
 
         public bool CanWrite
           => this.canWrite ??= GetPropertyInfo().CanWrite;
@@ -945,7 +944,7 @@ namespace BionicCode.Utilities.Net
                     : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{GetPropertyInfo().Name}' does not have a get method.")
                 : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{GetPropertyInfo().Name}' does not have a get method. Check '{nameof(PropertyData)}.{nameof(PropertyData.CanRead)}' before access.");
 
-        public MethodData SetValueMethodData
+        public MethodData PropertySetMethodData
           => this.setMethodData ??= GetPropertyInfo() is PropertyInfo propertyInfo && propertyInfo.CanWrite
             ? propertyInfo.GetSetMethod(true) is MethodInfo propertySetter
                 ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertySetter)
@@ -997,14 +996,14 @@ namespace BionicCode.Utilities.Net
 
         public override bool IsStatic
           => this.isStatic ??= (this.CanRead && this.PropertyGetMethodData!.IsStatic)
-            || (this.CanWrite && this.SetValueMethodData!.IsStatic);
+            || (this.CanWrite && this.PropertySetMethodData!.IsStatic);
 
         public bool IsSetMethodReadOnly
-          => this.isSetMethodReadOnly ??= this.CanWrite && this.SetValueMethodData!.AttributeData.Any(data => data.AttributeType == typeof(IsReadOnlyAttribute));
+          => this.isSetMethodReadOnly ??= this.CanWrite && this.PropertySetMethodData!.AttributeData.Any(data => data.AttributeType == typeof(IsReadOnlyAttribute));
 
         public bool IsOverride
           => this.isOverride ??= (this.CanRead && this.PropertyGetMethodData!.IsOverride)
-            || (this.CanWrite && this.SetValueMethodData!.IsOverride);
+            || (this.CanWrite && this.PropertySetMethodData!.IsOverride);
 
         public override bool IsPublic
             => this._isPublic ??= this.AccessModifier == AccessModifier.Public;
@@ -1064,7 +1063,7 @@ namespace BionicCode.Utilities.Net
               ? SymbolAttributes.IndexerProperty
               : SymbolAttributes.Property;
 
-            MethodData? accessorData = propertyData.PropertyGetMethodData ?? propertyData.SetValueMethodData;
+            MethodData? accessorData = propertyData.PropertyGetMethodData ?? propertyData.PropertySetMethodData;
             if (accessorData is null)
             {
                 return SymbolAttributes.Undefined;
@@ -1107,7 +1106,7 @@ namespace BionicCode.Utilities.Net
         {
             if (propertyData.CanWrite)
             {
-                Type[] requiredModifiers = propertyData.SetValueMethodData!.GetMethodInfo().ReturnParameter.GetRequiredCustomModifiers();
+                Type[] requiredModifiers = propertyData.PropertySetMethodData!.GetMethodInfo().ReturnParameter.GetRequiredCustomModifiers();
                 if (requiredModifiers.Length > 0)
                 {
                     return requiredModifiers.FirstOrDefault(type => type == typeof(IsExternalInit)) != default;

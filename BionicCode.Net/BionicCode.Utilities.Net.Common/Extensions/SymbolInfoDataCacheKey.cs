@@ -302,7 +302,7 @@
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.MemberEvent,
                 ParameterKind.Undefined,
-                ParameterizedSymbolKind.Delegate,
+                ParameterizedSymbolKind.Undefined,
                 false);
         }
 
@@ -382,7 +382,7 @@
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.Type,
                 ParameterKind.Undefined,
-                type.IsDelegate() ? ParameterizedSymbolKind.Delegate : ParameterizedSymbolKind.Undefined,
+                ParameterizedSymbolKind.Undefined,
                 false);
         }
 
@@ -439,6 +439,19 @@
             ArgumentNullException.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
             MemberInfo member = parameterInfo.Member;
+
+            // If the 'ParameterInfo.Member' property returns a 'PropertyInfo' then the current parameter 'parameterInfo'
+            // was obtained via PropertyInfo.GetIndexParameters method call. As a result, the parameter's association to the property's accessors is ambiguous.
+            // We need to normalize it to remove association ambiguity by explicitly associating it with a property's accessor method.
+            // We basically replace the current 'GetIndexerParameters()' based 'propertyInfo' argument with a PropertyInfo from an accessor method.
+            if (member is PropertyInfo propertyInfo)
+            {
+                PropertyData? propertyData = propertyInfo.ToPropertyData();
+                SymbolInfoDataCacheKey normalizedParameterDataCacheKey = SymbolReflectionInfoCache.ConvertIndexerPropertyToAccessorAssociatedParameterCacheKey(propertyData, parameterInfo.Position);
+
+                return normalizedParameterDataCacheKey;
+            }
+
             Type? declaringType = member.DeclaringType;
             if (declaringType is null)
             {
@@ -448,19 +461,18 @@
             RuntimeTypeHandle declaringTypeHandle = declaringType.TypeHandle;
             Type parameterType = parameterInfo.ParameterType;
             RuntimeTypeHandle parameterTypeHandle = parameterType.TypeHandle;
-            RuntimeMethodHandle methodHandle = member is MethodBase methodBaseInfo // Method or constructor parameter or property setter or getter parameter where the parameter is obtained via MethodInfo.GetParameters method call.
+
+            // Method or constructor parameter or property setter or getter parameter where the parameter was obtained via MethodInfo.GetParameters method call
+            // or was obtained via PropertyInfo.GetIndexerParameters method but normalized to a method associated parameter.
+            RuntimeMethodHandle methodHandle = member is MethodBase methodBaseInfo
                 ? methodBaseInfo.MethodHandle
-                : parameterInfo.Member is PropertyInfo propertyInfo // Indexer parameter (obtained via PropertyInfo.GetIndexerParameters method)
-                    ? ParameterData.ChoseAccessorForIndexerParameter(propertyInfo.ToPropertyData()).Handle // Fetch cached PropertyData from cache to improve performance
-                    : throw new NotSupportedException($"The member '{member.Name}' is not supported. '{typeof(ParameterInfo).ToFullyQualifiedSignatureName}.{nameof(ParameterInfo.Member)} must return a '{typeof(MethodBase).ToFullyQualifiedSignatureName()}' or '{typeof(PropertyInfo).ToFullyQualifiedSignatureName()}'.");
+                : throw new NotSupportedException($"The member '{member.Name}' is not supported. '{typeof(ParameterInfo).ToFullyQualifiedSignatureName}.{nameof(ParameterInfo.Member)} must return a '{typeof(MethodBase).ToFullyQualifiedSignatureName()}' or '{typeof(PropertyInfo).ToFullyQualifiedSignatureName()}'.");
 
             ParameterizedSymbolKind parameterizedSymbolKind = member is MethodInfo
                 ? ParameterizedSymbolKind.MemberMethod
                 : member is ConstructorInfo
                     ? ParameterizedSymbolKind.MemberConstructor
-                    : member is PropertyInfo
-                        ? ParameterizedSymbolKind.MemberIndexerProperty
-                        : ParameterizedSymbolKind.Undefined;
+                    : ParameterizedSymbolKind.Undefined;
 
             return new SymbolInfoDataCacheKey(parameterInfo.Name ?? string.Empty,
                 parameterInfo.Member.Name,
@@ -685,7 +697,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterTypeHandle);
             ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle);
             ArgumentException.ThrowIfNullOrWhiteSpace(parameterName);
-            if (parameterizedSymbolKind == ParameterizedSymbolKind.MemberIndexerProperty)
+            if (parameterizedSymbolKind == ParameterizedSymbolKind.MemberIndexerPropertyGet
+                || parameterizedSymbolKind == ParameterizedSymbolKind.MemberIndexerPropertySet)
             {
                 // For indexer properties we allow empty or whitespace names.
                 memberName = ReflectionConstants.IndexerName;
@@ -701,7 +714,8 @@
             ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(
                 parameterizedSymbolKind,
                 [ParameterizedSymbolKind.Undefined],
-                nameof(parameterizedSymbolKind), $"Invalid argument '{nameof(parameterizedSymbolKind)}'. The value '{nameof(ParameterizedMemberKind)}.{ParameterizedSymbolKind.Undefined}' is not allowed.");
+                nameof(parameterizedSymbolKind),
+                $"Invalid argument '{nameof(parameterizedSymbolKind)}'. The value '{nameof(ParameterizedMemberKind)}.{ParameterizedSymbolKind.Undefined}' is not allowed.");
             ArgumentNullExceptionAdvanced.ThrowIfNull(
                 memberGenericMethodParameters,
                 nameof(memberGenericMethodParameters),
@@ -709,7 +723,8 @@
             ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(
                 parameterKind,
                 [ParameterKind.Undefined],
-                nameof(parameterKind), $"Invalid argument '{nameof(parameterKind)}'. The value '{nameof(ParameterKind)}.{ParameterKind.Undefined}' is not allowed.");
+                nameof(parameterKind),
+                $"Invalid argument '{nameof(parameterKind)}'. The value '{nameof(ParameterKind)}.{ParameterKind.Undefined}' is not allowed.");
 
             return new SymbolInfoDataCacheKey(parameterName,
                 memberName,
@@ -757,6 +772,10 @@
             ArgumentNullExceptionAdvanced.ThrowIfDefault(memberHandle);
             ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<ParameterKind>(parameterKind);
             ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<ParameterizedSymbolKind>(parameterizedSymbolKind);
+            ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(
+                parameterizedSymbolKind,
+                [ParameterKind.Undefined],
+                nameof(parameterizedSymbolKind), $"Invalid argument '{nameof(parameterKind)}'. The value '{nameof(ParameterKind)}.{ParameterKind.Undefined}' is not allowed.");
             ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(
                 parameterizedSymbolKind,
                 [ParameterizedSymbolKind.Undefined],

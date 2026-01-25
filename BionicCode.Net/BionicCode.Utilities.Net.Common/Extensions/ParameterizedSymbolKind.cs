@@ -5,8 +5,8 @@
         Undefined = 0,
         MemberMethod,
         MemberNormalPropertySet,
-        MemberIndexerProperty,
-        Delegate,
+        MemberIndexerPropertyGet,
+        MemberIndexerPropertySet,
         MemberConstructor,
     }
 }

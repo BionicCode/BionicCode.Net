@@ -31,7 +31,7 @@
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
 
-        public ConstructorData(ConstructorInfo constructorInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
+        internal ConstructorData(ConstructorInfo constructorInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
             : base(constructorInfo, SymbolKind.MemberConstructor, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(constructorInfo, nameof(constructorInfo));
