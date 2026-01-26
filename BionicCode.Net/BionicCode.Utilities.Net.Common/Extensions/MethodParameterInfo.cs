@@ -62,16 +62,22 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey, nameof(parameterInfoDataCacheKey));
             ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey.DeclaringTypeHandle, nameof(parameterInfoDataCacheKey));
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey.CacheKeyParameterDescriptor, nameof(parameterInfoDataCacheKey));
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey.CacheKeyParameterMemberDescriptor, nameof(parameterInfoDataCacheKey));
+
+            CacheKeyParameterDescriptor parameterDesciptor = parameterInfoDataCacheKey.CacheKeyParameterDescriptor;
+            CacheKeyParameterMemberDescriptor declaringMemberDescriptor = parameterInfoDataCacheKey.CacheKeyParameterMemberDescriptor;
             ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(
-                parameterInfoDataCacheKey.ParameterKind,
+                parameterDesciptor.ParameterKind,
                 [ParameterKind.Undefined],
                 nameof(parameterInfoDataCacheKey),
                 $"The property '{nameof(MethodParameterInfo.Kind)}' of the argument '{parameterInfoDataCacheKey}' cannot be of value '{nameof(ParameterKind)}.{nameof(ParameterKind.Undefined)}'.");
-            this.Position = parameterInfoDataCacheKey.ParameterPosition;
-            this.MethodName = parameterInfoDataCacheKey.ParameterMemberName;
-            this.ParameterTypeHandle = parameterInfoDataCacheKey.SymbolTypeHandle;
-            this.Kind = parameterInfoDataCacheKey.ParameterKind;
-            this.DeclaringTypeHandle = parameterInfoDataCacheKey.DeclaringTypeHandle;
+
+            this.Position = parameterDesciptor.ParameterPosition;
+            this.MethodName = declaringMemberDescriptor.DeclaringMemberName;
+            this.ParameterTypeHandle = parameterDesciptor.ParameterTypeHandle;
+            this.Kind = parameterDesciptor.ParameterKind;
+            this.DeclaringTypeHandle = declaringMemberDescriptor.DeclaringTypeHandle;
         }
 
         public override bool Equals(object? obj) => obj is MethodParameterInfo info && Equals(info);

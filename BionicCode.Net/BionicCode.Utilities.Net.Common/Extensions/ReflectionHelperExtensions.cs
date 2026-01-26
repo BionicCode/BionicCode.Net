@@ -1239,7 +1239,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
-            _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), typeData, isFullyQualifiedName: false, isGenericTypeParameterIncluded);
+            using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
+            _ = AppendDisplayNameInternal(pooledStringBuilder, typeData, isFullyQualifiedName: false, isGenericTypeParameterIncluded);
             return nameBuilder;
         }
 
@@ -1259,7 +1260,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-            _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), methodData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+            using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
+            _ = AppendDisplayNameInternal(pooledStringBuilder, methodData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
         }
 
@@ -1279,7 +1281,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
             EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
-            _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), eventData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+            using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
+            _ = AppendDisplayNameInternal(pooledStringBuilder, eventData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
         }
 
@@ -1299,7 +1302,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
             ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
-            _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), constructorData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+            using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
+            _ = AppendDisplayNameInternal(pooledStringBuilder, constructorData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
         }
 
@@ -1319,7 +1323,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
             PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
-            _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), propertyData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+            using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
+            _ = AppendDisplayNameInternal(pooledStringBuilder, propertyData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
         }
 
@@ -1335,7 +1340,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
             ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
-            _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), parameterData);
+            using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
+            _ = AppendDisplayNameInternal(pooledStringBuilder, parameterData);
             return nameBuilder;
         }
 
@@ -1355,7 +1361,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
             FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
-            _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), fieldData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+            using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
+            _ = AppendDisplayNameInternal(pooledStringBuilder, fieldData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
         }
 
@@ -1375,7 +1382,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(type, nameof(type));
 
             TypeData typeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(type);
-            _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), typeData, isFullyQualifiedName: true, isGenericTypeParameterIncluded);
+            using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
+            _ = AppendDisplayNameInternal(pooledStringBuilder, typeData, isFullyQualifiedName: true, isGenericTypeParameterIncluded);
             return nameBuilder;
         }
 
@@ -1385,7 +1393,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
-            _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), methodData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+            using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
+            _ = AppendDisplayNameInternal(pooledStringBuilder, methodData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
         }
 
@@ -1395,7 +1404,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
             EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
-            _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), eventData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+            using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
+            _ = AppendDisplayNameInternal(pooledStringBuilder, eventData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
         }
 
@@ -1405,7 +1415,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
             ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
-            _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), constructorData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+            using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
+            _ = AppendDisplayNameInternal(pooledStringBuilder, constructorData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
         }
 
@@ -1415,7 +1426,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
             PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
-            _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), propertyData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+            using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
+            _ = AppendDisplayNameInternal(pooledStringBuilder, propertyData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
         }
 
@@ -1425,7 +1437,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
             ParameterData parameterData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
-            _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), parameterData);
+            using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
+            _ = AppendDisplayNameInternal(pooledStringBuilder, parameterData);
             return nameBuilder;
         }
 
@@ -1435,7 +1448,8 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
             FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
-            _ = AppendDisplayNameInternal(PooledStringBuilder.Create(nameBuilder), fieldData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
+            using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
+            _ = AppendDisplayNameInternal(pooledStringBuilder, fieldData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
         }
 
@@ -1517,7 +1531,7 @@
                 {
                     _ = nameBuilder.Append('[');
 
-                    foreach (ParameterData indexerParameter in propertyData.IndexerParameters)
+                    foreach (ParameterData indexerParameter in propertyData.PropertyGetMethodParameters)
                     {
                         _ = nameBuilder.Append(indexerParameter.ParameterTypeData.ShortDisplayName);
                     }

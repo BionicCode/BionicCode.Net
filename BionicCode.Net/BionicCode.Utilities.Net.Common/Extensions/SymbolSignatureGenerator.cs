@@ -51,7 +51,7 @@
         /// </remarks>
         internal static string ToDisplayNameInternal(SymbolInfoData symbolInfoData, bool isFullyQualifiedName, bool isGenericTypeParameterIncluded, bool isDeclaringTypeIncluded)
         {
-            PooledStringBuilder nameBuilder = StringBuilderFactory.GetOrCreate();
+            using PooledStringBuilder nameBuilder = StringBuilderFactory.GetOrCreate();
 
             switch (symbolInfoData)
             {
@@ -69,7 +69,6 @@
             }
 
             string symbolName = nameBuilder.ToString();
-            nameBuilder.Recycle();
 
             return symbolName;
         }
@@ -90,7 +89,7 @@
         /// parameters.</returns>
         internal static SymbolComponentInfo ToSignatureComponentsInternal(MethodData methodData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
         {
-            SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
+            using SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
             {
                 IsSymbol = true,
                 HasExpressionTerminator = true,
@@ -210,7 +209,7 @@
         /// modifiers, attributes, name, generic parameters, and, for delegates, parameter and return type information.</returns>
         internal static SymbolComponentInfo ToSignatureComponentsInternal(TypeData typeData, bool isFullyQualifiedName, bool isCompact)
         {
-            SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: typeData.IsBuiltInType)
+            using SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: typeData.IsBuiltInType)
             {
                 IsSymbol = true,
             };
@@ -336,14 +335,14 @@
             TypeList interfaces = typeData.InterfacesData;
             if (isSubclass)
             {
-                var inheritedTypeComponent = new SymbolComponentInfo(isKeyword: typeData.BaseTypeData.IsBuiltInType);
+                using var inheritedTypeComponent = new SymbolComponentInfo(isKeyword: typeData.BaseTypeData.IsBuiltInType);
                 _ = inheritedTypeComponent.NameBuilder.Append(isFullyQualified ? typeData.BaseTypeData.FullyQualifiedDisplayName : typeData.BaseTypeData.Name);
                 symbolComponents.AddInheritedType(inheritedTypeComponent);
             }
 
             foreach (TypeData interfaceData in interfaces)
             {
-                var inheritedTypeComponent = new SymbolComponentInfo(isKeyword: false);
+                using var inheritedTypeComponent = new SymbolComponentInfo(isKeyword: false);
                 _ = inheritedTypeComponent.NameBuilder.Append(isFullyQualified ? interfaceData.FullyQualifiedDisplayName : interfaceData.Name);
                 symbolComponents.AddInheritedType(inheritedTypeComponent);
             }
@@ -376,7 +375,7 @@
 
                 foreach (TypeData constraintData in constraints)
                 {
-                    var constraint = new SymbolComponentInfo(isKeyword: constraintData.IsBuiltInType);
+                    using var constraint = new SymbolComponentInfo(isKeyword: constraintData.IsBuiltInType);
                     _ = constraint.NameBuilder.AppendDisplayNameInternal(constraintData, isFullyQualified, isGenericTypeParameterIncluded: true);
                     constraintComponents.AddGenericTypeConstraint(constraint);
                 }
@@ -407,7 +406,7 @@
         internal static SymbolComponentInfo ToSignatureComponentsInternal(ParameterData parameterData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
         {
             TypeData parameterTypeData = parameterData.ParameterTypeData;
-            SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: parameterTypeData.IsBuiltInType)
+            using SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: parameterTypeData.IsBuiltInType)
             {
                 IsSymbol = false,
                 IsParameter = true,
@@ -477,7 +476,7 @@
         /// name.</returns>
         internal static SymbolComponentInfo ToSignatureComponentsInternal(FieldData fieldData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
         {
-            SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
+            using SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
             {
                 IsSymbol = true,
                 HasExpressionTerminator = true,
@@ -546,7 +545,7 @@
         /// type, and name.</returns>
         internal static SymbolComponentInfo ToSignatureComponentsInternal(EventData eventData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
         {
-            SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
+            using SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
             {
                 IsSymbol = true,
                 HasExpressionTerminator = true,
@@ -612,7 +611,7 @@
         /// return type, name, parameters (for indexers), and accessor information.</returns>
         internal static SymbolComponentInfo ToSignatureComponentsInternal(PropertyData propertyData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
         {
-            SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
+            using SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
             {
                 IsSymbol = true,
                 HasExpressionTerminator = false,
@@ -661,7 +660,7 @@
             {
                 _ = symbolComponents.IsIndexer = true;
 
-                ParameterList parameters = propertyData.IndexerParameters;
+                ParameterList parameters = propertyData.PropertyGetMethodParameters;
                 if (parameters.HasItems)
                 {
                     foreach (ParameterData parameter in parameters)
@@ -726,7 +725,7 @@
         /// <returns>A SymbolComponentInfo object containing the formatted signature components of the specified constructor.</returns>
         internal static SymbolComponentInfo ToSignatureComponentsInternal(ConstructorData constructorData, bool isFullyQualifiedName, bool isDeclaringTypeIncluded, bool isCompact)
         {
-            SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
+            using SymbolComponentInfo symbolComponents = new SymbolComponentInfo(isKeyword: false)
             {
                 IsSymbol = true,
                 HasExpressionTerminator = true,
@@ -734,7 +733,7 @@
 
             SymbolAttributes symbolAttributes = constructorData.SymbolAttributes;
             IEnumerable<CustomAttributeData> customAttributesData = constructorData.AttributeData;
-            PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
+            using PooledStringBuilder signatureNameBuilder = StringBuilderFactory.GetOrCreate();
 
             if (symbolAttributes.HasFlag(SymbolAttributes.Final))
             {
@@ -1838,7 +1837,7 @@
                 _ = signatureNameBuilder.Append("this")
                   .Append('[');
 
-                ParameterList parameters = propertyData.IndexerParameters;
+                ParameterList parameters = propertyData.PropertyGetMethodParameters;
                 if (parameters.HasItems)
                 {
                     foreach (ParameterData parameter in parameters)

@@ -13,7 +13,7 @@
 
     internal class EventListBuilder : SymbolDataListBuilder<EventData>, IEventListBuilder
     {
-        private PropertyList? _builderResult;
+        private EventList? _builderResult;
 
         private EventListBuilder(RuntimeTypeHandle declaringTypeHandle) : base(declaringTypeHandle)
         {

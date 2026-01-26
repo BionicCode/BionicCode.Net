@@ -63,7 +63,7 @@
         private MethodList()
         {
             this.Methods = ImmutableList<MethodData>.Empty;
-            this._methodNameIndex = new Dictionary<string, MethodData[]>(0, StringComparer.Ordinal);
+            this._methodNameIndex = this.Methods.ToLookup(method => method.Name, StringComparer.Ordinal);
         }
 
         public bool TryGetMethodsByName(string methodName, out MethodList methodList)

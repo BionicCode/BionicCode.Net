@@ -37,8 +37,8 @@
         private Dictionary<int, string> KeyValuePairsReverse { get; }
 
         //[Profile]
-        [ProfilerPropertyArgument(12, Index = new[] { "A" })]
-        [ProfilerPropertyArgument(20, Index = new[] { "T" })]
+        [ProfilerPropertyArgument(12, IndexerArguments = new[] { "A" })]
+        [ProfilerPropertyArgument(20, IndexerArguments = new[] { "T" })]
         public int this[string key]
         {
             get => this.KeyValuePairs[key];
@@ -46,8 +46,8 @@
         }
 
         [Profile]
-        [ProfilerPropertyArgument("Twenty", Index = new object[] { 20 })]
-        [ProfilerPropertyArgument("Twelve", Index = new object[] { 12 })]
+        [ProfilerPropertyArgument("Twenty", IndexerArguments = new object[] { 20 })]
+        [ProfilerPropertyArgument("Twelve", IndexerArguments = new object[] { 12 })]
         public string this[int key]
         {
             get => this.KeyValuePairsReverse[key];
@@ -133,8 +133,8 @@
         private Dictionary<int, string> KeyValuePairsReverse { get; }
 
         [Profile]
-        [ProfilerPropertyArgument(12, Index = new[] { "A" })]
-        [ProfilerPropertyArgument(20, Index = new[] { "T" })]
+        [ProfilerPropertyArgument(12, IndexerArguments = new[] { "A" })]
+        [ProfilerPropertyArgument(20, IndexerArguments = new[] { "T" })]
         public int this[string key]
         {
             get => this.KeyValuePairs[key];
@@ -142,8 +142,8 @@
         }
 
         //[Profile]
-        [ProfilerPropertyArgument("Twenty", Index = new object[] { 20 })]
-        [ProfilerPropertyArgument("Twelve", Index = new object[] { 12 })]
+        [ProfilerPropertyArgument("Twenty", IndexerArguments = new object[] { 20 })]
+        [ProfilerPropertyArgument("Twelve", IndexerArguments = new object[] { 12 })]
         public string this[int key]
         {
             get => this.KeyValuePairsReverse[key];

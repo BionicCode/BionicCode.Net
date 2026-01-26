@@ -244,7 +244,7 @@
             foreach (ProfilerBatchResult result in profilerBatchResultGroup)
             {
                 _ = htmlDocumentBuilder
-                  .Append($@"<a class=""list-group-item list-group-item-action nav-link"" width=""20px"" href=""#{result.Index}"">'{result.Context.MethodInvokeInfo.ShortDisplayName.ToHtmlEncodedString()}' ({result.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue()})</a>");
+                  .Append($@"<a class=""list-group-item list-group-item-action nav-link"" width=""20px"" href=""#{result.Index}"">'{result.Context.ShortMemberDisplayName.ToHtmlEncodedString()}' ({profilerBatchResultGroup.TargetType.ToDisplayStringValue()})</a>");
             }
 
             string htmlDocumentContent = htmlDocumentBuilder.ToString();
@@ -258,7 +258,7 @@
             foreach (ProfilerBatchResult result in profilerBatchResultGroup)
             {
                 _ = htmlDocumentBuilder
-                  .Append($@"<a class=""list-group-item list-group-item-action nav-link"" href=""#{result.Index}"">'{result.Context.MethodInvokeInfo.ShortDisplayName.ToHtmlEncodedString()}' ({result.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue()}) results</a>");
+                  .Append($@"<a class=""list-group-item list-group-item-action nav-link"" href=""#{result.Index}"">'{result.Context.ShortMemberDisplayName.ToHtmlEncodedString()}' ({profilerBatchResultGroup.TargetType.ToDisplayStringValue()}) results</a>");
             }
 
             string htmlDocumentContent = htmlDocumentBuilder.ToString();
@@ -293,7 +293,7 @@
         <div style=""height: 100%; width: auto; border-left: 1px solid black; padding: 12px 12px 12px 12px;"">
           
           <span style=""font-weight: bold; font-size: 14pt"">Target Kind</span><br>
-      	  <span class=""valueSpan"">{batchResult.Context.MethodInvokeInfo.ProfiledTargetType.ToDisplayStringValue(toUpperCase: true).ToHtmlEncodedString()}</span><br><br>
+      	  <span class=""valueSpan"">{batchResultGroup.TargetType.ToDisplayStringValue(toUpperCase: true).ToHtmlEncodedString()}</span><br><br>
           <span style=""font-weight: bold; font-size: 14pt"">Conditions</span><br>
       	  <span class=""label-span"">Timestamp: </span><span class=""valueSpan"">{batchResult.TimeStamp}</span><br> 
       	  <span class=""label-span"">Target framework: </span><span class=""valueSpan"">{environmentInfo.RuntimeVersion}</span><br> 	

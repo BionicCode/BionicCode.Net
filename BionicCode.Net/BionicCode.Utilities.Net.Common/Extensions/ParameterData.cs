@@ -285,6 +285,11 @@
         public override string AssemblyName
           => this.assemblyName ??= this.MemberData.AssemblyName;
 
+        /// <summary>
+        /// Determine whether the parameter is passed by reference using the <see langword="ref"/> keyword.
+        /// </summary>
+        /// <param name="parameterData"></param>
+        /// <returns></returns>
         internal static bool IsRefInternal(ParameterData parameterData)
         {
             if (!parameterData.IsByRef || parameterData.IsOut)
@@ -298,6 +303,28 @@
                 && parameterInfo.GetCustomAttribute<RequiresLocationAttribute>() is null;
         }
 
+        /// <summary>
+        /// Determine whether the parameter is passed by reference using the <see langword="ref"/> keyword.
+        /// </summary>
+        /// <param name="parameterInfo"></param>
+        /// <returns></returns>
+        internal static bool IsRefInternal(ParameterInfo parameterInfo)
+        {
+            if (!parameterInfo.ParameterType.IsByRef || parameterInfo.IsOut)
+            {
+                return false;
+            }
+
+            // No readonly markers → plain ref           
+            return parameterInfo.GetCustomAttribute<IsReadOnlyAttribute>() is null
+                && parameterInfo.GetCustomAttribute<RequiresLocationAttribute>() is null;
+        }
+
+        /// <summary>
+        /// Determine whether the parameter is passed by reference using the <see langword="ref"/> <see langword="readonly"/> keywords.
+        /// </summary>
+        /// <param name="parameterData"></param>
+        /// <returns></returns>
         internal static bool IsRefReadOnlyInternal(ParameterData parameterData)
         {
             if (!parameterData.IsByRef || parameterData.IsOut)
@@ -305,8 +332,24 @@
                 return false;
             }
 
-            // No readonly markers → plain ref
+            // No readonly markers → plain ref readonly
             ParameterInfo parameterInfo = parameterData.GetParameterInfo();
+            return parameterInfo.GetCustomAttribute<RequiresLocationAttribute>() is not null;
+        }
+
+        /// <summary>
+        /// Determine whether the parameter is passed by reference using the <see langword="ref"/> <see langword="readonly"/> keywords.
+        /// </summary>
+        /// <param name="parameterInfo"></param>
+        /// <returns></returns>
+        internal static bool IsRefReadOnlyInternal(ParameterInfo parameterInfo)
+        {
+            if (!parameterInfo.ParameterType.IsByRef || parameterInfo.IsOut)
+            {
+                return false;
+            }
+
+            // No readonly markers → plain ref readonly
             return parameterInfo.GetCustomAttribute<RequiresLocationAttribute>() is not null;
         }
 

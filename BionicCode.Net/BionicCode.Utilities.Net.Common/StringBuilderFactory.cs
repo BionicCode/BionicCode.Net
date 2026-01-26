@@ -95,6 +95,9 @@ namespace BionicCode.Utilities.Net
             set => GetStringBuilderOrThrowIfRecycled()[index] = value;
         }
 
+        private PooledStringBuilder(StringBuilder stringBuilder)
+            => this.stringBuilder = stringBuilder;
+
         public static PooledStringBuilder Create()
             => StringBuilderFactory.GetOrCreate();
 
@@ -103,8 +106,6 @@ namespace BionicCode.Utilities.Net
 
         internal static PooledStringBuilder CreateInternal(StringBuilder stringBuilder)
             => new PooledStringBuilder(stringBuilder);
-
-        private PooledStringBuilder(StringBuilder stringBuilder) => this.stringBuilder = stringBuilder;
 
         private StringBuilder GetStringBuilderOrThrowIfRecycled()
             => this.stringBuilder ?? throw new InvalidOperationException(PooledStringBuilder.StringBuilderRecycledExceptionMessage);

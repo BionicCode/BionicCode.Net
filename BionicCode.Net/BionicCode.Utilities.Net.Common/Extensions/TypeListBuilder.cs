@@ -163,7 +163,7 @@
         }
 
         TypeList ITypeListBuilder.Build()
-            => this._builderResult ??= new TypeList(Build(), isIntegrityValidationEnabled: false);
+            => this._builderResult ??= new TypeList(Build());
     }
 
     internal static class TypeListBuilderExtensions

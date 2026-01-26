@@ -13,7 +13,7 @@
     /// attributes, parameters, and other symbol characteristics. Instances of this class are typically constructed and
     /// populated as part of a larger symbol processing workflow.</remarks>
     [DebuggerDisplay("Symbol name = {NameBuilder}")]
-    internal class SymbolComponentInfo
+    internal class SymbolComponentInfo : IDisposable
     {
         public ReadOnlyCollection<string> Modifiers { get; }
         public ReadOnlyCollection<SymbolComponentInfo> GenericTypeParameters { get; }
@@ -24,38 +24,24 @@
         public ReadOnlyCollection<(string PropertyName, string PropertyValue)> CustomAttributeNamedArgs { get; }
         public ReadOnlyCollection<SymbolComponentInfo> Parameters { get; }
 
-        private string? name;
-        public string Name
-        {
-            get
-            {
-                if (this.name is null)
-                {
-                    this.name = this.NameBuilder?.ToString() ?? string.Empty;
-                    this.NameBuilder?.Recycle();
-                }
+        public string Name { get; private set; } = string.Empty;
 
-                return this.name;
-            }
-        }
+        public string ValueName { get; private set; } = string.Empty;
 
-        private string valueName;
-        public string ValueName
-        {
-            get
-            {
-                if (this.valueName is null)
-                {
-                    this.valueName = this.ValueNameBuilder?.ToString() ?? string.Empty;
-                    this.ValueNameBuilder?.Recycle();
-                }
+        public bool IsCompleted { get; private set; }
 
-                return this.valueName;
-            }
-        }
+        private readonly PooledStringBuilder _nameBuilder;
+        public PooledStringBuilder NameBuilder
+            => this.IsCompleted
+                ? throw new InvalidOperationException($"Cannot access '{nameof(this.NameBuilder)}' after the '{nameof(SymbolComponentInfo)}' has been marked as completed.")
+                : this._nameBuilder;
 
-        public PooledStringBuilder NameBuilder { get; }
-        public PooledStringBuilder ValueNameBuilder { get; }
+        private readonly PooledStringBuilder _valueNameBuilder;
+        public PooledStringBuilder ValueNameBuilder
+            => this.IsCompleted
+                ? throw new InvalidOperationException($"Cannot access '{nameof(this.ValueNameBuilder)}' after the '{nameof(SymbolComponentInfo)}' has been marked as completed.")
+                : this._valueNameBuilder;
+
         public bool IsKeyword { get; set; }
         public bool IsExtensionMethodParameter { get; set; }
         public bool IsSymbol { get; set; }
@@ -132,15 +118,16 @@
             this.CustomAttributeConstructorArgs = new ReadOnlyCollection<string>(this.customAttributeConstructorArgs);
             this.customAttributeNamedArgs = new List<(string PropertyName, string PropertyValue)>();
             this.CustomAttributeNamedArgs = new ReadOnlyCollection<(string PropertyName, string PropertyValue)>(this.customAttributeNamedArgs);
-            this.NameBuilder = StringBuilderFactory.GetOrCreate();
-            this.ValueNameBuilder = StringBuilderFactory.GetOrCreate();
+            this._nameBuilder = StringBuilderFactory.GetOrCreate();
+            this._valueNameBuilder = StringBuilderFactory.GetOrCreate();
             this.Signature = string.Empty;
             this.ReturnType = null;
             this.IsKeyword = isKeyword;
             this.Indentation = 4;
         }
 
-        public SymbolComponentInfo(string name, bool isKeyword = false) : this(isKeyword) => _ = this.NameBuilder.Append(name);
+        public SymbolComponentInfo(string name, bool isKeyword = false) : this(isKeyword)
+            => _ = this.NameBuilder.Append(name);
 
         public void AddModifier(string modifier)
           => this.modifiersInternal.Add(modifier);
@@ -175,6 +162,18 @@
         public void AddParameter(SymbolComponentInfo parameter)
           => this.parametersInternal.Add(parameter);
 
+        public void Complete()
+        {
+            if (!this.IsCompleted)
+            {
+                this.Name = this.NameBuilder.ToString();
+                this.ValueName = this.ValueNameBuilder.ToString();
+                this.NameBuilder.Recycle();
+                this.ValueNameBuilder.Recycle();
+                this.IsCompleted = true;
+            }
+        }
+
         //TODO::Implement to signature
         public override string ToString() => this.Signature;
 
@@ -182,16 +181,35 @@
         {
             if (this.html is null)
             {
-                PooledStringBuilder signatureBuilder = StringBuilderFactory.GetOrCreate()
+                using PooledStringBuilder signatureBuilder = StringBuilderFactory.GetOrCreate()
                   .Append("<div style=\"display: block; width: 100%;\">")
                   .AppendInlineHtml(this)
                   .Append("</div>");
 
                 this.html = signatureBuilder.ToString();
-                signatureBuilder.Recycle();
             }
 
             return this.html;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.IsCompleted)
+            {
+                Complete();
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~SymbolComponentInfo()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
         }
     }
 }

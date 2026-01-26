@@ -119,7 +119,7 @@
                 return false;
             }
 
-            if (!this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle))
+            if (!this.DeclaringTypeCacheKey.Equals(other.DeclaringTypeCacheKey))
             {
                 return false;
             }
@@ -146,7 +146,7 @@
             {
                 var hashCode = new HashCode();
                 hashCode.Add(this.Count);
-                hashCode.Add(this.DeclaringTypeHandle);
+                hashCode.Add(this.DeclaringTypeCacheKey);
                 for (int index = 0; index < this.Events.Count; index++)
                 {
                     hashCode.Add(this.Events[index]);

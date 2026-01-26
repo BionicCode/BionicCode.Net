@@ -5,7 +5,6 @@
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
 
@@ -460,8 +459,10 @@
         //    return result;
         //}
 
-        internal static async Task<ProfilerBatchResult> LogMethodTimeInternalAsync<TTarget>(MethodProfilerContext<TTarget> context)
+        internal static async Task<ProfilerBatchResult> LogMethodTimeAsync<TTarget>(MethodProfilerContext<TTarget> context)
         {
+            ArgumentNullException.ThrowIfNull(context);
+
             if (context.IterationCount < 1)
             {
                 return ProfilerBatchResult.Empty;
@@ -589,81 +590,85 @@
             return result;
         }
 
-        private static async Task<ProfilerBatchResult> LogAwaitableGenericValueTaskMethodAsync<TTarget>(MethodProfilerContext<TTarget> context)
+        internal static async Task<ProfilerBatchResult> LogConstructorTimeAsync(ConstructorProfilerContext context)
+        {
+            ArgumentNullException.ThrowIfNull(context);
+
+            if (context.IterationCount < 1)
+            {
+                return ProfilerBatchResult.Empty;
+            }
+
+            ProfilerBatchResult result = await Task.Run(() => LogConstructor(context));
+
+            context.Logger?.Invoke(result, result.Summary);
+            if (context.AsyncLogger != null)
+            {
+                await context.AsyncLogger.Invoke(result, result.Summary);
+            }
+
+            return result;
+        }
+
+        private static ProfilerBatchResult LogConstructor(ConstructorProfilerContext context)
+        {
+            ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
+            var stopwatch = new Stopwatch();
+            object?[] arguments = context.ArgumentInfo.Arguments.ToArray();
+            for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
+            {
+                stopwatch.Restart();
+                _ = context.ConstructorData.Invoke(arguments);
+                stopwatch.Stop();
+
+                if (iterationCounter < 1)
+                {
+                    // Still warming up
+                    continue;
+                }
+
+                var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, result, context.ArgumentInfo.ArgumentListIndex);
+                result.AddResult(iterationResult);
+            }
+
+            return result;
+        }
+
+        internal static async Task<ProfilerBatchResult> LogPropertyTimeAsync<TTarget>(PropertyProfilerContext<TTarget> context)
+        {
+            ArgumentNullException.ThrowIfNull(context);
+
+            if (context.IterationCount < 1)
+            {
+                return ProfilerBatchResult.Empty;
+            }
+
+            ProfilerBatchResult result = context switch
+            {
+                { PropertyData.IsIndexer: true, IsProfilingGetter: true } => await Task.Run(() => LogIndexerPropertyGet<TTarget>(context)),
+                { PropertyData.IsIndexer: false, IsProfilingGetter: true } => await Task.Run(() => LogPropertyGet<TTarget>(context)),
+                { PropertyData.IsIndexer: true, IsProfilingGetter: false } => await Task.Run(() => LogIndexerPropertySet<TTarget>(context)),
+                { PropertyData.IsIndexer: false, IsProfilingGetter: false } => await Task.Run(() => LogPropertySet(context)),
+            };
+
+            context.Logger?.Invoke(result, result.Summary);
+            if (context.AsyncLogger != null)
+            {
+                await context.AsyncLogger.Invoke(result, result.Summary);
+            }
+
+            return result;
+        }
+
+        private static ProfilerBatchResult LogPropertyGet<TTarget>(PropertyProfilerContext<TTarget> context)
         {
             ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
             var stopwatch = new Stopwatch();
             TTarget invocationTarget = context.TargetInstance;
-            object[] arguments = context.MethodInvokeInfo.MethodArgument.Arguments.ToArray();
-            bool isTaskCancelled = false;
-            for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
-            {
-                if (context.MethodInvokeInfo.AsynchronousTaskMethodInvoker != null)
-                {
-                    try
-                    {
-                        stopwatch.Restart();
-                        await context.MethodInvokeInfo.AsynchronousTaskMethodInvoker.Invoke(invocationTarget, arguments);
-                        stopwatch.Stop();
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        stopwatch.Stop();
-                        isTaskCancelled = true;
-                    }
-                }
-                else if (context.MethodInvokeInfo.AsynchronousValueTaskMethodInvoker != null)
-                {
-                    try
-                    {
-                        stopwatch.Restart();
-                        await context.MethodInvokeInfo.AsynchronousValueTaskMethodInvoker.Invoke(invocationTarget, arguments);
-                        stopwatch.Stop();
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        stopwatch.Stop();
-                        isTaskCancelled = true;
-                    }
-                }
-                else if (context.MethodInvokeInfo.AsynchronousGenericValueTaskMethodInvoker != null)
-                {
-                    try
-                    {
-                        stopwatch.Restart();
-                        dynamic profiledValueTask = context.MethodInvokeInfo.AsynchronousGenericValueTaskMethodInvoker.Invoke(invocationTarget, arguments);
-                        await profiledValueTask;
-                        stopwatch.Stop();
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        stopwatch.Stop();
-                        isTaskCancelled = true;
-                    }
-                }
-
-                if (iterationCounter < 1)
-                {
-                    // Still warming up
-                    continue;
-                }
-
-                var iterationResult = new ProfilerResult(iterationCounter, isTaskCancelled, stopwatch.Elapsed, result, context.MethodInvokeInfo.MethodArgument.ArgumentListIndex);
-                result.AddResult(iterationResult);
-            }
-
-            return result;
-        }
-
-        private static ProfilerBatchResult LogConstructor(ProfilerContext context)
-        {
-            ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
-            var stopwatch = new Stopwatch();
-            object[] arguments = context.MethodInvokeInfo.MethodArgument.Arguments.ToArray();
             for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
             {
                 stopwatch.Restart();
-                _ = context.MethodInvokeInfo.ConstructorInvoker.Invoke(arguments);
+                _ = context.PropertyData.GetValue(invocationTarget);
                 stopwatch.Stop();
 
                 if (iterationCounter < 1)
@@ -672,26 +677,23 @@
                     continue;
                 }
 
-                var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, result, context.MethodInvokeInfo.MethodArgument.ArgumentListIndex);
+                var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, result, context.ArgumentInfo.ArgumentListIndex);
                 result.AddResult(iterationResult);
             }
 
             return result;
         }
 
-        private static ProfilerBatchResult LogPropertySet(ProfilerContext context)
+        private static ProfilerBatchResult LogIndexerPropertyGet<TTarget>(PropertyProfilerContext<TTarget> context)
         {
             ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
             var stopwatch = new Stopwatch();
-            object[]? indexArguments = context.MethodInvokeInfo.ProfiledTargetType.HasFlag(ProfiledTargetType.Indexer)
-              ? context.MethodInvokeInfo.PropertyArgument.Index
-              : null;
-            object value = context.MethodInvokeInfo.PropertyArgument.Value;
-            object invocationTarget = context.MethodInvokeInfo.Target;
+            object?[] indexArguments = context.ArgumentInfo.IndexerArguments.ToArray();
+            TTarget invocationTarget = context.TargetInstance;
             for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
             {
                 stopwatch.Restart();
-                context.MethodInvokeInfo.PropertySetInvoker.Invoke(invocationTarget, value, indexArguments);
+                _ = context.PropertyData.GetIndexerValue(invocationTarget, indexArguments);
                 stopwatch.Stop();
 
                 if (iterationCounter < 1)
@@ -700,25 +702,23 @@
                     continue;
                 }
 
-                var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, result, context.MethodInvokeInfo.PropertyArgument.ArgumentListIndex);
+                var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, result, context.ArgumentInfo.ArgumentListIndex);
                 result.AddResult(iterationResult);
             }
 
             return result;
         }
 
-        private static ProfilerBatchResult LogPropertyGet(ProfilerContext context)
+        private static ProfilerBatchResult LogPropertySet<TTarget>(PropertyProfilerContext<TTarget> context)
         {
             ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
             var stopwatch = new Stopwatch();
-            object[]? indexArguments = context.MethodInvokeInfo.ProfiledTargetType.HasFlag(ProfiledTargetType.Indexer)
-              ? context.MethodInvokeInfo.PropertyArgument.Index
-              : null;
-            object invocationTarget = context.MethodInvokeInfo.Target;
+            object value = context.ArgumentInfo.Value;
+            TTarget invocationTarget = context.TargetInstance;
             for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
             {
                 stopwatch.Restart();
-                _ = context.MethodInvokeInfo.PropertyGetInvoker.Invoke(invocationTarget, indexArguments);
+                context.PropertyData.SetValue(invocationTarget, value);
                 stopwatch.Stop();
 
                 if (iterationCounter < 1)
@@ -727,7 +727,33 @@
                     continue;
                 }
 
-                var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, result, context.MethodInvokeInfo.PropertyArgument.ArgumentListIndex);
+                var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, result, context.ArgumentInfo.ArgumentListIndex);
+                result.AddResult(iterationResult);
+            }
+
+            return result;
+        }
+
+        private static ProfilerBatchResult LogIndexerPropertySet<TTarget>(PropertyProfilerContext<TTarget> context)
+        {
+            ProfilerBatchResult result = new ProfilerBatchResult(DateTime.Now, context);
+            var stopwatch = new Stopwatch();
+            object?[] indexArguments = context.ArgumentInfo.IndexerArguments.ToArray();
+            object value = context.ArgumentInfo.Value;
+            TTarget invocationTarget = context.TargetInstance;
+            for (int iterationCounter = 1 - context.WarmupCount; iterationCounter <= context.IterationCount; iterationCounter++)
+            {
+                stopwatch.Restart();
+                context.PropertyData.SetIndexerValue(invocationTarget, value, indexArguments);
+                stopwatch.Stop();
+
+                if (iterationCounter < 1)
+                {
+                    // Still warming up
+                    continue;
+                }
+
+                var iterationResult = new ProfilerResult(iterationCounter, stopwatch.Elapsed, result, context.ArgumentInfo.ArgumentListIndex);
                 result.AddResult(iterationResult);
             }
 
@@ -757,8 +783,8 @@
         /// ╰─────────────────────────┴────────────────────────────┴────────────────╯
         /// </code></param>
         /// <param name="result">An <see langword="out"/> parameter holding the <see cref="ProfilerBatchResult"/> result which contains meta data like average execution time or a formatted report (<see cref="ProfilerBatchResult.Summary"/>).</param>
-        /// <param name="baseUnit">The optional time unit that theresults should be converted to. The default is <see cref="TimeUnit.Millisecond"/>. </param>
-        /// <param name="scopeName">The name of the scope. This value is automatically captured and set to the caller's member name. Therfore this optional parameter doesn't require an explicit value.</param>
+        /// <param name="baseUnit">The optional time unit that the results should be converted to. The default is <see cref="TimeUnit.Millisecond"/>. </param>
+        /// <param name="scopeName">The name of the scope. This value is automatically captured and set to the caller's member name. Therefore this optional parameter doesn't require an explicit value.</param>
         /// <param name="sourceFileName">The source file path of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
         /// <param name="lineNumber">The line in the source file of the profiled code. This value is automatically captured and therefore doesn't require an explicit value.</param>
         /// <returns>An <see cref="IDisposable"/> to control the scope of the profiling.</returns>
@@ -771,10 +797,16 @@
         /// </remarks>
         public static IDisposable LogTimeScoped(Action<ProfilerBatchResult, string> logger, out ProfilerBatchResult result, TimeUnit baseUnit = Profiler.DefaultBaseUnit, [CallerMemberName] string scopeName = "Scoped Profiling", [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
         {
-            var assemblyOfTargetType = Assembly.GetCallingAssembly();
-            string assemblyName = assemblyOfTargetType.GetName().Name;
-            var profilerTargetInfo = new ProfilerPropertyInvokeInfo(scopeName, scopeName, scopeName, scopeName, string.Empty, assemblyName);
-            var context = new ProfilerContext(profilerTargetInfo, sourceFileName, lineNumber, -1, -1, Runtime.Current, baseUnit, logger, null);
+            var context = new ScopeProfilerContext(
+                null,
+                sourceFileName,
+                lineNumber,
+                -1,
+                -1,
+                Runtime.Current,
+                baseUnit,
+                logger,
+                null);
             var profilerScopeProvider = new ProfilerScopeProvider(logger, context);
             IDisposable profilerScope = profilerScopeProvider.StartProfiling(out result);
 
@@ -818,10 +850,16 @@
         /// </remarks>
         public static IAsyncDisposable LogTimeScopedAsync(Func<ProfilerBatchResult, string, Task> asyncLogger, out ProfilerBatchResult result, TimeUnit baseUnit = Profiler.DefaultBaseUnit, [CallerMemberName] string scopeName = "Scoped Profiling", [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
         {
-            var assemblyOfTargetType = Assembly.GetCallingAssembly();
-            string assemblyName = assemblyOfTargetType.GetName().Name;
-            var profilerTargetInfo = new ProfilerPropertyInvokeInfo(scopeName, scopeName, scopeName, scopeName, string.Empty, assemblyName);
-            var context = new ProfilerContext(profilerTargetInfo, sourceFileName, lineNumber, -1, -1, Runtime.Current, baseUnit, null, asyncLogger);
+            var context = new ScopeProfilerContext(
+                null,
+                sourceFileName,
+                lineNumber,
+                -1,
+                -1,
+                Runtime.Current,
+                baseUnit,
+                null,
+                asyncLogger);
             var profilerScopeProvider = new ProfilerScopeProvider(asyncLogger, context);
             IAsyncDisposable profilerScope = profilerScopeProvider.StartProfilingAsync(out result);
 

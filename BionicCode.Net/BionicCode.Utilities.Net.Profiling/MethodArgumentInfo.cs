@@ -4,13 +4,13 @@
 
     internal readonly struct MethodArgumentInfo
     {
-        public MethodArgumentInfo(ImmutableList<object?>? arguments, int argumentListIndex)
+        public MethodArgumentInfo(ImmutableArray<object?>? arguments, int argumentListIndex)
         {
-            this.Arguments = arguments ?? ImmutableList<object?>.Empty;
+            this.Arguments = arguments ?? ImmutableArray<object?>.Empty;
             this.ArgumentListIndex = argumentListIndex;
         }
 
-        public ImmutableList<object?> Arguments { get; }
+        public ImmutableArray<object?> Arguments { get; }
         public int ArgumentListIndex { get; }
     }
 }

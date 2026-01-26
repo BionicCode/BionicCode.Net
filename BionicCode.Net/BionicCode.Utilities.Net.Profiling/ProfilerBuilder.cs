@@ -21,8 +21,8 @@
         private int WarmupIterations { get; set; }
         private TimeUnit BaseUnit { get; set; }
         //private Dictionary<ParameterType, Assembly> TypeAssemblyTable { get; }
-        private Func<ProfilerBatchResult, string, Task> AsyncProfilerLogger { get; set; }
-        private Action<ProfilerBatchResult, string> ProfilerLogger { get; set; }
+        private Func<ProfilerBatchResult, string, Task>? AsyncProfilerLogger { get; set; }
+        private Action<ProfilerBatchResult, string>? ProfilerLogger { get; set; }
         private Runtime Runtime { get; set; }
 
         HashSet<TypeData> IAttributeProfilerConfiguration.TypeData => this.TypeData;
@@ -191,6 +191,7 @@
         /// </returns>
         public ProfilerBuilder SetLogger(Action<ProfilerBatchResult, string> profilerLogger)
         {
+            ArgumentNullException.ThrowIfNull(profilerLogger, nameof(profilerLogger));
             this.ProfilerLogger = profilerLogger;
             return this;
         }
@@ -204,6 +205,7 @@
         /// </returns>
         public ProfilerBuilder SetAsyncLogger(Func<ProfilerBatchResult, string, Task> asyncProfilerLogger)
         {
+            ArgumentNullException.ThrowIfNull(asyncProfilerLogger, nameof(asyncProfilerLogger));
             this.AsyncProfilerLogger = asyncProfilerLogger;
             return this;
         }

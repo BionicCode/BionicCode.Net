@@ -176,10 +176,6 @@
             this._symbolTypeHandle = typeHandle;
             this._methodHandle = methodHandle;
             this._fieldHandle = fieldHandle;
-            //this.GetMethodHandle = getMethodHandle;
-            //this.SetMethodHandle = setMethodHandle;
-            //this.AddMethodHandle = addMethodHandle;
-            //this.RemoveMethodHandle = removeMethodHandle;
             this._parameterList = parameterList;
             this._methodParameterInfoList = methodParameterInfoList;
             this._genericParameterList = genericParameterList;
@@ -345,11 +341,11 @@
             // If the 'ParameterInfo.Member' property returns a 'PropertyInfo' then the current parameter 'parameterInfo'
             // was obtained via PropertyInfo.GetIndexParameters method call. As a result, the parameter's association to the property's accessors is ambiguous.
             // We need to normalize it to remove association ambiguity by explicitly associating it with a property's accessor method.
-            // We basically replace the current 'GetIndexerParameters()' based 'propertyInfo' argument with a PropertyInfo from an accessor method.
+            // We basically replace the current 'GetIndexerParameters()' based 'propertyInfo' argument with a 'PropertyInfo' from an accessor method.
             if (member is PropertyInfo propertyInfo)
             {
-                PropertyData? propertyData = propertyInfo.ToPropertyData();
-                SymbolInfoDataCacheKey normalizedParameterDataCacheKey = SymbolReflectionInfoCache.ConvertIndexerPropertyToAccessorAssociatedParameterCacheKey(propertyData, parameterInfo.Position);
+                ParameterData? disambiguatedPropertyData = SymbolReflectionInfoCache.ConvertAmbiguousIndexerPropertyParameterToAccessorAssociatedParameter(parameterInfo);
+                SymbolInfoDataCacheKey normalizedParameterDataCacheKey = disambiguatedPropertyData.CacheKey;
 
                 return normalizedParameterDataCacheKey;
             }
@@ -376,18 +372,21 @@
                 ? ParameterizedSymbolKind.MemberMethod
                 : ParameterizedSymbolKind.MemberConstructor;
 
-            return new SymbolInfoDataCacheKey(parameterInfo.Name ?? string.Empty,
-                declaringTypeHandle,
-                parameterTypeHandle,
-                methodHandle,
+            CacheKeyParameterDescriptor cacheKeyParameterDescriptor = new CacheKeyParameterDescriptor(parameterInfo.Name, parameterInfo.Position, parameterTypeHandle: parameterTypeHandle);
+            CacheKeyParameterMemberDescriptor cacheKeyParameterMemberDescriptor = new CacheKeyParameterMemberDescriptor(declaringTypeHandle, methodHandle, parameterizedSymbolKind: parameterizedSymbolKind);
+
+            return new SymbolInfoDataCacheKey(string.Empty,
+                default,
+                default,
+                default,
                 default,
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 TypeList.Empty,
                 SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.Parameter,
-                default,
-                default,
+                cacheKeyParameterDescriptor,
+                cacheKeyParameterMemberDescriptor,
                 false);
         }
 

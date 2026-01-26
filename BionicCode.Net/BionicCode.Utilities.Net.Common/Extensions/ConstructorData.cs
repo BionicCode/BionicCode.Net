@@ -27,7 +27,7 @@
         private bool? _isFamily;
         private bool? _isFamilyOrAssembly;
         private bool? _isFamilyAndAssembly;
-        private Func<object[], object>? invocator;
+        private Func<object?[], object>? invocator;
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
 
@@ -48,7 +48,7 @@
         protected override MemberInfo GetMemberInfo()
           => GetConstructorInfo();
 
-        public object Invoke(params object[] arguments)
+        public object Invoke(params object?[] arguments)
         {
             //  TODO::Implement fast invocator pattern
             if (this.invocator is null)

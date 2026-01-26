@@ -177,7 +177,7 @@ namespace BionicCode.Utilities.Net
         /// <exception cref="ArgumentNullException">Thrown if the target is null for an instance property, or if indexerPropertyParameters is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if the number of elements in indexerPropertyParameters does not match the indexer parameter count of the property.</exception>
         /// <exception cref="ArgumentException">Thrown if the <paramref name="target"/> instance is not of the correct type.</exception>
-        public object? GetIndexerValue(object? target, object[] indexerPropertyParameters)
+        public object? GetIndexerValue(object? target, object?[] indexerPropertyParameters)
         {
             if (!this.CanRead)
             {
@@ -481,7 +481,7 @@ namespace BionicCode.Utilities.Net
         /// <exception cref="InvalidOperationException">Thrown if the property is read-only or if the declaring type is a value type.</exception>
         /// <exception cref="ArgumentNullException">Thrown if the target object is null for an instance property, or if indexerPropertyParameters is null for an
         /// indexer property.</exception>
-        public void SetIndexerValue(object? target, object? value, object[]? indexerPropertyIndex = null)
+        public void SetIndexerValue(object? target, object? value, object?[] indexerPropertyIndex = null)
         {
             if (this.IsReadOnly)
             {

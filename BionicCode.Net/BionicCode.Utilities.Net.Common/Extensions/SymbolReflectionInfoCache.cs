@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Concurrent;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
     using Microsoft.CodeAnalysis;
@@ -11,7 +12,7 @@
     {
         private static readonly ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoData> SymbolInfoDataCache = new ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoData>();
         private static readonly ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoDataCacheKey> AnonymousSymbolDataCacheKeyMap = new ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoDataCacheKey>();
-        private static readonly ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoDataCacheKey> IndexerParameterSymbolDataCacheKeyMap = new ConcurrentDictionary<SymbolInfoDataCacheKey, SymbolInfoDataCacheKey>();
+        private static readonly ConcurrentDictionary<AmbiguousIndexerPropertyKey, SymbolInfoDataCacheKey> IndexerParameterSymbolDataCacheKeyMap = new ConcurrentDictionary<AmbiguousIndexerPropertyKey, SymbolInfoDataCacheKey>();
         private const string MemberNotFoundArgumentExceptionMessage = "Unable to find the {0} named '{1}'{2}on the type '{3}'.";
         private const string InvalidDeclaringTypeHandleFoundInKeyExceptionMessage = $"The key's property '{nameof(SymbolInfoDataCacheKey)}.{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type.";
         private const string DeclaringTypeHandleInKeyIsDefaultExceptionMessage = $"The value 'default' is not a valid value for the key's '{nameof(SymbolInfoDataCacheKey)}.{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}' property. The property must reference a valid declaring type handle.";
@@ -166,10 +167,9 @@
             // We basically replace the current 'GetIndexerParameters()' based 'propertyInfo' argument with a PropertyInfo from an accessor method.
             if (member is PropertyInfo propertyInfo)
             {
-                PropertyData propertyData = propertyInfo.ToPropertyData();
-                SymbolInfoDataCacheKey normalizedParameterDataCacheKey = ConvertIndexerPropertyToAccessorAssociatedParameterCacheKey(propertyData, parameterInfo.Position);
+                ParameterData normalizedParameterData = ConvertAmbiguousIndexerPropertyParameterToAccessorAssociatedParameter(parameterInfo);
 
-                cacheKey = normalizedParameterDataCacheKey;
+                return normalizedParameterData;
             }
             else
             {
@@ -184,20 +184,33 @@
             return (ParameterData)symbolInfoData;
         }
 
-        internal static SymbolInfoDataCacheKey ConvertIndexerPropertyToAccessorAssociatedParameterCacheKey(PropertyData propertyData, int parameterIndex)
+        internal static ParameterData ConvertAmbiguousIndexerPropertyParameterToAccessorAssociatedParameter(ParameterInfo parameterInfo)
         {
-            SymbolInfoDataCacheKey normalizedParameterDataCacheKey = SymbolReflectionInfoCache.IndexerParameterSymbolDataCacheKeyMap.GetOrAdd(propertyData.CacheKey,
+            ArgumentExceptionAdvanced.ThrowIfFalse(
+                parameterInfo.Member is PropertyInfo,
+                nameof(parameterInfo),
+                $"The provided argument '{nameof(parameterInfo)}' is not ambiguous. The provided parameter info must be ambiguous in that it was obtained via '{typeof(PropertyInfo).ToFullyQualifiedSignatureName()}.{nameof(PropertyInfo.GetIndexParameters)}()' belong to a property to be considered ambiguous.");
+
+            var propertyInfo = parameterInfo.Member as PropertyInfo;
+            PropertyData propertyData = GetOrCreateSymbolInfoDataCacheEntry(propertyInfo!);
+
+            // By convention, the getter takes precedence over the setter
+            MethodData accessorData = propertyData.CanRead
+                ? propertyData.PropertyGetMethodData
+                : propertyData.PropertySetMethodData;
+
+            SymbolInfoDataCacheKey accessorMethodCacheKey = accessorData.CacheKey;
+            AmbiguousIndexerPropertyKey ambiguousKey = new AmbiguousIndexerPropertyKey(parameterInfo.Position, accessorMethodCacheKey);
+            SymbolInfoDataCacheKey normalizedParameterDataCacheKey = SymbolReflectionInfoCache.IndexerParameterSymbolDataCacheKeyMap.GetOrAdd(ambiguousKey,
                 key =>
                 {
-                    // By convention, the getter takes precedence over the setter
-                    MethodData accessorMethod = propertyData.CanRead
-                            ? propertyData.PropertyGetMethodData
-                            : propertyData.PropertySetMethodData;
-                    ParameterData parameterData = accessorMethod.Parameters[parameterIndex];
+                    var accessorData = (MethodData)SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(key.AccessorMethodCacheKey, CreateMethodData);
+                    ParameterList accessorParameters = accessorData.Parameters;
+                    ParameterData parameterData = accessorParameters[key.ParameterIndex];
                     return parameterData.CacheKey;
                 });
 
-            return normalizedParameterDataCacheKey;
+            return (ParameterData)SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(normalizedParameterDataCacheKey, CreateParameterData);
         }
 
         /// <summary>
@@ -1205,6 +1218,37 @@
             cacheKey = normalizedCacheKey;
 
             return result;
+        }
+
+        private readonly struct AmbiguousIndexerPropertyKey : IEquatable<AmbiguousIndexerPropertyKey>
+        {
+            public AmbiguousIndexerPropertyKey(int parameterIndex, SymbolInfoDataCacheKey accessorMethodCacheKey)
+            {
+                ArgumentOutOfRangeException.ThrowIfNegative(parameterIndex);
+                ArgumentNullExceptionAdvanced.ThrowIfDefault(accessorMethodCacheKey);
+
+                this.ParameterIndex = parameterIndex;
+                this.AccessorMethodCacheKey = accessorMethodCacheKey;
+            }
+
+            public int ParameterIndex { get; init; }
+            public SymbolInfoDataCacheKey AccessorMethodCacheKey { get; init; }
+
+            public bool Equals(AmbiguousIndexerPropertyKey other)
+                => this.ParameterIndex == other.ParameterIndex
+                && this.AccessorMethodCacheKey.Equals(other.AccessorMethodCacheKey);
+
+            public override int GetHashCode()
+                => HashCode.Combine(this.ParameterIndex, this.AccessorMethodCacheKey);
+
+            public override bool Equals([NotNullWhen(true)] object? obj)
+                => obj is AmbiguousIndexerPropertyKey other && Equals(other);
+
+            public static bool operator ==(AmbiguousIndexerPropertyKey left, AmbiguousIndexerPropertyKey right)
+                => left.Equals(right);
+
+            public static bool operator !=(AmbiguousIndexerPropertyKey left, AmbiguousIndexerPropertyKey right)
+                => !(left == right);
         }
     }
 }

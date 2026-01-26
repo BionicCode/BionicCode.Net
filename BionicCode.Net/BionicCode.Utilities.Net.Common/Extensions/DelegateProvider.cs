@@ -851,6 +851,14 @@
                 throw new InvalidOperationException("The 'PropertyData' has already the get invoker generated.");
             }
 
+            ArgumentExceptionAdvanced.ThrowIfFalse(
+                propertyData.IsIndexer,
+                nameof(propertyData),
+                "The provided property is not an indexer. Use the appropriate indexer getter creation method instead.");
+            ArgumentExceptionAdvanced.ThrowIfFalse(
+                propertyData.CanRead,
+                nameof(propertyData),
+                "Cannot create a getter for a write-only property.");
             ArgumentNullException.ThrowIfNull(propertyData, nameof(propertyData));
             TypeData declaringTypeData = propertyData.DeclaringTypeData;
             ArgumentNullException.ThrowIfNull(declaringTypeData, nameof(propertyData));
@@ -865,23 +873,16 @@
                     nameof(TTarget),
                     declaringType,
                     "declaring type"));
-            ArgumentExceptionAdvanced.ThrowIfFalse(
-                propertyData.IsIndexer,
-                nameof(propertyData),
-                "The provided property must be an indexer to create an indexer getter.");
             //ArgumentOutOfRangeExceptionAdvanced.ThrowIfNotEqual(
             //    1,
             //    propertyData.IndexerParameters.Count,
             //    nameof(propertyData),
             //    "The provided indexer property must have exactly a single index parameter to create a 1D indexer getter.");
-            ArgumentExceptionAdvanced.ThrowIfFalse(
-                propertyData.CanRead,
-                nameof(propertyData),
-                "Cannot create a getter for a write-only property.");
             Type returnType = typeof(TValue);
             Type propertyType = propertyData.PropertyTypeData.UnwrapType();
             Type indexType = typeof(TIndex);
-            TypeData indexerParameterTypeData = propertyData.IndexerParameters[0].ParameterTypeData;
+            ParameterList propertyGetMethodParameters = propertyData.PropertyGetMethodParameters;
+            TypeData indexerParameterTypeData = propertyGetMethodParameters[0].ParameterTypeData;
             Type indexParameterType = indexerParameterTypeData.UnwrapType();
 
             // (TTarget declaringType, TIndex[] indices)
@@ -889,12 +890,12 @@
             ParameterExpression indicesParam = Expression.Parameter(typeof(TIndex[]), "indices");
 
             // Validate indices length
-            Expression validationExpression = CreateIndexParameterArrayLengthMismatchExceptionExpression(propertyData, indicesParam);
+            Expression validationExpression = CreateIndexParameterArrayLengthMismatchExceptionExpression(propertyData, indicesParam, isGetter: true);
 
-            Expression[] indexExpressions = new Expression[propertyData.IndexerParameters.Count];
-            for (int i = 0; i < propertyData.IndexerParameters.Count; i++)
+            Expression[] indexExpressions = new Expression[propertyGetMethodParameters.Count];
+            for (int i = 0; i < propertyGetMethodParameters.Count; i++)
             {
-                ParameterData indexParameterData = propertyData.IndexerParameters[i];
+                ParameterData indexParameterData = propertyGetMethodParameters[i];
 
                 // indices[i]
                 BinaryExpression indexAccess = Expression.ArrayIndex(
@@ -977,6 +978,14 @@
                 throw new InvalidOperationException("The 'PropertyData' has already the get invoker generated.");
             }
 
+            ArgumentExceptionAdvanced.ThrowIfFalse(
+                propertyData.IsIndexer,
+                nameof(propertyData),
+                "The provided property is not an indexer. Use the appropriate indexer getter creation method instead.");
+            ArgumentExceptionAdvanced.ThrowIfFalse(
+                propertyData.CanRead,
+                nameof(propertyData),
+                "Cannot create a getter for a write-only property.");
             ArgumentNullException.ThrowIfNull(propertyData, nameof(propertyData));
             TypeData declaringTypeData = propertyData.DeclaringTypeData;
             ArgumentNullException.ThrowIfNull(declaringTypeData, nameof(propertyData));
@@ -991,14 +1000,6 @@
                     nameof(TTarget),
                     declaringType,
                     "declaring type"));
-            ArgumentExceptionAdvanced.ThrowIfFalse(
-                propertyData.IsIndexer,
-                nameof(propertyData),
-                "The provided property must be an indexer to create an indexer getter.");
-            ArgumentExceptionAdvanced.ThrowIfFalse(
-                propertyData.CanRead,
-                nameof(propertyData),
-                "Cannot create a getter for a write-only property.");
             Type returnType = typeof(TValue);
             Type propertyType = propertyData.PropertyTypeData.UnwrapType();
 
@@ -1006,12 +1007,13 @@
             ParameterExpression targetParam = Expression.Parameter(targetType, "target");
             ParameterExpression indicesParam = Expression.Parameter(typeof(object[]), "indices");
 
-            Expression validationExpression = CreateIndexParameterArrayLengthMismatchExceptionExpression(propertyData, indicesParam);
+            Expression validationExpression = CreateIndexParameterArrayLengthMismatchExceptionExpression(propertyData, indicesParam, isGetter: true);
 
-            Expression[] indexExpressions = new Expression[propertyData.IndexerParameters.Count];
-            for (int i = 0; i < propertyData.IndexerParameters.Count; i++)
+            ParameterList propertyGetMethodParameters = propertyData.PropertyGetMethodParameters;
+            Expression[] indexExpressions = new Expression[propertyGetMethodParameters.Count];
+            for (int i = 0; i < propertyGetMethodParameters.Count; i++)
             {
-                ParameterData indexParameterData = propertyData.IndexerParameters[i];
+                ParameterData indexParameterData = propertyGetMethodParameters[i];
                 Type indexParameterType = indexParameterData.ParameterTypeData.UnwrapType();
 
                 // indices[i]
@@ -1093,6 +1095,14 @@
                 throw new InvalidOperationException("The 'PropertyData' has already the get invoker generated.");
             }
 
+            ArgumentExceptionAdvanced.ThrowIfFalse(
+                propertyData.IsIndexer,
+                nameof(propertyData),
+                "The provided property is not an indexer. Use the appropriate indexer getter creation method instead.");
+            ArgumentExceptionAdvanced.ThrowIfFalse(
+                propertyData.CanRead,
+                nameof(propertyData),
+                "Cannot create a getter for a write-only property.");
             ArgumentNullException.ThrowIfNull(propertyData, nameof(propertyData));
             TypeData declaringTypeData = propertyData.DeclaringTypeData;
             ArgumentNullException.ThrowIfNull(declaringTypeData, nameof(propertyData));
@@ -1107,26 +1117,20 @@
                     nameof(TTarget),
                     declaringType,
                     "declaring type"));
-            ArgumentExceptionAdvanced.ThrowIfFalse(
-                propertyData.IsIndexer,
-                nameof(propertyData),
-                "The provided property must be an indexer to create an indexer getter.");
+
+            ParameterList propertyGetMethodParameters = propertyData.PropertyGetMethodParameters;
             ArgumentOutOfRangeExceptionAdvanced.ThrowIfNotEqual(
                 2,
-                propertyData.IndexerParameters.Count,
+                propertyGetMethodParameters.Count,
                 nameof(propertyData),
                 "The provided indexer property must have exactly two index parameters to create a 2D indexer getter.");
-            ArgumentExceptionAdvanced.ThrowIfFalse(
-                propertyData.CanRead,
-                nameof(propertyData),
-                "Cannot create a getter for a write-only property.");
             Type returnType = typeof(TValue);
             Type propertyType = propertyData.PropertyTypeData.UnwrapType();
             Type index1Type = typeof(TIndex1);
-            TypeData indexerParameter1TypeData = propertyData.IndexerParameters[0].ParameterTypeData;
+            TypeData indexerParameter1TypeData = propertyGetMethodParameters[0].ParameterTypeData;
             Type indexParameter1Type = indexerParameter1TypeData.UnwrapType();
             Type index2Type = typeof(TIndex2);
-            TypeData indexerParameter2TypeData = propertyData.IndexerParameters[1].ParameterTypeData;
+            TypeData indexerParameter2TypeData = propertyGetMethodParameters[1].ParameterTypeData;
             Type indexParameter2Type = indexerParameter2TypeData.UnwrapType();
 
             // (TTarget target, TIndex1 index1, TIndex2 index2)
@@ -1222,6 +1226,14 @@
                 throw new InvalidOperationException("The 'PropertyData' has already the get invoker generated.");
             }
 
+            ArgumentExceptionAdvanced.ThrowIfFalse(
+                propertyData.IsIndexer,
+                nameof(propertyData),
+                "The provided property is not an indexer. Use the appropriate indexer getter creation method instead.");
+            ArgumentExceptionAdvanced.ThrowIfFalse(
+                propertyData.CanRead,
+                nameof(propertyData),
+                "Cannot create a getter for a write-only property.");
             ArgumentNullException.ThrowIfNull(propertyData, nameof(propertyData));
             TypeData declaringTypeData = propertyData.DeclaringTypeData;
             ArgumentNullException.ThrowIfNull(declaringTypeData, nameof(propertyData));
@@ -1236,32 +1248,26 @@
                     nameof(TTarget),
                     declaringType,
                     "declaring type"));
-            ArgumentExceptionAdvanced.ThrowIfFalse(
-                propertyData.IsIndexer,
-                nameof(propertyData),
-                "The provided property must be an indexer to create an indexer getter.");
+
+            ParameterList propertyGetMethodParameters = propertyData.PropertyGetMethodParameters;
             ArgumentOutOfRangeExceptionAdvanced.ThrowIfNotEqual(
                 3,
-                propertyData.IndexerParameters.Count,
+                propertyGetMethodParameters.Count,
                 nameof(propertyData),
                 "The provided indexer property must have exactly three index parameters to create a 3D indexer getter.");
-            ArgumentExceptionAdvanced.ThrowIfFalse(
-                propertyData.CanRead,
-                nameof(propertyData),
-                "Cannot create a getter for a write-only property.");
             Type returnType = typeof(TValue);
             Type propertyType = propertyData.PropertyTypeData.UnwrapType();
 
             Type index1Type = typeof(TIndex1);
-            TypeData indexerParameter1TypeData = propertyData.IndexerParameters[0].ParameterTypeData;
+            TypeData indexerParameter1TypeData = propertyGetMethodParameters[0].ParameterTypeData;
             Type indexParameter1Type = indexerParameter1TypeData.UnwrapType();
 
             Type index2Type = typeof(TIndex2);
-            TypeData indexerParameter2TypeData = propertyData.IndexerParameters[1].ParameterTypeData;
+            TypeData indexerParameter2TypeData = propertyGetMethodParameters[1].ParameterTypeData;
             Type indexParameter2Type = indexerParameter2TypeData.UnwrapType();
 
             Type index3Type = typeof(TIndex3);
-            TypeData indexerParameter3TypeData = propertyData.IndexerParameters[2].ParameterTypeData;
+            TypeData indexerParameter3TypeData = propertyGetMethodParameters[2].ParameterTypeData;
             Type indexParameter3Type = indexerParameter3TypeData.UnwrapType();
 
             // (TTarget target, TValue value, TIndex1 index1, TIndex2 index2, TIndex3 index3)
@@ -1373,7 +1379,6 @@
             ArgumentNullException.ThrowIfNull(propertyData, nameof(propertyData));
             TypeData declaringTypeData = propertyData.DeclaringTypeData;
             ArgumentNullException.ThrowIfNull(declaringTypeData, nameof(propertyData));
-            Type declaringType = declaringTypeData.UnwrapType();
             ArgumentExceptionAdvanced.ThrowIfFalse(
                 propertyData.IsIndexer,
                 nameof(propertyData),
@@ -1383,18 +1388,20 @@
                 nameof(propertyData),
                 "Cannot create a getter for a write-only property.");
 
+
             // (object? target, object[] indices)
             ParameterExpression targetParam = Expression.Parameter(typeof(object), "target");
             ParameterExpression indicesParam = Expression.Parameter(typeof(object[]), "indices");
 
             // Validate that indices length matches the number of index parameters when not null.
             // We do this inside the expression so the check happens at runtime.
-            Expression validationExpression = CreateIndexParameterArrayLengthMismatchExceptionExpression(propertyData, indicesParam);
+            Expression validationExpression = CreateIndexParameterArrayLengthMismatchExceptionExpression(propertyData, indicesParam, isGetter: true);
 
-            Expression[] indexExpressions = new Expression[propertyData.IndexerParameters.Count];
-            for (int i = 0; i < propertyData.IndexerParameters.Count; i++)
+            ParameterList propertyGetMethodParameters = propertyData.PropertyGetMethodParameters;
+            Expression[] indexExpressions = new Expression[propertyGetMethodParameters.Count];
+            for (int i = 0; i < propertyGetMethodParameters.Count; i++)
             {
-                ParameterData indexParameterData = propertyData.IndexerParameters[i];
+                ParameterData indexParameterData = propertyGetMethodParameters[i];
                 Type indexParameterType = indexParameterData.ParameterTypeData.UnwrapType();
 
                 // indices[i]
@@ -1418,6 +1425,7 @@
                 }
             }
 
+            Type declaringType = declaringTypeData.UnwrapType();
             Expression? instanceExpression = propertyData.IsStatic
                 ? null
                 : Expression.Convert(targetParam, declaringType);
@@ -1643,16 +1651,16 @@
             ParameterExpression indicesParam = Expression.Parameter(typeof(object[]), "indices");
             ParameterExpression valueParam = Expression.Parameter(typeof(object), "returnType");
 
-            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
 
             // Validate that indices length matches the number of index parameters when not null.
             // We do this inside the expression so the check happens at runtime.
-            Expression validationExpression = CreateIndexParameterArrayLengthMismatchExceptionExpression(propertyData, indicesParam);
+            Expression validationExpression = CreateIndexParameterArrayLengthMismatchExceptionExpression(propertyData, indicesParam, isGetter: false);
 
-            Expression[] indexExpressions = new Expression[propertyData.IndexerParameters.Count];
-            for (int i = 0; i < propertyData.IndexerParameters.Count; i++)
+            ParameterList propertySetMethodParameters = propertyData.PropertySetMethodParameters;
+            Expression[] indexExpressions = new Expression[propertySetMethodParameters.Count];
+            for (int i = 0; i < propertySetMethodParameters.Count; i++)
             {
-                ParameterData indexParameterData = propertyData.IndexerParameters[i];
+                ParameterData indexParameterData = propertySetMethodParameters[i];
                 Type indexParameterType = indexParameterData.ParameterTypeData.UnwrapType();
 
                 // indices[i]
@@ -1679,6 +1687,7 @@
             // Access the indexer: propertyType[index0, index1, ...]
             PropertyInfo propertyInfo = propertyData.GetPropertyInfo();
 
+            Type declaringType = propertyData.DeclaringTypeData.UnwrapType();
             Expression? instanceExpression = propertyData.IsStatic
                 ? null
                 : Expression.Convert(targetParam, declaringType);
@@ -1846,7 +1855,7 @@
         /// <typeparam name="TValue">The type of the value to set on the indexer property.</typeparam>
         /// <param name="propertyData">The metadata describing the indexer property for which to create a setter. Must represent a non-static,
         /// non-read-only indexer property and cannot be null.</param>
-        /// <returns>A delegate that sets the returnType of the specified indexer property on a returnType prpertyType instance using the provided
+        /// <returns>A delegate that sets the returnType of the specified indexer property on a value type instance using the provided
         /// indices and returnType.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the specified property already has a set invoker generated.</exception>
         public static ValueTypeIndexerPropertySetter<TTarget, TValue> CreateStructIndexerSetter<TTarget, TValue>(PropertyData propertyData)
@@ -1865,7 +1874,7 @@
             ArgumentExceptionAdvanced.ThrowIfTrue(
                 propertyData.IsStatic,
                 nameof(propertyData),
-                $"For reference prpertyType instance properties or class properties (static) call {nameof(CreateSetter)} instead.");
+                $"For reference instance properties or class properties (static) call {nameof(CreateSetter)} instead.");
             ArgumentExceptionAdvanced.ThrowIfTrue(
                 propertyData.IsReadOnly,
                 nameof(propertyData),
@@ -1881,7 +1890,7 @@
                         targetType,
                         nameof(TTarget),
                         declaringType,
-                        "declaring prpertyType"));
+                        "declaring type"));
 
             Type valueType = typeof(TValue);
             Type propertyType = propertyData.PropertyTypeData.UnwrapType();
@@ -1899,7 +1908,7 @@
             ParameterExpression indicesParam = Expression.Parameter(typeof(object[]), "indices");
             ParameterExpression valueParam = Expression.Parameter(typeof(TValue), "returnType");
 
-            ImmutableArray<ParameterInfo> indexParameters = propertyData.IndexerParameters.AsParameterInfoArray();
+            ImmutableArray<ParameterInfo> indexParameters = propertyData.PropertySetMethodParameters.AsParameterInfoArray();
 
             // Validate that indices length matches the number of index parameters when not null.
             // We do this inside the expression so the check happens at runtime.
@@ -1935,11 +1944,14 @@
                 .Compile();
         }
 
-        private static Expression CreateIndexParameterArrayLengthMismatchExceptionExpression(PropertyData propertyData, ParameterExpression indicesParam)
+        private static Expression CreateIndexParameterArrayLengthMismatchExceptionExpression(PropertyData propertyData, ParameterExpression indicesParam, bool isGetter)
         {
+            ParameterList indexParameters = isGetter
+                ? propertyData.PropertyGetMethodParameters
+                : propertyData.PropertySetMethodParameters;
             Expression lengthMismatch = Expression.NotEqual(
                             Expression.ArrayLength(indicesParam),
-                            Expression.Constant(propertyData.IndexerParameters.Count));
+                            Expression.Constant(indexParameters.Count));
             Expression foundIndexCount = Expression.ArrayLength(indicesParam);
             MethodInfo stringConcat5 = typeof(string).GetMethod(
                 nameof(string.Concat),
@@ -1954,7 +1966,7 @@
             Expression message = Expression.Call(
                 stringConcat5,
                 Expression.Constant($"The provided number of indexer parameters does not match the indexer parameter count of the property '{propertyData.FullyQualifiedSignature}'. Expected: "),
-                Expression.Constant(propertyData.IndexerParameters.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)),
+                Expression.Constant(indexParameters.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)),
                 Expression.Constant(", Found: "),
                 Expression.Call(foundIndexCount, nameof(int.ToString), Type.EmptyTypes),
                 Expression.Constant("."));
@@ -1990,8 +2002,8 @@
 
             TypeData helperExtensionsCommonTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(HelperExtensionsCommon));
             const string extensionMethodName = nameof(HelperExtensionsCommon.ToFullyQualifiedSignatureName);
-            MethodData toFullyQualifiedSignatureNameExtensionMethodData = helperExtensionsCommonTypeData.Methods[extensionMethodName]
-                .First(methodData => methodData.Parameters[0].ParameterTypeData.UnwrapType() == typeof(Type));
+            var typeCacheKey = SymbolInfoDataCacheKey.CreateForType(typeof(Type));
+            MethodData toFullyQualifiedSignatureNameExtensionMethodData = helperExtensionsCommonTypeData.Methods[extensionMethodName, new MethodParameterInfo(typeCacheKey)];
 
             // BUG::Call GetType on target and pass to extension method
             MethodCallExpression extensionMethodCall = Expression.Call(toFullyQualifiedSignatureNameExtensionMethodData.GetMethodInfo(), target);

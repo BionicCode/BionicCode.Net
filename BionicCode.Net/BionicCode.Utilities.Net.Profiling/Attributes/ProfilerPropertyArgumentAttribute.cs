@@ -46,9 +46,9 @@
         public object Value { get; }
 
         /// <summary>
-        /// The index used to get/set an indexer.
+        /// The indexer arguments used to get/set an indexer.
         /// </summary>
-        public object[] Index { get; set; }
+        public object?[] IndexerArguments { get; set; }
 
         public PropertyAccessor Accessor { get; set; }
     }

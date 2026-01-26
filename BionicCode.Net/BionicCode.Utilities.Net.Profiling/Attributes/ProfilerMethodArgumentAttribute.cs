@@ -22,7 +22,8 @@
         /// MemberConstructor to request the ordered argument list for the decorated member.
         /// </summary>
         /// <param name="arguments">The argument list ordered by their position.</param>
-        public ProfilerMethodArgumentAttribute(params object[] arguments) => this.Arguments = arguments;
+        public ProfilerMethodArgumentAttribute(params object?[] arguments)
+            => this.Arguments = arguments ?? Array.Empty<object?>();
 
         /// <summary>
         /// Gets the argument list. It is assumed that the provided list is ordered by position.
@@ -30,6 +31,6 @@
         /// <value>
         /// The argument list that is used to profile the decorated member.
         /// </value>
-        public IEnumerable<object> Arguments { get; }
+        public IEnumerable<object?> Arguments { get; }
     }
 }
