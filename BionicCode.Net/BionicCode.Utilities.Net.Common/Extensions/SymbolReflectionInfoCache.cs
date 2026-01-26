@@ -862,6 +862,7 @@
             if (declaringMemberDescriptor.ParameterizedMemberKind is ParameterizedSymbolKind.MemberNormalPropertySet
                 or ParameterizedSymbolKind.MemberIndexerPropertyGet
                 or ParameterizedSymbolKind.MemberIndexerPropertySet
+                or ParameterizedSymbolKind.MemberIndexerPropertyGetOrSet
                 or ParameterizedSymbolKind.Undefined)
             {
 
@@ -927,41 +928,13 @@
             exception = null;
 
             bool isPropertyAccessorSetterRequested = declaringMemberDescriptor.ParameterizedMemberKind is ParameterizedSymbolKind.MemberNormalPropertySet
-                or ParameterizedSymbolKind.MemberIndexerPropertySet;
-            bool isIndexerPropertyGetterRequested = declaringMemberDescriptor.ParameterizedMemberKind is ParameterizedSymbolKind.MemberIndexerPropertyGet;
+                or ParameterizedSymbolKind.MemberIndexerPropertySet
+                or ParameterizedSymbolKind.MemberIndexerPropertyGetOrSet;
+            bool isIndexerPropertyGetterRequested = declaringMemberDescriptor.ParameterizedMemberKind is ParameterizedSymbolKind.MemberIndexerPropertyGet
+                or ParameterizedSymbolKind.MemberIndexerPropertyGetOrSet;
 
-            if (isPropertyAccessorSetterRequested)
-            {
-                if (declaringMemberDescriptor.ParameterizedMemberKind is ParameterizedSymbolKind.MemberIndexerPropertySet
-                    && !propertyCandidate.IsIndexer)
-                {
-                    exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' specifies '{declaringMemberDescriptor.ParameterizedMemberKind}' for an indexer setter but the property is not an indexer.");
-
-                    return false;
-                }
-
-                if (propertyCandidate.CanWrite)
-                {
-                    MethodData propertyAccessorCandidate = propertyCandidate.PropertySetMethodData;
-                    if (TryFindParameterCandidateInMethods(parameterDescriptor, declaringMemberDescriptor, [propertyAccessorCandidate], out parameterDataCandidate))
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' does not specify an accessor that matches the provided parameter information.");
-
-                        return false;
-                    }
-                }
-                else
-                {
-                    exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' specifies '{declaringMemberDescriptor.ParameterizedMemberKind}' for a setter but the property is read-only.");
-
-                    return false;
-                }
-            }
-            else if (isIndexerPropertyGetterRequested)
+            // In case 'ParameterizedMemberKind' is 'MemberIndexerPropertyGetOrSet' give the getter precedence over the setter.
+            if (isIndexerPropertyGetterRequested)
             {
                 if (!propertyCandidate.IsIndexer)
                 {
@@ -991,6 +964,37 @@
                     return false;
                 }
             }
+            else if (isPropertyAccessorSetterRequested)
+            {
+                if (declaringMemberDescriptor.ParameterizedMemberKind is ParameterizedSymbolKind.MemberIndexerPropertySet or ParameterizedSymbolKind.MemberIndexerPropertyGetOrSet
+                    && !propertyCandidate.IsIndexer)
+                {
+                    exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' specifies '{declaringMemberDescriptor.ParameterizedMemberKind}' for an indexer setter but the property is not an indexer.");
+
+                    return false;
+                }
+
+                if (propertyCandidate.CanWrite)
+                {
+                    MethodData propertyAccessorCandidate = propertyCandidate.PropertySetMethodData;
+                    if (TryFindParameterCandidateInMethods(parameterDescriptor, declaringMemberDescriptor, [propertyAccessorCandidate], out parameterDataCandidate))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' does not specify an accessor that matches the provided parameter information.");
+
+                        return false;
+                    }
+                }
+                else
+                {
+                    exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' specifies '{declaringMemberDescriptor.ParameterizedMemberKind}' for a setter but the property is read-only.");
+
+                    return false;
+                }
+            }
             else // Accessor is undefined - need to search all accessor methods
             {
                 MethodData propertyAccessorCandidate;
@@ -998,6 +1002,12 @@
                 // Simplest case: property is not an indexer. In this case only the set accessor is parameterized.
                 if (!propertyCandidate.IsIndexer)
                 {
+                    if (declaringMemberDescriptor.ParameterizedMemberKind is ParameterizedSymbolKind.MemberIndexerPropertyGet)
+                    {
+                        exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' specifies '{declaringMemberDescriptor.ParameterizedMemberKind}' for an indexer getter but the property is not an indexer.");
+                        return false;
+                    }
+
                     if (propertyCandidate.CanWrite)
                     {
                         propertyAccessorCandidate = propertyCandidate.PropertySetMethodData;
@@ -1019,42 +1029,49 @@
                         return false;
                     }
                 }
-                else
-                {   // Property is an indexer - both accessors are parameterized.
+                else // Property is an indexer
+                {
+                    int propertyAccessorCount = 0;
+
+                    // Property is an indexer - both accessors are parameterized.
                     // However, getter and setter share the same parameter list - except the "value" parameter for the setter.
                     // If the searched parameter is not the setter's "value" parameter the parameter association is ambiguous.
-                    // In this case the getter takes precedence over the setter.
-                    // Hence, we start with the getter to allow it to produce a match first.
+                    // We should not support this case and instead ask the caller to provide more specific key information.
                     if (propertyCandidate.CanRead)
                     {
                         propertyAccessorCandidate = propertyCandidate.PropertyGetMethodData;
                         if (TryFindParameterCandidateInMethods(parameterDescriptor, declaringMemberDescriptor, [propertyAccessorCandidate], out parameterDataCandidate))
                         {
-                            return true;
-                        }
-                        else
-                        {
-                            exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' does not specify an accessor that matches the provided parameter information.");
-
-                            return false;
+                            propertyAccessorCount++;
                         }
                     }
-                    else if (propertyCandidate.CanWrite)
+
+                    // Early out: if we already have found a matching accessor and the requested kind is 'GetOrSet' we can return immediately
+                    // since we define a precedence of getter over setter..
+                    if (declaringMemberDescriptor.ParameterizedMemberKind is ParameterizedSymbolKind.MemberIndexerPropertyGetOrSet
+                        && propertyAccessorCount == 1)
+                    {
+                        return true;
+                    }
+
+                    if (propertyCandidate.CanWrite)
                     {
                         propertyAccessorCandidate = propertyCandidate.PropertyGetMethodData;
                         if (TryFindParameterCandidateInMethods(parameterDescriptor, declaringMemberDescriptor, [propertyAccessorCandidate], out parameterDataCandidate))
                         {
-                            return true;
-                        }
-                        else
-                        {
-                            exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' does not specify an accessor that matches the provided parameter information.");
-
-                            return false;
+                            propertyAccessorCount++;
                         }
                     }
 
-                    return false;
+                    bool isPropertyAccessorAmbiguous = propertyAccessorCount > 1;
+                    if (isPropertyAccessorAmbiguous)
+                    {
+                        exception = new InvalidReflectionCacheKeyException($"The key for the parameter is invalid. The provided declaring member information for the property '{propertyCandidate.FullyQualifiedSignature}' specifies multiple accessors that match the provided parameter information. Please be more specific which accessor should be preferred.");
+
+                        return false;
+                    }
+
+                    return propertyAccessorCount == 1;
                 }
             }
         }

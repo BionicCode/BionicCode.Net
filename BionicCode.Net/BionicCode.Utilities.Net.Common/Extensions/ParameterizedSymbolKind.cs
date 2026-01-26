@@ -7,6 +7,7 @@
         MemberNormalPropertySet,
         MemberIndexerPropertyGet,
         MemberIndexerPropertySet,
+        MemberIndexerPropertyGetOrSet,
         MemberConstructor,
     }
 }

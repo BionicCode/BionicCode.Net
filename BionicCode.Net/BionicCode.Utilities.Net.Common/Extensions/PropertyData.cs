@@ -848,19 +848,6 @@ namespace BionicCode.Utilities.Net
             ? this.PropertyGetMethodParameters.HasItems
             : this.CanWrite && this.PropertySetMethodParameters.Count > 1;
 
-        ///// <summary>
-        ///// Gets the indexer parameters for this property as returned by <see cref="PropertyInfo.GetIndexParameters"/>.
-        ///// </summary>
-        ///// <remarks>
-        ///// This list intentionally mirrors the .NET API behavior: it represents the shared indexer parameters for both the getter
-        ///// and setter and therefore does not include the compiler-generated <c>value</c> parameter of the setter.
-        ///// As a result, association with a specific accessor method can be ambiguous when both accessors exist.
-        ///// If accessor association matters (e.g., to distinguish getter vs. setter parameters), prefer
-        ///// <see cref="PropertyGetMethodParameters"/> and <see cref="PropertySetMethodParameters"/> instead.
-        ///// </remarks>
-        //public ParameterList IndexerParameters
-        //  => this.indexerParameters ??= ParameterListBuilder.CreateForIndexer(this);
-
         /// <summary>
         /// Gets the parameters of the property getter method (including indexer parameters only).
         /// </summary>

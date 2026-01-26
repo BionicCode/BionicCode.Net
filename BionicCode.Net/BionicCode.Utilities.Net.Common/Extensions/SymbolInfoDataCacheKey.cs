@@ -365,16 +365,16 @@
             RuntimeTypeHandle parameterTypeHandle = parameterType.TypeHandle;
 
             // Method or constructor parameter or property setter or getter parameter where the parameter was obtained via MethodInfo.GetParameters method call
-            // or was obtained via PropertyInfo.GetIndexerParameters method but normalized to a method associated parameter.
+            // But never a property setter or getter parameter where the parameter was obtained via 'PropertyInfo.GetIndexParameters()'.
             RuntimeMethodHandle methodHandle = member is MethodBase methodBaseInfo
                 ? methodBaseInfo.MethodHandle
-                : throw new NotSupportedException($"The member '{member.Name}' is not supported. '{typeof(ParameterInfo).ToFullyQualifiedSignatureName}.{nameof(ParameterInfo.Member)} must return a '{typeof(MethodBase).ToFullyQualifiedSignatureName()}' or '{typeof(PropertyInfo).ToFullyQualifiedSignatureName()}'.");
+
+                // Since we already handled PropertyInfo case above, this should never happen.
+                : throw new NotSupportedException($"The member '{member.Name}' is not supported. '{typeof(ParameterInfo).ToFullyQualifiedSignatureName}.{nameof(ParameterInfo.Member)} must return a '{typeof(MethodBase).ToFullyQualifiedSignatureName()}'.");
 
             ParameterizedSymbolKind parameterizedSymbolKind = member is MethodInfo
                 ? ParameterizedSymbolKind.MemberMethod
-                : member is ConstructorInfo
-                    ? ParameterizedSymbolKind.MemberConstructor
-                    : ParameterizedSymbolKind.Undefined;
+                : ParameterizedSymbolKind.MemberConstructor;
 
             return new SymbolInfoDataCacheKey(parameterInfo.Name ?? string.Empty,
                 declaringTypeHandle,
@@ -633,24 +633,24 @@
 
                 var hashCode = new HashCode();
                 hashCode.Add(this.SymbolName);
-                hashCode.Add(this.DeclaringTypeHandle);
-                hashCode.Add(this.SymbolTypeHandle);
-                hashCode.Add(this.MethodHandle);
-                hashCode.Add(this.FieldHandle);
+                hashCode.Add(this._declaringTypeHandle);
+                hashCode.Add(this._symbolTypeHandle);
+                hashCode.Add(this._methodHandle);
+                hashCode.Add(this._fieldHandle);
                 hashCode.Add(this.SymbolKind);
-                hashCode.Add(this.GenericTypeParameterCount);
+                hashCode.Add(this._genericTypeParameterCount);
                 hashCode.Add(this.IsAnonymousSymbolKey);
-                hashCode.Add(this.CacheKeyParameterDescriptor);
-                hashCode.Add(this.CacheKeyParameterMemberDescriptor);
+                hashCode.Add(this._cacheKeyParameterDescriptor);
+                hashCode.Add(this._cacheKeyParameterMemberDescriptor);
 
-                foreach (ParameterData parameterData in this.ParameterList)
+                foreach (ParameterData parameterData in this._parameterList)
                 {
                     hashCode.Add(parameterData.ParameterTypeHandle);
                     hashCode.Add(parameterData.DeclaringTypeHandle);
                     hashCode.Add(parameterData.Position);
                 }
 
-                foreach (MethodParameterInfo parameterData in this.MethodParameterInfoList)
+                foreach (MethodParameterInfo parameterData in this._methodParameterInfoList)
                 {
                     hashCode.Add(parameterData.ParameterTypeHandle);
                     hashCode.Add(parameterData.DeclaringTypeHandle);
@@ -665,17 +665,17 @@
             => obj is SymbolInfoDataCacheKey other && Equals(other);
 
         public bool Equals(SymbolInfoDataCacheKey other) => this.SymbolName == other.SymbolName
-            && this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle)
-            && this.SymbolTypeHandle.Equals(other.SymbolTypeHandle)
-            && this.MethodHandle == other.MethodHandle
-            && this.FieldHandle == other.FieldHandle
+            && this._declaringTypeHandle.Equals(other._declaringTypeHandle)
+            && this._symbolTypeHandle.Equals(other._symbolTypeHandle)
+            && this._methodHandle == other._methodHandle
+            && this._fieldHandle == other._fieldHandle
             && this.SymbolKind == other.SymbolKind
-            && this.GenericTypeParameterCount == other.GenericTypeParameterCount
+            && this._genericTypeParameterCount == other._genericTypeParameterCount
             && this.IsAnonymousSymbolKey == other.IsAnonymousSymbolKey
-            && this.CacheKeyParameterDescriptor == other.CacheKeyParameterDescriptor
-            && this.CacheKeyParameterMemberDescriptor == other.CacheKeyParameterMemberDescriptor
-            && this.ParameterList.Equals(other.ParameterList)
-            && this.MethodParameterInfoList.Equals(other.MethodParameterInfoList);
+            && this._cacheKeyParameterDescriptor == other._cacheKeyParameterDescriptor
+            && this._cacheKeyParameterMemberDescriptor == other._cacheKeyParameterMemberDescriptor
+            && this._parameterList.Equals(other._parameterList)
+            && this._methodParameterInfoList.Equals(other._methodParameterInfoList);
 
         public static bool operator ==(SymbolInfoDataCacheKey left, SymbolInfoDataCacheKey right) => left.Equals(right);
         public static bool operator !=(SymbolInfoDataCacheKey left, SymbolInfoDataCacheKey right) => !(left == right);

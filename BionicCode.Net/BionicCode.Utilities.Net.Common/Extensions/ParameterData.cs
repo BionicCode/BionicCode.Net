@@ -42,7 +42,6 @@
         private bool? _isIndexerPropertySetterParameter;
         private bool? _isIndexerPropertyGetterParameter;
         private bool? _isPropertySetterParameter;
-        private bool _isIndexerAccessorAmbiguous;
 
         internal ParameterData(ParameterInfo parameterInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
             : base(parameterInfo.Name, SymbolKind.Parameter, symbolInfoDataCacheKey)
@@ -50,7 +49,6 @@
             ArgumentNullException.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
             this.ParameterInfo = parameterInfo;
-            this._isIndexerAccessorAmbiguous = false;
         }
 
         public ParameterInfo GetParameterInfo()
@@ -175,7 +173,8 @@
                 // If ParameterInfo.Member is a PropertyInfo, it is ALWAYS an indexer property
                 // and the current parameter was obtained via PropertyInfo.GetIndexerParameters(). Since the returned parameter list excludes the "value" parameter for the setter,
                 // we can't resolve ambiguity whether the parameter belongs to the getter or setter.
-                PropertyInfo propertyInfo => FindDeclaringPropertyAccessor(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo)),
+                // This case is no longer supported since ParameterData creation involves normalization. The fact we landed here points to a bug in the code.
+                PropertyInfo propertyInfo => throw new NotSupportedException($"Parameters obtained via '{typeof(PropertyInfo).ToFullyQualifiedSignatureName}.{nameof(PropertyInfo.GetIndexParameters)}()' are not supported."),
 
                 // The parameter belongs to a method and was obtained via:
                 //      * MethodInfo.GetParameters() or
@@ -185,32 +184,6 @@
                 MethodInfo methodInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo),
                 _ => throw new NotImplementedException(),
             };
-
-        /// <summary>
-        /// Assumes that the parameter belongs to an indexer property accessor and was obtained via
-        /// PropertyInfo.GetIndexerParameters().
-        /// </summary>
-        /// <param name="propertyData"></param>
-        /// <returns></returns>
-        /// <remarks>If both accessors are available, the association is ambiguous since the "value" parameter is removed from the resulting parameter list.
-        /// In this case, give the getter precedence over the setter.
-        /// </remarks>
-        private MethodData FindDeclaringPropertyAccessor(PropertyData propertyData)
-        {
-            // If both accessor are available, the association is ambiguous since the "value" parameter is removed from the resulting parameter list...
-            this._isIndexerAccessorAmbiguous = propertyData.CanRead && propertyData.CanWrite;
-
-            // ... In this case, give the getter precedence over the setter.
-            return ChoseAccessorForIndexerParameter(propertyData);
-        }
-
-        internal static MethodData ChoseAccessorForIndexerParameter(PropertyData propertyData)
-        {
-            // Give the getter precedence over the setter.
-            return propertyData.CanRead
-                ? propertyData.PropertyGetMethodData
-                : propertyData.PropertySetMethodData;
-        }
 
         public TypeData ParameterTypeData
           => this.parameterTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetParameterInfo().ParameterType);
@@ -241,15 +214,9 @@
         /// <summary>
         /// Returns <see langword="true"/> if the parameter belongs to an indexer property getter.
         /// </summary>
-        /// <remarks>This property is typically used to identify parameters that are part of indexer property getters. However, if the current parameter was obtained via <see cref="PropertyData.IndexerParameters"/> (or <see cref="PropertyInfo.GetIndexParameters"/>)
-        /// and both property accessors are implemented, the association of the parameter with the getter or setter is impossible (and also irrelevant since getter and setter share the exact same indexer parameters).
-        /// In this case, the parameter is considered ambiguous (<see cref="IsIndexerAccessorAmbiguous"/> returns <see langword="true"/>) and the getter is used as associated member.<br/>
-        /// This means: if <see cref="IsIndexerAccessorAmbiguous"/> returns <see langword="true"/>, the current parameter a) can't be the compiler generated "value" parameter of the setter and b) is a pure indexer parameter and therefore associates with getter and setter.</remarks>
+        /// <remarks>This property is typically used to identify parameters that are part of indexer property getters. </remarks>
         public bool IsIndexerPropertyGetterParameter
           => this._isIndexerPropertyGetterParameter ??= this.MemberData is MethodData methodData && methodData.IsIndexerPropertyGetMethod;
-
-        public bool IsIndexerAccessorAmbiguous
-            => this.IsIndexerPropertyParameter && this._isIndexerAccessorAmbiguous; // Accessing 'IsIndexerPropertyParameter' is required since it will modify the ambiguity flag if the parameter was obtained via PropertyInfo.GetIndexerParameters()
 
         /// <summary>
         /// Gets a value indicating whether the parameter represents the implicit 'value' parameter of a property or
@@ -257,9 +224,7 @@
         /// </summary>
         /// <remarks>This property is typically used to identify the parameter that receives the value
         /// being assigned in a property or indexer set accessor. In C#, property and indexer setters include a
-        /// compiler-generated parameter named 'value' as the last parameter in the method signature.<para/>
-        /// If the current parameter was obtained via <see cref="PropertyData.IndexerParameters"/> (or <see cref="PropertyInfo.GetIndexParameters"/>), the identification of the "value" parameter is impossible
-        /// since the parameter list only contains the pure indexer parameters (which are the same for getter and setter) without the "value" parameter.
+        /// compiler-generated parameter named 'value' as the last parameter in the method signature.
         /// </remarks>
         /// <value><see langword="true"/> if the parameter is the implicit 'value' parameter of a property or indexer setter; otherwise, <see langword="false"/>.</value>
         public bool IsSetterValueParameter
