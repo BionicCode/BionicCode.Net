@@ -795,7 +795,7 @@
         /// API docs: <see href="https://sampoh.de/github/docs/bioniccode.net/api/BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerLoggerDelegate_BionicCode_Utilities_Net_ProfilerBatchResult__">IDisposable LogTimeScoped(ProfilerLoggerDelegate logger, out ProfilerBatchResult result)</see>
         /// </para>
         /// </remarks>
-        public static IDisposable LogTimeScoped(Action<ProfilerBatchResult, string> logger, out ProfilerBatchResult result, TimeUnit baseUnit = Profiler.DefaultBaseUnit, [CallerMemberName] string scopeName = "Scoped Profiling", [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+        public static IDisposable LogTimeScoped(Action<ProfilerBatchResult, string>? logger, out ProfilerBatchResult result, TimeUnit baseUnit = Profiler.DefaultBaseUnit, [CallerMemberName] string scopeName = "Scoped Profiling", [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
         {
             var context = new ScopeProfilerContext(
                 null,
@@ -848,7 +848,7 @@
         /// API docs: <see href="https://sampoh.de/github/docs/bioniccode.net/api/BionicCode.Utilities.Net.Profiler.html#BionicCode_Utilities_Net_Profiler_LogTimeScoped_BionicCode_Utilities_Net_ProfilerLoggerAsync_BionicCode_Utilities_Net_ProfilerBatchResult__">IDisposable LogTimeScoped(ProfilerLoggerAsyncDelegate, out ProfilerBatchResult)</see>
         /// </para>
         /// </remarks>
-        public static IAsyncDisposable LogTimeScopedAsync(Func<ProfilerBatchResult, string, Task> asyncLogger, out ProfilerBatchResult result, TimeUnit baseUnit = Profiler.DefaultBaseUnit, [CallerMemberName] string scopeName = "Scoped Profiling", [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
+        public static IAsyncDisposable LogTimeScopedAsync(Func<ProfilerBatchResult, string, Task>? asyncLogger, out ProfilerBatchResult result, TimeUnit baseUnit = Profiler.DefaultBaseUnit, [CallerMemberName] string scopeName = "Scoped Profiling", [CallerFilePath] string sourceFileName = "", [CallerLineNumber] int lineNumber = -1)
         {
             var context = new ScopeProfilerContext(
                 null,

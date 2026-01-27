@@ -6,17 +6,17 @@
 
     internal class ProfilerScopeProvider
     {
-        public Action<ProfilerBatchResult, string> Logger { get; }
-        public Func<ProfilerBatchResult, string, Task> AsyncLogger { get; }
+        public Action<ProfilerBatchResult, string>? Logger { get; }
+        public Func<ProfilerBatchResult, string, Task>? AsyncLogger { get; }
         public ProfilerBatchResult Result { get; }
 
-        internal ProfilerScopeProvider(Action<ProfilerBatchResult, string> logger, ProfilerContext profilerContext)
+        internal ProfilerScopeProvider(Action<ProfilerBatchResult, string>? logger, ProfilerContext profilerContext)
         {
             this.Logger = logger;
             this.Result = new ProfilerBatchResult(DateTime.Now, profilerContext);
         }
 
-        internal ProfilerScopeProvider(Func<ProfilerBatchResult, string, Task> asyncLogger, ProfilerContext profilerContext)
+        internal ProfilerScopeProvider(Func<ProfilerBatchResult, string, Task>? asyncLogger, ProfilerContext profilerContext)
         {
             this.AsyncLogger = asyncLogger;
             this.Result = new ProfilerBatchResult(DateTime.Now, profilerContext);
