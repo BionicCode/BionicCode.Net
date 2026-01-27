@@ -149,6 +149,9 @@
         public override bool IsFamilyAndAssembly
             => this._isFamilyAndAssembly ??= GetConstructorInfo().IsFamilyAndAssembly;
 
+        public override ParameterizedSymbolKind ParameterizedSymbolKind
+          => ParameterizedSymbolKind.MemberConstructor;
+
         /// <summary>
         /// Determines the symbol attributes for a constructor based on the specified constructor data.
         /// </summary>

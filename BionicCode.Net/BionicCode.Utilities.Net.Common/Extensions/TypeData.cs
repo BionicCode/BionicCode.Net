@@ -116,6 +116,58 @@ namespace BionicCode.Utilities.Net
             return this.Properties.TryGetPropertyByName(propertyName, out propertyData);
         }
 
+        public bool TryGetIndexerPropertyByParameterList(ParameterList parameters, PropertyAccessor propertyAccessor, out PropertyData? propertyData)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(parameters);
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<PropertyAccessor>(propertyAccessor);
+
+            propertyData = null;
+            foreach (PropertyData property in this.Properties)
+            {
+                ParameterList indexerAccessorParameters = propertyAccessor switch
+                {
+                    // Since we use binary AND to bit mask flags, we we also catch the combined flag GetAndSet here.
+                    var accessorSpecifier when (accessorSpecifier & PropertyAccessor.Get) != 0 && property.CanRead => property.PropertyGetMethodParameters,
+                    var accessorSpecifier when (accessorSpecifier & PropertyAccessor.Set) != 0 && property.CanWrite => property.PropertySetMethodParameters,
+                    _ => throw new NotSupportedException($"The value '{propertyAccessor}' is not supported."),
+                };
+
+                if (indexerAccessorParameters.Equals(parameters))
+                {
+                    propertyData = property;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool TryGetIndexerPropertyByParameterList(MethodParameterInfoList indexerParameters, PropertyAccessor indexerPropertyAccessor, out PropertyData? propertyData)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(indexerParameters);
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<PropertyAccessor>(indexerPropertyAccessor);
+
+            Func<PropertyData, ParameterList> indexerAccessorParametersReader = indexerPropertyAccessor switch
+            {
+                // Since we use binary AND to bit mask flags, we we also catch the combined flag GetAndSet here.
+                var accessorSpecifier when (accessorSpecifier & PropertyAccessor.Get) != 0 => property => property.IsIndexer && property.CanRead ? property.PropertyGetMethodParameters : ParameterList.Empty,
+                var accessorSpecifier when (accessorSpecifier & PropertyAccessor.Set) != 0 => property => property.IsIndexer && property.CanWrite ? property.PropertySetMethodParameters : ParameterList.Empty,
+                _ => throw new NotSupportedException($"The value '{indexerPropertyAccessor}' is not supported."),
+            };
+            propertyData = null;
+            foreach (PropertyData property in this.Properties)
+            {
+                ParameterList indexerAccessorParameters = indexerAccessorParametersReader.Invoke(property);
+                if (ParameterListComparer.Equals(indexerAccessorParameters, indexerParameters))
+                {
+                    propertyData = property;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Returns an enumerable collection of property metadata for the current type, using the specified binding
         /// flags to control which properties are included.

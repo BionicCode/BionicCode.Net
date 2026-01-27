@@ -66,8 +66,10 @@
             this.ParameterKind,
             this.ParameterTypeHandle);
 
-        public static bool operator ==(CacheKeyParameterDescriptor left, CacheKeyParameterDescriptor right) => left.Equals(right);
-        public static bool operator !=(CacheKeyParameterDescriptor left, CacheKeyParameterDescriptor right) => !left.Equals(right);
+        public static bool operator ==(CacheKeyParameterDescriptor left, CacheKeyParameterDescriptor right)
+            => left.Equals(right);
+        public static bool operator !=(CacheKeyParameterDescriptor left, CacheKeyParameterDescriptor right)
+            => !left.Equals(right);
 
         public override bool Equals(object? obj)
             => obj is CacheKeyParameterDescriptor other && Equals(other);

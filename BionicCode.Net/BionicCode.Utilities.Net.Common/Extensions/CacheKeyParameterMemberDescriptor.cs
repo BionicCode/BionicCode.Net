@@ -16,6 +16,7 @@
         /// Optional. The name of the member that declares the parameter. Providing this information can help to avoid ambiguity and improve lookup performance.
         /// <para/>Will be ignored when <paramref name="parameterizedSymbolKind"/> is <see cref="ParameterizedSymbolKind.MemberConstructor"/> or when the <paramref name="parameterizedSymbolKind"/> indicates an indexer property (<see cref="ParameterizedSymbolKind.MemberIndexerPropertyGet"/> or <see cref="ParameterizedSymbolKind.MemberIndexerPropertySet"/>).
         /// </param>
+        /// <param name="memberTypeHandle">Optional. The runtime type handle representing the return type of a method or property type of a property.</param>
         /// <param name="memberParameterCount">Optional. The number of parameters for the member that declares the parameter. Provide to narrow down ambiguity and improve performance.</param>
         /// <param name="parameterizedSymbolKind">Optional. Provides a hint about the kind of member that the parameter belongs to. Should be provided too improve efficiency of the key and to avoid ambiguity.</param>
         /// <param name="declaringTypeHandle">The runtime type handle representing the declaring type of the member that defines the anonymous parameter.</param>
@@ -27,7 +28,7 @@
             int memberParameterCount = SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
             ParameterizedSymbolKind parameterizedSymbolKind = ParameterizedSymbolKind.Undefined,
             TypeList? memberGenericMethodParameters = null,
-            RuntimeTypeHandle? propertyTypeHandle = null)
+            RuntimeTypeHandle? memberTypeHandle = null)
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle);
             ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<ParameterizedSymbolKind>(parameterizedSymbolKind);
@@ -46,7 +47,7 @@
             this.MemberGenericMethodParameters = memberGenericMethodParameters ?? TypeList.Empty;
             this.DeclaringTypeHandle = declaringTypeHandle;
             this.MemberHandle = memberHandle ?? default;
-            this.PropertyTypeHandle = propertyTypeHandle ?? default;
+            this.MemberTypeHandle = memberTypeHandle ?? default;
         }
 
         public bool HasDeclaringMemberName
@@ -67,15 +68,19 @@
         public bool HasParameterizedMemberKind
             => this.ParameterizedMemberKind != ParameterizedSymbolKind.Undefined;
 
-        public bool HasPropertyTypeHandle
-            => !this.PropertyTypeHandle.Equals(default);
+        public bool HasMemberTypeHandle
+            => !this.MemberTypeHandle.Equals(default);
 
         public string DeclaringMemberName { get; init; }
         public int MemberParameterCount { get; init; }
         public ParameterizedSymbolKind ParameterizedMemberKind { get; init; }
         public TypeList MemberGenericMethodParameters { get; init; }
         public RuntimeTypeHandle DeclaringTypeHandle { get; init; }
-        public RuntimeTypeHandle PropertyTypeHandle { get; init; }
+
+        /// <summary>
+        /// The handle for the return type of a method or the property type of a property.
+        /// </summary>
+        public RuntimeTypeHandle MemberTypeHandle { get; init; }
         public RuntimeMethodHandle MemberHandle { get; }
 
         public bool Equals(CacheKeyParameterMemberDescriptor other) => this.DeclaringMemberName.Equals(other.DeclaringMemberName, StringComparison.Ordinal)
@@ -84,7 +89,7 @@
             && this.MemberGenericMethodParameters.Equals(other.MemberGenericMethodParameters)
             && this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle)
             && this.MemberHandle.Equals(other.MemberHandle)
-            && this.PropertyTypeHandle.Equals(other.PropertyTypeHandle);
+            && this.MemberTypeHandle.Equals(other.MemberTypeHandle);
 
         public override int GetHashCode() => HashCode.Combine(
             this.DeclaringMemberName,
@@ -93,10 +98,12 @@
             this.MemberGenericMethodParameters,
             this.DeclaringTypeHandle,
             this.MemberHandle,
-            this.PropertyTypeHandle);
+            this.MemberTypeHandle);
 
-        public static bool operator ==(CacheKeyParameterMemberDescriptor left, CacheKeyParameterMemberDescriptor right) => left.Equals(right);
-        public static bool operator !=(CacheKeyParameterMemberDescriptor left, CacheKeyParameterMemberDescriptor right) => !(left == right);
+        public static bool operator ==(CacheKeyParameterMemberDescriptor left, CacheKeyParameterMemberDescriptor right)
+            => left.Equals(right);
+        public static bool operator !=(CacheKeyParameterMemberDescriptor left, CacheKeyParameterMemberDescriptor right)
+            => !(left == right);
 
         public override bool Equals(object obj)
             => obj is CacheKeyParameterMemberDescriptor other && Equals(other);

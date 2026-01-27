@@ -4,25 +4,19 @@
 
     internal readonly struct MethodParameterInfo : IEquatable<MethodParameterInfo>
     {
-        /// <summary>
-        /// Gets the zero based position of the parameter in the method signature.
-        /// </summary>
-        /// <value>The zero based position of the parameter in the method signature.</value>
-        public int Position { get; }
-        /// <summary>
-        /// Gets the runtime handle for the parameter's type.
-        /// </summary>
-        public RuntimeTypeHandle ParameterTypeHandle { get; }
-        /// <summary>
-        /// The runtime type handle of the type that declares the method that defines the parameter.
-        /// </summary>
-        public RuntimeTypeHandle DeclaringTypeHandle { get; }
-        /// <summary>
-        /// Describes the modifier kind of the parameter (e.g. <see langword="ref"/>).
-        /// </summary>
-        public ParameterKind Kind { get; }
+        public CacheKeyParameterDescriptor ParameterDescriptor { get; }
+        public CacheKeyParameterMemberDescriptor DeclaringMemberDescriptor { get; }
 
-        public string MethodName { get; }
+        /// <summary>
+        /// Gets a value indicating whether ambiguity is expected for the associated parameter or member descriptor.
+        /// </summary>
+        /// <remarks>Ambiguity is expected when neither the parameter nor the declaring member can be
+        /// uniquely identified by name, position, or handle. This property can be used to determine if additional
+        /// disambiguation logic may be required when resolving parameters or members.</remarks>
+        public bool IsAmbiguityExpected
+            => (!this.ParameterDescriptor.HasParameterName
+                && !this.ParameterDescriptor.HasParameterPosition)
+                || !this.DeclaringMemberDescriptor.HasMemberHandle;
 
         ///// <summary>
         ///// Gets a value indicating whether the type parameter is declared by a generic method definition.
@@ -40,11 +34,23 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(parameterData);
 
-            this.Position = parameterData.Position;
-            this.ParameterTypeHandle = parameterData.ParameterTypeHandle;
-            this.Kind = parameterData.ParameterKind;
-            this.MethodName = parameterData.MemberData.Name;
-            this.DeclaringTypeHandle = parameterData.DeclaringTypeHandle;
+            RuntimeTypeHandle memberTypeHandle = parameterData.MemberData is MethodData methodData
+                ? methodData.ReturnTypeData.Handle
+                : default;
+
+            this.ParameterDescriptor = new CacheKeyParameterDescriptor(
+                parameterData.Name,
+                parameterData.Position,
+                parameterData.ParameterKind,
+                parameterData.ParameterTypeHandle);
+            this.DeclaringMemberDescriptor = new CacheKeyParameterMemberDescriptor(
+                parameterData.DeclaringTypeHandle,
+                parameterData.MemberData.Handle,
+                parameterData.MemberData.Name,
+                parameterData.MemberData.Parameters.Count,
+                parameterData.MemberData.ParameterizedSymbolKind,
+                TypeList.Empty,
+                memberTypeHandle);
         }
 
         /// <summary>
@@ -60,35 +66,21 @@
         /// <exception cref="ArgumentException">Thrown when the <see cref="ParameterKind"/> of <paramref name="parameterInfoDataCacheKey"/> is <see cref="ParameterKind.Undefined"/>.</exception>"
         public MethodParameterInfo(SymbolInfoDataCacheKey parameterInfoDataCacheKey) : this()
         {
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey, nameof(parameterInfoDataCacheKey));
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey.DeclaringTypeHandle, nameof(parameterInfoDataCacheKey));
             ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey.CacheKeyParameterDescriptor, nameof(parameterInfoDataCacheKey));
             ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey.CacheKeyParameterMemberDescriptor, nameof(parameterInfoDataCacheKey));
 
-            CacheKeyParameterDescriptor parameterDesciptor = parameterInfoDataCacheKey.CacheKeyParameterDescriptor;
+            CacheKeyParameterDescriptor parameterDescriptor = parameterInfoDataCacheKey.CacheKeyParameterDescriptor;
             CacheKeyParameterMemberDescriptor declaringMemberDescriptor = parameterInfoDataCacheKey.CacheKeyParameterMemberDescriptor;
-            ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(
-                parameterDesciptor.ParameterKind,
-                [ParameterKind.Undefined],
-                nameof(parameterInfoDataCacheKey),
-                $"The property '{nameof(MethodParameterInfo.Kind)}' of the argument '{parameterInfoDataCacheKey}' cannot be of value '{nameof(ParameterKind)}.{nameof(ParameterKind.Undefined)}'.");
-
-            this.Position = parameterDesciptor.ParameterPosition;
-            this.MethodName = declaringMemberDescriptor.DeclaringMemberName;
-            this.ParameterTypeHandle = parameterDesciptor.ParameterTypeHandle;
-            this.Kind = parameterDesciptor.ParameterKind;
-            this.DeclaringTypeHandle = declaringMemberDescriptor.DeclaringTypeHandle;
+            this.ParameterDescriptor = parameterDescriptor;
+            this.DeclaringMemberDescriptor = declaringMemberDescriptor;
         }
 
         public override bool Equals(object? obj) => obj is MethodParameterInfo info && Equals(info);
-        public bool Equals(MethodParameterInfo other) => other.ParameterTypeHandle.Equals(this.ParameterTypeHandle)
-            && other.DeclaringTypeHandle.Equals(this.DeclaringTypeHandle)
-            && other.Position == this.Position
-            && other.Kind == this.Kind
-            && other.MethodName.Equals(this.MethodName, StringComparison.Ordinal);
+        public bool Equals(MethodParameterInfo other) => this.ParameterDescriptor == other.ParameterDescriptor
+            && this.DeclaringMemberDescriptor == other.DeclaringMemberDescriptor;
 
         public override int GetHashCode()
-            => HashCode.Combine(this.ParameterTypeHandle, this.DeclaringTypeHandle, this.Position, this.Kind, this.MethodName);
+            => HashCode.Combine(this.ParameterDescriptor, this.DeclaringMemberDescriptor);
 
         public static bool operator ==(MethodParameterInfo left, MethodParameterInfo right) => left.Equals(right);
         public static bool operator !=(MethodParameterInfo left, MethodParameterInfo right) => !(left == right);

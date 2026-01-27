@@ -64,6 +64,7 @@
         private bool? _isEventAddMethod;
         private bool? _isEventRemoveMethod;
         private bool? _isOperatorOverload;
+        private ParameterizedSymbolKind? _parameterizedSymbolKind;
         private BasicMethodFingerprint? _basicMethodFingerprint;
         private MemberData? _accessedMember;
 
@@ -1188,6 +1189,15 @@
 
         public bool IsOpenGenericMethodOrGenericMethodDefinition
           => (this.IsGenericMethod && this.ContainsGenericParameters) || this.IsGenericMethodDefinition;
+
+        public override ParameterizedSymbolKind ParameterizedSymbolKind
+          => this._parameterizedSymbolKind ??= this.IsPropertySetMethod
+            ? ParameterizedSymbolKind.MemberNormalPropertySet
+            : this.IsIndexerPropertyGetMethod
+                ? ParameterizedSymbolKind.MemberIndexerPropertyGet
+                : this.IsIndexerPropertySetMethod
+                    ? ParameterizedSymbolKind.MemberIndexerPropertySet
+                    : ParameterizedSymbolKind.MemberMethod;
 
         private static bool IsMethodExtensionMethod(MethodData methodData)
         {

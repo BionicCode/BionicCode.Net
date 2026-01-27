@@ -28,6 +28,7 @@
         public abstract ParameterList Parameters { get; }
         public abstract bool HasParamsParameter { get; }
         public abstract RuntimeMethodHandle Handle { get; }
+        public abstract ParameterizedSymbolKind ParameterizedSymbolKind { get; }
         public abstract MethodBase GetMethodBase();
 
         /// <summary>

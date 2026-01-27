@@ -132,19 +132,22 @@
 
         private readonly CacheKeyParameterDescriptor _cacheKeyParameterDescriptor;
 
-        public CacheKeyParameterDescriptor CacheKeyParameterDescriptor => !this.IsAnonymousSymbolKey
-            ? ThrowCurrentInstanceIsNotAnonymousException<CacheKeyParameterDescriptor>()
-            : this.SymbolKind is SymbolKind.Parameter
-                ? this._cacheKeyParameterDescriptor
-                : ThrowInvalidPropertyContextException<CacheKeyParameterDescriptor>([SymbolKind.Parameter]);
+        public CacheKeyParameterDescriptor CacheKeyParameterDescriptor => this.SymbolKind is SymbolKind.Parameter
+            ? this._cacheKeyParameterDescriptor
+            : ThrowInvalidPropertyContextException<CacheKeyParameterDescriptor>([SymbolKind.Parameter]);
 
         private readonly CacheKeyParameterMemberDescriptor _cacheKeyParameterMemberDescriptor;
 
-        public CacheKeyParameterMemberDescriptor CacheKeyParameterMemberDescriptor => !this.IsAnonymousSymbolKey
-            ? ThrowCurrentInstanceIsNotAnonymousException<CacheKeyParameterMemberDescriptor>()
-            : this.SymbolKind is SymbolKind.Parameter
-                ? this._cacheKeyParameterMemberDescriptor
-                : ThrowInvalidPropertyContextException<CacheKeyParameterMemberDescriptor>([SymbolKind.Parameter]);
+        public CacheKeyParameterMemberDescriptor CacheKeyParameterMemberDescriptor => this.SymbolKind is SymbolKind.Parameter
+            ? this._cacheKeyParameterMemberDescriptor
+            : ThrowInvalidPropertyContextException<CacheKeyParameterMemberDescriptor>([SymbolKind.Parameter]);
+
+        private readonly PropertyAccessor _indexerPropertyAccessor;
+        public PropertyAccessor IndexerPropertyAccessor => !this.IsAnonymousSymbolKey
+            ? ThrowCurrentInstanceIsNotAnonymousException<PropertyAccessor>()
+            : this.SymbolKind.EqualsAny([SymbolKind.MemberProperty])
+                ? this._indexerPropertyAccessor
+                : ThrowInvalidPropertyContextException<PropertyAccessor>([SymbolKind.MemberProperty]);
 
         public bool IsAnonymousSymbolKey { get; }
 
@@ -162,6 +165,7 @@
             SymbolKind symbolKind,
             CacheKeyParameterDescriptor cacheKeyParameterDescriptor,
             CacheKeyParameterMemberDescriptor cacheKeyParameterMemberDescriptor,
+            PropertyAccessor indexerPropertyAccessor,
             bool isAnonymousSymbolKey)
         {
             ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
@@ -171,6 +175,7 @@
             this.SymbolKind = symbolKind;
             this._cacheKeyParameterDescriptor = cacheKeyParameterDescriptor;
             this._cacheKeyParameterMemberDescriptor = cacheKeyParameterMemberDescriptor;
+            this._indexerPropertyAccessor = indexerPropertyAccessor;
             this.SymbolName = name;
             this._declaringTypeHandle = declaringTypeHandle;
             this._symbolTypeHandle = typeHandle;
@@ -216,6 +221,7 @@
                 SymbolKind.MemberEvent,
                 default,
                 default,
+                PropertyAccessor.Undefined,
                 false);
         }
 
@@ -232,7 +238,6 @@
             RuntimeTypeHandle declaringTypeHandle = declaringType.TypeHandle;
             RuntimeTypeHandle typeHandle = propertyInfo.PropertyType.TypeHandle;
 
-            int indexerParameterCount = propertyInfo.GetIndexParameters().Length;
             return new SymbolInfoDataCacheKey(propertyInfo.Name,
                 declaringTypeHandle,
                 typeHandle,
@@ -245,6 +250,7 @@
                 SymbolKind.MemberProperty,
                 default,
                 default,
+                PropertyAccessor.Undefined,
                 false);
         }
 
@@ -266,6 +272,7 @@
                 SymbolKind.MemberMethod,
                 default,
                 default,
+                PropertyAccessor.Undefined,
                 false);
         }
 
@@ -287,6 +294,7 @@
                 SymbolKind.Type,
                 default,
                 default,
+                PropertyAccessor.Undefined,
                 false);
         }
 
@@ -308,6 +316,7 @@
                 SymbolKind.MemberField,
                 default,
                 default,
+                PropertyAccessor.Undefined,
                 false);
         }
 
@@ -329,6 +338,7 @@
                 SymbolKind.MemberConstructor,
                 default,
                 default,
+                PropertyAccessor.Undefined,
                 false);
         }
 
@@ -387,6 +397,7 @@
                 SymbolKind.Parameter,
                 cacheKeyParameterDescriptor,
                 cacheKeyParameterMemberDescriptor,
+                PropertyAccessor.Undefined,
                 false);
         }
 
@@ -442,6 +453,7 @@
                 symbolKind,
                 default,
                 default,
+                PropertyAccessor.Undefined,
                 true);
         }
 
@@ -489,6 +501,7 @@
                 symbolKind,
                 default,
                 default,
+                PropertyAccessor.Undefined,
                 true);
         }
 
@@ -502,7 +515,7 @@
         /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous property.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="declaringTypeHandle"/> is <see langword="default"/>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName"/> is null, empty, or consists only of white-space characters</exception>
-        public static SymbolInfoDataCacheKey CreateForAnonymousProperty(RuntimeTypeHandle declaringTypeHandle, string propertyName, ParameterList? indexerParameters)
+        public static SymbolInfoDataCacheKey CreateForAnonymousProperty(RuntimeTypeHandle declaringTypeHandle, string propertyName, ParameterList? indexerParameters, PropertyAccessor indexerAaccessorKind)
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
             ArgumentException.ThrowIfNullOrWhiteSpace(propertyName, nameof(propertyName));
@@ -520,6 +533,7 @@
                 SymbolKind.MemberProperty,
                 default,
                 default,
+                indexerAaccessorKind,
                 true);
         }
 
@@ -530,13 +544,24 @@
         /// <param name="declaringTypeHandle">The runtime type handle representing the declaring type of the anonymous property.</param>
         /// <param name="propertyName">The name of the anonymous property. Cannot be null, empty, or consist only of white-space characters.</param>
         /// <param name="indexerParameters">The list of parameters for the anonymous indexer property. Can be <see cref="MethodParameterInfoList.Empty"/> or <see langword="null"/> to indicate no parameters in case of a normal property.</param>
+        /// <param name="indexerAccessorKind">The kind of accessor that <paramref name="indexerParameters"/> is specified for.</param>
         /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous property.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="declaringTypeHandle"/> is <see langword="default"/>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName"/> is null, empty, or consists only of white-space characters</exception>
-        public static SymbolInfoDataCacheKey CreateForAnonymousProperty(RuntimeTypeHandle declaringTypeHandle, string propertyName, MethodParameterInfoList? indexerParameters)
+        public static SymbolInfoDataCacheKey CreateForAnonymousProperty(RuntimeTypeHandle declaringTypeHandle, string propertyName, MethodParameterInfoList? indexerParameters, PropertyAccessor indexerAccessorKind)
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
             ArgumentException.ThrowIfNullOrWhiteSpace(propertyName, nameof(propertyName));
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<PropertyAccessor>(indexerAccessorKind);
+            if (indexerParameters is null || indexerParameters.Count == 0)
+            {
+                ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(indexerAccessorKind, [PropertyAccessor.Undefined], nameof(indexerAccessorKind), "The indexer accessor kind cannot be 'Undefined' when no indexer parameters are provided.");
+            }
+
+            if (indexerParameters is not null && indexerParameters.Count > 0)
+            {
+                ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(indexerAccessorKind, [PropertyAccessor.Undefined], $"The indexer accessor kind cannot be 'Undefined' when indexer parameters are provided.");
+            }
 
             MethodParameterInfoList methodParameterInfoList = indexerParameters ?? MethodParameterInfoList.Empty;
             return new SymbolInfoDataCacheKey(propertyName,
@@ -551,6 +576,7 @@
                 SymbolKind.MemberProperty,
                 default,
                 default,
+                indexerAccessorKind,
                 true);
         }
 
@@ -584,6 +610,7 @@
                 SymbolKind.Parameter,
                 cacheKeyParameterDescriptor,
                 cacheKeyParameterMemberDescriptor,
+                PropertyAccessor.Undefined,
                 true);
         }
 
@@ -618,6 +645,7 @@
                 symbolKind,
                 default,
                 default,
+                PropertyAccessor.Undefined,
                 true);
         }
 
