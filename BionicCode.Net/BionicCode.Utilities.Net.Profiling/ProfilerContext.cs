@@ -9,6 +9,7 @@
     {
         protected ProfilerContext(
             TypeData? targetInstanceTypeData,
+            SymbolInfoData? symbolInfoData,
             string sourceFileName,
             int lineNumber,
             int warmupCount,
@@ -16,10 +17,10 @@
             Runtime runtime,
             TimeUnit baseUnit,
             Action<ProfilerBatchResult, string>? logger,
-            Func<ProfilerBatchResult, string, Task>? asyncLogger,
-            string shortMemberDisplayName)
+            Func<ProfilerBatchResult, string, Task>? asyncLogger)
         {
             this.TargetInstanceTypeData = targetInstanceTypeData;
+            this.SymbolInfoData = symbolInfoData;
             this.FullSourceFileName = sourceFileName;
             this.LineNumber = lineNumber;
             this.RuntimeVersionFactory = new Lazy<string>(() => System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
@@ -29,7 +30,6 @@
             this.BaseUnit = baseUnit;
             this.Logger = logger;
             this.AsyncLogger = asyncLogger;
-            this.ShortMemberDisplayName = shortMemberDisplayName;
         }
 
         public Runtime Runtime { get; }
@@ -37,7 +37,6 @@
         public string FullSourceFileName { get; }
         public string SourceFileName => Path.GetFileName(this.FullSourceFileName);
         public int LineNumber { get; }
-        public string ShortMemberDisplayName { get; }
         public Lazy<string> RuntimeVersionFactory { get; }
         public string RuntimeVersion => this.RuntimeVersionFactory.Value;
         public int WarmupCount { get; }
@@ -45,13 +44,14 @@
         public TimeUnit BaseUnit { get; }
         public Action<ProfilerBatchResult, string>? Logger { get; }
         public Func<ProfilerBatchResult, string, Task>? AsyncLogger { get; }
-        public ProfiledTargetType
+        public SymbolInfoData? SymbolInfoData { get; }
     }
 
     internal abstract class ProfilerContext<TTarget> : ProfilerContext
     {
         protected ProfilerContext(
             TTarget targetInstance,
+            SymbolInfoData? symbolInfoData,
             string sourceFileName,
             int lineNumber,
             int warmupCount,
@@ -59,8 +59,7 @@
             Runtime runtime,
             TimeUnit baseUnit,
             Action<ProfilerBatchResult, string>? logger,
-            Func<ProfilerBatchResult, string, Task>? asyncLogger,
-            string shortMemberDisplayName) : base(typeof(TTarget).ToTypeData(), sourceFileName, lineNumber, warmupCount, iterationCount, runtime, baseUnit, logger, asyncLogger, shortMemberDisplayName)
+            Func<ProfilerBatchResult, string, Task>? asyncLogger) : base(typeof(TTarget).ToTypeData(), symbolInfoData, sourceFileName, lineNumber, warmupCount, iterationCount, runtime, baseUnit, logger, asyncLogger)
         {
             this.TargetInstance = targetInstance;
         }
@@ -71,7 +70,7 @@
     internal class ScopeProfilerContext : ProfilerContext
     {
         public ScopeProfilerContext(TypeData? targetInstanceTypeData, string sourceFileName, int lineNumber, int warmupCount, int iterationCount, Runtime runtime, TimeUnit baseUnit, Action<ProfilerBatchResult, string>? logger, Func<ProfilerBatchResult, string, Task>? asyncLogger)
-            : base(targetInstanceTypeData, sourceFileName, lineNumber, warmupCount, iterationCount, runtime, baseUnit, logger, asyncLogger, string.Empty)
+            : base(targetInstanceTypeData, null, sourceFileName, lineNumber, warmupCount, iterationCount, runtime, baseUnit, logger, asyncLogger)
         {
         }
     }
@@ -88,16 +87,17 @@
             Runtime runtime,
             TimeUnit baseUnit,
             Action<ProfilerBatchResult, string>? logger,
-            Func<ProfilerBatchResult, string, Task>? asyncLogger) : base(targetInstance, sourceFileName, lineNumber, warmupCount, iterationCount, runtime, baseUnit, logger, asyncLogger, methodData.ShortDisplayName)
+            Func<ProfilerBatchResult, string, Task>? asyncLogger) : base(targetInstance, methodData, sourceFileName, lineNumber, warmupCount, iterationCount, runtime, baseUnit, logger, asyncLogger)
         {
             ArgumentExceptionAdvanced.ThrowIfTrue(
                 methodData.IsOpenGenericMethodOrGenericMethodDefinition,
                 nameof(methodData),
                 "Open generic methods or generic method definitions are not supported for profiling.");
-            this.MethodData = methodData;
         }
 
-        public MethodData MethodData { get; }
+        public MethodData MethodData
+            => (MethodData)this.SymbolInfoData!;
+
         public MethodArgumentInfo ArgumentInfo { get; set; }
     }
 
@@ -115,7 +115,7 @@
             Runtime runtime,
             TimeUnit baseUnit,
             Action<ProfilerBatchResult, string>? logger,
-            Func<ProfilerBatchResult, string, Task>? asyncLogger) : base(targetInstance, sourceFileName, lineNumber, warmupCount, iterationCount, runtime, baseUnit, logger, asyncLogger, propertyData.ShortDisplayName)
+            Func<ProfilerBatchResult, string, Task>? asyncLogger) : base(targetInstance, propertyData, sourceFileName, lineNumber, warmupCount, iterationCount, runtime, baseUnit, logger, asyncLogger)
         {
             ArgumentNullException.ThrowIfNull(propertyData);
             ArgumentExceptionAdvanced.ThrowIfTrue(
@@ -126,11 +126,11 @@
                 (this.ArgumentInfo.Accessor & PropertyAccessor.Get) != 0 && !propertyData.CanRead,
                 nameof(propertyData),
                 $"The provided '{nameof(this.ArgumentInfo)}' does not match the provided argument '{nameof(propertyData)}'. The property '{propertyData.FullyQualifiedSignature}' is write-only but the '{nameof(this.ArgumentInfo)}' specifies a getter as profiling target.");
-
-            this.PropertyData = propertyData;
         }
 
-        public PropertyData PropertyData { get; }
+        public PropertyData PropertyData
+            => (PropertyData)this.SymbolInfoData!;
+
         public PropertyArgumentInfo ArgumentInfo
         {
             get => this._argumentInfo;
@@ -161,14 +161,14 @@
             Runtime runtime,
             TimeUnit baseUnit,
             Action<ProfilerBatchResult, string>? logger,
-            Func<ProfilerBatchResult, string, Task>? asyncLogger) : base(null, sourceFileName, lineNumber, warmupCount, iterationCount, runtime, baseUnit, logger, asyncLogger, constructorData.ShortDisplayName)
+            Func<ProfilerBatchResult, string, Task>? asyncLogger) : base(null, constructorData, sourceFileName, lineNumber, warmupCount, iterationCount, runtime, baseUnit, logger, asyncLogger)
         {
             ArgumentNullException.ThrowIfNull(constructorData);
-
-            this.ConstructorData = constructorData;
         }
 
-        public ConstructorData ConstructorData { get; }
+        public ConstructorData ConstructorData
+            => (ConstructorData)this.SymbolInfoData!;
+
         public MethodArgumentInfo ArgumentInfo { get; set; }
     }
 }

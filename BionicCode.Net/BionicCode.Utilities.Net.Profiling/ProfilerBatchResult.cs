@@ -55,8 +55,8 @@
             }
 
             using PooledStringBuilder summaryBuilder = StringBuilderFactory.GetOrCreate();
-            string title = $"Profile target: {this.Context.MethodInvokeInfo.Signature}";
-            Profiler.BuildSummaryHeader(summaryBuilder, title, this.Context.MethodInvokeInfo.Signature, this.Context.SourceFileName, this.Context.LineNumber);
+            string title = $"Profile target: {this.Context.SymbolInfoData?.Signature}";
+            Profiler.BuildSummaryHeader(summaryBuilder, title, this.Context.SymbolInfoData?.Signature ?? string.Empty, this.Context.SourceFileName, this.Context.LineNumber);
 
             foreach (ProfilerResult result in this.Results)
             {

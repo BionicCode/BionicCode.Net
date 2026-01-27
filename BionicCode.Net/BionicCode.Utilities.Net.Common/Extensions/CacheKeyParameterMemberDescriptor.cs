@@ -83,7 +83,8 @@
             && this.ParameterizedMemberKind == other.ParameterizedMemberKind
             && this.MemberGenericMethodParameters.Equals(other.MemberGenericMethodParameters)
             && this.DeclaringTypeHandle.Equals(other.DeclaringTypeHandle)
-            && this.MemberHandle.Equals(other.MemberHandle);
+            && this.MemberHandle.Equals(other.MemberHandle)
+            && this.PropertyTypeHandle.Equals(other.PropertyTypeHandle);
 
         public override int GetHashCode() => HashCode.Combine(
             this.DeclaringMemberName,
@@ -91,7 +92,8 @@
             this.ParameterizedMemberKind,
             this.MemberGenericMethodParameters,
             this.DeclaringTypeHandle,
-            this.MemberHandle);
+            this.MemberHandle,
+            this.PropertyTypeHandle);
 
         public static bool operator ==(CacheKeyParameterMemberDescriptor left, CacheKeyParameterMemberDescriptor right) => left.Equals(right);
         public static bool operator !=(CacheKeyParameterMemberDescriptor left, CacheKeyParameterMemberDescriptor right) => !(left == right);

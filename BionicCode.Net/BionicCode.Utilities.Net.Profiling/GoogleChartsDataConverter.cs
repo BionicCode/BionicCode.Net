@@ -38,7 +38,7 @@
                 {
                     SeriesIndex = batchResult.Index,
                     TargetAxisIndex = verticalChartAxis.AxisIndex,
-                    Title = $"{batchResult.Context.ShortMemberDisplayName} ({batchResultGroup.TargetType.ToDisplayStringValue()})"
+                    Title = $"{batchResult.Context.SymbolInfoData.ShortDisplayName} ({batchResultGroup.TargetType.ToDisplayStringValue()})"
                 };
 
                 chartOptions.AddSeries(series);

@@ -241,10 +241,15 @@
             }
 
             using PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
-            foreach (ProfilerBatchResult result in profilerBatchResultGroup)
+            foreach (ProfilerBatchResult? result in profilerBatchResultGroup)
             {
+                if (result is null)
+                {
+                    continue;
+                }
+
                 _ = htmlDocumentBuilder
-                  .Append($@"<a class=""list-group-item list-group-item-action nav-link"" width=""20px"" href=""#{result.Index}"">'{result.Context.ShortMemberDisplayName.ToHtmlEncodedString()}' ({profilerBatchResultGroup.TargetType.ToDisplayStringValue()})</a>");
+                  .Append($@"<a class=""list-group-item list-group-item-action nav-link"" width=""20px"" href=""#{result.Index}"">'{result.Context.SymbolInfoData?.ShortDisplayName}' ({profilerBatchResultGroup.TargetType.ToDisplayStringValue()})</a>");
             }
 
             string htmlDocumentContent = htmlDocumentBuilder.ToString();
@@ -255,10 +260,16 @@
         private string CreateHtmlInPageFooterElements(ProfilerBatchResultGroup profilerBatchResultGroup)
         {
             using PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
-            foreach (ProfilerBatchResult result in profilerBatchResultGroup)
+            foreach (ProfilerBatchResult? result in profilerBatchResultGroup)
             {
+                if (result is null)
+                {
+                    continue;
+
+                }
+
                 _ = htmlDocumentBuilder
-                  .Append($@"<a class=""list-group-item list-group-item-action nav-link"" href=""#{result.Index}"">'{result.Context.ShortMemberDisplayName.ToHtmlEncodedString()}' ({profilerBatchResultGroup.TargetType.ToDisplayStringValue()}) results</a>");
+                  .Append($@"<a class=""list-group-item list-group-item-action nav-link"" href=""#{result.Index}"">'{result.Context.SymbolInfoData?.ShortDisplayName}' ({profilerBatchResultGroup.TargetType.ToDisplayStringValue()}) results</a>");
             }
 
             string htmlDocumentContent = htmlDocumentBuilder.ToString();
@@ -281,9 +292,14 @@
             using PooledStringBuilder htmlDocumentBuilder = StringBuilderFactory.GetOrCreate();
             EnvironmentInfo environmentInfo = await Environment.GetEnvironmentInfoAsync();
 
-            foreach (ProfilerBatchResult batchResult in batchResultGroup)
+            foreach (ProfilerBatchResult? batchResult in batchResultGroup)
             {
                 cancellationToken.ThrowIfCancellationRequested();
+
+                if (batchResult is null)
+                {
+                    continue;
+                }
 
                 _ = htmlDocumentBuilder.Append(CultureInfo.InvariantCulture, $@"
     <article id=""{batchResult.Index}"" style=""padding-top: 48px;"">

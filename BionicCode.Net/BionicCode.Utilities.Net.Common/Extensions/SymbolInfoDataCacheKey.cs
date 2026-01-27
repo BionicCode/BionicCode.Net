@@ -558,8 +558,11 @@
         /// Creates a new cache key for an anonymous parameter using the specified declaring type, symbol name, parameter position,
         /// generic type parameter count, and symbol kind.
         /// </summary>
-        /// <remarks>This method is used to create a unique cache key for symbols of which the caller does not have a direct representation (e.g. a <see cref="MethodInfo"/> or corresponding <see cref="MethodData"/>) and instead only signature information is available.<para/>
-        /// <para/>For best performance and zero ambiguity ensure to provide the <see cref="RuntimeMethodHandle"/> for the declaring method or constructor.</remarks>
+        /// <remarks>This method is used to create a unique cache key for symbols of which the caller does not have a direct representation (e.g. a <see cref="MethodInfo"/> or corresponding <see cref="MethodData"/>)
+        /// and instead only signature information is available.<para/>
+        /// The anonymous key allows a huge degree af ambiguity e.g. omitting position or type etc. This can yield a successful result if the declaring type and member are unique enough to identify the parameter.
+        /// Otherwise, avoiding critical disambiguation information will to ambiguities in which case the cache will not be able to provide a result and instead throw exceptions.<para/>
+        /// For best performance and zero ambiguity ensure to provide the <see cref="RuntimeMethodHandle"/> for the declaring method or constructor.</remarks>
         /// <param name="cacheKeyParameterDescriptor">The <see cref="CacheKeyParameterDescriptor"/> descriptor for the parameter.</param>
         /// <param name="cacheKeyParameterMemberDescriptor">The <see cref="CacheKeyParameterMemberDescriptor"/> descriptor for the member that declares the parameter.</param>
         /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous parameter.</returns>
