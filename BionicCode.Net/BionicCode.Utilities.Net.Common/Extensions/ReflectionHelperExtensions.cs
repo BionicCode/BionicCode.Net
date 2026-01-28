@@ -62,7 +62,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
             return methodData.ShortSignature;
         }
 
@@ -85,7 +85,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
             return methodData.Signature;
         }
 
@@ -108,7 +108,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
             return methodData.FullyQualifiedSignature;
         }
 
@@ -131,7 +131,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
             return methodData.RuntimeShortSignature;
         }
 
@@ -154,7 +154,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
             return methodData.RuntimeSignature;
         }
 
@@ -292,7 +292,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
-            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
             return fieldData.ShortSignature;
         }
 
@@ -315,7 +315,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
-            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
             return fieldData.Signature;
         }
 
@@ -338,7 +338,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
-            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
             return fieldData.FullyQualifiedSignature;
         }
 
@@ -361,7 +361,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
-            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
             return fieldData.RuntimeShortSignature;
         }
 
@@ -384,7 +384,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
-            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
             return fieldData.RuntimeSignature;
         }
 
@@ -407,7 +407,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
-            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
             return propertyData.ShortSignature;
         }
 
@@ -430,7 +430,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
-            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
             return propertyData.Signature;
         }
 
@@ -453,7 +453,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
-            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
             return propertyData.FullyQualifiedSignature;
         }
 
@@ -476,7 +476,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
-            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
             return propertyData.RuntimeShortSignature;
         }
 
@@ -499,7 +499,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
-            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
             return propertyData.RuntimeSignature;
         }
 
@@ -522,7 +522,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
-            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo);
             return constructorData.ShortSignature;
         }
 
@@ -545,7 +545,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
-            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo);
             return constructorData.Signature;
         }
 
@@ -568,7 +568,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
-            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo);
             return constructorData.FullyQualifiedSignature;
         }
 
@@ -591,7 +591,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
-            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo);
             return constructorData.RuntimeShortSignature;
         }
 
@@ -614,7 +614,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
-            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo);
             return constructorData.RuntimeSignature;
         }
 
@@ -637,7 +637,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
-            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(eventInfo);
             return eventData.ShortSignature;
         }
 
@@ -660,7 +660,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
-            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(eventInfo);
             return eventData.Signature;
         }
 
@@ -683,7 +683,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
-            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(eventInfo);
             return eventData.Signature;
         }
 
@@ -706,7 +706,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
-            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(eventInfo);
             return eventData.RuntimeShortSignature;
         }
 
@@ -729,7 +729,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
-            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(eventInfo);
             return eventData.RuntimeSignature;
         }
 
@@ -842,7 +842,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(method, nameof(method));
 
-            MethodData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(method);
+            MethodData entry = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(method);
             return entry.AccessModifier;
         }
 
@@ -858,7 +858,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(constructor, nameof(constructor));
 
-            ConstructorData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructor);
+            ConstructorData entry = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructor);
             return entry.AccessModifier;
         }
 
@@ -874,7 +874,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(property, nameof(property));
 
-            PropertyData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(property);
+            PropertyData entry = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(property);
             return entry.AccessModifier;
         }
 
@@ -890,7 +890,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
-            EventData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+            EventData entry = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(eventInfo);
             return entry.AccessModifier;
         }
 
@@ -906,7 +906,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(field, nameof(field));
 
-            FieldData entry = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(field);
+            FieldData entry = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(field);
             return entry.AccessModifier;
         }
 
@@ -1000,7 +1000,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
             return isDeclaringTypeIncluded
                 ? methodData.DisplayName
                 : methodData.ShortDisplayName;
@@ -1021,7 +1021,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
-            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo);
             return isDeclaringTypeIncluded
                 ? constructorData.DisplayName
                 : constructorData.ShortDisplayName;
@@ -1042,7 +1042,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
-            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
             return isDeclaringTypeIncluded
                 ? propertyData.DisplayName
                 : propertyData.ShortDisplayName;
@@ -1063,7 +1063,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
-            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
             return isDeclaringTypeIncluded
                 ? fieldData.DisplayName
                 : fieldData.ShortDisplayName;
@@ -1103,7 +1103,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
-            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(eventInfo);
             return isDeclaringTypeIncluded
                 ? eventData.DisplayName
                 : eventData.ShortDisplayName;
@@ -1143,7 +1143,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
             return methodData.FullyQualifiedDisplayName;
         }
 
@@ -1162,7 +1162,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
-            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo);
             return constructorData.FullyQualifiedDisplayName;
         }
 
@@ -1181,7 +1181,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
-            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
             return propertyData.FullyQualifiedDisplayName;
         }
 
@@ -1200,7 +1200,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
-            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
             return fieldData.FullyQualifiedDisplayName;
         }
 
@@ -1219,7 +1219,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
-            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(eventInfo);
             return eventData.FullyQualifiedDisplayName;
         }
 
@@ -1259,7 +1259,7 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
             using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
             _ = AppendDisplayNameInternal(pooledStringBuilder, methodData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
@@ -1280,7 +1280,7 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
             ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
-            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(eventInfo);
             using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
             _ = AppendDisplayNameInternal(pooledStringBuilder, eventData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
@@ -1301,7 +1301,7 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
             ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
-            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo);
             using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
             _ = AppendDisplayNameInternal(pooledStringBuilder, constructorData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
@@ -1322,7 +1322,7 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
-            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
             using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
             _ = AppendDisplayNameInternal(pooledStringBuilder, propertyData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
@@ -1360,7 +1360,7 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
             ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
-            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
             using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
             _ = AppendDisplayNameInternal(pooledStringBuilder, fieldData, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
@@ -1392,7 +1392,7 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
             using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
             _ = AppendDisplayNameInternal(pooledStringBuilder, methodData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
@@ -1403,7 +1403,7 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
             ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo, nameof(eventInfo));
 
-            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+            EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(eventInfo);
             using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
             _ = AppendDisplayNameInternal(pooledStringBuilder, eventData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
@@ -1414,7 +1414,7 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
             ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
-            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo);
             using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
             _ = AppendDisplayNameInternal(pooledStringBuilder, constructorData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
@@ -1425,7 +1425,7 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
-            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
             using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
             _ = AppendDisplayNameInternal(pooledStringBuilder, propertyData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
@@ -1447,7 +1447,7 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(nameBuilder, nameof(nameBuilder));
             ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
-            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
             using var pooledStringBuilder = PooledStringBuilder.Create(nameBuilder);
             _ = AppendDisplayNameInternal(pooledStringBuilder, fieldData, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded);
             return nameBuilder;
@@ -1739,7 +1739,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
-            PropertyData memberInfoData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+            PropertyData memberInfoData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
             return memberInfoData.IsOverride;
         }
 
@@ -1754,7 +1754,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
-            FieldData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+            FieldData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
             return methodData.SymbolAttributes.HasFlag(SymbolAttributes.Constant);
         }
 
@@ -1762,7 +1762,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
             return methodData.IsOverride;
         }
 
@@ -1770,7 +1770,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
-            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+            PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
             return propertyData.SymbolAttributes.HasFlag(SymbolAttributes.InitProperty);
         }
 
@@ -1793,7 +1793,7 @@
         /// The default is <see langword="false"/>.</param>
         /// <returns><see langword="true"/> if the method associates with an indexer property's setter. Otherwise, <see langword="false"/>.</returns>
         public static bool IsIndexerPropertySetter(this MethodInfo methodInfo, bool isValidationEnabled = false)
-            => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo).IsIndexerPropertySetMethod;
+            => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsIndexerPropertySetMethod;
 
         /// <summary>
         /// Checks whether the provided <see cref="MethodBase"/> represents the getter accessor of an indexer property.
@@ -1811,7 +1811,7 @@
         /// The default is <see langword="false"/>.</param>
         /// <returns><see langword="true"/> if the method associates with an indexer property's setter. Otherwise, <see langword="false"/>.</returns>
         public static bool IsIndexerPropertyGetter(this MethodInfo methodInfo, bool isValidationEnabled = false)
-            => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo).IsIndexerPropertyGetMethod;
+            => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsIndexerPropertyGetMethod;
 
         /// <summary>
         /// Determines whether the specified method represents a non-indexer property setter.
@@ -1821,7 +1821,7 @@
         /// <param name="methodInfo">The method to evaluate. Typically obtained from reflection on a type's members.</param>
         /// <returns>true if the method is a property setter for a non-indexer property; otherwise, false.</returns>
         public static bool IsPropertySetter(this MethodInfo methodInfo)
-            => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo).IsPropertySetMethod;
+            => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsPropertySetMethod;
 
         /// <summary>
         /// Determines whether the specified method represents a property getter.
@@ -1833,55 +1833,55 @@
         public static bool IsPropertyGetter(this MethodInfo methodInfo)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
-            return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo).IsPropertyGetMethod;
+            return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsPropertyGetMethod;
         }
 
         public static bool IsEventAccessor(this MethodInfo methodInfo)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
-            return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo).IsEventAccessorMethod;
+            return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsEventAccessorMethod;
         }
 
         public static bool IsEventAddAccessor(this MethodInfo methodInfo)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
-            return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo).IsEventAddMethod;
+            return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsEventAddMethod;
         }
 
         public static bool IsEventRemoveAccessor(this MethodInfo methodInfo)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
-            return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo).IsEventRemoveMethod;
+            return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsEventRemoveMethod;
         }
 
         public static bool IsOperatorOverload(this MethodInfo methodInfo)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
-            return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo).IsOperatorOverload;
+            return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsOperatorOverload;
         }
 
         public static bool IsDelegateMethod(this MethodInfo methodInfo)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
-            return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo).IsDelegateMethod;
+            return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsDelegateMethod;
         }
 
         public static bool IsDelegateInvokeMethod(this MethodInfo methodInfo)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
-            return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo).IsDelegateInvokeMethod;
+            return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsDelegateInvokeMethod;
         }
 
         public static bool IsDelegateBeginInvokeMethod(this MethodInfo methodInfo)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
-            return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo).IsDelegateBeginInvokeMethod;
+            return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsDelegateBeginInvokeMethod;
         }
 
         public static bool IsDelegateEndInvokeMethod(this MethodInfo methodInfo)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
-            return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo).IsDelegateEndInvokeMethod;
+            return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo).IsDelegateEndInvokeMethod;
         }
 
         /// <summary>
@@ -1895,7 +1895,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
             return methodData.IsAwaitable;
         }
 
@@ -1923,7 +1923,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
             return methodData.IsAsync;
         }
 
@@ -2041,7 +2041,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
             return methodData.IsExtensionMethod;
         }
 
@@ -2092,7 +2092,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
 
             /* Check if the method satisfies the constraints to act as an extension methods */
             if (!methodData.IsExtensionMethod)
@@ -2124,7 +2124,7 @@
             ArgumentNullExceptionAdvanced.ThrowIfNull(typeToExtend, nameof(typeToExtend));
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo, nameof(methodInfo));
 
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
 
             // Check if the declaring class satisfies the constraints to declare extension methods
             if (!methodInfo.DeclaringType.CanDeclareExtensionMethods())
@@ -2167,7 +2167,7 @@
         public static bool IsReadOnly(this FieldInfo fieldInfo)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo, nameof(fieldInfo));
-            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+            FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
             return fieldData.IsReadonly;
         }
 

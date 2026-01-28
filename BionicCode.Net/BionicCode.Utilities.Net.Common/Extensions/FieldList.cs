@@ -10,7 +10,7 @@
         public static readonly FieldList Empty = new FieldList();
         private readonly int _hashCode; // precomputed
         private readonly Dictionary<string, FieldData> _fieldNameIndex;
-        private readonly SymbolInfoDataCacheKey _declaringTypeCacheKey;
+        private readonly SymbolReflectionInfoCacheKey _declaringTypeCacheKey;
 
         public FieldList(FieldData[] items) : this((IEnumerable<FieldData>)items)
         {
@@ -70,7 +70,7 @@
         public bool IsEmpty => this.Fields.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<FieldData> Fields { get; }
-        public SymbolInfoDataCacheKey DeclaringTypeCacheKey
+        public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey
             => this.HasItems
                 ? this._declaringTypeCacheKey
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(this.DeclaringTypeCacheKey)));
@@ -79,7 +79,7 @@
         {
             get
             {
-                SymbolInfoDataCacheKey cacheKey = this.DeclaringTypeCacheKey;
+                SymbolReflectionInfoCacheKey cacheKey = this.DeclaringTypeCacheKey;
                 return this.HasItems
                     ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
                     : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(this.DeclaringTypeData)));

@@ -41,7 +41,7 @@
             this.EventSourceType = eventSourceType;
 #endif
 
-            SymbolInfoDataCacheKey key = SymbolInfoDataCacheKey.CreateForAnonymousFieldOrEvent(eventSourceType.TypeHandle, eventName, SymbolKind.MemberEvent);
+            SymbolReflectionInfoCacheKey key = SymbolReflectionInfoCacheKey.CreateForAnonymousFieldOrEvent(eventSourceType.TypeHandle, eventName, SymbolKind.MemberEvent);
             EventData eventData = SymbolReflectionInfoCache.GetOrCreateEventDataCacheEntry(ref key);
             this.EventSourceEventData = eventData;
             Debug.Assert(this.EventSourceEventData != null);

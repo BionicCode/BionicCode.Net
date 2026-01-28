@@ -161,6 +161,11 @@
         public static MethodParameterInfoList AsMethodParameterInfoList(this IEnumerable<ParameterData> items)
             => items is null || items.IsEmpty() ? MethodParameterInfoList.Empty : new MethodParameterInfoList(items.Select(parameterData => new MethodParameterInfo(parameterData)));
 
+        /// <summary>
+        /// Returns an empty <see cref="MethodParameterInfoList"/> if the provided instance is <see langword="null"/>.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns>A <see cref="MethodParameterInfoList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
         public static MethodParameterInfoList OrEmpty(this MethodParameterInfoList items)
             => items ?? MethodParameterInfoList.Empty;
     }

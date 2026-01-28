@@ -19,7 +19,7 @@
         private bool? _isMethod;
         private bool? _isSpecialName;
 
-        protected ParameterizedMemberData(MemberInfo memberInfo, SymbolKind symbolKind, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
+        protected ParameterizedMemberData(MemberInfo memberInfo, SymbolKind symbolKind, SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
             : base(memberInfo, symbolKind, symbolInfoDataCacheKey)
         {
             ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(symbolKind, [SymbolKind.MemberMethod, SymbolKind.MemberConstructor], nameof(symbolKind));

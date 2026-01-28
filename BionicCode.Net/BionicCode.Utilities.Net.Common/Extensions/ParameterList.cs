@@ -16,7 +16,7 @@
     {
         public static readonly ParameterList Empty = new ParameterList();
         private readonly int _hashCode; // precomputed
-        private readonly SymbolInfoDataCacheKey _declaringMemberCacheKey;
+        private readonly SymbolReflectionInfoCacheKey _declaringMemberCacheKey;
         private readonly Dictionary<string, ParameterData> _parameterNameIndex;
 
         private ParameterList()
@@ -111,7 +111,7 @@
         public bool IsEmpty => this.Parameters.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<ParameterData> Parameters { get; }
-        public SymbolInfoDataCacheKey DeclaringMemberCacheKey
+        public SymbolReflectionInfoCacheKey DeclaringMemberCacheKey
             => this.HasItems
                 ? this._declaringMemberCacheKey
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringMemberCacheKey)));
@@ -125,7 +125,7 @@
                     throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringMemberData)));
                 }
 
-                SymbolInfoDataCacheKey cacheKey = this.DeclaringMemberCacheKey;
+                SymbolReflectionInfoCacheKey cacheKey = this.DeclaringMemberCacheKey;
                 return cacheKey.SymbolKind == SymbolKind.MemberMethod
                         ? SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(ref cacheKey)
                         : SymbolReflectionInfoCache.GetOrCreateConstructorDataCacheEntry(ref cacheKey);

@@ -9,7 +9,7 @@
     {
         public static readonly ConstructorList Empty = new ConstructorList();
         private readonly int _hashCode; // precomputed
-        private readonly SymbolInfoDataCacheKey _declaringTypeCacheKey;
+        private readonly SymbolReflectionInfoCacheKey _declaringTypeCacheKey;
 
         public ConstructorList(ConstructorData[] items) : this((IEnumerable<ConstructorData>)items)
         {
@@ -59,7 +59,7 @@
         public bool IsEmpty => this.Constructors.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<ConstructorData> Constructors { get; }
-        public SymbolInfoDataCacheKey DeclaringTypeCacheKey
+        public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey
             => this.HasItems
                 ? this._declaringTypeCacheKey
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringTypeCacheKey)));
@@ -68,7 +68,7 @@
         {
             get
             {
-                SymbolInfoDataCacheKey cacheKey = this.DeclaringTypeCacheKey;
+                SymbolReflectionInfoCacheKey cacheKey = this.DeclaringTypeCacheKey;
                 return this.HasItems
                     ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
                     : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringTypeData)));

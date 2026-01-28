@@ -51,7 +51,7 @@ namespace BionicCode.Utilities.Net
         private SymbolComponentInfo? symbolComponentInfo;
         private bool? isSetMethodReadOnly;
 
-        internal PropertyData(PropertyInfo propertyInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
+        internal PropertyData(PropertyInfo propertyInfo, SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
             : base(propertyInfo, SymbolKind.MemberProperty, symbolInfoDataCacheKey)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo, nameof(propertyInfo));
@@ -929,14 +929,14 @@ namespace BionicCode.Utilities.Net
         public MethodData PropertyGetMethodData
           => this.getMethodData ??= GetPropertyInfo() is PropertyInfo propertyInfo && propertyInfo.CanRead
                 ? propertyInfo.GetGetMethod(true) is MethodInfo propertyGetter
-                    ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyGetter)
+                    ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyGetter)
                     : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{GetPropertyInfo().Name}' does not have a get method.")
                 : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{GetPropertyInfo().Name}' does not have a get method. Check '{nameof(PropertyData)}.{nameof(PropertyData.CanRead)}' before access.");
 
         public MethodData PropertySetMethodData
           => this.setMethodData ??= GetPropertyInfo() is PropertyInfo propertyInfo && propertyInfo.CanWrite
             ? propertyInfo.GetSetMethod(true) is MethodInfo propertySetter
-                ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertySetter)
+                ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertySetter)
                 : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{GetPropertyInfo().Name}' does not have a set method.")
             : throw new NotSupportedException($"The underlying '{typeof(PropertyInfo).FullName}' for property '{GetPropertyInfo().Name}' does not have a set method. Check '{nameof(PropertyData)}.{nameof(PropertyData.CanWrite)}' before access.");
 

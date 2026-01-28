@@ -36,7 +36,7 @@
             RuntimeTypeHandle declaringTypeHandle = default;
             foreach (MethodInfo methodInfo in methodInfoList)
             {
-                MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo);
+                MethodData methodData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
 
                 if (declaringTypeHandle.Equals(default))
                 {
@@ -74,7 +74,7 @@
                 return MethodList.Empty;
             }
 
-            IEnumerable<MethodData> methods = methodInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
+            IEnumerable<MethodData> methods = methodInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry);
 
             return methods.ToMethodList();
         }
@@ -94,6 +94,11 @@
         public static MethodList ToMethodList(this IEnumerable<MethodData> items)
             => items is null || items.IsEmpty() ? MethodList.Empty : new MethodList(items);
 
+        /// <summary>
+        /// Returns an empty <see cref="MethodList"/> if the provided instance is <see langword="null"/>.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns>A <see cref="MethodList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
         public static MethodList OrEmpty(this MethodList items)
             => items ?? MethodList.Empty;
     }

@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Reflection;
 
-    internal class ParameterListComparer : IEqualityComparer<ParameterList>, IEqualityComparer<MethodParameterInfoList>
+    internal class ParameterListEqualityComparer : IEqualityComparer<ParameterList>, IEqualityComparer<MethodParameterInfoList>
     {
         public bool Equals(ParameterList? x, ParameterList? y)
             => x?.Equals(y) ?? (y is null);

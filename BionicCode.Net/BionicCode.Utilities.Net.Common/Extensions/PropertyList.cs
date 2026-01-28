@@ -12,7 +12,7 @@
     {
         public static readonly PropertyList Empty = new PropertyList();
         private readonly int _hashCode; // precomputed
-        private readonly SymbolInfoDataCacheKey _declaringTypeCacheKey;
+        private readonly SymbolReflectionInfoCacheKey _declaringTypeCacheKey;
         private readonly Dictionary<string, PropertyData> _propertyNameIndex;
 
         public PropertyList(PropertyData[] items) : this((IEnumerable<PropertyData>)items)
@@ -74,7 +74,7 @@
         public bool IsEmpty => this.Properties.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<PropertyData> Properties { get; }
-        public SymbolInfoDataCacheKey DeclaringTypeCacheKey
+        public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey
             => this.HasItems
                 ? this._declaringTypeCacheKey
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(this.DeclaringTypeCacheKey)));
@@ -83,7 +83,7 @@
         {
             get
             {
-                SymbolInfoDataCacheKey cacheKey = this.DeclaringTypeCacheKey;
+                SymbolReflectionInfoCacheKey cacheKey = this.DeclaringTypeCacheKey;
                 return this.HasItems
                     ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
                     : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(nameof(MethodList), nameof(this.DeclaringTypeData)));

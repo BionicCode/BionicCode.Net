@@ -35,7 +35,7 @@
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
 
-        internal EventData(EventInfo eventInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
+        internal EventData(EventInfo eventInfo, SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
             : base(eventInfo, SymbolKind.MemberEvent, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(eventInfo, nameof(eventInfo));
@@ -129,12 +129,12 @@
 
         public MethodData AddMethodData
           => this.addMethodData ??= GetEventInfo().GetAddMethod(true) is MethodInfo addMethod
-            ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(addMethod)
+            ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(addMethod)
             : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{GetEventInfo().Name}' does not have an add method.");
 
         public MethodData RemoveMethodData
           => this.removeMethodData ??= GetEventInfo().GetRemoveMethod(true) is MethodInfo removeMethod
-            ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(removeMethod)
+            ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(removeMethod)
             : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{GetEventInfo().Name}' does not have a remove method.");
 
         public MethodData EventInvokerMethodData

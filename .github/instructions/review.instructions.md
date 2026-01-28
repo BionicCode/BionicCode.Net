@@ -13,6 +13,9 @@ Include the following items:
 - **Expanded symbols:** list the expanded call chain(s) (method names).
 - **Stopped at (when incomplete):** the last method reviewed including `file path` and `line range`.
 - **Unexpanded callees / reasons:** list any calls not expanded and why (e.g., definition not provided, reflection, dynamic dispatch, delegate/event, too many branches).
+- **Files needed for complete coverage (when incomplete):** list of files and types needed to achieve complete coverage.
+- **Review trigger:** the trigger for the review (e.g., AGENTS.md, Codex web, automatic review, GitHub PR @codex, GitHub automation etc.).
+- **Notes:** any additional relevant information about the coverage.
 
 ## Definition of "Complete"
 

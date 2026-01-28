@@ -68,7 +68,7 @@
         private BasicMethodFingerprint? _basicMethodFingerprint;
         private MemberData? _accessedMember;
 
-        internal MethodData(MethodInfo methodInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
+        internal MethodData(MethodInfo methodInfo, SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
             : base(methodInfo, SymbolKind.MemberMethod, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(methodInfo, nameof(methodInfo));
@@ -90,13 +90,13 @@
         {
             Type[] typeArguments = typeDataArguments.Select(t => t.UnwrapType()).ToArray();
             MethodInfo genericMethodInfo = GetMethodInfo().MakeGenericMethod(typeArguments);
-            return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(genericMethodInfo);
+            return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(genericMethodInfo);
         }
 
         public MethodData MakeGenericMethodData(params Type[] typeArguments)
         {
             MethodInfo genericMethodInfo = GetMethodInfo().MakeGenericMethod(typeArguments);
-            return SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(genericMethodInfo);
+            return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(genericMethodInfo);
         }
 
         public MethodInfo MakeGenericMethodInfo(TypeList typeArguments)
@@ -920,7 +920,7 @@
                 else
                 {
                     MethodInfo genericMethodDefinitionMethodInfo = GetMethodInfo().GetGenericMethodDefinition();
-                    this.genericMethodDefinitionData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(genericMethodDefinitionMethodInfo);
+                    this.genericMethodDefinitionData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(genericMethodDefinitionMethodInfo);
                 }
 
                 return this.genericMethodDefinitionData;

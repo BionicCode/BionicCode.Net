@@ -37,7 +37,7 @@
             RuntimeTypeHandle declaringTypeHandle = default;
             foreach (FieldInfo fieldInfo in fieldInfoList)
             {
-                FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(fieldInfo);
+                FieldData fieldData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
 
                 if (declaringTypeHandle.Equals(default))
                 {
@@ -75,7 +75,7 @@
                 return FieldList.Empty;
             }
 
-            IEnumerable<FieldData> fields = fieldInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
+            IEnumerable<FieldData> fields = fieldInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry);
 
             return fields.ToFieldList();
         }
@@ -95,6 +95,11 @@
         internal static FieldList ToFieldList(this IEnumerable<FieldData> items)
             => items is null || items.IsEmpty() ? FieldList.Empty : new FieldList(items);
 
+        /// <summary>
+        /// Returns an empty <see cref="FieldList"/> if the provided instance is <see langword="null"/>.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns>A <see cref="FieldList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
         public static FieldList OrEmpty(this FieldList items)
             => items ?? FieldList.Empty;
     }

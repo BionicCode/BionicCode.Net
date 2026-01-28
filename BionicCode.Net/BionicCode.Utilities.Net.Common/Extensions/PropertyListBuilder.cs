@@ -37,7 +37,7 @@
             RuntimeTypeHandle declaringTypeHandle = default;
             foreach (PropertyInfo propertyInfo in propertyInfoList)
             {
-                PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(propertyInfo);
+                PropertyData propertyData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
 
                 if (declaringTypeHandle.Equals(default))
                 {
@@ -75,7 +75,7 @@
                 return PropertyList.Empty;
             }
 
-            IEnumerable<PropertyData> properties = propertyInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
+            IEnumerable<PropertyData> properties = propertyInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry);
 
             return properties.ToPropertyList();
         }
@@ -95,6 +95,11 @@
         public static PropertyList ToPropertyList(this IEnumerable<PropertyData> items)
             => items is null || items.IsEmpty() ? PropertyList.Empty : new PropertyList(items);
 
+        /// <summary>
+        /// Returns an empty <see cref="PropertyList"/> if the provided instance is <see langword="null"/>.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns>A <see cref="PropertyList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
         public static PropertyList OrEmpty(this PropertyList items)
             => items ?? PropertyList.Empty;
     }

@@ -15,7 +15,7 @@
     {
         public static readonly MethodParameterInfoList Empty = new MethodParameterInfoList();
         private readonly int _hashCode; // precomputed
-        private readonly SymbolInfoDataCacheKey _declaringTypeCacheKey;
+        private readonly SymbolReflectionInfoCacheKey _declaringTypeCacheKey;
         private readonly Dictionary<string, MethodParameterInfo> _parameterNameIndex;
 
         public MethodParameterInfoList(MethodParameterInfo[] items) : this((IEnumerable<MethodParameterInfo>)items)
@@ -90,7 +90,7 @@
         public bool IsEmpty => this.Parameters.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<MethodParameterInfo> Parameters { get; }
-        public SymbolInfoDataCacheKey DeclaringTypeCacheKey
+        public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey
             => this.HasItems
                 ? this._declaringTypeCacheKey
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringTypeCacheKey)));
@@ -104,7 +104,7 @@
                     throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringTypeData)));
                 }
 
-                SymbolInfoDataCacheKey cacheKey = this.DeclaringTypeCacheKey;
+                SymbolReflectionInfoCacheKey cacheKey = this.DeclaringTypeCacheKey;
                 return SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey);
             }
         }

@@ -14,7 +14,7 @@
     /// is suitable for use as a key in caching mechanisms where symbol identity and equivalence are important, such as
     /// symbol information lookups or metadata-based caching. Instances are immutable and can be compared for
     /// equality.</remarks>
-    internal readonly partial struct SymbolInfoDataCacheKey : IEquatable<SymbolInfoDataCacheKey>
+    internal readonly partial struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflectionInfoCacheKey>
     {
         /// <summary>
         /// Represents an unknown or unspecified parameter count.
@@ -153,7 +153,7 @@
 
         private readonly int _hashCode;
 
-        private SymbolInfoDataCacheKey(string name,
+        private SymbolReflectionInfoCacheKey(string name,
             RuntimeTypeHandle declaringTypeHandle,
             RuntimeTypeHandle typeHandle,
             RuntimeMethodHandle methodHandle,
@@ -190,7 +190,7 @@
             this._hashCode = ComputeHashCode();
         }
 
-        public static SymbolInfoDataCacheKey CreateForEvent(EventInfo eventInfo)
+        public static SymbolReflectionInfoCacheKey CreateForEvent(EventInfo eventInfo)
         {
             ArgumentNullException.ThrowIfNull(eventInfo, nameof(eventInfo));
 
@@ -209,7 +209,7 @@
 
             RuntimeTypeHandle eventDelegateTypeHandle = eventHandlerType.TypeHandle;
 
-            return new SymbolInfoDataCacheKey(eventInfo.Name,
+            return new SymbolReflectionInfoCacheKey(eventInfo.Name,
                 declaringTypeHandle,
                 eventDelegateTypeHandle,
                 default,
@@ -217,7 +217,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 TypeList.Empty,
-                SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.MemberEvent,
                 default,
                 default,
@@ -225,7 +225,7 @@
                 false);
         }
 
-        public static SymbolInfoDataCacheKey CreateForProperty(PropertyInfo propertyInfo)
+        public static SymbolReflectionInfoCacheKey CreateForProperty(PropertyInfo propertyInfo)
         {
             ArgumentNullException.ThrowIfNull(propertyInfo, nameof(propertyInfo));
 
@@ -238,7 +238,7 @@
             RuntimeTypeHandle declaringTypeHandle = declaringType.TypeHandle;
             RuntimeTypeHandle typeHandle = propertyInfo.PropertyType.TypeHandle;
 
-            return new SymbolInfoDataCacheKey(propertyInfo.Name,
+            return new SymbolReflectionInfoCacheKey(propertyInfo.Name,
                 declaringTypeHandle,
                 typeHandle,
                 default,
@@ -246,7 +246,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 TypeList.Empty,
-                SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.MemberProperty,
                 default,
                 default,
@@ -254,13 +254,13 @@
                 false);
         }
 
-        public static SymbolInfoDataCacheKey CreateForMethod(MethodInfo methodInfo)
+        public static SymbolReflectionInfoCacheKey CreateForMethod(MethodInfo methodInfo)
         {
             ArgumentNullException.ThrowIfNull(methodInfo, nameof(methodInfo));
 
             RuntimeMethodHandle methodHandle = methodInfo.MethodHandle;
 
-            return new SymbolInfoDataCacheKey(methodInfo.Name,
+            return new SymbolReflectionInfoCacheKey(methodInfo.Name,
                 default,
                 default,
                 methodHandle,
@@ -268,7 +268,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 TypeList.Empty,
-                SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.MemberMethod,
                 default,
                 default,
@@ -276,13 +276,13 @@
                 false);
         }
 
-        public static SymbolInfoDataCacheKey CreateForType(Type type)
+        public static SymbolReflectionInfoCacheKey CreateForType(Type type)
         {
             ArgumentNullException.ThrowIfNull(type, nameof(type));
 
             RuntimeTypeHandle typeHandle = type.TypeHandle;
 
-            return new SymbolInfoDataCacheKey(type.FullName ?? type.Name,
+            return new SymbolReflectionInfoCacheKey(type.FullName ?? type.Name,
                 default,
                 typeHandle,
                 default,
@@ -290,7 +290,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 TypeList.Empty,
-                SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.Type,
                 default,
                 default,
@@ -298,13 +298,13 @@
                 false);
         }
 
-        public static SymbolInfoDataCacheKey CreateForField(FieldInfo fieldInfo)
+        public static SymbolReflectionInfoCacheKey CreateForField(FieldInfo fieldInfo)
         {
             ArgumentNullException.ThrowIfNull(fieldInfo, nameof(fieldInfo));
 
             RuntimeFieldHandle fieldHandle = fieldInfo.FieldHandle;
 
-            return new SymbolInfoDataCacheKey(fieldInfo.Name,
+            return new SymbolReflectionInfoCacheKey(fieldInfo.Name,
                 default,
                 default,
                 default,
@@ -312,7 +312,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 TypeList.Empty,
-                SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.MemberField,
                 default,
                 default,
@@ -320,13 +320,13 @@
                 false);
         }
 
-        public static SymbolInfoDataCacheKey CreateForConstructor(ConstructorInfo constructorInfo)
+        public static SymbolReflectionInfoCacheKey CreateForConstructor(ConstructorInfo constructorInfo)
         {
             ArgumentNullException.ThrowIfNull(constructorInfo, nameof(constructorInfo));
 
             RuntimeMethodHandle methodHandle = constructorInfo.MethodHandle;
 
-            return new SymbolInfoDataCacheKey(constructorInfo.Name,
+            return new SymbolReflectionInfoCacheKey(constructorInfo.Name,
                 default,
                 default,
                 methodHandle,
@@ -334,7 +334,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 TypeList.Empty,
-                SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.MemberConstructor,
                 default,
                 default,
@@ -342,7 +342,7 @@
                 false);
         }
 
-        public static SymbolInfoDataCacheKey CreateForParameter(ParameterInfo parameterInfo)
+        public static SymbolReflectionInfoCacheKey CreateForParameter(ParameterInfo parameterInfo)
         {
             ArgumentNullException.ThrowIfNull(parameterInfo, nameof(parameterInfo));
 
@@ -355,7 +355,7 @@
             if (member is PropertyInfo propertyInfo)
             {
                 ParameterData? disambiguatedPropertyData = SymbolReflectionInfoCache.ConvertAmbiguousIndexerPropertyParameterToAccessorAssociatedParameter(parameterInfo);
-                SymbolInfoDataCacheKey normalizedParameterDataCacheKey = disambiguatedPropertyData.CacheKey;
+                SymbolReflectionInfoCacheKey normalizedParameterDataCacheKey = disambiguatedPropertyData.CacheKey;
 
                 return normalizedParameterDataCacheKey;
             }
@@ -385,7 +385,7 @@
             CacheKeyParameterDescriptor cacheKeyParameterDescriptor = new CacheKeyParameterDescriptor(parameterInfo.Name, parameterInfo.Position, parameterTypeHandle: parameterTypeHandle);
             CacheKeyParameterMemberDescriptor cacheKeyParameterMemberDescriptor = new CacheKeyParameterMemberDescriptor(declaringTypeHandle, methodHandle, parameterizedSymbolKind: parameterizedSymbolKind);
 
-            return new SymbolInfoDataCacheKey(string.Empty,
+            return new SymbolReflectionInfoCacheKey(string.Empty,
                 default,
                 default,
                 default,
@@ -393,7 +393,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 TypeList.Empty,
-                SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.Parameter,
                 cacheKeyParameterDescriptor,
                 cacheKeyParameterMemberDescriptor,
@@ -412,12 +412,12 @@
         /// <param name="genericMethodParameters">The list of generic method parameters for the anonymous method.<para/>
         /// Can be <see cref="MethodParameterInfoList.Empty"/> for constructors or to indicate a non-generic method.</param>
         /// <param name="symbolKind">The kind of symbol to associate with the cache key. Must be <see cref="SymbolKind.MemberMethod"/> or <see cref="SymbolKind.MemberConstructor"/>.</param>
-        /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous method, constructor.</returns>
+        /// <returns>A new instance of <see cref="SymbolReflectionInfoCacheKey"/> representing the specified anonymous method, constructor.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="declaringTypeHandle"/> is <see langword="default"/> or when <paramref name="genericMethodParameters"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="memberName"/> is null, empty, or consists only of white-space characters</exception>
         /// <exception cref="ArgumentException">Thrown when the provided <paramref name="symbolKind"/> value is not defined in <see cref="SymbolKind"/>.</exception>
         /// <exception cref="ArgumentException">Thrown when the provided <paramref name="symbolKind"/> value is not equal to <see cref="SymbolKind.MemberMethod"/> or <see cref="SymbolKind.MemberConstructor"/>.</exception>
-        public static SymbolInfoDataCacheKey CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle declaringTypeHandle, string memberName, ParameterList? symbolParameters, TypeList genericMethodParameters, SymbolKind symbolKind)
+        public static SymbolReflectionInfoCacheKey CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle declaringTypeHandle, string memberName, ParameterList? symbolParameters, TypeList genericMethodParameters, SymbolKind symbolKind)
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle);
             ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind);
@@ -441,7 +441,7 @@
                 memberName = string.Empty;
             }
 
-            return new SymbolInfoDataCacheKey(memberName,
+            return new SymbolReflectionInfoCacheKey(memberName,
                 declaringTypeHandle,
                 default,
                 default,
@@ -468,12 +468,12 @@
         /// <param name="genericMethodParameters">The list of generic method parameters for the anonymous method.<para/>
         /// Can be <see cref="MethodParameterInfoList.Empty"/> for constructors or to indicate a non-generic method.</param>
         /// <param name="symbolKind">The kind of symbol to associate with the cache key. Must be <see cref="SymbolKind.MemberMethod"/> or <see cref="SymbolKind.MemberConstructor"/>.</param>
-        /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous method, constructor.</returns>
+        /// <returns>A new instance of <see cref="SymbolReflectionInfoCacheKey"/> representing the specified anonymous method, constructor.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="declaringTypeHandle"/> is <see langword="default"/> or when <paramref name="genericMethodParameters"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="memberName"/> is null, empty, or consists only of white-space characters</exception>
         /// <exception cref="ArgumentException">Thrown when the provided <paramref name="symbolKind"/> value is not defined in <see cref="SymbolKind"/>.</exception>
         /// <exception cref="ArgumentException">Thrown when the provided <paramref name="symbolKind"/> value is not equal to <see cref="SymbolKind.MemberMethod"/> or <see cref="SymbolKind.MemberConstructor"/>.</exception>
-        public static SymbolInfoDataCacheKey CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle declaringTypeHandle, string memberName, MethodParameterInfoList? symbolParameters, TypeList genericMethodParameters, SymbolKind symbolKind)
+        public static SymbolReflectionInfoCacheKey CreateForAnonymousMethodOrConstructor(RuntimeTypeHandle declaringTypeHandle, string memberName, MethodParameterInfoList? symbolParameters, TypeList genericMethodParameters, SymbolKind symbolKind)
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
             ArgumentException.ThrowIfNullOrWhiteSpace(memberName, nameof(memberName));
@@ -489,7 +489,7 @@
                 nameof(symbolParameters),
                 $"Declaring type handle mismatch. The argument '{nameof(symbolParameters)}' sequence contains at least one item that holds a '{nameof(MethodParameterInfo)}.{nameof(MethodParameterInfo.DeclaringTypeHandle)}' value that is not equal to the provided argument '{nameof(declaringTypeHandle)}'.");
 
-            return new SymbolInfoDataCacheKey(memberName,
+            return new SymbolReflectionInfoCacheKey(memberName,
                 declaringTypeHandle,
                 default,
                 default,
@@ -512,16 +512,16 @@
         /// <param name="declaringTypeHandle">The runtime type handle representing the declaring type of the anonymous property.</param>
         /// <param name="propertyName">The name of the anonymous property. Cannot be null, empty, or consist only of white-space characters.</param>
         /// <param name="indexerParameters">The list of parameters for the anonymous indexer property. Can be <see cref="MethodParameterInfoList.Empty"/> or <see langword="null"/> to indicate no parameters in case of a normal property.</param>
-        /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous property.</returns>
+        /// <returns>A new instance of <see cref="SymbolReflectionInfoCacheKey"/> representing the specified anonymous property.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="declaringTypeHandle"/> is <see langword="default"/>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName"/> is null, empty, or consists only of white-space characters</exception>
-        public static SymbolInfoDataCacheKey CreateForAnonymousProperty(RuntimeTypeHandle declaringTypeHandle, string propertyName, ParameterList? indexerParameters, PropertyAccessor indexerAaccessorKind)
+        public static SymbolReflectionInfoCacheKey CreateForAnonymousProperty(RuntimeTypeHandle declaringTypeHandle, string propertyName, ParameterList? indexerParameters, PropertyAccessor indexerAaccessorKind)
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
             ArgumentException.ThrowIfNullOrWhiteSpace(propertyName, nameof(propertyName));
 
             ParameterList parameterList = indexerParameters ?? ParameterList.Empty;
-            return new SymbolInfoDataCacheKey(propertyName,
+            return new SymbolReflectionInfoCacheKey(propertyName,
                 declaringTypeHandle,
                 default,
                 default,
@@ -529,7 +529,7 @@
                 parameterList,
                 MethodParameterInfoList.Empty,
                 TypeList.Empty,
-                SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.MemberProperty,
                 default,
                 default,
@@ -545,10 +545,10 @@
         /// <param name="propertyName">The name of the anonymous property. Cannot be null, empty, or consist only of white-space characters.</param>
         /// <param name="indexerParameters">The list of parameters for the anonymous indexer property. Can be <see cref="MethodParameterInfoList.Empty"/> or <see langword="null"/> to indicate no parameters in case of a normal property.</param>
         /// <param name="indexerAccessorKind">The kind of accessor that <paramref name="indexerParameters"/> is specified for.</param>
-        /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous property.</returns>
+        /// <returns>A new instance of <see cref="SymbolReflectionInfoCacheKey"/> representing the specified anonymous property.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="declaringTypeHandle"/> is <see langword="default"/>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName"/> is null, empty, or consists only of white-space characters</exception>
-        public static SymbolInfoDataCacheKey CreateForAnonymousProperty(RuntimeTypeHandle declaringTypeHandle, string propertyName, MethodParameterInfoList? indexerParameters, PropertyAccessor indexerAccessorKind)
+        public static SymbolReflectionInfoCacheKey CreateForAnonymousProperty(RuntimeTypeHandle declaringTypeHandle, string propertyName, MethodParameterInfoList? indexerParameters, PropertyAccessor indexerAccessorKind)
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle, nameof(declaringTypeHandle));
             ArgumentException.ThrowIfNullOrWhiteSpace(propertyName, nameof(propertyName));
@@ -564,7 +564,7 @@
             }
 
             MethodParameterInfoList methodParameterInfoList = indexerParameters ?? MethodParameterInfoList.Empty;
-            return new SymbolInfoDataCacheKey(propertyName,
+            return new SymbolReflectionInfoCacheKey(propertyName,
                 declaringTypeHandle,
                 default,
                 default,
@@ -591,14 +591,14 @@
         /// For best performance and zero ambiguity ensure to provide the <see cref="RuntimeMethodHandle"/> for the declaring method or constructor.</remarks>
         /// <param name="cacheKeyParameterDescriptor">The <see cref="CacheKeyParameterDescriptor"/> descriptor for the parameter.</param>
         /// <param name="cacheKeyParameterMemberDescriptor">The <see cref="CacheKeyParameterMemberDescriptor"/> descriptor for the member that declares the parameter.</param>
-        /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous parameter.</returns>
-        public static SymbolInfoDataCacheKey CreateForAnonymousParameter(CacheKeyParameterDescriptor cacheKeyParameterDescriptor, CacheKeyParameterMemberDescriptor cacheKeyParameterMemberDescriptor)
+        /// <returns>A new instance of <see cref="SymbolReflectionInfoCacheKey"/> representing the specified anonymous parameter.</returns>
+        public static SymbolReflectionInfoCacheKey CreateForAnonymousParameter(CacheKeyParameterDescriptor cacheKeyParameterDescriptor, CacheKeyParameterMemberDescriptor cacheKeyParameterMemberDescriptor)
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKeyParameterDescriptor);
             ArgumentNullExceptionAdvanced.ThrowIfDefault(cacheKeyParameterMemberDescriptor);
 
 
-            return new SymbolInfoDataCacheKey(string.Empty,
+            return new SymbolReflectionInfoCacheKey(string.Empty,
                 default,
                 default,
                 default,
@@ -606,7 +606,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 TypeList.Empty,
-                SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition,
                 SymbolKind.Parameter,
                 cacheKeyParameterDescriptor,
                 cacheKeyParameterMemberDescriptor,
@@ -621,19 +621,19 @@
         /// <param name="declaringTypeHandle">The runtime type handle representing the declaring type of the anonymous field or event.</param>
         /// <param name="symbolName">The name of the anonymous field or event. Cannot be null, empty, or consist only of white-space characters.</param>
         /// <param name="symbolKind">The kind of symbol to associate with the cache key. Must be <see cref="SymbolKind.MemberEvent"/> or <see cref="SymbolKind.MemberField"/>.</param>
-        /// <returns>A new instance of <see cref="SymbolInfoDataCacheKey"/> representing the specified anonymous field or event.</returns>
+        /// <returns>A new instance of <see cref="SymbolReflectionInfoCacheKey"/> representing the specified anonymous field or event.</returns>
         /// <exception cref="ArgumentException">Thrown when <paramref name="symbolName"/> is null, empty, or consists only of white-space characters</exception>
         /// <exception cref="ArgumentException">Thrown when the provided <paramref name="symbolKind"/> value is not defined in <see cref="SymbolKind"/>.</exception>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="declaringTypeHandle"/> is <see langword="default"/>.</exception>
         /// <exception cref="ArgumentException">Thrown when the provided <paramref name="symbolKind"/> value is not equal to <see cref="SymbolKind.MemberEvent"/> or <see cref="SymbolKind.MemberField"/>.</exception>
-        public static SymbolInfoDataCacheKey CreateForAnonymousFieldOrEvent(RuntimeTypeHandle declaringTypeHandle, string symbolName, SymbolKind symbolKind)
+        public static SymbolReflectionInfoCacheKey CreateForAnonymousFieldOrEvent(RuntimeTypeHandle declaringTypeHandle, string symbolName, SymbolKind symbolKind)
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle);
             ArgumentException.ThrowIfNullOrWhiteSpace(symbolName);
             ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind);
             ArgumentExceptionAdvanced.ThrowIfEnumNotEqualsAny(symbolKind, [SymbolKind.MemberEvent, SymbolKind.MemberField], nameof(symbolKind), "The symbol kind must be 'MemberEvent' or 'MemberField' for anonymous event or field symbols.");
 
-            return new SymbolInfoDataCacheKey(symbolName,
+            return new SymbolReflectionInfoCacheKey(symbolName,
                 declaringTypeHandle,
                 default,
                 default,
@@ -641,7 +641,7 @@
                 ParameterList.Empty,
                 MethodParameterInfoList.Empty,
                 TypeList.Empty,
-                SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+                SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition,
                 symbolKind,
                 default,
                 default,
@@ -692,9 +692,9 @@
         }
 
         public override bool Equals(object obj)
-            => obj is SymbolInfoDataCacheKey other && Equals(other);
+            => obj is SymbolReflectionInfoCacheKey other && Equals(other);
 
-        public bool Equals(SymbolInfoDataCacheKey other) => this.SymbolName == other.SymbolName
+        public bool Equals(SymbolReflectionInfoCacheKey other) => this.SymbolName == other.SymbolName
             && this._declaringTypeHandle.Equals(other._declaringTypeHandle)
             && this._symbolTypeHandle.Equals(other._symbolTypeHandle)
             && this._methodHandle == other._methodHandle
@@ -707,8 +707,8 @@
             && this._parameterList.Equals(other._parameterList)
             && this._methodParameterInfoList.Equals(other._methodParameterInfoList);
 
-        public static bool operator ==(SymbolInfoDataCacheKey left, SymbolInfoDataCacheKey right) => left.Equals(right);
-        public static bool operator !=(SymbolInfoDataCacheKey left, SymbolInfoDataCacheKey right) => !(left == right);
+        public static bool operator ==(SymbolReflectionInfoCacheKey left, SymbolReflectionInfoCacheKey right) => left.Equals(right);
+        public static bool operator !=(SymbolReflectionInfoCacheKey left, SymbolReflectionInfoCacheKey right) => !(left == right);
 
         [DoesNotReturn]
         private TResult ThrowInvalidPropertyContextException<TResult>(ReadOnlySpan<SymbolKind> allowedSymbolKinds, [CallerMemberName] string propertyName = null)

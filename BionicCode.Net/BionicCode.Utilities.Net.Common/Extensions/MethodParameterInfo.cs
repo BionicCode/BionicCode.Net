@@ -64,7 +64,7 @@
         /// type. Cannot be <see langword="default"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="parameterInfoDataCacheKey"/> is <see langword="default"/> or its declaring type handle is <see langword="default"/>.</exception>
         /// <exception cref="ArgumentException">Thrown when the <see cref="ParameterKind"/> of <paramref name="parameterInfoDataCacheKey"/> is <see cref="ParameterKind.Undefined"/>.</exception>"
-        public MethodParameterInfo(SymbolInfoDataCacheKey parameterInfoDataCacheKey) : this()
+        public MethodParameterInfo(SymbolReflectionInfoCacheKey parameterInfoDataCacheKey) : this()
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey.CacheKeyParameterDescriptor, nameof(parameterInfoDataCacheKey));
             ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey.CacheKeyParameterMemberDescriptor, nameof(parameterInfoDataCacheKey));

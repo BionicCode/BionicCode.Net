@@ -19,7 +19,7 @@
         /// <param name="parameterKind">Conditionally optional. The modifier of the parameter.<para/>
         /// Must be provided if all of the following arguments are missing: <paramref name="parameterName"/> AND <paramref name="parameterTypeHandle"/> AND <paramref name="parameterPosition"/>.</param>
         public CacheKeyParameterDescriptor(string? parameterName = null,
-            int parameterPosition = SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+            int parameterPosition = SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition,
             ParameterKind parameterKind = ParameterKind.Undefined,
             RuntimeTypeHandle? parameterTypeHandle = null)
         {
@@ -27,7 +27,7 @@
             if (parameterTypeHandle.Equals(default)
                 && string.IsNullOrWhiteSpace(parameterName)
                 && parameterKind == ParameterKind.Undefined
-                && parameterPosition == SymbolInfoDataCacheKey.UnknownParameterCountOrPosition)
+                && parameterPosition == SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition)
             {
                 throw new ArgumentException($"At least one of the following arguments must be provided to avoid ambiguity when using the created key for lookups: '{nameof(parameterTypeHandle)}', '{nameof(parameterName)}', '{nameof(parameterKind)}', '{nameof(parameterPosition)}'.");
             }
@@ -42,7 +42,7 @@
             => !string.IsNullOrWhiteSpace(this.ParameterName);
 
         public bool HasParameterPosition
-            => this.ParameterPosition > SymbolInfoDataCacheKey.UnknownParameterCountOrPosition;
+            => this.ParameterPosition > SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition;
 
         public bool HasParameterKind
             => this.ParameterKind != ParameterKind.Undefined;

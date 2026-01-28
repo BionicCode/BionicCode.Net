@@ -36,7 +36,7 @@
         private string? assemblyName;
         private SymbolComponentInfo? symbolComponentInfo;
 
-        internal FieldData(FieldInfo fieldInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
+        internal FieldData(FieldInfo fieldInfo, SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
             : base(fieldInfo, SymbolKind.MemberField, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(fieldInfo, nameof(fieldInfo));

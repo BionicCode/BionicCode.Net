@@ -25,7 +25,7 @@
         public CacheKeyParameterMemberDescriptor(RuntimeTypeHandle declaringTypeHandle,
             RuntimeMethodHandle? memberHandle = null,
             string? memberName = null,
-            int memberParameterCount = SymbolInfoDataCacheKey.UnknownParameterCountOrPosition,
+            int memberParameterCount = SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition,
             ParameterizedSymbolKind parameterizedSymbolKind = ParameterizedSymbolKind.Undefined,
             TypeList? memberGenericMethodParameters = null,
             RuntimeTypeHandle? memberTypeHandle = null)
@@ -60,7 +60,7 @@
             => !this.MemberHandle.Equals(default);
 
         public bool HasMemberParameterCount
-            => this.MemberParameterCount > SymbolInfoDataCacheKey.UnknownParameterCountOrPosition;
+            => this.MemberParameterCount > SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition;
 
         public bool HasDeclaringTypeHandle
             => !this.DeclaringTypeHandle.Equals(default);

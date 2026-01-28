@@ -7,7 +7,7 @@
     [DebuggerDisplay("{RuntimeShortSignature}")]
     internal abstract class SymbolInfoData
     {
-        protected SymbolInfoData(string name, SymbolKind symbolKind, SymbolInfoDataCacheKey cacheKey)
+        protected SymbolInfoData(string name, SymbolKind symbolKind, SymbolReflectionInfoCacheKey cacheKey)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(name, nameof(name));
             ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
@@ -16,7 +16,7 @@
             ArgumentExceptionAdvanced.ThrowIfTrue(
                 symbolKind != SymbolKind.Type && cacheKey.DeclaringTypeHandle.Equals(default),
                 nameof(cacheKey),
-                $"The argument '{nameof(cacheKey)}' returns an invalid value from the property '{nameof(cacheKey)}.{nameof(SymbolInfoDataCacheKey.DeclaringTypeHandle)}'. Declaring type cannot be default for members (i.e. symbols other than of kind '{SymbolKind.Type}'.");
+                $"The argument '{nameof(cacheKey)}' returns an invalid value from the property '{nameof(cacheKey)}.{nameof(SymbolReflectionInfoCacheKey.DeclaringTypeHandle)}'. Declaring type cannot be default for members (i.e. symbols other than of kind '{SymbolKind.Type}'.");
 
             this.Name = name;
             this.SymbolKind = symbolKind;
@@ -139,6 +139,6 @@
         /// <value>The spaces to indent a line based on the <see cref="FormattingIndentation"/> property.</value>
         public string IndentationString { get; private set; }
 
-        public SymbolInfoDataCacheKey CacheKey { get; }
+        public SymbolReflectionInfoCacheKey CacheKey { get; }
     }
 }

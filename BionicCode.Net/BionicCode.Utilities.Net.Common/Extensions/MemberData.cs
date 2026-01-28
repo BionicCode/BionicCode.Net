@@ -12,7 +12,7 @@
         private string? _namespace;
         private BindingFlags? _bindingFlagsVisibilityMask;
 
-        protected MemberData(MemberInfo memberInfo, SymbolKind symbolKind, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
+        protected MemberData(MemberInfo memberInfo, SymbolKind symbolKind, SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
             : base(memberInfo.Name, symbolKind, symbolInfoDataCacheKey)
             => ArgumentNullException.ThrowIfNull(memberInfo, nameof(memberInfo));
 

@@ -43,7 +43,7 @@
         private bool? _isIndexerPropertyGetterParameter;
         private bool? _isPropertySetterParameter;
 
-        internal ParameterData(ParameterInfo parameterInfo, SymbolInfoDataCacheKey symbolInfoDataCacheKey)
+        internal ParameterData(ParameterInfo parameterInfo, SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
             : base(parameterInfo.Name, SymbolKind.Parameter, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(parameterInfo, nameof(parameterInfo));
@@ -168,7 +168,7 @@
         public ParameterizedMemberData MemberData
             => this.member ??= GetParameterInfo().Member switch
             {
-                ConstructorInfo constructorInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo),
+                ConstructorInfo constructorInfo => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo),
 
                 // If ParameterInfo.Member is a PropertyInfo, it is ALWAYS an indexer property
                 // and the current parameter was obtained via PropertyInfo.GetIndexerParameters(). Since the returned parameter list excludes the "value" parameter for the setter,
@@ -181,7 +181,7 @@
                 //      * ConstructorInfo.GetParameters() or
                 //      * PropertyInfo.GetGetMethod().GetParameters() or
                 //      * PropertyInfo.GetSetMethod().GetParameters() (which, opposed to PropertyInfo.GetIndexerParameters(), includes the "value" parameter of the property setter).
-                MethodInfo methodInfo => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(methodInfo),
+                MethodInfo methodInfo => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo),
                 _ => throw new NotImplementedException(),
             };
 

@@ -10,7 +10,7 @@
         public static readonly MethodList Empty = new MethodList();
         private readonly int _hashCode; // precomputed
         private readonly ILookup<string, MethodData> _methodNameIndex;
-        private readonly SymbolInfoDataCacheKey _declaringTypeCacheKey;
+        private readonly SymbolReflectionInfoCacheKey _declaringTypeCacheKey;
 
         public MethodList(MethodData[] items) : this((IEnumerable<MethodData>)items)
         {
@@ -79,7 +79,7 @@
         public bool IsEmpty => this.Methods.IsEmpty;
         public bool HasItems => !this.IsEmpty;
         public ImmutableList<MethodData> Methods { get; }
-        public SymbolInfoDataCacheKey DeclaringTypeCacheKey
+        public SymbolReflectionInfoCacheKey DeclaringTypeCacheKey
             => this.HasItems
                 ? this._declaringTypeCacheKey
                 : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringTypeCacheKey)));
@@ -88,7 +88,7 @@
         {
             get
             {
-                SymbolInfoDataCacheKey cacheKey = this.DeclaringTypeCacheKey;
+                SymbolReflectionInfoCacheKey cacheKey = this.DeclaringTypeCacheKey;
                 return this.HasItems
                     ? SymbolReflectionInfoCache.GetOrCreateTypeDataCacheEntry(ref cacheKey)
                     : throw new InvalidOperationException(ExceptionMessages.GetInvalidAccessCollectionEmptyExceptionMessage(GetType().Name, nameof(this.DeclaringTypeData)));

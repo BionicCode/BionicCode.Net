@@ -66,7 +66,7 @@
 
     internal static class DelegateProvider
     {
-        private static readonly ConcurrentDictionary<MethodDataGenericTypeVariantKey, SymbolInfoDataCacheKey> InvocatorKeyMap = new ConcurrentDictionary<MethodDataGenericTypeVariantKey, SymbolInfoDataCacheKey>();
+        private static readonly ConcurrentDictionary<MethodDataGenericTypeVariantKey, SymbolReflectionInfoCacheKey> InvocatorKeyMap = new ConcurrentDictionary<MethodDataGenericTypeVariantKey, SymbolReflectionInfoCacheKey>();
 
         /// <summary>
         /// Gets an invocable MethodData instance for the specified method, generating a fast delegate-based invoker if
@@ -506,7 +506,7 @@
 
             // Try get cached constructed invocator for the specified generic method parameters.
             var invocatorKeyMapKey = new MethodDataGenericTypeVariantKey(genericMethodArguments, desiredReturnTypeHandle, targetTypeHandle, targetMethodData.BasicMethodFingerprint);
-            if (DelegateProvider.InvocatorKeyMap.TryGetValue(invocatorKeyMapKey, out SymbolInfoDataCacheKey symbolInfoCacheKey)
+            if (DelegateProvider.InvocatorKeyMap.TryGetValue(invocatorKeyMapKey, out SymbolReflectionInfoCacheKey symbolInfoCacheKey)
                 && SymbolReflectionInfoCache.TryGetSymbolInfoDataCacheEntry(symbolInfoCacheKey, out MethodData? cachedMethodData))
             {
                 methodData = cachedMethodData!;
@@ -2002,7 +2002,7 @@
 
             TypeData helperExtensionsCommonTypeData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(typeof(HelperExtensionsCommon));
             const string extensionMethodName = nameof(HelperExtensionsCommon.ToFullyQualifiedSignatureName);
-            var typeCacheKey = SymbolInfoDataCacheKey.CreateForType(typeof(Type));
+            var typeCacheKey = SymbolReflectionInfoCacheKey.CreateForType(typeof(Type));
             MethodData toFullyQualifiedSignatureNameExtensionMethodData = helperExtensionsCommonTypeData.Methods[extensionMethodName, new MethodParameterInfo(typeCacheKey)];
 
             // BUG::Call GetType on target and pass to extension method

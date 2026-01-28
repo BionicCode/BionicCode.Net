@@ -37,7 +37,7 @@
             RuntimeTypeHandle declaringTypeHandle = default;
             foreach (EventInfo eventInfo in eventInfoList)
             {
-                EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventInfo);
+                EventData eventData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(eventInfo);
 
                 if (declaringTypeHandle.Equals(default))
                 {
@@ -75,7 +75,7 @@
                 return EventList.Empty;
             }
 
-            IEnumerable<EventData> events = eventInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
+            IEnumerable<EventData> events = eventInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry);
 
             return events.ToEventList();
         }
@@ -94,5 +94,13 @@
     {
         public static EventList ToEventList(this IEnumerable<EventData> items)
             => items is null || items.IsEmpty() ? EventList.Empty : new EventList(items);
+
+        /// <summary>
+        /// Returns an empty <see cref="EventList"/> if the provided instance is <see langword="null"/>.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns>A <see cref="EventList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
+        public static EventList OrEmpty(this EventList items)
+            => items ?? EventList.Empty;
     }
 }

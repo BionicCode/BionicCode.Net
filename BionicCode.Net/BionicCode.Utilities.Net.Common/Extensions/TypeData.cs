@@ -3,16 +3,18 @@ namespace BionicCode.Utilities.Net
 {
     using System;
     using System.CodeDom;
+    using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
 
     internal class TypeData : SymbolInfoData
     {
+        private delegate bool MethodEqualityComparer<TParameterList>(ParameterList foundMethodParameters, TParameterList requestedMethodParameters, TypeList foundGenericMethodParameters, TypeList requestedGenericMethodParameters, string foundMethodName, string requestedMethodName)
+            where TParameterList : notnull, IEnumerable;
         private static readonly Type TaskType = typeof(Task);
         private static readonly Type ValueTaskType = typeof(ValueTask);
         private static readonly Type ValueTaskGenericType = typeof(ValueTask<>);
@@ -64,7 +66,7 @@ namespace BionicCode.Utilities.Net
         private SymbolComponentInfo? symbolComponentInfo;
         private SymbolComponentInfo? compactSymbolComponentInfo;
         private bool? containsGenericParameters;
-        private readonly ConcurrentHashSet<SymbolInfoDataCacheKey> _memberTable;
+        private readonly ConcurrentHashSet<SymbolReflectionInfoCacheKey> _memberTable;
         private readonly ConcurrentDictionary<SymbolKind, bool> _memberTableStateFlagTable;
         private bool? isByRefLike;
         private bool? isGenericTypeParameter;
@@ -85,13 +87,13 @@ namespace BionicCode.Utilities.Net
         private bool? _isNestedFamANDAssem;
         private bool? _isVisible;
 
-        internal TypeData(Type type, SymbolInfoDataCacheKey symbolInfoDataCacheKey) : base(type.Name, SymbolKind.Type, symbolInfoDataCacheKey)
+        internal TypeData(Type type, SymbolReflectionInfoCacheKey symbolInfoDataCacheKey) : base(type.Name, SymbolKind.Type, symbolInfoDataCacheKey)
         {
             ArgumentNullException.ThrowIfNull(type, nameof(type));
 
             this.Handle = type.TypeHandle;
             this.Namespace = type.Namespace ?? string.Empty;
-            this._memberTable = new ConcurrentHashSet<SymbolInfoDataCacheKey>();
+            this._memberTable = new ConcurrentHashSet<SymbolReflectionInfoCacheKey>();
             this._memberTableStateFlagTable = new ConcurrentDictionary<SymbolKind, bool>();
         }
 
@@ -158,7 +160,7 @@ namespace BionicCode.Utilities.Net
             foreach (PropertyData property in this.Properties)
             {
                 ParameterList indexerAccessorParameters = indexerAccessorParametersReader.Invoke(property);
-                if (ParameterListComparer.Equals(indexerAccessorParameters, indexerParameters))
+                if (ParameterListEqualityComparer.Equals(indexerAccessorParameters, indexerParameters))
                 {
                     propertyData = property;
                     return true;
@@ -203,34 +205,49 @@ namespace BionicCode.Utilities.Net
             return this.Methods.TryGetMethodsByName(methodName, out methods);
         }
 
-        public MethodData GetMethod(string methodName, ReadOnlySpan<TypeData> genericTypeParameters, ReadOnlySpan<MethodParameterInfo> parameterList)
-            => GetMethod(methodName, new TypeList(genericTypeParameters.ToArray()), parameterList);
-
-        public MethodData GetMethod(string methodName, TypeList genericTypeParameters, ReadOnlySpan<MethodParameterInfo> parameterList)
+        public bool TryGetMethod(string methodName, TypeList genericMethodParameters, ParameterList parameters, out MethodData? methodData)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(methodName, nameof(methodName));
+            parameters = parameters.OrEmpty();
+            genericMethodParameters = genericMethodParameters.OrEmpty();
 
-            MethodParameterInfoList symbolParameters = parameterList.IsEmpty
-                ? MethodParameterInfoList.Empty
-                : new MethodParameterInfoList(parameterList);
-            ArgumentExceptionAdvanced.ThrowIfAny(
-                symbolParameters,
-                methodParameterInfo => !methodParameterInfo.DeclaringTypeHandle.Equals(this.Handle),
-                nameof(parameterList),
-                $"At least one item in the argument sequence '{nameof(parameterList)}' has a different value for the '{nameof(MethodParameterInfo)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type '{this.FullyQualifiedSignature}'.");
+            static bool equalityComparer(ParameterList foundMethodParameters, ParameterList requestedMethodParameters, TypeList foundGenericMethodParameters, TypeList requestedGenericMethodParameters, string foundMethodName, string requestedMethodName)
+                => foundMethodName.Equals(requestedMethodName, StringComparison.Ordinal)
+                    && foundMethodParameters.Equals(requestedMethodParameters)
+                    && foundGenericMethodParameters.Equals(requestedGenericMethodParameters);
 
-            TypeList genericTypeParameterList = genericTypeParameters.IsEmpty
-                ? TypeList.Empty
-                : new TypeList(genericTypeParameters.ToArray());
-            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrConstructor(
-                this.Handle,
-                methodName,
-                symbolParameters,
-                genericTypeParameterList,
-                SymbolKind.MemberMethod);
-            MethodData methodData = SymbolReflectionInfoCache.GetOrCreateMethodDataCacheEntry(ref cacheKey);
+            return TryGetMethodInternal(methodName, genericMethodParameters, parameters, equalityComparer, out methodData);
+        }
 
-            return methodData;
+        public bool TryGetMethod(string methodName, TypeList genericMethodParameters, MethodParameterInfoList parameters, out MethodData? methodData)
+        {
+            parameters = parameters.OrEmpty();
+            genericMethodParameters = genericMethodParameters.OrEmpty();
+
+            static bool equalityComparer(ParameterList foundMethodParameters, MethodParameterInfoList requestedMethodParameters, TypeList foundGenericMethodParameters, TypeList requestedGenericMethodParameters, string foundMethodName, string requestedMethodName)
+                => foundMethodName.Equals(requestedMethodName, StringComparison.Ordinal)
+                    && ParameterListEqualityComparer.Equals(foundMethodParameters, requestedMethodParameters)
+                    && foundGenericMethodParameters.Equals(requestedGenericMethodParameters);
+
+            return TryGetMethodInternal(methodName, genericMethodParameters, parameters, equalityComparer, out methodData);
+        }
+
+        private bool TryGetMethodInternal<TParameterList>(string requestedMethodName, TypeList requestedGenericMethodParameters, TParameterList requestedMethodParameters, MethodEqualityComparer<TParameterList> equalityComparer, out MethodData? requestedMethodData)
+            where TParameterList : notnull, IEnumerable
+        {
+            requestedMethodData = null;
+            foreach (MethodData method in this.Methods)
+            {
+                ParameterList methodParameters = method.Parameters;
+                TypeList methodGenericMethodParameters = method.GenericMethodParameters;
+
+                if (equalityComparer(methodParameters, requestedMethodParameters, methodGenericMethodParameters, requestedGenericMethodParameters, method.Name, requestedMethodName))
+                {
+                    requestedMethodData = method;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -300,26 +317,42 @@ namespace BionicCode.Utilities.Net
             }
         }
 
-        public ConstructorData GetConstructor(params MethodParameterInfo[] parameterList)
+        public bool TryGetConstructorByParameterList(ParameterList parameters, out ConstructorData? constructorData)
         {
-            MethodParameterInfoList symbolParameters = parameterList is null || parameterList.Length == 0
-                ? MethodParameterInfoList.Empty
-                : new MethodParameterInfoList(parameterList);
-            ArgumentExceptionAdvanced.ThrowIfAny(
-                symbolParameters,
-                methodParameterInfo => !methodParameterInfo.DeclaringTypeHandle.Equals(this.Handle),
-                nameof(parameterList),
-                $"At least one item in the argument sequence '{nameof(parameterList)}' has a different value for the '{nameof(MethodParameterInfo)}.{nameof(MemberData.DeclaringTypeHandle)}' declaring type handle. All parameters must belong to the same member of the same declaring type '{this.FullyQualifiedSignature}'.");
+            parameters = parameters.OrEmpty();
 
-            SymbolInfoDataCacheKey cacheKey = SymbolInfoDataCacheKey.CreateForAnonymousMethodOrConstructor(
-                this.Handle,
-                string.Empty,
-                symbolParameters,
-                TypeList.Empty,
-                SymbolKind.MemberConstructor);
-            ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateConstructorDataCacheEntry(ref cacheKey);
+            constructorData = null;
+            foreach (ConstructorData constructor in this.Constructors)
+            {
+                ParameterList constructorParameters = constructorData!.Parameters;
 
-            return constructorData;
+                if (parameters.Equals(constructorParameters))
+                {
+                    constructorData = constructor;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool TryGetConstructorByParameterList(MethodParameterInfoList parameters, out ConstructorData? constructorData)
+        {
+            parameters = parameters.OrEmpty();
+
+            constructorData = null;
+            foreach (ConstructorData constructor in this.Constructors)
+            {
+                ParameterList constructorParameters = constructorData!.Parameters;
+
+                if (ParameterListEqualityComparer.Equals(parameters, constructorParameters))
+                {
+                    constructorData = constructor;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public IEnumerable<ConstructorData> EnumerateConstructors(BindingFlags bindingFlags = HelperExtensionsCommon.AllMembersFullHierarchyFlags)
@@ -367,43 +400,43 @@ namespace BionicCode.Utilities.Net
         private IEnumerable<TMemberData> BuildAndEnumerateMemberKindCache<TMemberData>(MemberInfo[] members, BindingFlags bindingFlags) where TMemberData : MemberData
         {
             Func<MemberInfo, MemberData> readReflectionCache;
-            Action<MemberData> addMemberToTypeDataMemberListProperty;
+            Action<MemberData> addMemberToTypeDataMemberList;
             Action buildMemberListProperty;
             SymbolKind memberKind;
             switch (typeof(TMemberData))
             {
                 case Type memberType when memberType == typeof(PropertyData):
-                    readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry((PropertyInfo)memberInfo);
+                    readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((PropertyInfo)memberInfo);
                     IPropertyListBuilder propertyListBuilder = PropertyListBuilder.New(this.Handle);
-                    addMemberToTypeDataMemberListProperty = propertyData => propertyListBuilder.Add((PropertyData)propertyData);
+                    addMemberToTypeDataMemberList = propertyData => _ = propertyListBuilder.Add((PropertyData)propertyData);
                     buildMemberListProperty = () => this._properties = propertyListBuilder.Build();
                     memberKind = SymbolKind.MemberProperty;
                     break;
                 case Type memberType when memberType == typeof(MethodData):
-                    readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry((MethodInfo)memberInfo);
+                    readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((MethodInfo)memberInfo);
                     IMethodListBuilder methodListBuilder = MethodListBuilder.New(this.Handle);
-                    addMemberToTypeDataMemberListProperty = methodData => methodListBuilder.Add((MethodData)methodData);
+                    addMemberToTypeDataMemberList = methodData => methodListBuilder.Add((MethodData)methodData);
                     buildMemberListProperty = () => this._methods = methodListBuilder.Build();
                     memberKind = SymbolKind.MemberMethod;
                     break;
                 case Type memberType when memberType == typeof(FieldData):
-                    readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry((FieldInfo)memberInfo);
+                    readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((FieldInfo)memberInfo);
                     IFieldListBuilder fieldListBuilder = FieldListBuilder.New(this.Handle);
-                    addMemberToTypeDataMemberListProperty = fieldData => fieldListBuilder.Add((FieldData)fieldData);
+                    addMemberToTypeDataMemberList = fieldData => fieldListBuilder.Add((FieldData)fieldData);
                     buildMemberListProperty = () => this._fields = fieldListBuilder.Build();
                     memberKind = SymbolKind.MemberField;
                     break;
                 case Type memberType when memberType == typeof(EventData):
-                    readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry((EventInfo)memberInfo);
+                    readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((EventInfo)memberInfo);
                     IEventListBuilder eventListBuilder = EventListBuilder.New(this.Handle);
-                    addMemberToTypeDataMemberListProperty = eventData => eventListBuilder.Add((EventData)eventData);
+                    addMemberToTypeDataMemberList = eventData => eventListBuilder.Add((EventData)eventData);
                     buildMemberListProperty = () => this._events = eventListBuilder.Build();
                     memberKind = SymbolKind.MemberEvent;
                     break;
                 case Type memberType when memberType == typeof(ConstructorData):
-                    readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry((ConstructorInfo)memberInfo);
+                    readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((ConstructorInfo)memberInfo);
                     IConstructorListBuilder constructorListBuilder = ConstructorListBuilder.New(this.Handle);
-                    addMemberToTypeDataMemberListProperty = constructorData => constructorListBuilder.Add((ConstructorData)constructorData);
+                    addMemberToTypeDataMemberList = constructorData => constructorListBuilder.Add((ConstructorData)constructorData);
                     buildMemberListProperty = () => this._constructors = constructorListBuilder.Build();
                     memberKind = SymbolKind.MemberConstructor;
                     break;
@@ -417,9 +450,14 @@ namespace BionicCode.Utilities.Net
                 for (; memberIndex < members.Length; memberIndex++)
                 {
                     MemberInfo memberInfo = members[memberIndex];
+                    if (memberInfo is null)
+                    {
+                        continue;
+                    }
+
                     TMemberData memberDataFromReflectionCache = (TMemberData)readReflectionCache.Invoke(memberInfo);
-                    addMemberToTypeDataMemberListProperty.Invoke(memberDataFromReflectionCache);
-                    SymbolInfoDataCacheKey cacheKey = memberDataFromReflectionCache.CacheKey;
+                    addMemberToTypeDataMemberList.Invoke(memberDataFromReflectionCache);
+                    SymbolReflectionInfoCacheKey cacheKey = memberDataFromReflectionCache.CacheKey;
                     if (this._memberTable.TryAdd(cacheKey))
                     {
                         bool isValidMember = IsValidMember(memberDataFromReflectionCache, bindingFlags);
@@ -437,8 +475,8 @@ namespace BionicCode.Utilities.Net
                 {
                     MemberInfo memberInfo = members[memberIndex];
                     TMemberData memberDataFromReflectionCache = (TMemberData)readReflectionCache.Invoke(memberInfo);
-                    addMemberToTypeDataMemberListProperty.Invoke(memberDataFromReflectionCache);
-                    SymbolInfoDataCacheKey cacheKey = memberDataFromReflectionCache.CacheKey;
+                    addMemberToTypeDataMemberList.Invoke(memberDataFromReflectionCache);
+                    SymbolReflectionInfoCacheKey cacheKey = memberDataFromReflectionCache.CacheKey;
                     _ = this._memberTable.TryAdd(cacheKey);
                 }
 
@@ -739,7 +777,14 @@ namespace BionicCode.Utilities.Net
             {
                 if (this._properties is null)
                 {
-                    _ = BuildAndEnumerateMemberKindCache<PropertyData>(UnwrapType().GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags), HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+                    Type thisType = UnwrapType();
+                    PropertyInfo[] declaredProperties = thisType.GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+                    IEnumerable<PropertyInfo> inheritedProperties = thisType.GetInterfaces()
+                        .SelectMany(implementedInterface => implementedInterface.GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags));
+                    PropertyInfo[] reachableProperties = declaredProperties
+                        .Concat(inheritedProperties)
+                        .ToArray();
+                    _ = BuildAndEnumerateMemberKindCache<PropertyData>(reachableProperties, HelperExtensionsCommon.AllMembersFullHierarchyFlags)
                         .ToPropertyList();
                 }
 

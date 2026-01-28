@@ -37,7 +37,7 @@
             RuntimeTypeHandle declaringTypeHandle = default;
             foreach (ConstructorInfo constructorInfo in constructorInfoList)
             {
-                ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(constructorInfo);
+                ConstructorData constructorData = SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo);
 
                 if (declaringTypeHandle.Equals(default))
                 {
@@ -75,7 +75,7 @@
                 return ConstructorList.Empty;
             }
 
-            IEnumerable<ConstructorData> constructors = constructorInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry);
+            IEnumerable<ConstructorData> constructors = constructorInfoList.Select(SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry);
 
             return constructors.ToConstructorList();
         }
@@ -96,6 +96,11 @@
         internal static ConstructorList ToConstructorList(this IEnumerable<ConstructorData> items)
             => items is null || items.IsEmpty() ? ConstructorList.Empty : new ConstructorList(items);
 
+        /// <summary>
+        /// Returns an empty <see cref="ConstructorList"/> if the provided instance is <see langword="null"/>.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns>A <see cref="ConstructorList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
         public static ConstructorList OrEmpty(this ConstructorList items)
             => items ?? ConstructorList.Empty;
     }

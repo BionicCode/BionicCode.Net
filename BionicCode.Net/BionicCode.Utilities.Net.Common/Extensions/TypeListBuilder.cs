@@ -171,6 +171,11 @@
         internal static TypeList ToTypeList(this IEnumerable<TypeData> items)
             => items is null || items.IsEmpty() ? TypeList.Empty : new TypeList(items);
 
+        /// <summary>
+        /// Returns an empty <see cref="TypeList"/> if the provided instance is <see langword="null"/>.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns>A <see cref="TypeList"/> that is empty if the provided instance is <see langword="null"/>. Otherwise, returns the original instance.</returns>
         public static TypeList OrEmpty(this TypeList items)
             => items ?? TypeList.Empty;
     }
