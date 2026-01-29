@@ -376,7 +376,7 @@ namespace BionicCode.Utilities.Net
                 _ => throw new NotSupportedException($"The member type '{typeof(TMemberData).FullName}' is not supported."),
             };
 
-            IEnumerable<MemberData> cachedMemberReflectionCacheKeys = memberKind switch
+            IEnumerable<MemberData> cachedMembers = memberKind switch
             {
                 // Accessing member list properties ensure cache is built up
 
@@ -388,7 +388,7 @@ namespace BionicCode.Utilities.Net
                 _ => throw new NotSupportedException($"The member kind '{typeof(SymbolKind).FullName}.{memberKind}' is not supported."),
             };
 
-            foreach (MemberData memberData in cachedMemberReflectionCacheKeys)
+            foreach (MemberData memberData in cachedMembers)
             {
                 if (IsValidMember(memberData!, bindingFlags))
                 {
@@ -401,7 +401,6 @@ namespace BionicCode.Utilities.Net
         {
             Func<MemberInfo, MemberData> readReflectionCache;
             Action<MemberData> addMemberToTypeDataMemberList;
-            Action buildMemberListProperty;
             SymbolKind memberKind;
             switch (typeof(TMemberData))
             {
@@ -409,35 +408,30 @@ namespace BionicCode.Utilities.Net
                     readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((PropertyInfo)memberInfo);
                     IPropertyListBuilder propertyListBuilder = PropertyListBuilder.New(this.Handle);
                     addMemberToTypeDataMemberList = propertyData => _ = propertyListBuilder.Add((PropertyData)propertyData);
-                    buildMemberListProperty = () => this._properties = propertyListBuilder.Build();
                     memberKind = SymbolKind.MemberProperty;
                     break;
                 case Type memberType when memberType == typeof(MethodData):
                     readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((MethodInfo)memberInfo);
                     IMethodListBuilder methodListBuilder = MethodListBuilder.New(this.Handle);
                     addMemberToTypeDataMemberList = methodData => methodListBuilder.Add((MethodData)methodData);
-                    buildMemberListProperty = () => this._methods = methodListBuilder.Build();
                     memberKind = SymbolKind.MemberMethod;
                     break;
                 case Type memberType when memberType == typeof(FieldData):
                     readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((FieldInfo)memberInfo);
                     IFieldListBuilder fieldListBuilder = FieldListBuilder.New(this.Handle);
                     addMemberToTypeDataMemberList = fieldData => fieldListBuilder.Add((FieldData)fieldData);
-                    buildMemberListProperty = () => this._fields = fieldListBuilder.Build();
                     memberKind = SymbolKind.MemberField;
                     break;
                 case Type memberType when memberType == typeof(EventData):
                     readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((EventInfo)memberInfo);
                     IEventListBuilder eventListBuilder = EventListBuilder.New(this.Handle);
                     addMemberToTypeDataMemberList = eventData => eventListBuilder.Add((EventData)eventData);
-                    buildMemberListProperty = () => this._events = eventListBuilder.Build();
                     memberKind = SymbolKind.MemberEvent;
                     break;
                 case Type memberType when memberType == typeof(ConstructorData):
                     readReflectionCache = (memberInfo) => SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry((ConstructorInfo)memberInfo);
                     IConstructorListBuilder constructorListBuilder = ConstructorListBuilder.New(this.Handle);
                     addMemberToTypeDataMemberList = constructorData => constructorListBuilder.Add((ConstructorData)constructorData);
-                    buildMemberListProperty = () => this._constructors = constructorListBuilder.Build();
                     memberKind = SymbolKind.MemberConstructor;
                     break;
                 default:
@@ -481,7 +475,6 @@ namespace BionicCode.Utilities.Net
                 }
 
                 _ = this._memberTableStateFlagTable.TryAdd(memberKind, true);
-                buildMemberListProperty.Invoke();
             }
         }
 
@@ -732,7 +725,7 @@ namespace BionicCode.Utilities.Net
 
                 this.delegateInvokeMethodData ??= this.Methods.TryGetMethodsByName(ReflectionConstants.DelegateInvocatorMethodName, out MethodList methods)
                     ? methods[0]
-                    : null;
+                    : throw new InvalidOperationException($"The delegate type '{this.Name}' does not have a valid invoke method.");
 
                 return this.delegateInvokeMethodData!;
             }
@@ -771,6 +764,18 @@ namespace BionicCode.Utilities.Net
         public TypeList InterfacesData
           => this._interfaces ??= TypeListBuilder.CreateImplementedInterfacesList(this);
 
+        /// <summary>
+        /// Gets all reachable properties of the current type.
+        /// </summary>
+        /// <remarks>The returned <see cref="PropertyList"/> contains all properties that are reachable from the current type:
+        /// <list type="bullet">
+        /// <item>public protected and private instance and static properties of the current type</item>
+        /// <item>implemented public interface properties (either implemented directly or through a base class)</item>
+        /// <item>inherited public and protected instance and static properties</item>
+        /// </list>
+        /// To obtain private properties of a superclass read the <see cref="Properties"/> property of that particular superclass.<br/> />
+        /// Note: explicit interface implementation properties are not included in the returned list as they are not directly reachable via the type instance.<br/>
+        /// <para/>Accessing this property triggers the build up of the property cache for the current type.</remarks>
         public PropertyList Properties
         {
             get
@@ -778,13 +783,8 @@ namespace BionicCode.Utilities.Net
                 if (this._properties is null)
                 {
                     Type thisType = UnwrapType();
-                    PropertyInfo[] declaredProperties = thisType.GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
-                    IEnumerable<PropertyInfo> inheritedProperties = thisType.GetInterfaces()
-                        .SelectMany(implementedInterface => implementedInterface.GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags));
-                    PropertyInfo[] reachableProperties = declaredProperties
-                        .Concat(inheritedProperties)
-                        .ToArray();
-                    _ = BuildAndEnumerateMemberKindCache<PropertyData>(reachableProperties, HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+                    PropertyInfo[] visibleProperties = thisType.GetProperties(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+                    this._properties = BuildAndEnumerateMemberKindCache<PropertyData>(visibleProperties, HelperExtensionsCommon.AllMembersFullHierarchyFlags)
                         .ToPropertyList();
                 }
 
@@ -792,13 +792,100 @@ namespace BionicCode.Utilities.Net
             }
         }
 
+        public PropertyList ExplicitInterfaceProperties
+        {
+            get
+            {
+                if (this._explicitInterfaceProperties is null)
+                {
+                    Type thisType = UnwrapType();
+                    Type[] implementedInterfaces = thisType.GetInterfaces();
+                    IPropertyListBuilder propertyListBuilder = PropertyListBuilder.New(this.Handle);
+                    foreach (Type implementedInterface in implementedInterfaces)
+                    {
+                        InterfaceMapping interfaceMap = thisType.GetInterfaceMap(implementedInterface);
+
+                        foreach (PropertyInfo interfacePropertyInfo in implementedInterface.GetProperties())
+                        {
+                            (MethodData? getMethodData, MethodData? setMethodData) propertyAccessors;
+                            if (interfacePropertyInfo.CanRead)
+                            {
+                                MethodInfo? interfaceGetAccessorMethod = interfacePropertyInfo.GetMethod;
+                                int mapIndex = Array.IndexOf(interfaceMap.InterfaceMethods, interfaceGetAccessorMethod);
+                                var implementedPropertyAccessorMethodData = interfaceMap.TargetMethods[mapIndex].ToMethodData();
+                                if (implementedPropertyAccessorMethodData.IsPublic)
+                                {
+                                    // Not an explicit interface implementation (it's a normal public interface implementation)
+                                    continue;
+                                }
+
+                                propertyAccessors.getMethodData = implementedPropertyAccessorMethodData;
+                            }
+
+                            if (interfacePropertyInfo.CanWrite)
+                            {
+                                MethodInfo? interfaceSetAccessorMethod = interfacePropertyInfo.SetMethod;
+                                int mapIndex = Array.IndexOf(interfaceMap.InterfaceMethods, interfaceSetAccessorMethod);
+                                var implementedPropertyAccessorMethodData = interfaceMap.TargetMethods[mapIndex].ToMethodData();
+                                if (implementedPropertyAccessorMethodData.IsPublic)
+                                {
+                                    // Not an explicit interface implementation (it's a normal public interface implementation)
+                                    continue;
+                                }
+
+                                propertyAccessors.setMethodData = implementedPropertyAccessorMethodData;
+                            }
+                        }
+
+                        MethodInfo[] implementedPropertyAccessors = interfaceMap.TargetMethods;
+                        foreach (MethodInfo implementedPropertyAccessor in implementedPropertyAccessors)
+                        {
+                            if (implementedPropertyAccessor.IsPublic)
+                            {
+                                // Not an explicit interface implementation (it's a normal public interface implementation)
+                                continue;
+                            }
+
+                            RuntimeMethodHandle accessorMethodHandle = implementedPropertyAccessor.MethodHandle;
+                            if (propertyAccessorMap.TryGetValue(accessorMethodHandle, out PropertyData? propertyData))
+                            {
+                                // Property is an explicit interface implementation
+                                propertyListBuilder.Add(propertyData);
+                            }
+                        }
+                        RuntimeMethodHandle
+                    }
+
+                    this._properties = BuildAndEnumerateMemberKindCache<PropertyData>(visibleProperties, HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+                        .ToPropertyList();
+                }
+
+                return this._properties!;
+            }
+        }
+
+
+        /// <summary>
+        /// Gets all reachable methods of the current type.
+        /// </summary>
+        /// <remarks>The returned <see cref="MethodList"/> contains all methods that are reachable from the current type:
+        /// <list type="bullet">
+        /// <item>public protected and private instance and static methods of the current type</item>
+        /// <item>implemented public interface methods (either implemented directly or through a base class)</item>
+        /// <item>inherited public and protected instance and static methods</item>
+        /// </list>
+        /// To obtain private methods of a superclass read the <see cref="Methods"/> property of that particular superclass.<br/>/>
+        /// Note: explicit interface implementation methods are not included in the returned list as they are not directly reachable via the type instance.<br/>
+        /// <para/>Accessing this property triggers the build up of the method cache for the current type.</remarks>
         public MethodList Methods
         {
             get
             {
                 if (this._methods is null)
                 {
-                    _ = BuildAndEnumerateMemberKindCache<MethodData>(UnwrapType().GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags), HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+                    Type thisType = UnwrapType();
+                    MethodInfo[] visibleMethods = thisType.GetMethods(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+                    this._methods = BuildAndEnumerateMemberKindCache<MethodData>(visibleMethods, HelperExtensionsCommon.AllMembersFullHierarchyFlags)
                         .ToMethodList();
                 }
 
@@ -806,13 +893,26 @@ namespace BionicCode.Utilities.Net
             }
         }
 
+        /// <summary>
+        /// Gets all reachable fields of the current type.
+        /// </summary>
+        /// <remarks>The returned <see cref="FieldList"/> contains all fields that are reachable from the current type:
+        /// <list type="bullet">
+        /// <item>public protected and private instance and static fields of the current type</item>
+        /// <item>implemented public interface fields (either implemented directly or through a base class)</item>
+        /// <item>inherited public and protected instance and static fields</item>
+        /// </list>
+        /// To obtain private fields of a superclass read the <see cref="Fields"/> property of that particular superclass.<br/> 
+        /// <para/>Accessing this property triggers the build up of the field cache for the current type.</remarks>
         public FieldList Fields
         {
             get
             {
                 if (this._fields is null)
                 {
-                    _ = BuildAndEnumerateMemberKindCache<FieldData>(UnwrapType().GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags), HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+                    Type thisType = UnwrapType();
+                    FieldInfo[] visibleFields = thisType.GetFields(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+                    this._fields = BuildAndEnumerateMemberKindCache<FieldData>(visibleFields, HelperExtensionsCommon.AllMembersFullHierarchyFlags)
                         .ToFieldList();
                 }
 
@@ -820,13 +920,27 @@ namespace BionicCode.Utilities.Net
             }
         }
 
+        /// <summary>
+        /// Gets all reachable events of the current type.
+        /// </summary>
+        /// <remarks>The returned <see cref="EventList"/> contains all events that are reachable from the current type:
+        /// <list type="bullet">
+        /// <item>public protected and private instance and static events of the current type</item>
+        /// <item>implemented public interface events (either implemented directly or through a base class)</item>
+        /// <item>inherited public and protected instance and static events</item>
+        /// </list>
+        /// To obtain private events of a superclass read the <see cref="Events"/> property of that particular superclass.<br/>
+        /// Note: explicit interface implementation events are not included in the returned list as they are not directly reachable via the type instance.<br/>
+        /// <para/>Accessing this property triggers the build up of the event cache for the current type.</remarks>
         public EventList Events
         {
             get
             {
                 if (this._events is null)
                 {
-                    _ = BuildAndEnumerateMemberKindCache<EventData>(UnwrapType().GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags), HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+                    Type thisType = UnwrapType();
+                    EventInfo[] visibleEvents = thisType.GetEvents(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+                    this._events = BuildAndEnumerateMemberKindCache<EventData>(visibleEvents, HelperExtensionsCommon.AllMembersFullHierarchyFlags)
                         .ToEventList();
                 }
 
@@ -834,13 +948,26 @@ namespace BionicCode.Utilities.Net
             }
         }
 
+        /// <summary>
+        /// Gets all reachable constructors of the current type.
+        /// </summary>
+        /// <remarks>The returned <see cref="ConstructorList"/> contains all constructors that are reachable from the current type:
+        /// <list type="bullet">
+        /// <item>public protected and private instance and static constructors of the current type</item>
+        /// <item>implemented public interface constructors (either implemented directly or through a base class)</item>
+        /// <item>inherited public and protected instance and static constructors</item>
+        /// </list>
+        /// To obtain private constructors of a superclass read the <see cref="Constructors"/> property of that particular superclass.<br/> 
+        /// <para/>Accessing this property triggers the build up of the constructor cache for the current type.</remarks>
         public ConstructorList Constructors
         {
             get
             {
                 if (this._constructors is null)
                 {
-                    _ = BuildAndEnumerateMemberKindCache<ConstructorData>(UnwrapType().GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags), HelperExtensionsCommon.AllMembersFullHierarchyFlags)
+                    Type thisType = UnwrapType();
+                    ConstructorInfo[] visibleConstructors = thisType.GetConstructors(HelperExtensionsCommon.AllMembersFullHierarchyFlags);
+                    this._constructors = BuildAndEnumerateMemberKindCache<ConstructorData>(visibleConstructors, HelperExtensionsCommon.AllMembersFullHierarchyFlags)
                         .ToConstructorList();
                 }
 

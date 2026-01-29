@@ -8,6 +8,7 @@
         Undefined = 0,
         Set = 1,
         Get = 2,
+        None = 4,
         GetAndSet = Get | Set,
     }
 }

@@ -138,7 +138,7 @@
             : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{GetEventInfo().Name}' does not have a remove method.");
 
         public MethodData EventInvokerMethodData
-          => this.invocatorMethodData ??= this.EventHandlerTypeData?.GetMethod(ReflectionConstants.DelegateInvocatorMethodName, ReadOnlySpan<TypeData>.Empty, ReadOnlySpan<MethodParameterInfo>.Empty)!;
+          => this.invocatorMethodData ??= this.EventHandlerTypeData?.DelegateInvokeMethodData!;
 
         public TypeData EventHandlerTypeData
           => this.eventHandlerTypeData ??= GetEventInfo().EventHandlerType is Type eventHandlerType
