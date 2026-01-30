@@ -94,12 +94,12 @@
                 ? this._anonymousFieldDescriptor
                 : ThrowInvalidPropertyContextException<AnonymousFieldDescriptor>([SymbolKind.MemberField]);
 
-        //private readonly PropertyAccessor _indexerPropertyAccessor;
-        //public PropertyAccessor IndexerPropertyAccessor => !this.IsAnonymousSymbolKey
-        //    ? ThrowCurrentInstanceIsNotAnonymousException<PropertyAccessor>()
+        //private readonly PropertyAccessors _indexerPropertyAccessor;
+        //public PropertyAccessors IndexerPropertyAccessor => !this.IsAnonymousSymbolKey
+        //    ? ThrowCurrentInstanceIsNotAnonymousException<PropertyAccessors>()
         //    : this.SymbolKind.EqualsAny([SymbolKind.MemberProperty])
         //        ? this._indexerPropertyAccessor
-        //        : ThrowInvalidPropertyContextException<PropertyAccessor>([SymbolKind.MemberProperty]);
+        //        : ThrowInvalidPropertyContextException<PropertyAccessors>([SymbolKind.MemberProperty]);
 
         private readonly bool _isExplicitInterfaceImplementation;
         public bool IsExplicitInterfaceImplementation => this.SymbolKind is SymbolKind.MemberProperty

@@ -118,10 +118,10 @@ namespace BionicCode.Utilities.Net
             return this.Properties.TryGetPropertyByName(propertyName, out propertyData);
         }
 
-        public bool TryGetIndexerPropertyByParameterList(ParameterList parameters, PropertyAccessor propertyAccessor, out PropertyData? propertyData)
+        public bool TryGetIndexerPropertyByParameterList(ParameterList parameters, PropertyAccessors propertyAccessor, out PropertyData? propertyData)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(parameters);
-            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<PropertyAccessor>(propertyAccessor);
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<PropertyAccessors>(propertyAccessor);
 
             propertyData = null;
             foreach (PropertyData property in this.Properties)
@@ -129,8 +129,8 @@ namespace BionicCode.Utilities.Net
                 ParameterList indexerAccessorParameters = propertyAccessor switch
                 {
                     // Since we use binary AND to bit mask flags, we we also catch the combined flag GetAndSet here.
-                    var accessorSpecifier when (accessorSpecifier & PropertyAccessor.PropertyGet) != 0 && property.CanRead => property.PropertyGetMethodParameters,
-                    var accessorSpecifier when (accessorSpecifier & PropertyAccessor.PropertySet) != 0 && property.CanWrite => property.PropertySetMethodParameters,
+                    var accessorSpecifier when (accessorSpecifier & PropertyAccessors.Get) != 0 && property.CanRead => property.PropertyGetMethodParameters,
+                    var accessorSpecifier when (accessorSpecifier & PropertyAccessors.Set) != 0 && property.CanWrite => property.PropertySetMethodParameters,
                     _ => throw new NotSupportedException($"The value '{propertyAccessor}' is not supported."),
                 };
 
@@ -144,16 +144,16 @@ namespace BionicCode.Utilities.Net
             return false;
         }
 
-        public bool TryGetIndexerPropertyByParameterList(MethodParameterInfoList indexerParameters, PropertyAccessor indexerPropertyAccessor, out PropertyData? propertyData)
+        public bool TryGetIndexerPropertyByParameterList(MethodParameterInfoList indexerParameters, PropertyAccessors indexerPropertyAccessor, out PropertyData? propertyData)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNullOrEmpty(indexerParameters);
-            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<PropertyAccessor>(indexerPropertyAccessor);
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<PropertyAccessors>(indexerPropertyAccessor);
 
             Func<PropertyData, ParameterList> indexerAccessorParametersReader = indexerPropertyAccessor switch
             {
                 // Since we use binary AND to bit mask flags, we we also catch the combined flag GetAndSet here.
-                var accessorSpecifier when (accessorSpecifier & PropertyAccessor.PropertyGet) != 0 => property => property.IsIndexer && property.CanRead ? property.PropertyGetMethodParameters : ParameterList.Empty,
-                var accessorSpecifier when (accessorSpecifier & PropertyAccessor.PropertySet) != 0 => property => property.IsIndexer && property.CanWrite ? property.PropertySetMethodParameters : ParameterList.Empty,
+                var accessorSpecifier when (accessorSpecifier & PropertyAccessors.Get) != 0 => property => property.IsIndexer && property.CanRead ? property.PropertyGetMethodParameters : ParameterList.Empty,
+                var accessorSpecifier when (accessorSpecifier & PropertyAccessors.Set) != 0 => property => property.IsIndexer && property.CanWrite ? property.PropertySetMethodParameters : ParameterList.Empty,
                 _ => throw new NotSupportedException($"The value '{indexerPropertyAccessor}' is not supported."),
             };
             propertyData = null;

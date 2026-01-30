@@ -27,17 +27,18 @@
         /// <exception cref="ArgumentException">Thrown when
         /// <list type="bullet">
         /// <item>Is also thrown when <paramref name="isExplicitInterfaceImplementation"/> is <see langword="true"/> but <paramref name="methodInfo"/> is not from an interface type.</item>
-        /// <item>Is also thrown when <paramref name="propertyAccessor"/> has a value that is not defined by the <see cref="PropertyAccessor"/> enum.</item>
-        /// <item>Is also thrown when <paramref name="propertyAccessor"/> has value <see cref="PropertyAccessor.Undefined"/>.</item>
+        /// <item>Is also thrown when <paramref name="propertyAccessor"/> has a value that is not defined by the <see cref="PropertyAccessors"/> enum.</item>
+        /// <item>Is also thrown when <paramref name="propertyAccessor"/> has value <see cref="PropertyAccessors.None"/>.</item>
         /// </list>
         /// </exception>
-        public WellKnownMethodOrConstructorDescriptor(MethodInfo methodInfo, PropertyAccessor propertyAccessor, bool isExplicitInterfaceImplementation)
+        public WellKnownMethodOrConstructorDescriptor(MethodInfo methodInfo, PropertyAccessors propertyAccessor, bool isExplicitInterfaceImplementation,
+            RuntimeTypeHandle? declaringInterfaceTypeHandle,)
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo);
-            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<PropertyAccessor>(propertyAccessor);
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<PropertyAccessors>(propertyAccessor);
             ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(
                 propertyAccessor,
-                [PropertyAccessor.Undefined],
+                [PropertyAccessors.None],
                 nameof(propertyAccessor),
                 $"Invalid argument '{nameof(propertyAccessor)}'. The argument '{nameof(propertyAccessor)}' has an undefined value. The value '{propertyAccessor}' is not allowed.");
 
@@ -48,16 +49,14 @@
                     declaringType,
                     nameof(methodInfo),
                     $"The declaring type represented by the argument '{nameof(methodInfo)}' could not be resolved.");
-                ArgumentExceptionAdvanced.ThrowIfFalse(declaringType is not null && declaringType.IsInterface,
+                ArgumentExceptionAdvanced.ThrowIfTrue(declaringType!.IsInterface,
                     nameof(isExplicitInterfaceImplementation),
-                    $"Invalid argument '{nameof(isExplicitInterfaceImplementation)}'. The argument '{nameof(isExplicitInterfaceImplementation)}' returns 'true' while the declaring type of the argument '{nameof(methodInfo)}' is not an interface. Reason: Only interface types can provide the declaration of explicit interface implementations.");
+                    $"Invalid argument '{nameof(methodInfo)}'. The argument '{nameof(isExplicitInterfaceImplementation)}' returns 'true' while the declaring type of the argument '{nameof(methodInfo)}' is an interface. Reason: Only non-interface types can provide the explicit interface implementation.");
             }
 
             this.MethodName = methodInfo.Name;
-            this.PropertyAccessor = propertyAccessor;
-            this.IsPropertyAccessor = propertyAccessor is not PropertyAccessor.Undefined and not PropertyAccessor.None;
             this.IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
-            this._methodHandle = methodInfo.MethodHandle;
+            this.MethodHandle = methodInfo.MethodHandle;
             this.IsAnonymous = false;
         }
 
@@ -74,9 +73,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo);
 
-            this.MethodName = constructorInfo.Name;
-            this.PropertyAccessor = PropertyAccessor.None;
-            this.IsPropertyAccessor = false;
+            this.MethodName = string.Empty;
             this.IsExplicitInterfaceImplementation = false;
             this.MethodHandle = constructorInfo.MethodHandle;
             this.IsAnonymous = false;
@@ -85,15 +82,11 @@
         public RuntimeMethodHandle MethodHandle { get; }
 
         public string MethodName { get; }
-        public PropertyAccessor PropertyAccessor { get; }
         public bool IsExplicitInterfaceImplementation { get; }
-        public bool IsPropertyAccessor { get; }
         public bool IsAnonymous { get; }
 
         public bool Equals(WellKnownMethodOrConstructorDescriptor other)
             => this.IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
-            && this.PropertyAccessor.Equals(other.PropertyAccessor)
-            && this.IsPropertyAccessor.Equals(other.IsPropertyAccessor)
             && this.IsAnonymous == other.IsAnonymous
             && this.MethodHandle == other.MethodHandle
             && this.MethodName.Equals(other.MethodName, StringComparison.Ordinal);
@@ -102,10 +95,8 @@
         {
             var hashCode = new HashCode();
             hashCode.Add(this.IsExplicitInterfaceImplementation);
-            hashCode.Add(this.PropertyAccessor);
-            hashCode.Add(this.IsPropertyAccessor);
             hashCode.Add(this.IsAnonymous);
-            hashCode.Add(this._methodHandle);
+            hashCode.Add(this.MethodHandle);
             hashCode.Add(this.MethodName);
 
             return hashCode.ToHashCode();

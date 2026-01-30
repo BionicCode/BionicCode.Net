@@ -447,11 +447,11 @@
         //    {
         //        result = LogConstructor(context);
         //    }
-        //    else if (profiledTargetType.HasFlag(ProfiledTargetType.PropertyGet))
+        //    else if (profiledTargetType.HasFlag(ProfiledTargetType.Get))
         //    {
         //        result = LogPropertyGet(context);
         //    }
-        //    else if (profiledTargetType.HasFlag(ProfiledTargetType.PropertySet))
+        //    else if (profiledTargetType.HasFlag(ProfiledTargetType.Set))
         //    {
         //        result = LogPropertySet(context);
         //    }
