@@ -4,8 +4,8 @@
 
     internal readonly struct MethodParameterInfo : IEquatable<MethodParameterInfo>
     {
-        public CacheKeyParameterDescriptor ParameterDescriptor { get; }
-        public CacheKeyParameterMemberDescriptor DeclaringMemberDescriptor { get; }
+        public WellKnownParameterDescriptor ParameterDescriptor { get; }
+        public ParameterMemberDescriptor DeclaringMemberDescriptor { get; }
 
         /// <summary>
         /// Gets a value indicating whether ambiguity is expected for the associated parameter or member descriptor.
@@ -38,12 +38,12 @@
                 ? methodData.ReturnTypeData.Handle
                 : default;
 
-            this.ParameterDescriptor = new CacheKeyParameterDescriptor(
+            this.ParameterDescriptor = new CacheKeyWellKnownParameterDescriptor(
                 parameterData.Name,
                 parameterData.Position,
                 parameterData.ParameterKind,
                 parameterData.ParameterTypeHandle);
-            this.DeclaringMemberDescriptor = new CacheKeyParameterMemberDescriptor(
+            this.DeclaringMemberDescriptor = new ParameterMemberDescriptor(
                 parameterData.DeclaringTypeHandle,
                 parameterData.MemberData.Handle,
                 parameterData.MemberData.Name,
@@ -67,10 +67,10 @@
         public MethodParameterInfo(SymbolReflectionInfoCacheKey parameterInfoDataCacheKey) : this()
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey.CacheKeyParameterDescriptor, nameof(parameterInfoDataCacheKey));
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey.CacheKeyParameterMemberDescriptor, nameof(parameterInfoDataCacheKey));
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey.ParameterMemberDescriptor, nameof(parameterInfoDataCacheKey));
 
-            CacheKeyParameterDescriptor parameterDescriptor = parameterInfoDataCacheKey.CacheKeyParameterDescriptor;
-            CacheKeyParameterMemberDescriptor declaringMemberDescriptor = parameterInfoDataCacheKey.CacheKeyParameterMemberDescriptor;
+            WellKnownParameterDescriptor parameterDescriptor = parameterInfoDataCacheKey.CacheKeyParameterDescriptor;
+            ParameterMemberDescriptor declaringMemberDescriptor = parameterInfoDataCacheKey.ParameterMemberDescriptor;
             this.ParameterDescriptor = parameterDescriptor;
             this.DeclaringMemberDescriptor = declaringMemberDescriptor;
         }

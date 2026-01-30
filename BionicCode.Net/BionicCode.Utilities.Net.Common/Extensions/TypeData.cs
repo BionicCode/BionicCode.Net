@@ -129,8 +129,8 @@ namespace BionicCode.Utilities.Net
                 ParameterList indexerAccessorParameters = propertyAccessor switch
                 {
                     // Since we use binary AND to bit mask flags, we we also catch the combined flag GetAndSet here.
-                    var accessorSpecifier when (accessorSpecifier & PropertyAccessor.Get) != 0 && property.CanRead => property.PropertyGetMethodParameters,
-                    var accessorSpecifier when (accessorSpecifier & PropertyAccessor.Set) != 0 && property.CanWrite => property.PropertySetMethodParameters,
+                    var accessorSpecifier when (accessorSpecifier & PropertyAccessor.PropertyGet) != 0 && property.CanRead => property.PropertyGetMethodParameters,
+                    var accessorSpecifier when (accessorSpecifier & PropertyAccessor.PropertySet) != 0 && property.CanWrite => property.PropertySetMethodParameters,
                     _ => throw new NotSupportedException($"The value '{propertyAccessor}' is not supported."),
                 };
 
@@ -152,8 +152,8 @@ namespace BionicCode.Utilities.Net
             Func<PropertyData, ParameterList> indexerAccessorParametersReader = indexerPropertyAccessor switch
             {
                 // Since we use binary AND to bit mask flags, we we also catch the combined flag GetAndSet here.
-                var accessorSpecifier when (accessorSpecifier & PropertyAccessor.Get) != 0 => property => property.IsIndexer && property.CanRead ? property.PropertyGetMethodParameters : ParameterList.Empty,
-                var accessorSpecifier when (accessorSpecifier & PropertyAccessor.Set) != 0 => property => property.IsIndexer && property.CanWrite ? property.PropertySetMethodParameters : ParameterList.Empty,
+                var accessorSpecifier when (accessorSpecifier & PropertyAccessor.PropertyGet) != 0 => property => property.IsIndexer && property.CanRead ? property.PropertyGetMethodParameters : ParameterList.Empty,
+                var accessorSpecifier when (accessorSpecifier & PropertyAccessor.PropertySet) != 0 => property => property.IsIndexer && property.CanWrite ? property.PropertySetMethodParameters : ParameterList.Empty,
                 _ => throw new NotSupportedException($"The value '{indexerPropertyAccessor}' is not supported."),
             };
             propertyData = null;
@@ -835,6 +835,9 @@ namespace BionicCode.Utilities.Net
 
                                 propertyAccessors.setMethodData = implementedPropertyAccessorMethodData;
                             }
+
+                            var explicitPropertyImplementationDescriptor = new WellKnownPropertyDescriptor(
+                                )
                         }
 
                         MethodInfo[] implementedPropertyAccessors = interfaceMap.TargetMethods;

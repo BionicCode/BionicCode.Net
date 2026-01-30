@@ -739,8 +739,8 @@
                 nameof(anonymousCacheKey),
                 "The provided cache key is not anonymous. This method only supports creating parameter data for anonymous parameter keys.");
 
-            CacheKeyParameterDescriptor parameterDescriptor = anonymousCacheKey.CacheKeyParameterDescriptor;
-            CacheKeyParameterMemberDescriptor declaringMemberDescriptor = anonymousCacheKey.CacheKeyParameterMemberDescriptor;
+            WellKnownParameterDescriptor parameterDescriptor = anonymousCacheKey.CacheKeyParameterDescriptor;
+            ParameterMemberDescriptor declaringMemberDescriptor = anonymousCacheKey.ParameterMemberDescriptor;
 
             ParameterData? parameterDataCandidate = null;
 
@@ -944,7 +944,7 @@
             throw new InvalidReflectionCacheKeyException();
         }
 
-        private static bool TryFindParameterInProperty(CacheKeyParameterDescriptor parameterDescriptor, CacheKeyParameterMemberDescriptor declaringMemberDescriptor, PropertyData propertyCandidate, out ParameterData? parameterDataCandidate, out InvalidReflectionCacheKeyException? exception)
+        private static bool TryFindParameterInProperty(WellKnownParameterDescriptor parameterDescriptor, ParameterMemberDescriptor declaringMemberDescriptor, PropertyData propertyCandidate, out ParameterData? parameterDataCandidate, out InvalidReflectionCacheKeyException? exception)
         {
             parameterDataCandidate = null;
             exception = null;
@@ -1098,7 +1098,7 @@
             }
         }
 
-        private static bool TryFindParameterCandidateInMethods(CacheKeyParameterDescriptor parameterDescriptor, CacheKeyParameterMemberDescriptor declaringMemberDescriptor, IEnumerable<MethodData> methodCandidates, out ParameterData? parameterDataCandidate)
+        private static bool TryFindParameterCandidateInMethods(WellKnownParameterDescriptor parameterDescriptor, ParameterMemberDescriptor declaringMemberDescriptor, IEnumerable<MethodData> methodCandidates, out ParameterData? parameterDataCandidate)
         {
             parameterDataCandidate = null;
 
@@ -1136,7 +1136,7 @@
             return parameterDataCandidate is not null;
         }
 
-        private static bool TryFindParameterCandidate(CacheKeyParameterDescriptor parameterDescriptor, ParameterList parameters, out ParameterData? parameterDataCandidate, out InvalidReflectionCacheKeyException? exception)
+        private static bool TryFindParameterCandidate(WellKnownParameterDescriptor parameterDescriptor, ParameterList parameters, out ParameterData? parameterDataCandidate, out InvalidReflectionCacheKeyException? exception)
         {
             parameterDataCandidate = null;
             exception = null;

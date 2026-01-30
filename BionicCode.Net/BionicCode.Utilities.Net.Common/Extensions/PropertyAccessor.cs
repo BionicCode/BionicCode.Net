@@ -1,14 +1,14 @@
 ﻿namespace BionicCode.Utilities.Net
 {
-    using System;
-
-    [Flags]
     public enum PropertyAccessor
     {
         Undefined = 0,
-        Set = 1,
-        Get = 2,
-        None = 4,
-        GetAndSet = Get | Set,
+        PropertySet,
+        PropertyGet,
+        PropertyGetAndPropertySet,
+        EventAdd,
+        EventRemove,
+        EventAddAndEventRemove,
+        None,
     }
 }
