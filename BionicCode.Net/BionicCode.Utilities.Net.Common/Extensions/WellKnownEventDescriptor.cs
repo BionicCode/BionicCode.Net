@@ -21,7 +21,8 @@
         /// <para/>For best accuracy and performance always use this <see cref="WellKnownEventDescriptor"/> when the caller has direct access to the <see cref="System.Reflection.EventInfo"/> representation of the event.
         /// </remarks>
         /// <param name="eventInfo">The <see cref="System.Reflection.EventInfo"/> that the descriptor represents. If <paramref name="isExplicitInterfaceImplementation"/> is set to <see langword="true"/> then the <see cref="System.Reflection.EventInfo"/> must be obtained from the declaring interface type.</param>
-        /// <param name="isExplicitInterfaceImplementation"><see langword="true"/> if the event is an explicit interface implementation; otherwise, <see langword="false"/>. If set to <see langword="true"/>, the <paramref name="eventInfo"/> must be obtained from the declaring interface type.
+        /// <param name="isExplicitInterfaceImplementation"><see langword="true"/> if the event is an explicit interface implementation; otherwise, <see langword="false"/>.
+        /// <para/>If set to <see langword="true"/>, the <paramref name="eventInfo"/> must be obtained from the declaring interface type.
         /// </param>
         /// <param name="explicitAddImplementationMethod"></param>
         /// <param name="explicitRemoveImplementationMethod"></param>
@@ -37,7 +38,6 @@
         public WellKnownEventDescriptor(
             EventInfo eventInfo,
             bool isExplicitInterfaceImplementation,
-            RuntimeTypeHandle? declaringInterfaceTypeHandle
             MethodInfo? explicitAddImplementationMethod,
             MethodInfo? explicitRemoveImplementationMethod)
         {
