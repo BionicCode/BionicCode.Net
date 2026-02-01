@@ -18,7 +18,10 @@
 
         protected abstract MemberInfo GetMemberInfo();
 
-        private Type GetDeclaringType()
+        protected virtual Type GetDeclaringType()
+          => GetDeclaringTypeInternal();
+
+        private Type GetDeclaringTypeInternal()
           => GetMemberInfo().DeclaringType ?? throw new NotSupportedException($"The underlying '{nameof(MemberInfo)}' instance for the member '{GetMemberInfo().Name}' is not returning a declaring type.");
 
         private BindingFlags ComputeVisibilityBindingFlagsMask()
@@ -47,7 +50,7 @@
         public RuntimeTypeHandle DeclaringTypeHandle
             => this._declaringTypeHandle ??= GetDeclaringType().TypeHandle;
 
-        public TypeData DeclaringTypeData
+        public virtual TypeData DeclaringTypeData
           => this.declaringTypeData ??= SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(GetDeclaringType());
 
         public string Namespace

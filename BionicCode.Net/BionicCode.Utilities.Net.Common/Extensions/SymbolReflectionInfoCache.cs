@@ -8,16 +8,98 @@
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Runtime.Loader;
+    using System.Threading;
     using Microsoft.CodeAnalysis;
 
     internal static class SymbolReflectionInfoCache
     {
         private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKey, SymbolInfoData> SymbolInfoDataCache = new ConcurrentDictionary<SymbolReflectionInfoCacheKey, SymbolInfoData>();
+        private static readonly ConcurrentDictionary<AssemblyId, ConcurrentHashSet<SymbolReflectionInfoCacheKey>> AssemblyToCacheKeyMap = new ConcurrentDictionary<AssemblyId, ConcurrentHashSet<SymbolReflectionInfoCacheKey>>();
+        private static readonly ConcurrentDictionary<AssemblyId, WeakReference<Assembly>> AssemblyMap = new ConcurrentDictionary<AssemblyId, WeakReference<Assembly>>();
         private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKey, SymbolReflectionInfoCacheKey> AnonymousSymbolDataCacheKeyMap = new ConcurrentDictionary<SymbolReflectionInfoCacheKey, SymbolReflectionInfoCacheKey>();
         private static readonly ConcurrentDictionary<AmbiguousIndexerPropertyKey, SymbolReflectionInfoCacheKey> IndexerParameterSymbolDataCacheKeyMap = new ConcurrentDictionary<AmbiguousIndexerPropertyKey, SymbolReflectionInfoCacheKey>();
-        private const string MemberNotFoundArgumentExceptionMessage = "Unable to find the {0} named '{1}'{2}on the type '{3}'.";
-        private const string InvalidDeclaringTypeHandleFoundInKeyExceptionMessage = $"The key's property '{nameof(SymbolReflectionInfoCacheKey)}.{nameof(SymbolReflectionInfoCacheKey.DeclaringTypeHandle)}' does not contain a valid handle for the declaring type.";
         private const string DeclaringTypeHandleInKeyIsDefaultExceptionMessage = $"The value 'default' is not a valid value for the key's '{nameof(SymbolReflectionInfoCacheKey)}.{nameof(SymbolReflectionInfoCacheKey.DeclaringTypeHandle)}' property. The property must reference a valid declaring type handle.";
+
+        private static readonly TimeSpan CleanupTimerPeriod = TimeSpan.FromMinutes(10);
+        private static readonly PeriodicTimer CleanupTimer = new PeriodicTimer(SymbolReflectionInfoCache.CleanupTimerPeriod);
+        private static readonly CancellationTokenSource CleanupTimerCancellationTokenSource = new CancellationTokenSource();
+        private static readonly Task CleanupTask;
+
+        static SymbolReflectionInfoCache()
+        {
+            SymbolReflectionInfoCache.CleanupTask = SymbolReflectionInfoCache.MonitorAssembliesAndPruneCacheAsync();
+        }
+
+        private static async Task MonitorAssembliesAndPruneCacheAsync()
+        {
+            CancellationToken cancellationToken = SymbolReflectionInfoCache.CleanupTimerCancellationTokenSource.Token;
+            try
+            {
+                while (await SymbolReflectionInfoCache.CleanupTimer.WaitForNextTickAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    var assembliesToPrune = new List<AssemblyId>();
+                    foreach (KeyValuePair<AssemblyId, WeakReference<Assembly>> entry in SymbolReflectionInfoCache.AssemblyMap)
+                    {
+                        if (!entry.Value.TryGetTarget(out _))
+                        {
+                            AssemblyId assemblyId = entry.Key;
+                            assembliesToPrune.Add(assemblyId);
+                            if (SymbolReflectionInfoCache.AssemblyToCacheKeyMap.TryGetValue(assemblyId, out ConcurrentHashSet<SymbolReflectionInfoCacheKey>? cacheKeysOfAssembly))
+                            {
+                                foreach (SymbolReflectionInfoCacheKey cacheKey in cacheKeysOfAssembly)
+                                {
+                                    _ = SymbolReflectionInfoCache.SymbolInfoDataCache.TryRemove(cacheKey, out _);
+                                }
+
+                                _ = SymbolReflectionInfoCache.AssemblyToCacheKeyMap.TryRemove(assemblyId, out _);
+                            }
+                        }
+                    }
+
+                    foreach (AssemblyId assemblyId in assembliesToPrune)
+                    {
+                        _ = SymbolReflectionInfoCache.AssemblyMap.TryRemove(assemblyId, out _);
+                    }
+                }
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                // Cancellation is only expected during debug mode and never during production runs.
+                // Additionally nobody will ever monitor and await the stored 'CleanupTask' task.
+                // Hence we can swallow exceptions here.
+            }
+            catch (Exception)
+            {
+                // Nobody will ever monitor and await the stored 'CleanupTask' task to allow exceptions to leave the current context.
+                // Hence we can swallow exceptions here.
+            }
+        }
+
+#if DEBUG
+        internal static async Task ShutdownCacheAsync()
+        {
+            // Avoid deadlock
+            if (!SymbolReflectionInfoCache.CleanupTimerCancellationTokenSource.IsCancellationRequested)
+            {
+                await SymbolReflectionInfoCache.CleanupTimerCancellationTokenSource.CancelAsync().ConfigureAwait(false);
+            }
+
+            await SymbolReflectionInfoCache.CleanupTask.ConfigureAwait(false);
+            Cleanup();
+        }
+
+        private static void Cleanup()
+        {
+            SymbolReflectionInfoCache.CleanupTimer.Dispose();
+            SymbolReflectionInfoCache.CleanupTimerCancellationTokenSource.Dispose();
+
+            SymbolReflectionInfoCache.SymbolInfoDataCache.Clear();
+            SymbolReflectionInfoCache.AssemblyMap.Clear();
+            SymbolReflectionInfoCache.AssemblyToCacheKeyMap.Clear();
+            SymbolReflectionInfoCache.AnonymousSymbolDataCacheKeyMap.Clear();
+            SymbolReflectionInfoCache.IndexerParameterSymbolDataCacheKeyMap.Clear();
+        }
+#endif
 
         #region Extension Methods
 
@@ -95,7 +177,9 @@
 
         public static TypeData GetOrCreateSymbolInfoDataCacheEntry(Type type)
         {
-            SymbolReflectionInfoCacheKey cacheKey = SymbolReflectionInfoCacheKey.CreateForType(type);
+            var descriptor = new WellKnownTypeDescriptor(type);
+            SymbolReflectionInfoCacheKey cacheKey = SymbolReflectionInfoCacheKey.CreateForType(descriptor);
+            UpdateAssemblyMap(cacheKey, type);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new TypeData(type, cacheKey));
 
             // REMOVE::after testing
@@ -104,15 +188,68 @@
             return (TypeData)symbolInfoData;
         }
 
-        public static MethodData GetOrCreateSymbolReflectionInfoCacheEntry(MethodInfo methodInfo, bool isExplicitInterfaceImplementation)
+        private static void UpdateAssemblyMap(SymbolReflectionInfoCacheKey cacheKey, Type type)
         {
-            SymbolReflectionInfoCacheKey cacheKey = SymbolReflectionInfoCacheKey.CreateForMethod(methodInfo);
-            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(methodInfo, key, isExplicitInterfaceImplementation));
+            ConcurrentHashSet<SymbolReflectionInfoCacheKey> cacheKeysOfSameAssembly = SymbolReflectionInfoCache.AssemblyToCacheKeyMap.GetOrAdd(cacheKey.AssemblyID, _ => new ConcurrentHashSet<SymbolReflectionInfoCacheKey>());
+            if (cacheKeysOfSameAssembly.TryAdd(cacheKey))
+            {
+                // New assembly detected
+
+                Assembly newAssembly = type.Assembly;
+                var assemblyWeakReference = new WeakReference(newAssembly);
+                SymbolReflectionInfoCache.AssemblyMap[cacheKey.AssemblyID] = assemblyWeakReference;
+            }
+        }
+
+        public static MethodData GetOrCreateSymbolReflectionInfoCacheEntry(MethodInfo methodInfo)
+        {
+            WellKnownMethodDescriptor descriptor;
+            Type? declaringType = methodInfo.DeclaringType;
+            ArgumentNullExceptionAdvanced.ThrowIfNull(declaringType, nameof(methodInfo), $"The '{nameof(MethodInfo.DeclaringType)}' property of the provided '{nameof(methodInfo)}' is null. Method must have a declaring type.");
+
+            if (!declaringType!.IsInterface && TryGetExplicitInterfaceImplementationInfo(methodInfo, out Type declaringInterfaceType, out Type implementingType, out MethodInfo declaredInterfaceMethodInfo))
+            {
+                descriptor = new WellKnownMethodDescriptor(declaredInterfaceMethodInfo, isExplicitInterfaceImplementation: true, implementingType);
+            }
+            else
+            {
+                descriptor = new WellKnownMethodDescriptor(methodInfo, isExplicitInterfaceImplementation: false, null);
+            }
+
+            SymbolReflectionInfoCacheKey cacheKey = SymbolReflectionInfoCacheKey.CreateForMethod(descriptor);
+            UpdateAssemblyMap(cacheKey, declaringType);
+            SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(methodInfo, key));
 
             // REMOVE::after testing
             Debug.WriteLine($"Found SymbolInfoData entry for {methodInfo.GetType()}");
 
             return (MethodData)symbolInfoData;
+        }
+
+        private static bool TryGetExplicitInterfaceImplementationInfo(MethodInfo methodInfo, out Type declaringInterfaceType, out Type implementingType, out MethodInfo declaredInterfaceMethodInfo)
+        {
+            Type declaringType = methodInfo.DeclaringType!;
+            Type[] implementedInterfaces = declaringType.GetInterfaces();
+
+            foreach (Type interfaceType in implementedInterfaces)
+            {
+                InterfaceMapping interfaceMapping = declaringType.GetInterfaceMap(interfaceType);
+                for (int i = 0; i < interfaceMapping.TargetMethods.Length; i++)
+                {
+                    if (interfaceMapping.TargetMethods[i] == methodInfo)
+                    {
+                        // The method is an explicit interface implementation
+                        declaringInterfaceType = interfaceType;
+                        implementingType = declaringType;
+                        declaredInterfaceMethodInfo = interfaceMapping.InterfaceMethods[i];
+                        return true;
+                    }
+                }
+            }
+
+            declaringInterfaceType = null!;
+            declaredInterfaceMethodInfo = null!;
+            return false;
         }
 
         public static ConstructorData GetOrCreateSymbolReflectionInfoCacheEntry(ConstructorInfo constructorInfo)

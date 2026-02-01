@@ -67,6 +67,8 @@
         private ParameterizedSymbolKind? _parameterizedSymbolKind;
         private BasicMethodFingerprint? _basicMethodFingerprint;
         private MemberData? _accessedMember;
+        private TypeData? _implementingTypeData;
+        private readonly RuntimeTypeHandle? _implementingTypeHandle;
 
         internal MethodData(MethodInfo methodInfo, SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
             : base(methodInfo, SymbolKind.MemberMethod, symbolInfoDataCacheKey)
@@ -75,6 +77,12 @@
 
             this._invokerTable = new ConcurrentDictionary<MethodDataGenericTypeVariantKey, Delegate>();
             this.Handle = methodInfo.MethodHandle;
+
+            if (symbolInfoDataCacheKey.MethodDescriptor.IsExplicitInterfaceImplementation)
+            {
+                this.IsExplicitInterfaceImplementation = true;
+                this._implementingTypeHandle = symbolInfoDataCacheKey.MethodDescriptor.ImplementingTypeHandle;
+            }
         }
 
         public MethodInfo GetMethodInfo()
@@ -90,7 +98,7 @@
         {
             Type[] typeArguments = typeDataArguments.Select(t => t.UnwrapType()).ToArray();
             MethodInfo genericMethodInfo = GetMethodInfo().MakeGenericMethod(typeArguments);
-            return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(genericMethodInfo);
+            return SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(genericMethodInfo, this.IsExplicitInterfaceImplementation, this.ImplementingTypeData.UnwrapType());
         }
 
         public MethodData MakeGenericMethodData(params Type[] typeArguments)
@@ -932,6 +940,30 @@
 
         public override bool HasParamsParameter
           => this._hasParamsParameter ??= this.Parameters.HasItems && this.Parameters[^1].IsParams;
+
+        public bool IsExplicitInterfaceImplementation { get; }
+
+        /// <summary>
+        /// The type that implements the method.
+        /// </summary>
+        /// <remarks>If the current <see cref="MethodData"/> instance represents an explicit interface implementation,
+        /// then <see cref="ImplementingTypeData"/> will return the implementing type
+        /// whereas <see cref="DeclaringTypeData"/> returns the <see cref="TypeData"/> for the declaring interface.
+        /// <br/>Otherwise, <see cref="ImplementingTypeData"/> returns <see cref="DeclaringTypeData"/>.</remarks>
+        public TypeData ImplementingTypeData
+            => this._implementingTypeData ??= this.IsExplicitInterfaceImplementation
+                ? Type.GetTypeFromHandle(this._implementingTypeHandle!.Value)?.ToTypeData() ?? throw new InvalidOperationException($"Unable to resolve the '{nameof(RuntimeTypeHandle)}' returned from the '{nameof(this._implementingTypeHandle)}'.")
+                : this.DeclaringTypeData;
+
+        /// <summary>
+        /// Gets the <see cref="TypeData"/> that declares the method.
+        /// </summary>
+        /// <remarks>If the current <see cref="MethodData"/> instance represents an explicit interface implementation,
+        /// then <see cref="DeclaringTypeData"/> returns the <see cref="TypeData"/> for the declaring interface
+        /// whereas <see cref="ImplementingTypeData"/> will return the implementing type.
+        /// <br/>Otherwise, <see cref="DeclaringTypeData"/> returns <see cref="ImplementingTypeData"/>.</remarks>
+        public override TypeData DeclaringTypeData
+            => base.DeclaringTypeData;
 
         /// <summary>
         /// Checks whether the method is a property set method. Will not include indexer set methods.<br/>

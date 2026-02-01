@@ -179,7 +179,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(methodDescriptor);
 
-            MethodBase methodBase = MethodBase.GetMethodFromHandle(methodDescriptor.MethodHandle);
+            MethodBase methodBase = MethodBase.GetMethodFromHandle(methodDescriptor.MethodHandle)!;
             return new SymbolReflectionInfoCacheKey(
                 SymbolReflectionInfoCache.AssemblyId.FromAssembly(methodBase.DeclaringType!.Assembly),
                 methodDescriptor.MethodName,
