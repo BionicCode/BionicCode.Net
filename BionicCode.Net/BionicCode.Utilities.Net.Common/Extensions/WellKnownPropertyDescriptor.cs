@@ -23,8 +23,9 @@
         /// <param name="propertyInfo">The <see cref="PropertyInfo"/> that the descriptor represents. If <paramref name="isExplicitInterfaceImplementation"/> is s et to <see langword="true"/> then the <see cref="PropertyInfo"/> must be obtained from the declaring interface type.</param>
         /// <param name="isExplicitInterfaceImplementation"><see langword="true"/> if the property is an explicit interface implementation; otherwise, <see langword="false"/>. If set to <see langword="true"/>, the <paramref name="propertyInfo"/> must be obtained from the declaring interface type.
         /// </param>
-        /// <param name="explicitGetterImplementationMethod"></param>
-        /// <param name="explicitSetterImplementationMethod"></param>
+        /// <param name="declaringInterfaceTypeHandle">The runtime type handle representing the declaring interface type of the anonymous method.
+        /// <para/>Must be provided when the method is an explicit interface implementation (which is when <paramref name="isExplicitInterfaceImplementation"/> is <see langword="true"/>).
+        /// <br/>Otherwise, this parameter can be <see langword="null"/> and will be ignored.</param>
         /// <param name="isIndexerProperty">Specifies whether the property is an indexer.</param>
         /// <returns>A new instance of <see cref="WellKnownPropertyDescriptor"/> representing the specified anonymous or well-known property.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
@@ -38,9 +39,7 @@
         public WellKnownPropertyDescriptor(
             PropertyInfo propertyInfo,
             bool isExplicitInterfaceImplementation,
-            RuntimeTypeHandle? declaringInterfaceTypeHandle
-            MethodInfo? explicitGetterImplementationMethod,
-            MethodInfo? explicitSetterImplementationMethod,
+            RuntimeTypeHandle? declaringInterfaceTypeHandle,
             bool isIndexerProperty)
         {
             ArgumentNullException.ThrowIfNull(propertyInfo);
@@ -61,96 +60,60 @@
 
             if (isExplicitInterfaceImplementation)
             {
-                ArgumentExceptionAdvanced.ThrowIfFalse(declaringType is not null && declaringType.IsInterface,
+                ArgumentNullExceptionAdvanced.ThrowIfNull(
+                    declaringInterfaceTypeHandle,
+                    nameof(declaringInterfaceTypeHandle),
+                    $"Invalid argument '{nameof(declaringInterfaceTypeHandle)}'. The provided declaring interface type handle is not 'NULL' which is not allowed for explicit interface implementations (which is when '{nameof(isExplicitInterfaceImplementation)}' is 'true').");
+                ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringInterfaceTypeHandle!.Value);
+                Type? declaringInterfaceType = Type.GetTypeFromHandle(declaringInterfaceTypeHandle!.Value);
+                ArgumentNullExceptionAdvanced.ThrowIfNull(
+                    declaringInterfaceType,
+                    nameof(declaringInterfaceTypeHandle),
+                    $"The declaring interface type represented by the argument '{nameof(declaringInterfaceTypeHandle)}' could not be resolved.");
+                ArgumentExceptionAdvanced.ThrowIfFalse(declaringInterfaceType!.IsInterface,
                     nameof(isExplicitInterfaceImplementation),
-                    $"Invalid argument '{nameof(isExplicitInterfaceImplementation)}'. The argument '{nameof(isExplicitInterfaceImplementation)}' returns 'true' while the declaring type represented by the argument '{nameof(propertyInfo)}.{nameof(propertyInfo.DeclaringType)}' is not an interface. Reason: Only interface types can provide the declaration of explicit interface implementations.");
-
-                if (this.HasPropertyGetAccessor && explicitGetterImplementationMethod is null)
-                {
-                    throw new ArgumentException($"Invalid argument combination for the explicit interface implementation. The argument '{nameof(propertyInfo)}' declares a get accessor, but the '{nameof(explicitGetterImplementationMethod)}' is null. Or vice versa. Reason: Both arguments must be provided to describe a getter accessor.");
-                }
-
-                if (this.HasPropertySetAccessor && explicitSetterImplementationMethod is null)
-                {
-                    throw new ArgumentException($"Invalid argument combination for the explicit interface implementation. The argument '{nameof(propertyInfo)}' declares a set accessor, but the '{nameof(explicitSetterImplementationMethod)}' is null. Or vice versa. Reason: Both arguments must be provided to describe a setter accessor.");
-                }
-            }
-            else
-            {
-                if (explicitGetterImplementationMethod is not null || explicitSetterImplementationMethod is not null)
-                {
-                    throw new ArgumentException($"Invalid argument '{nameof(isExplicitInterfaceImplementation)}'. The argument '{nameof(isExplicitInterfaceImplementation)}' is set to 'false', but either a '{nameof(explicitGetterImplementationMethod)}' or a '{nameof(explicitSetterImplementationMethod)}' is provided. Reason: Accessor method descriptors can only be provided for explicit interface implementation properties.");
-                }
+                    $"Invalid argument '{nameof(declaringInterfaceTypeHandle)}'. The argument '{nameof(declaringInterfaceTypeHandle)}' points to a non-interface type. Reason: Only interface types can provide the declaration of explicit interface implementations.");
             }
 
-            this.HasExplicitPropertyGetAccessor = isExplicitInterfaceImplementation && this.HasPropertyGetAccessor;
-            this.HasExplicitPropertySetAccessor = isExplicitInterfaceImplementation && this.HasPropertySetAccessor;
             this.IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
             this.IsIndexerProperty = isIndexerProperty;
-            this._explicitGetterImplementationMethodDescriptor = this.HasPropertyGetAccessor && isExplicitInterfaceImplementation
-                ? new PropertyAccessorDescriptor(propertyInfo.GetGetMethod(), PropertyAccessors.Get, true)
-                : default;
-            this._explicitSetterImplementationMethodDescriptor = this.HasPropertySetAccessor && isExplicitInterfaceImplementation
-                ? new PropertyAccessorDescriptor(propertyInfo.GetSetMethod(), PropertyAccessors.Set, true)
-                : default;
             this.IsAnonymous = false;
-            this._propertyInfo = propertyInfo;
+            this.PropertyInfo = propertyInfo;
+            this.PropertyName = propertyInfo.Name;
         }
 
+        public string PropertyName { get; }
         public PropertyAccessors DeclaredPropertyAccessors { get; }
         public bool IsExplicitInterfaceImplementation { get; init; }
-        public bool HasExplicitPropertyGetAccessor { get; }
-        public bool HasExplicitPropertySetAccessor { get; }
         public bool IsIndexerProperty { get; }
         public bool IsAnonymous { get; }
         public bool HasPropertyGetAccessor { get; }
         public bool HasPropertySetAccessor { get; }
-
-        private readonly PropertyAccessorDescriptor _explicitGetterImplementationMethodDescriptor;
-        public PropertyAccessorDescriptor ExplicitGetterImplementationMethodDescriptor
-            => this.IsExplicitInterfaceImplementation && this.HasPropertyGetAccessor
-                ? this._explicitGetterImplementationMethodDescriptor
-                : throw new InvalidOperationException($"The property '{nameof(this.ExplicitGetterImplementationMethodDescriptor)}' cannot be accessed for implicit property implementations or write-only properties.");
-
-        private readonly PropertyAccessorDescriptor _explicitSetterImplementationMethodDescriptor;
-        public PropertyAccessorDescriptor ExplicitSetterImplementationMethodDescriptor
-            => this.IsExplicitInterfaceImplementation && this.HasPropertySetAccessor
-                ? this._explicitSetterImplementationMethodDescriptor
-                : throw new InvalidOperationException($"The property '{nameof(this.ExplicitSetterImplementationMethodDescriptor)}' cannot be accessed for implicit property implementations or write-only properties.");
-
-        private readonly PropertyInfo? _propertyInfo;
-        public PropertyInfo PropertyInfo
-            => this.IsAnonymous
-                ? throw new InvalidOperationException($"The property '{nameof(this.PropertyInfo)}' cannot be accessed for an anonymous property descriptor.")
-                : this._propertyInfo!;
+        public PropertyInfo PropertyInfo { get; }
 
         public bool Equals(WellKnownPropertyDescriptor other)
             => this.IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
-            && this.HasExplicitPropertyGetAccessor.Equals(other.HasExplicitPropertyGetAccessor)
-            && this.HasExplicitPropertySetAccessor.Equals(other.HasExplicitPropertySetAccessor)
-            && this.ExplicitGetterImplementationMethodDescriptor.Equals(other.ExplicitGetterImplementationMethodDescriptor)
-            && this.ExplicitSetterImplementationMethodDescriptor.Equals(other.ExplicitSetterImplementationMethodDescriptor)
             && this.IsIndexerProperty == other.IsIndexerProperty
             && this.IsAnonymous == other.IsAnonymous
-            && ReferenceEquals(this._propertyInfo, other._propertyInfo)
+            && ReferenceEquals(this.PropertyInfo, other.PropertyInfo)
             && this.HasPropertyGetAccessor == other.HasPropertyGetAccessor
-            && this.HasPropertySetAccessor == other.HasPropertySetAccessor;
+            && this.HasPropertySetAccessor == other.HasPropertySetAccessor
+            && this.PropertyName.Equals(other.PropertyName, StringComparison.Ordinal)
+            && this.DeclaredPropertyAccessors == other.DeclaredPropertyAccessors;
 
         public override int GetHashCode()
         {
-            var hasCode = new HashCode();
-            hasCode.Add(this.IsExplicitInterfaceImplementation);
-            hasCode.Add(this.HasExplicitPropertyGetAccessor);
-            hasCode.Add(this.HasExplicitPropertySetAccessor);
-            hasCode.Add(this.ExplicitGetterImplementationMethodDescriptor);
-            hasCode.Add(this.ExplicitSetterImplementationMethodDescriptor);
-            hasCode.Add(this.IsIndexerProperty);
-            hasCode.Add(this.HasPropertyGetAccessor);
-            hasCode.Add(this.HasPropertySetAccessor);
-            hasCode.Add(this.IsAnonymous);
-            hasCode.Add(this._propertyInfo);
+            var hashCode = new HashCode();
+            hashCode.Add(this.IsExplicitInterfaceImplementation);
+            hashCode.Add(this.IsIndexerProperty);
+            hashCode.Add(this.HasPropertyGetAccessor);
+            hashCode.Add(this.HasPropertySetAccessor);
+            hashCode.Add(this.IsAnonymous);
+            hashCode.Add(this.PropertyInfo);
+            hashCode.Add(this.PropertyName, StringComparer.Ordinal);
+            hashCode.Add(this.DeclaredPropertyAccessors);
 
-            return hasCode.ToHashCode();
+            return hashCode.ToHashCode();
         }
 
         public static bool operator ==(WellKnownPropertyDescriptor left, WellKnownPropertyDescriptor right)

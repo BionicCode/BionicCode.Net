@@ -1004,6 +1004,14 @@
         public bool IsAccessorMethod
             => this.IsPropertyAccessorMethod || this.IsEventAccessorMethod;
 
+        /// <summary>
+        /// If the current <see cref="MethodData"/> instance is an accessor method, gets the <see cref="PropertyData"/> or <see cref="EventData"/> that is accessed by this accessor method.
+        /// </summary>
+        /// <remarks>This property is only valid when the current method is an accessor (such as a
+        /// property getter or setter, or an event adder or remover). Call <see cref="MethodData.IsAccessorMethod"/> to determine whether the
+        /// method is an accessor before accessing this property.</remarks>
+        /// <exception cref="InvalidOperationException">Thrown if the current method is not an accessor method.</exception>
+        /// <value>The <see cref="PropertyData"/> or <see cref="EventData"/> representing the property or event accessed by this accessor method.</value>
         public MemberData AccessedMember
             => this.IsAccessorMethod
                 ? this._accessedMember! // The earlier call to MethodData.IsAccessorMethod ensured that _accessedMember is set.

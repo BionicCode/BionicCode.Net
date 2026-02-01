@@ -6,14 +6,19 @@
     using System.Runtime.CompilerServices;
 
     /// <summary>
-    /// Represents a unique cache key for symbol metadata, encapsulating identifying information for types, members, and
-    /// parameters used in reflection or symbol analysis scenarios.
+    /// Represents a unique cache key for a well-known symbol, such as a type, method, property, event, field, constructor, or
+    /// parameter, used in reflection-based symbol lookup and caching scenarios.
     /// </summary>
-    /// <remarks>This struct is used to efficiently identify and compare symbols such as types, methods,
-    /// properties, events, fields, constructors, and parameters based on their metadata handles and characteristics. It
-    /// is suitable for use as a key in caching mechanisms where symbol identity and equivalence are important, such as
-    /// symbol information lookups or metadata-based caching. Instances are immutable and can be compared for
-    /// equality.</remarks>
+    /// <remarks>A SymbolReflectionInfoCacheKey encapsulates identifying information for a symbol, supporting
+    /// both well-known symbols (with runtime metadata) and anonymous symbols (identified by signature). This struct is
+    /// used to efficiently cache and retrieve reflection information for various symbol kinds, including support for
+    /// explicit interface implementations and anonymous members. Instances are typically created using the provided
+    /// static factory methods, which enforce correct construction for each symbol kind. SymbolReflectionInfoCacheKey is
+    /// immutable and can be used as a key in hash-based collections.
+    /// <para/>A <see cref="AnonymousSymbolReflectionInfoCacheKey"/> is used to temporarily store symbol information for anonymous symbols (which is when no direct runtime metadata representation is available).
+    /// <br/>Such anonymous symbol keys are typically converted to well-known symbol keys by attempting to resolve the runtime metadata object based on the provided signature information before being used for caching purposes.
+    /// <br/>Therefore anonymous keys are never used directly for caching purposes and must be resolved to well-known keys first.
+    /// </remarks>
     internal readonly partial struct SymbolReflectionInfoCacheKey : IEquatable<SymbolReflectionInfoCacheKey>
     {
         /// <summary>
@@ -32,111 +37,81 @@
         /// <value>The name of the symbol, such as the method name, property name, event name, field name, or type name.</value>
         public readonly string SymbolName { get; }
 
+        internal SymbolReflectionInfoCache.AssemblyId AssemblyID { get; }
+
         /// <summary>
         /// Gets the kind of symbol represented by this instance.
         /// </summary>
         /// <value>The kind of symbol, such as type, method, property, event, field, constructor, or parameter.</value>
         public readonly SymbolKind SymbolKind { get; }
 
-        private readonly WellKnownParameterDescriptor _wellKnownParameterDescriptor;
-        public WellKnownParameterDescriptor CacheKeyParameterDescriptor => this.IsAnonymousSymbolKey
-            ? ThrowCurrentInstanceIsNotWellKnownException<WellKnownParameterDescriptor>()
-            : this.SymbolKind is SymbolKind.Parameter
-                ? this._wellKnownParameterDescriptor
-                : ThrowInvalidPropertyContextException<WellKnownParameterDescriptor>([SymbolKind.Parameter]);
+        private readonly WellKnownParameterDescriptor _parameterDescriptor;
+        public WellKnownParameterDescriptor ParameterDescriptor => this.SymbolKind is SymbolKind.Parameter
+            ? this._parameterDescriptor
+            : ThrowInvalidPropertyContextException<WellKnownParameterDescriptor>([SymbolKind.Parameter]);
 
-        private readonly AnonymousParameterDescriptor _anonymousParameterDescriptor;
-        public AnonymousParameterDescriptor AnonymousParameterDescriptor => !this.IsAnonymousSymbolKey
-            ? ThrowCurrentInstanceIsNotAnonymousException<AnonymousParameterDescriptor>()
-            : this.SymbolKind is SymbolKind.Parameter
-                ? this._anonymousParameterDescriptor
-                : ThrowInvalidPropertyContextException<AnonymousParameterDescriptor>([SymbolKind.Parameter]);
+        private readonly WellKnownPropertyDescriptor _propertyDescriptor;
+        public WellKnownPropertyDescriptor PropertyDescriptor => this.SymbolKind is SymbolKind.MemberProperty
+            ? this._propertyDescriptor
+            : ThrowInvalidPropertyContextException<WellKnownPropertyDescriptor>([SymbolKind.MemberProperty]);
 
-        private readonly WellKnownPropertyDescriptor _wellKnownPropertyDescriptor;
-        public WellKnownPropertyDescriptor WellKnownPropertyDescriptor => this.IsAnonymousSymbolKey
-            ? ThrowCurrentInstanceIsNotWellKnownException<WellKnownPropertyDescriptor>()
-            : this.SymbolKind is SymbolKind.MemberProperty
-                ? this._wellKnownPropertyDescriptor
-                : ThrowInvalidPropertyContextException<WellKnownPropertyDescriptor>([SymbolKind.MemberProperty]);
+        private readonly WellKnownMethodDescriptor _methodDescriptor;
+        public WellKnownMethodDescriptor MethodDescriptor => this.SymbolKind is SymbolKind.MemberMethod
+            ? this._methodDescriptor
+            : ThrowInvalidPropertyContextException<WellKnownMethodDescriptor>([SymbolKind.MemberMethod]);
 
-        private readonly AnonymousPropertyDescriptor _anonymousPropertyDescriptor;
-        public AnonymousPropertyDescriptor AnonymousPropertyDescriptor => !this.IsAnonymousSymbolKey
-            ? ThrowCurrentInstanceIsNotAnonymousException<AnonymousPropertyDescriptor>()
-            : this.SymbolKind is SymbolKind.MemberProperty
-                ? this._anonymousPropertyDescriptor
-                : ThrowInvalidPropertyContextException<AnonymousPropertyDescriptor>([SymbolKind.MemberProperty]);
+        private readonly WellKnownConstructorDescriptor _constructorDescriptor;
+        public WellKnownConstructorDescriptor ConstructorDescriptor => this.SymbolKind is SymbolKind.MemberConstructor
+            ? this._constructorDescriptor
+            : ThrowInvalidPropertyContextException<WellKnownMethodDescriptor>([SymbolKind.MemberConstructor]);
 
-        private readonly WellKnownMethodOrConstructorDescriptor _wellKnownMethodDescriptor;
-        public WellKnownMethodOrConstructorDescriptor CacheKeyMethodDescriptor => this.IsAnonymousSymbolKey
-            ? ThrowCurrentInstanceIsNotWellKnownException<WellKnownMethodOrConstructorDescriptor>()
-            : this.SymbolKind is SymbolKind.MemberMethod
-                ? this._wellKnownMethodDescriptor
-                : ThrowInvalidPropertyContextException<WellKnownMethodOrConstructorDescriptor>([SymbolKind.MemberMethod]);
+        private readonly WellKnownTypeDescriptor _typeDescriptor;
+        public WellKnownTypeDescriptor TypeDescriptor => this.SymbolKind is SymbolKind.Type
+            ? this._typeDescriptor
+            : ThrowInvalidPropertyContextException<WellKnownTypeDescriptor>([SymbolKind.Type]);
 
-        private readonly AnonymousMethodOrConstructorDescriptor _anonymousMethodDescriptor;
-        public AnonymousMethodOrConstructorDescriptor CacheKeyAnonymousMethodDescriptor => !this.IsAnonymousSymbolKey
-            ? ThrowCurrentInstanceIsNotAnonymousException<AnonymousMethodOrConstructorDescriptor>()
-            : this.SymbolKind is SymbolKind.MemberMethod
-                ? this._anonymousMethodDescriptor
-                : ThrowInvalidPropertyContextException<AnonymousMethodOrConstructorDescriptor>([SymbolKind.MemberMethod]);
+        private readonly WellKnownFieldDescriptor _fieldDescriptor;
+        public WellKnownFieldDescriptor FieldDescriptor => this.SymbolKind is SymbolKind.MemberField
+            ? this._fieldDescriptor
+            : ThrowInvalidPropertyContextException<WellKnownFieldDescriptor>([SymbolKind.MemberField]);
 
-        private readonly WellKnownFieldDescriptor _wellKnownFieldDescriptor;
-        public WellKnownFieldDescriptor CacheKeyFieldDescriptor => this.IsAnonymousSymbolKey
-            ? ThrowCurrentInstanceIsNotWellKnownException<WellKnownFieldDescriptor>()
-            : this.SymbolKind is SymbolKind.MemberField
-                ? this._wellKnownFieldDescriptor
-                : ThrowInvalidPropertyContextException<WellKnownFieldDescriptor>([SymbolKind.MemberField]);
-
-        private readonly AnonymousFieldDescriptor _anonymousFieldDescriptor;
-        public AnonymousFieldDescriptor CacheKeyAnonymousFieldDescriptor => !this.IsAnonymousSymbolKey
-            ? ThrowCurrentInstanceIsNotAnonymousException<AnonymousFieldDescriptor>()
-            : this.SymbolKind is SymbolKind.MemberField
-                ? this._anonymousFieldDescriptor
-                : ThrowInvalidPropertyContextException<AnonymousFieldDescriptor>([SymbolKind.MemberField]);
-
-        //private readonly PropertyAccessors _indexerPropertyAccessor;
-        //public PropertyAccessors IndexerPropertyAccessor => !this.IsAnonymousSymbolKey
-        //    ? ThrowCurrentInstanceIsNotAnonymousException<PropertyAccessors>()
-        //    : this.SymbolKind.EqualsAny([SymbolKind.MemberProperty])
-        //        ? this._indexerPropertyAccessor
-        //        : ThrowInvalidPropertyContextException<PropertyAccessors>([SymbolKind.MemberProperty]);
+        private readonly WellKnownEventDescriptor _eventDescriptor;
+        public WellKnownEventDescriptor EventDescriptor => this.SymbolKind is SymbolKind.MemberEvent
+            ? this._eventDescriptor
+            : ThrowInvalidPropertyContextException<WellKnownEventDescriptor>([SymbolKind.MemberEvent]);
 
         private readonly bool _isExplicitInterfaceImplementation;
-        public bool IsExplicitInterfaceImplementation => this.SymbolKind is SymbolKind.MemberProperty
+        public bool IsExplicitInterfaceImplementation => this.SymbolKind is SymbolKind.MemberProperty or SymbolKind.MemberEvent or SymbolKind.MemberMethod
             ? this._isExplicitInterfaceImplementation
-            : ThrowInvalidPropertyContextException<bool>([SymbolKind.MemberProperty]);
-
-        public bool IsAnonymousSymbolKey { get; }
+            : ThrowInvalidPropertyContextException<bool>([SymbolKind.MemberProperty, SymbolKind.MemberEvent, SymbolKind.MemberMethod]);
 
         private readonly int _hashCode;
 
-        private SymbolReflectionInfoCacheKey(string name,
+        private SymbolReflectionInfoCacheKey(
+            SymbolReflectionInfoCache.AssemblyId assemblyId,
+            string name,
             SymbolKind symbolKind,
-            WellKnownParameterDescriptor wellKnownParameterDescriptor,
-            AnonymousParameterDescriptor anonymousParameterDescriptor,
-            WellKnownMethodOrConstructorDescriptor wellKnownMethodDescriptor,
-            AnonymousMethodOrConstructorDescriptor anonymousMethodDescriptor,
-            WellKnownPropertyDescriptor wellKnownPropertyDescriptor,
-            AnonymousPropertyDescriptor anonymousPropertyDescriptor,
-            WellKnownFieldDescriptor wellKnownFieldDescriptor,
-            AnonymousFieldDescriptor anonymousFieldDescriptor,
-            bool isAnonymousSymbolKey)
+            WellKnownTypeDescriptor typeDescriptor,
+            WellKnownParameterDescriptor parameterDescriptor,
+            WellKnownMethodDescriptor methodDescriptor,
+            AnonymousConstructorDescriptor constructorDescriptor,
+            WellKnownPropertyDescriptor propertyDescriptor,
+            WellKnownFieldDescriptor fieldDescriptor,
+            WellKnownEventDescriptor eventDescriptor)
         {
             ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
             ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(symbolKind, [SymbolKind.Undefined], nameof(symbolKind));
             ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(name, nameof(name));
 
             this.SymbolKind = symbolKind;
-            this._wellKnownParameterDescriptor = wellKnownParameterDescriptor;
-            this._anonymousParameterDescriptor = anonymousParameterDescriptor;
-            this._wellKnownMethodDescriptor = wellKnownMethodDescriptor;
-            this._anonymousMethodDescriptor = anonymousMethodDescriptor;
-            this._wellKnownPropertyDescriptor = wellKnownPropertyDescriptor;
-            this._anonymousPropertyDescriptor = anonymousPropertyDescriptor;
-            this._wellKnownFieldDescriptor = wellKnownFieldDescriptor;
-            this._anonymousFieldDescriptor = anonymousFieldDescriptor;
+            this._typeDescriptor = typeDescriptor;
+            this._parameterDescriptor = parameterDescriptor;
+            this._methodDescriptor = methodDescriptor;
+            this._constructorDescriptor = constructorDescriptor;
+            this._propertyDescriptor = propertyDescriptor;
+            this._fieldDescriptor = fieldDescriptor;
+            this._eventDescriptor = eventDescriptor;
             this.SymbolName = name;
-            this.IsAnonymousSymbolKey = isAnonymousSymbolKey;
 
             this._hashCode = ComputeHashCode();
         }
@@ -144,53 +119,24 @@
         /// <summary>
         /// Creates a cache key for an event symbol.
         /// </summary>
-        /// <param name="eventInfo">The event information.</param>
-        /// <param name="isExplicitInterfaceImplementation">Indicates whether the event is an explicit interface implementation. If <see langword="true" /> the <paramref name="eventInfo"/> must be obtained from the declaring interface type i.e. the <see cref="MemberInfo.DeclaringType"/> must return an interface type.</param>
+        /// <param name="eventDescriptor">The event descriptor.</param>
         /// <returns>The unique cache key for the event symbol.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="eventInfo"/> or its declaring type is <see langword="null"/>.</exception>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="isExplicitInterfaceImplementation"/> is <see langword="true"/> but the declaring type of <paramref name="eventInfo"/> is not an interface type.</exception>"
-        public static SymbolReflectionInfoCacheKey CreateForEvent(EventInfo eventInfo, bool isExplicitInterfaceImplementation)
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="eventDescriptor"/> is <see langword="null"/>.</exception>
+        public static SymbolReflectionInfoCacheKey CreateForEvent(WellKnownEventDescriptor eventDescriptor)
         {
-            ArgumentNullException.ThrowIfNull(eventInfo, nameof(eventInfo));
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(eventDescriptor);
 
-            Type? declaringType = eventInfo.DeclaringType;
-            ArgumentNullExceptionAdvanced.ThrowIfNull(
-                declaringType,
-                nameof(eventInfo),
-                $"The declaring type represented by the argument '{nameof(eventInfo)}' could not be resolved.");
-
-            if (isExplicitInterfaceImplementation)
-            {
-                ArgumentExceptionAdvanced.ThrowIfFalse(declaringType is not null && declaringType.IsInterface,
-                    nameof(isExplicitInterfaceImplementation),
-                    $"Invalid argument '{nameof(isExplicitInterfaceImplementation)}'. The argument '{nameof(isExplicitInterfaceImplementation)}' returns 'true' while the declaring type represented by the argument '{nameof(eventInfo)}' is not an interface. Reason: Only interface types can provide the declaration of explicit interface implementations.");
-            }
-
-            RuntimeTypeHandle declaringTypeHandle = declaringType!.TypeHandle;
-            Type? eventHandlerType = eventInfo.EventHandlerType;
-            if (eventHandlerType is null)
-            {
-                throw new NotSupportedException($"The argument '{nameof(eventInfo)}' provides a '{nameof(EventInfo)}' instance which does not have an event handler type. Events without an event handler type are not supported.");
-            }
-
-            RuntimeTypeHandle eventDelegateTypeHandle = eventHandlerType.TypeHandle;
-
-            return new SymbolReflectionInfoCacheKey(eventInfo.Name,
-                declaringTypeHandle,
-                eventDelegateTypeHandle,
-                default,
-                default,
-                ParameterList.Empty,
-                MethodParameterInfoList.Empty,
-                TypeList.Empty,
-                SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition,
+            return new SymbolReflectionInfoCacheKey(
+                SymbolReflectionInfoCache.AssemblyId.FromAssembly(eventDescriptor.EventInfo.DeclaringType!.Assembly),
+                eventDescriptor.EventInfo.Name,
                 SymbolKind.MemberEvent,
                 default,
                 default,
                 default,
                 default,
-                isExplicitInterfaceImplementation,
-                false);
+                default,
+                default,
+                default);
         }
 
         /// <summary>
@@ -205,11 +151,12 @@
         /// <item><paramref name="propertyDescriptor"/> or its declaring type is <see langword="default"/>.</item>
         /// </list>
         /// </exception>
-        public static SymbolReflectionInfoCacheKey CreateForWellknownProperty(WellKnownPropertyDescriptor propertyDescriptor)
+        public static SymbolReflectionInfoCacheKey CreateForProperty(WellKnownPropertyDescriptor propertyDescriptor)
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(propertyDescriptor);
 
             return new SymbolReflectionInfoCacheKey(
+                SymbolReflectionInfoCache.AssemblyId.FromAssembly(propertyDescriptor.PropertyInfo.DeclaringType!.Assembly),
                 propertyDescriptor.PropertyInfo.Name,
                 SymbolKind.MemberProperty,
                 default,
@@ -218,53 +165,23 @@
                 default,
                 propertyDescriptor,
                 default,
-                default,
-                default,
-                propertyDescriptor.IsAnonymous);
-        }
-
-        /// <summary>
-        /// Creates a cache key for an anonymous property symbol.
-        /// </summary>
-        /// <param name="propertyDescriptor">The <see cref="Net.AnonymousPropertyDescriptor"/> that describes an anonymous property (which is where the <see cref="PropertyInfo"/> is not available  and instead only the signature information is available).</param>
-        /// <remarks>This method creates a unique cache key for anonymous property symbols, including indexer properties.
-        /// <para/>For maximum performance and zero ambiguity, always prefer to create property cache keys using well-known <see cref="PropertyInfo"/> instances via the <see cref="Net.WellKnownPropertyDescriptor"/>.</remarks>
-        /// <returns>The unique cache key for the anonymous property symbol.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when
-        /// <list type="bullet">
-        /// <item><paramref name="propertyDescriptor"/> or its declaring type is <see langword="default"/>.</item>
-        /// </list>
-        /// </exception>
-        public static SymbolReflectionInfoCacheKey CreateForAnonymousProperty(AnonymousPropertyDescriptor propertyDescriptor)
-        {
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(propertyDescriptor);
-
-            return new SymbolReflectionInfoCacheKey(
-                propertyDescriptor.PropertyName,
-                SymbolKind.MemberProperty,
-                default,
-                default,
-                default,
-                default,
-                default,
-                propertyDescriptor,
-                default,
-                default,
-                propertyDescriptor.IsAnonymous);
+                default);
         }
 
         /// <summary>
         /// Creates a cache key for a well-known method symbol.
         /// </summary>
-        /// <param name="methodDescriptor">The <see cref="Net.WellKnownMethodOrConstructorDescriptor"/> that describes a well-known method (which is where the <see cref="MethodInfo"/> is available).</param>
+        /// <param name="methodDescriptor">The <see cref="Net.WellKnownMethodDescriptor"/> that describes a well-known method (which is where the <see cref="MethodInfo"/> is available).</param>
         /// <remarks>This method creates a unique cache key for well-known or anonymous method symbols, including regular methods, property accessors, and event accessors.
-        /// <para/>For maximum performance and zero ambiguity, always prefer to create method cache keys using well-known <see cref="MethodInfo"/> instances via the <see cref="Net.WellKnownMethodOrConstructorDescriptor"/>.</remarks>
+        /// <para/>For maximum performance and zero ambiguity, always prefer to create method cache keys using well-known <see cref="MethodInfo"/> instances via the <see cref="Net.WellKnownMethodDescriptor"/>.</remarks>
         /// <returns>The unique cache key for the well-known method symbol.</returns>
-        public static SymbolReflectionInfoCacheKey CreateForWellKnownMethod(WellKnownMethodOrConstructorDescriptor methodDescriptor)
+        public static SymbolReflectionInfoCacheKey CreateForMethod(WellKnownMethodDescriptor methodDescriptor)
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(methodDescriptor);
 
+            MethodBase methodBase = MethodBase.GetMethodFromHandle(methodDescriptor.MethodHandle);
             return new SymbolReflectionInfoCacheKey(
+                SymbolReflectionInfoCache.AssemblyId.FromAssembly(methodBase.DeclaringType!.Assembly),
                 methodDescriptor.MethodName,
                 SymbolKind.MemberMethod,
                 default,
@@ -273,140 +190,59 @@
                 default,
                 default,
                 default,
-                default,
-                default,
-                methodDescriptor.IsAnonymous);
+                default);
         }
 
-        /// <summary>
-        /// Creates a cache key for an anonymous method symbol.
-        /// </summary>
-        /// <param name="methodDescriptor">The <see cref="Net.AnonymousMethodOrConstructorDescriptor"/> that describes an anonymous method (which is where the <see cref="MethodInfo"/> is not available and instead only the signature information is available).</param>
-        /// <remarks>This method creates a unique cache key for well-known or anonymous method symbols, including regular methods, property accessors, and event accessors.
-        /// <para/>For maximum performance and zero ambiguity, always prefer to create method cache keys using well-known <see cref="MethodInfo"/> instances via the <see cref="Net.WellKnownMethodOrConstructorDescriptor"/>.</remarks>
-        /// <returns>The unique cache key for the well-known method symbol.</returns>
-        public static SymbolReflectionInfoCacheKey CreateForAnonymousMethod(AnonymousMethodOrConstructorDescriptor methodDescriptor)
+        public static SymbolReflectionInfoCacheKey CreateForType(WellKnownTypeDescriptor typeDescriptor)
         {
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(methodDescriptor);
+            ArgumentNullException.ThrowIfNull(typeDescriptor);
 
             return new SymbolReflectionInfoCacheKey(
-                methodDescriptor.MethodName,
-                SymbolKind.MemberMethod,
-                default,
-                default,
-                default,
-                methodDescriptor,
-                default,
-                default,
-                default,
-                default,
-                methodDescriptor.IsAnonymous);
-        }
-
-        public static SymbolReflectionInfoCacheKey CreateForType(Type type)
-        {
-            ArgumentNullException.ThrowIfNull(type, nameof(type));
-
-            RuntimeTypeHandle typeHandle = type.TypeHandle;
-
-            return new SymbolReflectionInfoCacheKey(type.FullName ?? type.Name,
-                default,
-                typeHandle,
-                default,
-                default,
-                ParameterList.Empty,
-                MethodParameterInfoList.Empty,
-                TypeList.Empty,
-                SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition,
+                SymbolReflectionInfoCache.AssemblyId.FromAssembly(typeDescriptor.Type.Assembly),
+                typeDescriptor.FullName ?? typeDescriptor.Name,
                 SymbolKind.Type,
+                typeDescriptor,
                 default,
                 default,
                 default,
                 default,
-                false,
-                false);
+                default,
+                default);
         }
 
-        public static SymbolReflectionInfoCacheKey CreateForWellKnownField(WellKnownFieldDescriptor fieldDescriptor)
+        public static SymbolReflectionInfoCacheKey CreateForField(WellKnownFieldDescriptor fieldDescriptor)
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(fieldDescriptor);
 
-            return new SymbolReflectionInfoCacheKey(fieldDescriptor.FieldName,
+            var fieldInfo = FieldInfo.GetFieldFromHandle(fieldDescriptor.FieldHandle);
+            return new SymbolReflectionInfoCacheKey(
+                SymbolReflectionInfoCache.AssemblyId.FromAssembly(fieldInfo.DeclaringType!.Assembly),
+                fieldDescriptor.FieldName,
                 SymbolKind.MemberField,
                 default,
                 default,
                 default,
                 default,
                 default,
-                default,
                 fieldDescriptor,
-                default,
-                fieldDescriptor.IsAnonymous);
+                default);
         }
 
         /// <summary>
-        /// Creates a new cache key for an anonymous field using the specified <see cref="AnonymousFieldDescriptor"/>.
-        /// </summary>
-        /// <param name="fieldDescriptor">The <see cref="Net.AnonymousFieldDescriptor"/> that describes an anonymous field (which is where the <see cref="FieldInfo"/> is not available and instead only the signature information is available).</param>
-        /// <remarks>This method is used to create a unique cache key for field symbols of which the caller does not have a direct representation <see cref="FieldInfo"/> and instead only signature information is available.</remarks>
-        /// <returns>A new instance of <see cref="SymbolReflectionInfoCacheKey"/> representing the specified anonymous field.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="fieldDescriptor"/> is <see langword="default"/>.</exception>
-        public static SymbolReflectionInfoCacheKey CreateForAnonymousField(AnonymousFieldDescriptor fieldDescriptor)
-        {
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(fieldDescriptor);
-
-            return new SymbolReflectionInfoCacheKey(fieldDescriptor.FieldName,
-                SymbolKind.MemberField,
-                default,
-                default,
-                default,
-                default,
-                default,
-                default,
-                default,
-                fieldDescriptor,
-                fieldDescriptor.IsAnonymous);
-        }
-
-        /// <summary>
-        /// Creates a new cache key for a well-known constructor using the specified <see cref="WellKnownMethodOrConstructorDescriptor"/>.
+        /// Creates a new cache key for a well-known constructor using the specified <see cref="WellKnownMethodDescriptor"/>.
         /// </summary>
         /// <remarks>This method is used to create a unique cache key for constructor symbols of which the caller does not have a direct representation <see cref="ConstructorInfo"/> and instead only signature information is available.
-        ///<para/>For maximum performance and zero ambiguity, always prefer to create constructor cache keys using well-known <see cref="ConstructorInfo"/> instances via the <see cref="Net.WellKnownMethodOrConstructorDescriptor"/>.</remarks>
+        ///<para/>For maximum performance and zero ambiguity, always prefer to create constructor cache keys using well-known <see cref="ConstructorInfo"/> instances via the <see cref="Net.WellKnownMethodDescriptor"/>.</remarks>
         /// <param name="constructorDescriptor"></param>
         /// <returns>A new instance of <see cref="SymbolReflectionInfoCacheKey"/> representing the specified well-known constructor.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="constructorDescriptor"/> is <see langword="default"/>.</exception>
-        public static SymbolReflectionInfoCacheKey CreateForWellKnownConstructor(WellKnownMethodOrConstructorDescriptor constructorDescriptor)
+        public static SymbolReflectionInfoCacheKey CreateForConstructor(WellKnownConstructorDescriptor constructorDescriptor)
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(constructorDescriptor);
 
+            MethodBase methodBase = MethodBase.GetMethodFromHandle(constructorDescriptor.ConstructorHandle);
             return new SymbolReflectionInfoCacheKey(
-                string.Empty,
-                SymbolKind.MemberConstructor,
-                default,
-                default,
-                constructorDescriptor,
-                default,
-                default,
-                default,
-                default,
-                default,
-                constructorDescriptor.IsAnonymous);
-        }
-
-        /// <summary>
-        /// Creates a new cache key for an anonymous constructor using the specified <see cref="AnonymousMethodOrConstructorDescriptor"/>.
-        /// </summary>
-        /// <remarks>This method is used to create a unique cache key for constructor symbols of which the caller does not have a direct representation <see cref="ConstructorInfo"/> and instead only signature information is available.
-        ///<para/>For maximum performance and zero ambiguity, always prefer to create constructor cache keys using well-known <see cref="ConstructorInfo"/> instances via the <see cref="Net.WellKnownMethodOrConstructorDescriptor"/>.</remarks>
-        /// <param name="constructorDescriptor"></param>
-        /// <returns>A new instance of <see cref="SymbolReflectionInfoCacheKey"/> representing the specified anonymous constructor.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="constructorDescriptor"/> is <see langword="default"/>.</exception>
-        public static SymbolReflectionInfoCacheKey CreateForAnonymousConstructor(AnonymousMethodOrConstructorDescriptor constructorDescriptor)
-        {
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(constructorDescriptor);
-
-            return new SymbolReflectionInfoCacheKey(
+                SymbolReflectionInfoCache.AssemblyId.FromAssembly(methodBase.DeclaringType!.Assembly),
                 string.Empty,
                 SymbolKind.MemberConstructor,
                 default,
@@ -415,34 +251,16 @@
                 constructorDescriptor,
                 default,
                 default,
-                default,
-                default,
-                constructorDescriptor.IsAnonymous);
+                default);
         }
 
         public static SymbolReflectionInfoCacheKey CreateForWellKnownParameter(WellKnownParameterDescriptor parameterDescriptor)
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterDescriptor);
 
+            Type declaringType = parameterDescriptor.ParameterInfo.Member.DeclaringType!;
             return new SymbolReflectionInfoCacheKey(
-                parameterDescriptor.ParameterName,
-                SymbolKind.Parameter,
-                parameterDescriptor,
-                default,
-                default,
-                default,
-                default,
-                default,
-                default,
-                default,
-                parameterDescriptor.IsAnonymous);
-        }
-
-        public static SymbolReflectionInfoCacheKey CreateForAnonymousParameter(AnonymousParameterDescriptor parameterDescriptor)
-        {
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterDescriptor);
-
-            return new SymbolReflectionInfoCacheKey(
+                SymbolReflectionInfoCache.AssemblyId.FromAssembly(declaringType.Assembly),
                 parameterDescriptor.ParameterName,
                 SymbolKind.Parameter,
                 default,
@@ -451,65 +269,7 @@
                 default,
                 default,
                 default,
-                default,
-                default,
-                parameterDescriptor.IsAnonymous);
-        }
-
-        /// <summary>
-        /// Creates a new cache key for an anonymous event using the specified declaring type, event name.
-        /// </summary>
-        /// <remarks>This method is used to create a unique cache key for event symbols of which the caller does not have a direct representation <see cref="EventInfo"/> and instead only signature information is available.
-        /// <para/>
-        /// If the event is an explicit interface implementation, ensure to set the <paramref name="isExplicitInterfaceImplementation"/> parameter to <see langword="true"/> and provide the interface type as the <paramref name="declaringTypeHandle"/> parameter (it's crucial to provide the interface type as the declaring type).
-        /// </remarks>
-        /// <param name="declaringTypeHandle">The runtime type handle representing the declaring type of the anonymous event.
-        /// <para/>If the event is an explicit interface implementation, this must be an interface type.
-        /// </param>
-        /// <param name="eventName">The name of the anonymous event. Cannot be null, empty, or consist only of white-space characters.</param>
-        /// <param name="isExplicitInterfaceImplementation">Indicates whether the event is an explicit interface implementation. If set to <see langword="true"/>, the declaring type <paramref name="declaringTypeHandle"/> must be an interface type.</param>
-        /// <returns>A new instance of <see cref="SymbolReflectionInfoCacheKey"/> representing the specified anonymous event.</returns>
-        /// <exception cref="ArgumentException">Thrown when
-        /// <list>
-        /// <item><paramref name="eventName"/> is null, empty, or consists only of white-space characters</item>
-        /// <item>the provided <paramref name="isExplicitInterfaceImplementation"/> value is <see langword="true"/> but <paramref name="declaringTypeHandle"/> does not represent an interface type.</item>
-        /// </list>
-        /// </exception>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="declaringTypeHandle"/> is <see langword="default"/>.</exception>
-        public static SymbolReflectionInfoCacheKey CreateForAnonymousEvent(RuntimeTypeHandle declaringTypeHandle, string eventName, bool isExplicitInterfaceImplementation)
-        {
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle);
-
-            if (isExplicitInterfaceImplementation)
-            {
-                Type? declaringType = Type.GetTypeFromHandle(declaringTypeHandle);
-                ArgumentNullExceptionAdvanced.ThrowIfNull(
-                    declaringType,
-                    nameof(declaringTypeHandle),
-                    $"The declaring type represented by the argument '{nameof(declaringTypeHandle)}' could not be resolved.");
-                ArgumentExceptionAdvanced.ThrowIfFalse(declaringType is not null && declaringType.IsInterface,
-                    nameof(isExplicitInterfaceImplementation),
-                    $"Invalid argument '{nameof(isExplicitInterfaceImplementation)}'. The argument '{nameof(isExplicitInterfaceImplementation)}' returns 'true' while the declaring type represented by the argument '{nameof(declaringTypeHandle)}' is not an interface. Reason: Only interface types can provide the declaration of explicit interface implementations.");
-            }
-
-            ArgumentException.ThrowIfNullOrWhiteSpace(eventName);
-
-            return new SymbolReflectionInfoCacheKey(eventName,
-                declaringTypeHandle,
-                default,
-                default,
-                default,
-                ParameterList.Empty,
-                MethodParameterInfoList.Empty,
-                TypeList.Empty,
-                SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition,
-                SymbolKind.MemberEvent,
-                default,
-                default,
-                default,
-                default,
-                isExplicitInterfaceImplementation,
-                true);
+                default);
         }
 
         public override int GetHashCode()
@@ -526,29 +286,15 @@
 
                 var hashCode = new HashCode();
                 hashCode.Add(this.SymbolName);
-                hashCode.Add(this._declaringTypeHandle);
-                hashCode.Add(this._symbolTypeHandle);
-                hashCode.Add(this._methodHandle);
-                hashCode.Add(this._fieldHandle);
                 hashCode.Add(this.SymbolKind);
-                hashCode.Add(this._genericTypeParameterCount);
-                hashCode.Add(this.IsAnonymousSymbolKey);
-                hashCode.Add(this._anonymousParameterDescriptor);
-                hashCode.Add(this._parameterMemberDescriptor);
+                hashCode.Add(this._parameterDescriptor);
+                hashCode.Add(this._methodDescriptor);
+                hashCode.Add(this._constructorDescriptor);
+                hashCode.Add(this._propertyDescriptor);
+                hashCode.Add(this._fieldDescriptor);
+                hashCode.Add(this._eventDescriptor);
+                hashCode.Add(this._typeDescriptor);
                 hashCode.Add(this._isExplicitInterfaceImplementation);
-
-                foreach (ParameterData parameterData in this._parameterList)
-                {
-                    hashCode.Add(parameterData.ParameterTypeHandle);
-                    hashCode.Add(parameterData.DeclaringTypeHandle);
-                    hashCode.Add(parameterData.Position);
-                }
-
-                foreach (MethodParameterInfo parameterData in this._methodParameterInfoList)
-                {
-                    hashCode.Add(parameterData.DeclaringMemberDescriptor);
-                    hashCode.Add(parameterData.ParameterDescriptor);
-                }
 
                 return hashCode.ToHashCode();
             }
@@ -558,17 +304,14 @@
             => obj is SymbolReflectionInfoCacheKey other && Equals(other);
 
         public bool Equals(SymbolReflectionInfoCacheKey other) => this.SymbolName == other.SymbolName
-            && this._declaringTypeHandle.Equals(other._declaringTypeHandle)
-            && this._symbolTypeHandle.Equals(other._symbolTypeHandle)
-            && this._methodHandle == other._methodHandle
-            && this._fieldHandle == other._fieldHandle
             && this.SymbolKind == other.SymbolKind
-            && this._genericTypeParameterCount == other._genericTypeParameterCount
-            && this.IsAnonymousSymbolKey == other.IsAnonymousSymbolKey
-            && this._anonymousParameterDescriptor == other._anonymousParameterDescriptor
-            && this._parameterMemberDescriptor == other._parameterMemberDescriptor
-            && this._parameterList.Equals(other._parameterList)
-            && this._methodParameterInfoList.Equals(other._methodParameterInfoList)
+            && this._parameterDescriptor == other._parameterDescriptor
+            && this._methodDescriptor == other._methodDescriptor
+            && this._constructorDescriptor == other._constructorDescriptor
+            && this._propertyDescriptor == other._propertyDescriptor
+            && this._fieldDescriptor == other._fieldDescriptor
+            && this._eventDescriptor == other._eventDescriptor
+            && this._typeDescriptor == other._typeDescriptor
             && this._isExplicitInterfaceImplementation == other._isExplicitInterfaceImplementation;
 
         public static bool operator ==(SymbolReflectionInfoCacheKey left, SymbolReflectionInfoCacheKey right) => left.Equals(right);
@@ -584,13 +327,266 @@
                 ? throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the property '{nameof(this.SymbolKind)}' returns any of the following values: {allowedKinds}.")
                 : throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the property '{nameof(this.SymbolKind)}' returns the value '{allowedKinds[0]}'.");
         }
+    }
+
+    internal readonly partial struct AnonymousSymbolReflectionInfoCacheKey : IEquatable<AnonymousSymbolReflectionInfoCacheKey>
+    {
+        /// <summary>
+        /// Represents an unknown or unspecified parameter count.
+        /// </summary>
+        /// <remarks>Use this constant to indicate that the number of parameters is not known or cannot be
+        /// determined. This value is typically used in APIs where the parameter count is optional or
+        /// variable.</remarks>
+        public const int UnknownParameterCountOrPosition = SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition;
+
+        /// <summary>
+        /// Gets the name of the symbol represented by this instance.
+        /// </summary>
+        /// <value>The name of the symbol, such as the method name, property name, event name, field name, or type name.</value>
+        public readonly string SymbolName { get; }
+
+        /// <summary>
+        /// Gets the kind of symbol represented by this instance.
+        /// </summary>
+        /// <value>The kind of symbol, such as type, method, property, event, field, constructor, or parameter.</value>
+        public readonly SymbolKind SymbolKind { get; }
+
+        private readonly AnonymousParameterDescriptor _parameterDescriptor;
+        public AnonymousParameterDescriptor ParameterDescriptor => this.SymbolKind is SymbolKind.Parameter
+            ? this._parameterDescriptor
+            : ThrowInvalidPropertyContextException<AnonymousParameterDescriptor>([SymbolKind.Parameter]);
+
+        private readonly AnonymousPropertyDescriptor _propertyDescriptor;
+        public AnonymousPropertyDescriptor PropertyDescriptor => this.SymbolKind is SymbolKind.MemberProperty
+            ? this._propertyDescriptor
+            : ThrowInvalidPropertyContextException<AnonymousPropertyDescriptor>([SymbolKind.MemberProperty]);
+
+        private readonly AnonymousMethodDescriptor _methodDescriptor;
+        public AnonymousMethodDescriptor MethodDescriptor => this.SymbolKind is SymbolKind.MemberMethod
+            ? this._methodDescriptor
+            : ThrowInvalidPropertyContextException<AnonymousMethodDescriptor>([SymbolKind.MemberMethod]);
+
+        private readonly AnonymousConstructorDescriptor _constructorDescriptor;
+        public AnonymousConstructorDescriptor ConstructorDescriptor => this.SymbolKind is SymbolKind.MemberConstructor
+            ? this._constructorDescriptor
+            : ThrowInvalidPropertyContextException<AnonymousMethodDescriptor>([SymbolKind.MemberConstructor]);
+
+        private readonly AnonymousFieldDescriptor _fieldDescriptor;
+        public AnonymousFieldDescriptor FieldDescriptor => this.SymbolKind is SymbolKind.MemberField
+            ? this._fieldDescriptor
+            : ThrowInvalidPropertyContextException<AnonymousFieldDescriptor>([SymbolKind.MemberField]);
+
+        private readonly AnonymousEventDescriptor _eventDescriptor;
+        public AnonymousEventDescriptor EventDescriptor => this.SymbolKind is SymbolKind.MemberEvent
+            ? this._eventDescriptor
+            : ThrowInvalidPropertyContextException<AnonymousEventDescriptor>([SymbolKind.MemberEvent]);
+
+        private readonly bool _isExplicitInterfaceImplementation;
+        public bool IsExplicitInterfaceImplementation => this.SymbolKind is SymbolKind.MemberProperty or SymbolKind.MemberEvent or SymbolKind.MemberMethod
+            ? this._isExplicitInterfaceImplementation
+            : ThrowInvalidPropertyContextException<bool>([SymbolKind.MemberProperty, SymbolKind.MemberEvent, SymbolKind.MemberMethod]);
+
+        private readonly int _hashCode;
+
+        private AnonymousSymbolReflectionInfoCacheKey(
+            string name,
+            SymbolKind symbolKind,
+            AnonymousParameterDescriptor parameterDescriptor,
+            AnonymousMethodDescriptor methodDescriptor,
+            AnonymousConstructorDescriptor constructorDescriptor,
+            AnonymousPropertyDescriptor propertyDescriptor,
+            AnonymousFieldDescriptor fieldDescriptor,
+            AnonymousEventDescriptor eventDescriptor)
+        {
+            ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<SymbolKind>(symbolKind, nameof(symbolKind));
+            ArgumentExceptionAdvanced.ThrowIfEnumEqualsAny(symbolKind, [SymbolKind.Undefined], nameof(symbolKind));
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(name, nameof(name));
+
+            this.SymbolKind = symbolKind;
+            this._parameterDescriptor = parameterDescriptor;
+            this._constructorDescriptor = constructorDescriptor;
+            this._methodDescriptor = methodDescriptor;
+            this._propertyDescriptor = propertyDescriptor;
+            this._fieldDescriptor = fieldDescriptor;
+            this._eventDescriptor = eventDescriptor;
+            this.SymbolName = name;
+
+            this._hashCode = ComputeHashCode();
+        }
+
+        /// <summary>
+        /// Creates a cache key for an event symbol.
+        /// </summary>
+        /// <param name="eventDescriptor">The event descriptor.</param>
+        /// <returns>The unique cache key for the event symbol.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="eventDescriptor"/> is <see langword="null"/>.</exception>
+        public static AnonymousSymbolReflectionInfoCacheKey CreateForEvent(AnonymousEventDescriptor eventDescriptor)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(eventDescriptor);
+
+            return new AnonymousSymbolReflectionInfoCacheKey(
+                eventDescriptor.EventName,
+                SymbolKind.MemberEvent,
+                default,
+                default,
+                default,
+                default,
+                default,
+                eventDescriptor);
+        }
+
+        public static AnonymousSymbolReflectionInfoCacheKey CreateForProperty(AnonymousPropertyDescriptor propertyDescriptor)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(propertyDescriptor);
+
+            // Anonymous keys will never be used to cache items.
+            // Instead they will always be converted to well-known keys by attempting to identify the runtime metadata object
+            // based on the provided information. Therefore we can use an empty AssemblyId here.
+            return new AnonymousSymbolReflectionInfoCacheKey(
+                propertyDescriptor.PropertyName,
+                SymbolKind.MemberProperty,
+                default,
+                default,
+                default,
+                propertyDescriptor,
+                default,
+                default);
+        }
+
+        /// <summary>
+        /// Creates a cache key for an anonymous method symbol.
+        /// </summary>
+        /// <param name="methodDescriptor">The <see cref="Net.AnonymousMethodDescriptor"/> that describes an anonymous method (which is where the <see cref="MethodInfo"/> is not available and instead only the signature information is available).</param>
+        /// <remarks>This method creates a unique cache key for well-known or anonymous method symbols, including regular methods, property accessors, and event accessors.
+        /// <para/>For maximum performance and zero ambiguity, always prefer to create method cache keys using well-known <see cref="MethodInfo"/> instances via the <see cref="Net.WellKnownMethodDescriptor"/>.</remarks>
+        /// <returns>The unique cache key for the well-known method symbol.</returns>
+        public static AnonymousSymbolReflectionInfoCacheKey CreateForMethod(AnonymousMethodDescriptor methodDescriptor)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(methodDescriptor);
+
+            return new AnonymousSymbolReflectionInfoCacheKey(
+                methodDescriptor.MethodName,
+                SymbolKind.MemberMethod,
+                default,
+                methodDescriptor,
+                default,
+                default,
+                default,
+                default);
+        }
+
+        /// <summary>
+        /// Creates a new cache key for an anonymous field using the specified <see cref="AnonymousFieldDescriptor"/>.
+        /// </summary>
+        /// <param name="fieldDescriptor">The <see cref="Net.AnonymousFieldDescriptor"/> that describes an anonymous field (which is where the <see cref="FieldInfo"/> is not available and instead only the signature information is available).</param>
+        /// <remarks>This method is used to create a unique cache key for field symbols of which the caller does not have a direct representation <see cref="FieldInfo"/> and instead only signature information is available.</remarks>
+        /// <returns>A new instance of <see cref="SymbolReflectionInfoCacheKey"/> representing the specified anonymous field.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="fieldDescriptor"/> is <see langword="default"/>.</exception>
+        public static AnonymousSymbolReflectionInfoCacheKey CreateForField(AnonymousFieldDescriptor fieldDescriptor)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(fieldDescriptor);
+
+            return new AnonymousSymbolReflectionInfoCacheKey(
+                fieldDescriptor.FieldName,
+                SymbolKind.MemberField,
+                default,
+                default,
+                default,
+                default,
+                fieldDescriptor,
+                default);
+        }
+
+        /// <summary>
+        /// Creates a new cache key for an anonymous constructor using the specified <see cref="AnonymousMethodDescriptor"/>.
+        /// </summary>
+        /// <remarks>This method is used to create a unique cache key for constructor symbols of which the caller does not have a direct representation <see cref="ConstructorInfo"/> and instead only signature information is available.
+        ///<para/>For maximum performance and zero ambiguity, always prefer to create constructor cache keys using well-known <see cref="ConstructorInfo"/> instances via the <see cref="Net.WellKnownMethodDescriptor"/>.</remarks>
+        /// <param name="constructorDescriptor"></param>
+        /// <returns>A new instance of <see cref="SymbolReflectionInfoCacheKey"/> representing the specified anonymous constructor.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="constructorDescriptor"/> is <see langword="default"/>.</exception>
+        public static AnonymousSymbolReflectionInfoCacheKey CreateForConstructor(AnonymousConstructorDescriptor constructorDescriptor)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(constructorDescriptor);
+
+            return new AnonymousSymbolReflectionInfoCacheKey(
+                string.Empty,
+                SymbolKind.MemberConstructor,
+                default,
+                default,
+                constructorDescriptor,
+                default,
+                default,
+                default);
+        }
+
+        public static AnonymousSymbolReflectionInfoCacheKey CreateForParameter(AnonymousParameterDescriptor parameterDescriptor)
+        {
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterDescriptor);
+
+            return new AnonymousSymbolReflectionInfoCacheKey(
+                parameterDescriptor.ParameterName,
+                SymbolKind.Parameter,
+                parameterDescriptor,
+                default,
+                default,
+                default,
+                default,
+                default);
+        }
+
+        public override int GetHashCode()
+            => this._hashCode;
+
+        private int ComputeHashCode()
+        {
+            unchecked
+            {
+                if (this._hashCode != 0)
+                {
+                    return this._hashCode;
+                }
+
+                var hashCode = new HashCode();
+                hashCode.Add(this.SymbolName);
+                hashCode.Add(this.SymbolKind);
+                hashCode.Add(this._parameterDescriptor);
+                hashCode.Add(this._methodDescriptor);
+                hashCode.Add(this._constructorDescriptor);
+                hashCode.Add(this._propertyDescriptor);
+                hashCode.Add(this._fieldDescriptor);
+                hashCode.Add(this._eventDescriptor);
+                hashCode.Add(this._isExplicitInterfaceImplementation);
+
+                return hashCode.ToHashCode();
+            }
+        }
+
+        public override bool Equals(object obj)
+            => obj is AnonymousSymbolReflectionInfoCacheKey other && Equals(other);
+
+        public bool Equals(AnonymousSymbolReflectionInfoCacheKey other) => this.SymbolName == other.SymbolName
+            && this.SymbolKind == other.SymbolKind
+            && this._parameterDescriptor == other._parameterDescriptor
+            && this._methodDescriptor == other._methodDescriptor
+            && this._constructorDescriptor == other._constructorDescriptor
+            && this._propertyDescriptor == other._propertyDescriptor
+            && this._fieldDescriptor == other._fieldDescriptor
+            && this._eventDescriptor == other._eventDescriptor
+            && this._isExplicitInterfaceImplementation == other._isExplicitInterfaceImplementation;
+
+        public static bool operator ==(AnonymousSymbolReflectionInfoCacheKey left, AnonymousSymbolReflectionInfoCacheKey right) => left.Equals(right);
+        public static bool operator !=(AnonymousSymbolReflectionInfoCacheKey left, AnonymousSymbolReflectionInfoCacheKey right) => !(left == right);
 
         [DoesNotReturn]
-        private TResult ThrowCurrentInstanceIsNotAnonymousException<TResult>([CallerMemberName] string propertyName = null)
-            => throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the current instance represents an anonymous symbol, which is when the property '{nameof(this.IsAnonymousSymbolKey)}' returns true.");
+        private TResult ThrowInvalidPropertyContextException<TResult>(ReadOnlySpan<SymbolKind> allowedSymbolKinds, [CallerMemberName] string propertyName = null)
+        {
+            ArgumentExceptionAdvanced.ThrowIfTrue(allowedSymbolKinds.IsEmpty, nameof(allowedSymbolKinds), "At least one allowed symbol kind must be provided.");
 
-        [DoesNotReturn]
-        private TResult ThrowCurrentInstanceIsNotWellKnownException<TResult>([CallerMemberName] string propertyName = null)
-            => throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the current instance represents an well-known symbol, which is when the property '{nameof(this.IsAnonymousSymbolKey)}' returns false.");
+            string allowedKinds = allowedSymbolKinds.JoinToString(kind => $"{typeof(SymbolKind).FullName}.{kind}", ", ");
+            return allowedSymbolKinds.Length > 1
+                ? throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the property '{nameof(this.SymbolKind)}' returns any of the following values: {allowedKinds}.")
+                : throw new InvalidOperationException($"The property '{propertyName}' is only available for symbols, where the property '{nameof(this.SymbolKind)}' returns the value '{allowedKinds[0]}'.");
+        }
     }
 }

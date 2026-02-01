@@ -6,6 +6,8 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.CompilerServices;
+    using System.Runtime.Loader;
     using Microsoft.CodeAnalysis;
 
     internal static class SymbolReflectionInfoCache
@@ -739,7 +741,7 @@
                 nameof(anonymousCacheKey),
                 "The provided cache key is not anonymous. This method only supports creating parameter data for anonymous parameter keys.");
 
-            WellKnownParameterDescriptor parameterDescriptor = anonymousCacheKey.CacheKeyParameterDescriptor;
+            WellKnownParameterDescriptor parameterDescriptor = anonymousCacheKey.ParameterDescriptor;
             ParameterMemberDescriptor declaringMemberDescriptor = anonymousCacheKey.ParameterMemberDescriptor;
 
             ParameterData? parameterDataCandidate = null;
@@ -1229,6 +1231,8 @@
             return result;
         }
 
+        #region AmbiguousIndexerPropertyKey
+
         private readonly struct AmbiguousIndexerPropertyKey : IEquatable<AmbiguousIndexerPropertyKey>
         {
             public AmbiguousIndexerPropertyKey(int parameterIndex, SymbolReflectionInfoCacheKey accessorMethodCacheKey)
@@ -1259,5 +1263,95 @@
             public static bool operator !=(AmbiguousIndexerPropertyKey left, AmbiguousIndexerPropertyKey right)
                 => !(left == right);
         }
+
+        #endregion
+
+        #region AssemblyId
+
+        internal readonly struct AssemblyId : IEquatable<AssemblyId>
+        {
+            public static readonly AssemblyId Empty = new AssemblyId(Guid.Empty, 0);
+
+            // Keep it small: Guid (16 bytes) + int (4 bytes) = 20 bytes.
+            public readonly Guid ModuleVersionId;
+            public readonly int InstanceHash;
+
+            public AssemblyId(Guid moduleVersionId, int instanceHash)
+            {
+                this.ModuleVersionId = moduleVersionId;
+                this.InstanceHash = instanceHash;
+            }
+
+            public static AssemblyId FromAssembly(Assembly asm)
+            {
+                ArgumentNullException.ThrowIfNull(asm);
+
+                // ModuleVersionId is available on the manifest module (typical single-module assemblies)
+                Guid mvid = asm.ManifestModule.ModuleVersionId;
+
+                // RuntimeHelpers.GetHashCode uses object identity and is stable for the lifetime of the object.
+                int instanceHash = RuntimeHelpers.GetHashCode(asm);
+
+                // Optionally strengthen uniqueness by mixing in the load-context identity:
+                var alc = AssemblyLoadContext.GetLoadContext(asm);
+                if (alc != null)
+                {
+                    // mix in ALC identity (also object-identity based)
+                    unchecked
+                    {
+                        instanceHash = (instanceHash * 31) + RuntimeHelpers.GetHashCode(alc);
+                    }
+                }
+
+                return new AssemblyId(mvid, instanceHash);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    var hasCode = new HashCode();
+                    // fold GUID into int then combine
+                    int g1 = this.ModuleVersionId.GetHashCode();
+                    hasCode.Add(g1);
+                    hasCode.Add(this.InstanceHash);
+
+                    return hasCode.ToHashCode();
+                }
+            }
+
+            public override bool Equals(object obj)
+                => obj is AssemblyId other && Equals(other);
+
+            public bool Equals(AssemblyId other)
+                => this.ModuleVersionId.Equals(other.ModuleVersionId)
+                    && this.InstanceHash == other.InstanceHash;
+
+            public static bool operator ==(AssemblyId a, AssemblyId b) => a.Equals(b);
+            public static bool operator !=(AssemblyId a, AssemblyId b) => !a.Equals(b);
+
+            // Optional: compress to a 64-bit value for smaller memory
+            public ulong ToUInt64()
+            {
+                // cheap non-cryptographic fold of GUID bytes + instanceHash -> 64-bit
+                Span<byte> buf = stackalloc byte[20]; // 16 + 4
+                _ = this.ModuleVersionId.TryWriteBytes(buf);
+                buf[16] = (byte)this.InstanceHash;
+                buf[17] = (byte)(this.InstanceHash >> 8);
+                buf[18] = (byte)(this.InstanceHash >> 16);
+                buf[19] = (byte)(this.InstanceHash >> 24);
+
+                // simple FNV or xxhash-style fold; here a basic fold to 64-bit
+                ulong h = 1469598103934665603ul;
+                foreach (byte b in buf)
+                {
+                    h = (h ^ b) * 1099511628211ul;
+                }
+
+                return h;
+            }
+        }
+
+        #endregion
     }
 }

@@ -92,6 +92,7 @@
                 : default;
             this.IsAnonymous = false;
             this.EventInfo = eventInfo;
+            this.EventName = eventInfo.Name;
         }
 
         public EventAccessors DeclaredEventAccessors { get; }
@@ -113,6 +114,7 @@
                 : throw new InvalidOperationException($"The property '{nameof(this.ExplicitRemoveImplementationMethodDescriptor)}' cannot be accessed for implicit property implementations or write-only properties.");
 
         public EventInfo EventInfo { get; }
+        public string EventName { get; }
 
         public bool HasAddDelegateEventAccessor { get; }
         public bool HasRemoveDelegateEventAccessor { get; }
@@ -125,23 +127,25 @@
             && this.ExplicitRemoveImplementationMethodDescriptor.Equals(other.ExplicitRemoveImplementationMethodDescriptor)
             && this.IsAnonymous == other.IsAnonymous
             && ReferenceEquals(this.EventInfo, other.EventInfo)
+            && this.EventName.Equals(other.EventName, StringComparison.Ordinal)
             && this.HasAddDelegateEventAccessor == other.HasAddDelegateEventAccessor
             && this.HasRemoveDelegateEventAccessor == other.HasRemoveDelegateEventAccessor;
 
         public override int GetHashCode()
         {
-            var hasCode = new HashCode();
-            hasCode.Add(this.IsExplicitInterfaceImplementation);
-            hasCode.Add(this.HasExplicitAddEventAccessor);
-            hasCode.Add(this.HasExplicitRemoveEventAccessor);
-            hasCode.Add(this.ExplicitAddImplementationMethodDescriptor);
-            hasCode.Add(this.ExplicitRemoveImplementationMethodDescriptor);
-            hasCode.Add(this.HasAddDelegateEventAccessor);
-            hasCode.Add(this.HasRemoveDelegateEventAccessor);
-            hasCode.Add(this.IsAnonymous);
-            hasCode.Add(this.EventInfo);
+            var hashCode = new HashCode();
+            hashCode.Add(this.IsExplicitInterfaceImplementation);
+            hashCode.Add(this.HasExplicitAddEventAccessor);
+            hashCode.Add(this.HasExplicitRemoveEventAccessor);
+            hashCode.Add(this.ExplicitAddImplementationMethodDescriptor);
+            hashCode.Add(this.ExplicitRemoveImplementationMethodDescriptor);
+            hashCode.Add(this.HasAddDelegateEventAccessor);
+            hashCode.Add(this.HasRemoveDelegateEventAccessor);
+            hashCode.Add(this.IsAnonymous);
+            hashCode.Add(this.EventInfo);
+            hashCode.Add(this.EventName, StringComparer.Ordinal);
 
-            return hasCode.ToHashCode();
+            return hashCode.ToHashCode();
         }
 
         public static bool operator ==(WellKnownEventDescriptor left, WellKnownEventDescriptor right)

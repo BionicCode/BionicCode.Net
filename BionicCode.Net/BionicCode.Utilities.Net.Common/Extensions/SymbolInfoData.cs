@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Reflection;
+    using Microsoft.CodeAnalysis;
 
     [DebuggerDisplay("{RuntimeShortSignature}")]
     internal abstract class SymbolInfoData

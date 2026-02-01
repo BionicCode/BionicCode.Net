@@ -15,7 +15,7 @@
         /// <summary>
         /// Constructs a descriptor that provides the specified parameter information for an anonymous parameter.
         /// </summary>
-        /// <param name="declaringMethodDescriptor">The <see cref="AnonymousMethodOrConstructorDescriptor"/> representing the anonymous method that declares the parameter.</param>
+        /// <param name="declaringMethodDescriptor">The <see cref="AnonymousMethodDescriptor"/> representing the anonymous method that declares the parameter.</param>
         /// <param name="parameterTypeHandle">Conditionally optional. The runtime type handle representing the type of the anonymous parameter.<para/>
         /// Must be provided if all of the following arguments are missing: <paramref name="parameterName"/> AND <paramref name="parameterKind"/> AND <paramref name="parameterPosition"/>.</param>
         /// <param name="parameterName">Conditionally optional. The name of the anonymous parameter.<para/>
@@ -25,7 +25,7 @@
         /// <param name="parameterKind">Conditionally optional. The modifier of the parameter.<para/>
         /// Must be provided if all of the following arguments are missing: <paramref name="parameterName"/> AND <paramref name="parameterTypeHandle"/> AND <paramref name="parameterPosition"/>.</param>
         public AnonymousParameterDescriptor(
-            AnonymousMethodOrConstructorDescriptor declaringMethodDescriptor,
+            AnonymousMethodDescriptor declaringMethodDescriptor,
             string? parameterName = null,
             int parameterPosition = SymbolReflectionInfoCacheKey.UnknownParameterCountOrPosition,
             ParameterKind parameterKind = ParameterKind.Undefined,
@@ -62,7 +62,7 @@
         public bool IsAnonymous
             => true;
 
-        public AnonymousMethodOrConstructorDescriptor DeclaringMethodDescriptor { get; }
+        public AnonymousMethodDescriptor DeclaringMethodDescriptor { get; }
         public string ParameterName { get; }
         public int ParameterPosition { get; }
         public ParameterKind ParameterKind { get; }

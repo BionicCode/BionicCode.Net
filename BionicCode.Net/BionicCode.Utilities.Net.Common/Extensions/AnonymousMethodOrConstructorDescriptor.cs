@@ -4,26 +4,25 @@
     using System.Reflection;
 
     /// <summary>
-    /// A descriptor that provides information about an anonymous method (where the caller does not have a direct representation (a <see cref="MethodInfo"/>) of the method symbol).
+    /// A descriptor that provides information about an anonymous method (anonymous is when the caller does not have a direct a <see cref="MethodInfo"/> representation of the method symbol).
     /// </summary>
-    /// <remarks>The <see cref="AnonymousMethodOrConstructorDescriptor"/> is used to provide information for anonymous method symbols, which is when the caller does not have the direct <see cref="MethodInfo"/> representation.
-    /// <para/>When the caller has the direct <see cref="MethodInfo"/> representation and the method is well-known, use the <see cref="WellKnownMethodOrConstructorDescriptor"/> instead.
+    /// <remarks>The <see cref="AnonymousMethodDescriptor"/> is used to provide information for anonymous method symbols, which is when the caller does not have the direct <see cref="MethodInfo"/> representation.
+    /// <para/>When the caller has the direct <see cref="MethodInfo"/> representation and the method is well-known, use the <see cref="WellKnownMethodDescriptor"/> instead.
     /// <para/>Important: well-known descriptors are preferred over anonymous descriptors when the <see cref="MethodInfo"/> is available to ensure maximum accuracy and performance.
     /// </remarks>
-    internal readonly struct AnonymousMethodOrConstructorDescriptor : IEquatable<AnonymousMethodOrConstructorDescriptor>
+    internal readonly struct AnonymousMethodDescriptor : IEquatable<AnonymousMethodDescriptor>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AnonymousMethodOrConstructorDescriptor"/> struct.
+        /// Initializes a new instance of the <see cref="AnonymousMethodDescriptor"/> struct.
         /// </summary>
-        /// <remarks>The <see cref="AnonymousMethodOrConstructorDescriptor"/> is used to provide information about a method symbol of which the caller does not have a direct representation <see cref="MethodInfo"/> or <see cref="MethodData"/> and instead only signature information is available.
+        /// <remarks>The <see cref="AnonymousMethodDescriptor"/> is used to provide information about a method symbol of which the caller does not have a direct representation <see cref="MethodInfo"/> or <see cref="MethodData"/> and instead only signature information is available.
         /// <para/>If the method is an explicit interface implementation, then the <paramref name="declaringInterfaceTypeHandle"/> must provide a <see cref="RuntimeTypeHandle"/> that refers to the originally declaring interface type.
-        /// <para/>For best accuracy and performance always use the <see cref="WellKnownMethodOrConstructorDescriptor"/>, which requires the caller to have direct access to the <see cref="MethodInfo"/> or <see cref="ConstructorInfo"/> representation of the method or constructor.
+        /// <para/>For best accuracy and performance always use the <see cref="WellKnownMethodDescriptor"/>, which requires the caller to have direct access to the <see cref="MethodInfo"/> or <see cref="ConstructorInfo"/> representation of the method or constructor.
         /// </remarks>
         /// <param name="implementingTypeHandle">The runtime type handle representing the implementing type of the anonymous method or constructor.</param>
         /// <param name="methodName">Conditionally optional. The name of the anonymous method. For methods the value cannot be null, empty, or consist only of white-space characters.
         /// <para/>For constructors this parameter is ignored (constructors don't have names).</param>
-        /// <param name="isConstructor"><see langword="true"/> if the method is a constructor; otherwise, <see langword="false"/>.</param>
-        /// <param name="methodOrConstructorParameters">The list of parameters for the anonymous method. Can be <see cref="ParameterList.Empty"/> or <see langword="null"/> to indicate no parameters.</param>
+        /// <param name="methodParameters">The list of parameters for the anonymous method. Can be <see cref="ParameterList.Empty"/> or <see langword="null"/> to indicate no parameters.</param>
         /// <param name="genericMethodParameters">The list of generic method parameters for the anonymous method.<para/>
         /// Can be <see cref="TypeList.Empty"/> for constructors or to indicate a non-generic method.
         /// <para/>For  constructors this parameter is ignored.</param>
@@ -33,7 +32,7 @@
         /// <param name="declaringInterfaceTypeHandle">The runtime type handle representing the declaring interface type of the anonymous method.
         /// <para/>Must be provided when the method is an explicit interface implementation (which is when <paramref name="isExplicitInterfaceImplementation"/> is <see langword="true"/>).
         /// <br/>Otherwise, this parameter can be <see langword="null"/> and will be ignored.</param>
-        /// <returns>A new instance of <see cref="AnonymousMethodOrConstructorDescriptor"/> representing the specified anonymous method.</returns>
+        /// <returns>A new instance of <see cref="AnonymousMethodDescriptor"/> representing the specified anonymous method.</returns>
         /// <exception cref="ArgumentNullException">Thrown when
         /// <list type="bullet">
         /// <item><paramref name="implementingTypeHandle"/> is <see langword="default"/>.</item>
@@ -48,10 +47,9 @@
         /// <item>the provided <paramref name="implementingTypeHandle"/> refers to an interface type.</item>
         /// </list>
         /// </exception>
-        public AnonymousMethodOrConstructorDescriptor(
+        public AnonymousMethodDescriptor(
             RuntimeTypeHandle implementingTypeHandle,
-            bool isConstructor,
-            MethodParameterInfoList? methodOrConstructorParameters,
+            MethodParameterInfoList? methodParameters,
             string? methodName,
             TypeList? genericMethodParameters,
             bool isExplicitInterfaceImplementation,
@@ -68,25 +66,10 @@
                 nameof(implementingTypeHandle),
                 $"Invalid argument '{nameof(implementingTypeHandle)}'. The argument '{nameof(isExplicitInterfaceImplementation)}' is pointing to an interface type. Reason: Only non-interface types can provide the implementations.");
 
-            if (isConstructor)
-            {
-                methodName = string.Empty;
-
-                // Constructors can't be generic
-                genericMethodParameters = TypeList.Empty;
-            }
-            else
-            {
-                ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(methodName);
-            }
+            ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(methodName);
 
             if (isExplicitInterfaceImplementation)
             {
-                ArgumentExceptionAdvanced.ThrowIfTrue(
-                    isConstructor,
-                    nameof(isConstructor),
-                    $"Invalid argument '{nameof(isConstructor)}'. The argument '{nameof(isExplicitInterfaceImplementation)}' returns 'true' while the argument '{nameof(isConstructor)}' is also 'true'. Reason: Constructors cannot be explicit interface implementations.");
-
                 ArgumentNullExceptionAdvanced.ThrowIfNull(
                     declaringInterfaceTypeHandle,
                     nameof(declaringInterfaceTypeHandle),
@@ -107,8 +90,7 @@
                 : default;
             this.ImplementingTypeHandle = implementingTypeHandle;
             this.MethodName = methodName;
-            this.IsConstructor = isConstructor;
-            this.MethodOrConstructorParameterList = methodOrConstructorParameters.OrEmpty();
+            this.MethodParameterList = methodParameters.OrEmpty();
             this.GenericMethodParameters = genericMethodParameters.OrEmpty();
             this.IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
             this.IsAnonymous = true;
@@ -117,43 +99,40 @@
         public RuntimeTypeHandle ImplementingTypeHandle { get; }
         public RuntimeTypeHandle DeclaringInterfaceTypeHandle { get; }
         public string MethodName { get; }
-        public bool IsConstructor { get; }
-        public MethodParameterInfoList MethodOrConstructorParameterList { get; }
+        public MethodParameterInfoList MethodParameterList { get; }
         public TypeList GenericMethodParameters { get; }
         public bool IsExplicitInterfaceImplementation { get; }
         public bool IsAnonymous { get; }
 
-        public bool Equals(AnonymousMethodOrConstructorDescriptor other)
+        public bool Equals(AnonymousMethodDescriptor other)
             => this.ImplementingTypeHandle.Equals(other.ImplementingTypeHandle)
-            && this.IsConstructor.Equals(other.IsConstructor)
             && this.DeclaringInterfaceTypeHandle.Equals(other.DeclaringInterfaceTypeHandle)
             && this.MethodName.Equals(other.MethodName, StringComparison.Ordinal)
             && this.GenericMethodParameters.Equals(other.GenericMethodParameters)
             && this.IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
-            && this.MethodOrConstructorParameterList.Equals(other.MethodOrConstructorParameterList)
+            && this.MethodParameterList.Equals(other.MethodParameterList)
             && this.IsAnonymous == other.IsAnonymous;
 
         public override int GetHashCode()
         {
             var hashCode = new HashCode();
             hashCode.Add(this.ImplementingTypeHandle);
-            hashCode.Add(this.IsConstructor);
             hashCode.Add(this.DeclaringInterfaceTypeHandle);
             hashCode.Add(this.MethodName);
             hashCode.Add(this.GenericMethodParameters);
             hashCode.Add(this.IsExplicitInterfaceImplementation);
-            hashCode.Add(this.MethodOrConstructorParameterList);
+            hashCode.Add(this.MethodParameterList);
             hashCode.Add(this.IsAnonymous);
 
             return hashCode.ToHashCode();
         }
 
-        public static bool operator ==(AnonymousMethodOrConstructorDescriptor left, AnonymousMethodOrConstructorDescriptor right)
+        public static bool operator ==(AnonymousMethodDescriptor left, AnonymousMethodDescriptor right)
             => left.Equals(right);
-        public static bool operator !=(AnonymousMethodOrConstructorDescriptor left, AnonymousMethodOrConstructorDescriptor right)
+        public static bool operator !=(AnonymousMethodDescriptor left, AnonymousMethodDescriptor right)
             => !(left == right);
 
         public override bool Equals(object obj)
-            => obj is AnonymousMethodOrConstructorDescriptor other && Equals(other);
+            => obj is AnonymousMethodDescriptor other && Equals(other);
     }
 }

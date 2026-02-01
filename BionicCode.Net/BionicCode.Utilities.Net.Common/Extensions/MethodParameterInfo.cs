@@ -66,10 +66,10 @@
         /// <exception cref="ArgumentException">Thrown when the <see cref="ParameterKind"/> of <paramref name="parameterInfoDataCacheKey"/> is <see cref="ParameterKind.Undefined"/>.</exception>"
         public MethodParameterInfo(SymbolReflectionInfoCacheKey parameterInfoDataCacheKey) : this()
         {
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey.CacheKeyParameterDescriptor, nameof(parameterInfoDataCacheKey));
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey.ParameterDescriptor, nameof(parameterInfoDataCacheKey));
             ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterInfoDataCacheKey.ParameterMemberDescriptor, nameof(parameterInfoDataCacheKey));
 
-            WellKnownParameterDescriptor parameterDescriptor = parameterInfoDataCacheKey.CacheKeyParameterDescriptor;
+            WellKnownParameterDescriptor parameterDescriptor = parameterInfoDataCacheKey.ParameterDescriptor;
             ParameterMemberDescriptor declaringMemberDescriptor = parameterInfoDataCacheKey.ParameterMemberDescriptor;
             this.ParameterDescriptor = parameterDescriptor;
             this.DeclaringMemberDescriptor = declaringMemberDescriptor;

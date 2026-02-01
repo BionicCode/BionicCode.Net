@@ -93,7 +93,8 @@
                     $"Invalid argument '{nameof(declaringInterfaceTypeHandle)}'. The argument '{nameof(declaringInterfaceTypeHandle)}' points to a non-interface type. Reason: Only interface types can provide the declaration of explicit interface implementations.");
             }
 
-            this.ImplmentingTypeHandle = implementingTypeHandle;
+            this.EventName = eventName;
+            this.ImplementingTypeHandle = implementingTypeHandle;
             this.DeclaringInterfaceTypeHandle = isExplicitInterfaceImplementation
                 ? declaringInterfaceTypeHandle!.Value
                 : default;
@@ -101,10 +102,11 @@
             this.IsAnonymous = true;
         }
 
+        public string EventName { get; }
         public EventAccessors DeclaredAccessors { get; }
         public bool IsExplicitInterfaceImplementation { get; init; }
         public bool IsAnonymous { get; }
-        public RuntimeTypeHandle ImplmentingTypeHandle { get; }
+        public RuntimeTypeHandle ImplementingTypeHandle { get; }
         public RuntimeTypeHandle DeclaringInterfaceTypeHandle { get; }
 
         public bool HasAddDelegateEventAccessor { get; }
@@ -113,24 +115,26 @@
         public bool Equals(AnonymousEventDescriptor other)
             => this.IsExplicitInterfaceImplementation.Equals(other.IsExplicitInterfaceImplementation)
             && this.IsAnonymous == other.IsAnonymous
-            && this.ImplmentingTypeHandle.Equals(other.ImplmentingTypeHandle)
+            && this.ImplementingTypeHandle.Equals(other.ImplementingTypeHandle)
             && this.DeclaringInterfaceTypeHandle.Equals(other.DeclaringInterfaceTypeHandle)
             && this.HasAddDelegateEventAccessor == other.HasAddDelegateEventAccessor
             && this.HasRemoveDelegateEventAccessor == other.HasRemoveDelegateEventAccessor
-            && this.DeclaredAccessors == other.DeclaredAccessors;
+            && this.DeclaredAccessors == other.DeclaredAccessors
+            && this.EventName.Equals(other.EventName, StringComparison.Ordinal);
 
         public override int GetHashCode()
         {
-            var hasCode = new HashCode();
-            hasCode.Add(this.IsExplicitInterfaceImplementation);
-            hasCode.Add(this.DeclaredAccessors);
-            hasCode.Add(this.HasAddDelegateEventAccessor);
-            hasCode.Add(this.HasRemoveDelegateEventAccessor);
-            hasCode.Add(this.IsAnonymous);
-            hasCode.Add(this.ImplmentingTypeHandle);
-            hasCode.Add(this.DeclaringInterfaceTypeHandle);
+            var hashCode = new HashCode();
+            hashCode.Add(this.IsExplicitInterfaceImplementation);
+            hashCode.Add(this.DeclaredAccessors);
+            hashCode.Add(this.HasAddDelegateEventAccessor);
+            hashCode.Add(this.HasRemoveDelegateEventAccessor);
+            hashCode.Add(this.IsAnonymous);
+            hashCode.Add(this.ImplementingTypeHandle);
+            hashCode.Add(this.DeclaringInterfaceTypeHandle);
+            hashCode.Add(this.EventName, StringComparer.Ordinal);
 
-            return hasCode.ToHashCode();
+            return hashCode.ToHashCode();
         }
 
         public static bool operator ==(AnonymousEventDescriptor left, AnonymousEventDescriptor right)

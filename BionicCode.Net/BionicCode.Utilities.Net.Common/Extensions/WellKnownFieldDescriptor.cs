@@ -40,12 +40,12 @@
 
         public override int GetHashCode()
         {
-            var hasCode = new HashCode();
-            hasCode.Add(this.IsAnonymous);
-            hasCode.Add(this.FieldHandle);
-            hasCode.Add(this.FieldName);
+            var hashCode = new HashCode();
+            hashCode.Add(this.IsAnonymous);
+            hashCode.Add(this.FieldHandle);
+            hashCode.Add(this.FieldName, StringComparer.Ordinal);
 
-            return hasCode.ToHashCode();
+            return hashCode.ToHashCode();
         }
 
         public static bool operator ==(WellKnownFieldDescriptor left, WellKnownFieldDescriptor right)
