@@ -16,10 +16,10 @@
         /// Initializes a new instance of the <see cref="AnonymousMethodDescriptor"/> struct.
         /// </summary>
         /// <remarks>The <see cref="AnonymousMethodDescriptor"/> is used to provide information about a method symbol of which the caller does not have a direct representation <see cref="MethodInfo"/> or <see cref="MethodData"/> and instead only signature information is available.
-        /// <para/>If the method is an explicit interface implementation, then the <paramref name="declaringInterfaceTypeHandle"/> must provide a <see cref="RuntimeTypeHandle"/> that refers to the originally declaring interface type.
+        /// <para/>If the method is an explicit interface implementation, then the <paramref name="implementingTypeHandle"/> must provide a <see cref="RuntimeTypeHandle"/> that refers to the originally declaring interface type.
         /// <para/>For best accuracy and performance always use the <see cref="WellKnownMethodDescriptor"/>, which requires the caller to have direct access to the <see cref="MethodInfo"/> or <see cref="ConstructorInfo"/> representation of the method or constructor.
         /// </remarks>
-        /// <param name="implementingTypeHandle">The runtime type handle representing the implementing type of the anonymous method or constructor.</param>
+        /// <param name="declaringTypeHandle">The runtime type handle representing the implementing type of the anonymous method or constructor.</param>
         /// <param name="methodName">Conditionally optional. The name of the anonymous method. For methods the value cannot be null, empty, or consist only of white-space characters.
         /// <para/>For constructors this parameter is ignored (constructors don't have names).</param>
         /// <param name="methodParameters">The list of parameters for the anonymous method. Can be <see cref="ParameterList.Empty"/> or <see langword="null"/> to indicate no parameters.</param>
@@ -28,67 +28,69 @@
         /// <para/>For  constructors this parameter is ignored.</param>
         /// <param name="isExplicitInterfaceImplementation"><see langword="true"/> if the method is an explicit interface implementation; otherwise, <see langword="false"/>.
         /// <para/>If set to <see langword="true"/> and the descriptor describes an explicitly implemented method,
-        /// then the <paramref name="declaringInterfaceTypeHandle"/> must provide a <see cref="RuntimeTypeHandle"/> that was obtained from the declaring interface type.</param>
-        /// <param name="declaringInterfaceTypeHandle">The runtime type handle representing the declaring interface type of the anonymous method.
+        /// then the <paramref name="implementingTypeHandle"/> must provide a <see cref="RuntimeTypeHandle"/> that was obtained from the declaring interface type.</param>
+        /// <param name="implementingTypeHandle">The runtime type handle representing the declaring interface type of the anonymous method.
         /// <para/>Must be provided when the method is an explicit interface implementation (which is when <paramref name="isExplicitInterfaceImplementation"/> is <see langword="true"/>).
         /// <br/>Otherwise, this parameter can be <see langword="null"/> and will be ignored.</param>
         /// <returns>A new instance of <see cref="AnonymousMethodDescriptor"/> representing the specified anonymous method.</returns>
         /// <exception cref="ArgumentNullException">Thrown when
         /// <list type="bullet">
-        /// <item><paramref name="implementingTypeHandle"/> is <see langword="default"/>.</item>
+        /// <item><paramref name="declaringTypeHandle"/> is <see langword="default"/>.</item>
         /// <item><paramref name="methodName"/> is <see langword="null"/>, empty, or consists only of white-space characters.</item>
-        /// <item>Is also thrown when <paramref name="isExplicitInterfaceImplementation"/> is <see langword="true"/> but <paramref name="declaringInterfaceTypeHandle"/> is <see langword="default"/>.</item>
+        /// <item>Is also thrown when <paramref name="isExplicitInterfaceImplementation"/> is <see langword="true"/> but <paramref name="implementingTypeHandle"/> is <see langword="null"/>.</item>
+        /// <item>Is also thrown when <paramref name="isExplicitInterfaceImplementation"/> is <see langword="true"/> but <paramref name="implementingTypeHandle"/> is <see langword="default"/>.</item>
         /// </list>
         /// </exception>
         /// <exception cref="ArgumentException">Thrown when
         /// <list type="bullet">
-        /// <item>the provided <paramref name="isExplicitInterfaceImplementation"/> value is <see langword="true"/> but <paramref name="declaringInterfaceTypeHandle"/> was not obtained from an interface type.</item>
-        /// <item>the provided <paramref name="isExplicitInterfaceImplementation"/> value is <see langword="true"/> and <paramref name="isConstructor"/> is also <see langword="true"/> since constructors can't be explicitly implemented.</item>
-        /// <item>the provided <paramref name="implementingTypeHandle"/> refers to an interface type.</item>
+        /// <item>the provided <paramref name="isExplicitInterfaceImplementation"/> value is <see langword="true"/> but <paramref name="declaringTypeHandle"/> was not obtained from an interface type.</item>
+        /// <item>the provided <paramref name="isExplicitInterfaceImplementation"/> value is <see langword="true"/> but <paramref name="implementingTypeHandle"/> was obtained from an interface type.</item>
+        /// <item>the provided <paramref name="declaringTypeHandle"/> refers to an interface type.</item>
         /// </list>
         /// </exception>
         public AnonymousMethodDescriptor(
-            RuntimeTypeHandle implementingTypeHandle,
+            RuntimeTypeHandle declaringTypeHandle,
             MethodParameterInfoList? methodParameters,
             string? methodName,
             TypeList? genericMethodParameters,
             bool isExplicitInterfaceImplementation,
-            RuntimeTypeHandle? declaringInterfaceTypeHandle)
+            RuntimeTypeHandle? implementingTypeHandle)
         {
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(implementingTypeHandle);
-            Type? implementingType = Type.GetTypeFromHandle(implementingTypeHandle);
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle);
+            Type? declaringType = Type.GetTypeFromHandle(declaringTypeHandle);
             ArgumentNullExceptionAdvanced.ThrowIfNull(
-                implementingType,
-                nameof(implementingTypeHandle),
-                $"Invalid argument '{nameof(implementingTypeHandle)}'. The provided declaring type handle does not resolve to a runtime type.");
-            ArgumentExceptionAdvanced.ThrowIfTrue(
-                implementingType!.IsInterface,
-                nameof(implementingTypeHandle),
-                $"Invalid argument '{nameof(implementingTypeHandle)}'. The argument '{nameof(isExplicitInterfaceImplementation)}' is pointing to an interface type. Reason: Only non-interface types can provide the implementations.");
+                declaringType,
+                nameof(declaringTypeHandle),
+                $"Invalid argument '{nameof(declaringTypeHandle)}'. The provided declaring type handle does not resolve to a runtime type.");
 
             ArgumentNullExceptionAdvanced.ThrowIfNullOrWhiteSpace(methodName);
 
             if (isExplicitInterfaceImplementation)
             {
+                ArgumentExceptionAdvanced.ThrowIfFalse(
+                    declaringType!.IsInterface,
+                    nameof(declaringTypeHandle),
+                    $"Invalid argument '{nameof(declaringTypeHandle)}'. The argument '{nameof(declaringType)}' is pointing to an non-interface type. Reason: Only interface types can declare explicit member implementations.");
+
                 ArgumentNullExceptionAdvanced.ThrowIfNull(
-                    declaringInterfaceTypeHandle,
-                    nameof(declaringInterfaceTypeHandle),
-                    $"Invalid argument '{nameof(declaringInterfaceTypeHandle)}'. The provided declaring interface type handle is not 'NULL' which is not allowed for explicit interface implementations (which is when '{nameof(isExplicitInterfaceImplementation)}' is 'true').");
-                ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringInterfaceTypeHandle!.Value);
-                Type? declaringInterfaceType = Type.GetTypeFromHandle(declaringInterfaceTypeHandle!.Value);
+                    implementingTypeHandle,
+                    nameof(implementingTypeHandle),
+                    $"Invalid argument '{nameof(implementingTypeHandle)}'. The provided declaring interface type handle is not 'NULL' which is not allowed for explicit interface implementations (which is when '{nameof(isExplicitInterfaceImplementation)}' is 'true').");
+                ArgumentNullExceptionAdvanced.ThrowIfDefault(implementingTypeHandle!.Value);
+                Type? declaringInterfaceType = Type.GetTypeFromHandle(implementingTypeHandle!.Value);
                 ArgumentNullExceptionAdvanced.ThrowIfNull(
                     declaringInterfaceType,
-                    nameof(declaringInterfaceTypeHandle),
-                    $"The declaring interface type represented by the argument '{nameof(declaringInterfaceTypeHandle)}' could not be resolved.");
-                ArgumentExceptionAdvanced.ThrowIfFalse(declaringInterfaceType!.IsInterface,
+                    nameof(implementingTypeHandle),
+                    $"The declaring interface type represented by the argument '{nameof(implementingTypeHandle)}' could not be resolved.");
+                ArgumentExceptionAdvanced.ThrowIfTrue(declaringInterfaceType!.IsInterface,
                     nameof(isExplicitInterfaceImplementation),
-                    $"Invalid argument '{nameof(declaringInterfaceTypeHandle)}'. The argument '{nameof(declaringInterfaceTypeHandle)}' points to a non-interface type. Reason: Only interface types can provide the declaration of explicit interface implementations.");
+                    $"Invalid argument '{nameof(implementingTypeHandle)}'. The argument '{nameof(implementingTypeHandle)}' points to a interface type. Reason: Only non-interface types can provide the explicit interface implementations.");
             }
 
             this.DeclaringInterfaceTypeHandle = isExplicitInterfaceImplementation
-                ? declaringInterfaceTypeHandle!.Value
+                ? implementingTypeHandle!.Value
                 : default;
-            this.ImplementingTypeHandle = implementingTypeHandle;
+            this.ImplementingTypeHandle = declaringTypeHandle;
             this.MethodName = methodName;
             this.MethodParameterList = methodParameters.OrEmpty();
             this.GenericMethodParameters = genericMethodParameters.OrEmpty();

@@ -63,7 +63,7 @@
         private readonly WellKnownConstructorDescriptor _constructorDescriptor;
         public WellKnownConstructorDescriptor ConstructorDescriptor => this.SymbolKind is SymbolKind.MemberConstructor
             ? this._constructorDescriptor
-            : ThrowInvalidPropertyContextException<WellKnownMethodDescriptor>([SymbolKind.MemberConstructor]);
+            : ThrowInvalidPropertyContextException<WellKnownConstructorDescriptor>([SymbolKind.MemberConstructor]);
 
         private readonly WellKnownTypeDescriptor _typeDescriptor;
         public WellKnownTypeDescriptor TypeDescriptor => this.SymbolKind is SymbolKind.Type
@@ -94,7 +94,7 @@
             WellKnownTypeDescriptor typeDescriptor,
             WellKnownParameterDescriptor parameterDescriptor,
             WellKnownMethodDescriptor methodDescriptor,
-            AnonymousConstructorDescriptor constructorDescriptor,
+            WellKnownConstructorDescriptor constructorDescriptor,
             WellKnownPropertyDescriptor propertyDescriptor,
             WellKnownFieldDescriptor fieldDescriptor,
             WellKnownEventDescriptor eventDescriptor)
@@ -195,11 +195,12 @@
 
         public static SymbolReflectionInfoCacheKey CreateForType(WellKnownTypeDescriptor typeDescriptor)
         {
-            ArgumentNullException.ThrowIfNull(typeDescriptor);
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(typeDescriptor);
 
+            Type type = Type.GetTypeFromHandle(typeDescriptor.TypeHandle)!;
             return new SymbolReflectionInfoCacheKey(
-                SymbolReflectionInfoCache.AssemblyId.FromAssembly(typeDescriptor.Type.Assembly),
-                typeDescriptor.FullName ?? typeDescriptor.Name,
+                SymbolReflectionInfoCache.AssemblyId.FromAssembly(type.Assembly),
+                typeDescriptor.TypeName,
                 SymbolKind.Type,
                 typeDescriptor,
                 default,
@@ -369,7 +370,7 @@
         private readonly AnonymousConstructorDescriptor _constructorDescriptor;
         public AnonymousConstructorDescriptor ConstructorDescriptor => this.SymbolKind is SymbolKind.MemberConstructor
             ? this._constructorDescriptor
-            : ThrowInvalidPropertyContextException<AnonymousMethodDescriptor>([SymbolKind.MemberConstructor]);
+            : ThrowInvalidPropertyContextException<AnonymousConstructorDescriptor>([SymbolKind.MemberConstructor]);
 
         private readonly AnonymousFieldDescriptor _fieldDescriptor;
         public AnonymousFieldDescriptor FieldDescriptor => this.SymbolKind is SymbolKind.MemberField

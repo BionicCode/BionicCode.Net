@@ -15,52 +15,53 @@
         /// Creates a new instance of the <see cref="AnonymousEventDescriptor"/> struct for a anonymous event.
         /// </summary>
         /// <remarks>
-        /// If the event is an explicit interface implementation, ensure to set the <paramref name="isExplicitInterfaceImplementation"/> parameter to <see langword="true"/> and provide the <paramref name="implementingTypeHandle"/> obtained from the declaring interface type (it's crucial to provide the interface type as the declaring type).
+        /// If the event is an explicit interface implementation, ensure to set the <paramref name="isExplicitInterfaceImplementation"/> parameter to <see langword="true"/> and provide the <paramref name="declaringTypeHandle"/> obtained from the declaring interface type (it's crucial to provide the interface type as the declaring type).
         /// <para/>For best accuracy and performance always use this <see cref="WellKnownEventDescriptor"/> when the caller has direct access to the <see cref="System.Reflection.EventInfo"/> representation of the event.
         /// </remarks>
-        /// <param name="implementingTypeHandle">The <see cref="RuntimeTypeHandle"/> for the type that implements the event.</param>
-        /// <param name="declaringInterfaceTypeHandle">If the event is an explicit interface implementation,
-        /// then the <paramref name="declaringInterfaceTypeHandle"/> must be a <see cref="RuntimeTypeHandle"/> obtained from the interface type that originally declares the event.
+        /// <param name="declaringTypeHandle">The <see cref="RuntimeTypeHandle"/> for the type that implements the event.
+        /// <para/>If the event is an explicit interface implementation (which is when <paramref name="isExplicitInterfaceImplementation"/> is <see langword="false"/>),
+        /// then the <paramref name="declaringTypeHandle"/> must be a <see cref="RuntimeTypeHandle"/> obtained from the interface type that originally declares the event.
+        /// </param>
+        /// <param name="implementingTypeHandle">If the event is an explicit interface implementation,
+        /// then the <paramref name="implementingTypeHandle"/> must be a <see cref="RuntimeTypeHandle"/> obtained from the type that provides the explicit interface implementation.
         /// <para/>If the event is not an explicit interface implementation (which is when <paramref name="isExplicitInterfaceImplementation"/> is <see langword="false"/>),
-        /// then the <paramref name="declaringInterfaceTypeHandle"/> can be <see langword="null"/> since it will be ignored.</param>
+        /// then the <paramref name="implementingTypeHandle"/> can be <see langword="null"/> since it will be ignored.</param>
         /// <param name="eventName">The name of the event. Cannot be <see langword="null"/>, empty or consist of white-space characters.</param>
         /// <param name="declaredEventAccessors">Specifies the accessors that the event declares. Cannot be <see cref="EventAccessors.None"/>.</param>
         /// <param name="isExplicitInterfaceImplementation"><see langword="true"/> if the event is an explicit interface implementation; otherwise, <see langword="false"/>.
-        /// <br/>If set to <see langword="true"/>, the <paramref name="declaringInterfaceTypeHandle"/> must provide the <see cref="RuntimeTypeHandle"/> tha was obtained from the interface type that originally declared the event.
+        /// <br/>If set to <see langword="true"/>, the <paramref name="declaringTypeHandle"/> must provide the <see cref="RuntimeTypeHandle"/> that was obtained from the interface type that originally declared the event.
         /// </param>
         /// <returns>A new instance of <see cref="AnonymousEventDescriptor"/> representing the specified anonymous event.</returns>
         /// <exception cref="ArgumentNullException">Thrown when
         /// <list type="bullet">
-        /// <item><paramref name="implementingTypeHandle"/> is <see langword="default"/>.</item>
+        /// <item><paramref name="declaringTypeHandle"/> is <see langword="default"/>.</item>
         /// <item><paramref name="eventName"/> is <see langword="null"/>, empty, or consists only of white-space characters.</item>
-        /// <item>Is also thrown when <paramref name="isExplicitInterfaceImplementation"/> is <see langword="true"/> but <paramref name="declaringInterfaceTypeHandle"/> is <see langword="default"/>.</item>
+        /// <item>Is also thrown when <paramref name="isExplicitInterfaceImplementation"/> is <see langword="true"/> but <paramref name="implementingTypeHandle"/> is <see langword="null"/>.</item>
+        /// <item>Is also thrown when <paramref name="isExplicitInterfaceImplementation"/> is <see langword="true"/> but <paramref name="implementingTypeHandle"/> is <see langword="default"/>.</item>
         /// </list>
         /// </exception>
         /// <exception cref="ArgumentException">Thrown when
         /// <list type="bullet">
-        /// <item>the provided <paramref name="isExplicitInterfaceImplementation"/> value is <see langword="true"/> but <paramref name="declaringInterfaceTypeHandle"/> was not obtained from an interface type.</item>
-        /// <item>the provided <paramref name="implementingTypeHandle"/> refers to an interface type.</item>
+        /// <item>the provided <paramref name="isExplicitInterfaceImplementation"/> value is <see langword="true"/> but <paramref name="declaringTypeHandle"/> was not obtained from an interface type.</item>
+        /// <item>the provided <paramref name="isExplicitInterfaceImplementation"/> value is <see langword="true"/> but <paramref name="implementingTypeHandle"/> was obtained from an interface type.</item>
+        /// <item>the provided <paramref name="declaringTypeHandle"/> refers to an interface type.</item>
         /// <item>the provided <paramref name="declaredEventAccessors"/> value is not defined by the enum <see cref="EventAccessors"/>.</item>
         /// <item>the provided <paramref name="declaredEventAccessors"/> value is <see cref="EventAccessors.None"/>.</item>
         /// </list>
         /// </exception>
         public AnonymousEventDescriptor(
-            RuntimeTypeHandle implementingTypeHandle,
+            RuntimeTypeHandle declaringTypeHandle,
             string eventName,
             EventAccessors declaredEventAccessors,
             bool isExplicitInterfaceImplementation,
-            RuntimeTypeHandle? declaringInterfaceTypeHandle)
+            RuntimeTypeHandle? implementingTypeHandle)
         {
-            ArgumentNullExceptionAdvanced.ThrowIfDefault(implementingTypeHandle);
-            Type? implementingType = Type.GetTypeFromHandle(implementingTypeHandle);
+            ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringTypeHandle);
+            Type? declaringType = Type.GetTypeFromHandle(declaringTypeHandle);
             ArgumentNullExceptionAdvanced.ThrowIfNull(
-                implementingType,
-                nameof(implementingTypeHandle),
-                $"Invalid argument '{nameof(implementingTypeHandle)}'. The provided declaring type handle does not resolve to a runtime type.");
-            ArgumentExceptionAdvanced.ThrowIfTrue(
-                implementingType!.IsInterface,
-                nameof(implementingTypeHandle),
-                $"Invalid argument '{nameof(implementingTypeHandle)}'. The argument '{nameof(isExplicitInterfaceImplementation)}' is pointing to an interface type. Reason: Only non-interface types can provide the implementations.");
+                declaringType,
+                nameof(declaringTypeHandle),
+                $"Invalid argument '{nameof(declaringTypeHandle)}'. The provided declaring type handle does not resolve to a runtime type.");
 
             ArgumentNullException.ThrowIfNullOrWhiteSpace(eventName);
             ArgumentExceptionAdvanced.ThrowIfEnumIsNotDefined<EventAccessors>(
@@ -78,25 +79,30 @@
 
             if (isExplicitInterfaceImplementation)
             {
+                ArgumentExceptionAdvanced.ThrowIfFalse(
+                    declaringType!.IsInterface,
+                    nameof(declaringTypeHandle),
+                    $"Invalid argument '{nameof(declaringTypeHandle)}'. The argument '{nameof(declaringType)}' is pointing to an non-interface type. Reason: Only interface types can declare explicit member implementations.");
+
                 ArgumentNullExceptionAdvanced.ThrowIfNull(
-                    declaringInterfaceTypeHandle,
-                    nameof(declaringInterfaceTypeHandle),
-                    $"Invalid argument '{nameof(declaringInterfaceTypeHandle)}'. The provided declaring interface type handle is not 'NULL' which is not allowed for explicit interface implementations (which is when '{nameof(isExplicitInterfaceImplementation)}' is 'true').");
-                ArgumentNullExceptionAdvanced.ThrowIfDefault(declaringInterfaceTypeHandle!.Value);
-                Type? declaringInterfaceType = Type.GetTypeFromHandle(declaringInterfaceTypeHandle!.Value);
+                    implementingTypeHandle,
+                    nameof(implementingTypeHandle),
+                    $"Invalid argument '{nameof(implementingTypeHandle)}'. The provided declaring interface type handle is not 'NULL' which is not allowed for explicit interface implementations (which is when '{nameof(isExplicitInterfaceImplementation)}' is 'true').");
+                ArgumentNullExceptionAdvanced.ThrowIfDefault(implementingTypeHandle!.Value);
+                Type? declaringInterfaceType = Type.GetTypeFromHandle(implementingTypeHandle!.Value);
                 ArgumentNullExceptionAdvanced.ThrowIfNull(
                     declaringInterfaceType,
-                    nameof(declaringInterfaceTypeHandle),
-                    $"The declaring interface type represented by the argument '{nameof(declaringInterfaceTypeHandle)}' could not be resolved.");
-                ArgumentExceptionAdvanced.ThrowIfFalse(declaringInterfaceType!.IsInterface,
+                    nameof(implementingTypeHandle),
+                    $"The declaring interface type represented by the argument '{nameof(implementingTypeHandle)}' could not be resolved.");
+                ArgumentExceptionAdvanced.ThrowIfTrue(declaringInterfaceType!.IsInterface,
                     nameof(isExplicitInterfaceImplementation),
-                    $"Invalid argument '{nameof(declaringInterfaceTypeHandle)}'. The argument '{nameof(declaringInterfaceTypeHandle)}' points to a non-interface type. Reason: Only interface types can provide the declaration of explicit interface implementations.");
+                    $"Invalid argument '{nameof(implementingTypeHandle)}'. The argument '{nameof(implementingTypeHandle)}' points to a interface type. Reason: Only non-interface types can provide the explicit interface implementations.");
             }
 
             this.EventName = eventName;
-            this.ImplementingTypeHandle = implementingTypeHandle;
+            this.ImplementingTypeHandle = declaringTypeHandle;
             this.DeclaringInterfaceTypeHandle = isExplicitInterfaceImplementation
-                ? declaringInterfaceTypeHandle!.Value
+                ? implementingTypeHandle!.Value
                 : default;
             this.IsExplicitInterfaceImplementation = isExplicitInterfaceImplementation;
             this.IsAnonymous = true;

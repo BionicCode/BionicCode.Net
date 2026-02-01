@@ -98,12 +98,12 @@
             return hashCode.ToHashCode();
         }
 
-        public static bool operator ==(WellKnownConstructorDescriptor left, WellKnownConstructorDescriptor right)
+        public static bool operator ==(WellKnownTypeDescriptor left, WellKnownTypeDescriptor right)
             => left.Equals(right);
-        public static bool operator !=(WellKnownConstructorDescriptor left, WellKnownConstructorDescriptor right)
+        public static bool operator !=(WellKnownTypeDescriptor left, WellKnownTypeDescriptor right)
             => !(left == right);
 
         public override bool Equals(object obj)
-            => obj is WellKnownConstructorDescriptor other && Equals(other);
+            => obj is WellKnownTypeDescriptor other && Equals(other);
     }
 }
