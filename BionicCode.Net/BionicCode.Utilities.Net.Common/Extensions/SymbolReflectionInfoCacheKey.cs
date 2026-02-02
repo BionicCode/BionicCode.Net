@@ -37,8 +37,6 @@
         /// <value>The name of the symbol, such as the method name, property name, event name, field name, or type name.</value>
         public readonly string SymbolName { get; }
 
-        internal SymbolReflectionInfoCache.AssemblyId AssemblyID { get; }
-
         /// <summary>
         /// Gets the kind of symbol represented by this instance.
         /// </summary>
@@ -88,7 +86,6 @@
         private readonly int _hashCode;
 
         private SymbolReflectionInfoCacheKey(
-            SymbolReflectionInfoCache.AssemblyId assemblyId,
             string name,
             SymbolKind symbolKind,
             WellKnownTypeDescriptor typeDescriptor,
@@ -127,7 +124,6 @@
             ArgumentNullExceptionAdvanced.ThrowIfDefault(eventDescriptor);
 
             return new SymbolReflectionInfoCacheKey(
-                SymbolReflectionInfoCache.AssemblyId.FromAssembly(eventDescriptor.EventInfo.DeclaringType!.Assembly),
                 eventDescriptor.EventInfo.Name,
                 SymbolKind.MemberEvent,
                 default,
@@ -156,7 +152,6 @@
             ArgumentNullExceptionAdvanced.ThrowIfDefault(propertyDescriptor);
 
             return new SymbolReflectionInfoCacheKey(
-                SymbolReflectionInfoCache.AssemblyId.FromAssembly(propertyDescriptor.PropertyInfo.DeclaringType!.Assembly),
                 propertyDescriptor.PropertyInfo.Name,
                 SymbolKind.MemberProperty,
                 default,
@@ -179,9 +174,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(methodDescriptor);
 
-            MethodBase methodBase = MethodBase.GetMethodFromHandle(methodDescriptor.MethodHandle)!;
             return new SymbolReflectionInfoCacheKey(
-                SymbolReflectionInfoCache.AssemblyId.FromAssembly(methodBase.DeclaringType!.Assembly),
                 methodDescriptor.MethodName,
                 SymbolKind.MemberMethod,
                 default,
@@ -197,9 +190,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(typeDescriptor);
 
-            Type type = Type.GetTypeFromHandle(typeDescriptor.TypeHandle)!;
             return new SymbolReflectionInfoCacheKey(
-                SymbolReflectionInfoCache.AssemblyId.FromAssembly(type.Assembly),
                 typeDescriptor.TypeName,
                 SymbolKind.Type,
                 typeDescriptor,
@@ -215,9 +206,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(fieldDescriptor);
 
-            var fieldInfo = FieldInfo.GetFieldFromHandle(fieldDescriptor.FieldHandle);
             return new SymbolReflectionInfoCacheKey(
-                SymbolReflectionInfoCache.AssemblyId.FromAssembly(fieldInfo.DeclaringType!.Assembly),
                 fieldDescriptor.FieldName,
                 SymbolKind.MemberField,
                 default,
@@ -241,9 +230,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(constructorDescriptor);
 
-            MethodBase methodBase = MethodBase.GetMethodFromHandle(constructorDescriptor.ConstructorHandle);
             return new SymbolReflectionInfoCacheKey(
-                SymbolReflectionInfoCache.AssemblyId.FromAssembly(methodBase.DeclaringType!.Assembly),
                 string.Empty,
                 SymbolKind.MemberConstructor,
                 default,
@@ -259,9 +246,7 @@
         {
             ArgumentNullExceptionAdvanced.ThrowIfDefault(parameterDescriptor);
 
-            Type declaringType = parameterDescriptor.ParameterInfo.Member.DeclaringType!;
             return new SymbolReflectionInfoCacheKey(
-                SymbolReflectionInfoCache.AssemblyId.FromAssembly(declaringType.Assembly),
                 parameterDescriptor.ParameterName,
                 SymbolKind.Parameter,
                 default,

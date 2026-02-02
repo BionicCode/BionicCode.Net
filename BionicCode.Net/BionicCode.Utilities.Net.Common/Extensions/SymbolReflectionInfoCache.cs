@@ -6,150 +6,33 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
-    using System.Runtime.CompilerServices;
-    using System.Runtime.Loader;
-    using System.Threading;
     using Microsoft.CodeAnalysis;
-
-    internal static class AssemblyMonitor
-    {
-        internal class AssemblyUnloadingEventArgs : EventArgs
-        {
-            public SymbolReflectionInfoCache.AssemblyId AssemblyId { get; }
-
-            public AssemblyUnloadingEventArgs(SymbolReflectionInfoCache.AssemblyId assemblyId)
-            {
-                this.AssemblyId = assemblyId;
-            }
-        }
-
-        private static ConditionalWeakTable<AssemblyLoadContext, Guid> MonitoredAssemblyLoadContextIds { get; } = new ConditionalWeakTable<AssemblyLoadContext, Guid>();
-
-        public static event EventHandler<AssemblyUnloadingEventArgs>? AssemblyUnloading;
-
-        public static bool TryStartMonitoringAssembly(AssemblyLoadContext assemblyLoadContext)
-        {
-            if (assemblyLoadContext is null
-                || !assemblyLoadContext.IsCollectible
-                || !MonitoredAssemblyIds.TryAdd(assemblyId))
-            {
-                return false;
-            }
-
-            // Creates a closure to capture the assemblyId for the unloading event handler.
-            // It's a small struct and the event is published only once before the context gets collected.
-            // Additionally the 'assemblyId' ends its lifetime together with the assembly load context. So, no keeping alive issues.
-            assemblyLoadContext!.Unloading += _ => OnAssemblyUnloading(assemblyId);
-
-            return true;
-        }
-
-        private static void OnAssemblyUnloading(SymbolReflectionInfoCache.AssemblyId assemblyId)
-        {
-            if (MonitoredAssemblyIds.TryRemove(assemblyId))
-            {
-                try
-                {
-                    AssemblyMonitor.AssemblyUnloading?.Invoke(null, new AssemblyUnloadingEventArgs(assemblyId));
-                }
-                catch (Exception)
-                {
-                    // Swallow exceptions thrown by event subscribers to avoid unhandled exceptions during assembly unloading
-                    // and causing the AssemblyMonitor to stop (if a handler allows exceptions to propagate i.e. not catch the exception or rethrows it).
-                }
-            }
-        }
-    }
 
     internal static class SymbolReflectionInfoCache
     {
         private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKey, SymbolInfoData> SymbolInfoDataCache = new ConcurrentDictionary<SymbolReflectionInfoCacheKey, SymbolInfoData>();
-        private static readonly ConcurrentDictionary<AssemblyId, ConcurrentHashSet<SymbolReflectionInfoCacheKey>> AssemblyToCacheKeyMap = new ConcurrentDictionary<AssemblyId, ConcurrentHashSet<SymbolReflectionInfoCacheKey>>();
-        private static readonly ConcurrentDictionary<AssemblyId, WeakReference<Assembly>> AssemblyMap = new ConcurrentDictionary<AssemblyId, WeakReference<Assembly>>();
+        private static readonly ConcurrentDictionary<uint, ConcurrentHashSet<SymbolReflectionInfoCacheKey>> AssemblyLoadContextIdToCacheKeyMap = new ConcurrentDictionary<uint, ConcurrentHashSet<SymbolReflectionInfoCacheKey>>();
         private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKey, SymbolReflectionInfoCacheKey> AnonymousSymbolDataCacheKeyMap = new ConcurrentDictionary<SymbolReflectionInfoCacheKey, SymbolReflectionInfoCacheKey>();
         private static readonly ConcurrentDictionary<AmbiguousIndexerPropertyKey, SymbolReflectionInfoCacheKey> IndexerParameterSymbolDataCacheKeyMap = new ConcurrentDictionary<AmbiguousIndexerPropertyKey, SymbolReflectionInfoCacheKey>();
         private const string DeclaringTypeHandleInKeyIsDefaultExceptionMessage = $"The value 'default' is not a valid value for the key's '{nameof(SymbolReflectionInfoCacheKey)}.{nameof(SymbolReflectionInfoCacheKey.DeclaringTypeHandle)}' property. The property must reference a valid declaring type handle.";
 
-        private static readonly TimeSpan CleanupTimerPeriod = TimeSpan.FromMinutes(10);
-        private static readonly PeriodicTimer CleanupTimer = new PeriodicTimer(SymbolReflectionInfoCache.CleanupTimerPeriod);
-        private static readonly CancellationTokenSource CleanupTimerCancellationTokenSource = new CancellationTokenSource();
-        private static readonly Task CleanupTask;
-
         static SymbolReflectionInfoCache()
         {
-            SymbolReflectionInfoCache.CleanupTask = SymbolReflectionInfoCache.MonitorAssembliesAndPruneCacheAsync();
+            AssemblyMonitor.AssemblyLoadContextUnloading += OnAssemblyLoadContextUnloading;
         }
 
-        private static async Task MonitorAssembliesAndPruneCacheAsync()
+        private static void OnAssemblyLoadContextUnloading(object? sender, AssemblyMonitor.AssemblyLoadContextUnloadingEventArgs e)
         {
-            CancellationToken cancellationToken = SymbolReflectionInfoCache.CleanupTimerCancellationTokenSource.Token;
-            try
+            if (SymbolReflectionInfoCache.AssemblyLoadContextIdToCacheKeyMap.TryRemove(e.AssemblyLoadContextId, out ConcurrentHashSet<SymbolReflectionInfoCacheKey>? cacheKeysOfAssemblyLoadContext))
             {
-                while (await SymbolReflectionInfoCache.CleanupTimer.WaitForNextTickAsync(cancellationToken).ConfigureAwait(false))
+                foreach (SymbolReflectionInfoCacheKey cacheKey in cacheKeysOfAssemblyLoadContext)
                 {
-                    var assembliesToPrune = new List<AssemblyId>();
-                    foreach (KeyValuePair<AssemblyId, WeakReference<Assembly>> entry in SymbolReflectionInfoCache.AssemblyMap)
-                    {
-                        if (!entry.Value.TryGetTarget(out _))
-                        {
-                            AssemblyId assemblyId = entry.Key;
-                            assembliesToPrune.Add(assemblyId);
-                            if (SymbolReflectionInfoCache.AssemblyToCacheKeyMap.TryGetValue(assemblyId, out ConcurrentHashSet<SymbolReflectionInfoCacheKey>? cacheKeysOfAssembly))
-                            {
-                                foreach (SymbolReflectionInfoCacheKey cacheKey in cacheKeysOfAssembly)
-                                {
-                                    _ = SymbolReflectionInfoCache.SymbolInfoDataCache.TryRemove(cacheKey, out _);
-                                }
-
-                                _ = SymbolReflectionInfoCache.AssemblyToCacheKeyMap.TryRemove(assemblyId, out _);
-                            }
-                        }
-                    }
-
-                    foreach (AssemblyId assemblyId in assembliesToPrune)
-                    {
-                        _ = SymbolReflectionInfoCache.AssemblyMap.TryRemove(assemblyId, out _);
-                    }
+                    _ = SymbolReflectionInfoCache.SymbolInfoDataCache.TryRemove(cacheKey, out _);
                 }
-            }
-            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-            {
-                // Cancellation is only expected during debug mode and never during production runs.
-                // Additionally nobody will ever monitor and await the stored 'CleanupTask' task.
-                // Hence we can swallow exceptions here.
-            }
-            catch (Exception)
-            {
-                // Nobody will ever monitor and await the stored 'CleanupTask' task to allow exceptions to leave the current context.
-                // Hence we can swallow exceptions here.
+
+                cacheKeysOfAssemblyLoadContext.Clear();
             }
         }
-
-#if DEBUG
-        internal static async Task ShutdownCacheAsync()
-        {
-            // Avoid deadlock
-            if (!SymbolReflectionInfoCache.CleanupTimerCancellationTokenSource.IsCancellationRequested)
-            {
-                await SymbolReflectionInfoCache.CleanupTimerCancellationTokenSource.CancelAsync().ConfigureAwait(false);
-            }
-
-            await SymbolReflectionInfoCache.CleanupTask.ConfigureAwait(false);
-            Cleanup();
-        }
-
-        private static void Cleanup()
-        {
-            SymbolReflectionInfoCache.CleanupTimer.Dispose();
-            SymbolReflectionInfoCache.CleanupTimerCancellationTokenSource.Dispose();
-
-            SymbolReflectionInfoCache.SymbolInfoDataCache.Clear();
-            SymbolReflectionInfoCache.AssemblyMap.Clear();
-            SymbolReflectionInfoCache.AssemblyToCacheKeyMap.Clear();
-            SymbolReflectionInfoCache.AnonymousSymbolDataCacheKeyMap.Clear();
-            SymbolReflectionInfoCache.IndexerParameterSymbolDataCacheKeyMap.Clear();
-        }
-#endif
 
         #region Extension Methods
 
@@ -229,26 +112,13 @@
         {
             var descriptor = new WellKnownTypeDescriptor(type);
             SymbolReflectionInfoCacheKey cacheKey = SymbolReflectionInfoCacheKey.CreateForType(descriptor);
-            UpdateAssemblyMap(cacheKey, type);
+            MonitorAssemblyLoadContextOfType(cacheKey, type);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new TypeData(type, cacheKey));
 
             // REMOVE::after testing
             Debug.WriteLine($"Found SymbolInfoData entry for {type.GetType()}");
 
             return (TypeData)symbolInfoData;
-        }
-
-        private static void UpdateAssemblyMap(SymbolReflectionInfoCacheKey cacheKey, Type type)
-        {
-            ConcurrentHashSet<SymbolReflectionInfoCacheKey> cacheKeysOfSameAssembly = SymbolReflectionInfoCache.AssemblyToCacheKeyMap.GetOrAdd(cacheKey.AssemblyID, _ => new ConcurrentHashSet<SymbolReflectionInfoCacheKey>());
-            if (cacheKeysOfSameAssembly.TryAdd(cacheKey))
-            {
-                // New assembly detected
-
-                Assembly newAssembly = type.Assembly;
-                var assemblyWeakReference = new WeakReference(newAssembly);
-                SymbolReflectionInfoCache.AssemblyMap[cacheKey.AssemblyID] = assemblyWeakReference;
-            }
         }
 
         public static MethodData GetOrCreateSymbolReflectionInfoCacheEntry(MethodInfo methodInfo)
@@ -267,7 +137,7 @@
             }
 
             SymbolReflectionInfoCacheKey cacheKey = SymbolReflectionInfoCacheKey.CreateForMethod(descriptor);
-            UpdateAssemblyMap(cacheKey, declaringType);
+            MonitorAssemblyLoadContextOfType(cacheKey, declaringType);
             SymbolInfoData symbolInfoData = SymbolReflectionInfoCache.SymbolInfoDataCache.GetOrAdd(cacheKey, key => new MethodData(methodInfo, key));
 
             // REMOVE::after testing
@@ -1418,6 +1288,17 @@
             return result;
         }
 
+        private static void MonitorAssemblyLoadContextOfType(SymbolReflectionInfoCacheKey cacheKey, Type type)
+        {
+            if (!AssemblyMonitor.TryStartMonitoringAssembly(type.Assembly, out uint assemblyLoadContextId))
+            {
+                throw new InvalidOperationException($"Failed to monitor assembly load context for type '{type.ToFullyQualifiedSignatureName()}' in assembly '{type.Assembly.FullName}'.");
+            }
+
+            ConcurrentHashSet<SymbolReflectionInfoCacheKey> cacheKeysOfSameAssembly = SymbolReflectionInfoCache.AssemblyLoadContextIdToCacheKeyMap.GetOrAdd(assemblyLoadContextId, _ => new ConcurrentHashSet<SymbolReflectionInfoCacheKey>());
+            _ = cacheKeysOfSameAssembly.TryAdd(cacheKey);
+        }
+
         #region AmbiguousIndexerPropertyKey
 
         private readonly struct AmbiguousIndexerPropertyKey : IEquatable<AmbiguousIndexerPropertyKey>
@@ -1449,94 +1330,6 @@
 
             public static bool operator !=(AmbiguousIndexerPropertyKey left, AmbiguousIndexerPropertyKey right)
                 => !(left == right);
-        }
-
-        #endregion
-
-        #region AssemblyId
-
-        internal readonly struct AssemblyId : IEquatable<AssemblyId>
-        {
-            public static readonly AssemblyId Empty = new AssemblyId(Guid.Empty, 0);
-
-            // Keep it small: Guid (16 bytes) + int (4 bytes) = 20 bytes.
-            public readonly Guid ModuleVersionId;
-            public readonly int InstanceHash;
-
-            public AssemblyId(Guid moduleVersionId, int instanceHash)
-            {
-                this.ModuleVersionId = moduleVersionId;
-                this.InstanceHash = instanceHash;
-            }
-
-            public static AssemblyId FromAssembly(Assembly asm)
-            {
-                ArgumentNullException.ThrowIfNull(asm);
-
-                // ModuleVersionId is available on the manifest module (typical single-module assemblies)
-                Guid mvid = asm.ManifestModule.ModuleVersionId;
-
-                // RuntimeHelpers.GetHashCode uses object identity and is stable for the lifetime of the object.
-                int instanceHash = RuntimeHelpers.GetHashCode(asm);
-
-                // Optionally strengthen uniqueness by mixing in the load-context identity:
-                var alc = AssemblyLoadContext.GetLoadContext(asm);
-                if (alc != null)
-                {
-                    // mix in ALC identity (also object-identity based)
-                    unchecked
-                    {
-                        instanceHash = (instanceHash * 31) + RuntimeHelpers.GetHashCode(alc);
-                    }
-                }
-
-                return new AssemblyId(mvid, instanceHash);
-            }
-
-            public override int GetHashCode()
-            {
-                unchecked
-                {
-                    var hasCode = new HashCode();
-                    // fold GUID into int then combine
-                    int g1 = this.ModuleVersionId.GetHashCode();
-                    hasCode.Add(g1);
-                    hasCode.Add(this.InstanceHash);
-
-                    return hasCode.ToHashCode();
-                }
-            }
-
-            public override bool Equals(object obj)
-                => obj is AssemblyId other && Equals(other);
-
-            public bool Equals(AssemblyId other)
-                => this.ModuleVersionId.Equals(other.ModuleVersionId)
-                    && this.InstanceHash == other.InstanceHash;
-
-            public static bool operator ==(AssemblyId a, AssemblyId b) => a.Equals(b);
-            public static bool operator !=(AssemblyId a, AssemblyId b) => !a.Equals(b);
-
-            // Optional: compress to a 64-bit value for smaller memory
-            public ulong ToUInt64()
-            {
-                // cheap non-cryptographic fold of GUID bytes + instanceHash -> 64-bit
-                Span<byte> buf = stackalloc byte[20]; // 16 + 4
-                _ = this.ModuleVersionId.TryWriteBytes(buf);
-                buf[16] = (byte)this.InstanceHash;
-                buf[17] = (byte)(this.InstanceHash >> 8);
-                buf[18] = (byte)(this.InstanceHash >> 16);
-                buf[19] = (byte)(this.InstanceHash >> 24);
-
-                // simple FNV or xxhash-style fold; here a basic fold to 64-bit
-                ulong h = 1469598103934665603ul;
-                foreach (byte b in buf)
-                {
-                    h = (h ^ b) * 1099511628211ul;
-                }
-
-                return h;
-            }
         }
 
         #endregion
