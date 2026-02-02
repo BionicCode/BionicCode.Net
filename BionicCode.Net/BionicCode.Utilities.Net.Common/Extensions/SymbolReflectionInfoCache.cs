@@ -11,6 +11,56 @@
     using System.Threading;
     using Microsoft.CodeAnalysis;
 
+    internal static class AssemblyMonitor
+    {
+        internal class AssemblyUnloadingEventArgs : EventArgs
+        {
+            public SymbolReflectionInfoCache.AssemblyId AssemblyId { get; }
+
+            public AssemblyUnloadingEventArgs(SymbolReflectionInfoCache.AssemblyId assemblyId)
+            {
+                this.AssemblyId = assemblyId;
+            }
+        }
+
+        private static ConditionalWeakTable<AssemblyLoadContext, Guid> MonitoredAssemblyLoadContextIds { get; } = new ConditionalWeakTable<AssemblyLoadContext, Guid>();
+
+        public static event EventHandler<AssemblyUnloadingEventArgs>? AssemblyUnloading;
+
+        public static bool TryStartMonitoringAssembly(AssemblyLoadContext assemblyLoadContext)
+        {
+            if (assemblyLoadContext is null
+                || !assemblyLoadContext.IsCollectible
+                || !MonitoredAssemblyIds.TryAdd(assemblyId))
+            {
+                return false;
+            }
+
+            // Creates a closure to capture the assemblyId for the unloading event handler.
+            // It's a small struct and the event is published only once before the context gets collected.
+            // Additionally the 'assemblyId' ends its lifetime together with the assembly load context. So, no keeping alive issues.
+            assemblyLoadContext!.Unloading += _ => OnAssemblyUnloading(assemblyId);
+
+            return true;
+        }
+
+        private static void OnAssemblyUnloading(SymbolReflectionInfoCache.AssemblyId assemblyId)
+        {
+            if (MonitoredAssemblyIds.TryRemove(assemblyId))
+            {
+                try
+                {
+                    AssemblyMonitor.AssemblyUnloading?.Invoke(null, new AssemblyUnloadingEventArgs(assemblyId));
+                }
+                catch (Exception)
+                {
+                    // Swallow exceptions thrown by event subscribers to avoid unhandled exceptions during assembly unloading
+                    // and causing the AssemblyMonitor to stop (if a handler allows exceptions to propagate i.e. not catch the exception or rethrows it).
+                }
+            }
+        }
+    }
+
     internal static class SymbolReflectionInfoCache
     {
         private static readonly ConcurrentDictionary<SymbolReflectionInfoCacheKey, SymbolInfoData> SymbolInfoDataCache = new ConcurrentDictionary<SymbolReflectionInfoCacheKey, SymbolInfoData>();
