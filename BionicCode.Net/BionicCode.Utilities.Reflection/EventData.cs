@@ -1,0 +1,296 @@
+﻿namespace BionicCode.Utilities.Net.Reflection;
+
+using System;
+using System.Reflection;
+
+internal sealed class EventData : MemberData
+{
+    private string? _displayName;
+    private string? _shortDisplayName;
+    private string? _fullyQualifiedDisplayName;
+    private string? _signature;
+    private string? _shortSignature;
+    private string? _shortCompactSignature;
+    private string? _fullyQualifiedSignature;
+    private string? _fullyQualifiedRuntimeSignature;
+    private string? _runtimeSignature;
+    private string? _runtimeShortSignature;
+    private string? _runtimeShortCompactSignature;
+    private SymbolAttributes _symbolAttributes;
+    private bool? _isOverride;
+    private MethodData? _addMethodData;
+    private MethodData? _removeMethodData;
+    private MethodData? _invocatorMethodData;
+    private AccessModifier _accessModifier;
+    private bool? _isStatic;
+    private bool? _isPublic;
+    private bool? _isPrivate;
+    private bool? _isAssembly;
+    private bool? _isFamily;
+    private bool? _isFamilyOrAssembly;
+    private bool? _isFamilyAndAssembly;
+    private bool? _canAdd;
+    private bool? _canRemove;
+    private TypeData? _eventHandlerTypeData;
+    private string? _assemblyName;
+    private SymbolComponentInfo? _symbolComponentInfo;
+    private readonly WellKnownEventDescriptor _descriptor;
+
+    internal EventData(SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
+        : base(symbolInfoDataCacheKey.EventDescriptor.EventName, SymbolKind.MemberEvent, symbolInfoDataCacheKey)
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfDefault(symbolInfoDataCacheKey.EventDescriptor, nameof(symbolInfoDataCacheKey));
+
+        _descriptor = symbolInfoDataCacheKey.EventDescriptor;
+        EventInfo = symbolInfoDataCacheKey.EventDescriptor.EventInfo;
+        IsExplicitInterfaceImplementation = _descriptor.IsExplicitInterfaceImplementation;
+        DeclaringTypeHandle = _descriptor.DeclaringTypeHandle;
+        ImplementingTypeHandle = _descriptor.ImplementingTypeHandle;
+    }
+
+    public EventInfo GetEventInfo()
+      => EventInfo;
+
+    protected override MemberInfo GetMemberInfo()
+      => GetEventInfo();
+
+    public object? RaiseEvent(object? target, params object?[]? arguments)
+    {
+        ThrowIfTargetIsNullOrTargetTypeIsNotMatchingDeclaringTypeForInstanceMember(target);
+        ThrowIfInvalidMethodArguments(arguments);
+
+        return EventInvokerMethodData.Invoke(target, arguments);
+    }
+
+    private void ThrowIfTargetIsNullOrTargetTypeIsNotMatchingDeclaringTypeForInstanceMember(object? target)
+    {
+        if (!IsStatic)
+        {
+            ArgumentNullException.ThrowIfNull(target, nameof(target));
+
+            Type targetType = target.GetType();
+            Type declaringType = DeclaringTypeData.UnwrapType();
+            ArgumentExceptionAdvanced.ThrowIfNotAssignableTo(
+                targetType,
+                declaringType,
+                nameof(target),
+                ExceptionMessages.GetTypeMismatchExceptionMessage(
+                        targetType,
+                        nameof(target),
+                        declaringType,
+                        "declaring type"));
+        }
+    }
+
+    private void ThrowIfInvalidMethodArguments(object?[]? args)
+    {
+        // Validate arguments against method parameters
+        if (EventInvokerMethodData.Parameters.HasItems)
+        {
+            if (EventInvokerMethodData.HasParamsParameter)
+            {
+                // NULL is valid for 'args' if there is only a single non-params parameter since params can be empty.
+                // Additionally, no need to check 'args' for NULL if there is only the params parameter.
+                // However, NULL is not valid for 'args' if there are more than a single non-params parameters.
+                if (EventInvokerMethodData.Parameters.Count > 2)
+                {
+                    ArgumentNullException.ThrowIfNull(args, nameof(args));
+
+                    // Insufficient number of arguments provided for method invocation with 'params' parameter.
+                    // For a params method parameter, providing no arguments for it is valid, hence the -1 check.
+                    ArgumentOutOfRangeException.ThrowIfLessThan(args.Length, EventInvokerMethodData.Parameters.Count - 1, nameof(args));
+                }
+            }
+            else
+            {
+                // NULL is valid for 'args' if there is only a single non-params parameter.
+                // However, NULL is not valid for 'args' if there are more than a single non-params parameters.
+                if (EventInvokerMethodData.Parameters.Count > 1)
+                {
+                    ArgumentNullException.ThrowIfNull(args, nameof(args));
+                }
+
+                if (args is not null)
+                {
+                    ArgumentOutOfRangeException.ThrowIfNotEqual(args.Length, EventInvokerMethodData.Parameters.Count, nameof(args));
+                }
+            }
+        }
+        else if (args is not null && args.Length > 0) // Method has no parameters but arguments were provided.
+        {
+            throw new ArgumentException("Method has no parameters but arguments were provided.", nameof(args));
+        }
+    }
+
+    public override AccessModifier AccessModifier => _accessModifier is AccessModifier.Undefined
+      ? (_accessModifier = EventData.GetAccessModifierInternal(this))
+      : _accessModifier;
+
+    public void AddEventHandler(object eventSource, Delegate handler)
+      => AddMethodData.Invoke(eventSource, handler);
+
+    public void AddEventHandler<TEventSource>(TEventSource eventSource, Delegate handler)
+      => AddMethodData.Invoke(eventSource, handler);
+
+    public void RemoveEventHandler(object eventSource, Delegate handler)
+      => RemoveMethodData.Invoke(eventSource, handler);
+
+    public void RemoveEventHandler<TEventSource>(TEventSource eventSource, Delegate handler)
+      => RemoveMethodData.Invoke(eventSource, handler);
+
+    public MethodData AddMethodData
+      => _addMethodData ??= IsExplicitInterfaceImplementation
+            ? MethodInfo.GetMethodFromHandle(_descriptor.AddAccessorImplementationMethodHandle) is MethodInfo explicitImplementationAccessor
+                ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(explicitImplementationAccessor)
+                : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{GetEventInfo().Name}' does not have an add method.")
+            : GetEventInfo().GetAddMethod() is MethodInfo methodInfo
+                ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo)
+                : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{GetEventInfo().Name}' does not have an add method.");
+
+    public MethodData RemoveMethodData
+      => _removeMethodData ??= IsExplicitInterfaceImplementation
+            ? MethodInfo.GetMethodFromHandle(_descriptor.RemoveAccessorImplementationMethodHandle) is MethodInfo explicitImplementationAccessor
+                ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(explicitImplementationAccessor)
+                : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{GetEventInfo().Name}' does not have a remove method.")
+            : GetEventInfo().GetRemoveMethod() is MethodInfo methodInfo
+                ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo)
+                : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{GetEventInfo().Name}' does not have a remove method.");
+
+    public MethodData EventInvokerMethodData
+      => _invocatorMethodData ??= EventHandlerTypeData?.DelegateInvokeMethodData!;
+
+    public TypeData EventHandlerTypeData
+      => _eventHandlerTypeData ??= GetEventInfo().EventHandlerType is Type eventHandlerType
+        ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventHandlerType)
+        : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{GetEventInfo().Name}' does not have an event handler type.");
+
+    public EventInfo EventInfo { get; }
+
+    public override bool IsExplicitInterfaceImplementation { get; }
+
+    public override RuntimeTypeHandle DeclaringTypeHandle { get; }
+    public override RuntimeTypeHandle DeclaringInterfaceHandle { get; }
+    public override RuntimeTypeHandle ImplementingTypeHandle { get; }
+
+    public override bool IsStatic
+      => _isStatic ??= AddMethodData?.IsStatic ?? false;
+
+    public override SymbolAttributes SymbolAttributes => _symbolAttributes is SymbolAttributes.Undefined
+      ? (_symbolAttributes = EventData.GetAttributesInternal(this))
+      : _symbolAttributes;
+
+    public override SymbolComponentInfo SymbolComponentInfo
+      => _symbolComponentInfo ??= SymbolSignatureGenerator.ToSignatureComponentsInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false);
+
+    public override string Signature
+      => _signature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+
+    public override string ShortSignature
+      => _shortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: false);
+
+    public override string ShortCompactSignature
+      => _shortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: false);
+
+    public override string FullyQualifiedSignature
+      => _fullyQualifiedSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: false);
+
+    public override string FullyQualifiedRuntimeSignature
+      => _fullyQualifiedRuntimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: true, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+
+    public override string RuntimeSignature
+      => _runtimeSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: true, isCompact: false, isRuntimeSymbol: true);
+
+    public override string RuntimeShortSignature
+      => _runtimeShortSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: false, isRuntimeSymbol: true);
+
+    public override string RuntimeShortCompactSignature
+      => _runtimeShortCompactSignature ??= SymbolSignatureGenerator.ToSignatureNameInternal(this, isFullyQualifiedName: false, isDeclaringTypeIncluded: false, isCompact: true, isRuntimeSymbol: true);
+
+    public override string DisplayName
+      => _displayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
+
+    public override string ShortDisplayName
+      => _shortDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: false, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: false);
+
+    public override string FullyQualifiedDisplayName
+      => _fullyQualifiedDisplayName ??= SymbolSignatureGenerator.ToDisplayNameInternal(this, isFullyQualifiedName: true, isGenericTypeParameterIncluded: true, isDeclaringTypeIncluded: true);
+
+    public override string AssemblyName
+      => _assemblyName ??= DeclaringTypeData.AssemblyName;
+
+    public bool CanAdd
+      => _canAdd ??= GetEventInfo().GetAddMethod(true) is not null;
+
+    public bool CanRemove
+        => _canRemove ??= GetEventInfo().GetRemoveMethod(true) is not null;
+
+    public bool IsOverride
+      => _isOverride ??= AddMethodData!.IsOverride;
+
+    public override bool IsPublic
+        => _isPublic ??= AccessModifier == AccessModifier.Public;
+
+    public override bool IsPrivate
+        => _isPrivate ??= AccessModifier == AccessModifier.Private;
+
+    /// <summary>
+    /// Gets a value indicating whether the member has internal accessibility within its assembly.
+    /// </summary>
+    public override bool IsAssembly
+        => _isAssembly ??= AccessModifier == AccessModifier.Internal;
+
+    /// <summary>
+    /// Gets a value indicating whether the member is protected and thus accessible only within its own class or by
+    /// derived class instances.
+    /// </summary>
+    public override bool IsFamily
+        => _isFamily ??= AccessModifier == AccessModifier.Protected;
+
+    public override bool IsFamilyOrAssembly
+        => _isFamilyOrAssembly ??= AccessModifier == AccessModifier.ProtectedInternal;
+
+    public override bool IsFamilyAndAssembly
+        => _isFamilyAndAssembly ??= AccessModifier == AccessModifier.PrivateProtected;
+
+    /// <summary>
+    /// Determines the set of symbol attributes for the specified event based on its add method characteristics.
+    /// </summary>
+    /// <remarks>For performance reasons avoid querying the attributes and prefer reading the particular property or properties.</remarks>
+    /// <param name="eventData">The event metadata used to evaluate and derive the corresponding symbol attributes.</param>
+    /// <returns>A bitwise combination of SymbolAttributes values that represent the attributes of the event, such as Final,
+    /// Abstract, Static, Virtual, or Override.</returns>
+    private static SymbolAttributes GetAttributesInternal(EventData eventData)
+    {
+        MethodData? eventAddMethodData = eventData.AddMethodData;
+        SymbolAttributes eventAttributes = SymbolAttributes.Event;
+        if (eventAddMethodData?.IsSealed ?? false)
+        {
+            eventAttributes |= SymbolAttributes.Final;
+        }
+
+        if (eventAddMethodData?.IsAbstract ?? false)
+        {
+            eventAttributes |= SymbolAttributes.Abstract;
+        }
+
+        if (eventAddMethodData?.IsStatic ?? false)
+        {
+            eventAttributes |= SymbolAttributes.Static;
+        }
+
+        if (eventAddMethodData?.IsVirtual ?? false)
+        {
+            eventAttributes |= SymbolAttributes.Virtual;
+        }
+
+        if (eventAddMethodData?.IsOverride ?? false)
+        {
+            eventAttributes |= SymbolAttributes.Override;
+        }
+
+        return eventAttributes;
+    }
+
+    private static AccessModifier GetAccessModifierInternal(EventData eventData)
+      => eventData.AddMethodData?.AccessModifier ?? AccessModifier.Undefined;
+}
