@@ -34,6 +34,7 @@ internal sealed class EventData : MemberData
     private TypeData? _eventHandlerTypeData;
     private string? _assemblyName;
     private SymbolComponentInfo? _symbolComponentInfo;
+    private EventInfo _eventInfo;
     private readonly WellKnownEventDescriptor _descriptor;
 
     internal EventData(SymbolReflectionInfoCacheKey symbolInfoDataCacheKey)
@@ -48,11 +49,8 @@ internal sealed class EventData : MemberData
         ImplementingTypeHandle = _descriptor.ImplementingTypeHandle;
     }
 
-    public EventInfo GetEventInfo()
-      => EventInfo;
-
     protected override MemberInfo GetMemberInfo()
-      => GetEventInfo();
+      => EventInfo;
 
     public object? RaiseEvent(object? target, params object?[]? arguments)
     {
@@ -142,29 +140,39 @@ internal sealed class EventData : MemberData
       => _addMethodData ??= IsExplicitInterfaceImplementation
             ? MethodInfo.GetMethodFromHandle(_descriptor.AddAccessorImplementationMethodHandle) is MethodInfo explicitImplementationAccessor
                 ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(explicitImplementationAccessor)
-                : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{GetEventInfo().Name}' does not have an add method.")
-            : GetEventInfo().GetAddMethod() is MethodInfo methodInfo
+                : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{EventInfo.Name}' does not have an add method.")
+            : EventInfo.GetAddMethod() is MethodInfo methodInfo
                 ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo)
-                : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{GetEventInfo().Name}' does not have an add method.");
+                : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{EventInfo.Name}' does not have an add method.");
 
     public MethodData RemoveMethodData
       => _removeMethodData ??= IsExplicitInterfaceImplementation
             ? MethodInfo.GetMethodFromHandle(_descriptor.RemoveAccessorImplementationMethodHandle) is MethodInfo explicitImplementationAccessor
                 ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(explicitImplementationAccessor)
-                : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{GetEventInfo().Name}' does not have a remove method.")
-            : GetEventInfo().GetRemoveMethod() is MethodInfo methodInfo
+                : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{EventInfo.Name}' does not have a remove method.")
+            : EventInfo.GetRemoveMethod() is MethodInfo methodInfo
                 ? SymbolReflectionInfoCache.GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo)
-                : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{GetEventInfo().Name}' does not have a remove method.");
+                : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{EventInfo.Name}' does not have a remove method.");
 
     public MethodData EventInvokerMethodData
       => _invocatorMethodData ??= EventHandlerTypeData?.DelegateInvokeMethodData!;
 
     public TypeData EventHandlerTypeData
-      => _eventHandlerTypeData ??= GetEventInfo().EventHandlerType is Type eventHandlerType
+      => _eventHandlerTypeData ??= EventInfo.EventHandlerType is Type eventHandlerType
         ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(eventHandlerType)
-        : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{GetEventInfo().Name}' does not have an event handler type.");
+        : throw new NotSupportedException($"The underlying '{typeof(EventInfo).FullName}' for event '{EventInfo.Name}' does not have an event handler type.");
 
-    public EventInfo EventInfo { get; }
+    public EventInfo EventInfo
+    {
+        get
+        {
+            ExceptionThrower.ThrowIfDisposed(this);
+
+            return base.IsDisposed ? throw new ObjectDisposedException(nameof(EventData)) : _eventInfo;
+        }
+
+        private set => _eventInfo = value;
+    }
 
     public override bool IsExplicitInterfaceImplementation { get; }
 
@@ -219,10 +227,10 @@ internal sealed class EventData : MemberData
       => _assemblyName ??= DeclaringTypeData.AssemblyName;
 
     public bool CanAdd
-      => _canAdd ??= GetEventInfo().GetAddMethod(true) is not null;
+      => _canAdd ??= _addMethodData is not null || (_addMethodData = EventInfo.GetAddMethod(true)?.ToMethodData()) is not null;
 
     public bool CanRemove
-        => _canRemove ??= GetEventInfo().GetRemoveMethod(true) is not null;
+        => _canRemove ??= _removeMethodData is not null || (_removeMethodData = EventInfo.GetRemoveMethod(true)?.ToMethodData()) is not null;
 
     public bool IsOverride
       => _isOverride ??= AddMethodData!.IsOverride;
@@ -261,6 +269,8 @@ internal sealed class EventData : MemberData
     /// Abstract, Static, Virtual, or Override.</returns>
     private static SymbolAttributes GetAttributesInternal(EventData eventData)
     {
+        ArgumentNullException.ThrowIfNull(eventData);
+
         MethodData? eventAddMethodData = eventData.AddMethodData;
         SymbolAttributes eventAttributes = SymbolAttributes.Event;
         if (eventAddMethodData?.IsSealed ?? false)
@@ -292,5 +302,13 @@ internal sealed class EventData : MemberData
     }
 
     private static AccessModifier GetAccessModifierInternal(EventData eventData)
-      => eventData.AddMethodData?.AccessModifier ?? AccessModifier.Undefined;
+      => eventData is EventData checkedEventData
+        ? checkedEventData.AddMethodData?.AccessModifier ?? AccessModifier.Undefined
+        : throw new ArgumentNullException(nameof(eventData));
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        EventInfo = null!;
+    }
 }

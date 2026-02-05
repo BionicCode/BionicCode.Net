@@ -241,7 +241,7 @@ namespace BionicCode.Utilities.Net
             if (!isValueValid && methodConfiguration.IsRejectInvalidValueEnabled)
             {
                 return methodConfiguration.IsThrowExceptionOnValidationErrorEnabled
-                  ? throw new ArgumentException(ExceptionMessages.GetArgumentExceptionMessage_ValidationFailed())
+                  ? throw new ArgumentException(ExceptionMessages.ArgumentExceptionMessage_ValidationFailed())
                   : false;
             }
 
@@ -255,7 +255,7 @@ namespace BionicCode.Utilities.Net
             targetBackingField = value;
             OnPropertyChanged(oldValue, value, propertyName);
             return !isValueValid && methodConfiguration.IsThrowExceptionOnValidationErrorEnabled
-              ? throw new ArgumentException(ExceptionMessages.GetArgumentExceptionMessage_ValidationFailed())
+              ? throw new ArgumentException(ExceptionMessages.ArgumentExceptionMessage_ValidationFailed())
               : isValueValid;
         }
 
@@ -414,7 +414,7 @@ namespace BionicCode.Utilities.Net
             if (!isValueValid && methodConfiguration.IsRejectInvalidValueEnabled)
             {
                 return methodConfiguration.IsThrowExceptionOnValidationErrorEnabled
-                  ? throw new ArgumentException(ExceptionMessages.GetArgumentExceptionMessage_ValidationFailed())
+                  ? throw new ArgumentException(ExceptionMessages.ArgumentExceptionMessage_ValidationFailed())
                   : false;
             }
 
@@ -426,7 +426,7 @@ namespace BionicCode.Utilities.Net
             backingFieldSetterDelegate.Invoke(newValue);
             OnPropertyChanged(oldValue, newValue, propertyName);
             return !isValueValid && methodConfiguration.IsThrowExceptionOnValidationErrorEnabled
-              ? throw new ArgumentException(ExceptionMessages.GetArgumentExceptionMessage_ValidationFailed())
+              ? throw new ArgumentException(ExceptionMessages.ArgumentExceptionMessage_ValidationFailed())
               : isValueValid;
         }
 

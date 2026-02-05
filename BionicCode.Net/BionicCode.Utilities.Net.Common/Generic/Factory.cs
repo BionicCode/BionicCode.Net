@@ -121,7 +121,7 @@
             {
                 if (this.IsScoped)
                 {
-                    throw new InvalidOperationException(ExceptionMessages.GetInvalidOperationExceptionMessage_SetFactoryModeOnScopedFactory());
+                    throw new InvalidOperationException(ExceptionMessages.InvalidOperationExceptionMessage_SetFactoryModeOnScopedFactory());
                 }
 
                 this.factoryMode = value;

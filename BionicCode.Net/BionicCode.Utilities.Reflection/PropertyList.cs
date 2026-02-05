@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using BionicCode.Utilities.Net.Reflection.Exceptions;
 
 /// <summary>
 /// Represents a read-only list of <see cref="PropertyData"/> items that belong to the same declaring type.

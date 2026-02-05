@@ -801,8 +801,8 @@
                         if (argumentList.IsEmpty())
                         {
                             string propertyExceptionMessage = isPropertyIndexer
-                              ? ExceptionMessages.GetMissingProfiledArgumentAttributeExceptionMessage_IndexerProperty()
-                              : ExceptionMessages.GetMissingProfiledArgumentAttributeExceptionMessage_Property();
+                              ? ExceptionMessages.MissingProfiledArgumentAttributeExceptionMessage_IndexerProperty()
+                              : ExceptionMessages.MissingProfiledArgumentAttributeExceptionMessage_Property();
 
                             throw new ProfilerConfigurationException(propertyExceptionMessage);
                         }

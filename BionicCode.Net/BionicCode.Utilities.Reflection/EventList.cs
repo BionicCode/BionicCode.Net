@@ -10,7 +10,7 @@ internal sealed class EventList : IReadOnlyList<EventData>, IEquatable<EventList
     private static EventList Empty { get; } = new EventList();
     private readonly int _hashCode; // precomputed
     private readonly SymbolReflectionInfoCacheKey _declaringTypeCacheKey;
-    private readonly Dictionary<string, EventData> _eventNameIndex;
+    public readonly Dictionary<string, EventData> _eventNameIndex;
 
     public EventList(EventData[] items) : this((IEnumerable<EventData>)items)
     {

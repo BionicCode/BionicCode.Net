@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Concurrent;
     using System.Reflection;
+    using BionicCode.Utilities.Net.Reflection.Exceptions;
 
     internal sealed class FieldData : MemberData, IFieldDataInvoker
     {

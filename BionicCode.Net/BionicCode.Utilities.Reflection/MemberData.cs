@@ -6,9 +6,8 @@ using System.Reflection;
 
 internal abstract class MemberData : SymbolInfoData
 {
-    private IList<CustomAttributeData> attributeData;
-    private TypeData declaringTypeData;
-    private RuntimeTypeHandle? _declaringTypeHandle;
+    private IList<CustomAttributeData> _attributeData;
+    private TypeData _declaringTypeData;
     private string? _namespace;
     private BindingFlags? _bindingFlagsVisibilityMask;
 
@@ -44,7 +43,7 @@ internal abstract class MemberData : SymbolInfoData
     }
 
     public TypeData DeclaringTypeData
-      => this.declaringTypeData ??= Type.GetTypeFromHandle(this.DeclaringTypeHandle) is Type declaringType
+      => this._declaringTypeData ??= Type.GetTypeFromHandle(this.DeclaringTypeHandle) is Type declaringType
             ? SymbolReflectionInfoCache.GetOrCreateSymbolInfoDataCacheEntry(declaringType)
             : throw new InvalidOperationException($"The runtime type handle returned from the property '{nameof(this.DeclaringTypeHandle)}' is not valid.");
 
@@ -67,5 +66,5 @@ internal abstract class MemberData : SymbolInfoData
     public BindingFlags BindingFlagsVisibilityMask => this._bindingFlagsVisibilityMask ??= ComputeVisibilityBindingFlagsMask();
 
     public override IList<CustomAttributeData> AttributeData
-      => this.attributeData ??= new List<CustomAttributeData>(GetMemberInfo().GetCustomAttributesData());
+      => this._attributeData ??= new List<CustomAttributeData>(GetMemberInfo().GetCustomAttributesData());
 }

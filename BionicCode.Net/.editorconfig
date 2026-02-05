@@ -4,6 +4,149 @@ root = true
 # C# files
 [*.cs]
 
+#### .NET Analyzers ####
+
+# CA1051: Do not declare visible instance fields
+dotnet_diagnostic.CA1051.severity = error
+dotnet_code_quality.CA1051.api_surface = all
+
+# CA1005: Avoid excessive parameters on generic types
+dotnet_diagnostic.CA1005.severity = error
+dotnet_code_quality.CA1005.api_surface = all
+
+# CA1003: Use generic event handler instances
+dotnet_diagnostic.CA1003.severity = error
+dotnet_code_quality.CA1003.api_surface = all
+
+# CA1008: Enums should have zero value
+dotnet_diagnostic.CA1008.severity = error
+dotnet_code_quality.CA1008.api_surface = all
+
+# CA1010: Collections should implement generic interface
+dotnet_diagnostic.CA1010.severity = error
+dotnet_code_quality.CA1010.api_surface = all
+
+# CA1012: Abstract types should not have public constructors
+dotnet_diagnostic.CA1012.severity = error
+dotnet_code_quality.CA1012.api_surface = all
+
+# CA1018: Mark attributes with AttributeUsageAttribute
+dotnet_diagnostic.CA1018.severity = error	
+dotnet_code_quality.CA1018.api_surface = all
+
+# CA1019: Define accessors for attribute arguments
+dotnet_diagnostic.CA1019.severity = error
+dotnet_code_quality.CA1019.api_surface = all
+
+# CA1024: Use properties where appropriate
+dotnet_diagnostic.CA1024.severity = error
+dotnet_code_quality.CA1024.api_surface = all
+
+# CA1027: Mark enums with FlagsAttribute
+dotnet_diagnostic.CA1027.severity = error
+dotnet_code_quality.CA1027.api_surface = all
+
+# CA1031: Do not catch general exception types
+dotnet_code_quality.CA1031.disallowed_symbol_names = NullReferenceException
+dotnet_code_quality.CA1031.disallowed_symbol_names = IndexOutOfRangeException
+
+# CA1032: Implement standard exception constructors
+dotnet_diagnostic.CA1032.severity = error
+dotnet_code_quality.CA1032.api_surface = all
+
+# CA1033: Interface methods should be callable by child types
+dotnet_diagnostic.CA1033.severity = error
+dotnet_code_quality.CA1033.api_surface = all
+
+# CA1034: Nested types should not be visible
+dotnet_diagnostic.CA1034.severity = error	
+dotnet_code_quality.CA1034.api_surface = all
+
+# CA1036: Override methods on comparable types
+dotnet_diagnostic.CA1036.severity = error
+dotnet_code_quality.CA1036.api_surface = all
+
+# CA1040: Avoid empty interfaces
+dotnet_diagnostic.CA1040.severity = error
+dotnet_code_quality.CA1040.api_surface = all
+
+# CA1041: Provide ObsoleteAttribute message
+dotnet_diagnostic.CA1041.severity = error
+dotnet_code_quality.CA1041.api_surface = all
+
+# CA1044: Properties should not be write-only
+dotnet_diagnostic.CA1044.severity = error
+dotnet_code_quality.CA1044.api_surface = all
+
+# CA1046: Do not overload operator equals on reference types
+dotnet_diagnostic.CA1046.severity = warning
+dotnet_code_quality.CA1046.api_surface = all
+
+# CA1047: Do not declare protected members in sealed types
+dotnet_diagnostic.CA1047.severity = error
+dotnet_code_quality.CA1047.api_surface = all
+
+# CA1052: Static holder types should be Static or NotInheritable
+dotnet_diagnostic.CA1052.severity = error
+dotnet_code_quality.CA1052.api_surface = all
+
+# CA1053: Static holder types should not have default constructors
+dotnet_diagnostic.CA1053.severity = error
+dotnet_code_quality.CA1053.api_surface = all
+
+# CA1054: Uri parameters should not be strings
+dotnet_diagnostic.CA1054.severity = error
+dotnet_code_quality.CA1054.api_surface = all
+
+# CA1055: URI return values should not be strings
+dotnet_diagnostic.CA1055.severity = error
+dotnet_code_quality.CA1055.api_surface = all
+
+# CA1060: Move P/Invokes to NativeMethods class
+dotnet_diagnostic.CA1060.severity = error
+dotnet_code_quality.CA1060.api_surface = all
+
+# CA1061: Do not hide base class methods
+dotnet_diagnostic.CA1061.severity = error
+dotnet_code_quality.CA1061.api_surface = all
+
+# CA1062: Validate arguments of public methods
+dotnet_diagnostic.CA1062.severity = error
+dotnet_code_quality.CA1062.api_surface = public, internal
+
+# CA1063: Implement IDisposable correctly
+dotnet_diagnostic.CA1063.severity = error
+dotnet_code_quality.CA1063.api_surface = all
+
+# CA1064: Exceptions should be public
+dotnet_diagnostic.CA1064.severity = error
+dotnet_code_quality.CA1064.api_surface = all
+
+# CA1065: Do not raise exceptions in unexpected locations
+dotnet_diagnostic.CA1065.severity = error
+dotnet_code_quality.CA1065.api_surface = all
+
+# CA1066: Implement IEquatable when overriding Object.Equals
+dotnet_diagnostic.CA1066.severity = error
+dotnet_code_quality.CA1066.api_surface = all
+
+# CA1067: Override Equals when implementing IEquatable
+dotnet_diagnostic.CA1067.severity = error
+dotnet_code_quality.CA1067.api_surface = all
+
+# CA1068: CancellationToken parameters must come last
+dotnet_diagnostic.CA1068.severity = error
+dotnet_code_quality.CA1068.api_surface = all
+
+# CA1069: Enums values should not be duplicated
+dotnet_diagnostic.CA1069.severity = error
+dotnet_code_quality.CA1069.api_surface = all
+
+# CA1070: Do not declare event handlers as virtual
+dotnet_diagnostic.CA1070.severity = error
+dotnet_code_quality.CA1070.api_surface = all
+
+
 #### Core EditorConfig Options ####
 
 # Indentation and spacing

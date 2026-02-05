@@ -147,7 +147,7 @@
                 bool isInitialized = await initializable.InitializeAsync().ConfigureAwait(false);
                 if (isThrowExceptionEnabled && !isInitialized)
                 {
-                    throw new InvalidOperationException(ExceptionMessages.GetInvalidOperationExceptionMessage_IInitializableFailed(implementation.GetType()));
+                    throw new InvalidOperationException(ExceptionMessages.GetInvalidOperationExceptionMessage_InitializableFailed(implementation.GetType()));
                 }
             }
 

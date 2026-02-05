@@ -33,7 +33,11 @@ internal static class SymbolReflectionInfoCache
             {
                 foreach (SymbolReflectionInfoCacheKey cacheKey in cacheKeysOfAssemblyLoadContext)
                 {
-                    _ = SymbolReflectionInfoCache.s_symbolInfoDataCache.TryRemove(cacheKey, out _);
+                    if (SymbolReflectionInfoCache.s_symbolInfoDataCache.TryRemove(cacheKey, out SymbolInfoData? symbolInfoData))
+                    {
+                        symbolInfoData.Dispose();
+                    }
+
                     ClearAnonymousCacheKeyMap(cacheKey);
                     ClearWellKnownMethodAndConstructorCacheKeyTable(cacheKey);
                     ClearIndexerParameterSymbolDataCacheKeyMap(cacheKey);
@@ -78,7 +82,6 @@ internal static class SymbolReflectionInfoCache
     }
 
     #region Extension Methods
-
     /// <summary>
     /// Converts the specified <see cref="Type"/> to a <see cref="TypeData"/> instance representing its metadata and
     /// characteristics.
@@ -87,7 +90,11 @@ internal static class SymbolReflectionInfoCache
     /// <returns>A <see cref="TypeData"/> instance that describes the specified type. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
     /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="TypeData"/> instances for the same type.</remarks>
     public static TypeData ToTypeData(this Type type)
-        => GetOrCreateSymbolInfoDataCacheEntry(type);
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(type);
+
+        return GetOrCreateSymbolInfoDataCacheEntry(type);
+    }
 
     /// <summary>
     /// Converts the specified <see cref="MethodInfo"/> to a <see cref="MethodData"/> instance representing its metadata and
@@ -97,7 +104,11 @@ internal static class SymbolReflectionInfoCache
     /// <returns>A <see cref="MethodData"/> instance that describes the specified method. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
     /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="MethodData"/> instances for the same method.</remarks>
     public static MethodData ToMethodData(this MethodInfo methodInfo)
-        => GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(methodInfo);
+
+        return GetOrCreateSymbolReflectionInfoCacheEntry(methodInfo);
+    }
 
     /// <summary>
     /// Converts the specified <see cref="ConstructorInfo"/> to a <see cref="ConstructorData"/> instance representing its metadata and
@@ -107,7 +118,11 @@ internal static class SymbolReflectionInfoCache
     /// <returns>A <see cref="ConstructorData"/> instance that describes the specified constructor. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
     /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="ConstructorData"/> instances for the same constructor.</remarks>
     public static ConstructorData ToConstructorData(this ConstructorInfo constructorInfo)
-        => GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo);
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(constructorInfo);
+
+        return GetOrCreateSymbolReflectionInfoCacheEntry(constructorInfo);
+    }
 
     /// <summary>
     /// Converts the specified <see cref="FieldInfo"/> to a <see cref="FieldData"/> instance representing its metadata and
@@ -117,7 +132,11 @@ internal static class SymbolReflectionInfoCache
     /// <returns>A <see cref="FieldData"/> instance that describes the specified field. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
     /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="FieldData"/> instances for the same field.</remarks>
     public static FieldData ToFieldData(this FieldInfo fieldInfo)
-        => GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(fieldInfo);
+
+        return GetOrCreateSymbolReflectionInfoCacheEntry(fieldInfo);
+    }
 
     /// <summary>
     /// Converts the specified <see cref="PropertyInfo"/> to a <see cref="PropertyData"/> instance representing its metadata and
@@ -127,7 +146,11 @@ internal static class SymbolReflectionInfoCache
     /// <returns>A <see cref="PropertyData"/> instance that describes the specified property. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
     /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="PropertyData"/> instances for the same property.</remarks>
     public static PropertyData ToPropertyData(this PropertyInfo propertyInfo)
-        => GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(propertyInfo);
+
+        return GetOrCreateSymbolReflectionInfoCacheEntry(propertyInfo);
+    }
 
     /// <summary>
     /// Converts the specified <see cref="EventInfo"/> to a <see cref="EventData"/> instance representing its metadata and
@@ -137,7 +160,11 @@ internal static class SymbolReflectionInfoCache
     /// <returns>A <see cref="EventData"/> instance that describes the specified event. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
     /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="EventData"/> instances for the same event.</remarks>
     public static EventData ToEventData(this EventInfo eventInfo)
-        => GetOrCreateSymbolReflectionInfoCacheEntry(eventInfo);
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(eventInfo);
+
+        return GetOrCreateSymbolReflectionInfoCacheEntry(eventInfo);
+    }
 
     /// <summary>
     /// Converts the specified <see cref="ParameterInfo"/> to a <see cref="ParameterData"/> instance representing its metadata and
@@ -147,8 +174,11 @@ internal static class SymbolReflectionInfoCache
     /// <returns>A <see cref="ParameterData"/> instance that describes the specified parameter. The returned instance is cached for future use if it is not already present in the cache, in which case the cached instance will be returned.</returns>
     /// <remarks>The method utilizes a caching mechanism to optimize performance by avoiding redundant creation of <see cref="ParameterData"/> instances for the same parameter.</remarks>
     public static ParameterData ToParameterData(this ParameterInfo parameterInfo)
-        => GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
+    {
+        ArgumentNullExceptionAdvanced.ThrowIfNull(parameterInfo);
 
+        return GetOrCreateSymbolInfoDataCacheEntry(parameterInfo);
+    }
     #endregion Extension Methods
 
     /// <summary>

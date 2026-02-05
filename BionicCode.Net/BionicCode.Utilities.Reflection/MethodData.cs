@@ -7,6 +7,7 @@
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
+    using BionicCode.Utilities.Net.Reflection.Exceptions;
     using Microsoft.CodeAnalysis;
 
     internal sealed class MethodData : ParameterizedMemberData, IMethodDataInvoker, IStrictMethodDataInvoker

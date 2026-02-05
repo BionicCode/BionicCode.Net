@@ -6,6 +6,7 @@ namespace BionicCode.Utilities.Net.Reflection
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
+    using BionicCode.Utilities.Net.Reflection.Exceptions;
     using Microsoft.CodeAnalysis;
 
     internal sealed class PropertyData : MemberData, IPropertyDataInvoker
